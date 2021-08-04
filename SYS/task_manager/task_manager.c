@@ -1,0 +1,1141 @@
+#include "task_manager.c"
+#include "runtime.h"
+#include "string.h"
+#include "stddef.h"
+#include "periph_gpio.h"
+#include "periph_timer.h"
+#include <stdio.h>
+#include "tasksys_config.h"
+#include "binary_tree.h"
+#include "linked_list.h"
+
+//coder: 8_B!T0
+//bref:
+//estabishment a task running system with priority calling functional
+//alway calling the highest priority function in all function under the ready table
+//reference to ucos (version earler than v8.6)
+
+/*
+*******************************   TASK Handle    *******************************
+
+             task0   task1   task2   task3   task4   task5   task6   task7
+group0     |_______|_______|_______|_______|_______|_______|_______|_______|
+group1     |_______|_______|_______|_______|_______|_______|_______|_______|
+group2     |_______|_______|_______|_______|_______|_______|_______|_______|
+group3     |_______|_______|_______|_______|_______|_______|_______|_______|
+group4     |_______|_______|_______|_______|_______|_______|_______|_______|
+group5     |_______|_______|_______|_______|_______|_______|_______|_______|
+group6     |_______|_______|_______|_______|_______|_______|_______|_______|
+group7     |_______|_______|_______|_______|_______|_______|_______|_______|
+
+*/
+
+#define GET_TASKGROUP_PRIORITY(x) x >> 3
+#define GET_TASKINGROUP_PRIORITY(y) y & 0X07
+
+static const uint8_t Tsk_Handle[256] = {0, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x00 ~ 0x0F
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x10 ~ 0x1F
+                                        5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x20 ~ 0x2F
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x30 ~ 0x3F
+                                        6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x40 ~ 0x4F
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x50 ~ 0x5F
+                                        5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x60 ~ 0x6F
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x70 ~ 0x7F
+                                        7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x80 ~ 0x8F
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0x90 ~ 0x9F
+                                        5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0xA0 ~ 0xAF
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0xB0 ~ 0xBF
+                                        6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0xC0 ~ 0xCF
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0xD0 ~ 0xDF
+                                        5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,  //0xE0 ~ 0xEF
+                                        4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0}; //0xF0 ~ 0xFF
+
+Task *Task_Ptr[Group_Sum][Task_Priority_Sum];
+volatile Task *CurRunTsk_Ptr = NULL;
+volatile Task *NxtRunTsk_Ptr = NULL;
+
+static volatile TskMap_State TskHdl_RdyMap = {.Grp = 0, .TskInGrp[0] = 0, .TskInGrp[1] = 0, .TskInGrp[2] = 0, .TskInGrp[3] = 0, .TskInGrp[4] = 0, .TskInGrp[5] = 0, .TskInGrp[6] = 0, .TskInGrp[7] = 0};
+static volatile TskMap_State TskHdl_PndMap = {.Grp = 0, .TskInGrp[0] = 0, .TskInGrp[1] = 0, .TskInGrp[2] = 0, .TskInGrp[3] = 0, .TskInGrp[4] = 0, .TskInGrp[5] = 0, .TskInGrp[6] = 0, .TskInGrp[7] = 0};
+static volatile TskMap_State TskHdl_BlkMap = {.Grp = 0, .TskInGrp[0] = 0, .TskInGrp[1] = 0, .TskInGrp[2] = 0, .TskInGrp[3] = 0, .TskInGrp[4] = 0, .TskInGrp[5] = 0, .TskInGrp[6] = 0, .TskInGrp[7] = 0};
+
+static Task_Create_RegList_s TskCrt_RegList = {.num = 0,
+                                               .list = {.prv = NULL, .nxt = NULL, .data = NULL}};
+static volatile TaskSys_State TskSys_state = TaskSys_Initial;
+static uint32_t TaskSys_Idle_US = 0;
+static float TaskSys_Idle_Ocupy = 0.0f;
+static SYSTEM_RunTime TaskSys_StartTime;
+
+static void Task_SetReady(Task *tsk);
+static void Task_ClearReady(Task *tsk);
+static void Task_StopCountTargetFunc_Cast(Task *tsk_ptr);
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+volatile Task *PndHstTsk_Ptr = NULL;
+
+volatile TaskStack_ControlBlock CurTsk_TCB;
+volatile TaskStack_ControlBlock NxtTsk_TCB;
+
+static uint32_t Task_OS_StkMem[MSP_MEM_SPACE_SIZE];
+uint32_t *Task_OS_ExpStkBase;
+
+static void Task_SetStkPtr_Val(Task *tsk);
+static void Task_Set_CountRunnigTime_State(Task *tsk_ptr, uint8_t enable_state);
+static void Task_ClearPending(Task *tsk);
+static void Task_ClearBlock(Task *tsk);
+static void Task_SetBASEPRI(uint32_t ulBASEPRI);
+
+void Task_SetPending(Task *tsk);
+#endif
+
+static void Task_Exec(Task *tsk_ptr);
+static void Task_SetPendSVPro(void);
+void Task_TriggerPendSV(void);
+
+static void ReSet_Task_Data(Task *task)
+{
+    task->priority.Suction.Group_Level = 0;
+    task->priority.Suction.Task_Level = 0;
+    task->Task_name = NULL;
+    task->exec_frq = 0;
+    task->exec_interval_us = 0;
+    task->Exec_Func = NULL;
+    task->type = task_type_none;
+
+    task->Exec_status.detect_exec_frq = 0;
+    task->Exec_status.detect_exec_time_arv = 0;
+    task->Exec_status.detect_exec_time_max = 0;
+    task->Exec_status.Exec_Times = 0;
+    task->Exec_status.cpu_opy = 0;
+    task->Exec_status.totlal_running_time = 0;
+
+    task->delay_info.on_delay = false;
+    task->delay_info.tsk_hdl = 0;
+    task->delay_info.time_unit = 0;
+
+    List_ItemInit(&task->delay_item, &task->delay_info);
+
+    RunTime_Reset(&(task->Exec_status.Exec_Time));
+    RunTime_Reset(&(task->Exec_status.Init_Time));
+    RunTime_Reset(&(task->Exec_status.Start_Time));
+
+    task->Exec_status.State = Task_Done;
+}
+
+static void Task_ReSet_BaseInfo(Task_Base_Info *info)
+{
+    info->avg_exec_us = 0;
+    info->cpu_opy = 0;
+    info->exec_frq = 0;
+    info->exec_times = 0;
+    info->group = 0;
+    info->max_exec_us = 0;
+    info->priority = 0;
+
+    memset(info->name, NULL, TASK_NAME_MAXLEN);
+}
+
+static bool TaskSys_Init(void)
+{
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+    //init OS Stack Memory Space
+    memset(Task_OS_StkMem, NULL, MSP_MEM_SPACE_SIZE);
+
+    Task_OS_ExpStkBase = Task_OS_StkMem + MSP_MEM_SPACE_SIZE - 1;
+#endif
+
+    //periph_Timer_CounterMode_Init(Timer_4, TimerCounter_1M_Prescaler, TimerCounter_1us_Period, 0, 1);
+    //periph_Timer_Counter_SetEnable(Timer_4, DISABLE);
+
+    uint8_t index = 0;
+
+    for (uint8_t group_index = Group_0; group_index < Group_Sum; group_index++)
+    {
+        for (uint8_t task_priority = Task_Priority_0; task_priority < Task_Priority_Sum; task_priority++)
+        {
+            ReSet_Task_Data(Task_Ptr[group_index][task_priority]);
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+            Task_Ptr[group_index][task_priority]->Stack_Depth = 0;
+            Task_Ptr[group_index][task_priority]->TCB.Stack = NULL;
+            Task_Ptr[group_index][task_priority]->TCB.Top_Stk_Ptr = NULL;
+#endif
+            Task_Ptr[group_index][task_priority] = NULL;
+
+            index++;
+        }
+    }
+
+    TskCrt_RegList.num = 0;
+    TskCrt_RegList.list.data = NULL;
+    TskCrt_RegList.list.nxt = NULL;
+    TskCrt_RegList.list.prv = NULL;
+
+    ReSet_Task_Data(CurRunTsk_Ptr);
+    TskSys_state = TaskSys_Prepare;
+}
+
+static void Task_Exit(void)
+{
+    //task caller will not exit
+    while (true)
+    {
+    }
+}
+
+static void Task_Idle(void)
+{
+    SYSTEM_RunTime cur_time;
+    SYSTEM_RunTime time_diff;
+    uint32_t diff_us = 0;
+
+    RunTime_Reset(&time_diff);
+    RunTime_Reset(&cur_time);
+
+    cur_time = Get_Cur_Runtime();
+    time_diff = Get_Time_Difference(TaskSys_StartTime, cur_time);
+
+    diff_us = (time_diff.s * (REAL_S + 1) +
+               (time_diff.min * (REAL_MIN + 1) * (REAL_S + 1)) +
+               (time_diff.hour * (REAL_HOUR + 1) * (REAL_MIN + 1) * (REAL_S + 1)) +
+               (time_diff.ms * REAL_MS) +
+               time_diff.us);
+
+    TaskSys_Idle_US++;
+    TaskSys_Idle_Ocupy = (TaskSys_Idle_US / (float)diff_us);
+}
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+
+void Task_Resume_FromBlock(Task *tsk)
+{
+    Task_ClearBlock(tsk);
+    Task_SetReady(tsk);
+    //Task_Set_CountRunnigTime_State(tsk, ENABLE);
+
+    tsk->Exec_status.State = Task_Running;
+    NxtTsk_TCB.Top_Stk_Ptr = &tsk->TCB.Top_Stk_Ptr;
+    NxtTsk_TCB.Stack = tsk->TCB.Stack;
+    CurRunTsk_Ptr = tsk;
+}
+
+void Task_SetBlock(Task *tsk)
+{
+    uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
+    uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
+
+    //set current group block
+    TskHdl_BlkMap.Grp.Flg |= 1 << grp_id;
+    //set current task under this group flag to block
+    TskHdl_BlkMap.TskInGrp[grp_id].Flg |= 1 << tsk_id;
+
+    //reset task in ready reg group
+    TskHdl_RdyMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
+    //if no task ready then clear group reg
+    if (TskHdl_RdyMap.TskInGrp[grp_id].Flg == 0)
+    {
+        TskHdl_RdyMap.Grp.Flg &= ~(1 << grp_id);
+    }
+
+    //set task state
+    tsk->Exec_status.State = Task_Block;
+
+    //Task_StopCountTargetFunc_Cast(tsk);
+    //Task_Set_CountRunnigTime_State(tsk, DISABLE);
+
+    CurRunTsk_Ptr = NULL;
+
+    Task_SetBASEPRI(0);
+}
+
+void Task_SetPending(Task *tsk)
+{
+    uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
+    uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
+
+    //set current group pending
+    TskHdl_PndMap.Grp.Flg |= 1 << grp_id;
+    //set current task under this group flag to ready
+    TskHdl_PndMap.TskInGrp[grp_id].Flg |= 1 << tsk_id;
+
+    //set task state
+    tsk->Exec_status.State = Task_Pending;
+}
+
+void Task_SwitchStack(void)
+{
+    CurTsk_TCB = NxtTsk_TCB;
+}
+
+Task *Task_Get_HighestRank_PndTask(void)
+{
+    uint8_t grp_id;
+    uint8_t tsk_id;
+
+    if (TskHdl_PndMap.Grp.Flg)
+    {
+        //find group
+        grp_id = Tsk_Handle[TskHdl_PndMap.Grp.Flg];
+        //find task in group
+        tsk_id = Tsk_Handle[TskHdl_PndMap.TskInGrp[grp_id].Flg];
+    }
+    else
+        return NULL;
+
+    if (Task_Ptr[grp_id][tsk_id] != NULL)
+    {
+        return Task_Ptr[grp_id][tsk_id];
+    }
+    else
+    {
+        TskHdl_PndMap.Grp.Flg &= ~(1 << grp_id);
+        TskHdl_PndMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
+        return NULL;
+    }
+}
+
+static uint32_t Task_EnterCritical(void)
+{
+    /* Set BASEPRI to the max syscall priority to effect a critical
+	section. */
+    uint32_t ulOriginalBASEPRI, ulNewBASEPRI;
+
+    __asm volatile(
+        "	mrs %0, basepri											\n"
+        "	mov %1, %2												\n"
+        "	msr basepri, %1											\n"
+        "	isb														\n"
+        "	dsb														\n"
+        : "=r"(ulOriginalBASEPRI), "=r"(ulNewBASEPRI)
+        : "i"(80)
+        : "memory");
+
+    /* This return will not be reached but is necessary to prevent compiler
+	warnings. */
+    return ulOriginalBASEPRI;
+}
+
+static void Task_SetBASEPRI(uint32_t ulBASEPRI)
+{
+    __ASM("	msr basepri, %0	" ::"r"(ulBASEPRI)
+          : "memory");
+}
+
+static void Task_ExitCritical(void)
+{
+    /* Barrier instructions are not used as this function is only used to
+	lower the BASEPRI value. */
+    __ASM("	msr basepri, %0	" ::"r"(0)
+          : "memory");
+}
+
+static void Task_Recover(void)
+{
+    __ASM("LDR	  R3, CurrentTCBConst_Tmp2");
+    __ASM("LDR    R1, [R3]");
+    __ASM("LDR    R0, [R1]");
+
+    __ASM("LDMIA  R0!, {R4-R11, R14}");
+
+    __ASM("MSR    PSP, R0");
+    __ASM("ISB");
+    __ASM("BX     R14");
+    __ASM(".ALIGN 4");
+    __ASM("CurrentTCBConst_Tmp2: .word CurTsk_TCB");
+}
+
+void Task_SaveCurProc(void)
+{
+    __ASM("MRS    R0, PSP");
+    __ASM("LDR	  R3, CurrentTCBConst_Tmp3");
+    __ASM("LDR    R2, [R3]");
+
+    __ASM("ISB");
+
+    __ASM("STMDB    R0!, {R4-R11, R14}");
+    __ASM("STR      R0, [R2]");
+
+    /******************************  FPU SECTION  *********************************/
+    __ASM("TST      R14, #0x10");
+    __ASM("IT       EQ");
+    __ASM("VSTMDBEQ R0!, {s16-s31}");
+    /******************************  FPU SECTION  *********************************/
+
+    __ASM("ISB");
+    __ASM("BX       R14");
+
+    __ASM("CurrentTCBConst_Tmp3: .word CurTsk_TCB");
+}
+
+void Task_Load(void)
+{
+    __ASM("LDR	  R3, =CurTsk_TCB");
+    __ASM("LDR    R1, [R3]");
+    __ASM("LDR    R0, [R1]");
+
+    __ASM("LDMIA  R0!, {R4-R11, R14}");
+
+    /******************************  FPU SECTION  *********************************/
+    __ASM("TST      R14, #0x10");
+    __ASM("IT       EQ");
+    __ASM("VLDMIAEQ R0!, {s16-s31}");
+    /******************************  FPU SECTION  *********************************/
+
+    __ASM("MSR    PSP, R0");
+    __ASM("ISB");
+    __ASM("MOV    R0, #240");
+    __ASM("MSR	  BASEPRI, R0");
+    __ASM("BX     R14");
+    __ASM(".ALIGN 4");
+}
+
+void Load_FirstTask(void)
+{
+    Task_Load();
+}
+
+void Task_SwitchContext(void)
+{
+    __ASM("MRS      R0, PSP");
+    __ASM("ISB");
+
+    __ASM("LDR      R3, CurrentTCBConst_Tmp");
+    __ASM("LDR      R2, [R3]");
+
+    /******************************  FPU SECTION  *********************************/
+    __ASM("TST      R14, #0x10");
+    __ASM("IT       EQ");
+    __ASM("VSTMDBEQ R0!, {s16-s31}");
+    /******************************  FPU SECTION  *********************************/
+
+    __ASM("STMDB    R0!, {R4-R11, R14}");
+    __ASM("STR      R0, [R2]");
+
+    __ASM("STMDB    SP!, {R0, R3}");
+    __ASM("MOV      R0, %0" ::"i"(0x50));
+    __ASM("MSR      BASEPRI, R0");
+
+    __ASM("DSB");
+    __ASM("ISB");
+
+    __ASM("BL       Task_SwitchStack");
+
+    __ASM("MOV      R0, #0");
+    __ASM("MSR      BASEPRI, R0");
+    __ASM("LDMIA    SP!, {R0, R3}");
+
+    __ASM("LDR      R1, [R3]");
+    __ASM("LDR      R0, [R1]");
+
+    __ASM("LDMIA    R0!, {R4-R11, R14}");
+
+    /******************************  FPU SECTION  *********************************/
+    __ASM("TST      R14, #0x10");
+    __ASM("IT       EQ");
+    __ASM("VLDMIAEQ R0!, {s16-s31}");
+    /******************************  FPU SECTION  *********************************/
+
+    __ASM("MSR      PSP,R0");
+    __ASM("ISB");
+    __ASM("MOV      R0, #240");
+    __ASM("MSR	    BASEPRI, R0");
+    __ASM("BX       R14");
+
+    __ASM("CurrentTCBConst_Tmp: .word CurTsk_TCB");
+    __ASM(".ALIGN 4");
+}
+
+static void Task_SetStkPtr_Val(Task *tsk)
+{
+    uint32_t *Tsk_Ptr_tmp = NULL;
+
+    memset(tsk->TCB.Stack, NULL, tsk->Stack_Depth);
+
+    Tsk_Ptr_tmp = &tsk->TCB.Stack + (tsk->Stack_Depth - (uint32_t)1);
+    Tsk_Ptr_tmp = (uint32_t *)((uint32_t)(Tsk_Ptr_tmp)&0XFFFFFFF8ul);
+
+    Tsk_Ptr_tmp--;
+    *Tsk_Ptr_tmp = 0x01000000uL; /* xPSR */
+
+    Tsk_Ptr_tmp--;
+    *Tsk_Ptr_tmp = ((uint32_t)Task_Caller) & 0xfffffffeUL; /* PC */
+
+    Tsk_Ptr_tmp--;
+    *Tsk_Ptr_tmp = (uint32_t)Task_Exit; /* LR */
+
+    /* Save code space by skipping register initialisation. */
+    Tsk_Ptr_tmp -= 5;              /* R12, R3, R2 and R1. */
+    *Tsk_Ptr_tmp = (uint32_t)NULL; /* R0 */
+
+    /* A save method is being used that requires each task to maintain its
+	    own exec return value. */
+    Tsk_Ptr_tmp--;
+    *Tsk_Ptr_tmp = 0xfffffffd;
+
+    Tsk_Ptr_tmp -= 8; /* R11, R10, R9, R8, R7, R6, R5 and R4. */
+
+    //set task stack top pointer
+    tsk->TCB.Top_Stk_Ptr = Tsk_Ptr_tmp; //&Tsk_Ptr_tmp
+}
+
+#endif
+
+static void Task_SetReady(Task *tsk)
+{
+    uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
+    uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
+
+    //set current group flag to ready
+    TskHdl_RdyMap.Grp.Flg |= 1 << grp_id;
+    //set current task under this group flag to ready
+    TskHdl_RdyMap.TskInGrp[grp_id].Flg |= 1 << tsk_id;
+
+    tsk->Exec_status.State = Task_Ready;
+}
+
+static void Task_ClearBlock(Task *tsk)
+{
+    uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
+    uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
+
+    TskHdl_BlkMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
+    if (TskHdl_BlkMap.TskInGrp[grp_id].Flg == 0)
+    {
+        TskHdl_BlkMap.Grp.Flg &= ~(1 << grp_id);
+    }
+}
+
+static void Task_ClearPending(Task *tsk)
+{
+    uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
+    uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
+
+    TskHdl_PndMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
+    if (TskHdl_PndMap.TskInGrp[grp_id].Flg == 0)
+    {
+        TskHdl_PndMap.Grp.Flg &= ~(1 << grp_id);
+    }
+}
+
+static void Task_ClearReady(Task *tsk)
+{
+    uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
+    uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
+
+    TskHdl_RdyMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
+    if (TskHdl_RdyMap.TskInGrp[grp_id].Flg == 0)
+    {
+        TskHdl_RdyMap.Grp.Flg &= ~(1 << grp_id);
+    }
+}
+
+Task *Task_Get_HighestRank_RdyTask(void)
+{
+    uint8_t grp_id = 0;
+    uint8_t tsk_id = 0;
+
+    if (TskHdl_RdyMap.Grp.Flg)
+    {
+        //find group
+        grp_id = Tsk_Handle[TskHdl_RdyMap.Grp.Flg];
+        //find task in group
+        tsk_id = Tsk_Handle[TskHdl_RdyMap.TskInGrp[grp_id].Flg];
+    }
+    else
+        return NULL;
+
+    if (Task_Ptr[grp_id][tsk_id] != NULL)
+    {
+        return Task_Ptr[grp_id][tsk_id];
+    }
+    else
+    {
+        TskHdl_RdyMap.Grp.Flg &= ~(1 << grp_id);
+        TskHdl_RdyMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
+        return NULL;
+    }
+}
+
+void Task_SetNextTask_Ptr(const Task *nxt)
+{
+    if (nxt != NULL)
+    {
+        NxtRunTsk_Ptr = nxt;
+        NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
+        NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
+    }
+}
+
+//first need to know is linux support AT&T formate ASM code
+static __attribute__((naked)) void Task_SetPendSVPro(void)
+{
+    //set pendsv interrupt
+    __ASM(".equ NVIC_SYSPRI14, 0xE000ED22");
+    __ASM(".equ NVIC_PENDSV_PRI, 0xFF");
+
+    __ASM("LDR      R0, =NVIC_SYSPRI14");
+    __ASM("LDR      R1, =NVIC_PENDSV_PRI");
+    __ASM("STRB     R1, [R0]");
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+    //set PSP to 0 to initial context switch call
+    __ASM("MOVS     R0, #0");
+    __ASM("MSR      PSP, R0");
+
+    //initial MSP to Task_OS_ExpStkBase
+    __ASM("LDR      R0, =Task_OS_ExpStkBase");
+    __ASM("LDR      R1, [R0]");
+    __ASM("MSR      MSP, R1");
+#endif
+
+    __ASM("BX       LR");
+}
+
+__attribute__((naked)) void Task_TriggerPendSV(void)
+{
+    __ASM(".equ NVIC_INT_CTRL, 0xE000ED04");
+    __ASM(".equ NVIC_PENDSVSET, 0x10000000");
+
+    __ASM("LDR      R0, =NVIC_INT_CTRL");
+    __ASM("LDR      R1, =NVIC_PENDSVSET");
+    __ASM("STR      R1, [R0]");
+    __ASM("BX       LR");
+}
+
+void Task_Force_TriggerPendSV(void)
+{
+    /* Barriers are normally not required but do ensure the code is completely \
+        within the specified behaviour for the architecture. */
+    __ASM volatile("dsb" ::
+                       : "memory");
+    __ASM volatile("isb");
+    Task_TriggerPendSV();
+}
+
+uint8_t Task_Get_TaskNum(void)
+{
+    return TskCrt_RegList.num;
+}
+
+//return high priority task pointer
+Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r)
+{
+    if ((tsk_l == NULL) && (tsk_r == NULL))
+    {
+        return NULL;
+    }
+
+    if ((tsk_l == NULL) && (tsk_r != NULL))
+    {
+        return tsk_r;
+    }
+
+    if ((tsk_l != NULL) && (tsk_r == NULL))
+    {
+        return tsk_l;
+    }
+
+    uint8_t L_Grp_level = GET_TASKGROUP_PRIORITY(tsk_l->priority.Suction.Group_Level);
+    uint8_t R_Grp_level = GET_TASKGROUP_PRIORITY(tsk_r->priority.Suction.Group_Level);
+    uint8_t L_TskPri_level = GET_TASKINGROUP_PRIORITY(tsk_l->priority.Suction.Task_Level);
+    uint8_t R_TskPri_level = GET_TASKINGROUP_PRIORITY(tsk_r->priority.Suction.Task_Level);
+
+    if (L_Grp_level < R_Grp_level)
+    {
+        return tsk_l;
+    }
+    else if (L_Grp_level > R_Grp_level)
+    {
+        return tsk_r;
+    }
+    else if (L_Grp_level == R_Grp_level)
+    {
+        if (L_TskPri_level < R_TskPri_level)
+        {
+            return tsk_l;
+        }
+        else if (L_TskPri_level > R_TskPri_level)
+        {
+            return tsk_r;
+        }
+    }
+}
+
+Task_Handler Task_Create(const char *name, task_type tsk_type, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth)
+{
+    Task_Handler handle;
+    const uint32_t UNIT_S = 1000000;
+    uint16_t task_name_len = strlen(name);
+    uint32_t *Tsk_Ptr_tmp = NULL;
+    static bool taskOs_InitState = false;
+
+    if (!taskOs_InitState)
+    {
+        TaskSys_Init();
+        taskOs_InitState = true;
+    }
+
+    //already have task in current group and priority in task pointer matrix
+    if (Task_Ptr[group][priority] != NULL)
+    {
+        return TASK_REGISTED;
+    }
+
+    //set task type
+    Task_Ptr[group][priority]->type = tsk_type;
+
+    //request a memory space for Task_Ptr contain
+    Task_Ptr[group][priority] = (Task *)malloc(sizeof(Task));
+
+    //record Task_Ptr poiner`s address
+    handle = *&Task_Ptr[group][priority];
+
+    Task_Ptr[group][priority]->Task_name = name;
+
+    Task_Ptr[group][priority]->exec_frq = frq;
+    Task_Ptr[group][priority]->exec_interval_us = UNIT_S / frq;
+    Task_Ptr[group][priority]->Exec_Func = func;
+
+    Task_Ptr[group][priority]->priority.Priority = (group << 3) | priority;
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+    //init delay tag
+    Task_Ptr[group][priority]->delay_info.on_delay = false;
+    Task_Ptr[group][priority]->delay_info.tsk_hdl = handle;
+    Task_Ptr[group][priority]->delay_info.time_unit = 0;
+
+    //request memory space for task stack
+    Task_Ptr[group][priority]->Stack_Depth = StackDepth;
+    Task_Ptr[group][priority]->TCB.Stack = (uint32_t *)malloc(StackDepth * sizeof(uint32_t));
+
+    if (Task_Ptr[group][priority]->TCB.Stack != NULL)
+    {
+        Task_SetStkPtr_Val(Task_Ptr[group][priority]);
+    }
+    else
+    {
+        return TASK_BAD_MEMSPC_REQ;
+    }
+#endif
+    //reset task running statistics reg
+    Task_Ptr[group][priority]->statistics_reg.Reg.Caller_Statistics_REG = stop_statistics;
+    Task_Ptr[group][priority]->statistics_reg.Reg.TskFun_Statistics_REG = stop_statistics;
+
+    //reset single loop running us
+    Task_Ptr[group][priority]->TskFuncUing_US = 0;
+    Task_Ptr[group][priority]->CallerUsing_US = 0;
+
+    //reset task cpu occupy data
+    Task_Ptr[group][priority]->Exec_status.cpu_opy = 0;
+    Task_Ptr[group][priority]->Exec_status.totlal_running_time = 0;
+
+    //set current group flag to ready
+    TskHdl_RdyMap.Grp.Flg |= 1 << GET_TASKGROUP_PRIORITY(Task_Ptr[group][priority]->priority.Priority);
+    //set current task under this group flag to ready
+    TskHdl_RdyMap.TskInGrp[GET_TASKGROUP_PRIORITY(Task_Ptr[group][priority]->priority.Priority)].Flg |= 1 << GET_TASKINGROUP_PRIORITY(Task_Ptr[group][priority]->priority.Priority);
+
+    Task_Ptr[group][priority]->Exec_status.detect_exec_frq = 0;
+    Task_Ptr[group][priority]->Exec_status.detect_exec_time_arv = 0;
+    Task_Ptr[group][priority]->Exec_status.detect_exec_time_max = 0;
+
+    RunTime_Reset(&(Task_Ptr[group][priority]->Exec_status.Exec_Time));
+    RunTime_Reset(&(Task_Ptr[group][priority]->Exec_status.Init_Time));
+    RunTime_Reset(&(Task_Ptr[group][priority]->Exec_status.Start_Time));
+
+    Task_Ptr[group][priority]->Exec_status.Init_Time = Get_Cur_Runtime();
+
+    Task_Ptr[group][priority]->Exec_status.Exec_Times = 0;
+    Task_Ptr[group][priority]->Exec_status.TimeOut_Times = 0;
+    Task_Ptr[group][priority]->Exec_status.error_code = NOERROR;
+
+    Task_SetReady(Task_Ptr[group][priority]);
+
+#if DEBUG
+    Debug_Output("create %s done\r\n\r\n", name);
+#endif
+
+    Task_Ptr[group][priority]->item_ptr = (item_obj *)malloc(sizeof(item_obj));
+    if (Task_Ptr[group][priority]->item_ptr == NULL)
+    {
+        return TASK_BAD_MEMSPC_REQ;
+    }
+
+    List_ItemInit(Task_Ptr[group][priority]->item_ptr, Task_Ptr[group][priority]);
+    if (TskCrt_RegList.num == 0)
+    {
+        List_Init(&TskCrt_RegList.list, Task_Ptr[group][priority]->item_ptr, by_condition, Task_PriorityCompare);
+    }
+    else
+    {
+        List_Insert_Item(&TskCrt_RegList.list, Task_Ptr[group][priority]->item_ptr);
+    }
+
+    List_ItemInit(&Task_Ptr[group][priority]->delay_item, &Task_Ptr[group][priority]->delay_info);
+
+    TskCrt_RegList.num++;
+
+    return handle;
+}
+
+static void Task_Set_CountRunnigTime_State(Task *tsk_ptr, uint8_t enable_state)
+{
+    if (enable_state)
+    {
+        tsk_ptr->statistics_reg.Reg.Caller_Statistics_REG = start_statistics;
+    }
+    else
+    {
+        tsk_ptr->statistics_reg.Reg.Caller_Statistics_REG = stop_statistics;
+        tsk_ptr->statistics_reg.Reg.TskFun_Statistics_REG = stop_statistics;
+    }
+
+    periph_Timer_Counter_SetEnable(Timer_4, enable_state);
+}
+
+static void Task_StartCountTargetFunc_Cast(Task *tsk_ptr)
+{
+    tsk_ptr->statistics_reg.Reg.TskFun_Statistics_REG = start_statistics;
+}
+
+static void Task_StopCountTargetFunc_Cast(Task *tsk_ptr)
+{
+    tsk_ptr->statistics_reg.Reg.TskFun_Statistics_REG = stop_statistics;
+}
+
+//Remove func untest
+void Task_Remove(Task_Handler Tsk_Hdl)
+{
+    //convert Tsk_Hdl from uint32_t var to Task Address which we need to delete
+    //free that memory space
+    //erase all data in specificly memory space
+    //set Task pointer to Null which we wanted to be delete
+
+    uint8_t remove_group = GET_TASKGROUP_PRIORITY(((Task *)Tsk_Hdl)->priority.Priority);
+    uint8_t remove_task = GET_TASKINGROUP_PRIORITY(((Task *)Tsk_Hdl)->priority.Priority);
+
+    ReSet_Task_Data((Task *)Tsk_Hdl);
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+    free((uint32_t *)((Task *)Tsk_Hdl)->TCB.Stack);
+    free((uint32_t *)((Task *)Tsk_Hdl)->TCB.Top_Stk_Ptr);
+#endif
+
+    free((Task *)Tsk_Hdl);
+    Task_Ptr[remove_group][remove_task] = NULL;
+}
+
+void TaskSystem_Start(void)
+{
+    RunTime_Reset(&TaskSys_StartTime);
+
+    TaskSys_StartTime = Get_Cur_Runtime();
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+    NxtRunTsk_Ptr = Task_Get_HighestRank_RdyTask();
+
+    if (NxtRunTsk_Ptr != NULL)
+    {
+        NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
+        NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
+
+        CurTsk_TCB = NxtTsk_TCB;
+    }
+#endif
+
+    Task_SetPendSVPro();
+    Task_TriggerPendSV();
+
+    return true;
+}
+
+void Task_SetRunState(Task_Handler Tsk_Handle, TASK_STATE state)
+{
+    ((Task *)Tsk_Handle)->Exec_status.State = state;
+}
+
+void Task_CountRunningTime(void)
+{
+    if (CurRunTsk_Ptr != NULL)
+    {
+        RunTime_Tick();
+
+        if (CurRunTsk_Ptr->statistics_reg.Reg.TskFun_Statistics_REG == start_statistics)
+        {
+            CurRunTsk_Ptr->TskFuncUing_US++;
+        }
+
+        if (CurRunTsk_Ptr->statistics_reg.Reg.TskFun_Statistics_REG == start_statistics)
+        {
+            CurRunTsk_Ptr->CallerUsing_US++;
+        }
+    }
+}
+
+static Task *Get_TaskInstance(uint8_t group, uint8_t priority)
+{
+    return Task_Ptr[group][priority];
+}
+
+static void Task_Exec(Task *tsk_ptr)
+{
+    SYSTEM_RunTime time_diff;
+
+    RunTime_Reset(&time_diff);
+
+    while (true)
+    {
+        if (tsk_ptr->Exec_status.State == Task_Ready)
+        {
+            //Task_Set_CountRunnigTime_State(tsk_ptr, ENABLE);
+
+            //set current running task
+            CurRunTsk_Ptr = tsk_ptr;
+
+            if (tsk_ptr->Exec_status.Exec_Times == 0)
+            {
+                tsk_ptr->Exec_status.Start_Time = Get_Cur_Runtime();
+                tsk_ptr->Exec_status.Exec_Time = tsk_ptr->Exec_status.Start_Time;
+            }
+
+            tsk_ptr->Exec_status.State = Task_Running;
+            //Task_StartCountTargetFunc_Cast(tsk_ptr);
+
+            //execute task funtion
+            tsk_ptr->Exec_Func(*&tsk_ptr);
+
+            //get current task execut time
+            //Task_StopCountTargetFunc_Cast(tsk_ptr);
+
+            if (tsk_ptr->Exec_status.State == Task_Running)
+            {
+                //when task function execute finish reset ready flag of current task in group
+                //code down below
+                Task_ClearReady(tsk_ptr);
+
+                tsk_ptr->Exec_status.State = Task_Stop;
+
+                //record task running times
+                tsk_ptr->Exec_status.Exec_Times++;
+
+                //get max task execut time
+                if (tsk_ptr->TskFuncUing_US > tsk_ptr->Exec_status.detect_exec_time_max)
+                {
+                    tsk_ptr->Exec_status.detect_exec_time_max = tsk_ptr->TskFuncUing_US;
+                }
+
+                //get task total execute time unit in us
+                tsk_ptr->Exec_status.totlal_running_time += tsk_ptr->TskFuncUing_US;
+                time_diff = Get_Time_Difference(tsk_ptr->Exec_status.Start_Time, tsk_ptr->Exec_status.Exec_Time);
+
+                tsk_ptr->Exec_status.cpu_opy = (tsk_ptr->Exec_status.totlal_running_time /
+                                                (float)(time_diff.s * (REAL_S + 1) + (time_diff.min * (REAL_MIN + 1) * (REAL_S + 1)) + (time_diff.hour * (REAL_HOUR + 1) * (REAL_MIN + 1) * (REAL_S + 1)) + time_diff.ms));
+
+                //get average task running time
+                tsk_ptr->Exec_status.detect_exec_time_arv += tsk_ptr->TskFuncUing_US;
+                if (tsk_ptr->Exec_status.Exec_Times > 1)
+                {
+                    tsk_ptr->Exec_status.detect_exec_time_arv /= 2;
+                }
+
+                tsk_ptr->Exec_status.Exec_Time = Get_TargetTime(tsk_ptr->exec_interval_us, 0, 0, 0, 0);
+            }
+
+            //get task execute frequence
+            if ((tsk_ptr->Exec_status.Exec_Time.s) ||
+                (tsk_ptr->Exec_status.Exec_Time.min) ||
+                (tsk_ptr->Exec_status.Exec_Time.hour))
+            {
+                tsk_ptr->Exec_status.detect_exec_frq =
+                    (uint32_t)(tsk_ptr->Exec_status.Exec_Times /
+                               (float)(tsk_ptr->Exec_status.Exec_Time.s +
+                                       (tsk_ptr->Exec_status.Exec_Time.min * (REAL_MIN + 1)) +
+                                       (tsk_ptr->Exec_status.Exec_Time.hour * (REAL_HOUR + 1) * (REAL_MIN + 1)) +
+                                       (float)(tsk_ptr->Exec_status.Exec_Time.ms / (REAL_MS + 1))));
+            }
+
+            //stop counting caller using us time
+            //Task_Set_CountRunnigTime_State(tsk_ptr, DISABLE);
+        }
+        //erase currnet runnint task pointer
+        CurRunTsk_Ptr = NULL;
+
+        //enable systick handler
+        Task_SetBASEPRI(0);
+    }
+}
+
+uint32_t Task_Get_IdleUS(void)
+{
+    return TaskSys_Idle_US;
+}
+
+float Task_Get_IdleOcupy(void)
+{
+    return TaskSys_Idle_Ocupy;
+}
+
+void Task_Caller(void)
+{
+    //if any task in any group is under ready state
+    if (NxtRunTsk_Ptr != NULL)
+    {
+        //execute task function in function matrix
+        Task_Exec(NxtRunTsk_Ptr);
+    }
+}
+
+void TaskSys_Set_State(TaskSys_State state)
+{
+    TskSys_state = state;
+}
+
+TaskSys_State TaskSys_Get_State(void)
+{
+    return TskSys_state;
+}
+
+static void Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void *arg)
+{
+    Task *tmp = NULL;
+
+    if (data != NULL)
+    {
+        tmp = (Task *)data;
+
+        //get current highest priority task handler AKA NxtRunTsk_Ptr
+        if (TskSys_state == TaskSys_Start)
+        {
+            if ((tmp->Exec_status.State == Task_Stop) && (Time_CompareWithCurrentRt(tmp->Exec_status.Exec_Time)))
+            {
+                Task_SetReady(tmp);
+            }
+        }
+    }
+}
+
+void Task_Scheduler(void)
+{
+    List_traverse(&TskCrt_RegList.list, Task_CrtList_TraversePoll_callback, NULL);
+
+    NxtRunTsk_Ptr = Task_Get_HighestRank_RdyTask();
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+
+    PndHstTsk_Ptr = Task_Get_HighestRank_PndTask();
+
+    if (CurRunTsk_Ptr == NULL)
+    {
+        if (PndHstTsk_Ptr == NULL)
+        {
+            //Current Run task Pointer is Null also no task In pending mode
+            //set CurRunTsk_Ptr to NxtRunTsk_Ptr
+            if (NxtRunTsk_Ptr != NULL)
+            {
+                NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
+                NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
+
+                Task_TriggerPendSV();
+                return;
+            }
+            else
+            {
+                //doing idle function
+                Task_Idle();
+            }
+        }
+        else
+        {
+            if (NxtRunTsk_Ptr != NULL)
+            {
+                //if has NxtRunTsk_Ptr is not NULL also have task in pending state
+                //then get the highest priority task in pend list
+                //compare with NxtRunTsk_Ptr
+                if (Task_PriorityCompare(NxtRunTsk_Ptr, PndHstTsk_Ptr) == PndHstTsk_Ptr)
+                {
+                    PndHstTsk_Ptr->Exec_status.State = Task_Running;
+                    NxtRunTsk_Ptr = PndHstTsk_Ptr;
+
+                    Task_ClearPending(NxtRunTsk_Ptr);
+                }
+            }
+            else
+            {
+                //if NxtRunTsk_Ptr is NULL
+                //then set NxtRunTsk_Ptr PndHstTsk_Ptr
+                PndHstTsk_Ptr->Exec_status.State = Task_Running;
+                NxtRunTsk_Ptr = PndHstTsk_Ptr;
+
+                Task_ClearPending(NxtRunTsk_Ptr);
+            }
+
+            NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
+            NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
+
+            Task_TriggerPendSV();
+            return;
+        }
+    }
+    else
+    {
+        if (CurRunTsk_Ptr != NxtRunTsk_Ptr)
+        {
+            if ((NxtRunTsk_Ptr != NULL) && (Task_PriorityCompare(CurRunTsk_Ptr, NxtRunTsk_Ptr) == NxtRunTsk_Ptr))
+            {
+                //if NxtRunTsk_Ptr group priority is higher then CurRunTsk_Ptr also PndHstTsk_Ptr
+                //set current run task as pending state first
+                Task_SetPending(CurRunTsk_Ptr);
+                Task_ClearReady(CurRunTsk_Ptr);
+
+                //get the highset priority task in pending list
+                //if PndHstTsk_Ptr is not NULL
+                //then compare the priority between the NxtRunTsk_Ptr and PndHstTsk_Ptr
+                if (PndHstTsk_Ptr != NULL)
+                {
+                    if (Task_PriorityCompare(PndHstTsk_Ptr, NxtRunTsk_Ptr) == PndHstTsk_Ptr)
+                    {
+                        NxtRunTsk_Ptr = PndHstTsk_Ptr;
+                    }
+                }
+
+                Task_SetReady(NxtRunTsk_Ptr);
+                NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
+                NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
+
+                Task_TriggerPendSV();
+                return;
+            }
+        }
+        else
+        {
+            //compare with the highest priority pending task
+            if ((PndHstTsk_Ptr != NULL) && (Task_PriorityCompare(CurRunTsk_Ptr, NxtRunTsk_Ptr) == PndHstTsk_Ptr))
+            {
+                //if PndHstTsk_Ptr group priority is higher then CurRunTsk_Ptr
+                //set current run task as pending state first
+                Task_SetPending(CurRunTsk_Ptr);
+                Task_SetReady(PndHstTsk_Ptr);
+
+                NxtRunTsk_Ptr = PndHstTsk_Ptr;
+                NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
+                NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
+
+                Task_TriggerPendSV();
+                return;
+            }
+        }
+    }
+#else
+    Task_TriggerPendSV();
+#endif
+}
+
+Task_Base_Info Task_GetInfo_ByIndex(uint8_t index)
+{
+    Task_Base_Info task_info;
+
+    return task_info;
+}
+
+Task *Task_GetCurrentRunTask(void)
+{
+    return CurRunTsk_Ptr;
+}
