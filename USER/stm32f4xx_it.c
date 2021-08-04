@@ -32,8 +32,6 @@
 #include "runtime.h"
 #include "fault_check.h"
 
-uint8_t Ticker_Init = 0;
-
 /** @addtogroup Template_Project
   * @{
   */
