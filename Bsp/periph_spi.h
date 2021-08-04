@@ -2,7 +2,6 @@
 #define __PERIPH_SPI_H
 
 #include "stm32f4xx.h"
-#include "fc_board.h"
 
 #define SPI_PORT_SUM 3
 

@@ -36,17 +36,15 @@ BUILD_DIR = Objects
 ######################################
 # C sources
 C_SOURCES =  \
-SYSTEM/data_structure/queue.c \
-SYSTEM/data_structure/linked_list.c \
-SYSTEM/data_structure/binary_tree.c \
-SYSTEM/task/task.c \
-SYSTEM/task/task_delay.c \
-SYSTEM/task/fault_check.c \
-SYSTEM/delay/delay.c \
-SYSTEM/runtime/runtime.c \
-SYSTEM/sys/reboot.c \
-SYSTEM/sys/sys.c \
-SYSTEM/crc/crc16.c \
+SYS/data_structure/queue.c \
+SYS/data_structure/linked_list.c \
+SYS/data_structure/binary_tree.c \
+SYS/faultcheck/fault_check.c \
+SYS/delay/delay.c \
+SYS/runtime/runtime.c \
+SYS/common/reboot.c \
+SYS/common/sys.c \
+SYS/crc/crc16.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
 FWLIB/src/stm32f4xx_can.c \
@@ -88,17 +86,17 @@ FWLIB/src/stm32f4xx_syscfg.c \
 FWLIB/src/stm32f4xx_tim.c \
 FWLIB/src/stm32f4xx_usart.c \
 FWLIB/src/stm32f4xx_wwdg.c \
-periph/periph_dma.c \
-periph/periph_flash.c \
-periph/periph_gpio.c \
-periph/periph_iic.c \
-periph/periph_nvic.c \
-periph/periph_serial_irq.c \
-periph/periph_serial.c \
-periph/periph_spi.c \
-periph/periph_timer_irq.c \
-periph/periph_timer.c \
-periph/periph_dma_irq.c \
+Bsp/periph_dma.c \
+Bsp/periph_flash.c \
+Bsp/periph_gpio.c \
+Bsp/periph_iic.c \
+Bsp/periph_nvic.c \
+Bsp/periph_serial_irq.c \
+Bsp/periph_serial.c \
+Bsp/periph_spi.c \
+Bsp/periph_timer_irq.c \
+Bsp/periph_timer.c \
+Bsp/periph_dma_irq.c \
 USB/config/vcp.c \
 USB/config/tm_stm32f4_usb_vcp.c \
 USB/core/usb_bsp.c \
@@ -180,27 +178,20 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--Icommon/inc \
--IDEBUG/inc \
--IFlight/inc \
--IFatFs/inc \
--IBlackBox/inc \
--Idevice \
 -IF4_CORE \
 -IFWLIB/inc \
--IMath/inc \
--IMath_LIB/inc \
--Iperiph \
--ISYSTEM/data_structure \
--ISYSTEM/runtime \
--ISYSTEM/delay \
--ISYSTEM/mem \
--ISYSTEM/sys \
--ISYSTEM/mutex \
--ISYSTEM/os_cli \
--ISYSTEM/event \
--ISYSTEM/task \
--ISYSTEM/crc \
+-IBsp \
+-ISYS/data_structure \
+-ISYS/runtime \
+-ISYS/delay \
+-ISYS/mem \
+-ISYS/common \
+-ISYS/mutex \
+-ISYS/os_cli \
+-ISYS/event \
+-ISYS/task \
+-ISYS/crc \
+-ISYS/faultcheck \
 -IUSB/config \
 -IUSB/core \
 -IUSER \

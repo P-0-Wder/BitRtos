@@ -2,7 +2,6 @@
 #define __QUEUE_H
 
 #include "stm32f4xx.h"
-#include "fc_board.h"
 
 #define QUEUE_MAX_SIZE 512
 #define MAX_QUEUE_NUM 10

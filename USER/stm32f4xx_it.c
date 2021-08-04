@@ -146,7 +146,6 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  RunTime_Tick();
 }
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */

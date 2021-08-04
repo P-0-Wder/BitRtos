@@ -1,0 +1,891 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"runtime.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Runtime_Stop,"ax",%progbits
+  18              		.align	1
+  19              		.global	Runtime_Stop
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	Runtime_Stop:
+  27              	.LFB4:
+  28              		.file 1 "SYS/runtime/runtime.c"
+   1:SYS/runtime/runtime.c **** /*
+   2:SYS/runtime/runtime.c **** * Coder : 8_B!T0
+   3:SYS/runtime/runtime.c **** *
+   4:SYS/runtime/runtime.c **** * BitRTOS Core Ticker Code Module
+   5:SYS/runtime/runtime.c **** *
+   6:SYS/runtime/runtime.c **** */
+   7:SYS/runtime/runtime.c **** #include "runtime.h"
+   8:SYS/runtime/runtime.c **** #include <string.h>
+   9:SYS/runtime/runtime.c **** 
+  10:SYS/runtime/runtime.c **** /* internal variable */
+  11:SYS/runtime/runtime.c **** static Runtime_DataObj_TypeDef RunTime;
+  12:SYS/runtime/runtime.c **** static runtime_stop_p Runtime_Stop_FuncPtr = NULL;
+  13:SYS/runtime/runtime.c **** 
+  14:SYS/runtime/runtime.c **** void Runtime_PreInit(runtime_start_callback_p start_cb, runtime_stop_callback_p stop_cb, runtime_ti
+  15:SYS/runtime/runtime.c **** {
+  16:SYS/runtime/runtime.c ****     RunTime.start_callback = start_cb;
+  17:SYS/runtime/runtime.c ****     RunTime.stop_callback = stop_cb;
+  18:SYS/runtime/runtime.c ****     RunTime.timer_init = timer_init_cb;
+  19:SYS/runtime/runtime.c **** }
+  20:SYS/runtime/runtime.c **** 
+  21:SYS/runtime/runtime.c **** Runtime_ModuleState_List Get_RuntimeState(void)
+  22:SYS/runtime/runtime.c **** {
+  23:SYS/runtime/runtime.c ****     return RunTime.module_state;
+  24:SYS/runtime/runtime.c **** }
+  25:SYS/runtime/runtime.c **** 
+  26:SYS/runtime/runtime.c **** bool Runtime_Config(uint32_t tick_frq)
+  27:SYS/runtime/runtime.c **** {
+  28:SYS/runtime/runtime.c ****     RunTime.module_state = Runtime_Module_Init;
+  29:SYS/runtime/runtime.c ****     RunTime.time_base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
+  30:SYS/runtime/runtime.c ****     RunTime.tick_frq = tick_frq;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 2
+
+
+  31:SYS/runtime/runtime.c **** 
+  32:SYS/runtime/runtime.c ****     if (RunTime.timer_init != NULL)
+  33:SYS/runtime/runtime.c ****     {
+  34:SYS/runtime/runtime.c ****         return RunTime.timer_init(RunTime.tick_frq);
+  35:SYS/runtime/runtime.c ****     }
+  36:SYS/runtime/runtime.c **** 
+  37:SYS/runtime/runtime.c ****     return false;
+  38:SYS/runtime/runtime.c **** }
+  39:SYS/runtime/runtime.c **** 
+  40:SYS/runtime/runtime.c **** void Runtime_Start(void)
+  41:SYS/runtime/runtime.c **** {
+  42:SYS/runtime/runtime.c ****     RunTime.module_state = Runtime_Module_Start;
+  43:SYS/runtime/runtime.c **** 
+  44:SYS/runtime/runtime.c ****     if (RunTime.start_callback != NULL)
+  45:SYS/runtime/runtime.c ****     {
+  46:SYS/runtime/runtime.c ****         RunTime.start_callback();
+  47:SYS/runtime/runtime.c ****     }
+  48:SYS/runtime/runtime.c **** }
+  49:SYS/runtime/runtime.c **** 
+  50:SYS/runtime/runtime.c **** bool Runtime_Stop(void)
+  51:SYS/runtime/runtime.c **** {
+  29              		.loc 1 51 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  52:SYS/runtime/runtime.c ****     if (RunTime.tick_state != Runtime_Run_Tick)
+  38              		.loc 1 52 5 view .LVU1
+  39              		.loc 1 52 16 is_stmt 0 view .LVU2
+  40 0002 084B     		ldr	r3, .L7
+  41 0004 5B7F     		ldrb	r3, [r3, #29]	@ zero_extendqisi2
+  42              		.loc 1 52 8 view .LVU3
+  43 0006 23B9     		cbnz	r3, .L6
+  53:SYS/runtime/runtime.c ****     {
+  54:SYS/runtime/runtime.c ****         RunTime.module_state = Runtime_Module_Stop;
+  55:SYS/runtime/runtime.c **** 
+  56:SYS/runtime/runtime.c ****         if (RunTime.stop_callback != NULL)
+  57:SYS/runtime/runtime.c ****         {
+  58:SYS/runtime/runtime.c ****             RunTime.stop_callback();
+  59:SYS/runtime/runtime.c ****         }
+  60:SYS/runtime/runtime.c **** 
+  61:SYS/runtime/runtime.c ****         return true;
+  62:SYS/runtime/runtime.c ****     }
+  63:SYS/runtime/runtime.c **** 
+  64:SYS/runtime/runtime.c ****     Runtime_Stop_FuncPtr = Runtime_Stop;
+  44              		.loc 1 64 5 is_stmt 1 view .LVU4
+  45              		.loc 1 64 26 is_stmt 0 view .LVU5
+  46 0008 074B     		ldr	r3, .L7+4
+  47 000a 084A     		ldr	r2, .L7+8
+  48 000c 1A60     		str	r2, [r3]
+  65:SYS/runtime/runtime.c ****     return false;
+  49              		.loc 1 65 5 is_stmt 1 view .LVU6
+  50              		.loc 1 65 12 is_stmt 0 view .LVU7
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 3
+
+
+  51 000e 0020     		movs	r0, #0
+  52              	.L4:
+  66:SYS/runtime/runtime.c **** }
+  53              		.loc 1 66 1 view .LVU8
+  54 0010 08BD     		pop	{r3, pc}
+  55              	.L6:
+  54:SYS/runtime/runtime.c **** 
+  56              		.loc 1 54 9 is_stmt 1 view .LVU9
+  54:SYS/runtime/runtime.c **** 
+  57              		.loc 1 54 30 is_stmt 0 view .LVU10
+  58 0012 044B     		ldr	r3, .L7
+  59 0014 0222     		movs	r2, #2
+  60 0016 1A77     		strb	r2, [r3, #28]
+  56:SYS/runtime/runtime.c ****         {
+  61              		.loc 1 56 9 is_stmt 1 view .LVU11
+  56:SYS/runtime/runtime.c ****         {
+  62              		.loc 1 56 20 is_stmt 0 view .LVU12
+  63 0018 5B69     		ldr	r3, [r3, #20]
+  56:SYS/runtime/runtime.c ****         {
+  64              		.loc 1 56 12 view .LVU13
+  65 001a 03B1     		cbz	r3, .L3
+  58:SYS/runtime/runtime.c ****         }
+  66              		.loc 1 58 13 is_stmt 1 view .LVU14
+  67 001c 9847     		blx	r3
+  68              	.LVL0:
+  69              	.L3:
+  61:SYS/runtime/runtime.c ****     }
+  70              		.loc 1 61 9 view .LVU15
+  61:SYS/runtime/runtime.c ****     }
+  71              		.loc 1 61 16 is_stmt 0 view .LVU16
+  72 001e 0120     		movs	r0, #1
+  73 0020 F6E7     		b	.L4
+  74              	.L8:
+  75 0022 00BF     		.align	2
+  76              	.L7:
+  77 0024 00000000 		.word	.LANCHOR0
+  78 0028 00000000 		.word	.LANCHOR1
+  79 002c 00000000 		.word	Runtime_Stop
+  80              		.cfi_endproc
+  81              	.LFE4:
+  83              		.section	.text.Runtime_PreInit,"ax",%progbits
+  84              		.align	1
+  85              		.global	Runtime_PreInit
+  86              		.syntax unified
+  87              		.thumb
+  88              		.thumb_func
+  89              		.fpu fpv4-sp-d16
+  91              	Runtime_PreInit:
+  92              	.LVL1:
+  93              	.LFB0:
+  15:SYS/runtime/runtime.c ****     RunTime.start_callback = start_cb;
+  94              		.loc 1 15 1 is_stmt 1 view -0
+  95              		.cfi_startproc
+  96              		@ args = 0, pretend = 0, frame = 0
+  97              		@ frame_needed = 0, uses_anonymous_args = 0
+  98              		@ link register save eliminated.
+  16:SYS/runtime/runtime.c ****     RunTime.stop_callback = stop_cb;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 4
+
+
+  99              		.loc 1 16 5 view .LVU18
+  16:SYS/runtime/runtime.c ****     RunTime.stop_callback = stop_cb;
+ 100              		.loc 1 16 28 is_stmt 0 view .LVU19
+ 101 0000 024B     		ldr	r3, .L10
+ 102 0002 1861     		str	r0, [r3, #16]
+  17:SYS/runtime/runtime.c ****     RunTime.timer_init = timer_init_cb;
+ 103              		.loc 1 17 5 is_stmt 1 view .LVU20
+  17:SYS/runtime/runtime.c ****     RunTime.timer_init = timer_init_cb;
+ 104              		.loc 1 17 27 is_stmt 0 view .LVU21
+ 105 0004 5961     		str	r1, [r3, #20]
+  18:SYS/runtime/runtime.c **** }
+ 106              		.loc 1 18 5 is_stmt 1 view .LVU22
+  18:SYS/runtime/runtime.c **** }
+ 107              		.loc 1 18 24 is_stmt 0 view .LVU23
+ 108 0006 9A61     		str	r2, [r3, #24]
+  19:SYS/runtime/runtime.c **** 
+ 109              		.loc 1 19 1 view .LVU24
+ 110 0008 7047     		bx	lr
+ 111              	.L11:
+ 112 000a 00BF     		.align	2
+ 113              	.L10:
+ 114 000c 00000000 		.word	.LANCHOR0
+ 115              		.cfi_endproc
+ 116              	.LFE0:
+ 118              		.section	.text.Get_RuntimeState,"ax",%progbits
+ 119              		.align	1
+ 120              		.global	Get_RuntimeState
+ 121              		.syntax unified
+ 122              		.thumb
+ 123              		.thumb_func
+ 124              		.fpu fpv4-sp-d16
+ 126              	Get_RuntimeState:
+ 127              	.LFB1:
+  22:SYS/runtime/runtime.c ****     return RunTime.module_state;
+ 128              		.loc 1 22 1 is_stmt 1 view -0
+ 129              		.cfi_startproc
+ 130              		@ args = 0, pretend = 0, frame = 0
+ 131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132              		@ link register save eliminated.
+  23:SYS/runtime/runtime.c **** }
+ 133              		.loc 1 23 5 view .LVU26
+  24:SYS/runtime/runtime.c **** 
+ 134              		.loc 1 24 1 is_stmt 0 view .LVU27
+ 135 0000 014B     		ldr	r3, .L13
+ 136 0002 187F     		ldrb	r0, [r3, #28]	@ zero_extendqisi2
+ 137 0004 7047     		bx	lr
+ 138              	.L14:
+ 139 0006 00BF     		.align	2
+ 140              	.L13:
+ 141 0008 00000000 		.word	.LANCHOR0
+ 142              		.cfi_endproc
+ 143              	.LFE1:
+ 145              		.global	__aeabi_ui2d
+ 146              		.global	__aeabi_ddiv
+ 147              		.global	__aeabi_d2uiz
+ 148              		.section	.text.Runtime_Config,"ax",%progbits
+ 149              		.align	1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 5
+
+
+ 150              		.global	Runtime_Config
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.fpu fpv4-sp-d16
+ 156              	Runtime_Config:
+ 157              	.LVL2:
+ 158              	.LFB2:
+  27:SYS/runtime/runtime.c ****     RunTime.module_state = Runtime_Module_Init;
+ 159              		.loc 1 27 1 is_stmt 1 view -0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+  27:SYS/runtime/runtime.c ****     RunTime.module_state = Runtime_Module_Init;
+ 163              		.loc 1 27 1 is_stmt 0 view .LVU29
+ 164 0000 38B5     		push	{r3, r4, r5, lr}
+ 165              	.LCFI1:
+ 166              		.cfi_def_cfa_offset 16
+ 167              		.cfi_offset 3, -16
+ 168              		.cfi_offset 4, -12
+ 169              		.cfi_offset 5, -8
+ 170              		.cfi_offset 14, -4
+ 171 0002 0546     		mov	r5, r0
+  28:SYS/runtime/runtime.c ****     RunTime.time_base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
+ 172              		.loc 1 28 5 is_stmt 1 view .LVU30
+  28:SYS/runtime/runtime.c ****     RunTime.time_base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
+ 173              		.loc 1 28 26 is_stmt 0 view .LVU31
+ 174 0004 0E4C     		ldr	r4, .L19+8
+ 175 0006 0023     		movs	r3, #0
+ 176 0008 2377     		strb	r3, [r4, #28]
+  29:SYS/runtime/runtime.c ****     RunTime.tick_frq = tick_frq;
+ 177              		.loc 1 29 5 is_stmt 1 view .LVU32
+  29:SYS/runtime/runtime.c ****     RunTime.tick_frq = tick_frq;
+ 178              		.loc 1 29 46 is_stmt 0 view .LVU33
+ 179 000a FFF7FEFF 		bl	__aeabi_ui2d
+ 180              	.LVL3:
+  29:SYS/runtime/runtime.c ****     RunTime.tick_frq = tick_frq;
+ 181              		.loc 1 29 46 view .LVU34
+ 182 000e 0246     		mov	r2, r0
+ 183 0010 0B46     		mov	r3, r1
+ 184 0012 09A1     		adr	r1, .L19
+ 185 0014 D1E90001 		ldrd	r0, [r1]
+ 186 0018 FFF7FEFF 		bl	__aeabi_ddiv
+ 187              	.LVL4:
+  29:SYS/runtime/runtime.c ****     RunTime.tick_frq = tick_frq;
+ 188              		.loc 1 29 23 view .LVU35
+ 189 001c FFF7FEFF 		bl	__aeabi_d2uiz
+ 190              	.LVL5:
+ 191 0020 A060     		str	r0, [r4, #8]
+  30:SYS/runtime/runtime.c **** 
+ 192              		.loc 1 30 5 is_stmt 1 view .LVU36
+  30:SYS/runtime/runtime.c **** 
+ 193              		.loc 1 30 22 is_stmt 0 view .LVU37
+ 194 0022 E560     		str	r5, [r4, #12]
+  32:SYS/runtime/runtime.c ****     {
+ 195              		.loc 1 32 5 is_stmt 1 view .LVU38
+  32:SYS/runtime/runtime.c ****     {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 6
+
+
+ 196              		.loc 1 32 16 is_stmt 0 view .LVU39
+ 197 0024 A369     		ldr	r3, [r4, #24]
+  32:SYS/runtime/runtime.c ****     {
+ 198              		.loc 1 32 8 view .LVU40
+ 199 0026 13B1     		cbz	r3, .L17
+  34:SYS/runtime/runtime.c ****     }
+ 200              		.loc 1 34 9 is_stmt 1 view .LVU41
+  34:SYS/runtime/runtime.c ****     }
+ 201              		.loc 1 34 16 is_stmt 0 view .LVU42
+ 202 0028 A8B2     		uxth	r0, r5
+ 203 002a 9847     		blx	r3
+ 204              	.LVL6:
+ 205              	.L16:
+  38:SYS/runtime/runtime.c **** 
+ 206              		.loc 1 38 1 view .LVU43
+ 207 002c 38BD     		pop	{r3, r4, r5, pc}
+ 208              	.LVL7:
+ 209              	.L17:
+  37:SYS/runtime/runtime.c **** }
+ 210              		.loc 1 37 12 view .LVU44
+ 211 002e 0020     		movs	r0, #0
+ 212 0030 FCE7     		b	.L16
+ 213              	.L20:
+ 214 0032 00BFAFF3 		.align	3
+ 214      0080
+ 215              	.L19:
+ 216 0038 00000000 		.word	0
+ 217 003c 80842E41 		.word	1093567616
+ 218 0040 00000000 		.word	.LANCHOR0
+ 219              		.cfi_endproc
+ 220              	.LFE2:
+ 222              		.section	.text.Runtime_Start,"ax",%progbits
+ 223              		.align	1
+ 224              		.global	Runtime_Start
+ 225              		.syntax unified
+ 226              		.thumb
+ 227              		.thumb_func
+ 228              		.fpu fpv4-sp-d16
+ 230              	Runtime_Start:
+ 231              	.LFB3:
+  41:SYS/runtime/runtime.c ****     RunTime.module_state = Runtime_Module_Start;
+ 232              		.loc 1 41 1 is_stmt 1 view -0
+ 233              		.cfi_startproc
+ 234              		@ args = 0, pretend = 0, frame = 0
+ 235              		@ frame_needed = 0, uses_anonymous_args = 0
+ 236 0000 08B5     		push	{r3, lr}
+ 237              	.LCFI2:
+ 238              		.cfi_def_cfa_offset 8
+ 239              		.cfi_offset 3, -8
+ 240              		.cfi_offset 14, -4
+  42:SYS/runtime/runtime.c **** 
+ 241              		.loc 1 42 5 view .LVU46
+  42:SYS/runtime/runtime.c **** 
+ 242              		.loc 1 42 26 is_stmt 0 view .LVU47
+ 243 0002 034B     		ldr	r3, .L24
+ 244 0004 0122     		movs	r2, #1
+ 245 0006 1A77     		strb	r2, [r3, #28]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 7
+
+
+  44:SYS/runtime/runtime.c ****     {
+ 246              		.loc 1 44 5 is_stmt 1 view .LVU48
+  44:SYS/runtime/runtime.c ****     {
+ 247              		.loc 1 44 16 is_stmt 0 view .LVU49
+ 248 0008 1B69     		ldr	r3, [r3, #16]
+  44:SYS/runtime/runtime.c ****     {
+ 249              		.loc 1 44 8 view .LVU50
+ 250 000a 03B1     		cbz	r3, .L21
+  46:SYS/runtime/runtime.c ****     }
+ 251              		.loc 1 46 9 is_stmt 1 view .LVU51
+ 252 000c 9847     		blx	r3
+ 253              	.LVL8:
+ 254              	.L21:
+  48:SYS/runtime/runtime.c **** 
+ 255              		.loc 1 48 1 is_stmt 0 view .LVU52
+ 256 000e 08BD     		pop	{r3, pc}
+ 257              	.L25:
+ 258              		.align	2
+ 259              	.L24:
+ 260 0010 00000000 		.word	.LANCHOR0
+ 261              		.cfi_endproc
+ 262              	.LFE3:
+ 264              		.section	.text.Runtime_Tick,"ax",%progbits
+ 265              		.align	1
+ 266              		.global	Runtime_Tick
+ 267              		.syntax unified
+ 268              		.thumb
+ 269              		.thumb_func
+ 270              		.fpu fpv4-sp-d16
+ 272              	Runtime_Tick:
+ 273              	.LFB5:
+  67:SYS/runtime/runtime.c **** 
+  68:SYS/runtime/runtime.c **** bool Runtime_Tick(void)
+  69:SYS/runtime/runtime.c **** {
+ 274              		.loc 1 69 1 is_stmt 1 view -0
+ 275              		.cfi_startproc
+ 276              		@ args = 0, pretend = 0, frame = 0
+ 277              		@ frame_needed = 0, uses_anonymous_args = 0
+ 278 0000 08B5     		push	{r3, lr}
+ 279              	.LCFI3:
+ 280              		.cfi_def_cfa_offset 8
+ 281              		.cfi_offset 3, -8
+ 282              		.cfi_offset 14, -4
+  70:SYS/runtime/runtime.c ****     if (RunTime.module_state != Runtime_Module_Start)
+ 283              		.loc 1 70 5 view .LVU54
+ 284              		.loc 1 70 16 is_stmt 0 view .LVU55
+ 285 0002 0E4B     		ldr	r3, .L31
+ 286 0004 1B7F     		ldrb	r3, [r3, #28]	@ zero_extendqisi2
+ 287              		.loc 1 70 8 view .LVU56
+ 288 0006 012B     		cmp	r3, #1
+ 289 0008 15D0     		beq	.L29
+  71:SYS/runtime/runtime.c ****     {
+  72:SYS/runtime/runtime.c ****         RunTime.tick_state = Runtime_Run_Tick;
+ 290              		.loc 1 72 9 is_stmt 1 view .LVU57
+ 291              		.loc 1 72 28 is_stmt 0 view .LVU58
+ 292 000a 0C4B     		ldr	r3, .L31
+ 293 000c 0022     		movs	r2, #0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 8
+
+
+ 294 000e 5A77     		strb	r2, [r3, #29]
+  73:SYS/runtime/runtime.c **** 
+  74:SYS/runtime/runtime.c ****         RunTime.Use_Us += RunTime.time_base;
+ 295              		.loc 1 74 9 is_stmt 1 view .LVU59
+ 296              		.loc 1 74 34 is_stmt 0 view .LVU60
+ 297 0010 9868     		ldr	r0, [r3, #8]
+ 298              		.loc 1 74 24 view .LVU61
+ 299 0012 1A68     		ldr	r2, [r3]
+ 300 0014 5968     		ldr	r1, [r3, #4]
+ 301 0016 1218     		adds	r2, r2, r0
+ 302 0018 41F10001 		adc	r1, r1, #0
+ 303 001c 1A60     		str	r2, [r3]
+ 304 001e 5960     		str	r1, [r3, #4]
+  75:SYS/runtime/runtime.c **** 
+  76:SYS/runtime/runtime.c ****         RunTime.tick_state = Runtime_Run_Wait;
+ 305              		.loc 1 76 9 is_stmt 1 view .LVU62
+ 306              		.loc 1 76 28 is_stmt 0 view .LVU63
+ 307 0020 0122     		movs	r2, #1
+ 308 0022 5A77     		strb	r2, [r3, #29]
+  77:SYS/runtime/runtime.c **** 
+  78:SYS/runtime/runtime.c ****         if (Runtime_Stop_FuncPtr != NULL)
+ 309              		.loc 1 78 9 is_stmt 1 view .LVU64
+ 310              		.loc 1 78 34 is_stmt 0 view .LVU65
+ 311 0024 064B     		ldr	r3, .L31+4
+ 312 0026 1B68     		ldr	r3, [r3]
+ 313              		.loc 1 78 12 view .LVU66
+ 314 0028 1BB1     		cbz	r3, .L28
+  79:SYS/runtime/runtime.c ****         {
+  80:SYS/runtime/runtime.c ****             Runtime_Stop_FuncPtr();
+ 315              		.loc 1 80 13 is_stmt 1 view .LVU67
+ 316 002a 9847     		blx	r3
+ 317              	.LVL9:
+  81:SYS/runtime/runtime.c ****             Runtime_Stop_FuncPtr = NULL;
+ 318              		.loc 1 81 13 view .LVU68
+ 319              		.loc 1 81 34 is_stmt 0 view .LVU69
+ 320 002c 044B     		ldr	r3, .L31+4
+ 321 002e 0022     		movs	r2, #0
+ 322 0030 1A60     		str	r2, [r3]
+ 323              	.L28:
+  82:SYS/runtime/runtime.c ****         }
+  83:SYS/runtime/runtime.c **** 
+  84:SYS/runtime/runtime.c ****         return true;
+ 324              		.loc 1 84 9 is_stmt 1 view .LVU70
+ 325              		.loc 1 84 16 is_stmt 0 view .LVU71
+ 326 0032 0120     		movs	r0, #1
+ 327              	.L27:
+  85:SYS/runtime/runtime.c ****     }
+  86:SYS/runtime/runtime.c **** 
+  87:SYS/runtime/runtime.c ****     return false;
+  88:SYS/runtime/runtime.c **** }
+ 328              		.loc 1 88 1 view .LVU72
+ 329 0034 08BD     		pop	{r3, pc}
+ 330              	.L29:
+  87:SYS/runtime/runtime.c **** }
+ 331              		.loc 1 87 12 view .LVU73
+ 332 0036 0020     		movs	r0, #0
+ 333 0038 FCE7     		b	.L27
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 9
+
+
+ 334              	.L32:
+ 335 003a 00BF     		.align	2
+ 336              	.L31:
+ 337 003c 00000000 		.word	.LANCHOR0
+ 338 0040 00000000 		.word	.LANCHOR1
+ 339              		.cfi_endproc
+ 340              	.LFE5:
+ 342              		.section	.text.Get_CurrentRunningUs,"ax",%progbits
+ 343              		.align	1
+ 344              		.global	Get_CurrentRunningUs
+ 345              		.syntax unified
+ 346              		.thumb
+ 347              		.thumb_func
+ 348              		.fpu fpv4-sp-d16
+ 350              	Get_CurrentRunningUs:
+ 351              	.LFB6:
+  89:SYS/runtime/runtime.c **** 
+  90:SYS/runtime/runtime.c **** uint64_t Get_CurrentRunningUs(void)
+  91:SYS/runtime/runtime.c **** {
+ 352              		.loc 1 91 1 is_stmt 1 view -0
+ 353              		.cfi_startproc
+ 354              		@ args = 0, pretend = 0, frame = 0
+ 355              		@ frame_needed = 0, uses_anonymous_args = 0
+ 356              		@ link register save eliminated.
+  92:SYS/runtime/runtime.c ****     return RunTime.Use_Us;
+ 357              		.loc 1 92 5 view .LVU75
+  93:SYS/runtime/runtime.c **** }
+ 358              		.loc 1 93 1 is_stmt 0 view .LVU76
+ 359 0000 014B     		ldr	r3, .L34
+ 360 0002 D3E90001 		ldrd	r0, [r3]
+ 361 0006 7047     		bx	lr
+ 362              	.L35:
+ 363              		.align	2
+ 364              	.L34:
+ 365 0008 00000000 		.word	.LANCHOR0
+ 366              		.cfi_endproc
+ 367              	.LFE6:
+ 369              		.global	__aeabi_uldivmod
+ 370              		.section	.text.Get_CurrentRunningMs,"ax",%progbits
+ 371              		.align	1
+ 372              		.global	Get_CurrentRunningMs
+ 373              		.syntax unified
+ 374              		.thumb
+ 375              		.thumb_func
+ 376              		.fpu fpv4-sp-d16
+ 378              	Get_CurrentRunningMs:
+ 379              	.LFB7:
+  94:SYS/runtime/runtime.c **** 
+  95:SYS/runtime/runtime.c **** uint64_t Get_CurrentRunningMs(void)
+  96:SYS/runtime/runtime.c **** {
+ 380              		.loc 1 96 1 is_stmt 1 view -0
+ 381              		.cfi_startproc
+ 382              		@ args = 0, pretend = 0, frame = 0
+ 383              		@ frame_needed = 0, uses_anonymous_args = 0
+ 384 0000 08B5     		push	{r3, lr}
+ 385              	.LCFI4:
+ 386              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 10
+
+
+ 387              		.cfi_offset 3, -8
+ 388              		.cfi_offset 14, -4
+  97:SYS/runtime/runtime.c ****     return (RunTime.Use_Us / REAL_MS);
+ 389              		.loc 1 97 5 view .LVU78
+ 390              		.loc 1 97 28 is_stmt 0 view .LVU79
+ 391 0002 4FF47A72 		mov	r2, #1000
+ 392 0006 0023     		movs	r3, #0
+ 393 0008 0249     		ldr	r1, .L38
+ 394 000a D1E90001 		ldrd	r0, [r1]
+ 395 000e FFF7FEFF 		bl	__aeabi_uldivmod
+ 396              	.LVL10:
+  98:SYS/runtime/runtime.c **** }
+ 397              		.loc 1 98 1 view .LVU80
+ 398 0012 08BD     		pop	{r3, pc}
+ 399              	.L39:
+ 400              		.align	2
+ 401              	.L38:
+ 402 0014 00000000 		.word	.LANCHOR0
+ 403              		.cfi_endproc
+ 404              	.LFE7:
+ 406              		.section	.text.Get_CurrentRunningS,"ax",%progbits
+ 407              		.align	1
+ 408              		.global	Get_CurrentRunningS
+ 409              		.syntax unified
+ 410              		.thumb
+ 411              		.thumb_func
+ 412              		.fpu fpv4-sp-d16
+ 414              	Get_CurrentRunningS:
+ 415              	.LFB8:
+  99:SYS/runtime/runtime.c **** 
+ 100:SYS/runtime/runtime.c **** uint64_t Get_CurrentRunningS(void)
+ 101:SYS/runtime/runtime.c **** {
+ 416              		.loc 1 101 1 is_stmt 1 view -0
+ 417              		.cfi_startproc
+ 418              		@ args = 0, pretend = 0, frame = 0
+ 419              		@ frame_needed = 0, uses_anonymous_args = 0
+ 420 0000 08B5     		push	{r3, lr}
+ 421              	.LCFI5:
+ 422              		.cfi_def_cfa_offset 8
+ 423              		.cfi_offset 3, -8
+ 424              		.cfi_offset 14, -4
+ 102:SYS/runtime/runtime.c ****     return (Get_CurrentRunningMs() / REAL_MS);
+ 425              		.loc 1 102 5 view .LVU82
+ 426              		.loc 1 102 13 is_stmt 0 view .LVU83
+ 427 0002 FFF7FEFF 		bl	Get_CurrentRunningMs
+ 428              	.LVL11:
+ 429              		.loc 1 102 36 view .LVU84
+ 430 0006 4FF47A72 		mov	r2, #1000
+ 431 000a 0023     		movs	r3, #0
+ 432 000c FFF7FEFF 		bl	__aeabi_uldivmod
+ 433              	.LVL12:
+ 103:SYS/runtime/runtime.c **** }
+ 434              		.loc 1 103 1 view .LVU85
+ 435 0010 08BD     		pop	{r3, pc}
+ 436              		.cfi_endproc
+ 437              	.LFE8:
+ 439              		.section	.text.Get_TimeDifference,"ax",%progbits
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 11
+
+
+ 440              		.align	1
+ 441              		.global	Get_TimeDifference
+ 442              		.syntax unified
+ 443              		.thumb
+ 444              		.thumb_func
+ 445              		.fpu fpv4-sp-d16
+ 447              	Get_TimeDifference:
+ 448              	.LVL13:
+ 449              	.LFB9:
+ 104:SYS/runtime/runtime.c **** 
+ 105:SYS/runtime/runtime.c **** uint64_t Get_TimeDifference(uint64_t time_in)
+ 106:SYS/runtime/runtime.c **** {
+ 450              		.loc 1 106 1 is_stmt 1 view -0
+ 451              		.cfi_startproc
+ 452              		@ args = 0, pretend = 0, frame = 0
+ 453              		@ frame_needed = 0, uses_anonymous_args = 0
+ 454              		@ link register save eliminated.
+ 107:SYS/runtime/runtime.c ****     return (RunTime.Use_Us - time_in);
+ 455              		.loc 1 107 5 view .LVU87
+ 456              		.loc 1 107 20 is_stmt 0 view .LVU88
+ 457 0000 034A     		ldr	r2, .L43
+ 458 0002 1368     		ldr	r3, [r2]
+ 459 0004 5268     		ldr	r2, [r2, #4]
+ 460              		.loc 1 107 28 view .LVU89
+ 461 0006 181A     		subs	r0, r3, r0
+ 462              	.LVL14:
+ 108:SYS/runtime/runtime.c **** }
+ 463              		.loc 1 108 1 view .LVU90
+ 464 0008 62EB0101 		sbc	r1, r2, r1
+ 465 000c 7047     		bx	lr
+ 466              	.L44:
+ 467 000e 00BF     		.align	2
+ 468              	.L43:
+ 469 0010 00000000 		.word	.LANCHOR0
+ 470              		.cfi_endproc
+ 471              	.LFE9:
+ 473              		.section	.text.Get_TargetRunTime,"ax",%progbits
+ 474              		.align	1
+ 475              		.global	Get_TargetRunTime
+ 476              		.syntax unified
+ 477              		.thumb
+ 478              		.thumb_func
+ 479              		.fpu fpv4-sp-d16
+ 481              	Get_TargetRunTime:
+ 482              	.LVL15:
+ 483              	.LFB10:
+ 109:SYS/runtime/runtime.c **** 
+ 110:SYS/runtime/runtime.c **** uint64_t Get_TargetRunTime(uint16_t duration)
+ 111:SYS/runtime/runtime.c **** {
+ 484              		.loc 1 111 1 is_stmt 1 view -0
+ 485              		.cfi_startproc
+ 486              		@ args = 0, pretend = 0, frame = 0
+ 487              		@ frame_needed = 0, uses_anonymous_args = 0
+ 488              		@ link register save eliminated.
+ 112:SYS/runtime/runtime.c ****     return (RunTime.Use_Us + duration);
+ 489              		.loc 1 112 5 view .LVU92
+ 490              		.loc 1 112 20 is_stmt 0 view .LVU93
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 12
+
+
+ 491 0000 034A     		ldr	r2, .L46
+ 492 0002 1368     		ldr	r3, [r2]
+ 493 0004 5168     		ldr	r1, [r2, #4]
+ 494              		.loc 1 112 28 view .LVU94
+ 495 0006 C018     		adds	r0, r0, r3
+ 496              	.LVL16:
+ 113:SYS/runtime/runtime.c **** }
+ 497              		.loc 1 113 1 view .LVU95
+ 498 0008 41F10001 		adc	r1, r1, #0
+ 499 000c 7047     		bx	lr
+ 500              	.L47:
+ 501 000e 00BF     		.align	2
+ 502              	.L46:
+ 503 0010 00000000 		.word	.LANCHOR0
+ 504              		.cfi_endproc
+ 505              	.LFE10:
+ 507              		.section	.text.RuntimeObj_Compare,"ax",%progbits
+ 508              		.align	1
+ 509              		.global	RuntimeObj_Compare
+ 510              		.syntax unified
+ 511              		.thumb
+ 512              		.thumb_func
+ 513              		.fpu fpv4-sp-d16
+ 515              	RuntimeObj_Compare:
+ 516              	.LVL17:
+ 517              	.LFB11:
+ 114:SYS/runtime/runtime.c **** 
+ 115:SYS/runtime/runtime.c **** /* return the object addr for the longer one */
+ 116:SYS/runtime/runtime.c **** /* if EQ_L equal to EQ_R return null pointer */
+ 117:SYS/runtime/runtime.c **** uint32_t RuntimeObj_Compare(const uint64_t *EQ_L, const uint64_t *EQ_R)
+ 118:SYS/runtime/runtime.c **** {
+ 518              		.loc 1 118 1 is_stmt 1 view -0
+ 519              		.cfi_startproc
+ 520              		@ args = 0, pretend = 0, frame = 0
+ 521              		@ frame_needed = 0, uses_anonymous_args = 0
+ 522              		@ link register save eliminated.
+ 523              		.loc 1 118 1 is_stmt 0 view .LVU97
+ 524 0000 30B4     		push	{r4, r5}
+ 525              	.LCFI6:
+ 526              		.cfi_def_cfa_offset 8
+ 527              		.cfi_offset 4, -8
+ 528              		.cfi_offset 5, -4
+ 119:SYS/runtime/runtime.c ****     if (*EQ_L > *EQ_R)
+ 529              		.loc 1 119 5 is_stmt 1 view .LVU98
+ 530              		.loc 1 119 9 is_stmt 0 view .LVU99
+ 531 0002 0568     		ldr	r5, [r0]
+ 532 0004 4268     		ldr	r2, [r0, #4]
+ 533              		.loc 1 119 17 view .LVU100
+ 534 0006 0C68     		ldr	r4, [r1]
+ 535 0008 4B68     		ldr	r3, [r1, #4]
+ 536              		.loc 1 119 8 view .LVU101
+ 537 000a AC42     		cmp	r4, r5
+ 538 000c 73EB020C 		sbcs	ip, r3, r2
+ 539 0010 04D3     		bcc	.L48
+ 120:SYS/runtime/runtime.c ****     {
+ 121:SYS/runtime/runtime.c ****         return EQ_L;
+ 122:SYS/runtime/runtime.c ****     }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 13
+
+
+ 123:SYS/runtime/runtime.c ****     else if (*EQ_L < *EQ_R)
+ 540              		.loc 1 123 10 is_stmt 1 view .LVU102
+ 541              		.loc 1 123 13 is_stmt 0 view .LVU103
+ 542 0012 A542     		cmp	r5, r4
+ 543 0014 72EB0303 		sbcs	r3, r2, r3
+ 544 0018 02D3     		bcc	.L53
+ 124:SYS/runtime/runtime.c ****     {
+ 125:SYS/runtime/runtime.c ****         return EQ_R;
+ 126:SYS/runtime/runtime.c ****     }
+ 127:SYS/runtime/runtime.c **** 
+ 128:SYS/runtime/runtime.c ****     return NULL;
+ 545              		.loc 1 128 12 view .LVU104
+ 546 001a 0020     		movs	r0, #0
+ 547              	.LVL18:
+ 548              	.L48:
+ 129:SYS/runtime/runtime.c **** }
+ 549              		.loc 1 129 1 view .LVU105
+ 550 001c 30BC     		pop	{r4, r5}
+ 551              	.LCFI7:
+ 552              		.cfi_remember_state
+ 553              		.cfi_restore 5
+ 554              		.cfi_restore 4
+ 555              		.cfi_def_cfa_offset 0
+ 556 001e 7047     		bx	lr
+ 557              	.LVL19:
+ 558              	.L53:
+ 559              	.LCFI8:
+ 560              		.cfi_restore_state
+ 125:SYS/runtime/runtime.c ****     }
+ 561              		.loc 1 125 9 is_stmt 1 view .LVU106
+ 125:SYS/runtime/runtime.c ****     }
+ 562              		.loc 1 125 16 is_stmt 0 view .LVU107
+ 563 0020 0846     		mov	r0, r1
+ 564              	.LVL20:
+ 125:SYS/runtime/runtime.c ****     }
+ 565              		.loc 1 125 16 view .LVU108
+ 566 0022 FBE7     		b	.L48
+ 567              		.cfi_endproc
+ 568              	.LFE11:
+ 570              		.section	.text.RuntimeObj_CompareWithCurrent,"ax",%progbits
+ 571              		.align	1
+ 572              		.global	RuntimeObj_CompareWithCurrent
+ 573              		.syntax unified
+ 574              		.thumb
+ 575              		.thumb_func
+ 576              		.fpu fpv4-sp-d16
+ 578              	RuntimeObj_CompareWithCurrent:
+ 579              	.LVL21:
+ 580              	.LFB12:
+ 130:SYS/runtime/runtime.c **** 
+ 131:SYS/runtime/runtime.c **** /* input time object compare with current runtime */
+ 132:SYS/runtime/runtime.c **** /* if input time object >= current runtime return true */
+ 133:SYS/runtime/runtime.c **** bool RuntimeObj_CompareWithCurrent(const uint64_t time_in)
+ 134:SYS/runtime/runtime.c **** {
+ 581              		.loc 1 134 1 is_stmt 1 view -0
+ 582              		.cfi_startproc
+ 583              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 14
+
+
+ 584              		@ frame_needed = 0, uses_anonymous_args = 0
+ 585              		@ link register save eliminated.
+ 135:SYS/runtime/runtime.c ****     if (time_in >= RunTime.Use_Us)
+ 586              		.loc 1 135 5 view .LVU110
+ 587              		.loc 1 135 27 is_stmt 0 view .LVU111
+ 588 0000 054B     		ldr	r3, .L57
+ 589 0002 1A68     		ldr	r2, [r3]
+ 590 0004 5B68     		ldr	r3, [r3, #4]
+ 591              		.loc 1 135 8 view .LVU112
+ 592 0006 9042     		cmp	r0, r2
+ 593 0008 71EB0303 		sbcs	r3, r1, r3
+ 594 000c 01D2     		bcs	.L56
+ 136:SYS/runtime/runtime.c ****     {
+ 137:SYS/runtime/runtime.c ****         return true;
+ 138:SYS/runtime/runtime.c ****     }
+ 139:SYS/runtime/runtime.c **** 
+ 140:SYS/runtime/runtime.c ****     return false;
+ 595              		.loc 1 140 12 view .LVU113
+ 596 000e 0020     		movs	r0, #0
+ 597              	.LVL22:
+ 598              		.loc 1 140 12 view .LVU114
+ 599 0010 7047     		bx	lr
+ 600              	.LVL23:
+ 601              	.L56:
+ 137:SYS/runtime/runtime.c ****     }
+ 602              		.loc 1 137 16 view .LVU115
+ 603 0012 0120     		movs	r0, #1
+ 604              	.LVL24:
+ 141:SYS/runtime/runtime.c **** }
+ 605              		.loc 1 141 1 view .LVU116
+ 606 0014 7047     		bx	lr
+ 607              	.L58:
+ 608 0016 00BF     		.align	2
+ 609              	.L57:
+ 610 0018 00000000 		.word	.LANCHOR0
+ 611              		.cfi_endproc
+ 612              	.LFE12:
+ 614              		.section	.bss.RunTime,"aw",%nobits
+ 615              		.align	3
+ 616              		.set	.LANCHOR0,. + 0
+ 619              	RunTime:
+ 620 0000 00000000 		.space	32
+ 620      00000000 
+ 620      00000000 
+ 620      00000000 
+ 620      00000000 
+ 621              		.section	.bss.Runtime_Stop_FuncPtr,"aw",%nobits
+ 622              		.align	2
+ 623              		.set	.LANCHOR1,. + 0
+ 626              	Runtime_Stop_FuncPtr:
+ 627 0000 00000000 		.space	4
+ 628              		.text
+ 629              	.Letext0:
+ 630              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 631              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 632              		.file 4 "SYS/runtime/runtime.h"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 runtime.c
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:18     .text.Runtime_Stop:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:26     .text.Runtime_Stop:00000000 Runtime_Stop
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:77     .text.Runtime_Stop:00000024 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:84     .text.Runtime_PreInit:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:91     .text.Runtime_PreInit:00000000 Runtime_PreInit
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:114    .text.Runtime_PreInit:0000000c $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:119    .text.Get_RuntimeState:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:126    .text.Get_RuntimeState:00000000 Get_RuntimeState
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:141    .text.Get_RuntimeState:00000008 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:149    .text.Runtime_Config:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:156    .text.Runtime_Config:00000000 Runtime_Config
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:216    .text.Runtime_Config:00000038 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:223    .text.Runtime_Start:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:230    .text.Runtime_Start:00000000 Runtime_Start
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:260    .text.Runtime_Start:00000010 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:265    .text.Runtime_Tick:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:272    .text.Runtime_Tick:00000000 Runtime_Tick
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:337    .text.Runtime_Tick:0000003c $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:343    .text.Get_CurrentRunningUs:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:350    .text.Get_CurrentRunningUs:00000000 Get_CurrentRunningUs
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:365    .text.Get_CurrentRunningUs:00000008 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:371    .text.Get_CurrentRunningMs:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:378    .text.Get_CurrentRunningMs:00000000 Get_CurrentRunningMs
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:402    .text.Get_CurrentRunningMs:00000014 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:407    .text.Get_CurrentRunningS:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:414    .text.Get_CurrentRunningS:00000000 Get_CurrentRunningS
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:440    .text.Get_TimeDifference:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:447    .text.Get_TimeDifference:00000000 Get_TimeDifference
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:469    .text.Get_TimeDifference:00000010 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:474    .text.Get_TargetRunTime:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:481    .text.Get_TargetRunTime:00000000 Get_TargetRunTime
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:503    .text.Get_TargetRunTime:00000010 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:508    .text.RuntimeObj_Compare:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:515    .text.RuntimeObj_Compare:00000000 RuntimeObj_Compare
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:571    .text.RuntimeObj_CompareWithCurrent:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:578    .text.RuntimeObj_CompareWithCurrent:00000000 RuntimeObj_CompareWithCurrent
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:610    .text.RuntimeObj_CompareWithCurrent:00000018 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:615    .bss.RunTime:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:619    .bss.RunTime:00000000 RunTime
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:622    .bss.Runtime_Stop_FuncPtr:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccQA8sI0.s:626    .bss.Runtime_Stop_FuncPtr:00000000 Runtime_Stop_FuncPtr
+
+UNDEFINED SYMBOLS
+__aeabi_ui2d
+__aeabi_ddiv
+__aeabi_d2uiz
+__aeabi_uldivmod

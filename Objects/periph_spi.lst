@@ -1,0 +1,1051 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"periph_spi.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.periph_SPI_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	periph_SPI_Init
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	periph_SPI_Init:
+  27              	.LVL0:
+  28              	.LFB123:
+  29              		.file 1 "Bsp/periph_spi.c"
+   1:Bsp/periph_spi.c **** #include "delay.h"
+   2:Bsp/periph_spi.c **** #include "stm32f4xx_spi.h"
+   3:Bsp/periph_spi.c **** #include "periph_gpio.h"
+   4:Bsp/periph_spi.c **** #include "periph_spi.h"
+   5:Bsp/periph_spi.c **** 
+   6:Bsp/periph_spi.c **** u16 SpiErrorCount = 0;
+   7:Bsp/periph_spi.c **** u16 SpiErrorCount2 = 0;
+   8:Bsp/periph_spi.c **** 
+   9:Bsp/periph_spi.c **** static void (*SPI_IO_Init[SPI_PORT_SUM])() = {GPIO_SPI1_IO_Init, GPIO_SPI2_IO_Init, GPIO_SPI3_IO_In
+  10:Bsp/periph_spi.c **** 
+  11:Bsp/periph_spi.c **** static SPI_TypeDef *SPI_PORT[SPI_PORT_SUM] = {SPI1, SPI2, SPI3};
+  12:Bsp/periph_spi.c **** 
+  13:Bsp/periph_spi.c **** static uint32_t SPI_CLK[SPI_PORT_SUM] = {RCC_APB2Periph_SPI1, RCC_APB1Periph_SPI2, RCC_APB1Periph_S
+  14:Bsp/periph_spi.c **** 
+  15:Bsp/periph_spi.c **** static const uint16_t divisorMap[] = {
+  16:Bsp/periph_spi.c **** 	SPI_BaudRatePrescaler_256, // SPI_CLOCK_INITIALIZATON      328.125 KBits/s
+  17:Bsp/periph_spi.c **** 	SPI_BaudRatePrescaler_128, // SPI_CLOCK_SLOW               656.25 KBits/s
+  18:Bsp/periph_spi.c **** 	SPI_BaudRatePrescaler_8,   // SPI_CLOCK_STANDARD           10.5 MBits/s
+  19:Bsp/periph_spi.c **** 	SPI_BaudRatePrescaler_4,   // SPI_CLOCK_FAST               21.0 MBits/s
+  20:Bsp/periph_spi.c **** 	SPI_BaudRatePrescaler_2	   // SPI_CLOCK_ULTRAFAST          42.0 MBits/s
+  21:Bsp/periph_spi.c **** };
+  22:Bsp/periph_spi.c **** 
+  23:Bsp/periph_spi.c **** void periph_SPI_Init(SPI_List SPIx, uint8_t speed, uint16_t CPOL, uint16_t CPHA)
+  24:Bsp/periph_spi.c **** {
+  30              		.loc 1 24 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 24
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 24 1 is_stmt 0 view .LVU1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 2
+
+
+  35 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 20
+  38              		.cfi_offset 4, -20
+  39              		.cfi_offset 5, -16
+  40              		.cfi_offset 6, -12
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  43 0002 87B0     		sub	sp, sp, #28
+  44              	.LCFI1:
+  45              		.cfi_def_cfa_offset 48
+  46 0004 0446     		mov	r4, r0
+  47 0006 0D46     		mov	r5, r1
+  48 0008 1746     		mov	r7, r2
+  49 000a 1E46     		mov	r6, r3
+  25:Bsp/periph_spi.c **** 	SPI_InitTypeDef SPI_InitStructure;
+  50              		.loc 1 25 2 is_stmt 1 view .LVU2
+  26:Bsp/periph_spi.c **** 	SPI_IO_Init[SPIx]();
+  51              		.loc 1 26 2 view .LVU3
+  52              		.loc 1 26 13 is_stmt 0 view .LVU4
+  53 000c 204B     		ldr	r3, .L5
+  54              	.LVL1:
+  55              		.loc 1 26 13 view .LVU5
+  56 000e 53F82030 		ldr	r3, [r3, r0, lsl #2]
+  57              		.loc 1 26 2 view .LVU6
+  58 0012 9847     		blx	r3
+  59              	.LVL2:
+  27:Bsp/periph_spi.c **** 
+  28:Bsp/periph_spi.c **** 	if (SPIx == SPI_1)
+  60              		.loc 1 28 2 is_stmt 1 view .LVU7
+  61              		.loc 1 28 5 is_stmt 0 view .LVU8
+  62 0014 A4BB     		cbnz	r4, .L2
+  29:Bsp/periph_spi.c **** 	{
+  30:Bsp/periph_spi.c **** 		RCC_APB2PeriphClockCmd(SPI_CLK[SPIx], ENABLE);
+  63              		.loc 1 30 3 is_stmt 1 view .LVU9
+  64 0016 0121     		movs	r1, #1
+  65 0018 1E4B     		ldr	r3, .L5+4
+  66 001a 53F82400 		ldr	r0, [r3, r4, lsl #2]
+  67 001e FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+  68              	.LVL3:
+  69              	.L3:
+  31:Bsp/periph_spi.c **** 	}
+  32:Bsp/periph_spi.c **** 	else
+  33:Bsp/periph_spi.c **** 	{
+  34:Bsp/periph_spi.c **** 		RCC_APB1PeriphClockCmd(SPI_CLK[SPIx], ENABLE);
+  35:Bsp/periph_spi.c **** 	}
+  36:Bsp/periph_spi.c **** 
+  37:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_CPOL = CPOL;
+  70              		.loc 1 37 2 view .LVU10
+  71              		.loc 1 37 29 is_stmt 0 view .LVU11
+  72 0022 ADF80A70 		strh	r7, [sp, #10]	@ movhi
+  38:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_CPHA = CPHA;
+  73              		.loc 1 38 2 is_stmt 1 view .LVU12
+  74              		.loc 1 38 29 is_stmt 0 view .LVU13
+  75 0026 ADF80C60 		strh	r6, [sp, #12]	@ movhi
+  39:Bsp/periph_spi.c **** 
+  40:Bsp/periph_spi.c **** 	SPI_I2S_DeInit(SPI_PORT[SPIx]);
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 3
+
+
+  76              		.loc 1 40 2 is_stmt 1 view .LVU14
+  77 002a 1B4B     		ldr	r3, .L5+8
+  78 002c 53F82440 		ldr	r4, [r3, r4, lsl #2]
+  79 0030 2046     		mov	r0, r4
+  80 0032 FFF7FEFF 		bl	SPI_I2S_DeInit
+  81              	.LVL4:
+  41:Bsp/periph_spi.c **** 	SPI_Cmd(SPI_PORT[SPIx], DISABLE);
+  82              		.loc 1 41 2 view .LVU15
+  83 0036 0021     		movs	r1, #0
+  84 0038 2046     		mov	r0, r4
+  85 003a FFF7FEFF 		bl	SPI_Cmd
+  86              	.LVL5:
+  42:Bsp/periph_spi.c **** 
+  43:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+  87              		.loc 1 43 2 view .LVU16
+  88              		.loc 1 43 29 is_stmt 0 view .LVU17
+  89 003e 4FF48273 		mov	r3, #260
+  90 0042 ADF80630 		strh	r3, [sp, #6]	@ movhi
+  44:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  91              		.loc 1 44 2 is_stmt 1 view .LVU18
+  92              		.loc 1 44 34 is_stmt 0 view .LVU19
+  93 0046 0023     		movs	r3, #0
+  94 0048 ADF80430 		strh	r3, [sp, #4]	@ movhi
+  45:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+  95              		.loc 1 45 2 is_stmt 1 view .LVU20
+  96              		.loc 1 45 33 is_stmt 0 view .LVU21
+  97 004c ADF80830 		strh	r3, [sp, #8]	@ movhi
+  46:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+  98              		.loc 1 46 2 is_stmt 1 view .LVU22
+  99              		.loc 1 46 28 is_stmt 0 view .LVU23
+ 100 0050 4FF40072 		mov	r2, #512
+ 101 0054 ADF80E20 		strh	r2, [sp, #14]	@ movhi
+  47:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+ 102              		.loc 1 47 2 is_stmt 1 view .LVU24
+ 103              		.loc 1 47 33 is_stmt 0 view .LVU25
+ 104 0058 ADF81230 		strh	r3, [sp, #18]	@ movhi
+  48:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_CRCPolynomial = 7;
+ 105              		.loc 1 48 2 is_stmt 1 view .LVU26
+ 106              		.loc 1 48 38 is_stmt 0 view .LVU27
+ 107 005c 0723     		movs	r3, #7
+ 108 005e ADF81430 		strh	r3, [sp, #20]	@ movhi
+  49:Bsp/periph_spi.c **** 	SPI_InitStructure.SPI_BaudRatePrescaler = divisorMap[speed];
+ 109              		.loc 1 49 2 is_stmt 1 view .LVU28
+ 110              		.loc 1 49 54 is_stmt 0 view .LVU29
+ 111 0062 0E4B     		ldr	r3, .L5+12
+ 112 0064 33F81530 		ldrh	r3, [r3, r5, lsl #1]
+ 113              		.loc 1 49 42 view .LVU30
+ 114 0068 ADF81030 		strh	r3, [sp, #16]	@ movhi
+  50:Bsp/periph_spi.c **** 	SPI_Init(SPI_PORT[SPIx], &SPI_InitStructure);
+ 115              		.loc 1 50 2 is_stmt 1 view .LVU31
+ 116 006c 01A9     		add	r1, sp, #4
+ 117 006e 2046     		mov	r0, r4
+ 118 0070 FFF7FEFF 		bl	SPI_Init
+ 119              	.LVL6:
+  51:Bsp/periph_spi.c **** 
+  52:Bsp/periph_spi.c **** 	SPI_Cmd(SPI_PORT[SPIx], ENABLE);
+ 120              		.loc 1 52 2 view .LVU32
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 4
+
+
+ 121 0074 0121     		movs	r1, #1
+ 122 0076 2046     		mov	r0, r4
+ 123 0078 FFF7FEFF 		bl	SPI_Cmd
+ 124              	.LVL7:
+  53:Bsp/periph_spi.c **** }
+ 125              		.loc 1 53 1 is_stmt 0 view .LVU33
+ 126 007c 07B0     		add	sp, sp, #28
+ 127              	.LCFI2:
+ 128              		.cfi_remember_state
+ 129              		.cfi_def_cfa_offset 20
+ 130              		@ sp needed
+ 131 007e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 132              	.L2:
+ 133              	.LCFI3:
+ 134              		.cfi_restore_state
+  34:Bsp/periph_spi.c **** 	}
+ 135              		.loc 1 34 3 is_stmt 1 view .LVU34
+ 136 0080 0121     		movs	r1, #1
+ 137 0082 044B     		ldr	r3, .L5+4
+ 138 0084 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 139 0088 FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 140              	.LVL8:
+ 141 008c C9E7     		b	.L3
+ 142              	.L6:
+ 143 008e 00BF     		.align	2
+ 144              	.L5:
+ 145 0090 00000000 		.word	.LANCHOR0
+ 146 0094 00000000 		.word	.LANCHOR1
+ 147 0098 00000000 		.word	.LANCHOR2
+ 148 009c 00000000 		.word	.LANCHOR3
+ 149              		.cfi_endproc
+ 150              	.LFE123:
+ 152              		.section	.text.periph_SPI_SetSpeed,"ax",%progbits
+ 153              		.align	1
+ 154              		.global	periph_SPI_SetSpeed
+ 155              		.syntax unified
+ 156              		.thumb
+ 157              		.thumb_func
+ 158              		.fpu fpv4-sp-d16
+ 160              	periph_SPI_SetSpeed:
+ 161              	.LVL9:
+ 162              	.LFB124:
+  54:Bsp/periph_spi.c **** 
+  55:Bsp/periph_spi.c **** void periph_SPI_SetSpeed(SPI_List SPIx, SPIClockSpeed_e speed)
+  56:Bsp/periph_spi.c **** {
+ 163              		.loc 1 56 1 view -0
+ 164              		.cfi_startproc
+ 165              		@ args = 0, pretend = 0, frame = 0
+ 166              		@ frame_needed = 0, uses_anonymous_args = 0
+ 167              		.loc 1 56 1 is_stmt 0 view .LVU36
+ 168 0000 38B5     		push	{r3, r4, r5, lr}
+ 169              	.LCFI4:
+ 170              		.cfi_def_cfa_offset 16
+ 171              		.cfi_offset 3, -16
+ 172              		.cfi_offset 4, -12
+ 173              		.cfi_offset 5, -8
+ 174              		.cfi_offset 14, -4
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 5
+
+
+ 175 0002 0D46     		mov	r5, r1
+  57:Bsp/periph_spi.c **** #define BR_CLEAR_MASK 0xFFC7
+  58:Bsp/periph_spi.c **** 	SPI_Cmd(SPI_PORT[SPIx], DISABLE);
+ 176              		.loc 1 58 2 is_stmt 1 view .LVU37
+ 177 0004 0A4B     		ldr	r3, .L9
+ 178 0006 53F82040 		ldr	r4, [r3, r0, lsl #2]
+ 179 000a 0021     		movs	r1, #0
+ 180              	.LVL10:
+ 181              		.loc 1 58 2 is_stmt 0 view .LVU38
+ 182 000c 2046     		mov	r0, r4
+ 183              	.LVL11:
+ 184              		.loc 1 58 2 view .LVU39
+ 185 000e FFF7FEFF 		bl	SPI_Cmd
+ 186              	.LVL12:
+  59:Bsp/periph_spi.c **** 
+  60:Bsp/periph_spi.c **** 	uint16_t tempRegister = SPI_PORT[SPIx]->CR1;
+ 187              		.loc 1 60 2 is_stmt 1 view .LVU40
+ 188              		.loc 1 60 11 is_stmt 0 view .LVU41
+ 189 0012 2388     		ldrh	r3, [r4]
+ 190 0014 9BB2     		uxth	r3, r3
+ 191              	.LVL13:
+  61:Bsp/periph_spi.c **** 	tempRegister &= BR_CLEAR_MASK;
+ 192              		.loc 1 61 2 is_stmt 1 view .LVU42
+ 193              		.loc 1 61 15 is_stmt 0 view .LVU43
+ 194 0016 23F03803 		bic	r3, r3, #56
+ 195              	.LVL14:
+  62:Bsp/periph_spi.c **** 	tempRegister |= divisorMap[speed];
+ 196              		.loc 1 62 2 is_stmt 1 view .LVU44
+ 197              		.loc 1 62 28 is_stmt 0 view .LVU45
+ 198 001a 064A     		ldr	r2, .L9+4
+ 199 001c 32F81520 		ldrh	r2, [r2, r5, lsl #1]
+ 200              		.loc 1 62 15 view .LVU46
+ 201 0020 1343     		orrs	r3, r3, r2
+ 202              	.LVL15:
+  63:Bsp/periph_spi.c **** 	SPI_PORT[SPIx]->CR1 = tempRegister;
+ 203              		.loc 1 63 2 is_stmt 1 view .LVU47
+ 204              		.loc 1 63 22 is_stmt 0 view .LVU48
+ 205 0022 2380     		strh	r3, [r4]	@ movhi
+  64:Bsp/periph_spi.c **** 	SPI_Cmd(SPI_PORT[SPIx], ENABLE);
+ 206              		.loc 1 64 2 is_stmt 1 view .LVU49
+ 207 0024 0121     		movs	r1, #1
+ 208 0026 2046     		mov	r0, r4
+ 209 0028 FFF7FEFF 		bl	SPI_Cmd
+ 210              	.LVL16:
+  65:Bsp/periph_spi.c **** }
+ 211              		.loc 1 65 1 is_stmt 0 view .LVU50
+ 212 002c 38BD     		pop	{r3, r4, r5, pc}
+ 213              	.L10:
+ 214 002e 00BF     		.align	2
+ 215              	.L9:
+ 216 0030 00000000 		.word	.LANCHOR2
+ 217 0034 00000000 		.word	.LANCHOR3
+ 218              		.cfi_endproc
+ 219              	.LFE124:
+ 221              		.section	.text.periph_SPI_WriteByte,"ax",%progbits
+ 222              		.align	1
+ 223              		.global	periph_SPI_WriteByte
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 6
+
+
+ 224              		.syntax unified
+ 225              		.thumb
+ 226              		.thumb_func
+ 227              		.fpu fpv4-sp-d16
+ 229              	periph_SPI_WriteByte:
+ 230              	.LVL17:
+ 231              	.LFB125:
+  66:Bsp/periph_spi.c **** 
+  67:Bsp/periph_spi.c **** uint8_t periph_SPI_WriteByte(SPI_List SPIx, uint8_t TxData)
+  68:Bsp/periph_spi.c **** {
+ 232              		.loc 1 68 1 is_stmt 1 view -0
+ 233              		.cfi_startproc
+ 234              		@ args = 0, pretend = 0, frame = 0
+ 235              		@ frame_needed = 0, uses_anonymous_args = 0
+ 236              		.loc 1 68 1 is_stmt 0 view .LVU52
+ 237 0000 70B5     		push	{r4, r5, r6, lr}
+ 238              	.LCFI5:
+ 239              		.cfi_def_cfa_offset 16
+ 240              		.cfi_offset 4, -16
+ 241              		.cfi_offset 5, -12
+ 242              		.cfi_offset 6, -8
+ 243              		.cfi_offset 14, -4
+ 244 0002 0546     		mov	r5, r0
+ 245 0004 0E46     		mov	r6, r1
+  69:Bsp/periph_spi.c **** 	uint16_t retry = 0;
+ 246              		.loc 1 69 2 is_stmt 1 view .LVU53
+ 247              	.LVL18:
+  70:Bsp/periph_spi.c **** 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
+ 248              		.loc 1 70 2 view .LVU54
+  69:Bsp/periph_spi.c **** 	uint16_t retry = 0;
+ 249              		.loc 1 69 11 is_stmt 0 view .LVU55
+ 250 0006 0024     		movs	r4, #0
+ 251              	.LVL19:
+ 252              	.L12:
+ 253              		.loc 1 70 8 is_stmt 1 view .LVU56
+ 254              		.loc 1 70 9 is_stmt 0 view .LVU57
+ 255 0008 0221     		movs	r1, #2
+ 256 000a 0B4B     		ldr	r3, .L17
+ 257 000c 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 258 0010 FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 259              	.LVL20:
+ 260              		.loc 1 70 8 view .LVU58
+ 261 0014 0346     		mov	r3, r0
+ 262 0016 28B9     		cbnz	r0, .L16
+  71:Bsp/periph_spi.c **** 	{
+  72:Bsp/periph_spi.c **** 		retry++;
+ 263              		.loc 1 72 3 is_stmt 1 view .LVU59
+ 264              		.loc 1 72 8 is_stmt 0 view .LVU60
+ 265 0018 0134     		adds	r4, r4, #1
+ 266              	.LVL21:
+ 267              		.loc 1 72 8 view .LVU61
+ 268 001a A4B2     		uxth	r4, r4
+ 269              	.LVL22:
+  73:Bsp/periph_spi.c **** 		if (retry > 1000)
+ 270              		.loc 1 73 3 is_stmt 1 view .LVU62
+ 271              		.loc 1 73 6 is_stmt 0 view .LVU63
+ 272 001c B4F57A7F 		cmp	r4, #1000
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 7
+
+
+ 273 0020 F2D9     		bls	.L12
+ 274 0022 06E0     		b	.L13
+ 275              	.L16:
+  74:Bsp/periph_spi.c **** 			return 0;
+  75:Bsp/periph_spi.c **** 	}
+  76:Bsp/periph_spi.c **** 	SPI_I2S_SendData(SPI_PORT[SPIx], TxData);
+ 276              		.loc 1 76 2 is_stmt 1 view .LVU64
+ 277 0024 3146     		mov	r1, r6
+ 278 0026 044B     		ldr	r3, .L17
+ 279 0028 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 280 002c FFF7FEFF 		bl	SPI_I2S_SendData
+ 281              	.LVL23:
+  77:Bsp/periph_spi.c **** 	return 1;
+ 282              		.loc 1 77 2 view .LVU65
+ 283              		.loc 1 77 9 is_stmt 0 view .LVU66
+ 284 0030 0123     		movs	r3, #1
+ 285              	.L13:
+  78:Bsp/periph_spi.c **** }
+ 286              		.loc 1 78 1 view .LVU67
+ 287 0032 1846     		mov	r0, r3
+ 288 0034 70BD     		pop	{r4, r5, r6, pc}
+ 289              	.LVL24:
+ 290              	.L18:
+ 291              		.loc 1 78 1 view .LVU68
+ 292 0036 00BF     		.align	2
+ 293              	.L17:
+ 294 0038 00000000 		.word	.LANCHOR2
+ 295              		.cfi_endproc
+ 296              	.LFE125:
+ 298              		.section	.text.periph_SPI_ReadByte,"ax",%progbits
+ 299              		.align	1
+ 300              		.global	periph_SPI_ReadByte
+ 301              		.syntax unified
+ 302              		.thumb
+ 303              		.thumb_func
+ 304              		.fpu fpv4-sp-d16
+ 306              	periph_SPI_ReadByte:
+ 307              	.LVL25:
+ 308              	.LFB126:
+  79:Bsp/periph_spi.c **** 
+  80:Bsp/periph_spi.c **** uint8_t periph_SPI_ReadByte(SPI_List SPIx)
+  81:Bsp/periph_spi.c **** {
+ 309              		.loc 1 81 1 is_stmt 1 view -0
+ 310              		.cfi_startproc
+ 311              		@ args = 0, pretend = 0, frame = 0
+ 312              		@ frame_needed = 0, uses_anonymous_args = 0
+ 313              		.loc 1 81 1 is_stmt 0 view .LVU70
+ 314 0000 38B5     		push	{r3, r4, r5, lr}
+ 315              	.LCFI6:
+ 316              		.cfi_def_cfa_offset 16
+ 317              		.cfi_offset 3, -16
+ 318              		.cfi_offset 4, -12
+ 319              		.cfi_offset 5, -8
+ 320              		.cfi_offset 14, -4
+ 321 0002 0546     		mov	r5, r0
+  82:Bsp/periph_spi.c **** 	uint16_t retry = 0;
+ 322              		.loc 1 82 2 is_stmt 1 view .LVU71
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 8
+
+
+ 323              	.LVL26:
+  83:Bsp/periph_spi.c **** 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
+ 324              		.loc 1 83 2 view .LVU72
+  82:Bsp/periph_spi.c **** 	uint16_t retry = 0;
+ 325              		.loc 1 82 11 is_stmt 0 view .LVU73
+ 326 0004 0024     		movs	r4, #0
+ 327              	.LVL27:
+ 328              	.L20:
+ 329              		.loc 1 83 8 is_stmt 1 view .LVU74
+ 330              		.loc 1 83 9 is_stmt 0 view .LVU75
+ 331 0006 0221     		movs	r1, #2
+ 332 0008 144B     		ldr	r3, .L28
+ 333 000a 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 334 000e FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 335              	.LVL28:
+ 336              		.loc 1 83 8 view .LVU76
+ 337 0012 0346     		mov	r3, r0
+ 338 0014 28B9     		cbnz	r0, .L26
+  84:Bsp/periph_spi.c **** 	{
+  85:Bsp/periph_spi.c **** 		retry++;
+ 339              		.loc 1 85 3 is_stmt 1 view .LVU77
+ 340              		.loc 1 85 8 is_stmt 0 view .LVU78
+ 341 0016 0134     		adds	r4, r4, #1
+ 342              	.LVL29:
+ 343              		.loc 1 85 8 view .LVU79
+ 344 0018 A4B2     		uxth	r4, r4
+ 345              	.LVL30:
+  86:Bsp/periph_spi.c **** 		if (retry > 1000)
+ 346              		.loc 1 86 3 is_stmt 1 view .LVU80
+ 347              		.loc 1 86 6 is_stmt 0 view .LVU81
+ 348 001a B4F57A7F 		cmp	r4, #1000
+ 349 001e F2D9     		bls	.L20
+ 350 0020 1AE0     		b	.L21
+ 351              	.L26:
+  87:Bsp/periph_spi.c **** 			return 0;
+  88:Bsp/periph_spi.c **** 	}
+  89:Bsp/periph_spi.c **** 	SPI_I2S_SendData(SPI_PORT[SPIx], 0XFF);
+ 352              		.loc 1 89 2 is_stmt 1 view .LVU82
+ 353 0022 FF21     		movs	r1, #255
+ 354 0024 0D4B     		ldr	r3, .L28
+ 355 0026 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 356 002a FFF7FEFF 		bl	SPI_I2S_SendData
+ 357              	.LVL31:
+  90:Bsp/periph_spi.c **** 
+  91:Bsp/periph_spi.c **** 	retry = 0;
+ 358              		.loc 1 91 2 view .LVU83
+  92:Bsp/periph_spi.c **** 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
+ 359              		.loc 1 92 2 view .LVU84
+  91:Bsp/periph_spi.c **** 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
+ 360              		.loc 1 91 8 is_stmt 0 view .LVU85
+ 361 002e 0024     		movs	r4, #0
+ 362              	.LVL32:
+ 363              	.L23:
+ 364              		.loc 1 92 8 is_stmt 1 view .LVU86
+ 365              		.loc 1 92 9 is_stmt 0 view .LVU87
+ 366 0030 0121     		movs	r1, #1
+ 367 0032 0A4B     		ldr	r3, .L28
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 9
+
+
+ 368 0034 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 369 0038 FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 370              	.LVL33:
+ 371              		.loc 1 92 8 view .LVU88
+ 372 003c 0346     		mov	r3, r0
+ 373 003e 28B9     		cbnz	r0, .L27
+  93:Bsp/periph_spi.c **** 	{
+  94:Bsp/periph_spi.c **** 		retry++;
+ 374              		.loc 1 94 3 is_stmt 1 view .LVU89
+ 375              		.loc 1 94 8 is_stmt 0 view .LVU90
+ 376 0040 0134     		adds	r4, r4, #1
+ 377              	.LVL34:
+ 378              		.loc 1 94 8 view .LVU91
+ 379 0042 A4B2     		uxth	r4, r4
+ 380              	.LVL35:
+  95:Bsp/periph_spi.c **** 		if (retry > 1000)
+ 381              		.loc 1 95 3 is_stmt 1 view .LVU92
+ 382              		.loc 1 95 6 is_stmt 0 view .LVU93
+ 383 0044 B4F57A7F 		cmp	r4, #1000
+ 384 0048 F2D9     		bls	.L23
+ 385 004a 05E0     		b	.L21
+ 386              	.L27:
+  96:Bsp/periph_spi.c **** 			return 0;
+  97:Bsp/periph_spi.c **** 	}
+  98:Bsp/periph_spi.c **** 	return SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
+ 387              		.loc 1 98 2 is_stmt 1 view .LVU94
+ 388              		.loc 1 98 9 is_stmt 0 view .LVU95
+ 389 004c 034B     		ldr	r3, .L28
+ 390 004e 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 391 0052 FFF7FEFF 		bl	SPI_I2S_ReceiveData
+ 392              	.LVL36:
+ 393 0056 C3B2     		uxtb	r3, r0
+ 394              	.L21:
+  99:Bsp/periph_spi.c **** }
+ 395              		.loc 1 99 1 view .LVU96
+ 396 0058 1846     		mov	r0, r3
+ 397 005a 38BD     		pop	{r3, r4, r5, pc}
+ 398              	.LVL37:
+ 399              	.L29:
+ 400              		.loc 1 99 1 view .LVU97
+ 401              		.align	2
+ 402              	.L28:
+ 403 005c 00000000 		.word	.LANCHOR2
+ 404              		.cfi_endproc
+ 405              	.LFE126:
+ 407              		.section	.text.periph_SPI_ReadWriteByte,"ax",%progbits
+ 408              		.align	1
+ 409              		.global	periph_SPI_ReadWriteByte
+ 410              		.syntax unified
+ 411              		.thumb
+ 412              		.thumb_func
+ 413              		.fpu fpv4-sp-d16
+ 415              	periph_SPI_ReadWriteByte:
+ 416              	.LVL38:
+ 417              	.LFB127:
+ 100:Bsp/periph_spi.c **** 
+ 101:Bsp/periph_spi.c **** uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData)
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 10
+
+
+ 102:Bsp/periph_spi.c **** {
+ 418              		.loc 1 102 1 is_stmt 1 view -0
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 0
+ 421              		@ frame_needed = 0, uses_anonymous_args = 0
+ 422              		.loc 1 102 1 is_stmt 0 view .LVU99
+ 423 0000 70B5     		push	{r4, r5, r6, lr}
+ 424              	.LCFI7:
+ 425              		.cfi_def_cfa_offset 16
+ 426              		.cfi_offset 4, -16
+ 427              		.cfi_offset 5, -12
+ 428              		.cfi_offset 6, -8
+ 429              		.cfi_offset 14, -4
+ 430 0002 0546     		mov	r5, r0
+ 431 0004 0E46     		mov	r6, r1
+ 103:Bsp/periph_spi.c **** 	uint16_t retry = 0;
+ 432              		.loc 1 103 2 is_stmt 1 view .LVU100
+ 433              	.LVL39:
+ 104:Bsp/periph_spi.c **** 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
+ 434              		.loc 1 104 2 view .LVU101
+ 103:Bsp/periph_spi.c **** 	uint16_t retry = 0;
+ 435              		.loc 1 103 11 is_stmt 0 view .LVU102
+ 436 0006 0024     		movs	r4, #0
+ 437              	.LVL40:
+ 438              	.L31:
+ 439              		.loc 1 104 8 is_stmt 1 view .LVU103
+ 440              		.loc 1 104 9 is_stmt 0 view .LVU104
+ 441 0008 0221     		movs	r1, #2
+ 442 000a 154B     		ldr	r3, .L39
+ 443 000c 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 444 0010 FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 445              	.LVL41:
+ 446              		.loc 1 104 8 view .LVU105
+ 447 0014 0346     		mov	r3, r0
+ 448 0016 28B9     		cbnz	r0, .L37
+ 105:Bsp/periph_spi.c **** 	{
+ 106:Bsp/periph_spi.c **** 		retry++;
+ 449              		.loc 1 106 3 is_stmt 1 view .LVU106
+ 450              		.loc 1 106 8 is_stmt 0 view .LVU107
+ 451 0018 0134     		adds	r4, r4, #1
+ 452              	.LVL42:
+ 453              		.loc 1 106 8 view .LVU108
+ 454 001a A4B2     		uxth	r4, r4
+ 455              	.LVL43:
+ 107:Bsp/periph_spi.c **** 		if (retry > 1000)
+ 456              		.loc 1 107 3 is_stmt 1 view .LVU109
+ 457              		.loc 1 107 6 is_stmt 0 view .LVU110
+ 458 001c B4F57A7F 		cmp	r4, #1000
+ 459 0020 F2D9     		bls	.L31
+ 460 0022 1AE0     		b	.L32
+ 461              	.L37:
+ 108:Bsp/periph_spi.c **** 			return 0;
+ 109:Bsp/periph_spi.c **** 	}
+ 110:Bsp/periph_spi.c **** 	SPI_I2S_SendData(SPI_PORT[SPIx], TxData);
+ 462              		.loc 1 110 2 is_stmt 1 view .LVU111
+ 463 0024 3146     		mov	r1, r6
+ 464 0026 0E4B     		ldr	r3, .L39
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 11
+
+
+ 465 0028 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 466 002c FFF7FEFF 		bl	SPI_I2S_SendData
+ 467              	.LVL44:
+ 111:Bsp/periph_spi.c **** 
+ 112:Bsp/periph_spi.c **** 	retry = 0;
+ 468              		.loc 1 112 2 view .LVU112
+ 113:Bsp/periph_spi.c **** 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
+ 469              		.loc 1 113 2 view .LVU113
+ 112:Bsp/periph_spi.c **** 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
+ 470              		.loc 1 112 8 is_stmt 0 view .LVU114
+ 471 0030 0024     		movs	r4, #0
+ 472              	.LVL45:
+ 473              	.L34:
+ 474              		.loc 1 113 8 is_stmt 1 view .LVU115
+ 475              		.loc 1 113 9 is_stmt 0 view .LVU116
+ 476 0032 0121     		movs	r1, #1
+ 477 0034 0A4B     		ldr	r3, .L39
+ 478 0036 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 479 003a FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 480              	.LVL46:
+ 481              		.loc 1 113 8 view .LVU117
+ 482 003e 0346     		mov	r3, r0
+ 483 0040 28B9     		cbnz	r0, .L38
+ 114:Bsp/periph_spi.c **** 	{
+ 115:Bsp/periph_spi.c **** 		retry++;
+ 484              		.loc 1 115 3 is_stmt 1 view .LVU118
+ 485              		.loc 1 115 8 is_stmt 0 view .LVU119
+ 486 0042 0134     		adds	r4, r4, #1
+ 487              	.LVL47:
+ 488              		.loc 1 115 8 view .LVU120
+ 489 0044 A4B2     		uxth	r4, r4
+ 490              	.LVL48:
+ 116:Bsp/periph_spi.c **** 		if (retry > 1000)
+ 491              		.loc 1 116 3 is_stmt 1 view .LVU121
+ 492              		.loc 1 116 6 is_stmt 0 view .LVU122
+ 493 0046 B4F57A7F 		cmp	r4, #1000
+ 494 004a F2D9     		bls	.L34
+ 495 004c 05E0     		b	.L32
+ 496              	.L38:
+ 117:Bsp/periph_spi.c **** 			return 0;
+ 118:Bsp/periph_spi.c **** 	}
+ 119:Bsp/periph_spi.c **** 	return SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
+ 497              		.loc 1 119 2 is_stmt 1 view .LVU123
+ 498              		.loc 1 119 9 is_stmt 0 view .LVU124
+ 499 004e 044B     		ldr	r3, .L39
+ 500 0050 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 501 0054 FFF7FEFF 		bl	SPI_I2S_ReceiveData
+ 502              	.LVL49:
+ 503 0058 C3B2     		uxtb	r3, r0
+ 504              	.L32:
+ 120:Bsp/periph_spi.c **** }
+ 505              		.loc 1 120 1 view .LVU125
+ 506 005a 1846     		mov	r0, r3
+ 507 005c 70BD     		pop	{r4, r5, r6, pc}
+ 508              	.LVL50:
+ 509              	.L40:
+ 510              		.loc 1 120 1 view .LVU126
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 12
+
+
+ 511 005e 00BF     		.align	2
+ 512              	.L39:
+ 513 0060 00000000 		.word	.LANCHOR2
+ 514              		.cfi_endproc
+ 515              	.LFE127:
+ 517              		.section	.text.periph_SPI_Transfer,"ax",%progbits
+ 518              		.align	1
+ 519              		.global	periph_SPI_Transfer
+ 520              		.syntax unified
+ 521              		.thumb
+ 522              		.thumb_func
+ 523              		.fpu fpv4-sp-d16
+ 525              	periph_SPI_Transfer:
+ 526              	.LVL51:
+ 527              	.LFB128:
+ 121:Bsp/periph_spi.c **** 
+ 122:Bsp/periph_spi.c **** uint8_t periph_SPI_Transfer(SPI_List SPIx, u8 *rx, u8 *tx, uint16_t len)
+ 123:Bsp/periph_spi.c **** {
+ 528              		.loc 1 123 1 is_stmt 1 view -0
+ 529              		.cfi_startproc
+ 530              		@ args = 0, pretend = 0, frame = 0
+ 531              		@ frame_needed = 0, uses_anonymous_args = 0
+ 532              		.loc 1 123 1 is_stmt 0 view .LVU128
+ 533 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 534              	.LCFI8:
+ 535              		.cfi_def_cfa_offset 32
+ 536              		.cfi_offset 3, -32
+ 537              		.cfi_offset 4, -28
+ 538              		.cfi_offset 5, -24
+ 539              		.cfi_offset 6, -20
+ 540              		.cfi_offset 7, -16
+ 541              		.cfi_offset 8, -12
+ 542              		.cfi_offset 9, -8
+ 543              		.cfi_offset 14, -4
+ 544 0004 0546     		mov	r5, r0
+ 545 0006 0F46     		mov	r7, r1
+ 546 0008 1646     		mov	r6, r2
+ 124:Bsp/periph_spi.c **** 	uint16_t spitimeout = 1000;
+ 547              		.loc 1 124 2 is_stmt 1 view .LVU129
+ 548              	.LVL52:
+ 125:Bsp/periph_spi.c **** 	uint8_t b;
+ 549              		.loc 1 125 2 view .LVU130
+ 126:Bsp/periph_spi.c **** 	SPI_PORT[SPIx]->DR;
+ 550              		.loc 1 126 2 view .LVU131
+ 551              		.loc 1 126 10 is_stmt 0 view .LVU132
+ 552 000a 214A     		ldr	r2, .L56
+ 553              	.LVL53:
+ 554              		.loc 1 126 10 view .LVU133
+ 555 000c 52F82020 		ldr	r2, [r2, r0, lsl #2]
+ 556              		.loc 1 126 16 view .LVU134
+ 557 0010 9289     		ldrh	r2, [r2, #12]
+ 127:Bsp/periph_spi.c **** 	while (len--)
+ 558              		.loc 1 127 2 is_stmt 1 view .LVU135
+ 124:Bsp/periph_spi.c **** 	uint8_t b;
+ 559              		.loc 1 124 11 is_stmt 0 view .LVU136
+ 560 0012 4FF47A74 		mov	r4, #1000
+ 561              	.LVL54:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 13
+
+
+ 562              	.L42:
+ 563              		.loc 1 127 8 is_stmt 1 view .LVU137
+ 564              		.loc 1 127 12 is_stmt 0 view .LVU138
+ 565 0016 03F1FF38 		add	r8, r3, #-1
+ 566 001a 1FFA88F8 		uxth	r8, r8
+ 567              	.LVL55:
+ 568              		.loc 1 127 8 view .LVU139
+ 569 001e 93B3     		cbz	r3, .L53
+ 128:Bsp/periph_spi.c **** 	{
+ 129:Bsp/periph_spi.c **** 		b = tx ? *(tx++) : 0xff;
+ 570              		.loc 1 129 3 is_stmt 1 view .LVU140
+ 571              		.loc 1 129 5 is_stmt 0 view .LVU141
+ 572 0020 76B1     		cbz	r6, .L51
+ 573              	.LVL56:
+ 574              		.loc 1 129 5 discriminator 1 view .LVU142
+ 575 0022 16F8019B 		ldrb	r9, [r6], #1	@ zero_extendqisi2
+ 576              	.LVL57:
+ 577              	.L44:
+ 130:Bsp/periph_spi.c **** 
+ 131:Bsp/periph_spi.c **** 		while (SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
+ 578              		.loc 1 131 9 is_stmt 1 view .LVU143
+ 579              		.loc 1 131 10 is_stmt 0 view .LVU144
+ 580 0026 0221     		movs	r1, #2
+ 581 0028 194B     		ldr	r3, .L56
+ 582 002a 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 583 002e FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 584              	.LVL58:
+ 585              		.loc 1 131 9 view .LVU145
+ 586 0032 0246     		mov	r2, r0
+ 587 0034 38B9     		cbnz	r0, .L54
+ 132:Bsp/periph_spi.c **** 		{
+ 133:Bsp/periph_spi.c **** 			if ((spitimeout--) == 0)
+ 588              		.loc 1 133 4 is_stmt 1 view .LVU146
+ 589              		.loc 1 133 19 is_stmt 0 view .LVU147
+ 590 0036 631E     		subs	r3, r4, #1
+ 591 0038 9BB2     		uxth	r3, r3
+ 592              	.LVL59:
+ 593              		.loc 1 133 7 view .LVU148
+ 594 003a 2CB3     		cbz	r4, .L45
+ 595              		.loc 1 133 19 view .LVU149
+ 596 003c 1C46     		mov	r4, r3
+ 597 003e F2E7     		b	.L44
+ 598              	.LVL60:
+ 599              	.L51:
+ 129:Bsp/periph_spi.c **** 
+ 600              		.loc 1 129 5 view .LVU150
+ 601 0040 4FF0FF09 		mov	r9, #255
+ 602              	.LVL61:
+ 131:Bsp/periph_spi.c **** 		{
+ 603              		.loc 1 131 3 is_stmt 1 view .LVU151
+ 131:Bsp/periph_spi.c **** 		{
+ 604              		.loc 1 131 9 is_stmt 0 view .LVU152
+ 605 0044 EFE7     		b	.L44
+ 606              	.LVL62:
+ 607              	.L54:
+ 134:Bsp/periph_spi.c **** 			{
+ 135:Bsp/periph_spi.c **** 				return 0;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 14
+
+
+ 136:Bsp/periph_spi.c **** 			}
+ 137:Bsp/periph_spi.c **** 		}
+ 138:Bsp/periph_spi.c **** 		SPI_I2S_SendData(SPI_PORT[SPIx], b);
+ 608              		.loc 1 138 3 is_stmt 1 view .LVU153
+ 609 0046 4946     		mov	r1, r9
+ 610 0048 114B     		ldr	r3, .L56
+ 611 004a 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 612 004e FFF7FEFF 		bl	SPI_I2S_SendData
+ 613              	.LVL63:
+ 139:Bsp/periph_spi.c **** 
+ 140:Bsp/periph_spi.c **** 		spitimeout = 1000;
+ 614              		.loc 1 140 3 view .LVU154
+ 141:Bsp/periph_spi.c **** 		while (SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
+ 615              		.loc 1 141 3 view .LVU155
+ 140:Bsp/periph_spi.c **** 		while (SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
+ 616              		.loc 1 140 14 is_stmt 0 view .LVU156
+ 617 0052 4FF47A74 		mov	r4, #1000
+ 618              	.LVL64:
+ 619              	.L47:
+ 620              		.loc 1 141 9 is_stmt 1 view .LVU157
+ 621              		.loc 1 141 10 is_stmt 0 view .LVU158
+ 622 0056 0121     		movs	r1, #1
+ 623 0058 0D4B     		ldr	r3, .L56
+ 624 005a 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 625 005e FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 626              	.LVL65:
+ 627              		.loc 1 141 9 view .LVU159
+ 628 0062 0246     		mov	r2, r0
+ 629 0064 20B9     		cbnz	r0, .L55
+ 142:Bsp/periph_spi.c **** 		{
+ 143:Bsp/periph_spi.c **** 			if ((spitimeout--) == 0)
+ 630              		.loc 1 143 4 is_stmt 1 view .LVU160
+ 631              		.loc 1 143 19 is_stmt 0 view .LVU161
+ 632 0066 631E     		subs	r3, r4, #1
+ 633 0068 9BB2     		uxth	r3, r3
+ 634              	.LVL66:
+ 635              		.loc 1 143 7 view .LVU162
+ 636 006a 6CB1     		cbz	r4, .L45
+ 637              		.loc 1 143 19 view .LVU163
+ 638 006c 1C46     		mov	r4, r3
+ 639 006e F2E7     		b	.L47
+ 640              	.LVL67:
+ 641              	.L55:
+ 144:Bsp/periph_spi.c **** 			{
+ 145:Bsp/periph_spi.c **** 				return 0;
+ 146:Bsp/periph_spi.c **** 			}
+ 147:Bsp/periph_spi.c **** 		}
+ 148:Bsp/periph_spi.c **** 
+ 149:Bsp/periph_spi.c **** 		b = SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
+ 642              		.loc 1 149 3 is_stmt 1 view .LVU164
+ 643              		.loc 1 149 7 is_stmt 0 view .LVU165
+ 644 0070 074B     		ldr	r3, .L56
+ 645 0072 53F82500 		ldr	r0, [r3, r5, lsl #2]
+ 646 0076 FFF7FEFF 		bl	SPI_I2S_ReceiveData
+ 647              	.LVL68:
+ 648              		.loc 1 149 5 view .LVU166
+ 649 007a C0B2     		uxtb	r0, r0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 15
+
+
+ 650              	.LVL69:
+ 150:Bsp/periph_spi.c **** 		if (rx)
+ 651              		.loc 1 150 3 is_stmt 1 view .LVU167
+ 652              		.loc 1 150 6 is_stmt 0 view .LVU168
+ 653 007c 0FB1     		cbz	r7, .L49
+ 151:Bsp/periph_spi.c **** 		{
+ 152:Bsp/periph_spi.c **** 			*(rx++) = b;
+ 654              		.loc 1 152 4 is_stmt 1 view .LVU169
+ 655              	.LVL70:
+ 656              		.loc 1 152 12 is_stmt 0 view .LVU170
+ 657 007e 07F8010B 		strb	r0, [r7], #1
+ 658              	.LVL71:
+ 659              	.L49:
+ 660              		.loc 1 152 8 view .LVU171
+ 661 0082 4346     		mov	r3, r8
+ 662 0084 C7E7     		b	.L42
+ 663              	.LVL72:
+ 664              	.L53:
+ 153:Bsp/periph_spi.c **** 		}
+ 154:Bsp/periph_spi.c **** 	}
+ 155:Bsp/periph_spi.c **** 	return 1;
+ 665              		.loc 1 155 9 view .LVU172
+ 666 0086 0122     		movs	r2, #1
+ 667              	.LVL73:
+ 668              	.L45:
+ 156:Bsp/periph_spi.c **** }
+ 669              		.loc 1 156 1 view .LVU173
+ 670 0088 1046     		mov	r0, r2
+ 671 008a BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 672              	.LVL74:
+ 673              	.L57:
+ 674              		.loc 1 156 1 view .LVU174
+ 675 008e 00BF     		.align	2
+ 676              	.L56:
+ 677 0090 00000000 		.word	.LANCHOR2
+ 678              		.cfi_endproc
+ 679              	.LFE128:
+ 681              		.section	.text.periph_SPI_CheckBusy,"ax",%progbits
+ 682              		.align	1
+ 683              		.global	periph_SPI_CheckBusy
+ 684              		.syntax unified
+ 685              		.thumb
+ 686              		.thumb_func
+ 687              		.fpu fpv4-sp-d16
+ 689              	periph_SPI_CheckBusy:
+ 690              	.LVL75:
+ 691              	.LFB129:
+ 157:Bsp/periph_spi.c **** 
+ 158:Bsp/periph_spi.c **** uint8_t periph_SPI_CheckBusy(SPI_List SPIx)
+ 159:Bsp/periph_spi.c **** {
+ 692              		.loc 1 159 1 is_stmt 1 view -0
+ 693              		.cfi_startproc
+ 694              		@ args = 0, pretend = 0, frame = 0
+ 695              		@ frame_needed = 0, uses_anonymous_args = 0
+ 696              		.loc 1 159 1 is_stmt 0 view .LVU176
+ 697 0000 10B5     		push	{r4, lr}
+ 698              	.LCFI9:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 16
+
+
+ 699              		.cfi_def_cfa_offset 8
+ 700              		.cfi_offset 4, -8
+ 701              		.cfi_offset 14, -4
+ 702 0002 0446     		mov	r4, r0
+ 160:Bsp/periph_spi.c **** 	return SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET || SPI_I2S_GetFlagStatus(S
+ 703              		.loc 1 160 2 is_stmt 1 view .LVU177
+ 704              		.loc 1 160 9 is_stmt 0 view .LVU178
+ 705 0004 0221     		movs	r1, #2
+ 706 0006 0A4B     		ldr	r3, .L64
+ 707 0008 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 708              	.LVL76:
+ 709              		.loc 1 160 9 view .LVU179
+ 710 000c FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 711              	.LVL77:
+ 712              		.loc 1 160 74 view .LVU180
+ 713 0010 08B9     		cbnz	r0, .L63
+ 714 0012 0120     		movs	r0, #1
+ 715              	.L59:
+ 161:Bsp/periph_spi.c **** }
+ 716              		.loc 1 161 1 discriminator 6 view .LVU181
+ 717 0014 10BD     		pop	{r4, pc}
+ 718              	.L63:
+ 160:Bsp/periph_spi.c **** 	return SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET || SPI_I2S_GetFlagStatus(S
+ 719              		.loc 1 160 77 discriminator 2 view .LVU182
+ 720 0016 8021     		movs	r1, #128
+ 721 0018 054B     		ldr	r3, .L64
+ 722 001a 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 723 001e FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 724              	.LVL78:
+ 160:Bsp/periph_spi.c **** 	return SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET || SPI_I2S_GetFlagStatus(S
+ 725              		.loc 1 160 74 discriminator 2 view .LVU183
+ 726 0022 0128     		cmp	r0, #1
+ 727 0024 01D0     		beq	.L61
+ 160:Bsp/periph_spi.c **** 	return SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET || SPI_I2S_GetFlagStatus(S
+ 728              		.loc 1 160 74 view .LVU184
+ 729 0026 0020     		movs	r0, #0
+ 730 0028 F4E7     		b	.L59
+ 731              	.L61:
+ 732 002a 0120     		movs	r0, #1
+ 733 002c F2E7     		b	.L59
+ 734              	.L65:
+ 735 002e 00BF     		.align	2
+ 736              	.L64:
+ 737 0030 00000000 		.word	.LANCHOR2
+ 738              		.cfi_endproc
+ 739              	.LFE129:
+ 741              		.global	SpiErrorCount2
+ 742              		.global	SpiErrorCount
+ 743              		.section	.bss.SpiErrorCount,"aw",%nobits
+ 744              		.align	1
+ 747              	SpiErrorCount:
+ 748 0000 0000     		.space	2
+ 749              		.section	.bss.SpiErrorCount2,"aw",%nobits
+ 750              		.align	1
+ 753              	SpiErrorCount2:
+ 754 0000 0000     		.space	2
+ 755              		.section	.rodata.SPI_CLK,"a"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 17
+
+
+ 756              		.align	2
+ 757              		.set	.LANCHOR1,. + 0
+ 760              	SPI_CLK:
+ 761 0000 00100000 		.word	4096
+ 762 0004 00400000 		.word	16384
+ 763 0008 00800000 		.word	32768
+ 764              		.section	.rodata.SPI_IO_Init,"a"
+ 765              		.align	2
+ 766              		.set	.LANCHOR0,. + 0
+ 769              	SPI_IO_Init:
+ 770 0000 00000000 		.word	GPIO_SPI1_IO_Init
+ 771 0004 00000000 		.word	GPIO_SPI2_IO_Init
+ 772 0008 00000000 		.word	GPIO_SPI3_IO_Init
+ 773              		.section	.rodata.SPI_PORT,"a"
+ 774              		.align	2
+ 775              		.set	.LANCHOR2,. + 0
+ 778              	SPI_PORT:
+ 779 0000 00300140 		.word	1073819648
+ 780 0004 00380040 		.word	1073756160
+ 781 0008 003C0040 		.word	1073757184
+ 782              		.section	.rodata.divisorMap,"a"
+ 783              		.align	2
+ 784              		.set	.LANCHOR3,. + 0
+ 787              	divisorMap:
+ 788 0000 3800     		.short	56
+ 789 0002 3000     		.short	48
+ 790 0004 1000     		.short	16
+ 791 0006 0800     		.short	8
+ 792 0008 0000     		.short	0
+ 793              		.text
+ 794              	.Letext0:
+ 795              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 796              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 797              		.file 4 "USER/stm32f4xx.h"
+ 798              		.file 5 "FWLIB/inc/stm32f4xx_spi.h"
+ 799              		.file 6 "Bsp/periph_spi.h"
+ 800              		.file 7 "FWLIB/inc/stm32f4xx_rcc.h"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccurqmap.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 periph_spi.c
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:18     .text.periph_SPI_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:26     .text.periph_SPI_Init:00000000 periph_SPI_Init
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:145    .text.periph_SPI_Init:00000090 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:153    .text.periph_SPI_SetSpeed:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:160    .text.periph_SPI_SetSpeed:00000000 periph_SPI_SetSpeed
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:216    .text.periph_SPI_SetSpeed:00000030 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:222    .text.periph_SPI_WriteByte:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:229    .text.periph_SPI_WriteByte:00000000 periph_SPI_WriteByte
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:294    .text.periph_SPI_WriteByte:00000038 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:299    .text.periph_SPI_ReadByte:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:306    .text.periph_SPI_ReadByte:00000000 periph_SPI_ReadByte
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:403    .text.periph_SPI_ReadByte:0000005c $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:408    .text.periph_SPI_ReadWriteByte:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:415    .text.periph_SPI_ReadWriteByte:00000000 periph_SPI_ReadWriteByte
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:513    .text.periph_SPI_ReadWriteByte:00000060 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:518    .text.periph_SPI_Transfer:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:525    .text.periph_SPI_Transfer:00000000 periph_SPI_Transfer
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:677    .text.periph_SPI_Transfer:00000090 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:682    .text.periph_SPI_CheckBusy:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:689    .text.periph_SPI_CheckBusy:00000000 periph_SPI_CheckBusy
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:737    .text.periph_SPI_CheckBusy:00000030 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:753    .bss.SpiErrorCount2:00000000 SpiErrorCount2
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:747    .bss.SpiErrorCount:00000000 SpiErrorCount
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:744    .bss.SpiErrorCount:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:750    .bss.SpiErrorCount2:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:756    .rodata.SPI_CLK:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:760    .rodata.SPI_CLK:00000000 SPI_CLK
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:765    .rodata.SPI_IO_Init:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:769    .rodata.SPI_IO_Init:00000000 SPI_IO_Init
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:774    .rodata.SPI_PORT:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:778    .rodata.SPI_PORT:00000000 SPI_PORT
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:783    .rodata.divisorMap:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccurqmap.s:787    .rodata.divisorMap:00000000 divisorMap
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+SPI_I2S_DeInit
+SPI_Cmd
+SPI_Init
+RCC_APB1PeriphClockCmd
+SPI_I2S_GetFlagStatus
+SPI_I2S_SendData
+SPI_I2S_ReceiveData
+GPIO_SPI1_IO_Init
+GPIO_SPI2_IO_Init
+GPIO_SPI3_IO_Init

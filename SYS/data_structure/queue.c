@@ -1,5 +1,4 @@
 #include "queue.h"
-#include "debug.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -90,9 +89,6 @@ Queue_state Queue_PushLenChar(queue_s *queue, uint16_t len, char *data)
         }
         else
         {
-#if DEBUG
-            Debug_Output("%s overfolw\r\n", queue->name);
-#endif
             queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_overflow_w)]++;
             queue->total_error_times++;
             return Queue_overflow_w;
@@ -191,9 +187,6 @@ Queue_state Queue_PopLenCharFromFront(queue_s *queue, uint16_t len, char *out_bu
         }
         else
         {
-#if DEBUG
-            Debug_Output("%s overlimit req: %d rem: %d test %d\r\n", queue->name, len, queue->size, test);
-#endif
             test++;
             //count error num
             queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_overlimit_r)]++;
@@ -235,9 +228,6 @@ Queue_state Queue_PopLenCharFromBack(queue_s *queue, uint16_t len, char *out_buf
         }
         else
         {
-#if DEBUG
-            Debug_Output("%s overlimit\r\n", queue->name);
-#endif
             queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_overlimit_r)]++;
             queue->total_error_times++;
             return Queue_overlimit_r;
@@ -274,9 +264,6 @@ Queue_CheckOut_u Queue_CheckData(queue_s queue, uint16_t index)
 
 void Queue_Output_ErrorTimes(queue_s queue)
 {
-#if DEBUG
-    Debug_Output("%s : \r\n", queue.name);
-#endif
     if (queue.total_error_times)
     {
         for (uint8_t i = 0; i < QUEUE_ERROR_TYPENUM; i++)
@@ -286,27 +273,15 @@ void Queue_Output_ErrorTimes(queue_s queue)
                 switch (i + Queue_overflow_w)
                 {
                 case Queue_overflow_w:
-#if DEBUG
-                    Debug_Output("     write overflow times: %d\r\n", queue.error_times[i]);
-#endif
                     break;
 
                 case Queue_overlimit_r:
-#if DEBUG
-                    Debug_Output("     read overflow times: %d\r\n", queue.error_times[i]);
-#endif
                     break;
 
                 case Queue_empty:
-#if DEBUG
-                    Debug_Output("     empty times: %d\r\n", queue.error_times[i]);
-#endif
                     break;
 
                 case Queue_full:
-#if DEBUG
-                    Debug_Output("     full times: %d\r\n", queue.error_times[i]);
-#endif
                     break;
 
                 case Queue_CreateFailed:
@@ -314,14 +289,5 @@ void Queue_Output_ErrorTimes(queue_s queue)
                 }
             }
         }
-#if DEBUG
-        Debug_Output("     total error times: %d\r\n", queue.total_error_times);
-#endif
-    }
-    else
-    {
-#if DEBUG
-        Debug_Output("     0 Error Occured\r\n");
-#endif
     }
 }

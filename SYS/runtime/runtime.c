@@ -5,6 +5,7 @@
 *
 */
 #include "runtime.h"
+#include <string.h>
 
 /* internal variable */
 static Runtime_DataObj_TypeDef RunTime;
@@ -28,7 +29,7 @@ bool Runtime_Config(uint32_t tick_frq)
     RunTime.time_base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
     RunTime.tick_frq = tick_frq;
 
-    if(RunTime.timer_init != NULL)
+    if (RunTime.timer_init != NULL)
     {
         return RunTime.timer_init(RunTime.tick_frq);
     }
@@ -40,7 +41,7 @@ void Runtime_Start(void)
 {
     RunTime.module_state = Runtime_Module_Start;
 
-    if(RunTime.start_callback != NULL)
+    if (RunTime.start_callback != NULL)
     {
         RunTime.start_callback();
     }
@@ -48,11 +49,11 @@ void Runtime_Start(void)
 
 bool Runtime_Stop(void)
 {
-    if(Runtime.tick_state != Runtime_Run_Tick)
+    if (RunTime.tick_state != Runtime_Run_Tick)
     {
         RunTime.module_state = Runtime_Module_Stop;
 
-        if(RunTime.stop_callback != NULL)
+        if (RunTime.stop_callback != NULL)
         {
             RunTime.stop_callback();
         }
@@ -60,21 +61,21 @@ bool Runtime_Stop(void)
         return true;
     }
 
-    Runtime_Stop_FuncPtr = Runtme_Stop;
+    Runtime_Stop_FuncPtr = Runtime_Stop;
     return false;
 }
 
 bool Runtime_Tick(void)
 {
-    if(Runtime.module_state != Runtime_Module_Start)
+    if (RunTime.module_state != Runtime_Module_Start)
     {
-        Runtime.tick_state = Runtime_Run_Tick;
+        RunTime.tick_state = Runtime_Run_Tick;
 
-        Runtime.Use_Us += Runtime.time_base;
+        RunTime.Use_Us += RunTime.time_base;
 
-        Runtime.tick_state = Runtime_Run_Wait;
+        RunTime.tick_state = Runtime_Run_Wait;
 
-        if(Runtime_Stop_FuncPtr != NULL)
+        if (Runtime_Stop_FuncPtr != NULL)
         {
             Runtime_Stop_FuncPtr();
             Runtime_Stop_FuncPtr = NULL;
@@ -82,18 +83,18 @@ bool Runtime_Tick(void)
 
         return true;
     }
-    
+
     return false;
 }
 
 uint64_t Get_CurrentRunningUs(void)
 {
-    return Runtime.Use_Us;
+    return RunTime.Use_Us;
 }
 
 uint64_t Get_CurrentRunningMs(void)
 {
-    return (Runtime.Use_Us / REAL_MS);
+    return (RunTime.Use_Us / REAL_MS);
 }
 
 uint64_t Get_CurrentRunningS(void)
@@ -103,23 +104,23 @@ uint64_t Get_CurrentRunningS(void)
 
 uint64_t Get_TimeDifference(uint64_t time_in)
 {
-    return (Runtime.Use_Us - time_in);
+    return (RunTime.Use_Us - time_in);
 }
 
 uint64_t Get_TargetRunTime(uint16_t duration)
 {
-    return (Runtime.Use_Us + duration);
+    return (RunTime.Use_Us + duration);
 }
 
 /* return the object addr for the longer one */
 /* if EQ_L equal to EQ_R return null pointer */
 uint32_t RuntimeObj_Compare(const uint64_t *EQ_L, const uint64_t *EQ_R)
 {
-    if(*EQ_L > *EQ_R)
+    if (*EQ_L > *EQ_R)
     {
         return EQ_L;
     }
-    else if(*EQ_L < *EQ_R)
+    else if (*EQ_L < *EQ_R)
     {
         return EQ_R;
     }
@@ -131,11 +132,10 @@ uint32_t RuntimeObj_Compare(const uint64_t *EQ_L, const uint64_t *EQ_R)
 /* if input time object >= current runtime return true */
 bool RuntimeObj_CompareWithCurrent(const uint64_t time_in)
 {
-    if(time_in >= runtime.Use_Us)
+    if (time_in >= RunTime.Use_Us)
     {
         return true;
     }
 
     return false;
 }
-
