@@ -5,17 +5,18 @@
 *
 */
 #include "runtime.h"
+#include "stm32f4xx.h"
+#include "misc.h"
 #include <string.h>
 
 /* internal variable */
 static Runtime_DataObj_TypeDef RunTime;
 static runtime_stop_p Runtime_Stop_FuncPtr = NULL;
 
-void Runtime_PreInit(runtime_start_callback_p start_cb, runtime_stop_callback_p stop_cb, runtime_timer_init_p timer_init_cb)
+void Runtime_SetCallback(runtime_start_callback_p start_cb, runtime_stop_callback_p stop_cb, runtime_timer_init_p timer_init_cb)
 {
     RunTime.start_callback = start_cb;
     RunTime.stop_callback = stop_cb;
-    RunTime.timer_init = timer_init_cb;
 }
 
 Runtime_ModuleState_List Get_RuntimeState(void)
@@ -29,10 +30,8 @@ bool Runtime_Config(uint32_t tick_frq)
     RunTime.time_base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
     RunTime.tick_frq = tick_frq;
 
-    if (RunTime.timer_init != NULL)
-    {
-        return RunTime.timer_init(RunTime.tick_frq);
-    }
+    SysTick_Config(SystemCoreClock / RunTime.time_base); //1us system running step
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
 
     return false;
 }

@@ -23,7 +23,6 @@
 #define RUNTIME_TICK_FRQ_1K 1e3    /* 1ms base time */
 
 typedef bool (*runtime_stop_p)(void);
-typedef bool (*runtime_timer_init_p)(uint16_t tick_frq);
 typedef uint32_t (*runtime_start_callback_p)(void);
 typedef uint32_t (*runtime_stop_callback_p)(void);
 
@@ -50,10 +49,22 @@ typedef struct
 
     runtime_start_callback_p start_callback;
     runtime_stop_callback_p stop_callback;
-    runtime_timer_init_p timer_init;
 
     Runtime_ModuleState_List module_state;
     Runtime_RunState_List tick_state;
 } Runtime_DataObj_TypeDef;
+
+bool Runtime_Config(uint32_t tick_frq);
+bool RuntimeObj_CompareWithCurrent(const uint64_t time_in);
+bool Runtime_Stop(void);
+bool Runtime_Tick(void);
+void Runtime_Start(void);
+
+uint64_t Get_CurrentRunningUs(void);
+uint64_t Get_CurrentRunningMs(void);
+uint64_t Get_CurrentRunningS(void);
+uint64_t Get_TimeDifference(uint64_t time_in);
+uint64_t Get_TargetRunTime(uint16_t duration);
+uint32_t RuntimeObj_Compare(const uint64_t *EQ_L, const uint64_t *EQ_R);
 
 #endif
