@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = BitOS
+TARGET = BitRTOS
 
 ######################################
 # building variables
@@ -36,8 +36,6 @@ BUILD_DIR = Objects
 ######################################
 # C sources
 C_SOURCES =  \
-common/src/typeconversion.c \
-DEBUG/src/debug.c \
 SYSTEM/mem/memng.c \
 SYSTEM/mutex/mutex.c \
 SYSTEM/os_cli/os_cli.c \
@@ -55,25 +53,7 @@ SYSTEM/runtime/runtime.c \
 SYSTEM/sys/reboot.c \
 SYSTEM/sys/sys.c \
 SYSTEM/crc/crc16.c \
-Flight/src/mpu_proc.c \
-Flight/src/mavlink.c \
-Flight/src/filter.c \
-Flight/src/imu.c \
-Flight/src/pid.c \
-Flight/src/flash_disk.c \
-Math/src/maths.c \
-Math_LIB/src/Math_Lib.c \
 device/led.c \
-device/mpu6000.c \
-device/dshot600.c \
-device/max7456.c \
-device/radio.c \
-device/sbus.c \
-device/sdcard_drv.c \
-device/sdcard_opr.c \
-device/sdcard_standard.c \
-FatFs/src/asyncfatfs.c \
-FatFs/src/fat_standard.c \
 BlackBox/src/encoding.c \
 BlackBox/src/blackbox.c \
 BlackBox/src/blackbox_io.c \

@@ -29,17 +29,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
-#include "delay.h"
 #include "runtime.h"
-#include "task.h"
-#include "sys.h"
-#include "periph_gpio.h"
-#include "debug.h"
-#include "led.h"
-#include "tasksys_config.h"
 #include "fault_check.h"
-#include "event_func.h"
-#include "task_delay.h"
 
 uint8_t Ticker_Init = 0;
 
@@ -148,29 +139,6 @@ void DebugMon_Handler(void)
   */
 void PendSV_Handler(void)
 {
-  static bool tasksystem_runstate = false;
-
-#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
-  extern volatile TaskStack_ControlBlock CurTsk_TCB;
-#endif
-
-  //first time triggered by TaskSystem_Start function
-  if (!tasksystem_runstate)
-  {
-    tasksystem_runstate = true;
-    TaskSys_Set_State(TaskSys_Start);
-
-    //Event_TaskOS_StartSchedul_Triggered();
-    Load_FirstTask();
-  }
-  else
-  {
-#if (TASK_SCHEDULER_TYPE == POLL_SCHEDULER)
-    Task_Caller();
-#else
-    Task_SwitchContext();
-#endif
-  }
 }
 
 /**
@@ -181,17 +149,6 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   RunTime_Tick();
-
-  //poll event below
-  //this part still in developing
-
-  if ((RunTimer_Get_TotalRunningMS() % SCHEDULER_US_DURATION_US) == 0)
-  {
-    if ((TaskSys_Get_State() == TaskSys_Start) && (!Get_TaskDelay_SwitchContext_REQ()))
-    {
-      Task_Scheduler();
-    }
-  }
 }
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
