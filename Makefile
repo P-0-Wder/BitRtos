@@ -36,12 +36,6 @@ BUILD_DIR = Objects
 ######################################
 # C sources
 C_SOURCES =  \
-SYSTEM/mem/memng.c \
-SYSTEM/mutex/mutex.c \
-SYSTEM/os_cli/os_cli.c \
-SYSTEM/os_cli/cli_proc_tool.c \
-SYSTEM/event/os_event.c \
-SYSTEM/event/event_func.c \
 SYSTEM/data_structure/queue.c \
 SYSTEM/data_structure/linked_list.c \
 SYSTEM/data_structure/binary_tree.c \
@@ -53,12 +47,6 @@ SYSTEM/runtime/runtime.c \
 SYSTEM/sys/reboot.c \
 SYSTEM/sys/sys.c \
 SYSTEM/crc/crc16.c \
-device/led.c \
-BlackBox/src/encoding.c \
-BlackBox/src/blackbox.c \
-BlackBox/src/blackbox_io.c \
-BlackBox/src/blackbox_encoding.c \
-BlackBox/src/printf_m.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
 FWLIB/src/stm32f4xx_can.c \
