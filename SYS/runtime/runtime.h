@@ -25,6 +25,7 @@
 typedef bool (*runtime_stop_p)(void);
 typedef uint32_t (*runtime_start_callback_p)(void);
 typedef uint32_t (*runtime_stop_callback_p)(void);
+typedef uint32_t (*runtime_tick_callback_p)(void);
 
 typedef enum
 {
@@ -49,10 +50,15 @@ typedef struct
 
     runtime_start_callback_p start_callback;
     runtime_stop_callback_p stop_callback;
+    runtime_tick_callback_p tick_callback;
 
     Runtime_ModuleState_List module_state;
     Runtime_RunState_List tick_state;
 } Runtime_DataObj_TypeDef;
+
+void Runtime_Set_stop_Callback(runtime_stop_callback_p stop_cb);
+void Runtime_Set_tick_Callback(runtime_tick_callback_p tick_cb);
+void Runtime_Set_start_Callback(runtime_start_callback_p start_cb);
 
 bool Runtime_Config(uint32_t tick_frq);
 bool RuntimeObj_CompareWithCurrent(const uint64_t time_in);

@@ -6,17 +6,32 @@
 */
 #include "runtime.h"
 #include "stm32f4xx.h"
+#include "stm32f4xx_rcc.h"
 #include "misc.h"
 #include <string.h>
 
 /* internal variable */
-static Runtime_DataObj_TypeDef RunTime;
+static RCC_ClocksTypeDef SysFrq;
 static runtime_stop_p Runtime_Stop_FuncPtr = NULL;
+static volatile Runtime_DataObj_TypeDef RunTime = {
+    .tick_callback = NULL,
+    .start_callback = NULL,
+    .stop_callback = NULL,
+};
 
-void Runtime_SetCallback(runtime_start_callback_p start_cb, runtime_stop_callback_p stop_cb, runtime_timer_init_p timer_init_cb)
+void Runtime_Set_start_Callback(runtime_start_callback_p start_cb)
 {
     RunTime.start_callback = start_cb;
+}
+
+void Runtime_Set_stop_Callback(runtime_stop_callback_p stop_cb)
+{
     RunTime.stop_callback = stop_cb;
+}
+
+void Runtime_Set_tick_Callback(runtime_tick_callback_p tick_cb)
+{
+    RunTime.tick_callback = tick_cb;
 }
 
 Runtime_ModuleState_List Get_RuntimeState(void)
@@ -32,6 +47,8 @@ bool Runtime_Config(uint32_t tick_frq)
 
     SysTick_Config(SystemCoreClock / RunTime.time_base); //1us system running step
     SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
+
+    RCC_GetClocksFreq(&SysFrq);
 
     return false;
 }
