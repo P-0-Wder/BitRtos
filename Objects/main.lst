@@ -1,4 +1,4 @@
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s 			page 1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -17,24 +17,25 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s 			page 1
   14              		.text
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
-  17              		.section	.text.main,"ax",%progbits
+  17              		.section	.text.Gpio_Flip,"ax",%progbits
   18              		.align	1
-  19              		.global	main
+  19              		.global	Gpio_Flip
   20              		.arch armv7e-m
   21              		.syntax unified
   22              		.thumb
   23              		.thumb_func
   24              		.fpu fpv4-sp-d16
-  26              	main:
-  27              	.LFB3:
+  26              	Gpio_Flip:
+  27              	.LFB126:
   28              		.file 1 "USER/main.c"
    1:USER/main.c   **** #include "stddef.h"
    2:USER/main.c   **** #include "stdio.h"
    3:USER/main.c   **** #include "runtime.h"
-   4:USER/main.c   **** 
-   5:USER/main.c   **** int main(void)
-   6:USER/main.c   **** {
-  29              		.loc 1 6 1 view -0
+   4:USER/main.c   **** #include "periph_gpio.h"
+   5:USER/main.c   **** 
+   6:USER/main.c   **** void Gpio_Flip(void)
+   7:USER/main.c   **** {
+  29              		.loc 1 7 1 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -43,38 +44,167 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s 			page 1
   35              		.cfi_def_cfa_offset 8
   36              		.cfi_offset 3, -8
   37              		.cfi_offset 14, -4
-   7:USER/main.c   **** 	Runtime_Config(RUNTIME_TICK_FRQ_200K);
-  38              		.loc 1 7 2 view .LVU1
-  39 0002 0248     		ldr	r0, .L3
-  40 0004 FFF7FEFF 		bl	Runtime_Config
-  41              	.LVL0:
-   8:USER/main.c   **** 
-   9:USER/main.c   **** 	return 0;
-  42              		.loc 1 9 2 view .LVU2
-  10:USER/main.c   **** }
-  43              		.loc 1 10 1 is_stmt 0 view .LVU3
-  44 0008 0020     		movs	r0, #0
-  45 000a 08BD     		pop	{r3, pc}
-  46              	.L4:
-  47              		.align	2
-  48              	.L3:
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s 			page 2
+   8:USER/main.c   **** 	static bool io_level = false;
+  38              		.loc 1 8 2 view .LVU1
+   9:USER/main.c   **** 
+  10:USER/main.c   **** 	if (io_level)
+  39              		.loc 1 10 2 view .LVU2
+  40              		.loc 1 10 6 is_stmt 0 view .LVU3
+  41 0002 094B     		ldr	r3, .L5
+  42 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  43              		.loc 1 10 5 view .LVU4
+  44 0006 43B1     		cbz	r3, .L2
+  11:USER/main.c   **** 	{
+  12:USER/main.c   **** 		GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
+  45              		.loc 1 12 3 is_stmt 1 view .LVU5
+  46 0008 0022     		movs	r2, #0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s 			page 2
 
 
-  49 000c 400D0300 		.word	200000
-  50              		.cfi_endproc
-  51              	.LFE3:
-  53              		.text
-  54              	.Letext0:
-  55              		.file 2 "SYS/runtime/runtime.h"
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s 			page 3
+  47 000a 0821     		movs	r1, #8
+  48 000c 0748     		ldr	r0, .L5+4
+  49 000e FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+  50              	.LVL0:
+  51              	.L3:
+  13:USER/main.c   **** 	}
+  14:USER/main.c   **** 	else
+  15:USER/main.c   **** 	{
+  16:USER/main.c   **** 		GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+  17:USER/main.c   **** 	}
+  18:USER/main.c   **** 
+  19:USER/main.c   **** 	io_level = ~io_level;
+  52              		.loc 1 19 2 view .LVU6
+  53              		.loc 1 19 11 is_stmt 0 view .LVU7
+  54 0012 054B     		ldr	r3, .L5
+  55 0014 0122     		movs	r2, #1
+  56 0016 1A70     		strb	r2, [r3]
+  20:USER/main.c   **** }
+  57              		.loc 1 20 1 view .LVU8
+  58 0018 08BD     		pop	{r3, pc}
+  59              	.L2:
+  16:USER/main.c   **** 	}
+  60              		.loc 1 16 3 is_stmt 1 view .LVU9
+  61 001a 0122     		movs	r2, #1
+  62 001c 0821     		movs	r1, #8
+  63 001e 0348     		ldr	r0, .L5+4
+  64 0020 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+  65              	.LVL1:
+  66 0024 F5E7     		b	.L3
+  67              	.L6:
+  68 0026 00BF     		.align	2
+  69              	.L5:
+  70 0028 00000000 		.word	.LANCHOR0
+  71 002c 00040240 		.word	1073873920
+  72              		.cfi_endproc
+  73              	.LFE126:
+  75              		.section	.text.main,"ax",%progbits
+  76              		.align	1
+  77              		.global	main
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  81              		.fpu fpv4-sp-d16
+  83              	main:
+  84              	.LFB127:
+  21:USER/main.c   **** 
+  22:USER/main.c   **** int main(void)
+  23:USER/main.c   **** {
+  85              		.loc 1 23 1 view -0
+  86              		.cfi_startproc
+  87              		@ Volatile: function does not return.
+  88              		@ args = 0, pretend = 0, frame = 0
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  90 0000 08B5     		push	{r3, lr}
+  91              	.LCFI1:
+  92              		.cfi_def_cfa_offset 8
+  93              		.cfi_offset 3, -8
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s 			page 3
+
+
+  94              		.cfi_offset 14, -4
+  24:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_3, GPIOB);
+  95              		.loc 1 24 2 view .LVU11
+  96 0002 0A4A     		ldr	r2, .L10
+  97 0004 0821     		movs	r1, #8
+  98 0006 0220     		movs	r0, #2
+  99 0008 FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 100              	.LVL2:
+  25:USER/main.c   **** 
+  26:USER/main.c   **** 	Runtime_Config(RUNTIME_TICK_FRQ_200K);
+ 101              		.loc 1 26 2 view .LVU12
+ 102 000c 0848     		ldr	r0, .L10+4
+ 103 000e FFF7FEFF 		bl	Runtime_Config
+ 104              	.LVL3:
+  27:USER/main.c   **** 	Runtime_Set_start_Callback(NULL);
+ 105              		.loc 1 27 2 view .LVU13
+ 106 0012 0020     		movs	r0, #0
+ 107 0014 FFF7FEFF 		bl	Runtime_Set_start_Callback
+ 108              	.LVL4:
+  28:USER/main.c   **** 	Runtime_Set_stop_Callback(NULL);
+ 109              		.loc 1 28 2 view .LVU14
+ 110 0018 0020     		movs	r0, #0
+ 111 001a FFF7FEFF 		bl	Runtime_Set_stop_Callback
+ 112              	.LVL5:
+  29:USER/main.c   **** 	Runtime_Set_tick_Callback(Gpio_Flip);
+ 113              		.loc 1 29 2 view .LVU15
+ 114 001e 0548     		ldr	r0, .L10+8
+ 115 0020 FFF7FEFF 		bl	Runtime_Set_tick_Callback
+ 116              	.LVL6:
+  30:USER/main.c   **** 	Runtime_Start();
+ 117              		.loc 1 30 2 view .LVU16
+ 118 0024 FFF7FEFF 		bl	Runtime_Start
+ 119              	.LVL7:
+ 120              	.L8:
+  31:USER/main.c   **** 
+  32:USER/main.c   **** 	while (true)
+ 121              		.loc 1 32 2 discriminator 1 view .LVU17
+  33:USER/main.c   **** 	{
+  34:USER/main.c   **** 	}
+ 122              		.loc 1 34 2 discriminator 1 view .LVU18
+  32:USER/main.c   **** 	{
+ 123              		.loc 1 32 8 discriminator 1 view .LVU19
+ 124 0028 FEE7     		b	.L8
+ 125              	.L11:
+ 126 002a 00BF     		.align	2
+ 127              	.L10:
+ 128 002c 00040240 		.word	1073873920
+ 129 0030 400D0300 		.word	200000
+ 130 0034 00000000 		.word	Gpio_Flip
+ 131              		.cfi_endproc
+ 132              	.LFE127:
+ 134              		.section	.bss.io_level.0,"aw",%nobits
+ 135              		.set	.LANCHOR0,. + 0
+ 138              	io_level.0:
+ 139 0000 00       		.space	1
+ 140              		.text
+ 141              	.Letext0:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s 			page 4
+
+
+ 142              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 143              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 144              		.file 4 "USER/stm32f4xx.h"
+ 145              		.file 5 "Bsp/periph_gpio.h"
+ 146              		.file 6 "SYS/runtime/runtime.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s:18     .text.main:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s:26     .text.main:0000000000000000 main
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc3tQgRU.s:49     .text.main:000000000000000c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:18     .text.Gpio_Flip:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:26     .text.Gpio_Flip:0000000000000000 Gpio_Flip
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:70     .text.Gpio_Flip:0000000000000028 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:76     .text.main:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:83     .text.main:0000000000000000 main
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:128    .text.main:000000000000002c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:138    .bss.io_level.0:0000000000000000 io_level.0
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccq5vlxX.s:139    .bss.io_level.0:0000000000000000 $d
 
 UNDEFINED SYMBOLS
+GPIO_Set_IO_LEVEL
+GPIO_IO_Output_Init
 Runtime_Config
+Runtime_Set_start_Callback
+Runtime_Set_stop_Callback
+Runtime_Set_tick_Callback
+Runtime_Start

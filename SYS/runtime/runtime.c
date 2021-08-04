@@ -86,16 +86,14 @@ bool Runtime_Tick(void)
     if (RunTime.module_state != Runtime_Module_Start)
     {
         RunTime.tick_state = Runtime_Run_Tick;
-
         RunTime.Use_Us += RunTime.time_base;
-
         RunTime.tick_state = Runtime_Run_Wait;
 
         if (Runtime_Stop_FuncPtr != NULL)
-        {
             Runtime_Stop_FuncPtr();
-            Runtime_Stop_FuncPtr = NULL;
-        }
+
+        if (RunTime.tick_callback != NULL)
+            RunTime.tick_callback();
 
         return true;
     }
