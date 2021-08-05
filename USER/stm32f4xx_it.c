@@ -30,6 +30,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 #include "runtime.h"
+#include "task_manager.h"
 #include "fault_check.h"
 
 /** @addtogroup Template_Project
@@ -137,6 +138,29 @@ void DebugMon_Handler(void)
   */
 void PendSV_Handler(void)
 {
+  static bool tasksystem_runstate = false;
+
+#if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
+  extern volatile TaskStack_ControlBlock CurTsk_TCB;
+#endif
+
+  //first time triggered by TaskSystem_Start function
+  if (!tasksystem_runstate)
+  {
+    tasksystem_runstate = true;
+    TaskSys_Set_State(TaskSys_Start);
+
+    //Event_TaskOS_StartSchedul_Triggered();
+    Load_FirstTask();
+  }
+  else
+  {
+#if (TASK_SCHEDULER_TYPE == POLL_SCHEDULER)
+    Task_Caller();
+#else
+    Task_SwitchContext();
+#endif
+  }
 }
 
 /**

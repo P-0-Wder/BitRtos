@@ -1,11 +1,11 @@
-#include "task_manager.c"
+#include "task_manager.h"
 #include "runtime.h"
 #include "string.h"
 #include "stddef.h"
 #include "periph_gpio.h"
 #include "periph_timer.h"
 #include <stdio.h>
-#include "tasksys_config.h"
+#include "task_manager_cfg.h"
 #include "binary_tree.h"
 #include "linked_list.h"
 
@@ -99,7 +99,6 @@ static void ReSet_Task_Data(Task *task)
     task->exec_frq = 0;
     task->exec_interval_us = 0;
     task->Exec_Func = NULL;
-    task->type = task_type_none;
 
     task->Exec_status.detect_exec_frq = 0;
     task->Exec_status.detect_exec_time_arv = 0;
@@ -114,9 +113,9 @@ static void ReSet_Task_Data(Task *task)
 
     List_ItemInit(&task->delay_item, &task->delay_info);
 
-    RunTime_Reset(&(task->Exec_status.Exec_Time));
-    RunTime_Reset(&(task->Exec_status.Init_Time));
-    RunTime_Reset(&(task->Exec_status.Start_Time));
+    RuntimeObj_Reset(&(task->Exec_status.Exec_Time));
+    RuntimeObj_Reset(&(task->Exec_status.Init_Time));
+    RuntimeObj_Reset(&(task->Exec_status.Start_Time));
 
     task->Exec_status.State = Task_Done;
 }
@@ -186,22 +185,15 @@ static void Task_Idle(void)
 {
     SYSTEM_RunTime cur_time;
     SYSTEM_RunTime time_diff;
-    uint32_t diff_us = 0;
 
-    RunTime_Reset(&time_diff);
-    RunTime_Reset(&cur_time);
+    RuntimeObj_Reset(&time_diff);
+    RuntimeObj_Reset(&cur_time);
 
-    cur_time = Get_Cur_Runtime();
-    time_diff = Get_Time_Difference(TaskSys_StartTime, cur_time);
-
-    diff_us = (time_diff.s * (REAL_S + 1) +
-               (time_diff.min * (REAL_MIN + 1) * (REAL_S + 1)) +
-               (time_diff.hour * (REAL_HOUR + 1) * (REAL_MIN + 1) * (REAL_S + 1)) +
-               (time_diff.ms * REAL_MS) +
-               time_diff.us);
+    cur_time = Get_CurrentRunningUs();
+    time_diff = Get_TimeDifference_Between(TaskSys_StartTime, cur_time);
 
     TaskSys_Idle_US++;
-    TaskSys_Idle_Ocupy = (TaskSys_Idle_US / (float)diff_us);
+    TaskSys_Idle_Ocupy = (TaskSys_Idle_US / (float)time_diff);
 }
 
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
@@ -660,7 +652,7 @@ Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r)
     }
 }
 
-Task_Handler Task_Create(const char *name, task_type tsk_type, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth)
+Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth)
 {
     Task_Handler handle;
     const uint32_t UNIT_S = 1000000;
@@ -679,9 +671,6 @@ Task_Handler Task_Create(const char *name, task_type tsk_type, uint32_t frq, Pri
     {
         return TASK_REGISTED;
     }
-
-    //set task type
-    Task_Ptr[group][priority]->type = tsk_type;
 
     //request a memory space for Task_Ptr contain
     Task_Ptr[group][priority] = (Task *)malloc(sizeof(Task));
@@ -737,11 +726,11 @@ Task_Handler Task_Create(const char *name, task_type tsk_type, uint32_t frq, Pri
     Task_Ptr[group][priority]->Exec_status.detect_exec_time_arv = 0;
     Task_Ptr[group][priority]->Exec_status.detect_exec_time_max = 0;
 
-    RunTime_Reset(&(Task_Ptr[group][priority]->Exec_status.Exec_Time));
-    RunTime_Reset(&(Task_Ptr[group][priority]->Exec_status.Init_Time));
-    RunTime_Reset(&(Task_Ptr[group][priority]->Exec_status.Start_Time));
+    RuntimeObj_Reset(&(Task_Ptr[group][priority]->Exec_status.Exec_Time));
+    RuntimeObj_Reset(&(Task_Ptr[group][priority]->Exec_status.Init_Time));
+    RuntimeObj_Reset(&(Task_Ptr[group][priority]->Exec_status.Start_Time));
 
-    Task_Ptr[group][priority]->Exec_status.Init_Time = Get_Cur_Runtime();
+    Task_Ptr[group][priority]->Exec_status.Init_Time = Get_CurrentRunningUs();
 
     Task_Ptr[group][priority]->Exec_status.Exec_Times = 0;
     Task_Ptr[group][priority]->Exec_status.TimeOut_Times = 0;
@@ -825,9 +814,9 @@ void Task_Remove(Task_Handler Tsk_Hdl)
 
 void TaskSystem_Start(void)
 {
-    RunTime_Reset(&TaskSys_StartTime);
+    RuntimeObj_Reset(&TaskSys_StartTime);
 
-    TaskSys_StartTime = Get_Cur_Runtime();
+    TaskSys_StartTime = Get_CurrentRunningUs();
 
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
     NxtRunTsk_Ptr = Task_Get_HighestRank_RdyTask();
@@ -879,7 +868,7 @@ static void Task_Exec(Task *tsk_ptr)
 {
     SYSTEM_RunTime time_diff;
 
-    RunTime_Reset(&time_diff);
+    RuntimeObj_Reset(&time_diff);
 
     while (true)
     {
@@ -892,7 +881,7 @@ static void Task_Exec(Task *tsk_ptr)
 
             if (tsk_ptr->Exec_status.Exec_Times == 0)
             {
-                tsk_ptr->Exec_status.Start_Time = Get_Cur_Runtime();
+                tsk_ptr->Exec_status.Start_Time = Get_CurrentRunningUs();
                 tsk_ptr->Exec_status.Exec_Time = tsk_ptr->Exec_status.Start_Time;
             }
 
@@ -924,10 +913,9 @@ static void Task_Exec(Task *tsk_ptr)
 
                 //get task total execute time unit in us
                 tsk_ptr->Exec_status.totlal_running_time += tsk_ptr->TskFuncUing_US;
-                time_diff = Get_Time_Difference(tsk_ptr->Exec_status.Start_Time, tsk_ptr->Exec_status.Exec_Time);
+                time_diff = Get_TimeDifference_Between(tsk_ptr->Exec_status.Start_Time, tsk_ptr->Exec_status.Exec_Time);
 
-                tsk_ptr->Exec_status.cpu_opy = (tsk_ptr->Exec_status.totlal_running_time /
-                                                (float)(time_diff.s * (REAL_S + 1) + (time_diff.min * (REAL_MIN + 1) * (REAL_S + 1)) + (time_diff.hour * (REAL_HOUR + 1) * (REAL_MIN + 1) * (REAL_S + 1)) + time_diff.ms));
+                tsk_ptr->Exec_status.cpu_opy = tsk_ptr->Exec_status.totlal_running_time / (float)time_diff;
 
                 //get average task running time
                 tsk_ptr->Exec_status.detect_exec_time_arv += tsk_ptr->TskFuncUing_US;
@@ -936,20 +924,13 @@ static void Task_Exec(Task *tsk_ptr)
                     tsk_ptr->Exec_status.detect_exec_time_arv /= 2;
                 }
 
-                tsk_ptr->Exec_status.Exec_Time = Get_TargetTime(tsk_ptr->exec_interval_us, 0, 0, 0, 0);
+                tsk_ptr->Exec_status.Exec_Time = Get_TargetRunTime(tsk_ptr->exec_interval_us);
             }
 
             //get task execute frequence
-            if ((tsk_ptr->Exec_status.Exec_Time.s) ||
-                (tsk_ptr->Exec_status.Exec_Time.min) ||
-                (tsk_ptr->Exec_status.Exec_Time.hour))
+            if (tsk_ptr->Exec_status.Exec_Times)
             {
-                tsk_ptr->Exec_status.detect_exec_frq =
-                    (uint32_t)(tsk_ptr->Exec_status.Exec_Times /
-                               (float)(tsk_ptr->Exec_status.Exec_Time.s +
-                                       (tsk_ptr->Exec_status.Exec_Time.min * (REAL_MIN + 1)) +
-                                       (tsk_ptr->Exec_status.Exec_Time.hour * (REAL_HOUR + 1) * (REAL_MIN + 1)) +
-                                       (float)(tsk_ptr->Exec_status.Exec_Time.ms / (REAL_MS + 1))));
+                tsk_ptr->Exec_status.detect_exec_frq = (uint32_t)(tsk_ptr->Exec_status.Exec_Times / (float)tsk_ptr->Exec_status.Exec_Time);
             }
 
             //stop counting caller using us time
@@ -1004,7 +985,7 @@ static void Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void 
         //get current highest priority task handler AKA NxtRunTsk_Ptr
         if (TskSys_state == TaskSys_Start)
         {
-            if ((tmp->Exec_status.State == Task_Stop) && (Time_CompareWithCurrentRt(tmp->Exec_status.Exec_Time)))
+            if ((tmp->Exec_status.State == Task_Stop) && (RuntimeObj_CompareWithCurrent(tmp->Exec_status.Exec_Time)))
             {
                 Task_SetReady(tmp);
             }
@@ -1014,6 +995,9 @@ static void Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void 
 
 void Task_Scheduler(void)
 {
+    if (TskSys_state != TaskSys_Start)
+        return;
+
     List_traverse(&TskCrt_RegList.list, Task_CrtList_TraversePoll_callback, NULL);
 
     NxtRunTsk_Ptr = Task_Get_HighestRank_RdyTask();

@@ -45,12 +45,12 @@ bool Runtime_Config(uint32_t tick_frq)
     RunTime.time_base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
     RunTime.tick_frq = tick_frq;
 
-    SysTick_Config(SystemCoreClock / RunTime.time_base); //1us system running step
+    SysTick_Config(SystemCoreClock / (RUNTIEM_MAX_TICK_FRQ / RunTime.time_base)); //1us system running step
     SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
 
     RCC_GetClocksFreq(&SysFrq);
 
-    return false;
+    return true;
 }
 
 void Runtime_Start(void)
@@ -61,6 +61,19 @@ void Runtime_Start(void)
     {
         RunTime.start_callback();
     }
+}
+
+void RuntimeObj_Reset(SYSTEM_RunTime *Obj)
+{
+    Obj = 0;
+}
+
+SYSTEM_RunTime Get_TimeDifference_Between(SYSTEM_RunTime time_l, SYSTEM_RunTime time_r)
+{
+    if (time_r >= time_l)
+        return (time_r - time_l);
+
+    return (time_l - time_r);
 }
 
 bool Runtime_Stop(void)
@@ -83,7 +96,7 @@ bool Runtime_Stop(void)
 
 bool Runtime_Tick(void)
 {
-    if (RunTime.module_state != Runtime_Module_Start)
+    if (RunTime.module_state == Runtime_Module_Start)
     {
         RunTime.tick_state = Runtime_Run_Tick;
         RunTime.Use_Us += RunTime.time_base;
@@ -101,27 +114,27 @@ bool Runtime_Tick(void)
     return false;
 }
 
-uint64_t Get_CurrentRunningUs(void)
+SYSTEM_RunTime Get_CurrentRunningUs(void)
 {
     return RunTime.Use_Us;
 }
 
-uint64_t Get_CurrentRunningMs(void)
+SYSTEM_RunTime Get_CurrentRunningMs(void)
 {
     return (RunTime.Use_Us / REAL_MS);
 }
 
-uint64_t Get_CurrentRunningS(void)
+SYSTEM_RunTime Get_CurrentRunningS(void)
 {
     return (Get_CurrentRunningMs() / REAL_MS);
 }
 
-uint64_t Get_TimeDifference(uint64_t time_in)
+SYSTEM_RunTime Get_TimeDifference(uint64_t time_in)
 {
     return (RunTime.Use_Us - time_in);
 }
 
-uint64_t Get_TargetRunTime(uint16_t duration)
+SYSTEM_RunTime Get_TargetRunTime(uint16_t duration)
 {
     return (RunTime.Use_Us + duration);
 }

@@ -14,6 +14,7 @@
 #define RUNTIMT_TICK_FRQ_250K 25e4 /* 4us bse time */
 #define RUNTIME_TICK_FRQ_200K 20e4 /* 5us base time */
 #define RUNTIME_TICK_FRQ_100K 10e4 /* 10us base time */
+#define RUNTIME_TICK_FRQ_40K 4e4   /* 25us base time */
 #define RUNTIME_TICK_FRQ_50K 5e4   /* 20us base time */
 #define RUNTIME_TICK_FRQ_25K 25e3  /* 40us base time */
 #define RUNTIME_TICK_FRQ_20K 2e4   /* 50us base time */
@@ -26,6 +27,8 @@ typedef bool (*runtime_stop_p)(void);
 typedef uint32_t (*runtime_start_callback_p)(void);
 typedef uint32_t (*runtime_stop_callback_p)(void);
 typedef uint32_t (*runtime_tick_callback_p)(void);
+
+typedef uint64_t SYSTEM_RunTime;
 
 typedef enum
 {
@@ -43,7 +46,7 @@ typedef enum
 /* runtime data block object definition*/
 typedef struct
 {
-    uint64_t Use_Us;
+    SYSTEM_RunTime Use_Us;
 
     uint32_t time_base;
     uint32_t tick_frq;
@@ -59,18 +62,20 @@ typedef struct
 void Runtime_Set_stop_Callback(runtime_stop_callback_p stop_cb);
 void Runtime_Set_tick_Callback(runtime_tick_callback_p tick_cb);
 void Runtime_Set_start_Callback(runtime_start_callback_p start_cb);
+void RuntimeObj_Reset(SYSTEM_RunTime *Obj);
 
 bool Runtime_Config(uint32_t tick_frq);
-bool RuntimeObj_CompareWithCurrent(const uint64_t time_in);
+bool RuntimeObj_CompareWithCurrent(const SYSTEM_RunTime time_in);
 bool Runtime_Stop(void);
 bool Runtime_Tick(void);
 void Runtime_Start(void);
 
-uint64_t Get_CurrentRunningUs(void);
-uint64_t Get_CurrentRunningMs(void);
-uint64_t Get_CurrentRunningS(void);
-uint64_t Get_TimeDifference(uint64_t time_in);
-uint64_t Get_TargetRunTime(uint16_t duration);
-uint32_t RuntimeObj_Compare(const uint64_t *EQ_L, const uint64_t *EQ_R);
+SYSTEM_RunTime Get_CurrentRunningUs(void);
+SYSTEM_RunTime Get_CurrentRunningMs(void);
+SYSTEM_RunTime Get_CurrentRunningS(void);
+SYSTEM_RunTime Get_TimeDifference_ByCurrent(SYSTEM_RunTime time_in);
+SYSTEM_RunTime Get_TimeDifference_Between(SYSTEM_RunTime time_l, SYSTEM_RunTime time_r);
+SYSTEM_RunTime Get_TargetRunTime(uint16_t duration);
+uint32_t RuntimeObj_Compare(const SYSTEM_RunTime *EQ_L, const SYSTEM_RunTime *EQ_R);
 
 #endif

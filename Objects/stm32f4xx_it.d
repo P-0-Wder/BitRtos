@@ -14,7 +14,9 @@ Objects/stm32f4xx_it.o: USER/stm32f4xx_it.c USER/stm32f4xx_it.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
- SYS/runtime/runtime.h SYS/faultcheck/fault_check.h
+ SYS/runtime/runtime.h SYS/task_manager/task_manager.h \
+ SYS/task_manager/task_manager_cfg.h SYS/data_structure/binary_tree.h \
+ SYS/data_structure/linked_list.h SYS/faultcheck/fault_check.h
 USER/stm32f4xx_it.h:
 USER/stm32f4xx.h:
 F4_CORE/core_cm4.h:
@@ -51,4 +53,8 @@ FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 SYS/runtime/runtime.h:
+SYS/task_manager/task_manager.h:
+SYS/task_manager/task_manager_cfg.h:
+SYS/data_structure/binary_tree.h:
+SYS/data_structure/linked_list.h:
 SYS/faultcheck/fault_check.h:

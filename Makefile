@@ -42,6 +42,7 @@ SYS/data_structure/binary_tree.c \
 SYS/faultcheck/fault_check.c \
 SYS/delay/delay.c \
 SYS/runtime/runtime.c \
+SYS/task_manager/task_manager.c \
 SYS/common/reboot.c \
 SYS/common/sys.c \
 SYS/crc/crc16.c \
@@ -181,6 +182,7 @@ C_INCLUDES =  \
 -IF4_CORE \
 -IFWLIB/inc \
 -IBsp \
+-ISYS/task_manager \
 -ISYS/data_structure \
 -ISYS/runtime \
 -ISYS/delay \

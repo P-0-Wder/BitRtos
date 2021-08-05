@@ -138,19 +138,6 @@ typedef union
 
 typedef enum
 {
-    task_type_none = 0,
-    task_type_acc_sample,
-    task_type_gyro_sample,
-    task_type_imu_comput,
-    task_type_flight_control,
-    task_type_radio_trans,
-    task_type_blackbox,
-    task_type_debug,
-    task_type_idle,
-} task_type;
-
-typedef enum
-{
     TaskSys_Initial = 0,
     TaskSys_Prepare,
     TaskSys_Start,
@@ -227,8 +214,6 @@ typedef struct
     Task_Func Exec_Func;
     Task_Exec_Status Exec_status;
 
-    task_type type;
-
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
     uint32_t Stack_Depth;
     TaskStack_ControlBlock TCB;
@@ -259,7 +244,6 @@ typedef struct
     uint16_t avg_exec_us;
     uint16_t max_exec_us;
     uint32_t exec_times;
-    task_type type;
 } Task_Base_Info;
 
 typedef struct
@@ -272,7 +256,7 @@ void Task_Scheduler(void);
 void Task_Caller(void);
 void TaskSystem_Start(void);
 
-Task_Handler Task_Create(const char *name, task_type tsk_type, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth);
+Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth);
 void Task_Remove(Task_Handler Tsk_Hdl);
 void Task_SetRunState(Task_Handler Tsk_Handle, TASK_STATE state);
 void Task_PrintState(Task_Handler Tsk_Hdl);
