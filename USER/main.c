@@ -57,7 +57,7 @@ int main(void)
 	Runtime_Config(RUNTIME_TICK_FRQ_40K);
 	Runtime_Set_start_Callback(NULL);
 	Runtime_Set_stop_Callback(NULL);
-	Runtime_Set_tick_Callback(scheduler);
+	Runtime_Set_tick_Callback(scheduler); /* 5us cast by calling the scheduler */
 	Runtime_Start();
 
 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_4KHZ, Group_0, Task_Priority_1, Task_test_1, 200);
