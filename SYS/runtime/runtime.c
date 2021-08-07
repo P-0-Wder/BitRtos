@@ -13,7 +13,7 @@
 /* internal variable */
 static RCC_ClocksTypeDef SysFrq;
 static runtime_stop_p Runtime_Stop_FuncPtr = NULL;
-static volatile Runtime_DataObj_TypeDef RunTime = {
+static Runtime_DataObj_TypeDef RunTime = {
     .tick_callback = NULL,
     .start_callback = NULL,
     .stop_callback = NULL,
