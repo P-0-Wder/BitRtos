@@ -184,6 +184,9 @@ C_INCLUDES =  \
 -IFWLIB/inc \
 -IBsp \
 -Idisplay/screen \
+-Idisplay/widget/font \
+-Idisplay/widget/img \
+-Idisplay/widget/wgt_core \
 -ISYS/task_manager \
 -ISYS/data_structure \
 -ISYS/runtime \
