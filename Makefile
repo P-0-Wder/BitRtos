@@ -46,6 +46,7 @@ SYS/task_manager/task_manager.c \
 SYS/common/reboot.c \
 SYS/common/sys.c \
 SYS/crc/crc16.c \
+display/screen/screen.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
 FWLIB/src/stm32f4xx_can.c \
@@ -182,6 +183,7 @@ C_INCLUDES =  \
 -IF4_CORE \
 -IFWLIB/inc \
 -IBsp \
+-Idisplay/screen \
 -ISYS/task_manager \
 -ISYS/data_structure \
 -ISYS/runtime \
