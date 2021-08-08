@@ -47,6 +47,7 @@ SYS/common/reboot.c \
 SYS/common/sys.c \
 SYS/crc/crc16.c \
 display/screen/screen.c \
+display/widget/wgt_core/widget_mng.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
 FWLIB/src/stm32f4xx_can.c \
