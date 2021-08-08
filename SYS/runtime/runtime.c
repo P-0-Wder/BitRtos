@@ -65,7 +65,7 @@ void Runtime_Start(void)
 
 void RuntimeObj_Reset(SYSTEM_RunTime *Obj)
 {
-    Obj = 0;
+    *Obj = 0;
 }
 
 SYSTEM_RunTime Get_TimeDifference_Between(SYSTEM_RunTime time_l, SYSTEM_RunTime time_r)

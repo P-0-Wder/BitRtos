@@ -814,6 +814,12 @@ void Task_Remove(Task_Handler Tsk_Hdl)
 
 void TaskSystem_Start(void)
 {
+    Runtime_Config(RUNTIME_TICK_FRQ_40K);
+    Runtime_Set_start_Callback(NULL);
+    Runtime_Set_stop_Callback(NULL);
+    Runtime_Set_tick_Callback(Task_Scheduler); /* 5us cast by calling the scheduler */
+    Runtime_Start();
+
     RuntimeObj_Reset(&TaskSys_StartTime);
 
     TaskSys_StartTime = Get_CurrentRunningUs();
@@ -985,7 +991,7 @@ static void Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void 
         //get current highest priority task handler AKA NxtRunTsk_Ptr
         if (TskSys_state == TaskSys_Start)
         {
-            if ((tmp->Exec_status.State == Task_Stop) && (RuntimeObj_CompareWithCurrent(tmp->Exec_status.Exec_Time)))
+            if ((tmp->Exec_status.State == Task_Stop) && (!RuntimeObj_CompareWithCurrent(tmp->Exec_status.Exec_Time)))
             {
                 Task_SetReady(tmp);
             }
