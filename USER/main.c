@@ -27,38 +27,41 @@ void Gpio_Flip(void)
 
 void Task_test_1(Task_Handler self)
 {
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
 }
 
 void Task_test_2(Task_Handler self)
 {
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, HI);
 }
 
 void Task_test_3(Task_Handler self)
 {
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, HI);
 }
 
 void Task_test_4(Task_Handler self)
 {
-}
-
-void scheduler(void)
-{
-	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
-	Task_Scheduler();
-	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
 }
 
 int main(void)
 {
+	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_0, GPIOB);
+	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_1, GPIOB);
+	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_2, GPIOB);
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_3, GPIOB);
-	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
-	SystemInit();
 
-	Runtime_Config(RUNTIME_TICK_FRQ_40K);
-	Runtime_Set_start_Callback(NULL);
-	Runtime_Set_stop_Callback(NULL);
-	Runtime_Set_tick_Callback(scheduler); /* 5us cast by calling the scheduler */
-	Runtime_Start();
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+
+	SystemInit();
 
 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_4KHZ, Group_0, Task_Priority_1, Task_test_1, 200);
 	test2_tsk_hdl = Task_Create("test 2", TASK_EXEC_2KHZ, Group_0, Task_Priority_0, Task_test_2, 200);
