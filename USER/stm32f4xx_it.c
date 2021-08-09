@@ -32,6 +32,7 @@
 #include "runtime.h"
 #include "task_manager.h"
 #include "fault_check.h"
+#include "periph_gpio.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -143,6 +144,7 @@ void PendSV_Handler(void)
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
   extern volatile TaskStack_ControlBlock CurTsk_TCB;
 #endif
+  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
 
   //first time triggered by TaskSystem_Start function
   if (!tasksystem_runstate)
@@ -161,6 +163,7 @@ void PendSV_Handler(void)
     Task_SwitchContext();
 #endif
   }
+  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, HI);
 }
 
 /**
@@ -170,7 +173,9 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
   Runtime_Tick();
+  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, HI);
 }
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */

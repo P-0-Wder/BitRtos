@@ -55,11 +55,15 @@ int main(void)
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_1, GPIOB);
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_2, GPIOB);
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_3, GPIOB);
+	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_4, GPIOB);
+	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_5, GPIOB);
 
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
+	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
 
 	SystemInit();
 
