@@ -20,7 +20,7 @@ static const uint16_t divisorMap[] = {
 	SPI_BaudRatePrescaler_2	   // SPI_CLOCK_ULTRAFAST          42.0 MBits/s
 };
 
-void periph_SPI_Init(SPI_List SPIx, uint8_t speed, uint16_t CPOL, uint16_t CPHA)
+void periph_SPI_Init(SPI_List SPIx, SPIClockSpeed_e speed, uint16_t CPOL, uint16_t CPHA)
 {
 	SPI_InitTypeDef SPI_InitStructure;
 	SPI_IO_Init[SPIx]();
@@ -46,7 +46,7 @@ void periph_SPI_Init(SPI_List SPIx, uint8_t speed, uint16_t CPOL, uint16_t CPHA)
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_InitStructure.SPI_CRCPolynomial = 7;
-	SPI_InitStructure.SPI_BaudRatePrescaler = divisorMap[speed];
+	SPI_InitStructure.SPI_BaudRatePrescaler = divisorMap[(uint8_t)speed];
 	SPI_Init(SPI_PORT[SPIx], &SPI_InitStructure);
 
 	SPI_Cmd(SPI_PORT[SPIx], ENABLE);

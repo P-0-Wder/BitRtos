@@ -21,7 +21,7 @@ typedef enum
     SPI_CLOCK_ULTRAFAST = 4      // Highest possible
 } SPIClockSpeed_e;
 
-void periph_SPI_Init(SPI_List SPIx, uint8_t speed, uint16_t CPOL, uint16_t CPHA);
+void periph_SPI_Init(SPI_List SPIx, SPIClockSpeed_e speed, uint16_t CPOL, uint16_t CPHA);
 void periph_SPI_SetSpeed(SPI_List SPIx, SPIClockSpeed_e speed);
 
 uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData);

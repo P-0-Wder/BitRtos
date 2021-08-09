@@ -46,7 +46,7 @@ SYS/task_manager/task_manager.c \
 SYS/common/reboot.c \
 SYS/common/sys.c \
 SYS/crc/crc16.c \
-display/screen/screen.c \
+display/screen/dev_screen.c \
 display/widget/wgt_core/widget_mng.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
@@ -100,6 +100,8 @@ Bsp/periph_spi.c \
 Bsp/periph_timer_irq.c \
 Bsp/periph_timer.c \
 Bsp/periph_dma_irq.c \
+Drv/drv_spi.c \
+Drv/drv_gpio.c \
 USB/config/vcp.c \
 USB/config/tm_stm32f4_usb_vcp.c \
 USB/core/usb_bsp.c \
@@ -184,6 +186,7 @@ C_INCLUDES =  \
 -IF4_CORE \
 -IFWLIB/inc \
 -IBsp \
+-IDrv \
 -Idisplay/screen \
 -Idisplay/widget/font \
 -Idisplay/widget/img \
