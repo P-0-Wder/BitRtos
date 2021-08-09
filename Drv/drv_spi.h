@@ -18,6 +18,7 @@ typedef struct
 {
     bool (*open)(DrvSpi_Obj_TypeDef *Obj);
     bool (*close)(DrvSpi_Obj_TypeDef *Obj);
+    bool (*set_speed)(DrvSpi_Obj_TypeDef *Obj, SPIClockSpeed_e speed);
     bool (*transmit)(DrvSpi_Obj_TypeDef *Obj, uint8_t data);
     bool (*receive)(DrvSpi_Obj_TypeDef *Obj, uint8_t *data);
     bool (*transmit_receive)(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata);

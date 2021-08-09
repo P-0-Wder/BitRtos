@@ -14,7 +14,7 @@ Objects/drv_spi.o: Drv/drv_spi.c Drv/drv_spi.h Bsp/periph_spi.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
- SYS/data_structure/queue.h Bsp/periph_gpio.h
+ SYS/data_structure/queue.h
 Drv/drv_spi.h:
 Bsp/periph_spi.h:
 USER/stm32f4xx.h:
@@ -51,4 +51,3 @@ FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 SYS/data_structure/queue.h:
-Bsp/periph_gpio.h:
