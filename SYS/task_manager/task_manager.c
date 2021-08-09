@@ -306,7 +306,7 @@ static uint32_t Task_EnterCritical(void)
     return ulOriginalBASEPRI;
 }
 
-static void Task_SetBASEPRI(uint32_t ulBASEPRI)
+__attribute__((nake)) static void Task_SetBASEPRI(uint32_t ulBASEPRI)
 {
     __ASM("	msr basepri, %0	" ::"r"(ulBASEPRI)
           : "memory");
@@ -374,8 +374,8 @@ void Task_Load(void)
 
     __ASM("MSR    PSP, R0");
     __ASM("ISB");
-    __ASM("MOV    R0, #240");
-    __ASM("MSR	  BASEPRI, R0");
+    //__ASM("MOV    R0, #240");
+    //__ASM("MSR	  BASEPRI, R0");
     __ASM("BX     R14");
     __ASM(".ALIGN 4");
 }
@@ -428,8 +428,8 @@ void Task_SwitchContext(void)
 
     __ASM("MSR      PSP,R0");
     __ASM("ISB");
-    __ASM("MOV      R0, #240");
-    __ASM("MSR	    BASEPRI, R0");
+    //__ASM("MOV      R0, #240");
+    //__ASM("MSR	    BASEPRI, R0");
     __ASM("BX       R14");
 
     __ASM("CurrentTCBConst_Tmp: .word CurTsk_TCB");
@@ -873,7 +873,6 @@ static Task *Get_TaskInstance(uint8_t group, uint8_t priority)
 static void Task_Exec(Task *tsk_ptr)
 {
     SYSTEM_RunTime time_diff;
-
     RuntimeObj_Reset(&time_diff);
 
     while (true)
@@ -946,7 +945,7 @@ static void Task_Exec(Task *tsk_ptr)
         CurRunTsk_Ptr = NULL;
 
         //enable systick handler
-        Task_SetBASEPRI(0);
+        //Task_SetBASEPRI(0);
     }
 }
 

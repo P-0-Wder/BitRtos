@@ -34,6 +34,8 @@
 #include "fault_check.h"
 #include "periph_gpio.h"
 
+extern uint8_t discount;
+
 /** @addtogroup Template_Project
   * @{
   */
@@ -145,6 +147,7 @@ void PendSV_Handler(void)
   extern volatile TaskStack_ControlBlock CurTsk_TCB;
 #endif
   GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
+  //cast 1.2us
 
   //first time triggered by TaskSystem_Start function
   if (!tasksystem_runstate)
@@ -174,6 +177,9 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
+  if (discount > 0)
+    discount--;
+  //cast 4.8us
   Runtime_Tick();
   GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, HI);
 }

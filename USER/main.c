@@ -9,6 +9,8 @@ Task_Handler test2_tsk_hdl;
 Task_Handler test3_tsk_hdl;
 Task_Handler test4_tsk_hdl;
 
+uint8_t discount;
+
 void Gpio_Flip(void)
 {
 	static bool io_level = false;
@@ -27,7 +29,13 @@ void Gpio_Flip(void)
 
 void Task_test_1(Task_Handler self)
 {
+	discount = 100;
+
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+
+	while (discount)
+		;
+
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
 }
 
