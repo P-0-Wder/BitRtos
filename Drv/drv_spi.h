@@ -23,4 +23,6 @@ typedef struct
     bool (*transmit_receive)(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata);
 } DrvSpi_GenProcFunc_TypeDef;
 
+extern DrvSpi_GenProcFunc_TypeDef GenSPI_Drv;
+
 #endif
