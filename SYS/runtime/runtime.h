@@ -29,6 +29,8 @@ typedef uint32_t (*runtime_stop_callback_p)(void);
 typedef uint32_t (*runtime_tick_callback_p)(void);
 
 typedef uint64_t SYSTEM_RunTime;
+typedef uint32_t Tick_Frq;
+typedef uint32_t Tick_Base;
 
 typedef enum
 {
@@ -48,8 +50,8 @@ typedef struct
 {
     SYSTEM_RunTime Use_Us;
 
-    uint32_t time_base;
-    uint32_t tick_frq;
+    Tick_Base base;
+    Tick_Frq frq;
 
     runtime_start_callback_p start_callback;
     runtime_stop_callback_p stop_callback;
@@ -78,4 +80,6 @@ SYSTEM_RunTime Get_TimeDifference_Between(SYSTEM_RunTime time_l, SYSTEM_RunTime 
 SYSTEM_RunTime Get_TargetRunTime(uint16_t duration);
 uint32_t RuntimeObj_Compare(const SYSTEM_RunTime *EQ_L, const SYSTEM_RunTime *EQ_R);
 
+Tick_Frq Runtime_GetTickFrq(void);
+Tick_Base Runtime_GetTickBase(void);
 #endif

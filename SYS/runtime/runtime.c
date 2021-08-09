@@ -39,13 +39,23 @@ Runtime_ModuleState_List Get_RuntimeState(void)
     return RunTime.module_state;
 }
 
+Tick_Frq Runtime_GetTickFrq(void)
+{
+    return RunTime.frq;
+}
+
+Tick_Base Runtime_GetTickBase(void)
+{
+    return RunTime.base;
+}
+
 bool Runtime_Config(uint32_t tick_frq)
 {
     RunTime.module_state = Runtime_Module_Init;
-    RunTime.time_base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
-    RunTime.tick_frq = tick_frq;
+    RunTime.base = RUNTIEM_MAX_TICK_FRQ / tick_frq;
+    RunTime.frq = tick_frq;
 
-    SysTick_Config(SystemCoreClock / (RUNTIEM_MAX_TICK_FRQ / RunTime.time_base)); //1us system running step
+    SysTick_Config(SystemCoreClock / (RUNTIEM_MAX_TICK_FRQ / RunTime.base)); //1us system running step
     SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
 
     RCC_GetClocksFreq(&SysFrq);
@@ -99,7 +109,7 @@ bool Runtime_Tick(void)
     if (RunTime.module_state == Runtime_Module_Start)
     {
         RunTime.tick_state = Runtime_Run_Tick;
-        RunTime.Use_Us += RunTime.time_base;
+        RunTime.Use_Us += RunTime.base;
         RunTime.tick_state = Runtime_Run_Wait;
 
         if (Runtime_Stop_FuncPtr != NULL)

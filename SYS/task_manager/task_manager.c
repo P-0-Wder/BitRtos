@@ -655,7 +655,6 @@ Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r)
 Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth)
 {
     Task_Handler handle;
-    const uint32_t UNIT_S = 1000000;
     uint16_t task_name_len = strlen(name);
     uint32_t *Tsk_Ptr_tmp = NULL;
     static bool taskOs_InitState = false;
@@ -681,7 +680,7 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
     Task_Ptr[group][priority]->Task_name = name;
 
     Task_Ptr[group][priority]->exec_frq = frq;
-    Task_Ptr[group][priority]->exec_interval_us = UNIT_S / frq;
+    Task_Ptr[group][priority]->exec_interval_us = RUNTIEM_MAX_TICK_FRQ / frq;
     Task_Ptr[group][priority]->Exec_Func = func;
 
     Task_Ptr[group][priority]->priority.Priority = (group << 3) | priority;
