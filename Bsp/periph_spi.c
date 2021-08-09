@@ -1,4 +1,3 @@
-#include "delay.h"
 #include "stm32f4xx_spi.h"
 #include "periph_gpio.h"
 #include "periph_spi.h"
@@ -19,6 +18,11 @@ static const uint16_t divisorMap[] = {
 	SPI_BaudRatePrescaler_4,   // SPI_CLOCK_FAST               21.0 MBits/s
 	SPI_BaudRatePrescaler_2	   // SPI_CLOCK_ULTRAFAST          42.0 MBits/s
 };
+
+void periph_SPI_DeInit(SPI_List SPIx)
+{
+	SPI_I2S_DeInit(SPI_PORT[SPIx]);
+}
 
 void periph_SPI_Init(SPI_List SPIx, SPIClockSpeed_e speed, uint16_t CPOL, uint16_t CPHA)
 {
@@ -64,27 +68,27 @@ void periph_SPI_SetSpeed(SPI_List SPIx, SPIClockSpeed_e speed)
 	SPI_Cmd(SPI_PORT[SPIx], ENABLE);
 }
 
-uint8_t periph_SPI_WriteByte(SPI_List SPIx, uint8_t TxData)
+bool periph_SPI_WriteByte(SPI_List SPIx, uint8_t TxData)
 {
 	uint16_t retry = 0;
 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
 	{
 		retry++;
-		if (retry > 1000)
-			return 0;
+		if (retry > SPI_TIMEOUT)
+			return false;
 	}
 	SPI_I2S_SendData(SPI_PORT[SPIx], TxData);
-	return 1;
+	return true;
 }
 
-uint8_t periph_SPI_ReadByte(SPI_List SPIx)
+bool periph_SPI_ReadByte(SPI_List SPIx, uint8_t *data)
 {
 	uint16_t retry = 0;
 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
 	{
 		retry++;
-		if (retry > 1000)
-			return 0;
+		if (retry > SPI_TIMEOUT)
+			return false;
 	}
 	SPI_I2S_SendData(SPI_PORT[SPIx], 0XFF);
 
@@ -92,10 +96,11 @@ uint8_t periph_SPI_ReadByte(SPI_List SPIx)
 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
 	{
 		retry++;
-		if (retry > 1000)
-			return 0;
+		if (retry > SPI_TIMEOUT)
+			return false;
 	}
-	return SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
+	*data = SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
+	return true;
 }
 
 uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData)
@@ -104,7 +109,7 @@ uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData)
 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
 	{
 		retry++;
-		if (retry > 1000)
+		if (retry > SPI_TIMEOUT)
 			return 0;
 	}
 	SPI_I2S_SendData(SPI_PORT[SPIx], TxData);
@@ -113,7 +118,7 @@ uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData)
 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
 	{
 		retry++;
-		if (retry > 1000)
+		if (retry > SPI_TIMEOUT)
 			return 0;
 	}
 	return SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
@@ -121,7 +126,7 @@ uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData)
 
 uint8_t periph_SPI_Transfer(SPI_List SPIx, u8 *rx, u8 *tx, uint16_t len)
 {
-	uint16_t spitimeout = 1000;
+	uint16_t spitimeout = SPI_TIMEOUT;
 	uint8_t b;
 	SPI_PORT[SPIx]->DR;
 	while (len--)
@@ -137,7 +142,7 @@ uint8_t periph_SPI_Transfer(SPI_List SPIx, u8 *rx, u8 *tx, uint16_t len)
 		}
 		SPI_I2S_SendData(SPI_PORT[SPIx], b);
 
-		spitimeout = 1000;
+		spitimeout = SPI_TIMEOUT;
 		while (SPI_I2S_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_RXNE) == RESET)
 		{
 			if ((spitimeout--) == 0)
