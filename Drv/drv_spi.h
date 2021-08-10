@@ -16,12 +16,13 @@ typedef struct
 
 typedef struct
 {
-    bool (*open)(DrvSpi_Obj_TypeDef *Obj);
-    bool (*close)(DrvSpi_Obj_TypeDef *Obj);
+    void (*open)(DrvSpi_Obj_TypeDef *Obj);
+    void (*close)(DrvSpi_Obj_TypeDef *Obj);
     bool (*set_speed)(DrvSpi_Obj_TypeDef *Obj, SPIClockSpeed_e speed);
     bool (*transmit)(DrvSpi_Obj_TypeDef *Obj, uint8_t data);
     bool (*receive)(DrvSpi_Obj_TypeDef *Obj, uint8_t *data);
-    bool (*transmit_receive)(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata);
+    bool (*transmit_receive)(DrvSpi_Obj_TypeDef *Obj, uint8_t tdata, uint8_t *rdata);
+    uint16_t (*transfer)(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata, uint16_t len);
 } DrvSpi_GenProcFunc_TypeDef;
 
 extern DrvSpi_GenProcFunc_TypeDef GenSPI_Drv;

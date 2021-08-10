@@ -2,8 +2,8 @@
 #include "periph_gpio.h"
 #include "periph_spi.h"
 
-u16 SpiErrorCount = 0;
-u16 SpiErrorCount2 = 0;
+uint16_t SpiErrorCount = 0;
+uint16_t SpiErrorCount2 = 0;
 
 static void (*SPI_IO_Init[SPI_PORT_SUM])() = {GPIO_SPI1_IO_Init, GPIO_SPI2_IO_Init, GPIO_SPI3_IO_Init};
 
@@ -103,14 +103,14 @@ bool periph_SPI_ReadByte(SPI_List SPIx, uint8_t *data)
 	return true;
 }
 
-uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData)
+bool periph_SPI_ReadWriteByte(SPI_List SPIx, uint8_t TxData, uint8_t *RxData)
 {
 	uint16_t retry = 0;
 	while (SPI_GetFlagStatus(SPI_PORT[SPIx], SPI_I2S_FLAG_TXE) == RESET)
 	{
 		retry++;
 		if (retry > SPI_TIMEOUT)
-			return 0;
+			return false;
 	}
 	SPI_I2S_SendData(SPI_PORT[SPIx], TxData);
 
@@ -119,12 +119,15 @@ uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, u8 TxData)
 	{
 		retry++;
 		if (retry > SPI_TIMEOUT)
-			return 0;
+			return false;
 	}
-	return SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
+
+	*RxData = SPI_I2S_ReceiveData(SPI_PORT[SPIx]);
+
+	return true;
 }
 
-uint8_t periph_SPI_Transfer(SPI_List SPIx, u8 *rx, u8 *tx, uint16_t len)
+uint16_t periph_SPI_Transfer(SPI_List SPIx, uint8_t *rx, uint8_t *tx, uint16_t len)
 {
 	uint16_t spitimeout = SPI_TIMEOUT;
 	uint8_t b;
@@ -157,7 +160,7 @@ uint8_t periph_SPI_Transfer(SPI_List SPIx, u8 *rx, u8 *tx, uint16_t len)
 			*(rx++) = b;
 		}
 	}
-	return 1;
+	return len;
 }
 
 uint8_t periph_SPI_CheckBusy(SPI_List SPIx)

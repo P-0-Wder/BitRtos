@@ -27,10 +27,9 @@ void periph_SPI_Init(SPI_List SPIx, SPIClockSpeed_e speed, uint16_t CPOL, uint16
 void periph_SPI_DeInit(SPI_List SPIx);
 void periph_SPI_SetSpeed(SPI_List SPIx, SPIClockSpeed_e speed);
 
-uint8_t periph_SPI_ReadWriteByte(SPI_List SPIx, uint8_t TxData);
-uint8_t periph_SPI_Transfer(SPI_List SPIx, uint8_t *rx, uint8_t *tx, uint16_t len);
+bool periph_SPI_ReadWriteByte(SPI_List SPIx, uint8_t TxData, uint8_t *RxData);
+uint16_t periph_SPI_Transfer(SPI_List SPIx, uint8_t *rx, uint8_t *tx, uint16_t len);
 bool periph_SPI_WriteByte(SPI_List SPIx, uint8_t TxData);
-bool periph_SPI_ReadByte(SPI_List SPIx, uint8_t *data);
 uint8_t periph_SPI_CheckBusy(SPI_List SPIx);
-
+bool periph_SPI_ReadByte(SPI_List SPIx, uint8_t *data);
 #endif
