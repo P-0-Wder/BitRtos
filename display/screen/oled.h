@@ -56,15 +56,6 @@ typedef enum
     Oled_CS_Disable,
 } Oled_CS_State_List;
 
-typedef struct
-{
-    void (*cs_init)();
-    void (*cs_ctl)(Oled_CS_State_List state);
-
-    bool (*bus_init)();
-    bool (*bus_transfer)(uint8_t *Tx, uint8_t *Rx, uint16_t len);
-} Oled_Obj_TypeDef;
-
 typedef enum
 {
     Oled_Display_Enable = 0,
@@ -73,8 +64,20 @@ typedef enum
 
 typedef struct
 {
-    bool (*init)(Oled_Obj_TypeDef *Obj);
-    bool (*state_set)(Oled_Obj_TypeDef *Obj, Oled_Enable_State_List state);
+    uint8_t Oled_Width;
+    uint8_t Oled_Height;
+
+    void (*cs_init)(void);
+    void (*cs_ctl)(Oled_CS_State_List state);
+
+    bool (*bus_init)(void);
+    bool (*bus_transfer)(uint8_t *Tx, uint8_t *Rx, uint16_t len);
+} Oled_Obj_TypeDef;
+
+typedef struct
+{
+    bool (*init)(Oled_Obj_TypeDef *Obj, uint8_t width, uint8_t height);
+    bool (*enable_set)(Oled_Obj_TypeDef *Obj, Oled_Enable_State_List state);
     bool (*clear)(Oled_Obj_TypeDef *Obj);
     bool (*fresh)(Oled_Obj_TypeDef *Obj);
 } Oled_GenProcFunc_TypeDef;
