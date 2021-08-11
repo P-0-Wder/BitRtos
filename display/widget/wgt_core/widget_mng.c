@@ -1,5 +1,15 @@
 #include "widget_mng.h"
 
+/* internal function */
+
+/* external function */
+Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
+bool Widget_Deleted(Widget_Handle *hdl);
+void Widget_Show(Widget_Handle *hdl);
+void Widget_Hide(Widget_Handle *hdl);
+void Widget_MovdeDis(int8_t x, int8_t y);
+void Widget_MoveTo(uint8_t x, uint8_t y);
+
 Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
 {
     WidgetObj_TypeDef *widget_tmp;

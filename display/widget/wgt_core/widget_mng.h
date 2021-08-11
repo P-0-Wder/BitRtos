@@ -44,17 +44,21 @@ typedef struct
     void *Sub_Widget[MAX_SUB_WIDGET_NUM];
     uint8_t Sub_Widget_Num;
 
-    //general screen draw function is nesscessary
-    //point
+    //general screen draw function instence pointer is nesscessary
+    //
     //
     char *name;
 } WidgetObj_TypeDef;
 
-Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
-bool Widget_Deleted(Widget_Handle *hdl);
-void Widget_Show(Widget_Handle *hdl);
-void Widget_Hide(Widget_Handle *hdl);
-void Widget_MovdeDis(int8_t x, int8_t y);
-void Widget_MoveTo(uint8_t x, uint8_t y);
+typedef struct
+{
+    Widget_Handle (*Create)();
+    bool (*Delete)(Widget_Handle *hdl);
+    bool (*MoveDis)();
+    bool (*MoveTo)();
+    bool (*show)();
+    bool (*Hide)();
+    bool (*Draw)();
+} Widget_GenProcFunc_TypeDef;
 
 #endif
