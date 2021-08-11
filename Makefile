@@ -46,7 +46,8 @@ SYS/task_manager/task_manager.c \
 SYS/common/reboot.c \
 SYS/common/sys.c \
 SYS/crc/crc16.c \
-display/screen/dev_screen.c \
+display/screen/font/oledfont.c \
+display/screen/device/oled.c \
 display/widget/wgt_core/widget_mng.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
@@ -187,7 +188,9 @@ C_INCLUDES =  \
 -IFWLIB/inc \
 -IBsp \
 -IDrv \
--Idisplay/screen \
+-Idisplay \
+-Idisplay/screen/device \
+-Idisplay/screen/font \
 -Idisplay/widget/font \
 -Idisplay/widget/img \
 -Idisplay/widget/wgt_core \

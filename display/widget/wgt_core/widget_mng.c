@@ -2,9 +2,9 @@
 
 Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
 {
-    Widget_TypeDef *widget_tmp;
+    WidgetObj_TypeDef *widget_tmp;
 
-    widget_tmp = (Widget_TypeDef *)malloc(sizeof(Widget_TypeDef));
+    widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
 
     if (widget_tmp == NULL)
         return WIDGET_CREATE_ERROR;
@@ -18,18 +18,10 @@ Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8
     widget_tmp->name = name;
     widget_tmp->on_layer = DEFAULT_LAYER;
 
-    widget_tmp->cache = (uint8_t **)malloc(height);
+    widget_tmp->pixel_map = (Widget_Pixel *)malloc(height * width);
 
-    if (widget_tmp->cache == NULL)
+    if (widget_tmp->pixel_map == NULL)
         return WIDGET_CREATE_ERROR;
-
-    for (uint8_t h = 0; h < height; h++)
-    {
-        widget_tmp->cache[h] = (uint8_t *)malloc(width);
-
-        if (widget_tmp->cache[h] == NULL)
-            return WIDGET_CREATE_ERROR;
-    }
 
     widget_tmp->state = Widget_Created;
 
