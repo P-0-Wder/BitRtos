@@ -1,5 +1,5 @@
-Objects/oled.o: display/screen/device/oled.c display/screen/device/oled.h \
- display/pixel.h SYS/delay/delay.h SYS/common/sys.h USER/stm32f4xx.h \
+Objects/oled.o: Dsp/screen/device/oled.c Dsp/screen/device/oled.h \
+ Dsp/pixel.h SYS/delay/delay.h SYS/common/sys.h USER/stm32f4xx.h \
  F4_CORE/core_cm4.h F4_CORE/core_cmInstr.h F4_CORE/core_cmFunc.h \
  F4_CORE/core_cmSimd.h USER/system_stm32f4xx.h USER/stm32f4xx_conf.h \
  FWLIB/inc/stm32f4xx_adc.h FWLIB/inc/stm32f4xx_crc.h \
@@ -15,8 +15,8 @@ Objects/oled.o: display/screen/device/oled.c display/screen/device/oled.h \
  FWLIB/inc/stm32f4xx_rng.h FWLIB/inc/stm32f4xx_can.h \
  FWLIB/inc/stm32f4xx_dac.h FWLIB/inc/stm32f4xx_dcmi.h \
  FWLIB/inc/stm32f4xx_fsmc.h
-display/screen/device/oled.h:
-display/pixel.h:
+Dsp/screen/device/oled.h:
+Dsp/pixel.h:
 SYS/delay/delay.h:
 SYS/common/sys.h:
 USER/stm32f4xx.h:

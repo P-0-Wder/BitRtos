@@ -10,7 +10,6 @@
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
 
 #define MSP_MEM_SPACE_SIZE TASKSYS_HEAP_SPACE //for 10k memory space
-#define IDLE_TASK_STK_SZIE 128
 #endif
 
 #endif

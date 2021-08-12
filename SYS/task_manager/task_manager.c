@@ -732,7 +732,6 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
     Task_Ptr[group][priority]->Exec_status.Init_Time = Get_CurrentRunningUs();
 
     Task_Ptr[group][priority]->Exec_status.Exec_Times = 0;
-    Task_Ptr[group][priority]->Exec_status.TimeOut_Times = 0;
     Task_Ptr[group][priority]->Exec_status.error_code = NOERROR;
 
     Task_SetReady(Task_Ptr[group][priority]);

@@ -195,7 +195,6 @@ typedef struct
     uint32_t detect_exec_time_arv; //task  average running time
     uint32_t detect_exec_time_max; //task max running time
     uint32_t Exec_Times;
-    uint32_t TimeOut_Times; //unuseful under current circumstance
     uint8_t error_code;
 
     uint32_t totlal_running_time;

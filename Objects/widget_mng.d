@@ -1,7 +1,7 @@
-Objects/widget_mng.o: display/widget/wgt_core/widget_mng.c \
- display/widget/wgt_core/widget_mng.h display/pixel.h \
- display/widget/wgt_core/GenDsp.h display/screen/font/oledfont.h
-display/widget/wgt_core/widget_mng.h:
-display/pixel.h:
-display/widget/wgt_core/GenDsp.h:
-display/screen/font/oledfont.h:
+Objects/widget_mng.o: Dsp/widget/wgt_core/widget_mng.c \
+ Dsp/widget/wgt_core/widget_mng.h Dsp/pixel.h \
+ Dsp/widget/wgt_core/GenDsp.h Dsp/screen/font/oledfont.h
+Dsp/widget/wgt_core/widget_mng.h:
+Dsp/pixel.h:
+Dsp/widget/wgt_core/GenDsp.h:
+Dsp/screen/font/oledfont.h:
