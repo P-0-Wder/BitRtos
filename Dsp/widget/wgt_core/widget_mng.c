@@ -1,5 +1,8 @@
 #include "widget_mng.h"
 
+/* internal variable */
+Widget_MonitorData_TypeDef MonitorDataObj;
+
 /* internal function */
 
 /* external function */
@@ -29,13 +32,16 @@ Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8
     widget_tmp->on_layer = DEFAULT_LAYER;
 
     widget_tmp->pixel_map = (uint8_t **)malloc(sizeof(uint8_t *) * height);
+    if (widget_tmp->pixel_map == NULL)
+        return WIDGET_CREATE_ERROR;
+
     for (uint8_t h = 0; h < height; h++)
     {
         widget_tmp->pixel_map[h] = (uint8_t *)malloc(width);
-    }
 
-    if (widget_tmp->pixel_map == NULL)
-        return WIDGET_CREATE_ERROR;
+        if (widget_tmp->pixel_map == NULL)
+            return WIDGET_CREATE_ERROR;
+    }
 
     widget_tmp->state = Widget_Created;
 

@@ -52,6 +52,20 @@ typedef struct
 
 typedef struct
 {
+    uint8_t created_widget;
+    uint16_t widget_used_size;
+    uint16_t remain_size;
+    uint16_t max_display_cache;
+} Widget_MonitorData_TypeDef;
+
+typedef enum
+{
+    Widget_Monitor_Init,
+    WIdget_Operate_Exectue,
+} WidgetState_List;
+
+typedef struct
+{
     Widget_Handle (*Create)();
     bool (*Delete)(Widget_Handle *hdl);
     bool (*MoveDis)();
