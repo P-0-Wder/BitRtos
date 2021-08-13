@@ -39,7 +39,7 @@ typedef struct
     uint8_t cord_y;
     uint8_t width;
     uint8_t height;
-    Widget_Pixel *pixel_map;
+    uint8_t **pixel_map;
 
     void *Sub_Widget[MAX_SUB_WIDGET_NUM];
     uint8_t Sub_Widget_Num;

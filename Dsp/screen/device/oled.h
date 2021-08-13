@@ -65,7 +65,7 @@ typedef struct
 {
     bool (*init)(Oled_Obj_TypeDef *Obj);
     bool (*enable_set)(Oled_Obj_TypeDef *Obj, Oled_Enable_State_List state);
-    bool (*fresh)(Oled_Obj_TypeDef *Obj, uint8_t *map, uint16_t map_size);
+    bool (*fresh)(Oled_Obj_TypeDef *Obj, uint8_t **map);
     bool (*clear)(Oled_Obj_TypeDef *Obj);
     uint8_t (*get_max_width)(void);
     uint8_t (*get_max_height)(void);

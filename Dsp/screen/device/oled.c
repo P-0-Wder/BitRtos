@@ -1,6 +1,8 @@
 #include "oled.h"
 #include "delay.h"
 
+static Pixel_Block_TypeDef blackboard[COLUMN_SIZE][OLED_MAX_WIDTH];
+
 /* const static variable */
 const uint8_t OledEnable_CMD[2] = {0X14, 0XAF};
 const uint8_t OledDisable_CMD[2] = {0X10, 0XAE};
@@ -9,10 +11,10 @@ const uint8_t OledDisable_CMD[2] = {0X10, 0XAE};
 static void Oled_EnableControl(Oled_Obj_TypeDef *Oled_Obj, Oled_Enable_State_List state);
 static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj);
 static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj);
-static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size);
+static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map);
 static uint8_t Oled_GetMax_Width(void);
 static uint8_t Oled_GetMax_Height(void);
-static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size);
+static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val);
 
 /* internal function */
 static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Write_Type type);
@@ -107,10 +109,10 @@ static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj)
 	Oled_Clear(Oled_Obj);
 }
 
-static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size)
+static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)
 {
 	//update pixel map
-	if (!Oled_MapUpdate(Oled_Obj, val, map_size))
+	if (!Oled_MapUpdate(Oled_Obj, val))
 	{
 		return false;
 	}
@@ -156,11 +158,17 @@ static uint8_t Oled_GetMax_Height(void)
 	return OLED_MAX_HEIGHT;
 }
 
-static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size)
+static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
 {
-	if ((map_size != OLED_MAX_WIDTH * OLED_COLUMN_BLOCK_NUM) || (Oled_Obj == NULL) || (val == NULL))
+	if ((Oled_Obj == NULL) || (map == NULL))
 		return false;
 
-	memcpy(Oled_Obj->pixel_map, val, OLED_MAX_WIDTH * OLED_COLUMN_BLOCK_NUM);
+	for (uint8_t row_index = 0; row_index < OLED_MAX_WIDTH; row_index++)
+	{
+		for (uint8_t column_index = 0; column_index < OLED_MAX_HEIGHT; column_index++)
+		{
+			blackboard[column_index / COLUMN_SIZE][row_index].val |= map[column_index][row_index] << (column_index % COLUMN_SIZE);
+		}
+	}
 	return true;
 }
