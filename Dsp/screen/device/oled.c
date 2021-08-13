@@ -9,10 +9,10 @@ const uint8_t OledDisable_CMD[2] = {0X10, 0XAE};
 static void Oled_EnableControl(Oled_Obj_TypeDef *Oled_Obj, Oled_Enable_State_List state);
 static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj);
 static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj);
-static void Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj);
+static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size);
 static uint8_t Oled_GetMax_Width(void);
 static uint8_t Oled_GetMax_Height(void);
-static bool Oled_FreshPixelMap(Oled_Obj_TypeDef *Oled_Obj, uint8_t *val, uint16_t map_size);
+static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size);
 
 /* internal function */
 static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Write_Type type);
@@ -24,7 +24,6 @@ Oled_GenProcFunc_TypeDef DrvOled = {
 	.clear = Oled_Clear,
 	.get_max_height = Oled_GetMax_Height,
 	.get_max_width = Oled_GetMax_Width,
-	.update_pixelmap = Oled_FreshPixelMap,
 };
 
 /* device Bsp IO SPI_Bus correspond control Function */
@@ -108,19 +107,28 @@ static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj)
 	Oled_Clear(Oled_Obj);
 }
 
-static void Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj)
+static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size)
 {
+	//update pixel map
+	if (!Oled_MapUpdate(Oled_Obj, val, map_size))
+	{
+		return false;
+	}
+
 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
 	{
 		Oled_TransmitByte(Oled_Obj, (0xb0 + c), Oled_Write_CMD);
 		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
 		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
 
+		//can use spi dma for transmit
 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
 		{
 			Oled_TransmitByte(Oled_Obj, Oled_Obj->pixel_map[c * OLED_MAX_WIDTH + r].val, Oled_Write_CMD);
 		}
 	}
+
+	return true;
 }
 
 static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj)
@@ -133,7 +141,7 @@ static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj)
 
 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
 		{
-			Oled_TransmitByte(Oled_Obj, 0, Oled_Write_CMD);
+			Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
 		}
 	}
 }
@@ -148,11 +156,11 @@ static uint8_t Oled_GetMax_Height(void)
 	return OLED_MAX_HEIGHT;
 }
 
-static bool Oled_FreshPixelMap(Oled_Obj_TypeDef *Oled_Obj, uint8_t *val, uint16_t map_size)
+static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, Oled_Pixel_Block_TypeDef *val, uint16_t map_size)
 {
 	if ((map_size != OLED_MAX_WIDTH * OLED_COLUMN_BLOCK_NUM) || (Oled_Obj == NULL) || (val == NULL))
 		return false;
 
-	memcpy(Oled_Obj->pixel_map->val, val, OLED_MAX_WIDTH * OLED_COLUMN_BLOCK_NUM);
+	memcpy(Oled_Obj->pixel_map, val, OLED_MAX_WIDTH * OLED_COLUMN_BLOCK_NUM);
 	return true;
 }

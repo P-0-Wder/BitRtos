@@ -1,4 +1,7 @@
 #include "GenDsp.h"
+#include "pixel.h"
+
+/* internal variable */
 
 /* external function definition */
 

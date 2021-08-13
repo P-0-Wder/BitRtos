@@ -22,4 +22,5 @@ typedef union
 
 typedef Pixel_Block_TypeDef Widget_Pixel;
 typedef Pixel_Block_TypeDef Oled_Pixel_Block_TypeDef;
+
 #endif

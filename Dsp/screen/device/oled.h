@@ -65,11 +65,10 @@ typedef struct
 {
     bool (*init)(Oled_Obj_TypeDef *Obj);
     bool (*enable_set)(Oled_Obj_TypeDef *Obj, Oled_Enable_State_List state);
-    bool (*fresh)(Oled_Obj_TypeDef *Obj);
+    bool (*fresh)(Oled_Obj_TypeDef *Obj, uint8_t *map, uint16_t map_size);
     bool (*clear)(Oled_Obj_TypeDef *Obj);
     uint8_t (*get_max_width)(void);
     uint8_t (*get_max_height)(void);
-    bool (*update_pixelmap)(Oled_Obj_TypeDef *Obj, uint8_t *val, uint16_t map_size);
 } Oled_GenProcFunc_TypeDef;
 
 extern Oled_GenProcFunc_TypeDef DrvOled;
