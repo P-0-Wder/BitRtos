@@ -4,4 +4,6 @@
 
 /* internal funtion definition */
 
-static void
+static void GenDsp_DrawPoint(uint8_t x, uint8_t y)
+{
+}
