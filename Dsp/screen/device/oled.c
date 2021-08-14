@@ -67,8 +67,6 @@ static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj)
 	Oled_Obj->dc_init();
 	Oled_Obj->rs_init();
 
-	Oled_Obj->pixel_map = NULL;
-
 	Oled_Obj->rs_ctl(Oled_RS_Disable);
 	delay_ms(100);
 	Oled_Obj->rs_ctl(Oled_RS_Enable);
@@ -126,7 +124,7 @@ static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)
 		//can use spi dma for transmit
 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
 		{
-			Oled_TransmitByte(Oled_Obj, Oled_Obj->pixel_map[c * OLED_MAX_WIDTH + r].val, Oled_Write_CMD);
+			Oled_TransmitByte(Oled_Obj, blackboard[c][r].val, Oled_Write_CMD);
 		}
 	}
 

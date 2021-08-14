@@ -49,8 +49,6 @@ typedef struct
     Oled_BusInterface_TypeList Bus;
     uint8_t BusID;
 
-    Oled_Pixel_Block_TypeDef *pixel_map;
-
     void (*rs_init)(void);
     void (*dc_init)(void);
 

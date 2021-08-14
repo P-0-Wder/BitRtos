@@ -273,7 +273,7 @@ $(BUILD_DIR):
 # -rd /s /q $(BUILD_DIR)
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	-rd /s /q $(BUILD_DIR)
 	
 #######################################
 # dependencies
