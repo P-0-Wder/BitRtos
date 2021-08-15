@@ -44,9 +44,8 @@ typedef struct
     void *Sub_Widget[MAX_SUB_WIDGET_NUM];
     uint8_t Sub_Widget_Num;
 
-    //general screen draw function instence pointer is nesscessary
-    //
-    //
+    GeneralDispalyProc_TypeDef *Dsp;
+
     char *name;
 } WidgetObj_TypeDef;
 

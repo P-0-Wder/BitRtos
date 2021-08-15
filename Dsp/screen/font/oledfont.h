@@ -5,8 +5,8 @@
 
 typedef enum
 {
-    Font_12,
-    Font_16,
+    Font_12 = 12,
+    Font_16 = 16,
 } Font_List;
 
 extern const uint8_t oled_asc2_1206[95][12];
