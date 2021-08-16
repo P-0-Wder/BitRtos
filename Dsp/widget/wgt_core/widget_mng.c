@@ -133,6 +133,20 @@ static void Widget_FreshAll(void)
     //DrvOled.fresh();
 }
 
+static void Widget_CtlShow(void)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    tmp->on_show = true;
+}
+
+static void Widget_CtlHide(void)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    tmp->on_show = false;
+}
+
 static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();

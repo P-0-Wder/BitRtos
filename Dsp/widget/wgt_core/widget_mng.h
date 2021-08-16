@@ -48,6 +48,14 @@ typedef struct
 
 typedef struct
 {
+    void (*Show)(void);
+    void (*Hide)(void);
+    void (*Move)(uint8_t x, uint8_t y);
+    Widget_DrawFunc_TypeDef *(*Draw)(Widget_Handle hdl);
+} Widget_Control_TypeDef;
+
+typedef struct
+{
     bool use_frame;
     uint8_t frame_line_size;
     bool is_selected;
@@ -73,10 +81,7 @@ typedef struct
 {
     Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
     bool (*Delete)(Widget_Handle hdl);
-    bool (*MoveTo)(Widget_Handle hdl, uint8_t x, uint8_t y);
-    bool (*show)(Widget_Handle hdl);
-    bool (*Hide)(Widget_Handle hdl);
-    Widget_DrawFunc_TypeDef *(*Draw)(Widget_Handle hdl);
+    Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     void (*fresh_all)(void);
 } Widget_GenProcFunc_TypeDef;
 
