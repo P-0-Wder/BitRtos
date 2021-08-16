@@ -9,8 +9,6 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .max_display_cache = 0,
 };
 
-Widget_DrawFunc_TypeDef WidgetDraw_Interface;
-
 static Widget_Handle CurActive_Widget = 0;
 
 /* internal function */
@@ -24,6 +22,25 @@ static void Widget_Hide(Widget_Handle hdl);
 static void Widget_MovdeDis(Widget_Handle hdl, int8_t x, int8_t y);
 static void Widget_MoveTo(Widget_Handle hdl, uint8_t x, uint8_t y);
 static void Widget_FreshAll(void);
+
+/* widget draw function interface */
+static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set);
+static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y, bool col_cnv);
+static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv);
+static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_size);
+static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size);
+static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
+static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv);
+
+static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
+    .draw_str = Widget_DrawStr,
+    .draw_rectangle = Widget_DrawRectangle,
+    .draw_point = Widget_DrawPoint,
+    .draw_num = Widget_DrawNum,
+    .draw_line = Widget_DrawLine,
+    .draw_circle = Widget_DrawCircle,
+    .draw_char = Widget_DrawChr,
+};
 
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
 {
@@ -97,12 +114,95 @@ static bool Widget_Deleted(Widget_Handle hdl)
     return false;
 }
 
+//fresh all widget
 static void Widget_FreshAll(void)
 {
+    if (MonitorDataObj.created_widget > 0)
+    {
+        for (uint8_t widget_index = 0; widget_index < MonitorDataObj.created_widget; widget_index++)
+        {
+        }
+    }
     //DrvOled.fresh();
 }
 
 static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.draw_point(tmp->pixel_map,
+                                x + tmp->cord_x,
+                                y + tmp->cord_y,
+                                set);
+}
+
+static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.draw_num(font,
+                              tmp->pixel_map,
+                              num,
+                              x + tmp->cord_x,
+                              y + tmp->cord_y,
+                              col_cnv);
+}
+
+static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y, bool col_cnv)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.draw_char(font,
+                               tmp->pixel_map,
+                               char_dsp,
+                               x + tmp->cord_x,
+                               y + tmp->cord_y,
+                               col_cnv);
+}
+
+static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.draw_str(font,
+                              tmp->pixel_map,
+                              str_dsp,
+                              x + tmp->cord_x,
+                              y + tmp->cord_y,
+                              col_cnv);
+}
+
+static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_size)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.draw_line(tmp->pixel_map,
+                               start_x + tmp->cord_x,
+                               start_y + tmp->cord_y,
+                               end_x + tmp->cord_x,
+                               end_y + tmp->cord_y,
+                               line_size);
+}
+
+static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.draw_circle(tmp->pixel_map,
+                                 center_x + tmp->cord_x,
+                                 center_y + tmp->cord_y,
+                                 radius,
+                                 line_size);
+}
+
+static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.draw_rectangle(tmp->pixel_map,
+                                    x + tmp->cord_x,
+                                    y + tmp->cord_y,
+                                    width,
+                                    height,
+                                    line_size);
 }

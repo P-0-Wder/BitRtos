@@ -18,6 +18,7 @@
 
 #define MAX_SUB_WIDGET_NUM 8
 
+typedef GenFont_List Widget_Font;
 typedef uint32_t Widget_Handle;
 
 typedef struct
