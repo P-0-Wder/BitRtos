@@ -1,5 +1,4 @@
 #include "widget_mng.h"
-#include "GenDsp.h"
 #include "oled.h"
 
 /* internal variable */
@@ -10,7 +9,12 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .max_display_cache = 0,
 };
 
+Widget_DrawFunc_TypeDef WidgetDraw_Interface;
+
+static Widget_Handle CurActive_Widget = 0;
+
 /* internal function */
+static WidgetObj_TypeDef *GetCur_Active_Widget(void);
 
 /* external function */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
@@ -21,7 +25,7 @@ static void Widget_MovdeDis(Widget_Handle hdl, int8_t x, int8_t y);
 static void Widget_MoveTo(Widget_Handle hdl, uint8_t x, uint8_t y);
 static void Widget_FreshAll(void);
 
-Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
+static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -64,20 +68,41 @@ Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8
     MonitorDataObj.remain_size -= width * height;
     MonitorDataObj.widget_used_size += width * height;
 
-    widget_tmp->state = Widget_Created;
     MonitorDataObj.created_widget++;
 
-    widget_tmp->Dsp = &GenDsp_Interface;
+    widget_tmp->Dsp = &WidgetDraw_Interface;
 
     return (Widget_Handle)widget_tmp;
 }
 
-bool Widget_Deleted(Widget_Handle hdl)
+static WidgetObj_TypeDef *GetCur_Active_Widget(void)
+{
+    if (CurActive_Widget == 0)
+        return 0;
+
+    return (WidgetObj_TypeDef *)CurActive_Widget;
+}
+
+static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
+{
+    WidgetObj_TypeDef *widget_tmp = (WidgetObj_TypeDef *)hdl;
+    CurActive_Widget = hdl;
+
+    return widget_tmp->Dsp;
+}
+
+static bool Widget_Deleted(Widget_Handle hdl)
 {
 
     return false;
 }
 
-void Widget_FreshAll(void)
+static void Widget_FreshAll(void)
 {
+    //DrvOled.fresh();
+}
+
+static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
