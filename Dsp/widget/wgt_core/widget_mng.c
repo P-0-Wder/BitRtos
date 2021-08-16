@@ -14,13 +14,15 @@ static Widget_Handle CurActive_Widget = 0;
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
 
+/* external widget control function */
+static bool Widget_Show(void);
+static bool Widget_Hide(void);
+static bool Widget_MoveTo(uint8_t x, uint8_t y);
+static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
+
 /* external function */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
 static bool Widget_Deleted(Widget_Handle hdl);
-static void Widget_Show(Widget_Handle hdl);
-static void Widget_Hide(Widget_Handle hdl);
-static void Widget_MovdeDis(Widget_Handle hdl, int8_t x, int8_t y);
-static void Widget_MoveTo(Widget_Handle hdl, uint8_t x, uint8_t y);
 static void Widget_FreshAll(void);
 
 /* widget draw function interface */
@@ -40,6 +42,13 @@ static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
     .draw_line = Widget_DrawLine,
     .draw_circle = Widget_DrawCircle,
     .draw_char = Widget_DrawChr,
+};
+
+static Widget_Control_TypeDef WidgetCtl_Interface = {
+    .Show = Widget_Show,
+    .Hide = Widget_Hide,
+    .Move = Widget_MoveTo,
+    .Draw = Widget_DrawInterface,
 };
 
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
@@ -88,6 +97,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     MonitorDataObj.created_widget++;
 
     widget_tmp->Dsp = &WidgetDraw_Interface;
+    widget_tmp->Ctl = &WidgetCtl_Interface;
 
     return (Widget_Handle)widget_tmp;
 }
@@ -98,9 +108,41 @@ static bool Widget_Deleted(Widget_Handle hdl)
     return false;
 }
 
-static void Widget_Show(Widget_Handle hdl)
+static bool Widget_Show(void)
 {
-    WidgetObj_TypeDef *tmp = (WidgetObj_TypeDef *)hdl;
+    if (GetCur_Active_Widget() == NULL)
+        return false;
+
+    GetCur_Active_Widget()->on_show = true;
+    return true;
+}
+
+static bool Widget_Hide(void)
+{
+    if (GetCur_Active_Widget() == NULL)
+        return false;
+
+    GetCur_Active_Widget()->on_show = false;
+    return true;
+}
+
+static bool Widget_MoveTo(uint8_t x, uint8_t y)
+{
+    if (GetCur_Active_Widget() == NULL)
+        return false;
+
+    GetCur_Active_Widget()->cord_x = x;
+    GetCur_Active_Widget()->cord_y = y;
+
+    return true;
+}
+
+static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void)
+{
+    if (GetCur_Active_Widget() == NULL)
+        return NULL;
+
+    return GetCur_Active_Widget()->Dsp;
 }
 
 static WidgetObj_TypeDef *GetCur_Active_Widget(void)

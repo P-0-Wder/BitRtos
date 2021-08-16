@@ -9,7 +9,7 @@
 
 /* internal function definition */
 
-/* external funtion definition */
+/* external draw funtion definition */
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set);
 static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv);
 static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, uint8_t x, uint8_t y, bool col_inv);

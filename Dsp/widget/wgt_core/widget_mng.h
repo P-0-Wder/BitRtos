@@ -48,9 +48,9 @@ typedef struct
 
 typedef struct
 {
-    void (*Show)(void);
-    void (*Hide)(void);
-    void (*Move)(uint8_t x, uint8_t y);
+    bool (*Show)(void);
+    bool (*Hide)(void);
+    bool (*Move)(uint8_t x, uint8_t y);
     Widget_DrawFunc_TypeDef *(*Draw)(Widget_Handle hdl);
 } Widget_Control_TypeDef;
 
@@ -71,6 +71,7 @@ typedef struct
     uint8_t Sub_Widget_Num;
 
     Widget_DrawFunc_TypeDef *Dsp; //widget draw function block
+    Widget_DrawFunc_TypeDef *Ctl; //widget control function block
 
     char *name;
 
