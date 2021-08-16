@@ -60,7 +60,6 @@ typedef struct
     uint8_t height;
     uint8_t **pixel_map;
 
-    void *Sub_Widget[MAX_SUB_WIDGET_NUM];
     uint8_t Sub_Widget_Num;
 
     Widget_DrawFunc_TypeDef *Dsp; //widget draw function block
