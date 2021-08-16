@@ -92,6 +92,17 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     return (Widget_Handle)widget_tmp;
 }
 
+static bool Widget_Deleted(Widget_Handle hdl)
+{
+
+    return false;
+}
+
+static void Widget_Show(Widget_Handle hdl)
+{
+    WidgetObj_TypeDef *tmp = (WidgetObj_TypeDef *)hdl;
+}
+
 static WidgetObj_TypeDef *GetCur_Active_Widget(void)
 {
     if (CurActive_Widget == 0)
@@ -108,15 +119,11 @@ static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
     return widget_tmp->Dsp;
 }
 
-static bool Widget_Deleted(Widget_Handle hdl)
-{
-
-    return false;
-}
-
 //fresh all widget
 static void Widget_FreshAll(void)
 {
+    WidgetObj_TypeDef *tmp = NULL;
+
     if (MonitorDataObj.created_widget > 0)
     {
         for (uint8_t widget_index = 0; widget_index < MonitorDataObj.created_widget; widget_index++)

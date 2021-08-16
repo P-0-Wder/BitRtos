@@ -13,7 +13,7 @@
 #define WIDGET_CREATE_ERROR WIDGET_OPR_ERROR
 #define WIDGET_DELETE_ERROR WIDGET_OPR_ERROR
 
-#define MAX_WIDGET_CACHE_PAGE 10
+#define MAX_WIDGET_CACHE_PAGE 8 //64k for widget display
 #define DEFAULT_LAYER 0
 
 #define MAX_SUB_WIDGET_NUM 8
@@ -66,6 +66,8 @@ typedef struct
     Widget_DrawFunc_TypeDef *Dsp; //widget draw function block
 
     char *name;
+
+    uint8_t level;
 } WidgetObj_TypeDef;
 
 typedef struct
