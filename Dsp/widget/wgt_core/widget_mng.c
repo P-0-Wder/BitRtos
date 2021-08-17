@@ -1,5 +1,4 @@
 #include "widget_mng.h"
-#include "oled.h"
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
@@ -221,7 +220,7 @@ static bool Widget_FreshAll(void)
         {
         case Fresh_State_DrvInit:
             WidgetFresh_State = Fresh_State_Reguler;
-            //DrvOled.init(&Oled);
+            //DrvOled.init();
             break;
 
         case Fresh_State_Reguler:
@@ -230,7 +229,7 @@ static bool Widget_FreshAll(void)
             return true;
 
         case Fresh_State_DrvError:
-            break;
+            return false;
 
         default:
             return false;

@@ -47,7 +47,7 @@ SYS/common/reboot.c \
 SYS/common/sys.c \
 SYS/crc/crc16.c \
 Dsp/screen/font/oledfont.c \
-Dsp/screen/device/oled.c \
+Dsp/screen/device/oled1306.c \
 Dsp/widget/wgt_core/widget_mng.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \

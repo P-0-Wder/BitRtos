@@ -1,4 +1,4 @@
-#include "oled.h"
+#include "oled1306.h"
 #include "delay.h"
 
 static Pixel_Block_TypeDef blackboard[OLED_MAX_WIDTH][COLUMN_SIZE];
