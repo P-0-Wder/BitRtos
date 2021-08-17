@@ -14,16 +14,17 @@ static Widget_Handle CurActive_Widget = 0;
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
 
+/* external widget manager function definition */
+static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
+static Widget_Control_TypeDef *Widget_CtlInterface(void);
+static bool Widget_Deleted(Widget_Handle *hdl);
+static void Widget_FreshAll(void);
+
 /* external widget control function */
 static bool Widget_Show(void);
 static bool Widget_Hide(void);
 static bool Widget_MoveTo(uint8_t x, uint8_t y);
 static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
-
-/* external function */
-static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
-static bool Widget_Deleted(Widget_Handle hdl);
-static void Widget_FreshAll(void);
 
 /* widget draw function interface */
 static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set);
@@ -49,6 +50,13 @@ static Widget_Control_TypeDef WidgetCtl_Interface = {
     .Hide = Widget_Hide,
     .Move = Widget_MoveTo,
     .Draw = Widget_DrawInterface,
+};
+
+Widget_GenProcFunc_TypeDef Widget_Mng = {
+    .Create = Widget_Create,
+    .Delete = Widget_Deleted,
+    .Control = Widget_CtlInterface,
+    .fresh_all = Widget_FreshAll,
 };
 
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
@@ -102,10 +110,32 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     return (Widget_Handle)widget_tmp;
 }
 
-static bool Widget_Deleted(Widget_Handle hdl)
+static bool Widget_Deleted(Widget_Handle *hdl)
 {
+    uint8_t height = 0;
+    uint8_t width = 0;
 
-    return false;
+    if ((hdl == NULL) || ((*hdl) == 0))
+        return false;
+
+    height = ((WidgetObj_TypeDef *)(*hdl))->height;
+    width = ((WidgetObj_TypeDef *)(*hdl))->width;
+
+    free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
+
+    for (uint8_t h = 0; h < height; h++)
+    {
+        free(((WidgetObj_TypeDef *)(*hdl))->pixel_map[h]);
+    }
+
+    MonitorDataObj.remain_size += width * height;
+    MonitorDataObj.widget_used_size -= width * height;
+
+    if (MonitorDataObj.remain_size > MonitorDataObj.max_display_cache)
+        return false;
+
+    *hdl = 0;
+    return true;
 }
 
 static bool Widget_Show(void)
@@ -143,6 +173,14 @@ static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void)
         return NULL;
 
     return GetCur_Active_Widget()->Dsp;
+}
+
+static Widget_Control_TypeDef *Widget_CtlInterface(void)
+{
+    if (GetCur_Active_Widget() == NULL)
+        return NULL;
+
+    return GetCur_Active_Widget()->Ctl;
 }
 
 static WidgetObj_TypeDef *GetCur_Active_Widget(void)
