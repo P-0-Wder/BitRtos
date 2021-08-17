@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "stm32f4xx_spi.h"
 
 #define SPI_PORT_SUM 3
 #define SPI_TIMEOUT 1000
