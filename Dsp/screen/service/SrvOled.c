@@ -64,7 +64,7 @@ static bool SrvOled_Init(void)
 {
     if (SrvOled_PreInit())
     {
-        DrvOled.init();
+        DrvOled.init(&Oled1306Obj);
 
         return true;
     }
