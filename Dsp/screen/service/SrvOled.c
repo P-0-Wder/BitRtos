@@ -15,6 +15,8 @@ static bool SrvOled_PreInit(void)
 {
     Oled1306Obj.Bus = Oled_SpiBus;
     Oled1306Obj.BusID = SPI_1;
+
+    Oled1306Obj.bus_init = GenSPI_Drv.open();
 }
 
 static bool SrvOled_Init(void)
