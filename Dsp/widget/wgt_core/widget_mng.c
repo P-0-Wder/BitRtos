@@ -8,17 +8,18 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .remain_size = 0,
     .max_display_cache = 0,
 };
-
 static Widget_Handle CurActive_Widget = 0;
+static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
 
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
+static void Widget_Fusion(void);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
 static Widget_Control_TypeDef *Widget_CtlInterface(void);
 static bool Widget_Deleted(Widget_Handle *hdl);
-static void Widget_FreshAll(void);
+static bool Widget_FreshAll(void);
 
 /* external widget control function */
 static bool Widget_Show(void);
@@ -199,18 +200,42 @@ static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
     return widget_tmp->Dsp;
 }
 
-//fresh all widget
-static void Widget_FreshAll(void)
+static void Widget_Fusion(void)
 {
-    WidgetObj_TypeDef *tmp = NULL;
-
     if (MonitorDataObj.created_widget > 0)
     {
         for (uint8_t widget_index = 0; widget_index < MonitorDataObj.created_widget; widget_index++)
         {
         }
     }
-    //DrvOled.fresh();
+}
+
+//fresh all widget
+static bool Widget_FreshAll(void)
+{
+    WidgetObj_TypeDef *tmp = NULL;
+
+    while (true)
+    {
+        switch ((uint8_t)WidgetFresh_State)
+        {
+        case Fresh_State_DrvInit:
+            WidgetFresh_State = Fresh_State_Reguler;
+            //DrvOled.init(&Oled);
+            break;
+
+        case Fresh_State_Reguler:
+            Widget_Fusion();
+            //DrvOled.fresh();
+            return true;
+
+        case Fresh_State_DrvError:
+            break;
+
+        default:
+            return false;
+        }
+    }
 }
 
 static void Widget_CtlShow(void)

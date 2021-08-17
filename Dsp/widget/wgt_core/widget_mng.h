@@ -23,8 +23,9 @@ typedef uint32_t Widget_Handle;
 
 typedef enum
 {
-    WidgetFresh_State_DrvInit,
-    WidgetFresh_State_RegulerFresh,
+    Fresh_State_DrvInit,
+    Fresh_State_DrvError,
+    Fresh_State_Reguler,
 } WidgetFresh_State_List;
 
 typedef struct
@@ -87,9 +88,9 @@ typedef struct
 typedef struct
 {
     Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
-    bool (*Delete)(Widget_Handle *hdl);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
-    void (*fresh_all)(void);
+    bool (*Delete)(Widget_Handle *hdl);
+    bool (*fresh_all)(void);
 } Widget_GenProcFunc_TypeDef;
 
 extern Widget_GenProcFunc_TypeDef Widget_Mng;
