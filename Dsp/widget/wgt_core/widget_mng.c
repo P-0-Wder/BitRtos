@@ -1,6 +1,5 @@
 #include "widget_mng.h"
 #include "SrvOled.h"
-#include "linked_list.h"
 #include "runtime.h"
 
 /* internal variable */
@@ -16,7 +15,7 @@ static uint8_t **widget_blackboard;
 
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
-static void Widget_Fusion(item_obj *itm, Widget_Handle hdl, void *arg);
+static void Widget_Fusion(WidgetObj_TypeDef *hdl, void *arg);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
@@ -84,8 +83,6 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
             if (widget_blackboard[column_index] == NULL)
                 return WIDGET_CREATE_ERROR;
         }
-
-        MonitorDataObj.widget_list = NULL;
     }
 
     widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
@@ -126,16 +123,6 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->Dsp = &WidgetDraw_Interface;
     widget_tmp->Ctl = &WidgetCtl_Interface;
 
-    widget_tmp->item = (item_obj *)malloc(sizeof(item_obj));
-    if (widget_tmp == NULL)
-        return WIDGET_CREATE_ERROR;
-
-    widget_tmp->item->mode = by_order;
-    widget_tmp->item->compare_callback = NULL;
-    widget_tmp->item->data = (Widget_Handle)widget_tmp;
-
-    List_Insert_Item(MonitorDataObj.widget_list, widget_tmp->item);
-
     return (Widget_Handle)widget_tmp;
 }
 
@@ -150,7 +137,6 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     height = ((WidgetObj_TypeDef *)(*hdl))->height;
     width = ((WidgetObj_TypeDef *)(*hdl))->width;
 
-    free(((WidgetObj_TypeDef *)(*hdl))->item);
     free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
 
     for (uint8_t h = 0; h < height; h++)
@@ -238,8 +224,13 @@ static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
     return widget_tmp->Dsp;
 }
 
-static void Widget_Fusion(item_obj *itm, Widget_Handle hdl, void *arg)
+static void Widget_Fusion(WidgetObj_TypeDef *obj, void *arg)
 {
+    /* clear entire widget first */
+    for (uint8_t height = 0; height < SrvOled.get_range().height; height++)
+    {
+        memset(&widget_blackboard[0][height], NULL, SrvOled.get_range().width);
+    }
 }
 
 //fresh all widget
@@ -266,7 +257,6 @@ static bool Widget_FreshAll(void)
         case Fresh_State_Reguler:
             if (MonitorDataObj.created_widget > 0)
             {
-                List_traverse(MonitorDataObj.widget_list, Widget_Fusion, NULL);
                 SrvOled.fresh(widget_blackboard);
             }
             WidgetFresh_State = Fresh_State_Sleep;
