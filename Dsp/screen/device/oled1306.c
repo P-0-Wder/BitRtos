@@ -105,6 +105,8 @@ static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj)
 	Oled_TransmitByte(Oled_Obj, 0xAF, Oled_Write_CMD);
 
 	Oled_Clear(Oled_Obj);
+
+	return true;
 }
 
 static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)

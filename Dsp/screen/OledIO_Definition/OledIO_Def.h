@@ -1,0 +1,14 @@
+#ifndef __OLEDIO_DEF_H
+#define __OLEDIO_DEF_H
+
+#include "drv_gpio.h"
+
+#define OLED1306_RS_PORT_CLK RCC_AHB1Periph_GPIOD
+#define OLED1306_RS_PORT GPIOD
+#define OLED1306_RS_PIN GPIO_Pin_0
+
+#define OLED1306_DC_PORT_CLK RCC_AHB1Periph_GPIOD
+#define OLED1306_DC_PORT GPIOD
+#define OLED1306_DC_PIN GPIO_Pin_1
+
+#endif

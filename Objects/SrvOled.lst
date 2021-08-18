@@ -1,0 +1,814 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"SrvOled.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.SrvOled_BusInit,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	SrvOled_BusInit:
+  26              	.LVL0:
+  27              	.LFB123:
+  28              		.file 1 "Dsp/screen/service/SrvOled.c"
+   1:Dsp/screen/service/SrvOled.c **** #include "oled1306.h"
+   2:Dsp/screen/service/SrvOled.c **** #include "drv_spi.h"
+   3:Dsp/screen/service/SrvOled.c **** #include "drv_gpio.h"
+   4:Dsp/screen/service/SrvOled.c **** #include "OledIO_Def.h"
+   5:Dsp/screen/service/SrvOled.c **** #include "SrvOled.h"
+   6:Dsp/screen/service/SrvOled.c **** 
+   7:Dsp/screen/service/SrvOled.c **** /* internal varible definition */
+   8:Dsp/screen/service/SrvOled.c **** static Oled_Obj_TypeDef Oled1306Obj;
+   9:Dsp/screen/service/SrvOled.c **** static DrvGPIO_Obj_TypeDef DC_IO_Obj;
+  10:Dsp/screen/service/SrvOled.c **** static DrvGPIO_Obj_TypeDef RS_IO_Obj;
+  11:Dsp/screen/service/SrvOled.c **** static bool SrvPerInit_State = false;
+  12:Dsp/screen/service/SrvOled.c **** static bool SrvInit_State = false;
+  13:Dsp/screen/service/SrvOled.c **** 
+  14:Dsp/screen/service/SrvOled.c **** /* internal function definition */
+  15:Dsp/screen/service/SrvOled.c **** static bool SrvOled_PreInit(void);
+  16:Dsp/screen/service/SrvOled.c **** static void SrvOled_BusInit(SPI_List BusID);
+  17:Dsp/screen/service/SrvOled.c **** 
+  18:Dsp/screen/service/SrvOled.c **** /* external function definition */
+  19:Dsp/screen/service/SrvOled.c **** static bool SrvOled_Init(void);
+  20:Dsp/screen/service/SrvOled.c **** static bool SrvOled_Fresh(uint8_t **bit_map);
+  21:Dsp/screen/service/SrvOled.c **** static SrvOled_DspRange SrvOled_GetDev_DspRange(void);
+  22:Dsp/screen/service/SrvOled.c **** 
+  23:Dsp/screen/service/SrvOled.c **** SrvOled_TypeDef SrvOled = {
+  24:Dsp/screen/service/SrvOled.c ****     .init = SrvOled_Init,
+  25:Dsp/screen/service/SrvOled.c ****     .fresh = SrvOled_Fresh,
+  26:Dsp/screen/service/SrvOled.c ****     .get_range = SrvOled_GetDev_DspRange,
+  27:Dsp/screen/service/SrvOled.c **** };
+  28:Dsp/screen/service/SrvOled.c **** 
+  29:Dsp/screen/service/SrvOled.c **** /******************************* IO & Bus Init Function Section ***********************************
+  30:Dsp/screen/service/SrvOled.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 2
+
+
+  31:Dsp/screen/service/SrvOled.c **** static void
+  32:Dsp/screen/service/SrvOled.c **** SrvOled_BusInit(SPI_List BusID)
+  33:Dsp/screen/service/SrvOled.c **** {
+  29              		.loc 1 33 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 33 1 is_stmt 0 view .LVU1
+  34 0000 00B5     		push	{lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 4
+  37              		.cfi_offset 14, -4
+  38 0002 83B0     		sub	sp, sp, #12
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 16
+  34:Dsp/screen/service/SrvOled.c ****     DrvSpi_Obj_TypeDef BusInit_Structure;
+  41              		.loc 1 34 5 is_stmt 1 view .LVU2
+  35:Dsp/screen/service/SrvOled.c **** 
+  36:Dsp/screen/service/SrvOled.c ****     BusInit_Structure.SPIx = BusID;
+  42              		.loc 1 36 5 view .LVU3
+  43              		.loc 1 36 28 is_stmt 0 view .LVU4
+  44 0004 8DF80000 		strb	r0, [sp]
+  37:Dsp/screen/service/SrvOled.c ****     BusInit_Structure.speed = SPI_CLOCK_INITIALIZATON;
+  45              		.loc 1 37 5 is_stmt 1 view .LVU5
+  46              		.loc 1 37 29 is_stmt 0 view .LVU6
+  47 0008 0023     		movs	r3, #0
+  48 000a 8DF80130 		strb	r3, [sp, #1]
+  38:Dsp/screen/service/SrvOled.c ****     BusInit_Structure.CPOL = SPI_CPOL_High;
+  49              		.loc 1 38 5 is_stmt 1 view .LVU7
+  50              		.loc 1 38 28 is_stmt 0 view .LVU8
+  51 000e 0223     		movs	r3, #2
+  52 0010 ADF80230 		strh	r3, [sp, #2]	@ movhi
+  39:Dsp/screen/service/SrvOled.c ****     BusInit_Structure.CPHA = SPI_CPHA_2Edge;
+  53              		.loc 1 39 5 is_stmt 1 view .LVU9
+  54              		.loc 1 39 28 is_stmt 0 view .LVU10
+  55 0014 0123     		movs	r3, #1
+  56 0016 ADF80430 		strh	r3, [sp, #4]	@ movhi
+  40:Dsp/screen/service/SrvOled.c **** 
+  41:Dsp/screen/service/SrvOled.c ****     GenSPI_Drv.open(&BusInit_Structure);
+  57              		.loc 1 41 5 is_stmt 1 view .LVU11
+  58              		.loc 1 41 15 is_stmt 0 view .LVU12
+  59 001a 034B     		ldr	r3, .L3
+  60 001c 1B68     		ldr	r3, [r3]
+  61              		.loc 1 41 5 view .LVU13
+  62 001e 6846     		mov	r0, sp
+  63              	.LVL1:
+  64              		.loc 1 41 5 view .LVU14
+  65 0020 9847     		blx	r3
+  66              	.LVL2:
+  42:Dsp/screen/service/SrvOled.c **** }
+  67              		.loc 1 42 1 view .LVU15
+  68 0022 03B0     		add	sp, sp, #12
+  69              	.LCFI2:
+  70              		.cfi_def_cfa_offset 4
+  71              		@ sp needed
+  72 0024 5DF804FB 		ldr	pc, [sp], #4
+  73              	.L4:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 3
+
+
+  74              		.align	2
+  75              	.L3:
+  76 0028 00000000 		.word	GenSPI_Drv
+  77              		.cfi_endproc
+  78              	.LFE123:
+  80              		.section	.text.SrvOled_DCPin_Init,"ax",%progbits
+  81              		.align	1
+  82              		.syntax unified
+  83              		.thumb
+  84              		.thumb_func
+  85              		.fpu fpv4-sp-d16
+  87              	SrvOled_DCPin_Init:
+  88              	.LFB124:
+  43:Dsp/screen/service/SrvOled.c **** 
+  44:Dsp/screen/service/SrvOled.c **** static void SrvOled_DCPin_Init(void)
+  45:Dsp/screen/service/SrvOled.c **** {
+  89              		.loc 1 45 1 is_stmt 1 view -0
+  90              		.cfi_startproc
+  91              		@ args = 0, pretend = 0, frame = 0
+  92              		@ frame_needed = 0, uses_anonymous_args = 0
+  93 0000 08B5     		push	{r3, lr}
+  94              	.LCFI3:
+  95              		.cfi_def_cfa_offset 8
+  96              		.cfi_offset 3, -8
+  97              		.cfi_offset 14, -4
+  46:Dsp/screen/service/SrvOled.c ****     DC_IO_Obj.CLK = OLED1306_DC_PORT_CLK;
+  98              		.loc 1 46 5 view .LVU17
+  99              		.loc 1 46 19 is_stmt 0 view .LVU18
+ 100 0002 0648     		ldr	r0, .L7
+ 101 0004 0823     		movs	r3, #8
+ 102 0006 0360     		str	r3, [r0]
+  47:Dsp/screen/service/SrvOled.c ****     DC_IO_Obj.Port = OLED1306_DC_PORT;
+ 103              		.loc 1 47 5 is_stmt 1 view .LVU19
+ 104              		.loc 1 47 20 is_stmt 0 view .LVU20
+ 105 0008 054B     		ldr	r3, .L7+4
+ 106 000a 8360     		str	r3, [r0, #8]
+  48:Dsp/screen/service/SrvOled.c ****     DC_IO_Obj.Pin = OLED1306_DC_PIN;
+ 107              		.loc 1 48 5 is_stmt 1 view .LVU21
+ 108              		.loc 1 48 19 is_stmt 0 view .LVU22
+ 109 000c 0223     		movs	r3, #2
+ 110 000e 8380     		strh	r3, [r0, #4]	@ movhi
+  49:Dsp/screen/service/SrvOled.c ****     DC_IO_Obj.IO_Type = GPIO_Output;
+ 111              		.loc 1 49 5 is_stmt 1 view .LVU23
+ 112              		.loc 1 49 23 is_stmt 0 view .LVU24
+ 113 0010 0021     		movs	r1, #0
+ 114 0012 0173     		strb	r1, [r0, #12]
+  50:Dsp/screen/service/SrvOled.c **** 
+  51:Dsp/screen/service/SrvOled.c ****     GenGPIO_Drv.open(&DC_IO_Obj, DC_IO_Obj.IO_Type);
+ 115              		.loc 1 51 5 is_stmt 1 view .LVU25
+ 116              		.loc 1 51 16 is_stmt 0 view .LVU26
+ 117 0014 034B     		ldr	r3, .L7+8
+ 118 0016 1B68     		ldr	r3, [r3]
+ 119              		.loc 1 51 5 view .LVU27
+ 120 0018 9847     		blx	r3
+ 121              	.LVL3:
+  52:Dsp/screen/service/SrvOled.c **** }
+ 122              		.loc 1 52 1 view .LVU28
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 4
+
+
+ 123 001a 08BD     		pop	{r3, pc}
+ 124              	.L8:
+ 125              		.align	2
+ 126              	.L7:
+ 127 001c 00000000 		.word	.LANCHOR0
+ 128 0020 000C0240 		.word	1073875968
+ 129 0024 00000000 		.word	GenGPIO_Drv
+ 130              		.cfi_endproc
+ 131              	.LFE124:
+ 133              		.section	.text.SrvOled_RSPin_Init,"ax",%progbits
+ 134              		.align	1
+ 135              		.syntax unified
+ 136              		.thumb
+ 137              		.thumb_func
+ 138              		.fpu fpv4-sp-d16
+ 140              	SrvOled_RSPin_Init:
+ 141              	.LFB125:
+  53:Dsp/screen/service/SrvOled.c **** 
+  54:Dsp/screen/service/SrvOled.c **** static void SrvOled_RSPin_Init(void)
+  55:Dsp/screen/service/SrvOled.c **** {
+ 142              		.loc 1 55 1 is_stmt 1 view -0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146 0000 08B5     		push	{r3, lr}
+ 147              	.LCFI4:
+ 148              		.cfi_def_cfa_offset 8
+ 149              		.cfi_offset 3, -8
+ 150              		.cfi_offset 14, -4
+  56:Dsp/screen/service/SrvOled.c ****     RS_IO_Obj.CLK = OLED1306_RS_PORT_CLK;
+ 151              		.loc 1 56 5 view .LVU30
+ 152              		.loc 1 56 19 is_stmt 0 view .LVU31
+ 153 0002 0648     		ldr	r0, .L11
+ 154 0004 0823     		movs	r3, #8
+ 155 0006 0360     		str	r3, [r0]
+  57:Dsp/screen/service/SrvOled.c ****     RS_IO_Obj.Port = OLED1306_RS_PORT;
+ 156              		.loc 1 57 5 is_stmt 1 view .LVU32
+ 157              		.loc 1 57 20 is_stmt 0 view .LVU33
+ 158 0008 054B     		ldr	r3, .L11+4
+ 159 000a 8360     		str	r3, [r0, #8]
+  58:Dsp/screen/service/SrvOled.c ****     RS_IO_Obj.Pin = OLED1306_RS_PIN;
+ 160              		.loc 1 58 5 is_stmt 1 view .LVU34
+ 161              		.loc 1 58 19 is_stmt 0 view .LVU35
+ 162 000c 0123     		movs	r3, #1
+ 163 000e 8380     		strh	r3, [r0, #4]	@ movhi
+  59:Dsp/screen/service/SrvOled.c ****     RS_IO_Obj.IO_Type = GPIO_Output;
+ 164              		.loc 1 59 5 is_stmt 1 view .LVU36
+ 165              		.loc 1 59 23 is_stmt 0 view .LVU37
+ 166 0010 0021     		movs	r1, #0
+ 167 0012 0173     		strb	r1, [r0, #12]
+  60:Dsp/screen/service/SrvOled.c **** 
+  61:Dsp/screen/service/SrvOled.c ****     GenGPIO_Drv.open(&RS_IO_Obj, RS_IO_Obj.IO_Type);
+ 168              		.loc 1 61 5 is_stmt 1 view .LVU38
+ 169              		.loc 1 61 16 is_stmt 0 view .LVU39
+ 170 0014 034B     		ldr	r3, .L11+8
+ 171 0016 1B68     		ldr	r3, [r3]
+ 172              		.loc 1 61 5 view .LVU40
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 5
+
+
+ 173 0018 9847     		blx	r3
+ 174              	.LVL4:
+  62:Dsp/screen/service/SrvOled.c **** }
+ 175              		.loc 1 62 1 view .LVU41
+ 176 001a 08BD     		pop	{r3, pc}
+ 177              	.L12:
+ 178              		.align	2
+ 179              	.L11:
+ 180 001c 00000000 		.word	.LANCHOR1
+ 181 0020 000C0240 		.word	1073875968
+ 182 0024 00000000 		.word	GenGPIO_Drv
+ 183              		.cfi_endproc
+ 184              	.LFE125:
+ 186              		.section	.text.SrvOled_DCPin_Ctl,"ax",%progbits
+ 187              		.align	1
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 191              		.fpu fpv4-sp-d16
+ 193              	SrvOled_DCPin_Ctl:
+ 194              	.LVL5:
+ 195              	.LFB126:
+  63:Dsp/screen/service/SrvOled.c **** 
+  64:Dsp/screen/service/SrvOled.c **** static void SrvOled_DCPin_Ctl(Oled_DC_State_List state)
+  65:Dsp/screen/service/SrvOled.c **** {
+ 196              		.loc 1 65 1 is_stmt 1 view -0
+ 197              		.cfi_startproc
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200              		.loc 1 65 1 is_stmt 0 view .LVU43
+ 201 0000 08B5     		push	{r3, lr}
+ 202              	.LCFI5:
+ 203              		.cfi_def_cfa_offset 8
+ 204              		.cfi_offset 3, -8
+ 205              		.cfi_offset 14, -4
+  66:Dsp/screen/service/SrvOled.c ****     DrvGPIO_IO_Level_TypeDef level = GPIO_ERR;
+ 206              		.loc 1 66 5 is_stmt 1 view .LVU44
+ 207              	.LVL6:
+  67:Dsp/screen/service/SrvOled.c **** 
+  68:Dsp/screen/service/SrvOled.c ****     if (state == Oled_DC_Enable)
+ 208              		.loc 1 68 5 view .LVU45
+ 209              		.loc 1 68 8 is_stmt 0 view .LVU46
+ 210 0002 18B1     		cbz	r0, .L15
+  69:Dsp/screen/service/SrvOled.c ****     {
+  70:Dsp/screen/service/SrvOled.c ****         level = GPIO_LOW;
+  71:Dsp/screen/service/SrvOled.c ****     }
+  72:Dsp/screen/service/SrvOled.c ****     else if (state == Oled_DC_Disable)
+ 211              		.loc 1 72 10 is_stmt 1 view .LVU47
+ 212              		.loc 1 72 13 is_stmt 0 view .LVU48
+ 213 0004 0128     		cmp	r0, #1
+ 214 0006 07D0     		beq	.L16
+  66:Dsp/screen/service/SrvOled.c **** 
+ 215              		.loc 1 66 30 view .LVU49
+ 216 0008 0021     		movs	r1, #0
+ 217 000a 00E0     		b	.L14
+ 218              	.L15:
+  70:Dsp/screen/service/SrvOled.c ****     }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 6
+
+
+ 219              		.loc 1 70 15 view .LVU50
+ 220 000c 0121     		movs	r1, #1
+ 221              	.L14:
+ 222              	.LVL7:
+  73:Dsp/screen/service/SrvOled.c ****         level = GPIO_HIGH;
+  74:Dsp/screen/service/SrvOled.c **** 
+  75:Dsp/screen/service/SrvOled.c ****     GenGPIO_Drv.set(&DC_IO_Obj, level);
+ 223              		.loc 1 75 5 is_stmt 1 view .LVU51
+ 224              		.loc 1 75 16 is_stmt 0 view .LVU52
+ 225 000e 034B     		ldr	r3, .L18
+ 226 0010 9B68     		ldr	r3, [r3, #8]
+ 227              		.loc 1 75 5 view .LVU53
+ 228 0012 0348     		ldr	r0, .L18+4
+ 229              	.LVL8:
+ 230              		.loc 1 75 5 view .LVU54
+ 231 0014 9847     		blx	r3
+ 232              	.LVL9:
+  76:Dsp/screen/service/SrvOled.c **** }
+ 233              		.loc 1 76 1 view .LVU55
+ 234 0016 08BD     		pop	{r3, pc}
+ 235              	.LVL10:
+ 236              	.L16:
+  73:Dsp/screen/service/SrvOled.c ****         level = GPIO_HIGH;
+ 237              		.loc 1 73 15 view .LVU56
+ 238 0018 0221     		movs	r1, #2
+ 239 001a F8E7     		b	.L14
+ 240              	.L19:
+ 241              		.align	2
+ 242              	.L18:
+ 243 001c 00000000 		.word	GenGPIO_Drv
+ 244 0020 00000000 		.word	.LANCHOR0
+ 245              		.cfi_endproc
+ 246              	.LFE126:
+ 248              		.section	.text.SrvOled_RSPin_Ctl,"ax",%progbits
+ 249              		.align	1
+ 250              		.syntax unified
+ 251              		.thumb
+ 252              		.thumb_func
+ 253              		.fpu fpv4-sp-d16
+ 255              	SrvOled_RSPin_Ctl:
+ 256              	.LVL11:
+ 257              	.LFB127:
+  77:Dsp/screen/service/SrvOled.c **** 
+  78:Dsp/screen/service/SrvOled.c **** static void SrvOled_RSPin_Ctl(Oled_RS_State_List state)
+  79:Dsp/screen/service/SrvOled.c **** {
+ 258              		.loc 1 79 1 is_stmt 1 view -0
+ 259              		.cfi_startproc
+ 260              		@ args = 0, pretend = 0, frame = 0
+ 261              		@ frame_needed = 0, uses_anonymous_args = 0
+ 262              		.loc 1 79 1 is_stmt 0 view .LVU58
+ 263 0000 08B5     		push	{r3, lr}
+ 264              	.LCFI6:
+ 265              		.cfi_def_cfa_offset 8
+ 266              		.cfi_offset 3, -8
+ 267              		.cfi_offset 14, -4
+  80:Dsp/screen/service/SrvOled.c ****     DrvGPIO_IO_Level_TypeDef level = GPIO_ERR;
+ 268              		.loc 1 80 5 is_stmt 1 view .LVU59
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 7
+
+
+ 269              	.LVL12:
+  81:Dsp/screen/service/SrvOled.c **** 
+  82:Dsp/screen/service/SrvOled.c ****     if (state == Oled_RS_Enable)
+ 270              		.loc 1 82 5 view .LVU60
+ 271              		.loc 1 82 8 is_stmt 0 view .LVU61
+ 272 0002 18B1     		cbz	r0, .L22
+  83:Dsp/screen/service/SrvOled.c ****     {
+  84:Dsp/screen/service/SrvOled.c ****         level = GPIO_LOW;
+  85:Dsp/screen/service/SrvOled.c ****     }
+  86:Dsp/screen/service/SrvOled.c ****     else if (state == Oled_RS_Disable)
+ 273              		.loc 1 86 10 is_stmt 1 view .LVU62
+ 274              		.loc 1 86 13 is_stmt 0 view .LVU63
+ 275 0004 0128     		cmp	r0, #1
+ 276 0006 07D0     		beq	.L23
+  80:Dsp/screen/service/SrvOled.c **** 
+ 277              		.loc 1 80 30 view .LVU64
+ 278 0008 0021     		movs	r1, #0
+ 279 000a 00E0     		b	.L21
+ 280              	.L22:
+  84:Dsp/screen/service/SrvOled.c ****     }
+ 281              		.loc 1 84 15 view .LVU65
+ 282 000c 0121     		movs	r1, #1
+ 283              	.L21:
+ 284              	.LVL13:
+  87:Dsp/screen/service/SrvOled.c ****         level = GPIO_HIGH;
+  88:Dsp/screen/service/SrvOled.c **** 
+  89:Dsp/screen/service/SrvOled.c ****     GenGPIO_Drv.set(&RS_IO_Obj, level);
+ 285              		.loc 1 89 5 is_stmt 1 view .LVU66
+ 286              		.loc 1 89 16 is_stmt 0 view .LVU67
+ 287 000e 034B     		ldr	r3, .L25
+ 288 0010 9B68     		ldr	r3, [r3, #8]
+ 289              		.loc 1 89 5 view .LVU68
+ 290 0012 0348     		ldr	r0, .L25+4
+ 291              	.LVL14:
+ 292              		.loc 1 89 5 view .LVU69
+ 293 0014 9847     		blx	r3
+ 294              	.LVL15:
+  90:Dsp/screen/service/SrvOled.c **** }
+ 295              		.loc 1 90 1 view .LVU70
+ 296 0016 08BD     		pop	{r3, pc}
+ 297              	.LVL16:
+ 298              	.L23:
+  87:Dsp/screen/service/SrvOled.c ****         level = GPIO_HIGH;
+ 299              		.loc 1 87 15 view .LVU71
+ 300 0018 0221     		movs	r1, #2
+ 301 001a F8E7     		b	.L21
+ 302              	.L26:
+ 303              		.align	2
+ 304              	.L25:
+ 305 001c 00000000 		.word	GenGPIO_Drv
+ 306 0020 00000000 		.word	.LANCHOR1
+ 307              		.cfi_endproc
+ 308              	.LFE127:
+ 310              		.section	.text.SrvOled_PreInit,"ax",%progbits
+ 311              		.align	1
+ 312              		.syntax unified
+ 313              		.thumb
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 8
+
+
+ 314              		.thumb_func
+ 315              		.fpu fpv4-sp-d16
+ 317              	SrvOled_PreInit:
+ 318              	.LFB128:
+  91:Dsp/screen/service/SrvOled.c **** 
+  92:Dsp/screen/service/SrvOled.c **** /******************************* IO & Bus Init Function Section ***********************************
+  93:Dsp/screen/service/SrvOled.c **** 
+  94:Dsp/screen/service/SrvOled.c **** static bool SrvOled_PreInit(void)
+  95:Dsp/screen/service/SrvOled.c **** {
+ 319              		.loc 1 95 1 is_stmt 1 view -0
+ 320              		.cfi_startproc
+ 321              		@ args = 0, pretend = 0, frame = 0
+ 322              		@ frame_needed = 0, uses_anonymous_args = 0
+ 323              		@ link register save eliminated.
+  96:Dsp/screen/service/SrvOled.c ****     Oled1306Obj.Bus = Oled_SpiBus;
+ 324              		.loc 1 96 5 view .LVU73
+ 325              		.loc 1 96 21 is_stmt 0 view .LVU74
+ 326 0000 084B     		ldr	r3, .L28
+ 327 0002 0022     		movs	r2, #0
+ 328 0004 1A70     		strb	r2, [r3]
+  97:Dsp/screen/service/SrvOled.c ****     Oled1306Obj.BusID = SPI_1;
+ 329              		.loc 1 97 5 is_stmt 1 view .LVU75
+ 330              		.loc 1 97 23 is_stmt 0 view .LVU76
+ 331 0006 5A70     		strb	r2, [r3, #1]
+  98:Dsp/screen/service/SrvOled.c **** 
+  99:Dsp/screen/service/SrvOled.c ****     Oled1306Obj.bus_init = SrvOled_BusInit;
+ 332              		.loc 1 99 5 is_stmt 1 view .LVU77
+ 333              		.loc 1 99 26 is_stmt 0 view .LVU78
+ 334 0008 074A     		ldr	r2, .L28+4
+ 335 000a 5A61     		str	r2, [r3, #20]
+ 100:Dsp/screen/service/SrvOled.c **** 
+ 101:Dsp/screen/service/SrvOled.c ****     Oled1306Obj.rs_init = SrvOled_RSPin_Init;
+ 336              		.loc 1 101 5 is_stmt 1 view .LVU79
+ 337              		.loc 1 101 25 is_stmt 0 view .LVU80
+ 338 000c 074A     		ldr	r2, .L28+8
+ 339 000e 5A60     		str	r2, [r3, #4]
+ 102:Dsp/screen/service/SrvOled.c ****     Oled1306Obj.rs_ctl = SrvOled_RSPin_Ctl;
+ 340              		.loc 1 102 5 is_stmt 1 view .LVU81
+ 341              		.loc 1 102 24 is_stmt 0 view .LVU82
+ 342 0010 074A     		ldr	r2, .L28+12
+ 343 0012 DA60     		str	r2, [r3, #12]
+ 103:Dsp/screen/service/SrvOled.c **** 
+ 104:Dsp/screen/service/SrvOled.c ****     Oled1306Obj.dc_init = SrvOled_DCPin_Init;
+ 344              		.loc 1 104 5 is_stmt 1 view .LVU83
+ 345              		.loc 1 104 25 is_stmt 0 view .LVU84
+ 346 0014 074A     		ldr	r2, .L28+16
+ 347 0016 9A60     		str	r2, [r3, #8]
+ 105:Dsp/screen/service/SrvOled.c ****     Oled1306Obj.dc_ctl = SrvOled_DCPin_Ctl;
+ 348              		.loc 1 105 5 is_stmt 1 view .LVU85
+ 349              		.loc 1 105 24 is_stmt 0 view .LVU86
+ 350 0018 074A     		ldr	r2, .L28+20
+ 351 001a 1A61     		str	r2, [r3, #16]
+ 106:Dsp/screen/service/SrvOled.c **** 
+ 107:Dsp/screen/service/SrvOled.c ****     SrvPerInit_State = true;
+ 352              		.loc 1 107 5 is_stmt 1 view .LVU87
+ 353              		.loc 1 107 22 is_stmt 0 view .LVU88
+ 354 001c 0120     		movs	r0, #1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 9
+
+
+ 355 001e 074B     		ldr	r3, .L28+24
+ 356 0020 1870     		strb	r0, [r3]
+ 108:Dsp/screen/service/SrvOled.c **** 
+ 109:Dsp/screen/service/SrvOled.c ****     return SrvPerInit_State;
+ 357              		.loc 1 109 5 is_stmt 1 view .LVU89
+ 110:Dsp/screen/service/SrvOled.c **** }
+ 358              		.loc 1 110 1 is_stmt 0 view .LVU90
+ 359 0022 7047     		bx	lr
+ 360              	.L29:
+ 361              		.align	2
+ 362              	.L28:
+ 363 0024 00000000 		.word	.LANCHOR2
+ 364 0028 00000000 		.word	SrvOled_BusInit
+ 365 002c 00000000 		.word	SrvOled_RSPin_Init
+ 366 0030 00000000 		.word	SrvOled_RSPin_Ctl
+ 367 0034 00000000 		.word	SrvOled_DCPin_Init
+ 368 0038 00000000 		.word	SrvOled_DCPin_Ctl
+ 369 003c 00000000 		.word	.LANCHOR3
+ 370              		.cfi_endproc
+ 371              	.LFE128:
+ 373              		.section	.text.SrvOled_Init,"ax",%progbits
+ 374              		.align	1
+ 375              		.syntax unified
+ 376              		.thumb
+ 377              		.thumb_func
+ 378              		.fpu fpv4-sp-d16
+ 380              	SrvOled_Init:
+ 381              	.LFB129:
+ 111:Dsp/screen/service/SrvOled.c **** 
+ 112:Dsp/screen/service/SrvOled.c **** static bool SrvOled_Init(void)
+ 113:Dsp/screen/service/SrvOled.c **** {
+ 382              		.loc 1 113 1 is_stmt 1 view -0
+ 383              		.cfi_startproc
+ 384              		@ args = 0, pretend = 0, frame = 0
+ 385              		@ frame_needed = 0, uses_anonymous_args = 0
+ 386 0000 08B5     		push	{r3, lr}
+ 387              	.LCFI7:
+ 388              		.cfi_def_cfa_offset 8
+ 389              		.cfi_offset 3, -8
+ 390              		.cfi_offset 14, -4
+ 114:Dsp/screen/service/SrvOled.c ****     SrvInit_State = false;
+ 391              		.loc 1 114 5 view .LVU92
+ 392              		.loc 1 114 19 is_stmt 0 view .LVU93
+ 393 0002 084B     		ldr	r3, .L33
+ 394 0004 0022     		movs	r2, #0
+ 395 0006 1A70     		strb	r2, [r3]
+ 115:Dsp/screen/service/SrvOled.c **** 
+ 116:Dsp/screen/service/SrvOled.c ****     if (SrvOled_PreInit())
+ 396              		.loc 1 116 5 is_stmt 1 view .LVU94
+ 397              		.loc 1 116 9 is_stmt 0 view .LVU95
+ 398 0008 FFF7FEFF 		bl	SrvOled_PreInit
+ 399              	.LVL17:
+ 400              		.loc 1 116 8 view .LVU96
+ 401 000c 38B1     		cbz	r0, .L31
+ 117:Dsp/screen/service/SrvOled.c ****     {
+ 118:Dsp/screen/service/SrvOled.c ****         if (DrvOled.init(&Oled1306Obj))
+ 402              		.loc 1 118 9 is_stmt 1 view .LVU97
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 10
+
+
+ 403              		.loc 1 118 20 is_stmt 0 view .LVU98
+ 404 000e 064B     		ldr	r3, .L33+4
+ 405 0010 1B68     		ldr	r3, [r3]
+ 406              		.loc 1 118 13 view .LVU99
+ 407 0012 0648     		ldr	r0, .L33+8
+ 408 0014 9847     		blx	r3
+ 409              	.LVL18:
+ 410              		.loc 1 118 12 view .LVU100
+ 411 0016 10B1     		cbz	r0, .L31
+ 119:Dsp/screen/service/SrvOled.c ****         {
+ 120:Dsp/screen/service/SrvOled.c ****             SrvInit_State = true;
+ 412              		.loc 1 120 13 is_stmt 1 view .LVU101
+ 413              		.loc 1 120 27 is_stmt 0 view .LVU102
+ 414 0018 024B     		ldr	r3, .L33
+ 415 001a 0122     		movs	r2, #1
+ 416 001c 1A70     		strb	r2, [r3]
+ 417              	.L31:
+ 121:Dsp/screen/service/SrvOled.c ****         }
+ 122:Dsp/screen/service/SrvOled.c ****     }
+ 123:Dsp/screen/service/SrvOled.c **** 
+ 124:Dsp/screen/service/SrvOled.c ****     return SrvInit_State;
+ 418              		.loc 1 124 5 is_stmt 1 view .LVU103
+ 125:Dsp/screen/service/SrvOled.c **** }
+ 419              		.loc 1 125 1 is_stmt 0 view .LVU104
+ 420 001e 014B     		ldr	r3, .L33
+ 421 0020 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 422 0022 08BD     		pop	{r3, pc}
+ 423              	.L34:
+ 424              		.align	2
+ 425              	.L33:
+ 426 0024 00000000 		.word	.LANCHOR4
+ 427 0028 00000000 		.word	DrvOled
+ 428 002c 00000000 		.word	.LANCHOR2
+ 429              		.cfi_endproc
+ 430              	.LFE129:
+ 432              		.section	.text.SrvOled_Fresh,"ax",%progbits
+ 433              		.align	1
+ 434              		.syntax unified
+ 435              		.thumb
+ 436              		.thumb_func
+ 437              		.fpu fpv4-sp-d16
+ 439              	SrvOled_Fresh:
+ 440              	.LVL19:
+ 441              	.LFB130:
+ 126:Dsp/screen/service/SrvOled.c **** 
+ 127:Dsp/screen/service/SrvOled.c **** static bool SrvOled_Fresh(uint8_t **bit_map)
+ 128:Dsp/screen/service/SrvOled.c **** {
+ 442              		.loc 1 128 1 is_stmt 1 view -0
+ 443              		.cfi_startproc
+ 444              		@ args = 0, pretend = 0, frame = 0
+ 445              		@ frame_needed = 0, uses_anonymous_args = 0
+ 446              		.loc 1 128 1 is_stmt 0 view .LVU106
+ 447 0000 10B5     		push	{r4, lr}
+ 448              	.LCFI8:
+ 449              		.cfi_def_cfa_offset 8
+ 450              		.cfi_offset 4, -8
+ 451              		.cfi_offset 14, -4
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 11
+
+
+ 129:Dsp/screen/service/SrvOled.c ****     if (!SrvInit_State)
+ 452              		.loc 1 129 5 is_stmt 1 view .LVU107
+ 453              		.loc 1 129 9 is_stmt 0 view .LVU108
+ 454 0002 054B     		ldr	r3, .L38
+ 455 0004 1C78     		ldrb	r4, [r3]	@ zero_extendqisi2
+ 456              		.loc 1 129 8 view .LVU109
+ 457 0006 24B1     		cbz	r4, .L36
+ 458 0008 0146     		mov	r1, r0
+ 130:Dsp/screen/service/SrvOled.c ****         return false;
+ 131:Dsp/screen/service/SrvOled.c **** 
+ 132:Dsp/screen/service/SrvOled.c ****     DrvOled.fresh(&Oled1306Obj, bit_map);
+ 459              		.loc 1 132 5 is_stmt 1 view .LVU110
+ 460              		.loc 1 132 12 is_stmt 0 view .LVU111
+ 461 000a 044B     		ldr	r3, .L38+4
+ 462 000c 9B68     		ldr	r3, [r3, #8]
+ 463              		.loc 1 132 5 view .LVU112
+ 464 000e 0448     		ldr	r0, .L38+8
+ 465              	.LVL20:
+ 466              		.loc 1 132 5 view .LVU113
+ 467 0010 9847     		blx	r3
+ 468              	.LVL21:
+ 133:Dsp/screen/service/SrvOled.c ****     return true;
+ 469              		.loc 1 133 5 is_stmt 1 view .LVU114
+ 470              	.L36:
+ 134:Dsp/screen/service/SrvOled.c **** }
+ 471              		.loc 1 134 1 is_stmt 0 view .LVU115
+ 472 0012 2046     		mov	r0, r4
+ 473 0014 10BD     		pop	{r4, pc}
+ 474              	.L39:
+ 475 0016 00BF     		.align	2
+ 476              	.L38:
+ 477 0018 00000000 		.word	.LANCHOR4
+ 478 001c 00000000 		.word	DrvOled
+ 479 0020 00000000 		.word	.LANCHOR2
+ 480              		.cfi_endproc
+ 481              	.LFE130:
+ 483              		.section	.text.SrvOled_GetDev_DspRange,"ax",%progbits
+ 484              		.align	1
+ 485              		.syntax unified
+ 486              		.thumb
+ 487              		.thumb_func
+ 488              		.fpu fpv4-sp-d16
+ 490              	SrvOled_GetDev_DspRange:
+ 491              	.LFB131:
+ 135:Dsp/screen/service/SrvOled.c **** 
+ 136:Dsp/screen/service/SrvOled.c **** static SrvOled_DspRange SrvOled_GetDev_DspRange(void)
+ 137:Dsp/screen/service/SrvOled.c **** {
+ 492              		.loc 1 137 1 is_stmt 1 view -0
+ 493              		.cfi_startproc
+ 494              		@ args = 0, pretend = 0, frame = 8
+ 495              		@ frame_needed = 0, uses_anonymous_args = 0
+ 496 0000 10B5     		push	{r4, lr}
+ 497              	.LCFI9:
+ 498              		.cfi_def_cfa_offset 8
+ 499              		.cfi_offset 4, -8
+ 500              		.cfi_offset 14, -4
+ 501 0002 82B0     		sub	sp, sp, #8
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 12
+
+
+ 502              	.LCFI10:
+ 503              		.cfi_def_cfa_offset 16
+ 138:Dsp/screen/service/SrvOled.c ****     SrvOled_DspRange range;
+ 504              		.loc 1 138 5 view .LVU117
+ 139:Dsp/screen/service/SrvOled.c **** 
+ 140:Dsp/screen/service/SrvOled.c ****     range.width = DrvOled.get_max_width();
+ 505              		.loc 1 140 5 view .LVU118
+ 506              		.loc 1 140 26 is_stmt 0 view .LVU119
+ 507 0004 0B4C     		ldr	r4, .L42
+ 508 0006 2369     		ldr	r3, [r4, #16]
+ 509              		.loc 1 140 19 view .LVU120
+ 510 0008 9847     		blx	r3
+ 511              	.LVL22:
+ 512              		.loc 1 140 17 view .LVU121
+ 513 000a 8DF80000 		strb	r0, [sp]
+ 141:Dsp/screen/service/SrvOled.c ****     range.height = DrvOled.get_max_height();
+ 514              		.loc 1 141 5 is_stmt 1 view .LVU122
+ 515              		.loc 1 141 27 is_stmt 0 view .LVU123
+ 516 000e 6369     		ldr	r3, [r4, #20]
+ 517              		.loc 1 141 20 view .LVU124
+ 518 0010 9847     		blx	r3
+ 519              	.LVL23:
+ 520              		.loc 1 141 18 view .LVU125
+ 521 0012 8DF80100 		strb	r0, [sp, #1]
+ 142:Dsp/screen/service/SrvOled.c **** 
+ 143:Dsp/screen/service/SrvOled.c ****     return range;
+ 522              		.loc 1 143 5 is_stmt 1 view .LVU126
+ 523              		.loc 1 143 12 is_stmt 0 view .LVU127
+ 524 0016 BDF80030 		ldrh	r3, [sp]
+ 525 001a ADF80430 		strh	r3, [sp, #4]	@ movhi
+ 526 001e 0020     		movs	r0, #0
+ 527 0020 9DF80430 		ldrb	r3, [sp, #4]	@ zero_extendqisi2
+ 528 0024 63F30700 		bfi	r0, r3, #0, #8
+ 529 0028 9DF80530 		ldrb	r3, [sp, #5]	@ zero_extendqisi2
+ 530 002c 63F30F20 		bfi	r0, r3, #8, #8
+ 144:Dsp/screen/service/SrvOled.c **** }
+ 531              		.loc 1 144 1 view .LVU128
+ 532 0030 02B0     		add	sp, sp, #8
+ 533              	.LCFI11:
+ 534              		.cfi_def_cfa_offset 8
+ 535              		@ sp needed
+ 536 0032 10BD     		pop	{r4, pc}
+ 537              	.L43:
+ 538              		.align	2
+ 539              	.L42:
+ 540 0034 00000000 		.word	DrvOled
+ 541              		.cfi_endproc
+ 542              	.LFE131:
+ 544              		.global	SrvOled
+ 545              		.section	.bss.DC_IO_Obj,"aw",%nobits
+ 546              		.align	2
+ 547              		.set	.LANCHOR0,. + 0
+ 550              	DC_IO_Obj:
+ 551 0000 00000000 		.space	16
+ 551      00000000 
+ 551      00000000 
+ 551      00000000 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 13
+
+
+ 552              		.section	.bss.Oled1306Obj,"aw",%nobits
+ 553              		.align	2
+ 554              		.set	.LANCHOR2,. + 0
+ 557              	Oled1306Obj:
+ 558 0000 00000000 		.space	28
+ 558      00000000 
+ 558      00000000 
+ 558      00000000 
+ 558      00000000 
+ 559              		.section	.bss.RS_IO_Obj,"aw",%nobits
+ 560              		.align	2
+ 561              		.set	.LANCHOR1,. + 0
+ 564              	RS_IO_Obj:
+ 565 0000 00000000 		.space	16
+ 565      00000000 
+ 565      00000000 
+ 565      00000000 
+ 566              		.section	.bss.SrvInit_State,"aw",%nobits
+ 567              		.set	.LANCHOR4,. + 0
+ 570              	SrvInit_State:
+ 571 0000 00       		.space	1
+ 572              		.section	.bss.SrvPerInit_State,"aw",%nobits
+ 573              		.set	.LANCHOR3,. + 0
+ 576              	SrvPerInit_State:
+ 577 0000 00       		.space	1
+ 578              		.section	.data.SrvOled,"aw"
+ 579              		.align	2
+ 582              	SrvOled:
+ 583 0000 00000000 		.word	SrvOled_Init
+ 584 0004 00000000 		.word	SrvOled_Fresh
+ 585 0008 00000000 		.word	SrvOled_GetDev_DspRange
+ 586              		.text
+ 587              	.Letext0:
+ 588              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 589              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 590              		.file 4 "Dsp/screen/device/oled1306.h"
+ 591              		.file 5 "USER/stm32f4xx.h"
+ 592              		.file 6 "Bsp/periph_spi.h"
+ 593              		.file 7 "SYS/data_structure/queue.h"
+ 594              		.file 8 "Drv/drv_spi.h"
+ 595              		.file 9 "Drv/drv_gpio.h"
+ 596              		.file 10 "Dsp/screen/service/SrvOled.h"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwRNEty.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 SrvOled.c
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:18     .text.SrvOled_BusInit:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:25     .text.SrvOled_BusInit:00000000 SrvOled_BusInit
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:76     .text.SrvOled_BusInit:00000028 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:81     .text.SrvOled_DCPin_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:87     .text.SrvOled_DCPin_Init:00000000 SrvOled_DCPin_Init
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:127    .text.SrvOled_DCPin_Init:0000001c $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:134    .text.SrvOled_RSPin_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:140    .text.SrvOled_RSPin_Init:00000000 SrvOled_RSPin_Init
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:180    .text.SrvOled_RSPin_Init:0000001c $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:187    .text.SrvOled_DCPin_Ctl:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:193    .text.SrvOled_DCPin_Ctl:00000000 SrvOled_DCPin_Ctl
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:243    .text.SrvOled_DCPin_Ctl:0000001c $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:249    .text.SrvOled_RSPin_Ctl:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:255    .text.SrvOled_RSPin_Ctl:00000000 SrvOled_RSPin_Ctl
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:305    .text.SrvOled_RSPin_Ctl:0000001c $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:311    .text.SrvOled_PreInit:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:317    .text.SrvOled_PreInit:00000000 SrvOled_PreInit
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:363    .text.SrvOled_PreInit:00000024 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:374    .text.SrvOled_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:380    .text.SrvOled_Init:00000000 SrvOled_Init
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:426    .text.SrvOled_Init:00000024 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:433    .text.SrvOled_Fresh:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:439    .text.SrvOled_Fresh:00000000 SrvOled_Fresh
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:477    .text.SrvOled_Fresh:00000018 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:484    .text.SrvOled_GetDev_DspRange:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:490    .text.SrvOled_GetDev_DspRange:00000000 SrvOled_GetDev_DspRange
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:540    .text.SrvOled_GetDev_DspRange:00000034 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:582    .data.SrvOled:00000000 SrvOled
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:546    .bss.DC_IO_Obj:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:550    .bss.DC_IO_Obj:00000000 DC_IO_Obj
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:553    .bss.Oled1306Obj:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:557    .bss.Oled1306Obj:00000000 Oled1306Obj
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:560    .bss.RS_IO_Obj:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:564    .bss.RS_IO_Obj:00000000 RS_IO_Obj
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:570    .bss.SrvInit_State:00000000 SrvInit_State
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:571    .bss.SrvInit_State:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:576    .bss.SrvPerInit_State:00000000 SrvPerInit_State
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:577    .bss.SrvPerInit_State:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccwRNEty.s:579    .data.SrvOled:00000000 $d
+
+UNDEFINED SYMBOLS
+GenSPI_Drv
+GenGPIO_Drv
+DrvOled

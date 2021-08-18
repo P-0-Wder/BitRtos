@@ -1,4 +1,5 @@
 #include "widget_mng.h"
+#include "SrvOled.h"
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
@@ -65,7 +66,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     if (MonitorDataObj.max_display_cache == 0)
     {
-        MonitorDataObj.max_display_cache = (DrvOled.get_max_height() * DrvOled.get_max_width()) * MAX_WIDGET_CACHE_PAGE;
+        MonitorDataObj.max_display_cache = (SrvOled.get_range().height * SrvOled.get_range().width) * MAX_WIDGET_CACHE_PAGE;
         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
     }
 

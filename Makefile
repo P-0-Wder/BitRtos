@@ -48,6 +48,7 @@ SYS/common/sys.c \
 SYS/crc/crc16.c \
 Dsp/screen/font/oledfont.c \
 Dsp/screen/device/oled1306.c \
+Dsp/screen/service/SrvOled.c \
 Dsp/widget/wgt_core/widget_mng.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
@@ -189,9 +190,10 @@ C_INCLUDES =  \
 -IBsp \
 -IDrv \
 -IDsp \
+-IDsp/screen/OledIO_Definition \
+-IDsp/screen/service \
 -IDsp/screen/device \
 -IDsp/screen/font \
--IDsp/screen/img \
 -IDsp/widget/wgt_core \
 -ISYS/task_manager \
 -ISYS/data_structure \
