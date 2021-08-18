@@ -1,5 +1,6 @@
 #include "widget_mng.h"
 #include "SrvOled.h"
+#include "linked_list.h"
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
@@ -10,6 +11,7 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
 };
 static Widget_Handle CurActive_Widget = 0;
 static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
+static uint8_t **widget_blackboard;
 
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
@@ -68,6 +70,21 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     {
         MonitorDataObj.max_display_cache = (SrvOled.get_range().height * SrvOled.get_range().width) * MAX_WIDGET_CACHE_PAGE;
         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+
+        widget_blackboard = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().height);
+
+        if (widget_blackboard == NULL)
+            return WIDGET_CREATE_ERROR;
+
+        for (uint8_t column_index = 0; column_index < SrvOled.get_range().height; column_index++)
+        {
+            widget_blackboard[column_index] = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().width);
+
+            if (widget_blackboard[column_index] == NULL)
+                return WIDGET_CREATE_ERROR;
+        }
+
+        MonitorDataObj.widget_list = NULL;
     }
 
     widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
@@ -107,6 +124,27 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     widget_tmp->Dsp = &WidgetDraw_Interface;
     widget_tmp->Ctl = &WidgetCtl_Interface;
+
+    widget_tmp->item = (item_obj *)malloc(sizeof(item_obj));
+    if (widget_tmp == NULL)
+        return WIDGET_CREATE_ERROR;
+
+    widget_tmp->item->mode = by_order;
+    widget_tmp->item->data = (Widget_Handle)widget_tmp;
+
+    if (MonitorDataObj.widget_list == NULL)
+    {
+        widget_tmp->item->nxt = NULL;
+        widget_tmp->item->prv = NULL;
+        widget_tmp->item->compare_callback = NULL;
+
+        MonitorDataObj.widget_list = widget_tmp->item;
+    }
+    else
+    {
+        MonitorDataObj.widget_list->nxt = widget_tmp->item;
+        widget_tmp->item->prv = MonitorDataObj.widget_list;
+    }
 
     return (Widget_Handle)widget_tmp;
 }
@@ -220,13 +258,17 @@ static bool Widget_FreshAll(void)
         switch ((uint8_t)WidgetFresh_State)
         {
         case Fresh_State_DrvInit:
-            WidgetFresh_State = Fresh_State_Reguler;
-            //DrvOled.init();
+            if (SrvOled.init())
+            {
+                WidgetFresh_State = Fresh_State_Reguler;
+            }
+            else
+                WidgetFresh_State = Fresh_State_DrvError;
             break;
 
         case Fresh_State_Reguler:
             Widget_Fusion();
-            //DrvOled.fresh();
+            SrvOled.fresh(widget_blackboard);
             return true;
 
         case Fresh_State_DrvError:

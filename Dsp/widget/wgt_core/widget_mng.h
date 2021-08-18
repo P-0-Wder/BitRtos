@@ -8,6 +8,7 @@
 #include <string.h>
 #include "GenDsp.h"
 #include "pixel.h"
+#include "linked_list.h"
 
 #define WIDGET_OPR_ERROR 0
 #define WIDGET_CREATE_ERROR WIDGET_OPR_ERROR
@@ -34,6 +35,7 @@ typedef struct
     uint16_t widget_used_size;
     uint16_t remain_size;
     uint16_t max_display_cache;
+    list_obj *widget_list;
 } Widget_MonitorData_TypeDef;
 
 typedef enum
@@ -81,6 +83,8 @@ typedef struct
     Widget_DrawFunc_TypeDef *Ctl; //widget control function block
 
     char *name;
+
+    item_obj *item;
 
     uint8_t level;
 } WidgetObj_TypeDef;

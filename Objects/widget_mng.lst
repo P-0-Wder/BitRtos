@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -29,218 +29,256 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
   27              		.file 1 "Dsp/widget/wgt_core/widget_mng.c"
    1:Dsp/widget/wgt_core/widget_mng.c **** #include "widget_mng.h"
    2:Dsp/widget/wgt_core/widget_mng.c **** #include "SrvOled.h"
-   3:Dsp/widget/wgt_core/widget_mng.c **** 
-   4:Dsp/widget/wgt_core/widget_mng.c **** /* internal variable */
-   5:Dsp/widget/wgt_core/widget_mng.c **** Widget_MonitorData_TypeDef MonitorDataObj = {
-   6:Dsp/widget/wgt_core/widget_mng.c ****     .created_widget = 0,
-   7:Dsp/widget/wgt_core/widget_mng.c ****     .widget_used_size = 0,
-   8:Dsp/widget/wgt_core/widget_mng.c ****     .remain_size = 0,
-   9:Dsp/widget/wgt_core/widget_mng.c ****     .max_display_cache = 0,
-  10:Dsp/widget/wgt_core/widget_mng.c **** };
-  11:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Handle CurActive_Widget = 0;
-  12:Dsp/widget/wgt_core/widget_mng.c **** static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
-  13:Dsp/widget/wgt_core/widget_mng.c **** 
-  14:Dsp/widget/wgt_core/widget_mng.c **** /* internal function */
-  15:Dsp/widget/wgt_core/widget_mng.c **** static WidgetObj_TypeDef *GetCur_Active_Widget(void);
-  16:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_Fusion(void);
-  17:Dsp/widget/wgt_core/widget_mng.c **** 
-  18:Dsp/widget/wgt_core/widget_mng.c **** /* external widget manager function definition */
-  19:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, c
-  20:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Control_TypeDef *Widget_CtlInterface(void);
-  21:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Deleted(Widget_Handle *hdl);
-  22:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_FreshAll(void);
-  23:Dsp/widget/wgt_core/widget_mng.c **** 
-  24:Dsp/widget/wgt_core/widget_mng.c **** /* external widget control function */
-  25:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Show(void);
-  26:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Hide(void);
-  27:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_MoveTo(uint8_t x, uint8_t y);
-  28:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
-  29:Dsp/widget/wgt_core/widget_mng.c **** 
-  30:Dsp/widget/wgt_core/widget_mng.c **** /* widget draw function interface */
-  31:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set);
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 2
+   3:Dsp/widget/wgt_core/widget_mng.c **** #include "linked_list.h"
+   4:Dsp/widget/wgt_core/widget_mng.c **** 
+   5:Dsp/widget/wgt_core/widget_mng.c **** /* internal variable */
+   6:Dsp/widget/wgt_core/widget_mng.c **** Widget_MonitorData_TypeDef MonitorDataObj = {
+   7:Dsp/widget/wgt_core/widget_mng.c ****     .created_widget = 0,
+   8:Dsp/widget/wgt_core/widget_mng.c ****     .widget_used_size = 0,
+   9:Dsp/widget/wgt_core/widget_mng.c ****     .remain_size = 0,
+  10:Dsp/widget/wgt_core/widget_mng.c ****     .max_display_cache = 0,
+  11:Dsp/widget/wgt_core/widget_mng.c **** };
+  12:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Handle CurActive_Widget = 0;
+  13:Dsp/widget/wgt_core/widget_mng.c **** static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
+  14:Dsp/widget/wgt_core/widget_mng.c **** static uint8_t **widget_blackboard;
+  15:Dsp/widget/wgt_core/widget_mng.c **** 
+  16:Dsp/widget/wgt_core/widget_mng.c **** /* internal function */
+  17:Dsp/widget/wgt_core/widget_mng.c **** static WidgetObj_TypeDef *GetCur_Active_Widget(void);
+  18:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_Fusion(void);
+  19:Dsp/widget/wgt_core/widget_mng.c **** 
+  20:Dsp/widget/wgt_core/widget_mng.c **** /* external widget manager function definition */
+  21:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, c
+  22:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Control_TypeDef *Widget_CtlInterface(void);
+  23:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Deleted(Widget_Handle *hdl);
+  24:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_FreshAll(void);
+  25:Dsp/widget/wgt_core/widget_mng.c **** 
+  26:Dsp/widget/wgt_core/widget_mng.c **** /* external widget control function */
+  27:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Show(void);
+  28:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Hide(void);
+  29:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_MoveTo(uint8_t x, uint8_t y);
+  30:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
+  31:Dsp/widget/wgt_core/widget_mng.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 2
 
 
-  32:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y, bool col_cnv);
-  33:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv);
-  34:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t
-  35:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size
-  36:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_
-  37:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv);
-  38:Dsp/widget/wgt_core/widget_mng.c **** 
-  39:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
-  40:Dsp/widget/wgt_core/widget_mng.c ****     .draw_str = Widget_DrawStr,
-  41:Dsp/widget/wgt_core/widget_mng.c ****     .draw_rectangle = Widget_DrawRectangle,
-  42:Dsp/widget/wgt_core/widget_mng.c ****     .draw_point = Widget_DrawPoint,
-  43:Dsp/widget/wgt_core/widget_mng.c ****     .draw_num = Widget_DrawNum,
-  44:Dsp/widget/wgt_core/widget_mng.c ****     .draw_line = Widget_DrawLine,
-  45:Dsp/widget/wgt_core/widget_mng.c ****     .draw_circle = Widget_DrawCircle,
-  46:Dsp/widget/wgt_core/widget_mng.c ****     .draw_char = Widget_DrawChr,
-  47:Dsp/widget/wgt_core/widget_mng.c **** };
-  48:Dsp/widget/wgt_core/widget_mng.c **** 
-  49:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Control_TypeDef WidgetCtl_Interface = {
-  50:Dsp/widget/wgt_core/widget_mng.c ****     .Show = Widget_Show,
-  51:Dsp/widget/wgt_core/widget_mng.c ****     .Hide = Widget_Hide,
-  52:Dsp/widget/wgt_core/widget_mng.c ****     .Move = Widget_MoveTo,
-  53:Dsp/widget/wgt_core/widget_mng.c ****     .Draw = Widget_DrawInterface,
-  54:Dsp/widget/wgt_core/widget_mng.c **** };
-  55:Dsp/widget/wgt_core/widget_mng.c **** 
-  56:Dsp/widget/wgt_core/widget_mng.c **** Widget_GenProcFunc_TypeDef Widget_Mng = {
-  57:Dsp/widget/wgt_core/widget_mng.c ****     .Create = Widget_Create,
-  58:Dsp/widget/wgt_core/widget_mng.c ****     .Delete = Widget_Deleted,
-  59:Dsp/widget/wgt_core/widget_mng.c ****     .Control = Widget_CtlInterface,
-  60:Dsp/widget/wgt_core/widget_mng.c ****     .fresh_all = Widget_FreshAll,
-  61:Dsp/widget/wgt_core/widget_mng.c **** };
-  62:Dsp/widget/wgt_core/widget_mng.c **** 
-  63:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, c
-  64:Dsp/widget/wgt_core/widget_mng.c **** {
-  65:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp;
-  66:Dsp/widget/wgt_core/widget_mng.c **** 
-  67:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.max_display_cache == 0)
-  68:Dsp/widget/wgt_core/widget_mng.c ****     {
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.max_display_cache = (SrvOled.get_range().height * SrvOled.get_range().width)
-  70:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
-  71:Dsp/widget/wgt_core/widget_mng.c ****     }
-  72:Dsp/widget/wgt_core/widget_mng.c **** 
-  73:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
-  74:Dsp/widget/wgt_core/widget_mng.c **** 
-  75:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp == NULL)
-  76:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
-  77:Dsp/widget/wgt_core/widget_mng.c **** 
-  78:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_x = cord_x;
-  79:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_y = cord_y;
-  80:Dsp/widget/wgt_core/widget_mng.c **** 
-  81:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->width = width;
-  82:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->height = height;
-  83:Dsp/widget/wgt_core/widget_mng.c **** 
-  84:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->name = name;
-  85:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->on_layer = DEFAULT_LAYER;
+  32:Dsp/widget/wgt_core/widget_mng.c **** /* widget draw function interface */
+  33:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set);
+  34:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y, bool col_cnv);
+  35:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv);
+  36:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t
+  37:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size
+  38:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_
+  39:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv);
+  40:Dsp/widget/wgt_core/widget_mng.c **** 
+  41:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
+  42:Dsp/widget/wgt_core/widget_mng.c ****     .draw_str = Widget_DrawStr,
+  43:Dsp/widget/wgt_core/widget_mng.c ****     .draw_rectangle = Widget_DrawRectangle,
+  44:Dsp/widget/wgt_core/widget_mng.c ****     .draw_point = Widget_DrawPoint,
+  45:Dsp/widget/wgt_core/widget_mng.c ****     .draw_num = Widget_DrawNum,
+  46:Dsp/widget/wgt_core/widget_mng.c ****     .draw_line = Widget_DrawLine,
+  47:Dsp/widget/wgt_core/widget_mng.c ****     .draw_circle = Widget_DrawCircle,
+  48:Dsp/widget/wgt_core/widget_mng.c ****     .draw_char = Widget_DrawChr,
+  49:Dsp/widget/wgt_core/widget_mng.c **** };
+  50:Dsp/widget/wgt_core/widget_mng.c **** 
+  51:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Control_TypeDef WidgetCtl_Interface = {
+  52:Dsp/widget/wgt_core/widget_mng.c ****     .Show = Widget_Show,
+  53:Dsp/widget/wgt_core/widget_mng.c ****     .Hide = Widget_Hide,
+  54:Dsp/widget/wgt_core/widget_mng.c ****     .Move = Widget_MoveTo,
+  55:Dsp/widget/wgt_core/widget_mng.c ****     .Draw = Widget_DrawInterface,
+  56:Dsp/widget/wgt_core/widget_mng.c **** };
+  57:Dsp/widget/wgt_core/widget_mng.c **** 
+  58:Dsp/widget/wgt_core/widget_mng.c **** Widget_GenProcFunc_TypeDef Widget_Mng = {
+  59:Dsp/widget/wgt_core/widget_mng.c ****     .Create = Widget_Create,
+  60:Dsp/widget/wgt_core/widget_mng.c ****     .Delete = Widget_Deleted,
+  61:Dsp/widget/wgt_core/widget_mng.c ****     .Control = Widget_CtlInterface,
+  62:Dsp/widget/wgt_core/widget_mng.c ****     .fresh_all = Widget_FreshAll,
+  63:Dsp/widget/wgt_core/widget_mng.c **** };
+  64:Dsp/widget/wgt_core/widget_mng.c **** 
+  65:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, c
+  66:Dsp/widget/wgt_core/widget_mng.c **** {
+  67:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp;
+  68:Dsp/widget/wgt_core/widget_mng.c **** 
+  69:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.max_display_cache == 0)
+  70:Dsp/widget/wgt_core/widget_mng.c ****     {
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.max_display_cache = (SrvOled.get_range().height * SrvOled.get_range().width)
+  72:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+  73:Dsp/widget/wgt_core/widget_mng.c **** 
+  74:Dsp/widget/wgt_core/widget_mng.c ****         widget_blackboard = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().height);
+  75:Dsp/widget/wgt_core/widget_mng.c **** 
+  76:Dsp/widget/wgt_core/widget_mng.c ****         if (widget_blackboard == NULL)
+  77:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
+  78:Dsp/widget/wgt_core/widget_mng.c **** 
+  79:Dsp/widget/wgt_core/widget_mng.c ****         for (uint8_t column_index = 0; column_index < SrvOled.get_range().height; column_index++)
+  80:Dsp/widget/wgt_core/widget_mng.c ****         {
+  81:Dsp/widget/wgt_core/widget_mng.c ****             widget_blackboard[column_index] = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_ra
+  82:Dsp/widget/wgt_core/widget_mng.c **** 
+  83:Dsp/widget/wgt_core/widget_mng.c ****             if (widget_blackboard[column_index] == NULL)
+  84:Dsp/widget/wgt_core/widget_mng.c ****                 return WIDGET_CREATE_ERROR;
+  85:Dsp/widget/wgt_core/widget_mng.c ****         }
   86:Dsp/widget/wgt_core/widget_mng.c **** 
-  87:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.remain_size < (height * width))
-  88:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 3
+  87:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.widget_list = NULL;
+  88:Dsp/widget/wgt_core/widget_mng.c ****     }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 3
 
 
   89:Dsp/widget/wgt_core/widget_mng.c **** 
-  90:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->pixel_map = (uint8_t **)malloc(sizeof(uint8_t *) * height);
+  90:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
   91:Dsp/widget/wgt_core/widget_mng.c **** 
-  92:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp->pixel_map == NULL)
+  92:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp == NULL)
   93:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
   94:Dsp/widget/wgt_core/widget_mng.c **** 
-  95:Dsp/widget/wgt_core/widget_mng.c ****     for (uint8_t h = 0; h < height; h++)
-  96:Dsp/widget/wgt_core/widget_mng.c ****     {
-  97:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->pixel_map[h] = (uint8_t *)malloc(width);
-  98:Dsp/widget/wgt_core/widget_mng.c **** 
-  99:Dsp/widget/wgt_core/widget_mng.c ****         if (widget_tmp->pixel_map == NULL)
- 100:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
- 101:Dsp/widget/wgt_core/widget_mng.c ****     }
- 102:Dsp/widget/wgt_core/widget_mng.c **** 
- 103:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.remain_size -= width * height;
- 104:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
- 105:Dsp/widget/wgt_core/widget_mng.c **** 
- 106:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.created_widget++;
- 107:Dsp/widget/wgt_core/widget_mng.c **** 
- 108:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Dsp = &WidgetDraw_Interface;
- 109:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Ctl = &WidgetCtl_Interface;
- 110:Dsp/widget/wgt_core/widget_mng.c **** 
- 111:Dsp/widget/wgt_core/widget_mng.c ****     return (Widget_Handle)widget_tmp;
- 112:Dsp/widget/wgt_core/widget_mng.c **** }
- 113:Dsp/widget/wgt_core/widget_mng.c **** 
- 114:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Deleted(Widget_Handle *hdl)
- 115:Dsp/widget/wgt_core/widget_mng.c **** {
- 116:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t height = 0;
- 117:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t width = 0;
- 118:Dsp/widget/wgt_core/widget_mng.c **** 
- 119:Dsp/widget/wgt_core/widget_mng.c ****     if ((hdl == NULL) || ((*hdl) == 0))
- 120:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 121:Dsp/widget/wgt_core/widget_mng.c **** 
- 122:Dsp/widget/wgt_core/widget_mng.c ****     height = ((WidgetObj_TypeDef *)(*hdl))->height;
- 123:Dsp/widget/wgt_core/widget_mng.c ****     width = ((WidgetObj_TypeDef *)(*hdl))->width;
+  95:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_x = cord_x;
+  96:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_y = cord_y;
+  97:Dsp/widget/wgt_core/widget_mng.c **** 
+  98:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->width = width;
+  99:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->height = height;
+ 100:Dsp/widget/wgt_core/widget_mng.c **** 
+ 101:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->name = name;
+ 102:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->on_layer = DEFAULT_LAYER;
+ 103:Dsp/widget/wgt_core/widget_mng.c **** 
+ 104:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.remain_size < (height * width))
+ 105:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 106:Dsp/widget/wgt_core/widget_mng.c **** 
+ 107:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->pixel_map = (uint8_t **)malloc(sizeof(uint8_t *) * height);
+ 108:Dsp/widget/wgt_core/widget_mng.c **** 
+ 109:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp->pixel_map == NULL)
+ 110:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 111:Dsp/widget/wgt_core/widget_mng.c **** 
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     for (uint8_t h = 0; h < height; h++)
+ 113:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 114:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->pixel_map[h] = (uint8_t *)malloc(width);
+ 115:Dsp/widget/wgt_core/widget_mng.c **** 
+ 116:Dsp/widget/wgt_core/widget_mng.c ****         if (widget_tmp->pixel_map == NULL)
+ 117:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
+ 118:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 119:Dsp/widget/wgt_core/widget_mng.c **** 
+ 120:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.remain_size -= width * height;
+ 121:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
+ 122:Dsp/widget/wgt_core/widget_mng.c **** 
+ 123:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.created_widget++;
  124:Dsp/widget/wgt_core/widget_mng.c **** 
- 125:Dsp/widget/wgt_core/widget_mng.c ****     free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
- 126:Dsp/widget/wgt_core/widget_mng.c **** 
- 127:Dsp/widget/wgt_core/widget_mng.c ****     for (uint8_t h = 0; h < height; h++)
- 128:Dsp/widget/wgt_core/widget_mng.c ****     {
- 129:Dsp/widget/wgt_core/widget_mng.c ****         free(((WidgetObj_TypeDef *)(*hdl))->pixel_map[h]);
- 130:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 125:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Dsp = &WidgetDraw_Interface;
+ 126:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Ctl = &WidgetCtl_Interface;
+ 127:Dsp/widget/wgt_core/widget_mng.c **** 
+ 128:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->item = (item_obj *)malloc(sizeof(item_obj));
+ 129:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp == NULL)
+ 130:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
  131:Dsp/widget/wgt_core/widget_mng.c **** 
- 132:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.remain_size += width * height;
- 133:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
+ 132:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->item->mode = by_order;
+ 133:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->item->data = (Widget_Handle)widget_tmp;
  134:Dsp/widget/wgt_core/widget_mng.c **** 
- 135:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.remain_size > MonitorDataObj.max_display_cache)
- 136:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 137:Dsp/widget/wgt_core/widget_mng.c **** 
- 138:Dsp/widget/wgt_core/widget_mng.c ****     *hdl = 0;
- 139:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 140:Dsp/widget/wgt_core/widget_mng.c **** }
- 141:Dsp/widget/wgt_core/widget_mng.c **** 
- 142:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Show(void)
- 143:Dsp/widget/wgt_core/widget_mng.c **** {
- 144:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 145:Dsp/widget/wgt_core/widget_mng.c ****         return false;
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 4
+ 135:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.widget_list == NULL)
+ 136:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 137:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->nxt = NULL;
+ 138:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = NULL;
+ 139:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->compare_callback = NULL;
+ 140:Dsp/widget/wgt_core/widget_mng.c **** 
+ 141:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.widget_list = widget_tmp->item;
+ 142:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 143:Dsp/widget/wgt_core/widget_mng.c ****     else
+ 144:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 145:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.widget_list->nxt = widget_tmp->item;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 4
 
 
- 146:Dsp/widget/wgt_core/widget_mng.c **** 
- 147:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->on_show = true;
- 148:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 149:Dsp/widget/wgt_core/widget_mng.c **** }
- 150:Dsp/widget/wgt_core/widget_mng.c **** 
- 151:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Hide(void)
- 152:Dsp/widget/wgt_core/widget_mng.c **** {
- 153:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 154:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 155:Dsp/widget/wgt_core/widget_mng.c **** 
- 156:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->on_show = false;
- 157:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 158:Dsp/widget/wgt_core/widget_mng.c **** }
+ 146:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = MonitorDataObj.widget_list;
+ 147:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 148:Dsp/widget/wgt_core/widget_mng.c **** 
+ 149:Dsp/widget/wgt_core/widget_mng.c ****     return (Widget_Handle)widget_tmp;
+ 150:Dsp/widget/wgt_core/widget_mng.c **** }
+ 151:Dsp/widget/wgt_core/widget_mng.c **** 
+ 152:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Deleted(Widget_Handle *hdl)
+ 153:Dsp/widget/wgt_core/widget_mng.c **** {
+ 154:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t height = 0;
+ 155:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t width = 0;
+ 156:Dsp/widget/wgt_core/widget_mng.c **** 
+ 157:Dsp/widget/wgt_core/widget_mng.c ****     if ((hdl == NULL) || ((*hdl) == 0))
+ 158:Dsp/widget/wgt_core/widget_mng.c ****         return false;
  159:Dsp/widget/wgt_core/widget_mng.c **** 
- 160:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_MoveTo(uint8_t x, uint8_t y)
- 161:Dsp/widget/wgt_core/widget_mng.c **** {
- 162:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 163:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 160:Dsp/widget/wgt_core/widget_mng.c ****     height = ((WidgetObj_TypeDef *)(*hdl))->height;
+ 161:Dsp/widget/wgt_core/widget_mng.c ****     width = ((WidgetObj_TypeDef *)(*hdl))->width;
+ 162:Dsp/widget/wgt_core/widget_mng.c **** 
+ 163:Dsp/widget/wgt_core/widget_mng.c ****     free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
  164:Dsp/widget/wgt_core/widget_mng.c **** 
- 165:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_x = x;
- 166:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_y = y;
- 167:Dsp/widget/wgt_core/widget_mng.c **** 
- 168:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 169:Dsp/widget/wgt_core/widget_mng.c **** }
- 170:Dsp/widget/wgt_core/widget_mng.c **** 
- 171:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void)
- 172:Dsp/widget/wgt_core/widget_mng.c **** {
- 173:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 174:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     for (uint8_t h = 0; h < height; h++)
+ 166:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 167:Dsp/widget/wgt_core/widget_mng.c ****         free(((WidgetObj_TypeDef *)(*hdl))->pixel_map[h]);
+ 168:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 169:Dsp/widget/wgt_core/widget_mng.c **** 
+ 170:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.remain_size += width * height;
+ 171:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
+ 172:Dsp/widget/wgt_core/widget_mng.c **** 
+ 173:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.remain_size > MonitorDataObj.max_display_cache)
+ 174:Dsp/widget/wgt_core/widget_mng.c ****         return false;
  175:Dsp/widget/wgt_core/widget_mng.c **** 
- 176:Dsp/widget/wgt_core/widget_mng.c ****     return GetCur_Active_Widget()->Dsp;
- 177:Dsp/widget/wgt_core/widget_mng.c **** }
- 178:Dsp/widget/wgt_core/widget_mng.c **** 
- 179:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Control_TypeDef *Widget_CtlInterface(void)
- 180:Dsp/widget/wgt_core/widget_mng.c **** {
- 181:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 182:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
- 183:Dsp/widget/wgt_core/widget_mng.c **** 
- 184:Dsp/widget/wgt_core/widget_mng.c ****     return GetCur_Active_Widget()->Ctl;
- 185:Dsp/widget/wgt_core/widget_mng.c **** }
- 186:Dsp/widget/wgt_core/widget_mng.c **** 
- 187:Dsp/widget/wgt_core/widget_mng.c **** static WidgetObj_TypeDef *GetCur_Active_Widget(void)
- 188:Dsp/widget/wgt_core/widget_mng.c **** {
-  28              		.loc 1 188 1 view -0
+ 176:Dsp/widget/wgt_core/widget_mng.c ****     *hdl = 0;
+ 177:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 178:Dsp/widget/wgt_core/widget_mng.c **** }
+ 179:Dsp/widget/wgt_core/widget_mng.c **** 
+ 180:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Show(void)
+ 181:Dsp/widget/wgt_core/widget_mng.c **** {
+ 182:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 183:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 184:Dsp/widget/wgt_core/widget_mng.c **** 
+ 185:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->on_show = true;
+ 186:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 187:Dsp/widget/wgt_core/widget_mng.c **** }
+ 188:Dsp/widget/wgt_core/widget_mng.c **** 
+ 189:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_Hide(void)
+ 190:Dsp/widget/wgt_core/widget_mng.c **** {
+ 191:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 192:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 193:Dsp/widget/wgt_core/widget_mng.c **** 
+ 194:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->on_show = false;
+ 195:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 196:Dsp/widget/wgt_core/widget_mng.c **** }
+ 197:Dsp/widget/wgt_core/widget_mng.c **** 
+ 198:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_MoveTo(uint8_t x, uint8_t y)
+ 199:Dsp/widget/wgt_core/widget_mng.c **** {
+ 200:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 201:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 202:Dsp/widget/wgt_core/widget_mng.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 5
+
+
+ 203:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_x = x;
+ 204:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_y = y;
+ 205:Dsp/widget/wgt_core/widget_mng.c **** 
+ 206:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 207:Dsp/widget/wgt_core/widget_mng.c **** }
+ 208:Dsp/widget/wgt_core/widget_mng.c **** 
+ 209:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void)
+ 210:Dsp/widget/wgt_core/widget_mng.c **** {
+ 211:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 212:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+ 213:Dsp/widget/wgt_core/widget_mng.c **** 
+ 214:Dsp/widget/wgt_core/widget_mng.c ****     return GetCur_Active_Widget()->Dsp;
+ 215:Dsp/widget/wgt_core/widget_mng.c **** }
+ 216:Dsp/widget/wgt_core/widget_mng.c **** 
+ 217:Dsp/widget/wgt_core/widget_mng.c **** static Widget_Control_TypeDef *Widget_CtlInterface(void)
+ 218:Dsp/widget/wgt_core/widget_mng.c **** {
+ 219:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 220:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+ 221:Dsp/widget/wgt_core/widget_mng.c **** 
+ 222:Dsp/widget/wgt_core/widget_mng.c ****     return GetCur_Active_Widget()->Ctl;
+ 223:Dsp/widget/wgt_core/widget_mng.c **** }
+ 224:Dsp/widget/wgt_core/widget_mng.c **** 
+ 225:Dsp/widget/wgt_core/widget_mng.c **** static WidgetObj_TypeDef *GetCur_Active_Widget(void)
+ 226:Dsp/widget/wgt_core/widget_mng.c **** {
+  28              		.loc 1 226 1 view -0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 0
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32              		@ link register save eliminated.
- 189:Dsp/widget/wgt_core/widget_mng.c ****     if (CurActive_Widget == 0)
-  33              		.loc 1 189 5 view .LVU1
- 190:Dsp/widget/wgt_core/widget_mng.c ****         return 0;
- 191:Dsp/widget/wgt_core/widget_mng.c **** 
- 192:Dsp/widget/wgt_core/widget_mng.c ****     return (WidgetObj_TypeDef *)CurActive_Widget;
- 193:Dsp/widget/wgt_core/widget_mng.c **** }
-  34              		.loc 1 193 1 is_stmt 0 view .LVU2
+ 227:Dsp/widget/wgt_core/widget_mng.c ****     if (CurActive_Widget == 0)
+  33              		.loc 1 227 5 view .LVU1
+ 228:Dsp/widget/wgt_core/widget_mng.c ****         return 0;
+ 229:Dsp/widget/wgt_core/widget_mng.c **** 
+ 230:Dsp/widget/wgt_core/widget_mng.c ****     return (WidgetObj_TypeDef *)CurActive_Widget;
+ 231:Dsp/widget/wgt_core/widget_mng.c **** }
+  34              		.loc 1 231 1 is_stmt 0 view .LVU2
   35 0000 0020     		movs	r0, #0
   36 0002 7047     		bx	lr
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 5
-
-
   37              		.cfi_endproc
   38              	.LFE10:
   40              		.section	.text.Widget_CtlInterface,"ax",%progbits
@@ -251,8 +289,8 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
   45              		.fpu fpv4-sp-d16
   47              	Widget_CtlInterface:
   48              	.LFB9:
- 180:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
-  49              		.loc 1 180 1 is_stmt 1 view -0
+ 218:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+  49              		.loc 1 218 1 is_stmt 1 view -0
   50              		.cfi_startproc
   51              		@ args = 0, pretend = 0, frame = 0
   52              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -260,25 +298,28 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
   54              	.LCFI0:
   55              		.cfi_def_cfa_offset 8
   56              		.cfi_offset 3, -8
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 6
+
+
   57              		.cfi_offset 14, -4
- 181:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
-  58              		.loc 1 181 5 view .LVU4
- 181:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
-  59              		.loc 1 181 9 is_stmt 0 view .LVU5
+ 219:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+  58              		.loc 1 219 5 view .LVU4
+ 219:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+  59              		.loc 1 219 9 is_stmt 0 view .LVU5
   60 0002 FFF7FEFF 		bl	GetCur_Active_Widget
   61              	.LVL0:
- 181:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
-  62              		.loc 1 181 8 view .LVU6
+ 219:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+  62              		.loc 1 219 8 view .LVU6
   63 0006 0346     		mov	r3, r0
   64 0008 00B1     		cbz	r0, .L2
- 184:Dsp/widget/wgt_core/widget_mng.c **** }
-  65              		.loc 1 184 5 is_stmt 1 view .LVU7
- 184:Dsp/widget/wgt_core/widget_mng.c **** }
-  66              		.loc 1 184 34 is_stmt 0 view .LVU8
+ 222:Dsp/widget/wgt_core/widget_mng.c **** }
+  65              		.loc 1 222 5 is_stmt 1 view .LVU7
+ 222:Dsp/widget/wgt_core/widget_mng.c **** }
+  66              		.loc 1 222 34 is_stmt 0 view .LVU8
   67 000a 8369     		ldr	r3, [r0, #24]
   68              	.L2:
- 185:Dsp/widget/wgt_core/widget_mng.c **** 
-  69              		.loc 1 185 1 view .LVU9
+ 223:Dsp/widget/wgt_core/widget_mng.c **** 
+  69              		.loc 1 223 1 view .LVU9
   70 000c 1846     		mov	r0, r3
   71 000e 08BD     		pop	{r3, pc}
   72              		.cfi_endproc
@@ -291,37 +332,37 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
   80              		.fpu fpv4-sp-d16
   82              	Widget_DrawInterface:
   83              	.LFB8:
- 172:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
-  84              		.loc 1 172 1 is_stmt 1 view -0
+ 210:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+  84              		.loc 1 210 1 is_stmt 1 view -0
   85              		.cfi_startproc
   86              		@ args = 0, pretend = 0, frame = 0
   87              		@ frame_needed = 0, uses_anonymous_args = 0
   88 0000 08B5     		push	{r3, lr}
   89              	.LCFI1:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 6
-
-
   90              		.cfi_def_cfa_offset 8
   91              		.cfi_offset 3, -8
   92              		.cfi_offset 14, -4
- 173:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
-  93              		.loc 1 173 5 view .LVU11
- 173:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
-  94              		.loc 1 173 9 is_stmt 0 view .LVU12
+ 211:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+  93              		.loc 1 211 5 view .LVU11
+ 211:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+  94              		.loc 1 211 9 is_stmt 0 view .LVU12
   95 0002 FFF7FEFF 		bl	GetCur_Active_Widget
   96              	.LVL1:
- 173:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
-  97              		.loc 1 173 8 view .LVU13
+ 211:Dsp/widget/wgt_core/widget_mng.c ****         return NULL;
+  97              		.loc 1 211 8 view .LVU13
   98 0006 0346     		mov	r3, r0
   99 0008 00B1     		cbz	r0, .L5
- 176:Dsp/widget/wgt_core/widget_mng.c **** }
- 100              		.loc 1 176 5 is_stmt 1 view .LVU14
- 176:Dsp/widget/wgt_core/widget_mng.c **** }
- 101              		.loc 1 176 34 is_stmt 0 view .LVU15
+ 214:Dsp/widget/wgt_core/widget_mng.c **** }
+ 100              		.loc 1 214 5 is_stmt 1 view .LVU14
+ 214:Dsp/widget/wgt_core/widget_mng.c **** }
+ 101              		.loc 1 214 34 is_stmt 0 view .LVU15
  102 000a 4369     		ldr	r3, [r0, #20]
  103              	.L5:
- 177:Dsp/widget/wgt_core/widget_mng.c **** 
- 104              		.loc 1 177 1 view .LVU16
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 7
+
+
+ 215:Dsp/widget/wgt_core/widget_mng.c **** 
+ 104              		.loc 1 215 1 view .LVU16
  105 000c 1846     		mov	r0, r3
  106 000e 08BD     		pop	{r3, pc}
  107              		.cfi_endproc
@@ -335,13 +376,13 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
  117              	Widget_MoveTo:
  118              	.LVL2:
  119              	.LFB7:
- 161:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 120              		.loc 1 161 1 is_stmt 1 view -0
+ 199:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 120              		.loc 1 199 1 is_stmt 1 view -0
  121              		.cfi_startproc
  122              		@ args = 0, pretend = 0, frame = 0
  123              		@ frame_needed = 0, uses_anonymous_args = 0
- 161:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 124              		.loc 1 161 1 is_stmt 0 view .LVU18
+ 199:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 124              		.loc 1 199 1 is_stmt 0 view .LVU18
  125 0000 38B5     		push	{r3, r4, r5, lr}
  126              	.LCFI2:
  127              		.cfi_def_cfa_offset 16
@@ -351,42 +392,42 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
  131              		.cfi_offset 14, -4
  132 0002 0546     		mov	r5, r0
  133 0004 0C46     		mov	r4, r1
- 162:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 134              		.loc 1 162 5 is_stmt 1 view .LVU19
- 162:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 135              		.loc 1 162 9 is_stmt 0 view .LVU20
+ 200:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 134              		.loc 1 200 5 is_stmt 1 view .LVU19
+ 200:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 135              		.loc 1 200 9 is_stmt 0 view .LVU20
  136 0006 FFF7FEFF 		bl	GetCur_Active_Widget
  137              	.LVL3:
- 162:Dsp/widget/wgt_core/widget_mng.c ****         return false;
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 7
-
-
- 138              		.loc 1 162 8 view .LVU21
+ 200:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 138              		.loc 1 200 8 view .LVU21
  139 000a 28B1     		cbz	r0, .L10
- 165:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_y = y;
- 140              		.loc 1 165 5 is_stmt 1 view .LVU22
- 165:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_y = y;
- 141              		.loc 1 165 36 is_stmt 0 view .LVU23
+ 203:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_y = y;
+ 140              		.loc 1 203 5 is_stmt 1 view .LVU22
+ 203:Dsp/widget/wgt_core/widget_mng.c ****     GetCur_Active_Widget()->cord_y = y;
+ 141              		.loc 1 203 36 is_stmt 0 view .LVU23
  142 000c 4571     		strb	r5, [r0, #5]
- 166:Dsp/widget/wgt_core/widget_mng.c **** 
- 143              		.loc 1 166 5 is_stmt 1 view .LVU24
+ 204:Dsp/widget/wgt_core/widget_mng.c **** 
+ 143              		.loc 1 204 5 is_stmt 1 view .LVU24
  144 000e FFF7FEFF 		bl	GetCur_Active_Widget
  145              	.LVL4:
- 166:Dsp/widget/wgt_core/widget_mng.c **** 
- 146              		.loc 1 166 36 is_stmt 0 view .LVU25
+ 204:Dsp/widget/wgt_core/widget_mng.c **** 
+ 146              		.loc 1 204 36 is_stmt 0 view .LVU25
  147 0012 8471     		strb	r4, [r0, #6]
- 168:Dsp/widget/wgt_core/widget_mng.c **** }
- 148              		.loc 1 168 5 is_stmt 1 view .LVU26
- 168:Dsp/widget/wgt_core/widget_mng.c **** }
- 149              		.loc 1 168 12 is_stmt 0 view .LVU27
+ 206:Dsp/widget/wgt_core/widget_mng.c **** }
+ 148              		.loc 1 206 5 is_stmt 1 view .LVU26
+ 206:Dsp/widget/wgt_core/widget_mng.c **** }
+ 149              		.loc 1 206 12 is_stmt 0 view .LVU27
  150 0014 0120     		movs	r0, #1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 8
+
+
  151              	.L9:
- 169:Dsp/widget/wgt_core/widget_mng.c **** 
- 152              		.loc 1 169 1 view .LVU28
+ 207:Dsp/widget/wgt_core/widget_mng.c **** 
+ 152              		.loc 1 207 1 view .LVU28
  153 0016 38BD     		pop	{r3, r4, r5, pc}
  154              	.L10:
- 163:Dsp/widget/wgt_core/widget_mng.c **** 
- 155              		.loc 1 163 16 view .LVU29
+ 201:Dsp/widget/wgt_core/widget_mng.c **** 
+ 155              		.loc 1 201 16 view .LVU29
  156 0018 0020     		movs	r0, #0
  157 001a FCE7     		b	.L9
  158              		.cfi_endproc
@@ -399,8 +440,8 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
  166              		.fpu fpv4-sp-d16
  168              	Widget_Hide:
  169              	.LFB6:
- 152:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 170              		.loc 1 152 1 is_stmt 1 view -0
+ 190:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 170              		.loc 1 190 1 is_stmt 1 view -0
  171              		.cfi_startproc
  172              		@ args = 0, pretend = 0, frame = 0
  173              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -409,37 +450,37 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
  176              		.cfi_def_cfa_offset 8
  177              		.cfi_offset 3, -8
  178              		.cfi_offset 14, -4
- 153:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 179              		.loc 1 153 5 view .LVU31
- 153:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 180              		.loc 1 153 9 is_stmt 0 view .LVU32
+ 191:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 179              		.loc 1 191 5 view .LVU31
+ 191:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 180              		.loc 1 191 9 is_stmt 0 view .LVU32
  181 0002 FFF7FEFF 		bl	GetCur_Active_Widget
  182              	.LVL5:
- 153:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 183              		.loc 1 153 8 view .LVU33
+ 191:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 183              		.loc 1 191 8 view .LVU33
  184 0006 18B1     		cbz	r0, .L14
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 8
-
-
- 156:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 185              		.loc 1 156 5 is_stmt 1 view .LVU34
- 156:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 186              		.loc 1 156 37 is_stmt 0 view .LVU35
+ 194:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 185              		.loc 1 194 5 is_stmt 1 view .LVU34
+ 194:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 186              		.loc 1 194 37 is_stmt 0 view .LVU35
  187 0008 0022     		movs	r2, #0
  188 000a C270     		strb	r2, [r0, #3]
- 157:Dsp/widget/wgt_core/widget_mng.c **** }
- 189              		.loc 1 157 5 is_stmt 1 view .LVU36
- 157:Dsp/widget/wgt_core/widget_mng.c **** }
- 190              		.loc 1 157 12 is_stmt 0 view .LVU37
+ 195:Dsp/widget/wgt_core/widget_mng.c **** }
+ 189              		.loc 1 195 5 is_stmt 1 view .LVU36
+ 195:Dsp/widget/wgt_core/widget_mng.c **** }
+ 190              		.loc 1 195 12 is_stmt 0 view .LVU37
  191 000c 0120     		movs	r0, #1
  192              	.L13:
- 158:Dsp/widget/wgt_core/widget_mng.c **** 
- 193              		.loc 1 158 1 view .LVU38
+ 196:Dsp/widget/wgt_core/widget_mng.c **** 
+ 193              		.loc 1 196 1 view .LVU38
  194 000e 08BD     		pop	{r3, pc}
  195              	.L14:
- 154:Dsp/widget/wgt_core/widget_mng.c **** 
- 196              		.loc 1 154 16 view .LVU39
+ 192:Dsp/widget/wgt_core/widget_mng.c **** 
+ 196              		.loc 1 192 16 view .LVU39
  197 0010 0020     		movs	r0, #0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 9
+
+
  198 0012 FCE7     		b	.L13
  199              		.cfi_endproc
  200              	.LFE6:
@@ -451,8 +492,8 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
  207              		.fpu fpv4-sp-d16
  209              	Widget_Show:
  210              	.LFB5:
- 143:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
- 211              		.loc 1 143 1 is_stmt 1 view -0
+ 181:Dsp/widget/wgt_core/widget_mng.c ****     if (GetCur_Active_Widget() == NULL)
+ 211              		.loc 1 181 1 is_stmt 1 view -0
  212              		.cfi_startproc
  213              		@ args = 0, pretend = 0, frame = 0
  214              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -461,34 +502,31 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
  217              		.cfi_def_cfa_offset 8
  218              		.cfi_offset 3, -8
  219              		.cfi_offset 14, -4
- 144:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 220              		.loc 1 144 5 view .LVU41
- 144:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 221              		.loc 1 144 9 is_stmt 0 view .LVU42
+ 182:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 220              		.loc 1 182 5 view .LVU41
+ 182:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 221              		.loc 1 182 9 is_stmt 0 view .LVU42
  222 0002 FFF7FEFF 		bl	GetCur_Active_Widget
  223              	.LVL6:
- 144:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 224              		.loc 1 144 8 view .LVU43
+ 182:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 224              		.loc 1 182 8 view .LVU43
  225 0006 18B1     		cbz	r0, .L18
  226 0008 0346     		mov	r3, r0
- 147:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 227              		.loc 1 147 5 is_stmt 1 view .LVU44
- 147:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 228              		.loc 1 147 37 is_stmt 0 view .LVU45
+ 185:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 227              		.loc 1 185 5 is_stmt 1 view .LVU44
+ 185:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 228              		.loc 1 185 37 is_stmt 0 view .LVU45
  229 000a 0120     		movs	r0, #1
  230 000c D870     		strb	r0, [r3, #3]
- 148:Dsp/widget/wgt_core/widget_mng.c **** }
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 9
-
-
- 231              		.loc 1 148 5 is_stmt 1 view .LVU46
+ 186:Dsp/widget/wgt_core/widget_mng.c **** }
+ 231              		.loc 1 186 5 is_stmt 1 view .LVU46
  232              	.L17:
- 149:Dsp/widget/wgt_core/widget_mng.c **** 
- 233              		.loc 1 149 1 is_stmt 0 view .LVU47
+ 187:Dsp/widget/wgt_core/widget_mng.c **** 
+ 233              		.loc 1 187 1 is_stmt 0 view .LVU47
  234 000e 08BD     		pop	{r3, pc}
  235              	.L18:
- 145:Dsp/widget/wgt_core/widget_mng.c **** 
- 236              		.loc 1 145 16 view .LVU48
+ 183:Dsp/widget/wgt_core/widget_mng.c **** 
+ 236              		.loc 1 183 16 view .LVU48
  237 0010 0020     		movs	r0, #0
  238 0012 FCE7     		b	.L17
  239              		.cfi_endproc
@@ -500,1357 +538,1634 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 1
  246              		.thumb_func
  247              		.fpu fpv4-sp-d16
  249              	Widget_FreshAll:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 10
+
+
  250              	.LFB13:
- 194:Dsp/widget/wgt_core/widget_mng.c **** 
- 195:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
- 196:Dsp/widget/wgt_core/widget_mng.c **** {
- 197:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp = (WidgetObj_TypeDef *)hdl;
- 198:Dsp/widget/wgt_core/widget_mng.c ****     CurActive_Widget = hdl;
- 199:Dsp/widget/wgt_core/widget_mng.c **** 
- 200:Dsp/widget/wgt_core/widget_mng.c ****     return widget_tmp->Dsp;
- 201:Dsp/widget/wgt_core/widget_mng.c **** }
- 202:Dsp/widget/wgt_core/widget_mng.c **** 
- 203:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_Fusion(void)
- 204:Dsp/widget/wgt_core/widget_mng.c **** {
- 205:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.created_widget > 0)
- 206:Dsp/widget/wgt_core/widget_mng.c ****     {
- 207:Dsp/widget/wgt_core/widget_mng.c ****         for (uint8_t widget_index = 0; widget_index < MonitorDataObj.created_widget; widget_index++
- 208:Dsp/widget/wgt_core/widget_mng.c ****         {
- 209:Dsp/widget/wgt_core/widget_mng.c ****         }
- 210:Dsp/widget/wgt_core/widget_mng.c ****     }
- 211:Dsp/widget/wgt_core/widget_mng.c **** }
- 212:Dsp/widget/wgt_core/widget_mng.c **** 
- 213:Dsp/widget/wgt_core/widget_mng.c **** //fresh all widget
- 214:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_FreshAll(void)
- 215:Dsp/widget/wgt_core/widget_mng.c **** {
- 251              		.loc 1 215 1 is_stmt 1 view -0
+ 232:Dsp/widget/wgt_core/widget_mng.c **** 
+ 233:Dsp/widget/wgt_core/widget_mng.c **** static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
+ 234:Dsp/widget/wgt_core/widget_mng.c **** {
+ 235:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp = (WidgetObj_TypeDef *)hdl;
+ 236:Dsp/widget/wgt_core/widget_mng.c ****     CurActive_Widget = hdl;
+ 237:Dsp/widget/wgt_core/widget_mng.c **** 
+ 238:Dsp/widget/wgt_core/widget_mng.c ****     return widget_tmp->Dsp;
+ 239:Dsp/widget/wgt_core/widget_mng.c **** }
+ 240:Dsp/widget/wgt_core/widget_mng.c **** 
+ 241:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_Fusion(void)
+ 242:Dsp/widget/wgt_core/widget_mng.c **** {
+ 243:Dsp/widget/wgt_core/widget_mng.c ****     if (MonitorDataObj.created_widget > 0)
+ 244:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 245:Dsp/widget/wgt_core/widget_mng.c ****         for (uint8_t widget_index = 0; widget_index < MonitorDataObj.created_widget; widget_index++
+ 246:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 247:Dsp/widget/wgt_core/widget_mng.c ****         }
+ 248:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 249:Dsp/widget/wgt_core/widget_mng.c **** }
+ 250:Dsp/widget/wgt_core/widget_mng.c **** 
+ 251:Dsp/widget/wgt_core/widget_mng.c **** //fresh all widget
+ 252:Dsp/widget/wgt_core/widget_mng.c **** static bool Widget_FreshAll(void)
+ 253:Dsp/widget/wgt_core/widget_mng.c **** {
+ 251              		.loc 1 253 1 is_stmt 1 view -0
  252              		.cfi_startproc
  253              		@ args = 0, pretend = 0, frame = 0
  254              		@ frame_needed = 0, uses_anonymous_args = 0
- 255              		@ link register save eliminated.
- 256              	.L24:
- 216:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = NULL;
- 217:Dsp/widget/wgt_core/widget_mng.c **** 
- 218:Dsp/widget/wgt_core/widget_mng.c ****     while (true)
- 257              		.loc 1 218 5 view .LVU50
- 219:Dsp/widget/wgt_core/widget_mng.c ****     {
- 220:Dsp/widget/wgt_core/widget_mng.c ****         switch ((uint8_t)WidgetFresh_State)
- 258              		.loc 1 220 9 view .LVU51
- 259              		.loc 1 220 17 is_stmt 0 view .LVU52
- 260 0000 064B     		ldr	r3, .L25
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 10
+ 255 0000 08B5     		push	{r3, lr}
+ 256              	.LCFI5:
+ 257              		.cfi_def_cfa_offset 8
+ 258              		.cfi_offset 3, -8
+ 259              		.cfi_offset 14, -4
+ 260              	.L21:
+ 254:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = NULL;
+ 255:Dsp/widget/wgt_core/widget_mng.c **** 
+ 256:Dsp/widget/wgt_core/widget_mng.c ****     while (true)
+ 261              		.loc 1 256 5 view .LVU50
+ 257:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 258:Dsp/widget/wgt_core/widget_mng.c ****         switch ((uint8_t)WidgetFresh_State)
+ 262              		.loc 1 258 9 view .LVU51
+ 263              		.loc 1 258 17 is_stmt 0 view .LVU52
+ 264 0002 0D4B     		ldr	r3, .L28
+ 265 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 266              		.loc 1 258 9 view .LVU53
+ 267 0006 1BB1     		cbz	r3, .L22
+ 268 0008 022B     		cmp	r3, #2
+ 269 000a 0DD0     		beq	.L23
+ 270 000c 0020     		movs	r0, #0
+ 271              	.L24:
+ 259:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 260:Dsp/widget/wgt_core/widget_mng.c ****         case Fresh_State_DrvInit:
+ 261:Dsp/widget/wgt_core/widget_mng.c ****             if (SrvOled.init())
+ 262:Dsp/widget/wgt_core/widget_mng.c ****             {
+ 263:Dsp/widget/wgt_core/widget_mng.c ****                 WidgetFresh_State = Fresh_State_Reguler;
+ 264:Dsp/widget/wgt_core/widget_mng.c ****             }
+ 265:Dsp/widget/wgt_core/widget_mng.c ****             else
+ 266:Dsp/widget/wgt_core/widget_mng.c ****                 WidgetFresh_State = Fresh_State_DrvError;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 11
 
 
- 261 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 262              		.loc 1 220 9 view .LVU53
- 263 0004 1BB1     		cbz	r3, .L21
- 264 0006 022B     		cmp	r3, #2
- 265 0008 05D0     		beq	.L22
- 266 000a 0020     		movs	r0, #0
- 267 000c 7047     		bx	lr
- 268              	.L21:
- 221:Dsp/widget/wgt_core/widget_mng.c ****         {
- 222:Dsp/widget/wgt_core/widget_mng.c ****         case Fresh_State_DrvInit:
- 223:Dsp/widget/wgt_core/widget_mng.c ****             WidgetFresh_State = Fresh_State_Reguler;
- 269              		.loc 1 223 13 is_stmt 1 view .LVU54
- 270              		.loc 1 223 31 is_stmt 0 view .LVU55
- 271 000e 034B     		ldr	r3, .L25
- 272 0010 0222     		movs	r2, #2
- 273 0012 1A70     		strb	r2, [r3]
- 224:Dsp/widget/wgt_core/widget_mng.c ****             //DrvOled.init();
- 225:Dsp/widget/wgt_core/widget_mng.c ****             break;
- 274              		.loc 1 225 13 is_stmt 1 view .LVU56
- 218:Dsp/widget/wgt_core/widget_mng.c ****     {
- 275              		.loc 1 218 11 view .LVU57
- 220:Dsp/widget/wgt_core/widget_mng.c ****         {
- 276              		.loc 1 220 9 is_stmt 0 view .LVU58
- 277 0014 F4E7     		b	.L24
- 278              	.L22:
- 226:Dsp/widget/wgt_core/widget_mng.c **** 
- 227:Dsp/widget/wgt_core/widget_mng.c ****         case Fresh_State_Reguler:
- 228:Dsp/widget/wgt_core/widget_mng.c ****             Widget_Fusion();
- 229:Dsp/widget/wgt_core/widget_mng.c ****             //DrvOled.fresh();
- 230:Dsp/widget/wgt_core/widget_mng.c ****             return true;
- 279              		.loc 1 230 20 view .LVU59
- 280 0016 0120     		movs	r0, #1
- 231:Dsp/widget/wgt_core/widget_mng.c **** 
- 232:Dsp/widget/wgt_core/widget_mng.c ****         case Fresh_State_DrvError:
- 233:Dsp/widget/wgt_core/widget_mng.c ****             return false;
- 234:Dsp/widget/wgt_core/widget_mng.c **** 
- 235:Dsp/widget/wgt_core/widget_mng.c ****         default:
- 236:Dsp/widget/wgt_core/widget_mng.c ****             return false;
- 237:Dsp/widget/wgt_core/widget_mng.c ****         }
- 238:Dsp/widget/wgt_core/widget_mng.c ****     }
- 239:Dsp/widget/wgt_core/widget_mng.c **** }
- 281              		.loc 1 239 1 view .LVU60
- 282 0018 7047     		bx	lr
- 283              	.L26:
- 284 001a 00BF     		.align	2
- 285              	.L25:
- 286 001c 00000000 		.word	.LANCHOR0
- 287              		.cfi_endproc
- 288              	.LFE13:
- 290              		.section	.text.Widget_DrawPoint,"ax",%progbits
- 291              		.align	1
- 292              		.syntax unified
- 293              		.thumb
- 294              		.thumb_func
- 295              		.fpu fpv4-sp-d16
- 297              	Widget_DrawPoint:
- 298              	.LVL7:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 11
-
-
- 299              	.LFB16:
- 240:Dsp/widget/wgt_core/widget_mng.c **** 
- 241:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_CtlShow(void)
- 242:Dsp/widget/wgt_core/widget_mng.c **** {
- 243:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 244:Dsp/widget/wgt_core/widget_mng.c **** 
- 245:Dsp/widget/wgt_core/widget_mng.c ****     tmp->on_show = true;
- 246:Dsp/widget/wgt_core/widget_mng.c **** }
- 247:Dsp/widget/wgt_core/widget_mng.c **** 
- 248:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_CtlHide(void)
- 249:Dsp/widget/wgt_core/widget_mng.c **** {
- 250:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 251:Dsp/widget/wgt_core/widget_mng.c **** 
- 252:Dsp/widget/wgt_core/widget_mng.c ****     tmp->on_show = false;
- 253:Dsp/widget/wgt_core/widget_mng.c **** }
- 254:Dsp/widget/wgt_core/widget_mng.c **** 
- 255:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
- 256:Dsp/widget/wgt_core/widget_mng.c **** {
- 300              		.loc 1 256 1 is_stmt 1 view -0
- 301              		.cfi_startproc
- 302              		@ args = 0, pretend = 0, frame = 0
- 303              		@ frame_needed = 0, uses_anonymous_args = 0
- 304              		.loc 1 256 1 is_stmt 0 view .LVU62
- 305 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
- 306              	.LCFI5:
- 307              		.cfi_def_cfa_offset 24
- 308              		.cfi_offset 3, -24
- 309              		.cfi_offset 4, -20
- 310              		.cfi_offset 5, -16
- 311              		.cfi_offset 6, -12
- 312              		.cfi_offset 7, -8
- 313              		.cfi_offset 14, -4
- 314 0002 0546     		mov	r5, r0
- 315 0004 0F46     		mov	r7, r1
- 316 0006 1446     		mov	r4, r2
- 257:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 317              		.loc 1 257 5 is_stmt 1 view .LVU63
- 318              		.loc 1 257 30 is_stmt 0 view .LVU64
- 319 0008 FFF7FEFF 		bl	GetCur_Active_Widget
- 320              	.LVL8:
- 258:Dsp/widget/wgt_core/widget_mng.c **** 
- 259:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_point(tmp->pixel_map,
- 321              		.loc 1 259 5 is_stmt 1 view .LVU65
- 322              		.loc 1 259 21 is_stmt 0 view .LVU66
- 323 000c 074B     		ldr	r3, .L29
- 324 000e 1E68     		ldr	r6, [r3]
- 260:Dsp/widget/wgt_core/widget_mng.c ****                                 x + tmp->cord_x,
- 325              		.loc 1 260 40 view .LVU67
- 326 0010 90F805C0 		ldrb	ip, [r0, #5]	@ zero_extendqisi2
- 261:Dsp/widget/wgt_core/widget_mng.c ****                                 y + tmp->cord_y,
- 327              		.loc 1 261 40 view .LVU68
- 328 0014 90F806E0 		ldrb	lr, [r0, #6]	@ zero_extendqisi2
- 259:Dsp/widget/wgt_core/widget_mng.c ****                                 x + tmp->cord_x,
- 329              		.loc 1 259 5 view .LVU69
- 330 0018 BE44     		add	lr, lr, r7
- 331 001a 0CEB0501 		add	r1, ip, r5
- 332 001e 2346     		mov	r3, r4
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 12
-
-
- 333 0020 5FFA8EF2 		uxtb	r2, lr
- 334 0024 C9B2     		uxtb	r1, r1
- 335 0026 C068     		ldr	r0, [r0, #12]
- 336              	.LVL9:
- 259:Dsp/widget/wgt_core/widget_mng.c ****                                 x + tmp->cord_x,
- 337              		.loc 1 259 5 view .LVU70
- 338 0028 B047     		blx	r6
- 339              	.LVL10:
- 262:Dsp/widget/wgt_core/widget_mng.c ****                                 set);
- 263:Dsp/widget/wgt_core/widget_mng.c **** }
- 340              		.loc 1 263 1 view .LVU71
- 341 002a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
- 342              	.L30:
- 343              		.align	2
- 344              	.L29:
- 345 002c 00000000 		.word	GenDsp_Interface
- 346              		.cfi_endproc
- 347              	.LFE16:
- 349              		.section	.text.Widget_DrawNum,"ax",%progbits
- 350              		.align	1
- 351              		.syntax unified
- 352              		.thumb
- 353              		.thumb_func
- 354              		.fpu fpv4-sp-d16
- 356              	Widget_DrawNum:
- 357              	.LVL11:
- 358              	.LFB17:
- 264:Dsp/widget/wgt_core/widget_mng.c **** 
- 265:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv)
- 266:Dsp/widget/wgt_core/widget_mng.c **** {
- 359              		.loc 1 266 1 is_stmt 1 view -0
- 360              		.cfi_startproc
- 361              		@ args = 4, pretend = 0, frame = 0
- 362              		@ frame_needed = 0, uses_anonymous_args = 0
- 363              		.loc 1 266 1 is_stmt 0 view .LVU73
- 364 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
- 365              	.LCFI6:
- 366              		.cfi_def_cfa_offset 28
- 367              		.cfi_offset 4, -28
- 368              		.cfi_offset 5, -24
- 369              		.cfi_offset 6, -20
- 370              		.cfi_offset 7, -16
- 371              		.cfi_offset 8, -12
- 372              		.cfi_offset 9, -8
- 373              		.cfi_offset 14, -4
- 374 0004 83B0     		sub	sp, sp, #12
- 375              	.LCFI7:
- 376              		.cfi_def_cfa_offset 40
- 377 0006 0546     		mov	r5, r0
- 378 0008 0E46     		mov	r6, r1
- 379 000a 9146     		mov	r9, r2
- 380 000c 9846     		mov	r8, r3
- 267:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 381              		.loc 1 267 5 is_stmt 1 view .LVU74
- 382              		.loc 1 267 30 is_stmt 0 view .LVU75
- 383 000e FFF7FEFF 		bl	GetCur_Active_Widget
- 384              	.LVL12:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 13
-
-
+ 267:Dsp/widget/wgt_core/widget_mng.c ****             break;
  268:Dsp/widget/wgt_core/widget_mng.c **** 
- 269:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_num(font,
- 385              		.loc 1 269 5 is_stmt 1 view .LVU76
- 386              		.loc 1 269 21 is_stmt 0 view .LVU77
- 387 0012 094B     		ldr	r3, .L33
- 388 0014 1F69     		ldr	r7, [r3, #16]
- 270:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
- 271:Dsp/widget/wgt_core/widget_mng.c ****                               num,
- 272:Dsp/widget/wgt_core/widget_mng.c ****                               x + tmp->cord_x,
- 389              		.loc 1 272 38 view .LVU78
- 390 0016 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
- 273:Dsp/widget/wgt_core/widget_mng.c ****                               y + tmp->cord_y,
- 391              		.loc 1 273 38 view .LVU79
- 392 0018 8479     		ldrb	r4, [r0, #6]	@ zero_extendqisi2
- 269:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
- 393              		.loc 1 269 5 view .LVU80
- 394 001a 4A44     		add	r2, r2, r9
- 395 001c C168     		ldr	r1, [r0, #12]
- 396 001e 9DF82830 		ldrb	r3, [sp, #40]	@ zero_extendqisi2
- 397 0022 0193     		str	r3, [sp, #4]
- 398 0024 4444     		add	r4, r4, r8
- 399 0026 E4B2     		uxtb	r4, r4
- 400 0028 0094     		str	r4, [sp]
- 401 002a D3B2     		uxtb	r3, r2
- 402 002c 3246     		mov	r2, r6
- 403 002e 2846     		mov	r0, r5
- 404              	.LVL13:
- 269:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
- 405              		.loc 1 269 5 view .LVU81
- 406 0030 B847     		blx	r7
- 407              	.LVL14:
- 274:Dsp/widget/wgt_core/widget_mng.c ****                               col_cnv);
- 275:Dsp/widget/wgt_core/widget_mng.c **** }
- 408              		.loc 1 275 1 view .LVU82
- 409 0032 03B0     		add	sp, sp, #12
- 410              	.LCFI8:
- 411              		.cfi_def_cfa_offset 28
- 412              		@ sp needed
- 413 0034 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
- 414              	.LVL15:
- 415              	.L34:
- 416              		.loc 1 275 1 view .LVU83
- 417              		.align	2
- 418              	.L33:
- 419 0038 00000000 		.word	GenDsp_Interface
- 420              		.cfi_endproc
- 421              	.LFE17:
- 423              		.section	.text.Widget_DrawChr,"ax",%progbits
- 424              		.align	1
- 425              		.syntax unified
- 426              		.thumb
- 427              		.thumb_func
- 428              		.fpu fpv4-sp-d16
- 430              	Widget_DrawChr:
- 431              	.LVL16:
- 432              	.LFB18:
+ 269:Dsp/widget/wgt_core/widget_mng.c ****         case Fresh_State_Reguler:
+ 270:Dsp/widget/wgt_core/widget_mng.c ****             Widget_Fusion();
+ 271:Dsp/widget/wgt_core/widget_mng.c ****             SrvOled.fresh(widget_blackboard);
+ 272:Dsp/widget/wgt_core/widget_mng.c ****             return true;
+ 273:Dsp/widget/wgt_core/widget_mng.c **** 
+ 274:Dsp/widget/wgt_core/widget_mng.c ****         case Fresh_State_DrvError:
+ 275:Dsp/widget/wgt_core/widget_mng.c ****             return false;
  276:Dsp/widget/wgt_core/widget_mng.c **** 
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 14
+ 277:Dsp/widget/wgt_core/widget_mng.c ****         default:
+ 278:Dsp/widget/wgt_core/widget_mng.c ****             return false;
+ 279:Dsp/widget/wgt_core/widget_mng.c ****         }
+ 280:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 281:Dsp/widget/wgt_core/widget_mng.c **** }
+ 272              		.loc 1 281 1 view .LVU54
+ 273 000e 08BD     		pop	{r3, pc}
+ 274              	.L22:
+ 261:Dsp/widget/wgt_core/widget_mng.c ****             {
+ 275              		.loc 1 261 13 is_stmt 1 view .LVU55
+ 261:Dsp/widget/wgt_core/widget_mng.c ****             {
+ 276              		.loc 1 261 24 is_stmt 0 view .LVU56
+ 277 0010 0A4B     		ldr	r3, .L28+4
+ 278 0012 1B68     		ldr	r3, [r3]
+ 261:Dsp/widget/wgt_core/widget_mng.c ****             {
+ 279              		.loc 1 261 17 view .LVU57
+ 280 0014 9847     		blx	r3
+ 281              	.LVL7:
+ 261:Dsp/widget/wgt_core/widget_mng.c ****             {
+ 282              		.loc 1 261 16 view .LVU58
+ 283 0016 18B1     		cbz	r0, .L25
+ 263:Dsp/widget/wgt_core/widget_mng.c ****             }
+ 284              		.loc 1 263 17 is_stmt 1 view .LVU59
+ 263:Dsp/widget/wgt_core/widget_mng.c ****             }
+ 285              		.loc 1 263 35 is_stmt 0 view .LVU60
+ 286 0018 074B     		ldr	r3, .L28
+ 287 001a 0222     		movs	r2, #2
+ 288 001c 1A70     		strb	r2, [r3]
+ 289 001e F0E7     		b	.L21
+ 290              	.L25:
+ 266:Dsp/widget/wgt_core/widget_mng.c ****             break;
+ 291              		.loc 1 266 17 is_stmt 1 view .LVU61
+ 266:Dsp/widget/wgt_core/widget_mng.c ****             break;
+ 292              		.loc 1 266 35 is_stmt 0 view .LVU62
+ 293 0020 054B     		ldr	r3, .L28
+ 294 0022 0122     		movs	r2, #1
+ 295 0024 1A70     		strb	r2, [r3]
+ 296 0026 ECE7     		b	.L21
+ 297              	.L23:
+ 270:Dsp/widget/wgt_core/widget_mng.c ****             SrvOled.fresh(widget_blackboard);
+ 298              		.loc 1 270 13 is_stmt 1 view .LVU63
+ 271:Dsp/widget/wgt_core/widget_mng.c ****             return true;
+ 299              		.loc 1 271 13 view .LVU64
+ 271:Dsp/widget/wgt_core/widget_mng.c ****             return true;
+ 300              		.loc 1 271 20 is_stmt 0 view .LVU65
+ 301 0028 044B     		ldr	r3, .L28+4
+ 302 002a 5B68     		ldr	r3, [r3, #4]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 12
 
 
- 277:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y, bool col_cnv)
- 278:Dsp/widget/wgt_core/widget_mng.c **** {
- 433              		.loc 1 278 1 is_stmt 1 view -0
- 434              		.cfi_startproc
- 435              		@ args = 4, pretend = 0, frame = 0
- 436              		@ frame_needed = 0, uses_anonymous_args = 0
- 437              		.loc 1 278 1 is_stmt 0 view .LVU85
- 438 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
- 439              	.LCFI9:
- 440              		.cfi_def_cfa_offset 28
- 441              		.cfi_offset 4, -28
- 442              		.cfi_offset 5, -24
- 443              		.cfi_offset 6, -20
- 444              		.cfi_offset 7, -16
- 445              		.cfi_offset 8, -12
- 446              		.cfi_offset 9, -8
- 447              		.cfi_offset 14, -4
- 448 0004 83B0     		sub	sp, sp, #12
- 449              	.LCFI10:
- 450              		.cfi_def_cfa_offset 40
- 451 0006 0546     		mov	r5, r0
- 452 0008 0E46     		mov	r6, r1
- 453 000a 9146     		mov	r9, r2
- 454 000c 9846     		mov	r8, r3
- 279:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 455              		.loc 1 279 5 is_stmt 1 view .LVU86
- 456              		.loc 1 279 30 is_stmt 0 view .LVU87
- 457 000e FFF7FEFF 		bl	GetCur_Active_Widget
- 458              	.LVL17:
- 280:Dsp/widget/wgt_core/widget_mng.c **** 
- 281:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_char(font,
- 459              		.loc 1 281 5 is_stmt 1 view .LVU88
- 460              		.loc 1 281 21 is_stmt 0 view .LVU89
- 461 0012 094B     		ldr	r3, .L37
- 462 0014 9F68     		ldr	r7, [r3, #8]
- 282:Dsp/widget/wgt_core/widget_mng.c ****                                tmp->pixel_map,
- 283:Dsp/widget/wgt_core/widget_mng.c ****                                char_dsp,
- 284:Dsp/widget/wgt_core/widget_mng.c ****                                x + tmp->cord_x,
- 463              		.loc 1 284 39 view .LVU90
- 464 0016 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
- 285:Dsp/widget/wgt_core/widget_mng.c ****                                y + tmp->cord_y,
- 465              		.loc 1 285 39 view .LVU91
- 466 0018 8479     		ldrb	r4, [r0, #6]	@ zero_extendqisi2
- 281:Dsp/widget/wgt_core/widget_mng.c ****                                tmp->pixel_map,
- 467              		.loc 1 281 5 view .LVU92
- 468 001a 4A44     		add	r2, r2, r9
- 469 001c C168     		ldr	r1, [r0, #12]
- 470 001e 9DF82830 		ldrb	r3, [sp, #40]	@ zero_extendqisi2
- 471 0022 0193     		str	r3, [sp, #4]
- 472 0024 4444     		add	r4, r4, r8
- 473 0026 E4B2     		uxtb	r4, r4
- 474 0028 0094     		str	r4, [sp]
- 475 002a D3B2     		uxtb	r3, r2
- 476 002c 3246     		mov	r2, r6
- 477 002e 2846     		mov	r0, r5
- 478              	.LVL18:
- 281:Dsp/widget/wgt_core/widget_mng.c ****                                tmp->pixel_map,
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 15
+ 271:Dsp/widget/wgt_core/widget_mng.c ****             return true;
+ 303              		.loc 1 271 13 view .LVU66
+ 304 002c 044A     		ldr	r2, .L28+8
+ 305 002e 1068     		ldr	r0, [r2]
+ 306 0030 9847     		blx	r3
+ 307              	.LVL8:
+ 272:Dsp/widget/wgt_core/widget_mng.c **** 
+ 308              		.loc 1 272 13 is_stmt 1 view .LVU67
+ 272:Dsp/widget/wgt_core/widget_mng.c **** 
+ 309              		.loc 1 272 20 is_stmt 0 view .LVU68
+ 310 0032 0120     		movs	r0, #1
+ 311 0034 EBE7     		b	.L24
+ 312              	.L29:
+ 313 0036 00BF     		.align	2
+ 314              	.L28:
+ 315 0038 00000000 		.word	.LANCHOR0
+ 316 003c 00000000 		.word	SrvOled
+ 317 0040 00000000 		.word	.LANCHOR1
+ 318              		.cfi_endproc
+ 319              	.LFE13:
+ 321              		.section	.text.Widget_DrawPoint,"ax",%progbits
+ 322              		.align	1
+ 323              		.syntax unified
+ 324              		.thumb
+ 325              		.thumb_func
+ 326              		.fpu fpv4-sp-d16
+ 328              	Widget_DrawPoint:
+ 329              	.LVL9:
+ 330              	.LFB16:
+ 282:Dsp/widget/wgt_core/widget_mng.c **** 
+ 283:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_CtlShow(void)
+ 284:Dsp/widget/wgt_core/widget_mng.c **** {
+ 285:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 286:Dsp/widget/wgt_core/widget_mng.c **** 
+ 287:Dsp/widget/wgt_core/widget_mng.c ****     tmp->on_show = true;
+ 288:Dsp/widget/wgt_core/widget_mng.c **** }
+ 289:Dsp/widget/wgt_core/widget_mng.c **** 
+ 290:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_CtlHide(void)
+ 291:Dsp/widget/wgt_core/widget_mng.c **** {
+ 292:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 293:Dsp/widget/wgt_core/widget_mng.c **** 
+ 294:Dsp/widget/wgt_core/widget_mng.c ****     tmp->on_show = false;
+ 295:Dsp/widget/wgt_core/widget_mng.c **** }
+ 296:Dsp/widget/wgt_core/widget_mng.c **** 
+ 297:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
+ 298:Dsp/widget/wgt_core/widget_mng.c **** {
+ 331              		.loc 1 298 1 is_stmt 1 view -0
+ 332              		.cfi_startproc
+ 333              		@ args = 0, pretend = 0, frame = 0
+ 334              		@ frame_needed = 0, uses_anonymous_args = 0
+ 335              		.loc 1 298 1 is_stmt 0 view .LVU70
+ 336 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 337              	.LCFI6:
+ 338              		.cfi_def_cfa_offset 24
+ 339              		.cfi_offset 3, -24
+ 340              		.cfi_offset 4, -20
+ 341              		.cfi_offset 5, -16
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 13
 
 
- 479              		.loc 1 281 5 view .LVU93
- 480 0030 B847     		blx	r7
- 481              	.LVL19:
- 286:Dsp/widget/wgt_core/widget_mng.c ****                                col_cnv);
- 287:Dsp/widget/wgt_core/widget_mng.c **** }
- 482              		.loc 1 287 1 view .LVU94
- 483 0032 03B0     		add	sp, sp, #12
- 484              	.LCFI11:
- 485              		.cfi_def_cfa_offset 28
- 486              		@ sp needed
- 487 0034 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
- 488              	.LVL20:
- 489              	.L38:
- 490              		.loc 1 287 1 view .LVU95
- 491              		.align	2
- 492              	.L37:
- 493 0038 00000000 		.word	GenDsp_Interface
- 494              		.cfi_endproc
- 495              	.LFE18:
- 497              		.section	.text.Widget_DrawStr,"ax",%progbits
- 498              		.align	1
- 499              		.syntax unified
- 500              		.thumb
- 501              		.thumb_func
- 502              		.fpu fpv4-sp-d16
- 504              	Widget_DrawStr:
- 505              	.LVL21:
- 506              	.LFB19:
- 288:Dsp/widget/wgt_core/widget_mng.c **** 
- 289:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv)
- 290:Dsp/widget/wgt_core/widget_mng.c **** {
- 507              		.loc 1 290 1 is_stmt 1 view -0
- 508              		.cfi_startproc
- 509              		@ args = 4, pretend = 0, frame = 0
- 510              		@ frame_needed = 0, uses_anonymous_args = 0
- 511              		.loc 1 290 1 is_stmt 0 view .LVU97
- 512 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
- 513              	.LCFI12:
- 514              		.cfi_def_cfa_offset 28
- 515              		.cfi_offset 4, -28
- 516              		.cfi_offset 5, -24
- 517              		.cfi_offset 6, -20
- 518              		.cfi_offset 7, -16
- 519              		.cfi_offset 8, -12
- 520              		.cfi_offset 9, -8
- 521              		.cfi_offset 14, -4
- 522 0004 83B0     		sub	sp, sp, #12
- 523              	.LCFI13:
- 524              		.cfi_def_cfa_offset 40
- 525 0006 0546     		mov	r5, r0
- 526 0008 0E46     		mov	r6, r1
- 527 000a 9146     		mov	r9, r2
- 528 000c 9846     		mov	r8, r3
- 291:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 529              		.loc 1 291 5 is_stmt 1 view .LVU98
- 530              		.loc 1 291 30 is_stmt 0 view .LVU99
- 531 000e FFF7FEFF 		bl	GetCur_Active_Widget
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 16
-
-
- 532              	.LVL22:
- 292:Dsp/widget/wgt_core/widget_mng.c **** 
- 293:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_str(font,
- 533              		.loc 1 293 5 is_stmt 1 view .LVU100
- 534              		.loc 1 293 21 is_stmt 0 view .LVU101
- 535 0012 094B     		ldr	r3, .L41
- 536 0014 DF68     		ldr	r7, [r3, #12]
- 294:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
- 295:Dsp/widget/wgt_core/widget_mng.c ****                               str_dsp,
- 296:Dsp/widget/wgt_core/widget_mng.c ****                               x + tmp->cord_x,
- 537              		.loc 1 296 38 view .LVU102
- 538 0016 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
- 297:Dsp/widget/wgt_core/widget_mng.c ****                               y + tmp->cord_y,
- 539              		.loc 1 297 38 view .LVU103
- 540 0018 8479     		ldrb	r4, [r0, #6]	@ zero_extendqisi2
- 293:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
- 541              		.loc 1 293 5 view .LVU104
- 542 001a 4A44     		add	r2, r2, r9
- 543 001c C168     		ldr	r1, [r0, #12]
- 544 001e 9DF82830 		ldrb	r3, [sp, #40]	@ zero_extendqisi2
- 545 0022 0193     		str	r3, [sp, #4]
- 546 0024 4444     		add	r4, r4, r8
- 547 0026 E4B2     		uxtb	r4, r4
- 548 0028 0094     		str	r4, [sp]
- 549 002a D3B2     		uxtb	r3, r2
- 550 002c 3246     		mov	r2, r6
- 551 002e 2846     		mov	r0, r5
- 552              	.LVL23:
- 293:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
- 553              		.loc 1 293 5 view .LVU105
- 554 0030 B847     		blx	r7
- 555              	.LVL24:
- 298:Dsp/widget/wgt_core/widget_mng.c ****                               col_cnv);
- 299:Dsp/widget/wgt_core/widget_mng.c **** }
- 556              		.loc 1 299 1 view .LVU106
- 557 0032 03B0     		add	sp, sp, #12
- 558              	.LCFI14:
- 559              		.cfi_def_cfa_offset 28
- 560              		@ sp needed
- 561 0034 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
- 562              	.LVL25:
- 563              	.L42:
- 564              		.loc 1 299 1 view .LVU107
- 565              		.align	2
- 566              	.L41:
- 567 0038 00000000 		.word	GenDsp_Interface
- 568              		.cfi_endproc
- 569              	.LFE19:
- 571              		.section	.text.Widget_DrawLine,"ax",%progbits
- 572              		.align	1
- 573              		.syntax unified
- 574              		.thumb
- 575              		.thumb_func
- 576              		.fpu fpv4-sp-d16
- 578              	Widget_DrawLine:
- 579              	.LVL26:
- 580              	.LFB20:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 17
-
-
+ 342              		.cfi_offset 6, -12
+ 343              		.cfi_offset 7, -8
+ 344              		.cfi_offset 14, -4
+ 345 0002 0546     		mov	r5, r0
+ 346 0004 0F46     		mov	r7, r1
+ 347 0006 1446     		mov	r4, r2
+ 299:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 348              		.loc 1 299 5 is_stmt 1 view .LVU71
+ 349              		.loc 1 299 30 is_stmt 0 view .LVU72
+ 350 0008 FFF7FEFF 		bl	GetCur_Active_Widget
+ 351              	.LVL10:
  300:Dsp/widget/wgt_core/widget_mng.c **** 
- 301:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t
- 302:Dsp/widget/wgt_core/widget_mng.c **** {
- 581              		.loc 1 302 1 is_stmt 1 view -0
- 582              		.cfi_startproc
- 583              		@ args = 4, pretend = 0, frame = 0
- 584              		@ frame_needed = 0, uses_anonymous_args = 0
- 585              		.loc 1 302 1 is_stmt 0 view .LVU109
- 586 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 587              	.LCFI15:
- 588              		.cfi_def_cfa_offset 24
- 589              		.cfi_offset 4, -24
- 590              		.cfi_offset 5, -20
- 591              		.cfi_offset 6, -16
- 592              		.cfi_offset 7, -12
- 593              		.cfi_offset 8, -8
- 594              		.cfi_offset 14, -4
- 595 0004 82B0     		sub	sp, sp, #8
- 596              	.LCFI16:
- 597              		.cfi_def_cfa_offset 32
- 598 0006 8046     		mov	r8, r0
- 599 0008 0D46     		mov	r5, r1
- 600 000a 1646     		mov	r6, r2
- 601 000c 1C46     		mov	r4, r3
- 303:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 602              		.loc 1 303 5 is_stmt 1 view .LVU110
- 603              		.loc 1 303 30 is_stmt 0 view .LVU111
- 604 000e FFF7FEFF 		bl	GetCur_Active_Widget
- 605              	.LVL27:
- 304:Dsp/widget/wgt_core/widget_mng.c **** 
- 305:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_line(tmp->pixel_map,
- 606              		.loc 1 305 5 is_stmt 1 view .LVU112
- 607              		.loc 1 305 21 is_stmt 0 view .LVU113
- 608 0012 0C4B     		ldr	r3, .L45
- 609 0014 9F69     		ldr	r7, [r3, #24]
- 306:Dsp/widget/wgt_core/widget_mng.c ****                                start_x + tmp->cord_x,
- 610              		.loc 1 306 45 view .LVU114
- 611 0016 4179     		ldrb	r1, [r0, #5]	@ zero_extendqisi2
- 307:Dsp/widget/wgt_core/widget_mng.c ****                                start_y + tmp->cord_y,
- 612              		.loc 1 307 45 view .LVU115
- 613 0018 90F806C0 		ldrb	ip, [r0, #6]	@ zero_extendqisi2
- 305:Dsp/widget/wgt_core/widget_mng.c ****                                start_x + tmp->cord_x,
- 614              		.loc 1 305 5 view .LVU116
- 615 001c 8B19     		adds	r3, r1, r6
- 616 001e 0CEB0502 		add	r2, ip, r5
- 617 0022 4144     		add	r1, r1, r8
- 618 0024 C068     		ldr	r0, [r0, #12]
- 619              	.LVL28:
- 305:Dsp/widget/wgt_core/widget_mng.c ****                                start_x + tmp->cord_x,
- 620              		.loc 1 305 5 view .LVU117
- 621 0026 9DF82050 		ldrb	r5, [sp, #32]	@ zero_extendqisi2
- 622 002a 0195     		str	r5, [sp, #4]
- 623 002c A444     		add	ip, ip, r4
- 624 002e 5FFA8CF4 		uxtb	r4, ip
- 625 0032 0094     		str	r4, [sp]
- 626 0034 DBB2     		uxtb	r3, r3
- 627 0036 D2B2     		uxtb	r2, r2
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 18
+ 301:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_point(tmp->pixel_map,
+ 352              		.loc 1 301 5 is_stmt 1 view .LVU73
+ 353              		.loc 1 301 21 is_stmt 0 view .LVU74
+ 354 000c 074B     		ldr	r3, .L32
+ 355 000e 1E68     		ldr	r6, [r3]
+ 302:Dsp/widget/wgt_core/widget_mng.c ****                                 x + tmp->cord_x,
+ 356              		.loc 1 302 40 view .LVU75
+ 357 0010 90F805C0 		ldrb	ip, [r0, #5]	@ zero_extendqisi2
+ 303:Dsp/widget/wgt_core/widget_mng.c ****                                 y + tmp->cord_y,
+ 358              		.loc 1 303 40 view .LVU76
+ 359 0014 90F806E0 		ldrb	lr, [r0, #6]	@ zero_extendqisi2
+ 301:Dsp/widget/wgt_core/widget_mng.c ****                                 x + tmp->cord_x,
+ 360              		.loc 1 301 5 view .LVU77
+ 361 0018 BE44     		add	lr, lr, r7
+ 362 001a 0CEB0501 		add	r1, ip, r5
+ 363 001e 2346     		mov	r3, r4
+ 364 0020 5FFA8EF2 		uxtb	r2, lr
+ 365 0024 C9B2     		uxtb	r1, r1
+ 366 0026 C068     		ldr	r0, [r0, #12]
+ 367              	.LVL11:
+ 301:Dsp/widget/wgt_core/widget_mng.c ****                                 x + tmp->cord_x,
+ 368              		.loc 1 301 5 view .LVU78
+ 369 0028 B047     		blx	r6
+ 370              	.LVL12:
+ 304:Dsp/widget/wgt_core/widget_mng.c ****                                 set);
+ 305:Dsp/widget/wgt_core/widget_mng.c **** }
+ 371              		.loc 1 305 1 view .LVU79
+ 372 002a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 373              	.L33:
+ 374              		.align	2
+ 375              	.L32:
+ 376 002c 00000000 		.word	GenDsp_Interface
+ 377              		.cfi_endproc
+ 378              	.LFE16:
+ 380              		.section	.text.Widget_DrawNum,"ax",%progbits
+ 381              		.align	1
+ 382              		.syntax unified
+ 383              		.thumb
+ 384              		.thumb_func
+ 385              		.fpu fpv4-sp-d16
+ 387              	Widget_DrawNum:
+ 388              	.LVL13:
+ 389              	.LFB17:
+ 306:Dsp/widget/wgt_core/widget_mng.c **** 
+ 307:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv)
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 14
 
 
- 628 0038 C9B2     		uxtb	r1, r1
- 629 003a B847     		blx	r7
- 630              	.LVL29:
- 308:Dsp/widget/wgt_core/widget_mng.c ****                                end_x + tmp->cord_x,
- 309:Dsp/widget/wgt_core/widget_mng.c ****                                end_y + tmp->cord_y,
- 310:Dsp/widget/wgt_core/widget_mng.c ****                                line_size);
- 311:Dsp/widget/wgt_core/widget_mng.c **** }
- 631              		.loc 1 311 1 view .LVU118
- 632 003c 02B0     		add	sp, sp, #8
- 633              	.LCFI17:
- 634              		.cfi_def_cfa_offset 24
- 635              		@ sp needed
- 636 003e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 637              	.LVL30:
- 638              	.L46:
- 639              		.loc 1 311 1 view .LVU119
- 640 0042 00BF     		.align	2
- 641              	.L45:
- 642 0044 00000000 		.word	GenDsp_Interface
- 643              		.cfi_endproc
- 644              	.LFE20:
- 646              		.section	.text.Widget_DrawCircle,"ax",%progbits
- 647              		.align	1
- 648              		.syntax unified
- 649              		.thumb
- 650              		.thumb_func
- 651              		.fpu fpv4-sp-d16
- 653              	Widget_DrawCircle:
- 654              	.LVL31:
- 655              	.LFB21:
- 312:Dsp/widget/wgt_core/widget_mng.c **** 
- 313:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size
- 314:Dsp/widget/wgt_core/widget_mng.c **** {
- 656              		.loc 1 314 1 is_stmt 1 view -0
- 657              		.cfi_startproc
- 658              		@ args = 0, pretend = 0, frame = 0
- 659              		@ frame_needed = 0, uses_anonymous_args = 0
- 660              		.loc 1 314 1 is_stmt 0 view .LVU121
- 661 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 662              	.LCFI18:
- 663              		.cfi_def_cfa_offset 24
- 664              		.cfi_offset 4, -24
- 665              		.cfi_offset 5, -20
- 666              		.cfi_offset 6, -16
- 667              		.cfi_offset 7, -12
- 668              		.cfi_offset 8, -8
- 669              		.cfi_offset 14, -4
- 670 0004 82B0     		sub	sp, sp, #8
- 671              	.LCFI19:
- 672              		.cfi_def_cfa_offset 32
- 673 0006 0646     		mov	r6, r0
- 674 0008 8846     		mov	r8, r1
- 675 000a 1446     		mov	r4, r2
- 676 000c 1D46     		mov	r5, r3
- 315:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 677              		.loc 1 315 5 is_stmt 1 view .LVU122
- 678              		.loc 1 315 30 is_stmt 0 view .LVU123
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 19
+ 308:Dsp/widget/wgt_core/widget_mng.c **** {
+ 390              		.loc 1 308 1 is_stmt 1 view -0
+ 391              		.cfi_startproc
+ 392              		@ args = 4, pretend = 0, frame = 0
+ 393              		@ frame_needed = 0, uses_anonymous_args = 0
+ 394              		.loc 1 308 1 is_stmt 0 view .LVU81
+ 395 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 396              	.LCFI7:
+ 397              		.cfi_def_cfa_offset 28
+ 398              		.cfi_offset 4, -28
+ 399              		.cfi_offset 5, -24
+ 400              		.cfi_offset 6, -20
+ 401              		.cfi_offset 7, -16
+ 402              		.cfi_offset 8, -12
+ 403              		.cfi_offset 9, -8
+ 404              		.cfi_offset 14, -4
+ 405 0004 83B0     		sub	sp, sp, #12
+ 406              	.LCFI8:
+ 407              		.cfi_def_cfa_offset 40
+ 408 0006 0546     		mov	r5, r0
+ 409 0008 0E46     		mov	r6, r1
+ 410 000a 9146     		mov	r9, r2
+ 411 000c 9846     		mov	r8, r3
+ 309:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 412              		.loc 1 309 5 is_stmt 1 view .LVU82
+ 413              		.loc 1 309 30 is_stmt 0 view .LVU83
+ 414 000e FFF7FEFF 		bl	GetCur_Active_Widget
+ 415              	.LVL14:
+ 310:Dsp/widget/wgt_core/widget_mng.c **** 
+ 311:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_num(font,
+ 416              		.loc 1 311 5 is_stmt 1 view .LVU84
+ 417              		.loc 1 311 21 is_stmt 0 view .LVU85
+ 418 0012 094B     		ldr	r3, .L36
+ 419 0014 1F69     		ldr	r7, [r3, #16]
+ 312:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
+ 313:Dsp/widget/wgt_core/widget_mng.c ****                               num,
+ 314:Dsp/widget/wgt_core/widget_mng.c ****                               x + tmp->cord_x,
+ 420              		.loc 1 314 38 view .LVU86
+ 421 0016 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+ 315:Dsp/widget/wgt_core/widget_mng.c ****                               y + tmp->cord_y,
+ 422              		.loc 1 315 38 view .LVU87
+ 423 0018 8479     		ldrb	r4, [r0, #6]	@ zero_extendqisi2
+ 311:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
+ 424              		.loc 1 311 5 view .LVU88
+ 425 001a 4A44     		add	r2, r2, r9
+ 426 001c C168     		ldr	r1, [r0, #12]
+ 427 001e 9DF82830 		ldrb	r3, [sp, #40]	@ zero_extendqisi2
+ 428 0022 0193     		str	r3, [sp, #4]
+ 429 0024 4444     		add	r4, r4, r8
+ 430 0026 E4B2     		uxtb	r4, r4
+ 431 0028 0094     		str	r4, [sp]
+ 432 002a D3B2     		uxtb	r3, r2
+ 433 002c 3246     		mov	r2, r6
+ 434 002e 2846     		mov	r0, r5
+ 435              	.LVL15:
+ 311:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
+ 436              		.loc 1 311 5 view .LVU89
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 15
 
 
- 679 000e FFF7FEFF 		bl	GetCur_Active_Widget
- 680              	.LVL32:
- 316:Dsp/widget/wgt_core/widget_mng.c **** 
- 317:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_circle(tmp->pixel_map,
- 681              		.loc 1 317 5 is_stmt 1 view .LVU124
- 682              		.loc 1 317 21 is_stmt 0 view .LVU125
- 683 0012 094B     		ldr	r3, .L49
- 684 0014 5F68     		ldr	r7, [r3, #4]
- 318:Dsp/widget/wgt_core/widget_mng.c ****                                  center_x + tmp->cord_x,
- 685              		.loc 1 318 48 view .LVU126
- 686 0016 90F805C0 		ldrb	ip, [r0, #5]	@ zero_extendqisi2
- 319:Dsp/widget/wgt_core/widget_mng.c ****                                  center_y + tmp->cord_y,
- 687              		.loc 1 319 48 view .LVU127
- 688 001a 90F806E0 		ldrb	lr, [r0, #6]	@ zero_extendqisi2
- 317:Dsp/widget/wgt_core/widget_mng.c ****                                  center_x + tmp->cord_x,
- 689              		.loc 1 317 5 view .LVU128
- 690 001e C644     		add	lr, lr, r8
- 691 0020 0CEB0601 		add	r1, ip, r6
- 692 0024 C068     		ldr	r0, [r0, #12]
- 693              	.LVL33:
- 317:Dsp/widget/wgt_core/widget_mng.c ****                                  center_x + tmp->cord_x,
- 694              		.loc 1 317 5 view .LVU129
- 695 0026 0095     		str	r5, [sp]
- 696 0028 2346     		mov	r3, r4
- 697 002a 5FFA8EF2 		uxtb	r2, lr
- 698 002e C9B2     		uxtb	r1, r1
- 699 0030 B847     		blx	r7
- 700              	.LVL34:
- 320:Dsp/widget/wgt_core/widget_mng.c ****                                  radius,
- 321:Dsp/widget/wgt_core/widget_mng.c ****                                  line_size);
- 322:Dsp/widget/wgt_core/widget_mng.c **** }
- 701              		.loc 1 322 1 view .LVU130
- 702 0032 02B0     		add	sp, sp, #8
- 703              	.LCFI20:
- 704              		.cfi_def_cfa_offset 24
- 705              		@ sp needed
- 706 0034 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 707              	.L50:
- 708              		.align	2
- 709              	.L49:
- 710 0038 00000000 		.word	GenDsp_Interface
- 711              		.cfi_endproc
- 712              	.LFE21:
- 714              		.section	.text.Widget_DrawRectangle,"ax",%progbits
- 715              		.align	1
- 716              		.syntax unified
- 717              		.thumb
- 718              		.thumb_func
- 719              		.fpu fpv4-sp-d16
- 721              	Widget_DrawRectangle:
- 722              	.LVL35:
- 723              	.LFB22:
- 323:Dsp/widget/wgt_core/widget_mng.c **** 
- 324:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_
- 325:Dsp/widget/wgt_core/widget_mng.c **** {
- 724              		.loc 1 325 1 is_stmt 1 view -0
- 725              		.cfi_startproc
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 20
+ 437 0030 B847     		blx	r7
+ 438              	.LVL16:
+ 316:Dsp/widget/wgt_core/widget_mng.c ****                               col_cnv);
+ 317:Dsp/widget/wgt_core/widget_mng.c **** }
+ 439              		.loc 1 317 1 view .LVU90
+ 440 0032 03B0     		add	sp, sp, #12
+ 441              	.LCFI9:
+ 442              		.cfi_def_cfa_offset 28
+ 443              		@ sp needed
+ 444 0034 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 445              	.LVL17:
+ 446              	.L37:
+ 447              		.loc 1 317 1 view .LVU91
+ 448              		.align	2
+ 449              	.L36:
+ 450 0038 00000000 		.word	GenDsp_Interface
+ 451              		.cfi_endproc
+ 452              	.LFE17:
+ 454              		.section	.text.Widget_DrawChr,"ax",%progbits
+ 455              		.align	1
+ 456              		.syntax unified
+ 457              		.thumb
+ 458              		.thumb_func
+ 459              		.fpu fpv4-sp-d16
+ 461              	Widget_DrawChr:
+ 462              	.LVL18:
+ 463              	.LFB18:
+ 318:Dsp/widget/wgt_core/widget_mng.c **** 
+ 319:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y, bool col_cnv)
+ 320:Dsp/widget/wgt_core/widget_mng.c **** {
+ 464              		.loc 1 320 1 is_stmt 1 view -0
+ 465              		.cfi_startproc
+ 466              		@ args = 4, pretend = 0, frame = 0
+ 467              		@ frame_needed = 0, uses_anonymous_args = 0
+ 468              		.loc 1 320 1 is_stmt 0 view .LVU93
+ 469 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 470              	.LCFI10:
+ 471              		.cfi_def_cfa_offset 28
+ 472              		.cfi_offset 4, -28
+ 473              		.cfi_offset 5, -24
+ 474              		.cfi_offset 6, -20
+ 475              		.cfi_offset 7, -16
+ 476              		.cfi_offset 8, -12
+ 477              		.cfi_offset 9, -8
+ 478              		.cfi_offset 14, -4
+ 479 0004 83B0     		sub	sp, sp, #12
+ 480              	.LCFI11:
+ 481              		.cfi_def_cfa_offset 40
+ 482 0006 0546     		mov	r5, r0
+ 483 0008 0E46     		mov	r6, r1
+ 484 000a 9146     		mov	r9, r2
+ 485 000c 9846     		mov	r8, r3
+ 321:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 486              		.loc 1 321 5 is_stmt 1 view .LVU94
+ 487              		.loc 1 321 30 is_stmt 0 view .LVU95
+ 488 000e FFF7FEFF 		bl	GetCur_Active_Widget
+ 489              	.LVL19:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 16
 
 
- 726              		@ args = 4, pretend = 0, frame = 0
- 727              		@ frame_needed = 0, uses_anonymous_args = 0
- 728              		.loc 1 325 1 is_stmt 0 view .LVU132
- 729 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 730              	.LCFI21:
- 731              		.cfi_def_cfa_offset 24
- 732              		.cfi_offset 4, -24
- 733              		.cfi_offset 5, -20
- 734              		.cfi_offset 6, -16
- 735              		.cfi_offset 7, -12
- 736              		.cfi_offset 8, -8
- 737              		.cfi_offset 14, -4
- 738 0004 82B0     		sub	sp, sp, #8
- 739              	.LCFI22:
- 740              		.cfi_def_cfa_offset 32
- 741 0006 0646     		mov	r6, r0
- 742 0008 8846     		mov	r8, r1
- 743 000a 1446     		mov	r4, r2
- 744 000c 1D46     		mov	r5, r3
- 326:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
- 745              		.loc 1 326 5 is_stmt 1 view .LVU133
- 746              		.loc 1 326 30 is_stmt 0 view .LVU134
- 747 000e FFF7FEFF 		bl	GetCur_Active_Widget
- 748              	.LVL36:
- 327:Dsp/widget/wgt_core/widget_mng.c **** 
- 328:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_rectangle(tmp->pixel_map,
- 749              		.loc 1 328 5 is_stmt 1 view .LVU135
- 750              		.loc 1 328 21 is_stmt 0 view .LVU136
- 751 0012 0B4B     		ldr	r3, .L53
- 752 0014 5F69     		ldr	r7, [r3, #20]
- 329:Dsp/widget/wgt_core/widget_mng.c ****                                     x + tmp->cord_x,
- 753              		.loc 1 329 44 view .LVU137
- 754 0016 90F805C0 		ldrb	ip, [r0, #5]	@ zero_extendqisi2
- 330:Dsp/widget/wgt_core/widget_mng.c ****                                     y + tmp->cord_y,
- 755              		.loc 1 330 44 view .LVU138
- 756 001a 90F806E0 		ldrb	lr, [r0, #6]	@ zero_extendqisi2
- 328:Dsp/widget/wgt_core/widget_mng.c ****                                     x + tmp->cord_x,
- 757              		.loc 1 328 5 view .LVU139
- 758 001e C644     		add	lr, lr, r8
- 759 0020 0CEB0601 		add	r1, ip, r6
- 760 0024 C068     		ldr	r0, [r0, #12]
- 761              	.LVL37:
- 328:Dsp/widget/wgt_core/widget_mng.c ****                                     x + tmp->cord_x,
- 762              		.loc 1 328 5 view .LVU140
- 763 0026 9DF82030 		ldrb	r3, [sp, #32]	@ zero_extendqisi2
- 764 002a 0193     		str	r3, [sp, #4]
- 765 002c 0095     		str	r5, [sp]
- 766 002e 2346     		mov	r3, r4
- 767 0030 5FFA8EF2 		uxtb	r2, lr
- 768 0034 C9B2     		uxtb	r1, r1
- 769 0036 B847     		blx	r7
- 770              	.LVL38:
- 331:Dsp/widget/wgt_core/widget_mng.c ****                                     width,
- 332:Dsp/widget/wgt_core/widget_mng.c ****                                     height,
- 333:Dsp/widget/wgt_core/widget_mng.c ****                                     line_size);
- 334:Dsp/widget/wgt_core/widget_mng.c **** }
- 771              		.loc 1 334 1 view .LVU141
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 21
+ 322:Dsp/widget/wgt_core/widget_mng.c **** 
+ 323:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_char(font,
+ 490              		.loc 1 323 5 is_stmt 1 view .LVU96
+ 491              		.loc 1 323 21 is_stmt 0 view .LVU97
+ 492 0012 094B     		ldr	r3, .L40
+ 493 0014 9F68     		ldr	r7, [r3, #8]
+ 324:Dsp/widget/wgt_core/widget_mng.c ****                                tmp->pixel_map,
+ 325:Dsp/widget/wgt_core/widget_mng.c ****                                char_dsp,
+ 326:Dsp/widget/wgt_core/widget_mng.c ****                                x + tmp->cord_x,
+ 494              		.loc 1 326 39 view .LVU98
+ 495 0016 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+ 327:Dsp/widget/wgt_core/widget_mng.c ****                                y + tmp->cord_y,
+ 496              		.loc 1 327 39 view .LVU99
+ 497 0018 8479     		ldrb	r4, [r0, #6]	@ zero_extendqisi2
+ 323:Dsp/widget/wgt_core/widget_mng.c ****                                tmp->pixel_map,
+ 498              		.loc 1 323 5 view .LVU100
+ 499 001a 4A44     		add	r2, r2, r9
+ 500 001c C168     		ldr	r1, [r0, #12]
+ 501 001e 9DF82830 		ldrb	r3, [sp, #40]	@ zero_extendqisi2
+ 502 0022 0193     		str	r3, [sp, #4]
+ 503 0024 4444     		add	r4, r4, r8
+ 504 0026 E4B2     		uxtb	r4, r4
+ 505 0028 0094     		str	r4, [sp]
+ 506 002a D3B2     		uxtb	r3, r2
+ 507 002c 3246     		mov	r2, r6
+ 508 002e 2846     		mov	r0, r5
+ 509              	.LVL20:
+ 323:Dsp/widget/wgt_core/widget_mng.c ****                                tmp->pixel_map,
+ 510              		.loc 1 323 5 view .LVU101
+ 511 0030 B847     		blx	r7
+ 512              	.LVL21:
+ 328:Dsp/widget/wgt_core/widget_mng.c ****                                col_cnv);
+ 329:Dsp/widget/wgt_core/widget_mng.c **** }
+ 513              		.loc 1 329 1 view .LVU102
+ 514 0032 03B0     		add	sp, sp, #12
+ 515              	.LCFI12:
+ 516              		.cfi_def_cfa_offset 28
+ 517              		@ sp needed
+ 518 0034 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 519              	.LVL22:
+ 520              	.L41:
+ 521              		.loc 1 329 1 view .LVU103
+ 522              		.align	2
+ 523              	.L40:
+ 524 0038 00000000 		.word	GenDsp_Interface
+ 525              		.cfi_endproc
+ 526              	.LFE18:
+ 528              		.section	.text.Widget_DrawStr,"ax",%progbits
+ 529              		.align	1
+ 530              		.syntax unified
+ 531              		.thumb
+ 532              		.thumb_func
+ 533              		.fpu fpv4-sp-d16
+ 535              	Widget_DrawStr:
+ 536              	.LVL23:
+ 537              	.LFB19:
+ 330:Dsp/widget/wgt_core/widget_mng.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 17
 
 
- 772 0038 02B0     		add	sp, sp, #8
- 773              	.LCFI23:
- 774              		.cfi_def_cfa_offset 24
- 775              		@ sp needed
- 776 003a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 777              	.LVL39:
- 778              	.L54:
- 779              		.loc 1 334 1 view .LVU142
- 780 003e 00BF     		.align	2
- 781              	.L53:
- 782 0040 00000000 		.word	GenDsp_Interface
- 783              		.cfi_endproc
- 784              	.LFE22:
- 786              		.section	.text.Widget_Deleted,"ax",%progbits
- 787              		.align	1
- 788              		.syntax unified
- 789              		.thumb
- 790              		.thumb_func
- 791              		.fpu fpv4-sp-d16
- 793              	Widget_Deleted:
- 794              	.LVL40:
- 795              	.LFB4:
- 115:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t height = 0;
- 796              		.loc 1 115 1 is_stmt 1 view -0
- 797              		.cfi_startproc
- 798              		@ args = 0, pretend = 0, frame = 0
- 799              		@ frame_needed = 0, uses_anonymous_args = 0
- 116:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t width = 0;
- 800              		.loc 1 116 5 view .LVU144
- 117:Dsp/widget/wgt_core/widget_mng.c **** 
- 801              		.loc 1 117 5 view .LVU145
- 119:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 802              		.loc 1 119 5 view .LVU146
- 119:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 803              		.loc 1 119 8 is_stmt 0 view .LVU147
- 804 0000 38B3     		cbz	r0, .L59
- 115:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t height = 0;
- 805              		.loc 1 115 1 discriminator 1 view .LVU148
- 806 0002 F8B5     		push	{r3, r4, r5, r6, r7, lr}
- 807              	.LCFI24:
- 808              		.cfi_def_cfa_offset 24
- 809              		.cfi_offset 3, -24
- 810              		.cfi_offset 4, -20
- 811              		.cfi_offset 5, -16
- 812              		.cfi_offset 6, -12
- 813              		.cfi_offset 7, -8
- 814              		.cfi_offset 14, -4
- 815 0004 0646     		mov	r6, r0
- 119:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 816              		.loc 1 119 28 discriminator 1 view .LVU149
- 817 0006 0368     		ldr	r3, [r0]
- 119:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 818              		.loc 1 119 23 discriminator 1 view .LVU150
- 819 0008 0BB9     		cbnz	r3, .L66
- 120:Dsp/widget/wgt_core/widget_mng.c **** 
- 820              		.loc 1 120 16 view .LVU151
- 821 000a 0020     		movs	r0, #0
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 22
+ 331:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv)
+ 332:Dsp/widget/wgt_core/widget_mng.c **** {
+ 538              		.loc 1 332 1 is_stmt 1 view -0
+ 539              		.cfi_startproc
+ 540              		@ args = 4, pretend = 0, frame = 0
+ 541              		@ frame_needed = 0, uses_anonymous_args = 0
+ 542              		.loc 1 332 1 is_stmt 0 view .LVU105
+ 543 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 544              	.LCFI13:
+ 545              		.cfi_def_cfa_offset 28
+ 546              		.cfi_offset 4, -28
+ 547              		.cfi_offset 5, -24
+ 548              		.cfi_offset 6, -20
+ 549              		.cfi_offset 7, -16
+ 550              		.cfi_offset 8, -12
+ 551              		.cfi_offset 9, -8
+ 552              		.cfi_offset 14, -4
+ 553 0004 83B0     		sub	sp, sp, #12
+ 554              	.LCFI14:
+ 555              		.cfi_def_cfa_offset 40
+ 556 0006 0546     		mov	r5, r0
+ 557 0008 0E46     		mov	r6, r1
+ 558 000a 9146     		mov	r9, r2
+ 559 000c 9846     		mov	r8, r3
+ 333:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 560              		.loc 1 333 5 is_stmt 1 view .LVU106
+ 561              		.loc 1 333 30 is_stmt 0 view .LVU107
+ 562 000e FFF7FEFF 		bl	GetCur_Active_Widget
+ 563              	.LVL24:
+ 334:Dsp/widget/wgt_core/widget_mng.c **** 
+ 335:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_str(font,
+ 564              		.loc 1 335 5 is_stmt 1 view .LVU108
+ 565              		.loc 1 335 21 is_stmt 0 view .LVU109
+ 566 0012 094B     		ldr	r3, .L44
+ 567 0014 DF68     		ldr	r7, [r3, #12]
+ 336:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
+ 337:Dsp/widget/wgt_core/widget_mng.c ****                               str_dsp,
+ 338:Dsp/widget/wgt_core/widget_mng.c ****                               x + tmp->cord_x,
+ 568              		.loc 1 338 38 view .LVU110
+ 569 0016 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+ 339:Dsp/widget/wgt_core/widget_mng.c ****                               y + tmp->cord_y,
+ 570              		.loc 1 339 38 view .LVU111
+ 571 0018 8479     		ldrb	r4, [r0, #6]	@ zero_extendqisi2
+ 335:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
+ 572              		.loc 1 335 5 view .LVU112
+ 573 001a 4A44     		add	r2, r2, r9
+ 574 001c C168     		ldr	r1, [r0, #12]
+ 575 001e 9DF82830 		ldrb	r3, [sp, #40]	@ zero_extendqisi2
+ 576 0022 0193     		str	r3, [sp, #4]
+ 577 0024 4444     		add	r4, r4, r8
+ 578 0026 E4B2     		uxtb	r4, r4
+ 579 0028 0094     		str	r4, [sp]
+ 580 002a D3B2     		uxtb	r3, r2
+ 581 002c 3246     		mov	r2, r6
+ 582 002e 2846     		mov	r0, r5
+ 583              	.LVL25:
+ 335:Dsp/widget/wgt_core/widget_mng.c ****                               tmp->pixel_map,
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 18
 
 
- 822              	.LVL41:
- 823              	.L56:
- 140:Dsp/widget/wgt_core/widget_mng.c **** 
- 824              		.loc 1 140 1 view .LVU152
- 825 000c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
- 826              	.LVL42:
- 827              	.L66:
- 122:Dsp/widget/wgt_core/widget_mng.c ****     width = ((WidgetObj_TypeDef *)(*hdl))->width;
- 828              		.loc 1 122 5 is_stmt 1 view .LVU153
- 122:Dsp/widget/wgt_core/widget_mng.c ****     width = ((WidgetObj_TypeDef *)(*hdl))->width;
- 829              		.loc 1 122 12 is_stmt 0 view .LVU154
- 830 000e 1D7A     		ldrb	r5, [r3, #8]	@ zero_extendqisi2
- 831              	.LVL43:
- 123:Dsp/widget/wgt_core/widget_mng.c **** 
- 832              		.loc 1 123 5 is_stmt 1 view .LVU155
- 123:Dsp/widget/wgt_core/widget_mng.c **** 
- 833              		.loc 1 123 11 is_stmt 0 view .LVU156
- 834 0010 DF79     		ldrb	r7, [r3, #7]	@ zero_extendqisi2
- 835              	.LVL44:
- 125:Dsp/widget/wgt_core/widget_mng.c **** 
- 836              		.loc 1 125 5 is_stmt 1 view .LVU157
- 837 0012 D868     		ldr	r0, [r3, #12]
- 838              	.LVL45:
- 125:Dsp/widget/wgt_core/widget_mng.c **** 
- 839              		.loc 1 125 5 is_stmt 0 view .LVU158
- 840 0014 FFF7FEFF 		bl	free
- 841              	.LVL46:
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 842              		.loc 1 127 5 is_stmt 1 view .LVU159
- 843              	.LBB2:
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 844              		.loc 1 127 10 view .LVU160
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 845              		.loc 1 127 18 is_stmt 0 view .LVU161
- 846 0018 0024     		movs	r4, #0
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 847              		.loc 1 127 5 view .LVU162
- 848 001a 07E0     		b	.L57
- 849              	.LVL47:
- 850              	.L58:
- 129:Dsp/widget/wgt_core/widget_mng.c ****     }
- 851              		.loc 1 129 9 is_stmt 1 discriminator 3 view .LVU163
- 129:Dsp/widget/wgt_core/widget_mng.c ****     }
- 852              		.loc 1 129 37 is_stmt 0 discriminator 3 view .LVU164
- 853 001c 3368     		ldr	r3, [r6]
- 129:Dsp/widget/wgt_core/widget_mng.c ****     }
- 854              		.loc 1 129 43 discriminator 3 view .LVU165
- 855 001e DB68     		ldr	r3, [r3, #12]
- 129:Dsp/widget/wgt_core/widget_mng.c ****     }
- 856              		.loc 1 129 9 discriminator 3 view .LVU166
- 857 0020 53F82400 		ldr	r0, [r3, r4, lsl #2]
- 858 0024 FFF7FEFF 		bl	free
- 859              	.LVL48:
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 860              		.loc 1 127 37 is_stmt 1 discriminator 3 view .LVU167
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 861              		.loc 1 127 38 is_stmt 0 discriminator 3 view .LVU168
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 23
+ 584              		.loc 1 335 5 view .LVU113
+ 585 0030 B847     		blx	r7
+ 586              	.LVL26:
+ 340:Dsp/widget/wgt_core/widget_mng.c ****                               col_cnv);
+ 341:Dsp/widget/wgt_core/widget_mng.c **** }
+ 587              		.loc 1 341 1 view .LVU114
+ 588 0032 03B0     		add	sp, sp, #12
+ 589              	.LCFI15:
+ 590              		.cfi_def_cfa_offset 28
+ 591              		@ sp needed
+ 592 0034 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 593              	.LVL27:
+ 594              	.L45:
+ 595              		.loc 1 341 1 view .LVU115
+ 596              		.align	2
+ 597              	.L44:
+ 598 0038 00000000 		.word	GenDsp_Interface
+ 599              		.cfi_endproc
+ 600              	.LFE19:
+ 602              		.section	.text.Widget_DrawLine,"ax",%progbits
+ 603              		.align	1
+ 604              		.syntax unified
+ 605              		.thumb
+ 606              		.thumb_func
+ 607              		.fpu fpv4-sp-d16
+ 609              	Widget_DrawLine:
+ 610              	.LVL28:
+ 611              	.LFB20:
+ 342:Dsp/widget/wgt_core/widget_mng.c **** 
+ 343:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t
+ 344:Dsp/widget/wgt_core/widget_mng.c **** {
+ 612              		.loc 1 344 1 is_stmt 1 view -0
+ 613              		.cfi_startproc
+ 614              		@ args = 4, pretend = 0, frame = 0
+ 615              		@ frame_needed = 0, uses_anonymous_args = 0
+ 616              		.loc 1 344 1 is_stmt 0 view .LVU117
+ 617 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 618              	.LCFI16:
+ 619              		.cfi_def_cfa_offset 24
+ 620              		.cfi_offset 4, -24
+ 621              		.cfi_offset 5, -20
+ 622              		.cfi_offset 6, -16
+ 623              		.cfi_offset 7, -12
+ 624              		.cfi_offset 8, -8
+ 625              		.cfi_offset 14, -4
+ 626 0004 82B0     		sub	sp, sp, #8
+ 627              	.LCFI17:
+ 628              		.cfi_def_cfa_offset 32
+ 629 0006 8046     		mov	r8, r0
+ 630 0008 0D46     		mov	r5, r1
+ 631 000a 1646     		mov	r6, r2
+ 632 000c 1C46     		mov	r4, r3
+ 345:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 633              		.loc 1 345 5 is_stmt 1 view .LVU118
+ 634              		.loc 1 345 30 is_stmt 0 view .LVU119
+ 635 000e FFF7FEFF 		bl	GetCur_Active_Widget
+ 636              	.LVL29:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 19
 
 
- 862 0028 0134     		adds	r4, r4, #1
- 863              	.LVL49:
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 864              		.loc 1 127 38 discriminator 3 view .LVU169
- 865 002a E4B2     		uxtb	r4, r4
- 866              	.LVL50:
- 867              	.L57:
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 868              		.loc 1 127 25 is_stmt 1 discriminator 1 view .LVU170
- 127:Dsp/widget/wgt_core/widget_mng.c ****     {
- 869              		.loc 1 127 5 is_stmt 0 discriminator 1 view .LVU171
- 870 002c AC42     		cmp	r4, r5
- 871 002e F5D3     		bcc	.L58
- 872              	.LBE2:
- 132:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
- 873              		.loc 1 132 5 is_stmt 1 view .LVU172
- 132:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
- 874              		.loc 1 132 41 is_stmt 0 view .LVU173
- 875 0030 07FB05F5 		mul	r5, r7, r5
- 876              	.LVL51:
- 132:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
- 877              		.loc 1 132 32 view .LVU174
- 878 0034 094A     		ldr	r2, .L67
- 879 0036 9388     		ldrh	r3, [r2, #4]
- 880 0038 2B44     		add	r3, r3, r5
- 881 003a 9BB2     		uxth	r3, r3
- 882 003c 9380     		strh	r3, [r2, #4]	@ movhi
- 133:Dsp/widget/wgt_core/widget_mng.c **** 
- 883              		.loc 1 133 5 is_stmt 1 view .LVU175
- 133:Dsp/widget/wgt_core/widget_mng.c **** 
- 884              		.loc 1 133 37 is_stmt 0 view .LVU176
- 885 003e 5188     		ldrh	r1, [r2, #2]
- 886 0040 4D1B     		subs	r5, r1, r5
- 887 0042 5580     		strh	r5, [r2, #2]	@ movhi
- 135:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 888              		.loc 1 135 5 is_stmt 1 view .LVU177
- 135:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 889              		.loc 1 135 52 is_stmt 0 view .LVU178
- 890 0044 D288     		ldrh	r2, [r2, #6]
- 135:Dsp/widget/wgt_core/widget_mng.c ****         return false;
- 891              		.loc 1 135 8 view .LVU179
- 892 0046 9342     		cmp	r3, r2
- 893 0048 05D8     		bhi	.L61
- 138:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 894              		.loc 1 138 5 is_stmt 1 view .LVU180
- 138:Dsp/widget/wgt_core/widget_mng.c ****     return true;
- 895              		.loc 1 138 10 is_stmt 0 view .LVU181
- 896 004a 0023     		movs	r3, #0
- 897 004c 3360     		str	r3, [r6]
- 139:Dsp/widget/wgt_core/widget_mng.c **** }
- 898              		.loc 1 139 5 is_stmt 1 view .LVU182
- 139:Dsp/widget/wgt_core/widget_mng.c **** }
- 899              		.loc 1 139 12 is_stmt 0 view .LVU183
- 900 004e 0120     		movs	r0, #1
- 901 0050 DCE7     		b	.L56
- 902              	.LVL52:
- 903              	.L59:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 24
+ 346:Dsp/widget/wgt_core/widget_mng.c **** 
+ 347:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_line(tmp->pixel_map,
+ 637              		.loc 1 347 5 is_stmt 1 view .LVU120
+ 638              		.loc 1 347 21 is_stmt 0 view .LVU121
+ 639 0012 0C4B     		ldr	r3, .L48
+ 640 0014 9F69     		ldr	r7, [r3, #24]
+ 348:Dsp/widget/wgt_core/widget_mng.c ****                                start_x + tmp->cord_x,
+ 641              		.loc 1 348 45 view .LVU122
+ 642 0016 4179     		ldrb	r1, [r0, #5]	@ zero_extendqisi2
+ 349:Dsp/widget/wgt_core/widget_mng.c ****                                start_y + tmp->cord_y,
+ 643              		.loc 1 349 45 view .LVU123
+ 644 0018 90F806C0 		ldrb	ip, [r0, #6]	@ zero_extendqisi2
+ 347:Dsp/widget/wgt_core/widget_mng.c ****                                start_x + tmp->cord_x,
+ 645              		.loc 1 347 5 view .LVU124
+ 646 001c 8B19     		adds	r3, r1, r6
+ 647 001e 0CEB0502 		add	r2, ip, r5
+ 648 0022 4144     		add	r1, r1, r8
+ 649 0024 C068     		ldr	r0, [r0, #12]
+ 650              	.LVL30:
+ 347:Dsp/widget/wgt_core/widget_mng.c ****                                start_x + tmp->cord_x,
+ 651              		.loc 1 347 5 view .LVU125
+ 652 0026 9DF82050 		ldrb	r5, [sp, #32]	@ zero_extendqisi2
+ 653 002a 0195     		str	r5, [sp, #4]
+ 654 002c A444     		add	ip, ip, r4
+ 655 002e 5FFA8CF4 		uxtb	r4, ip
+ 656 0032 0094     		str	r4, [sp]
+ 657 0034 DBB2     		uxtb	r3, r3
+ 658 0036 D2B2     		uxtb	r2, r2
+ 659 0038 C9B2     		uxtb	r1, r1
+ 660 003a B847     		blx	r7
+ 661              	.LVL31:
+ 350:Dsp/widget/wgt_core/widget_mng.c ****                                end_x + tmp->cord_x,
+ 351:Dsp/widget/wgt_core/widget_mng.c ****                                end_y + tmp->cord_y,
+ 352:Dsp/widget/wgt_core/widget_mng.c ****                                line_size);
+ 353:Dsp/widget/wgt_core/widget_mng.c **** }
+ 662              		.loc 1 353 1 view .LVU126
+ 663 003c 02B0     		add	sp, sp, #8
+ 664              	.LCFI18:
+ 665              		.cfi_def_cfa_offset 24
+ 666              		@ sp needed
+ 667 003e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 668              	.LVL32:
+ 669              	.L49:
+ 670              		.loc 1 353 1 view .LVU127
+ 671 0042 00BF     		.align	2
+ 672              	.L48:
+ 673 0044 00000000 		.word	GenDsp_Interface
+ 674              		.cfi_endproc
+ 675              	.LFE20:
+ 677              		.section	.text.Widget_DrawCircle,"ax",%progbits
+ 678              		.align	1
+ 679              		.syntax unified
+ 680              		.thumb
+ 681              		.thumb_func
+ 682              		.fpu fpv4-sp-d16
+ 684              	Widget_DrawCircle:
+ 685              	.LVL33:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 20
 
 
- 904              	.LCFI25:
- 905              		.cfi_def_cfa_offset 0
- 906              		.cfi_restore 3
- 907              		.cfi_restore 4
- 908              		.cfi_restore 5
- 909              		.cfi_restore 6
- 910              		.cfi_restore 7
- 911              		.cfi_restore 14
- 120:Dsp/widget/wgt_core/widget_mng.c **** 
- 912              		.loc 1 120 16 view .LVU184
- 913 0052 0020     		movs	r0, #0
- 914              	.LVL53:
- 140:Dsp/widget/wgt_core/widget_mng.c **** 
- 915              		.loc 1 140 1 view .LVU185
- 916 0054 7047     		bx	lr
- 917              	.LVL54:
- 918              	.L61:
- 919              	.LCFI26:
- 920              		.cfi_def_cfa_offset 24
- 921              		.cfi_offset 3, -24
- 922              		.cfi_offset 4, -20
- 923              		.cfi_offset 5, -16
- 924              		.cfi_offset 6, -12
- 925              		.cfi_offset 7, -8
- 926              		.cfi_offset 14, -4
- 136:Dsp/widget/wgt_core/widget_mng.c **** 
- 927              		.loc 1 136 16 view .LVU186
- 928 0056 0020     		movs	r0, #0
- 929 0058 D8E7     		b	.L56
- 930              	.L68:
- 931 005a 00BF     		.align	2
- 932              	.L67:
- 933 005c 00000000 		.word	.LANCHOR1
- 934              		.cfi_endproc
- 935              	.LFE4:
- 937              		.section	.text.Widget_Create,"ax",%progbits
- 938              		.align	1
- 939              		.syntax unified
- 940              		.thumb
- 941              		.thumb_func
- 942              		.fpu fpv4-sp-d16
- 944              	Widget_Create:
+ 686              	.LFB21:
+ 354:Dsp/widget/wgt_core/widget_mng.c **** 
+ 355:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size
+ 356:Dsp/widget/wgt_core/widget_mng.c **** {
+ 687              		.loc 1 356 1 is_stmt 1 view -0
+ 688              		.cfi_startproc
+ 689              		@ args = 0, pretend = 0, frame = 0
+ 690              		@ frame_needed = 0, uses_anonymous_args = 0
+ 691              		.loc 1 356 1 is_stmt 0 view .LVU129
+ 692 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 693              	.LCFI19:
+ 694              		.cfi_def_cfa_offset 24
+ 695              		.cfi_offset 4, -24
+ 696              		.cfi_offset 5, -20
+ 697              		.cfi_offset 6, -16
+ 698              		.cfi_offset 7, -12
+ 699              		.cfi_offset 8, -8
+ 700              		.cfi_offset 14, -4
+ 701 0004 82B0     		sub	sp, sp, #8
+ 702              	.LCFI20:
+ 703              		.cfi_def_cfa_offset 32
+ 704 0006 0646     		mov	r6, r0
+ 705 0008 8846     		mov	r8, r1
+ 706 000a 1446     		mov	r4, r2
+ 707 000c 1D46     		mov	r5, r3
+ 357:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 708              		.loc 1 357 5 is_stmt 1 view .LVU130
+ 709              		.loc 1 357 30 is_stmt 0 view .LVU131
+ 710 000e FFF7FEFF 		bl	GetCur_Active_Widget
+ 711              	.LVL34:
+ 358:Dsp/widget/wgt_core/widget_mng.c **** 
+ 359:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_circle(tmp->pixel_map,
+ 712              		.loc 1 359 5 is_stmt 1 view .LVU132
+ 713              		.loc 1 359 21 is_stmt 0 view .LVU133
+ 714 0012 094B     		ldr	r3, .L52
+ 715 0014 5F68     		ldr	r7, [r3, #4]
+ 360:Dsp/widget/wgt_core/widget_mng.c ****                                  center_x + tmp->cord_x,
+ 716              		.loc 1 360 48 view .LVU134
+ 717 0016 90F805C0 		ldrb	ip, [r0, #5]	@ zero_extendqisi2
+ 361:Dsp/widget/wgt_core/widget_mng.c ****                                  center_y + tmp->cord_y,
+ 718              		.loc 1 361 48 view .LVU135
+ 719 001a 90F806E0 		ldrb	lr, [r0, #6]	@ zero_extendqisi2
+ 359:Dsp/widget/wgt_core/widget_mng.c ****                                  center_x + tmp->cord_x,
+ 720              		.loc 1 359 5 view .LVU136
+ 721 001e C644     		add	lr, lr, r8
+ 722 0020 0CEB0601 		add	r1, ip, r6
+ 723 0024 C068     		ldr	r0, [r0, #12]
+ 724              	.LVL35:
+ 359:Dsp/widget/wgt_core/widget_mng.c ****                                  center_x + tmp->cord_x,
+ 725              		.loc 1 359 5 view .LVU137
+ 726 0026 0095     		str	r5, [sp]
+ 727 0028 2346     		mov	r3, r4
+ 728 002a 5FFA8EF2 		uxtb	r2, lr
+ 729 002e C9B2     		uxtb	r1, r1
+ 730 0030 B847     		blx	r7
+ 731              	.LVL36:
+ 362:Dsp/widget/wgt_core/widget_mng.c ****                                  radius,
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 21
+
+
+ 363:Dsp/widget/wgt_core/widget_mng.c ****                                  line_size);
+ 364:Dsp/widget/wgt_core/widget_mng.c **** }
+ 732              		.loc 1 364 1 view .LVU138
+ 733 0032 02B0     		add	sp, sp, #8
+ 734              	.LCFI21:
+ 735              		.cfi_def_cfa_offset 24
+ 736              		@ sp needed
+ 737 0034 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 738              	.L53:
+ 739              		.align	2
+ 740              	.L52:
+ 741 0038 00000000 		.word	GenDsp_Interface
+ 742              		.cfi_endproc
+ 743              	.LFE21:
+ 745              		.section	.text.Widget_DrawRectangle,"ax",%progbits
+ 746              		.align	1
+ 747              		.syntax unified
+ 748              		.thumb
+ 749              		.thumb_func
+ 750              		.fpu fpv4-sp-d16
+ 752              	Widget_DrawRectangle:
+ 753              	.LVL37:
+ 754              	.LFB22:
+ 365:Dsp/widget/wgt_core/widget_mng.c **** 
+ 366:Dsp/widget/wgt_core/widget_mng.c **** static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_
+ 367:Dsp/widget/wgt_core/widget_mng.c **** {
+ 755              		.loc 1 367 1 is_stmt 1 view -0
+ 756              		.cfi_startproc
+ 757              		@ args = 4, pretend = 0, frame = 0
+ 758              		@ frame_needed = 0, uses_anonymous_args = 0
+ 759              		.loc 1 367 1 is_stmt 0 view .LVU140
+ 760 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 761              	.LCFI22:
+ 762              		.cfi_def_cfa_offset 24
+ 763              		.cfi_offset 4, -24
+ 764              		.cfi_offset 5, -20
+ 765              		.cfi_offset 6, -16
+ 766              		.cfi_offset 7, -12
+ 767              		.cfi_offset 8, -8
+ 768              		.cfi_offset 14, -4
+ 769 0004 82B0     		sub	sp, sp, #8
+ 770              	.LCFI23:
+ 771              		.cfi_def_cfa_offset 32
+ 772 0006 0646     		mov	r6, r0
+ 773 0008 8846     		mov	r8, r1
+ 774 000a 1446     		mov	r4, r2
+ 775 000c 1D46     		mov	r5, r3
+ 368:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+ 776              		.loc 1 368 5 is_stmt 1 view .LVU141
+ 777              		.loc 1 368 30 is_stmt 0 view .LVU142
+ 778 000e FFF7FEFF 		bl	GetCur_Active_Widget
+ 779              	.LVL38:
+ 369:Dsp/widget/wgt_core/widget_mng.c **** 
+ 370:Dsp/widget/wgt_core/widget_mng.c ****     GenDsp_Interface.draw_rectangle(tmp->pixel_map,
+ 780              		.loc 1 370 5 is_stmt 1 view .LVU143
+ 781              		.loc 1 370 21 is_stmt 0 view .LVU144
+ 782 0012 0B4B     		ldr	r3, .L56
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 22
+
+
+ 783 0014 5F69     		ldr	r7, [r3, #20]
+ 371:Dsp/widget/wgt_core/widget_mng.c ****                                     x + tmp->cord_x,
+ 784              		.loc 1 371 44 view .LVU145
+ 785 0016 90F805C0 		ldrb	ip, [r0, #5]	@ zero_extendqisi2
+ 372:Dsp/widget/wgt_core/widget_mng.c ****                                     y + tmp->cord_y,
+ 786              		.loc 1 372 44 view .LVU146
+ 787 001a 90F806E0 		ldrb	lr, [r0, #6]	@ zero_extendqisi2
+ 370:Dsp/widget/wgt_core/widget_mng.c ****                                     x + tmp->cord_x,
+ 788              		.loc 1 370 5 view .LVU147
+ 789 001e C644     		add	lr, lr, r8
+ 790 0020 0CEB0601 		add	r1, ip, r6
+ 791 0024 C068     		ldr	r0, [r0, #12]
+ 792              	.LVL39:
+ 370:Dsp/widget/wgt_core/widget_mng.c ****                                     x + tmp->cord_x,
+ 793              		.loc 1 370 5 view .LVU148
+ 794 0026 9DF82030 		ldrb	r3, [sp, #32]	@ zero_extendqisi2
+ 795 002a 0193     		str	r3, [sp, #4]
+ 796 002c 0095     		str	r5, [sp]
+ 797 002e 2346     		mov	r3, r4
+ 798 0030 5FFA8EF2 		uxtb	r2, lr
+ 799 0034 C9B2     		uxtb	r1, r1
+ 800 0036 B847     		blx	r7
+ 801              	.LVL40:
+ 373:Dsp/widget/wgt_core/widget_mng.c ****                                     width,
+ 374:Dsp/widget/wgt_core/widget_mng.c ****                                     height,
+ 375:Dsp/widget/wgt_core/widget_mng.c ****                                     line_size);
+ 376:Dsp/widget/wgt_core/widget_mng.c **** }
+ 802              		.loc 1 376 1 view .LVU149
+ 803 0038 02B0     		add	sp, sp, #8
+ 804              	.LCFI24:
+ 805              		.cfi_def_cfa_offset 24
+ 806              		@ sp needed
+ 807 003a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 808              	.LVL41:
+ 809              	.L57:
+ 810              		.loc 1 376 1 view .LVU150
+ 811 003e 00BF     		.align	2
+ 812              	.L56:
+ 813 0040 00000000 		.word	GenDsp_Interface
+ 814              		.cfi_endproc
+ 815              	.LFE22:
+ 817              		.section	.text.Widget_Deleted,"ax",%progbits
+ 818              		.align	1
+ 819              		.syntax unified
+ 820              		.thumb
+ 821              		.thumb_func
+ 822              		.fpu fpv4-sp-d16
+ 824              	Widget_Deleted:
+ 825              	.LVL42:
+ 826              	.LFB4:
+ 153:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t height = 0;
+ 827              		.loc 1 153 1 is_stmt 1 view -0
+ 828              		.cfi_startproc
+ 829              		@ args = 0, pretend = 0, frame = 0
+ 830              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t width = 0;
+ 831              		.loc 1 154 5 view .LVU152
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 23
+
+
+ 155:Dsp/widget/wgt_core/widget_mng.c **** 
+ 832              		.loc 1 155 5 view .LVU153
+ 157:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 833              		.loc 1 157 5 view .LVU154
+ 157:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 834              		.loc 1 157 8 is_stmt 0 view .LVU155
+ 835 0000 38B3     		cbz	r0, .L62
+ 153:Dsp/widget/wgt_core/widget_mng.c ****     uint8_t height = 0;
+ 836              		.loc 1 153 1 discriminator 1 view .LVU156
+ 837 0002 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 838              	.LCFI25:
+ 839              		.cfi_def_cfa_offset 24
+ 840              		.cfi_offset 3, -24
+ 841              		.cfi_offset 4, -20
+ 842              		.cfi_offset 5, -16
+ 843              		.cfi_offset 6, -12
+ 844              		.cfi_offset 7, -8
+ 845              		.cfi_offset 14, -4
+ 846 0004 0646     		mov	r6, r0
+ 157:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 847              		.loc 1 157 28 discriminator 1 view .LVU157
+ 848 0006 0368     		ldr	r3, [r0]
+ 157:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 849              		.loc 1 157 23 discriminator 1 view .LVU158
+ 850 0008 0BB9     		cbnz	r3, .L69
+ 158:Dsp/widget/wgt_core/widget_mng.c **** 
+ 851              		.loc 1 158 16 view .LVU159
+ 852 000a 0020     		movs	r0, #0
+ 853              	.LVL43:
+ 854              	.L59:
+ 178:Dsp/widget/wgt_core/widget_mng.c **** 
+ 855              		.loc 1 178 1 view .LVU160
+ 856 000c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 857              	.LVL44:
+ 858              	.L69:
+ 160:Dsp/widget/wgt_core/widget_mng.c ****     width = ((WidgetObj_TypeDef *)(*hdl))->width;
+ 859              		.loc 1 160 5 is_stmt 1 view .LVU161
+ 160:Dsp/widget/wgt_core/widget_mng.c ****     width = ((WidgetObj_TypeDef *)(*hdl))->width;
+ 860              		.loc 1 160 12 is_stmt 0 view .LVU162
+ 861 000e 1D7A     		ldrb	r5, [r3, #8]	@ zero_extendqisi2
+ 862              	.LVL45:
+ 161:Dsp/widget/wgt_core/widget_mng.c **** 
+ 863              		.loc 1 161 5 is_stmt 1 view .LVU163
+ 161:Dsp/widget/wgt_core/widget_mng.c **** 
+ 864              		.loc 1 161 11 is_stmt 0 view .LVU164
+ 865 0010 DF79     		ldrb	r7, [r3, #7]	@ zero_extendqisi2
+ 866              	.LVL46:
+ 163:Dsp/widget/wgt_core/widget_mng.c **** 
+ 867              		.loc 1 163 5 is_stmt 1 view .LVU165
+ 868 0012 D868     		ldr	r0, [r3, #12]
+ 869              	.LVL47:
+ 163:Dsp/widget/wgt_core/widget_mng.c **** 
+ 870              		.loc 1 163 5 is_stmt 0 view .LVU166
+ 871 0014 FFF7FEFF 		bl	free
+ 872              	.LVL48:
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 873              		.loc 1 165 5 is_stmt 1 view .LVU167
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 24
+
+
+ 874              	.LBB2:
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 875              		.loc 1 165 10 view .LVU168
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 876              		.loc 1 165 18 is_stmt 0 view .LVU169
+ 877 0018 0024     		movs	r4, #0
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 878              		.loc 1 165 5 view .LVU170
+ 879 001a 07E0     		b	.L60
+ 880              	.LVL49:
+ 881              	.L61:
+ 167:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 882              		.loc 1 167 9 is_stmt 1 discriminator 3 view .LVU171
+ 167:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 883              		.loc 1 167 37 is_stmt 0 discriminator 3 view .LVU172
+ 884 001c 3368     		ldr	r3, [r6]
+ 167:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 885              		.loc 1 167 43 discriminator 3 view .LVU173
+ 886 001e DB68     		ldr	r3, [r3, #12]
+ 167:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 887              		.loc 1 167 9 discriminator 3 view .LVU174
+ 888 0020 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 889 0024 FFF7FEFF 		bl	free
+ 890              	.LVL50:
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 891              		.loc 1 165 37 is_stmt 1 discriminator 3 view .LVU175
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 892              		.loc 1 165 38 is_stmt 0 discriminator 3 view .LVU176
+ 893 0028 0134     		adds	r4, r4, #1
+ 894              	.LVL51:
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 895              		.loc 1 165 38 discriminator 3 view .LVU177
+ 896 002a E4B2     		uxtb	r4, r4
+ 897              	.LVL52:
+ 898              	.L60:
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 899              		.loc 1 165 25 is_stmt 1 discriminator 1 view .LVU178
+ 165:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 900              		.loc 1 165 5 is_stmt 0 discriminator 1 view .LVU179
+ 901 002c AC42     		cmp	r4, r5
+ 902 002e F5D3     		bcc	.L61
+ 903              	.LBE2:
+ 170:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
+ 904              		.loc 1 170 5 is_stmt 1 view .LVU180
+ 170:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
+ 905              		.loc 1 170 41 is_stmt 0 view .LVU181
+ 906 0030 07FB05F5 		mul	r5, r7, r5
+ 907              	.LVL53:
+ 170:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size -= width * height;
+ 908              		.loc 1 170 32 view .LVU182
+ 909 0034 094A     		ldr	r2, .L70
+ 910 0036 9388     		ldrh	r3, [r2, #4]
+ 911 0038 2B44     		add	r3, r3, r5
+ 912 003a 9BB2     		uxth	r3, r3
+ 913 003c 9380     		strh	r3, [r2, #4]	@ movhi
+ 171:Dsp/widget/wgt_core/widget_mng.c **** 
+ 914              		.loc 1 171 5 is_stmt 1 view .LVU183
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 25
+
+
+ 171:Dsp/widget/wgt_core/widget_mng.c **** 
+ 915              		.loc 1 171 37 is_stmt 0 view .LVU184
+ 916 003e 5188     		ldrh	r1, [r2, #2]
+ 917 0040 4D1B     		subs	r5, r1, r5
+ 918 0042 5580     		strh	r5, [r2, #2]	@ movhi
+ 173:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 919              		.loc 1 173 5 is_stmt 1 view .LVU185
+ 173:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 920              		.loc 1 173 52 is_stmt 0 view .LVU186
+ 921 0044 D288     		ldrh	r2, [r2, #6]
+ 173:Dsp/widget/wgt_core/widget_mng.c ****         return false;
+ 922              		.loc 1 173 8 view .LVU187
+ 923 0046 9342     		cmp	r3, r2
+ 924 0048 05D8     		bhi	.L64
+ 176:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 925              		.loc 1 176 5 is_stmt 1 view .LVU188
+ 176:Dsp/widget/wgt_core/widget_mng.c ****     return true;
+ 926              		.loc 1 176 10 is_stmt 0 view .LVU189
+ 927 004a 0023     		movs	r3, #0
+ 928 004c 3360     		str	r3, [r6]
+ 177:Dsp/widget/wgt_core/widget_mng.c **** }
+ 929              		.loc 1 177 5 is_stmt 1 view .LVU190
+ 177:Dsp/widget/wgt_core/widget_mng.c **** }
+ 930              		.loc 1 177 12 is_stmt 0 view .LVU191
+ 931 004e 0120     		movs	r0, #1
+ 932 0050 DCE7     		b	.L59
+ 933              	.LVL54:
+ 934              	.L62:
+ 935              	.LCFI26:
+ 936              		.cfi_def_cfa_offset 0
+ 937              		.cfi_restore 3
+ 938              		.cfi_restore 4
+ 939              		.cfi_restore 5
+ 940              		.cfi_restore 6
+ 941              		.cfi_restore 7
+ 942              		.cfi_restore 14
+ 158:Dsp/widget/wgt_core/widget_mng.c **** 
+ 943              		.loc 1 158 16 view .LVU192
+ 944 0052 0020     		movs	r0, #0
  945              	.LVL55:
- 946              	.LFB3:
-  64:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp;
- 947              		.loc 1 64 1 is_stmt 1 view -0
- 948              		.cfi_startproc
- 949              		@ args = 4, pretend = 0, frame = 8
- 950              		@ frame_needed = 0, uses_anonymous_args = 0
-  64:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp;
- 951              		.loc 1 64 1 is_stmt 0 view .LVU188
- 952 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
- 953              	.LCFI27:
- 954              		.cfi_def_cfa_offset 28
- 955              		.cfi_offset 4, -28
- 956              		.cfi_offset 5, -24
- 957              		.cfi_offset 6, -20
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 25
+ 178:Dsp/widget/wgt_core/widget_mng.c **** 
+ 946              		.loc 1 178 1 view .LVU193
+ 947 0054 7047     		bx	lr
+ 948              	.LVL56:
+ 949              	.L64:
+ 950              	.LCFI27:
+ 951              		.cfi_def_cfa_offset 24
+ 952              		.cfi_offset 3, -24
+ 953              		.cfi_offset 4, -20
+ 954              		.cfi_offset 5, -16
+ 955              		.cfi_offset 6, -12
+ 956              		.cfi_offset 7, -8
+ 957              		.cfi_offset 14, -4
+ 174:Dsp/widget/wgt_core/widget_mng.c **** 
+ 958              		.loc 1 174 16 view .LVU194
+ 959 0056 0020     		movs	r0, #0
+ 960 0058 D8E7     		b	.L59
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 26
 
 
- 958              		.cfi_offset 7, -16
- 959              		.cfi_offset 8, -12
- 960              		.cfi_offset 9, -8
- 961              		.cfi_offset 14, -4
- 962 0004 83B0     		sub	sp, sp, #12
- 963              	.LCFI28:
- 964              		.cfi_def_cfa_offset 40
- 965 0006 8146     		mov	r9, r0
- 966 0008 8846     		mov	r8, r1
- 967 000a 1746     		mov	r7, r2
- 968 000c 1E46     		mov	r6, r3
-  65:Dsp/widget/wgt_core/widget_mng.c **** 
- 969              		.loc 1 65 5 is_stmt 1 view .LVU189
-  67:Dsp/widget/wgt_core/widget_mng.c ****     {
- 970              		.loc 1 67 5 view .LVU190
-  67:Dsp/widget/wgt_core/widget_mng.c ****     {
- 971              		.loc 1 67 23 is_stmt 0 view .LVU191
- 972 000e 2E4B     		ldr	r3, .L81
- 973              	.LVL56:
-  67:Dsp/widget/wgt_core/widget_mng.c ****     {
- 974              		.loc 1 67 23 view .LVU192
- 975 0010 DB88     		ldrh	r3, [r3, #6]
-  67:Dsp/widget/wgt_core/widget_mng.c ****     {
- 976              		.loc 1 67 8 view .LVU193
- 977 0012 9BB9     		cbnz	r3, .L70
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 978              		.loc 1 69 9 is_stmt 1 view .LVU194
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 979              		.loc 1 69 52 is_stmt 0 view .LVU195
- 980 0014 2D4D     		ldr	r5, .L81+4
- 981 0016 AB68     		ldr	r3, [r5, #8]
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 982              		.loc 1 69 45 view .LVU196
- 983 0018 9847     		blx	r3
- 984              	.LVL57:
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 985              		.loc 1 69 45 view .LVU197
- 986 001a ADF80000 		strh	r0, [sp]	@ movhi
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 987              		.loc 1 69 64 view .LVU198
- 988 001e 9DF80140 		ldrb	r4, [sp, #1]	@ zero_extendqisi2
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 989              		.loc 1 69 81 view .LVU199
- 990 0022 AB68     		ldr	r3, [r5, #8]
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 991              		.loc 1 69 74 view .LVU200
- 992 0024 9847     		blx	r3
- 993              	.LVL58:
- 994 0026 ADF80400 		strh	r0, [sp, #4]	@ movhi
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 995              		.loc 1 69 93 view .LVU201
- 996 002a 9DF80430 		ldrb	r3, [sp, #4]	@ zero_extendqisi2
-  69:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
- 997              		.loc 1 69 42 view .LVU202
- 998 002e 14FB03F3 		smulbb	r3, r4, r3
- 999 0032 DB00     		lsls	r3, r3, #3
- 1000 0034 9BB2     		uxth	r3, r3
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 26
+ 961              	.L71:
+ 962 005a 00BF     		.align	2
+ 963              	.L70:
+ 964 005c 00000000 		.word	.LANCHOR2
+ 965              		.cfi_endproc
+ 966              	.LFE4:
+ 968              		.section	.text.Widget_Create,"ax",%progbits
+ 969              		.align	1
+ 970              		.syntax unified
+ 971              		.thumb
+ 972              		.thumb_func
+ 973              		.fpu fpv4-sp-d16
+ 975              	Widget_Create:
+ 976              	.LVL57:
+ 977              	.LFB3:
+  66:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp;
+ 978              		.loc 1 66 1 is_stmt 1 view -0
+ 979              		.cfi_startproc
+ 980              		@ args = 4, pretend = 0, frame = 24
+ 981              		@ frame_needed = 0, uses_anonymous_args = 0
+  66:Dsp/widget/wgt_core/widget_mng.c ****     WidgetObj_TypeDef *widget_tmp;
+ 982              		.loc 1 66 1 is_stmt 0 view .LVU196
+ 983 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 984              	.LCFI28:
+ 985              		.cfi_def_cfa_offset 32
+ 986              		.cfi_offset 4, -32
+ 987              		.cfi_offset 5, -28
+ 988              		.cfi_offset 6, -24
+ 989              		.cfi_offset 7, -20
+ 990              		.cfi_offset 8, -16
+ 991              		.cfi_offset 9, -12
+ 992              		.cfi_offset 10, -8
+ 993              		.cfi_offset 14, -4
+ 994 0004 86B0     		sub	sp, sp, #24
+ 995              	.LCFI29:
+ 996              		.cfi_def_cfa_offset 56
+ 997 0006 8046     		mov	r8, r0
+ 998 0008 8A46     		mov	r10, r1
+ 999 000a 1646     		mov	r6, r2
+ 1000 000c 1D46     		mov	r5, r3
+  67:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1001              		.loc 1 67 5 is_stmt 1 view .LVU197
+  69:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1002              		.loc 1 69 5 view .LVU198
+  69:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1003              		.loc 1 69 23 is_stmt 0 view .LVU199
+ 1004 000e 5B4B     		ldr	r3, .L93
+ 1005              	.LVL58:
+  69:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1006              		.loc 1 69 23 view .LVU200
+ 1007 0010 DB88     		ldrh	r3, [r3, #6]
+  69:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1008              		.loc 1 69 8 view .LVU201
+ 1009 0012 002B     		cmp	r3, #0
+ 1010 0014 47D1     		bne	.L73
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1011              		.loc 1 71 9 is_stmt 1 view .LVU202
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 27
 
 
- 1001 0036 244A     		ldr	r2, .L81
- 1002 0038 D380     		strh	r3, [r2, #6]	@ movhi
-  70:Dsp/widget/wgt_core/widget_mng.c ****     }
- 1003              		.loc 1 70 9 is_stmt 1 view .LVU203
-  70:Dsp/widget/wgt_core/widget_mng.c ****     }
- 1004              		.loc 1 70 36 is_stmt 0 view .LVU204
- 1005 003a 9380     		strh	r3, [r2, #4]	@ movhi
- 1006              	.L70:
-  73:Dsp/widget/wgt_core/widget_mng.c **** 
- 1007              		.loc 1 73 5 is_stmt 1 view .LVU205
-  73:Dsp/widget/wgt_core/widget_mng.c **** 
- 1008              		.loc 1 73 39 is_stmt 0 view .LVU206
- 1009 003c 2420     		movs	r0, #36
- 1010 003e FFF7FEFF 		bl	malloc
- 1011              	.LVL59:
-  75:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
- 1012              		.loc 1 75 5 is_stmt 1 view .LVU207
-  75:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
- 1013              		.loc 1 75 8 is_stmt 0 view .LVU208
- 1014 0042 0546     		mov	r5, r0
- 1015 0044 0028     		cmp	r0, #0
- 1016 0046 39D0     		beq	.L74
-  78:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_y = cord_y;
- 1017              		.loc 1 78 5 is_stmt 1 view .LVU209
-  78:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_y = cord_y;
- 1018              		.loc 1 78 24 is_stmt 0 view .LVU210
- 1019 0048 80F80590 		strb	r9, [r0, #5]
-  79:Dsp/widget/wgt_core/widget_mng.c **** 
- 1020              		.loc 1 79 5 is_stmt 1 view .LVU211
-  79:Dsp/widget/wgt_core/widget_mng.c **** 
- 1021              		.loc 1 79 24 is_stmt 0 view .LVU212
- 1022 004c 80F80680 		strb	r8, [r0, #6]
-  81:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->height = height;
- 1023              		.loc 1 81 5 is_stmt 1 view .LVU213
-  81:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->height = height;
- 1024              		.loc 1 81 23 is_stmt 0 view .LVU214
- 1025 0050 C771     		strb	r7, [r0, #7]
-  82:Dsp/widget/wgt_core/widget_mng.c **** 
- 1026              		.loc 1 82 5 is_stmt 1 view .LVU215
-  82:Dsp/widget/wgt_core/widget_mng.c **** 
- 1027              		.loc 1 82 24 is_stmt 0 view .LVU216
- 1028 0052 0672     		strb	r6, [r0, #8]
-  84:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->on_layer = DEFAULT_LAYER;
- 1029              		.loc 1 84 5 is_stmt 1 view .LVU217
-  84:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->on_layer = DEFAULT_LAYER;
- 1030              		.loc 1 84 22 is_stmt 0 view .LVU218
- 1031 0054 0A9B     		ldr	r3, [sp, #40]
- 1032 0056 C361     		str	r3, [r0, #28]
-  85:Dsp/widget/wgt_core/widget_mng.c **** 
- 1033              		.loc 1 85 5 is_stmt 1 view .LVU219
-  85:Dsp/widget/wgt_core/widget_mng.c **** 
- 1034              		.loc 1 85 26 is_stmt 0 view .LVU220
- 1035 0058 0023     		movs	r3, #0
- 1036 005a 0371     		strb	r3, [r0, #4]
-  87:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
- 1037              		.loc 1 87 5 is_stmt 1 view .LVU221
-  87:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 27
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1012              		.loc 1 71 52 is_stmt 0 view .LVU203
+ 1013 0016 DFF86C91 		ldr	r9, .L93+8
+ 1014 001a D9F80830 		ldr	r3, [r9, #8]
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1015              		.loc 1 71 45 view .LVU204
+ 1016 001e 9847     		blx	r3
+ 1017              	.LVL59:
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1018              		.loc 1 71 45 view .LVU205
+ 1019 0020 ADF80400 		strh	r0, [sp, #4]	@ movhi
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1020              		.loc 1 71 64 view .LVU206
+ 1021 0024 9DF80540 		ldrb	r4, [sp, #5]	@ zero_extendqisi2
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1022              		.loc 1 71 81 view .LVU207
+ 1023 0028 D9F80830 		ldr	r3, [r9, #8]
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1024              		.loc 1 71 74 view .LVU208
+ 1025 002c 9847     		blx	r3
+ 1026              	.LVL60:
+ 1027 002e ADF80800 		strh	r0, [sp, #8]	@ movhi
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1028              		.loc 1 71 93 view .LVU209
+ 1029 0032 9DF80830 		ldrb	r3, [sp, #8]	@ zero_extendqisi2
+  71:Dsp/widget/wgt_core/widget_mng.c ****         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
+ 1030              		.loc 1 71 42 view .LVU210
+ 1031 0036 14FB03F3 		smulbb	r3, r4, r3
+ 1032 003a DB00     		lsls	r3, r3, #3
+ 1033 003c 9BB2     		uxth	r3, r3
+ 1034 003e 4F4A     		ldr	r2, .L93
+ 1035 0040 D380     		strh	r3, [r2, #6]	@ movhi
+  72:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1036              		.loc 1 72 9 is_stmt 1 view .LVU211
+  72:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1037              		.loc 1 72 36 is_stmt 0 view .LVU212
+ 1038 0042 9380     		strh	r3, [r2, #4]	@ movhi
+  74:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1039              		.loc 1 74 9 is_stmt 1 view .LVU213
+  74:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1040              		.loc 1 74 75 is_stmt 0 view .LVU214
+ 1041 0044 D9F80830 		ldr	r3, [r9, #8]
+  74:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1042              		.loc 1 74 68 view .LVU215
+ 1043 0048 9847     		blx	r3
+ 1044              	.LVL61:
+ 1045 004a ADF80C00 		strh	r0, [sp, #12]	@ movhi
+  74:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1046              		.loc 1 74 87 view .LVU216
+ 1047 004e 9DF80D00 		ldrb	r0, [sp, #13]	@ zero_extendqisi2
+  74:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1048              		.loc 1 74 41 view .LVU217
+ 1049 0052 8000     		lsls	r0, r0, #2
+ 1050 0054 FFF7FEFF 		bl	malloc
+ 1051              	.LVL62:
+  74:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1052              		.loc 1 74 27 view .LVU218
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 28
 
 
- 1038              		.loc 1 87 23 is_stmt 0 view .LVU222
- 1039 005c 1A4B     		ldr	r3, .L81
- 1040 005e 9A88     		ldrh	r2, [r3, #4]
-  87:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
- 1041              		.loc 1 87 46 view .LVU223
- 1042 0060 07FB06F3 		mul	r3, r7, r6
-  87:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
- 1043              		.loc 1 87 8 view .LVU224
- 1044 0064 9A42     		cmp	r2, r3
- 1045 0066 03DA     		bge	.L79
-  88:Dsp/widget/wgt_core/widget_mng.c **** 
- 1046              		.loc 1 88 16 view .LVU225
- 1047 0068 0020     		movs	r0, #0
- 1048              	.LVL60:
- 1049              	.L69:
- 112:Dsp/widget/wgt_core/widget_mng.c **** 
- 1050              		.loc 1 112 1 view .LVU226
- 1051 006a 03B0     		add	sp, sp, #12
- 1052              	.LCFI29:
- 1053              		.cfi_remember_state
- 1054              		.cfi_def_cfa_offset 28
- 1055              		@ sp needed
- 1056 006c BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
- 1057              	.LVL61:
- 1058              	.L79:
- 1059              	.LCFI30:
- 1060              		.cfi_restore_state
+ 1053 0058 494B     		ldr	r3, .L93+4
+ 1054 005a 1860     		str	r0, [r3]
+  76:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
+ 1055              		.loc 1 76 9 is_stmt 1 view .LVU219
+  76:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
+ 1056              		.loc 1 76 12 is_stmt 0 view .LVU220
+ 1057 005c 0028     		cmp	r0, #0
+ 1058 005e 00F08480 		beq	.L81
+ 1059              	.LBB3:
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1060              		.loc 1 79 22 view .LVU221
+ 1061 0062 0024     		movs	r4, #0
+ 1062 0064 01E0     		b	.L75
+ 1063              	.LVL63:
+ 1064              	.L89:
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1065              		.loc 1 79 83 is_stmt 1 discriminator 2 view .LVU222
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1066              		.loc 1 79 95 is_stmt 0 discriminator 2 view .LVU223
+ 1067 0066 0134     		adds	r4, r4, #1
+ 1068              	.LVL64:
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1069              		.loc 1 79 95 discriminator 2 view .LVU224
+ 1070 0068 E4B2     		uxtb	r4, r4
+ 1071              	.LVL65:
+ 1072              	.L75:
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1073              		.loc 1 79 40 is_stmt 1 discriminator 1 view .LVU225
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1074              		.loc 1 79 62 is_stmt 0 discriminator 1 view .LVU226
+ 1075 006a 464B     		ldr	r3, .L93+8
+ 1076 006c 9B68     		ldr	r3, [r3, #8]
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1077              		.loc 1 79 55 discriminator 1 view .LVU227
+ 1078 006e 9847     		blx	r3
+ 1079              	.LVL66:
+ 1080 0070 ADF81400 		strh	r0, [sp, #20]	@ movhi
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1081              		.loc 1 79 74 discriminator 1 view .LVU228
+ 1082 0074 9DF815C0 		ldrb	ip, [sp, #21]	@ zero_extendqisi2
+  79:Dsp/widget/wgt_core/widget_mng.c ****         {
+ 1083              		.loc 1 79 9 discriminator 1 view .LVU229
+ 1084 0078 A445     		cmp	ip, r4
+ 1085 007a 11D9     		bls	.L88
+  81:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1086              		.loc 1 81 13 is_stmt 1 view .LVU230
+  81:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1087              		.loc 1 81 93 is_stmt 0 view .LVU231
+ 1088 007c 414B     		ldr	r3, .L93+8
+ 1089 007e 9B68     		ldr	r3, [r3, #8]
+  81:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1090              		.loc 1 81 86 view .LVU232
+ 1091 0080 9847     		blx	r3
+ 1092              	.LVL67:
+ 1093 0082 ADF81000 		strh	r0, [sp, #16]	@ movhi
+  81:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1094              		.loc 1 81 105 view .LVU233
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 29
+
+
+ 1095 0086 9DF81000 		ldrb	r0, [sp, #16]	@ zero_extendqisi2
+  81:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1096              		.loc 1 81 30 view .LVU234
+ 1097 008a 3D4B     		ldr	r3, .L93+4
+ 1098 008c 1F68     		ldr	r7, [r3]
+  81:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1099              		.loc 1 81 59 view .LVU235
+ 1100 008e 8000     		lsls	r0, r0, #2
+ 1101 0090 FFF7FEFF 		bl	malloc
+ 1102              	.LVL68:
+  81:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1103              		.loc 1 81 45 view .LVU236
+ 1104 0094 47F82400 		str	r0, [r7, r4, lsl #2]
+  83:Dsp/widget/wgt_core/widget_mng.c ****                 return WIDGET_CREATE_ERROR;
+ 1105              		.loc 1 83 13 is_stmt 1 view .LVU237
+  83:Dsp/widget/wgt_core/widget_mng.c ****                 return WIDGET_CREATE_ERROR;
+ 1106              		.loc 1 83 16 is_stmt 0 view .LVU238
+ 1107 0098 0028     		cmp	r0, #0
+ 1108 009a E4D1     		bne	.L89
+  84:Dsp/widget/wgt_core/widget_mng.c ****         }
+ 1109              		.loc 1 84 24 view .LVU239
+ 1110 009c 0020     		movs	r0, #0
+ 1111 009e 19E0     		b	.L72
+ 1112              	.L88:
+ 1113              	.LBE3:
+  87:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1114              		.loc 1 87 9 is_stmt 1 view .LVU240
+  87:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1115              		.loc 1 87 36 is_stmt 0 view .LVU241
+ 1116 00a0 364B     		ldr	r3, .L93
+ 1117 00a2 0022     		movs	r2, #0
+ 1118 00a4 9A60     		str	r2, [r3, #8]
+ 1119              	.LVL69:
+ 1120              	.L73:
   90:Dsp/widget/wgt_core/widget_mng.c **** 
- 1061              		.loc 1 90 5 is_stmt 1 view .LVU227
+ 1121              		.loc 1 90 5 is_stmt 1 view .LVU242
   90:Dsp/widget/wgt_core/widget_mng.c **** 
- 1062              		.loc 1 90 41 is_stmt 0 view .LVU228
- 1063 0070 B000     		lsls	r0, r6, #2
- 1064              	.LVL62:
-  90:Dsp/widget/wgt_core/widget_mng.c **** 
- 1065              		.loc 1 90 41 view .LVU229
- 1066 0072 FFF7FEFF 		bl	malloc
- 1067              	.LVL63:
-  90:Dsp/widget/wgt_core/widget_mng.c **** 
- 1068              		.loc 1 90 27 view .LVU230
- 1069 0076 E860     		str	r0, [r5, #12]
+ 1122              		.loc 1 90 39 is_stmt 0 view .LVU243
+ 1123 00a6 2820     		movs	r0, #40
+ 1124 00a8 FFF7FEFF 		bl	malloc
+ 1125              	.LVL70:
   92:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
- 1070              		.loc 1 92 5 is_stmt 1 view .LVU231
+ 1126              		.loc 1 92 5 is_stmt 1 view .LVU244
   92:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
- 1071              		.loc 1 92 8 is_stmt 0 view .LVU232
- 1072 0078 10B3     		cbz	r0, .L76
- 1073              	.LBB3:
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1074              		.loc 1 95 18 view .LVU233
- 1075 007a 0024     		movs	r4, #0
- 1076              	.L72:
- 1077              	.LVL64:
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1078              		.loc 1 95 25 is_stmt 1 discriminator 1 view .LVU234
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1079              		.loc 1 95 5 is_stmt 0 discriminator 1 view .LVU235
- 1080 007c B442     		cmp	r4, r6
- 1081 007e 0BD2     		bcs	.L80
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 28
+ 1127              		.loc 1 92 8 is_stmt 0 view .LVU245
+ 1128 00ac 8146     		mov	r9, r0
+ 1129 00ae 0028     		cmp	r0, #0
+ 1130 00b0 5DD0     		beq	.L83
+  95:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_y = cord_y;
+ 1131              		.loc 1 95 5 is_stmt 1 view .LVU246
+  95:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->cord_y = cord_y;
+ 1132              		.loc 1 95 24 is_stmt 0 view .LVU247
+ 1133 00b2 80F80580 		strb	r8, [r0, #5]
+  96:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1134              		.loc 1 96 5 is_stmt 1 view .LVU248
+  96:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1135              		.loc 1 96 24 is_stmt 0 view .LVU249
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 30
 
 
-  97:Dsp/widget/wgt_core/widget_mng.c **** 
- 1082              		.loc 1 97 9 is_stmt 1 view .LVU236
-  97:Dsp/widget/wgt_core/widget_mng.c **** 
- 1083              		.loc 1 97 19 is_stmt 0 view .LVU237
- 1084 0080 D5F80C80 		ldr	r8, [r5, #12]
-  97:Dsp/widget/wgt_core/widget_mng.c **** 
- 1085              		.loc 1 97 47 view .LVU238
- 1086 0084 3846     		mov	r0, r7
- 1087 0086 FFF7FEFF 		bl	malloc
- 1088              	.LVL65:
-  97:Dsp/widget/wgt_core/widget_mng.c **** 
- 1089              		.loc 1 97 34 view .LVU239
- 1090 008a 48F82400 		str	r0, [r8, r4, lsl #2]
-  99:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
- 1091              		.loc 1 99 9 is_stmt 1 view .LVU240
-  99:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
- 1092              		.loc 1 99 23 is_stmt 0 view .LVU241
- 1093 008e EB68     		ldr	r3, [r5, #12]
-  99:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
- 1094              		.loc 1 99 12 view .LVU242
- 1095 0090 C3B1     		cbz	r3, .L77
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1096              		.loc 1 95 37 is_stmt 1 discriminator 2 view .LVU243
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1097              		.loc 1 95 38 is_stmt 0 discriminator 2 view .LVU244
- 1098 0092 0134     		adds	r4, r4, #1
- 1099              	.LVL66:
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1100              		.loc 1 95 38 discriminator 2 view .LVU245
- 1101 0094 E4B2     		uxtb	r4, r4
- 1102              	.LVL67:
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1103              		.loc 1 95 38 discriminator 2 view .LVU246
- 1104 0096 F1E7     		b	.L72
- 1105              	.L80:
-  95:Dsp/widget/wgt_core/widget_mng.c ****     {
- 1106              		.loc 1 95 38 discriminator 2 view .LVU247
- 1107              	.LBE3:
- 103:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
- 1108              		.loc 1 103 5 is_stmt 1 view .LVU248
- 103:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
- 1109              		.loc 1 103 41 is_stmt 0 view .LVU249
- 1110 0098 07FB06F2 		mul	r2, r7, r6
- 103:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
- 1111              		.loc 1 103 32 view .LVU250
- 1112 009c 0A4B     		ldr	r3, .L81
- 1113 009e 9988     		ldrh	r1, [r3, #4]
- 1114 00a0 891A     		subs	r1, r1, r2
- 1115 00a2 9980     		strh	r1, [r3, #4]	@ movhi
- 104:Dsp/widget/wgt_core/widget_mng.c **** 
- 1116              		.loc 1 104 5 is_stmt 1 view .LVU251
- 104:Dsp/widget/wgt_core/widget_mng.c **** 
- 1117              		.loc 1 104 37 is_stmt 0 view .LVU252
- 1118 00a4 5E88     		ldrh	r6, [r3, #2]
- 1119 00a6 1644     		add	r6, r6, r2
- 1120 00a8 5E80     		strh	r6, [r3, #2]	@ movhi
- 106:Dsp/widget/wgt_core/widget_mng.c **** 
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 29
+ 1136 00b6 80F806A0 		strb	r10, [r0, #6]
+  98:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->height = height;
+ 1137              		.loc 1 98 5 is_stmt 1 view .LVU250
+  98:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->height = height;
+ 1138              		.loc 1 98 23 is_stmt 0 view .LVU251
+ 1139 00ba C671     		strb	r6, [r0, #7]
+  99:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1140              		.loc 1 99 5 is_stmt 1 view .LVU252
+  99:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1141              		.loc 1 99 24 is_stmt 0 view .LVU253
+ 1142 00bc 0572     		strb	r5, [r0, #8]
+ 101:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->on_layer = DEFAULT_LAYER;
+ 1143              		.loc 1 101 5 is_stmt 1 view .LVU254
+ 101:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->on_layer = DEFAULT_LAYER;
+ 1144              		.loc 1 101 22 is_stmt 0 view .LVU255
+ 1145 00be 0E9B     		ldr	r3, [sp, #56]
+ 1146 00c0 C361     		str	r3, [r0, #28]
+ 102:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1147              		.loc 1 102 5 is_stmt 1 view .LVU256
+ 102:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1148              		.loc 1 102 26 is_stmt 0 view .LVU257
+ 1149 00c2 0023     		movs	r3, #0
+ 1150 00c4 0371     		strb	r3, [r0, #4]
+ 104:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 1151              		.loc 1 104 5 is_stmt 1 view .LVU258
+ 104:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 1152              		.loc 1 104 23 is_stmt 0 view .LVU259
+ 1153 00c6 2D4B     		ldr	r3, .L93
+ 1154 00c8 9A88     		ldrh	r2, [r3, #4]
+ 104:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 1155              		.loc 1 104 46 view .LVU260
+ 1156 00ca 06FB05F3 		mul	r3, r6, r5
+ 104:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 1157              		.loc 1 104 8 view .LVU261
+ 1158 00ce 9A42     		cmp	r2, r3
+ 1159 00d0 03DA     		bge	.L90
+ 105:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1160              		.loc 1 105 16 view .LVU262
+ 1161 00d2 0020     		movs	r0, #0
+ 1162              	.LVL71:
+ 1163              	.L72:
+ 150:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1164              		.loc 1 150 1 view .LVU263
+ 1165 00d4 06B0     		add	sp, sp, #24
+ 1166              	.LCFI30:
+ 1167              		.cfi_remember_state
+ 1168              		.cfi_def_cfa_offset 32
+ 1169              		@ sp needed
+ 1170 00d6 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1171              	.LVL72:
+ 1172              	.L90:
+ 1173              	.LCFI31:
+ 1174              		.cfi_restore_state
+ 107:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1175              		.loc 1 107 5 is_stmt 1 view .LVU264
+ 107:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1176              		.loc 1 107 41 is_stmt 0 view .LVU265
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 31
 
 
- 1121              		.loc 1 106 5 is_stmt 1 view .LVU253
- 106:Dsp/widget/wgt_core/widget_mng.c **** 
- 1122              		.loc 1 106 19 is_stmt 0 view .LVU254
- 1123 00aa 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
- 106:Dsp/widget/wgt_core/widget_mng.c **** 
- 1124              		.loc 1 106 34 view .LVU255
- 1125 00ac 0132     		adds	r2, r2, #1
- 1126 00ae 1A70     		strb	r2, [r3]
- 108:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Ctl = &WidgetCtl_Interface;
- 1127              		.loc 1 108 5 is_stmt 1 view .LVU256
- 108:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Ctl = &WidgetCtl_Interface;
- 1128              		.loc 1 108 21 is_stmt 0 view .LVU257
- 1129 00b0 074B     		ldr	r3, .L81+8
- 1130 00b2 6B61     		str	r3, [r5, #20]
- 109:Dsp/widget/wgt_core/widget_mng.c **** 
- 1131              		.loc 1 109 5 is_stmt 1 view .LVU258
- 109:Dsp/widget/wgt_core/widget_mng.c **** 
- 1132              		.loc 1 109 21 is_stmt 0 view .LVU259
- 1133 00b4 074B     		ldr	r3, .L81+12
- 1134 00b6 AB61     		str	r3, [r5, #24]
- 111:Dsp/widget/wgt_core/widget_mng.c **** }
- 1135              		.loc 1 111 5 is_stmt 1 view .LVU260
- 111:Dsp/widget/wgt_core/widget_mng.c **** }
- 1136              		.loc 1 111 12 is_stmt 0 view .LVU261
- 1137 00b8 2846     		mov	r0, r5
- 1138 00ba D6E7     		b	.L69
- 1139              	.LVL68:
- 1140              	.L74:
-  76:Dsp/widget/wgt_core/widget_mng.c **** 
- 1141              		.loc 1 76 16 view .LVU262
- 1142 00bc 0020     		movs	r0, #0
- 1143              	.LVL69:
-  76:Dsp/widget/wgt_core/widget_mng.c **** 
- 1144              		.loc 1 76 16 view .LVU263
- 1145 00be D4E7     		b	.L69
- 1146              	.L76:
+ 1177 00da A800     		lsls	r0, r5, #2
+ 1178              	.LVL73:
+ 107:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1179              		.loc 1 107 41 view .LVU266
+ 1180 00dc FFF7FEFF 		bl	malloc
+ 1181              	.LVL74:
+ 107:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1182              		.loc 1 107 27 view .LVU267
+ 1183 00e0 C9F80C00 		str	r0, [r9, #12]
+ 109:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 1184              		.loc 1 109 5 is_stmt 1 view .LVU268
+ 109:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 1185              		.loc 1 109 8 is_stmt 0 view .LVU269
+ 1186 00e4 0028     		cmp	r0, #0
+ 1187 00e6 44D0     		beq	.L85
+ 1188              	.LBB4:
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1189              		.loc 1 112 18 view .LVU270
+ 1190 00e8 0024     		movs	r4, #0
+ 1191              	.L77:
+ 1192              	.LVL75:
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1193              		.loc 1 112 25 is_stmt 1 discriminator 1 view .LVU271
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1194              		.loc 1 112 5 is_stmt 0 discriminator 1 view .LVU272
+ 1195 00ea AC42     		cmp	r4, r5
+ 1196 00ec 0DD2     		bcs	.L91
+ 114:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1197              		.loc 1 114 9 is_stmt 1 view .LVU273
+ 114:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1198              		.loc 1 114 19 is_stmt 0 view .LVU274
+ 1199 00ee D9F80C70 		ldr	r7, [r9, #12]
+ 114:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1200              		.loc 1 114 47 view .LVU275
+ 1201 00f2 3046     		mov	r0, r6
+ 1202 00f4 FFF7FEFF 		bl	malloc
+ 1203              	.LVL76:
+ 114:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1204              		.loc 1 114 34 view .LVU276
+ 1205 00f8 47F82400 		str	r0, [r7, r4, lsl #2]
+ 116:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
+ 1206              		.loc 1 116 9 is_stmt 1 view .LVU277
+ 116:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
+ 1207              		.loc 1 116 23 is_stmt 0 view .LVU278
+ 1208 00fc D9F80C30 		ldr	r3, [r9, #12]
+ 116:Dsp/widget/wgt_core/widget_mng.c ****             return WIDGET_CREATE_ERROR;
+ 1209              		.loc 1 116 12 view .LVU279
+ 1210 0100 002B     		cmp	r3, #0
+ 1211 0102 38D0     		beq	.L86
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1212              		.loc 1 112 37 is_stmt 1 discriminator 2 view .LVU280
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1213              		.loc 1 112 38 is_stmt 0 discriminator 2 view .LVU281
+ 1214 0104 0134     		adds	r4, r4, #1
+ 1215              	.LVL77:
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1216              		.loc 1 112 38 discriminator 2 view .LVU282
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 32
+
+
+ 1217 0106 E4B2     		uxtb	r4, r4
+ 1218              	.LVL78:
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1219              		.loc 1 112 38 discriminator 2 view .LVU283
+ 1220 0108 EFE7     		b	.L77
+ 1221              	.L91:
+ 112:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1222              		.loc 1 112 38 discriminator 2 view .LVU284
+ 1223              	.LBE4:
+ 120:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
+ 1224              		.loc 1 120 5 is_stmt 1 view .LVU285
+ 120:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
+ 1225              		.loc 1 120 41 is_stmt 0 view .LVU286
+ 1226 010a 06FB05F5 		mul	r5, r6, r5
+ 120:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
+ 1227              		.loc 1 120 32 view .LVU287
+ 1228 010e 1B4C     		ldr	r4, .L93
+ 1229              	.LVL79:
+ 120:Dsp/widget/wgt_core/widget_mng.c ****     MonitorDataObj.widget_used_size += width * height;
+ 1230              		.loc 1 120 32 view .LVU288
+ 1231 0110 A388     		ldrh	r3, [r4, #4]
+ 1232 0112 5B1B     		subs	r3, r3, r5
+ 1233 0114 A380     		strh	r3, [r4, #4]	@ movhi
+ 121:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1234              		.loc 1 121 5 is_stmt 1 view .LVU289
+ 121:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1235              		.loc 1 121 37 is_stmt 0 view .LVU290
+ 1236 0116 6688     		ldrh	r6, [r4, #2]
+ 1237 0118 3544     		add	r5, r5, r6
+ 1238 011a 6580     		strh	r5, [r4, #2]	@ movhi
+ 123:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1239              		.loc 1 123 5 is_stmt 1 view .LVU291
+ 123:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1240              		.loc 1 123 19 is_stmt 0 view .LVU292
+ 1241 011c 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 123:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1242              		.loc 1 123 34 view .LVU293
+ 1243 011e 0133     		adds	r3, r3, #1
+ 1244 0120 2370     		strb	r3, [r4]
+ 125:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Ctl = &WidgetCtl_Interface;
+ 1245              		.loc 1 125 5 is_stmt 1 view .LVU294
+ 125:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->Ctl = &WidgetCtl_Interface;
+ 1246              		.loc 1 125 21 is_stmt 0 view .LVU295
+ 1247 0122 194B     		ldr	r3, .L93+12
+ 1248 0124 C9F81430 		str	r3, [r9, #20]
+ 126:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1249              		.loc 1 126 5 is_stmt 1 view .LVU296
+ 126:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1250              		.loc 1 126 21 is_stmt 0 view .LVU297
+ 1251 0128 184B     		ldr	r3, .L93+16
+ 1252 012a C9F81830 		str	r3, [r9, #24]
+ 128:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp == NULL)
+ 1253              		.loc 1 128 5 is_stmt 1 view .LVU298
+ 128:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp == NULL)
+ 1254              		.loc 1 128 36 is_stmt 0 view .LVU299
+ 1255 012e 1420     		movs	r0, #20
+ 1256 0130 FFF7FEFF 		bl	malloc
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 33
+
+
+ 1257              	.LVL80:
+ 128:Dsp/widget/wgt_core/widget_mng.c ****     if (widget_tmp == NULL)
+ 1258              		.loc 1 128 22 view .LVU300
+ 1259 0134 C9F82000 		str	r0, [r9, #32]
+ 129:Dsp/widget/wgt_core/widget_mng.c ****         return WIDGET_CREATE_ERROR;
+ 1260              		.loc 1 129 5 is_stmt 1 view .LVU301
+ 132:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->item->data = (Widget_Handle)widget_tmp;
+ 1261              		.loc 1 132 5 view .LVU302
+ 132:Dsp/widget/wgt_core/widget_mng.c ****     widget_tmp->item->data = (Widget_Handle)widget_tmp;
+ 1262              		.loc 1 132 28 is_stmt 0 view .LVU303
+ 1263 0138 0023     		movs	r3, #0
+ 1264 013a 0370     		strb	r3, [r0]
+ 133:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1265              		.loc 1 133 5 is_stmt 1 view .LVU304
+ 133:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1266              		.loc 1 133 28 is_stmt 0 view .LVU305
+ 1267 013c C0F81090 		str	r9, [r0, #16]
+ 135:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1268              		.loc 1 135 5 is_stmt 1 view .LVU306
+ 135:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1269              		.loc 1 135 23 is_stmt 0 view .LVU307
+ 1270 0140 A368     		ldr	r3, [r4, #8]
+ 135:Dsp/widget/wgt_core/widget_mng.c ****     {
+ 1271              		.loc 1 135 8 view .LVU308
+ 1272 0142 2BB1     		cbz	r3, .L92
+ 145:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = MonitorDataObj.widget_list;
+ 1273              		.loc 1 145 9 is_stmt 1 view .LVU309
+ 145:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = MonitorDataObj.widget_list;
+ 1274              		.loc 1 145 53 is_stmt 0 view .LVU310
+ 1275 0144 D9F82020 		ldr	r2, [r9, #32]
+ 145:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = MonitorDataObj.widget_list;
+ 1276              		.loc 1 145 41 view .LVU311
+ 1277 0148 DA60     		str	r2, [r3, #12]
+ 146:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1278              		.loc 1 146 9 is_stmt 1 view .LVU312
+ 146:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1279              		.loc 1 146 31 is_stmt 0 view .LVU313
+ 1280 014a 9360     		str	r3, [r2, #8]
+ 1281              	.L80:
+ 149:Dsp/widget/wgt_core/widget_mng.c **** }
+ 1282              		.loc 1 149 5 is_stmt 1 view .LVU314
+ 149:Dsp/widget/wgt_core/widget_mng.c **** }
+ 1283              		.loc 1 149 12 is_stmt 0 view .LVU315
+ 1284 014c 4846     		mov	r0, r9
+ 1285 014e C1E7     		b	.L72
+ 1286              	.L92:
+ 137:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = NULL;
+ 1287              		.loc 1 137 9 is_stmt 1 view .LVU316
+ 137:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = NULL;
+ 1288              		.loc 1 137 19 is_stmt 0 view .LVU317
+ 1289 0150 D9F82020 		ldr	r2, [r9, #32]
+ 137:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->prv = NULL;
+ 1290              		.loc 1 137 31 view .LVU318
+ 1291 0154 D360     		str	r3, [r2, #12]
+ 138:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->compare_callback = NULL;
+ 1292              		.loc 1 138 9 is_stmt 1 view .LVU319
+ 138:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->compare_callback = NULL;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 34
+
+
+ 1293              		.loc 1 138 19 is_stmt 0 view .LVU320
+ 1294 0156 D9F82020 		ldr	r2, [r9, #32]
+ 138:Dsp/widget/wgt_core/widget_mng.c ****         widget_tmp->item->compare_callback = NULL;
+ 1295              		.loc 1 138 31 view .LVU321
+ 1296 015a 9360     		str	r3, [r2, #8]
+ 139:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1297              		.loc 1 139 9 is_stmt 1 view .LVU322
+ 139:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1298              		.loc 1 139 19 is_stmt 0 view .LVU323
+ 1299 015c D9F82020 		ldr	r2, [r9, #32]
+ 139:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1300              		.loc 1 139 44 view .LVU324
+ 1301 0160 5360     		str	r3, [r2, #4]
+ 141:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1302              		.loc 1 141 9 is_stmt 1 view .LVU325
+ 141:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1303              		.loc 1 141 48 is_stmt 0 view .LVU326
+ 1304 0162 D9F82020 		ldr	r2, [r9, #32]
+ 141:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1305              		.loc 1 141 36 view .LVU327
+ 1306 0166 A260     		str	r2, [r4, #8]
+ 1307 0168 F0E7     		b	.L80
+ 1308              	.LVL81:
+ 1309              	.L81:
+  77:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1310              		.loc 1 77 20 view .LVU328
+ 1311 016a 0020     		movs	r0, #0
+ 1312 016c B2E7     		b	.L72
+ 1313              	.LVL82:
+ 1314              	.L83:
   93:Dsp/widget/wgt_core/widget_mng.c **** 
- 1147              		.loc 1 93 16 view .LVU264
- 1148 00c0 0020     		movs	r0, #0
- 1149 00c2 D2E7     		b	.L69
- 1150              	.LVL70:
- 1151              	.L77:
- 1152              	.LBB4:
- 100:Dsp/widget/wgt_core/widget_mng.c ****     }
- 1153              		.loc 1 100 20 view .LVU265
- 1154 00c4 0020     		movs	r0, #0
- 1155 00c6 D0E7     		b	.L69
- 1156              	.L82:
- 1157              		.align	2
- 1158              	.L81:
- 1159 00c8 00000000 		.word	.LANCHOR1
- 1160 00cc 00000000 		.word	SrvOled
- 1161 00d0 00000000 		.word	.LANCHOR2
- 1162 00d4 00000000 		.word	.LANCHOR3
- 1163              	.LBE4:
- 1164              		.cfi_endproc
- 1165              	.LFE3:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 30
+ 1315              		.loc 1 93 16 view .LVU329
+ 1316 016e 0020     		movs	r0, #0
+ 1317              	.LVL83:
+  93:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1318              		.loc 1 93 16 view .LVU330
+ 1319 0170 B0E7     		b	.L72
+ 1320              	.L85:
+ 110:Dsp/widget/wgt_core/widget_mng.c **** 
+ 1321              		.loc 1 110 16 view .LVU331
+ 1322 0172 0020     		movs	r0, #0
+ 1323 0174 AEE7     		b	.L72
+ 1324              	.LVL84:
+ 1325              	.L86:
+ 1326              	.LBB5:
+ 117:Dsp/widget/wgt_core/widget_mng.c ****     }
+ 1327              		.loc 1 117 20 view .LVU332
+ 1328 0176 0020     		movs	r0, #0
+ 1329 0178 ACE7     		b	.L72
+ 1330              	.L94:
+ 1331 017a 00BF     		.align	2
+ 1332              	.L93:
+ 1333 017c 00000000 		.word	.LANCHOR2
+ 1334 0180 00000000 		.word	.LANCHOR1
+ 1335 0184 00000000 		.word	SrvOled
+ 1336 0188 00000000 		.word	.LANCHOR3
+ 1337 018c 00000000 		.word	.LANCHOR4
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 35
 
 
- 1167              		.global	Widget_Mng
- 1168              		.global	MonitorDataObj
- 1169              		.section	.bss.MonitorDataObj,"aw",%nobits
- 1170              		.align	2
- 1171              		.set	.LANCHOR1,. + 0
- 1174              	MonitorDataObj:
- 1175 0000 00000000 		.space	8
- 1175      00000000 
- 1176              		.section	.bss.WidgetFresh_State,"aw",%nobits
- 1177              		.set	.LANCHOR0,. + 0
- 1180              	WidgetFresh_State:
- 1181 0000 00       		.space	1
- 1182              		.section	.data.WidgetCtl_Interface,"aw"
- 1183              		.align	2
- 1184              		.set	.LANCHOR3,. + 0
- 1187              	WidgetCtl_Interface:
- 1188 0000 00000000 		.word	Widget_Show
- 1189 0004 00000000 		.word	Widget_Hide
- 1190 0008 00000000 		.word	Widget_MoveTo
- 1191 000c 00000000 		.word	Widget_DrawInterface
- 1192              		.section	.data.WidgetDraw_Interface,"aw"
- 1193              		.align	2
- 1194              		.set	.LANCHOR2,. + 0
- 1197              	WidgetDraw_Interface:
- 1198 0000 00000000 		.word	Widget_DrawPoint
- 1199 0004 00000000 		.word	Widget_DrawCircle
- 1200 0008 00000000 		.word	Widget_DrawChr
- 1201 000c 00000000 		.word	Widget_DrawStr
- 1202 0010 00000000 		.word	Widget_DrawNum
- 1203 0014 00000000 		.word	Widget_DrawRectangle
- 1204 0018 00000000 		.word	Widget_DrawLine
- 1205              		.section	.data.Widget_Mng,"aw"
- 1206              		.align	2
- 1209              	Widget_Mng:
- 1210 0000 00000000 		.word	Widget_Create
- 1211 0004 00000000 		.word	Widget_CtlInterface
- 1212 0008 00000000 		.word	Widget_Deleted
- 1213 000c 00000000 		.word	Widget_FreshAll
- 1214              		.text
- 1215              	.Letext0:
- 1216              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
- 1217              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
- 1218              		.file 4 "Dsp/screen/font/oledfont.h"
- 1219              		.file 5 "Dsp/widget/wgt_core/GenDsp.h"
- 1220              		.file 6 "Dsp/widget/wgt_core/widget_mng.h"
- 1221              		.file 7 "Dsp/screen/service/SrvOled.h"
- 1222              		.file 8 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 31
+ 1338              	.LBE5:
+ 1339              		.cfi_endproc
+ 1340              	.LFE3:
+ 1342              		.global	Widget_Mng
+ 1343              		.global	MonitorDataObj
+ 1344              		.section	.bss.MonitorDataObj,"aw",%nobits
+ 1345              		.align	2
+ 1346              		.set	.LANCHOR2,. + 0
+ 1349              	MonitorDataObj:
+ 1350 0000 00000000 		.space	12
+ 1350      00000000 
+ 1350      00000000 
+ 1351              		.section	.bss.WidgetFresh_State,"aw",%nobits
+ 1352              		.set	.LANCHOR0,. + 0
+ 1355              	WidgetFresh_State:
+ 1356 0000 00       		.space	1
+ 1357              		.section	.bss.widget_blackboard,"aw",%nobits
+ 1358              		.align	2
+ 1359              		.set	.LANCHOR1,. + 0
+ 1362              	widget_blackboard:
+ 1363 0000 00000000 		.space	4
+ 1364              		.section	.data.WidgetCtl_Interface,"aw"
+ 1365              		.align	2
+ 1366              		.set	.LANCHOR4,. + 0
+ 1369              	WidgetCtl_Interface:
+ 1370 0000 00000000 		.word	Widget_Show
+ 1371 0004 00000000 		.word	Widget_Hide
+ 1372 0008 00000000 		.word	Widget_MoveTo
+ 1373 000c 00000000 		.word	Widget_DrawInterface
+ 1374              		.section	.data.WidgetDraw_Interface,"aw"
+ 1375              		.align	2
+ 1376              		.set	.LANCHOR3,. + 0
+ 1379              	WidgetDraw_Interface:
+ 1380 0000 00000000 		.word	Widget_DrawPoint
+ 1381 0004 00000000 		.word	Widget_DrawCircle
+ 1382 0008 00000000 		.word	Widget_DrawChr
+ 1383 000c 00000000 		.word	Widget_DrawStr
+ 1384 0010 00000000 		.word	Widget_DrawNum
+ 1385 0014 00000000 		.word	Widget_DrawRectangle
+ 1386 0018 00000000 		.word	Widget_DrawLine
+ 1387              		.section	.data.Widget_Mng,"aw"
+ 1388              		.align	2
+ 1391              	Widget_Mng:
+ 1392 0000 00000000 		.word	Widget_Create
+ 1393 0004 00000000 		.word	Widget_CtlInterface
+ 1394 0008 00000000 		.word	Widget_Deleted
+ 1395 000c 00000000 		.word	Widget_FreshAll
+ 1396              		.text
+ 1397              	.Letext0:
+ 1398              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 1399              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 1400              		.file 4 "Dsp/screen/font/oledfont.h"
+ 1401              		.file 5 "Dsp/widget/wgt_core/GenDsp.h"
+ 1402              		.file 6 "SYS/data_structure/linked_list.h"
+ 1403              		.file 7 "Dsp/widget/wgt_core/widget_mng.h"
+ 1404              		.file 8 "Dsp/screen/service/SrvOled.h"
+ 1405              		.file 9 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 36
+
+
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 37
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 widget_mng.c
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:18     .text.GetCur_Active_Widget:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:25     .text.GetCur_Active_Widget:00000000 GetCur_Active_Widget
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:41     .text.Widget_CtlInterface:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:47     .text.Widget_CtlInterface:00000000 Widget_CtlInterface
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:76     .text.Widget_DrawInterface:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:82     .text.Widget_DrawInterface:00000000 Widget_DrawInterface
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:111    .text.Widget_MoveTo:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:117    .text.Widget_MoveTo:00000000 Widget_MoveTo
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:162    .text.Widget_Hide:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:168    .text.Widget_Hide:00000000 Widget_Hide
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:203    .text.Widget_Show:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:209    .text.Widget_Show:00000000 Widget_Show
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:243    .text.Widget_FreshAll:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:249    .text.Widget_FreshAll:00000000 Widget_FreshAll
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:286    .text.Widget_FreshAll:0000001c $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:291    .text.Widget_DrawPoint:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:297    .text.Widget_DrawPoint:00000000 Widget_DrawPoint
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:345    .text.Widget_DrawPoint:0000002c $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:350    .text.Widget_DrawNum:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:356    .text.Widget_DrawNum:00000000 Widget_DrawNum
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:419    .text.Widget_DrawNum:00000038 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:424    .text.Widget_DrawChr:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:430    .text.Widget_DrawChr:00000000 Widget_DrawChr
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:493    .text.Widget_DrawChr:00000038 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:498    .text.Widget_DrawStr:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:504    .text.Widget_DrawStr:00000000 Widget_DrawStr
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:567    .text.Widget_DrawStr:00000038 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:572    .text.Widget_DrawLine:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:578    .text.Widget_DrawLine:00000000 Widget_DrawLine
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:642    .text.Widget_DrawLine:00000044 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:647    .text.Widget_DrawCircle:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:653    .text.Widget_DrawCircle:00000000 Widget_DrawCircle
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:710    .text.Widget_DrawCircle:00000038 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:715    .text.Widget_DrawRectangle:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:721    .text.Widget_DrawRectangle:00000000 Widget_DrawRectangle
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:782    .text.Widget_DrawRectangle:00000040 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:787    .text.Widget_Deleted:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:793    .text.Widget_Deleted:00000000 Widget_Deleted
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:933    .text.Widget_Deleted:0000005c $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:938    .text.Widget_Create:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:944    .text.Widget_Create:00000000 Widget_Create
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1159   .text.Widget_Create:000000c8 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1209   .data.Widget_Mng:00000000 Widget_Mng
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1174   .bss.MonitorDataObj:00000000 MonitorDataObj
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1170   .bss.MonitorDataObj:00000000 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1180   .bss.WidgetFresh_State:00000000 WidgetFresh_State
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1181   .bss.WidgetFresh_State:00000000 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1183   .data.WidgetCtl_Interface:00000000 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1187   .data.WidgetCtl_Interface:00000000 WidgetCtl_Interface
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1193   .data.WidgetDraw_Interface:00000000 $d
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1197   .data.WidgetDraw_Interface:00000000 WidgetDraw_Interface
-C:\Users\huav\AppData\Local\Temp\ccOjpToO.s:1206   .data.Widget_Mng:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:18     .text.GetCur_Active_Widget:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:25     .text.GetCur_Active_Widget:00000000 GetCur_Active_Widget
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:41     .text.Widget_CtlInterface:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:47     .text.Widget_CtlInterface:00000000 Widget_CtlInterface
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:76     .text.Widget_DrawInterface:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:82     .text.Widget_DrawInterface:00000000 Widget_DrawInterface
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:111    .text.Widget_MoveTo:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:117    .text.Widget_MoveTo:00000000 Widget_MoveTo
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:162    .text.Widget_Hide:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:168    .text.Widget_Hide:00000000 Widget_Hide
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:203    .text.Widget_Show:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:209    .text.Widget_Show:00000000 Widget_Show
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:243    .text.Widget_FreshAll:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:249    .text.Widget_FreshAll:00000000 Widget_FreshAll
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:315    .text.Widget_FreshAll:00000038 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:322    .text.Widget_DrawPoint:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:328    .text.Widget_DrawPoint:00000000 Widget_DrawPoint
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:376    .text.Widget_DrawPoint:0000002c $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:381    .text.Widget_DrawNum:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:387    .text.Widget_DrawNum:00000000 Widget_DrawNum
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:450    .text.Widget_DrawNum:00000038 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:455    .text.Widget_DrawChr:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:461    .text.Widget_DrawChr:00000000 Widget_DrawChr
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:524    .text.Widget_DrawChr:00000038 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:529    .text.Widget_DrawStr:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:535    .text.Widget_DrawStr:00000000 Widget_DrawStr
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:598    .text.Widget_DrawStr:00000038 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:603    .text.Widget_DrawLine:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:609    .text.Widget_DrawLine:00000000 Widget_DrawLine
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:673    .text.Widget_DrawLine:00000044 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:678    .text.Widget_DrawCircle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:684    .text.Widget_DrawCircle:00000000 Widget_DrawCircle
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:741    .text.Widget_DrawCircle:00000038 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:746    .text.Widget_DrawRectangle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:752    .text.Widget_DrawRectangle:00000000 Widget_DrawRectangle
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:813    .text.Widget_DrawRectangle:00000040 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:818    .text.Widget_Deleted:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:824    .text.Widget_Deleted:00000000 Widget_Deleted
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:964    .text.Widget_Deleted:0000005c $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:969    .text.Widget_Create:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:975    .text.Widget_Create:00000000 Widget_Create
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1333   .text.Widget_Create:0000017c $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1391   .data.Widget_Mng:00000000 Widget_Mng
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1349   .bss.MonitorDataObj:00000000 MonitorDataObj
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1345   .bss.MonitorDataObj:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1355   .bss.WidgetFresh_State:00000000 WidgetFresh_State
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1356   .bss.WidgetFresh_State:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1358   .bss.widget_blackboard:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1362   .bss.widget_blackboard:00000000 widget_blackboard
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1365   .data.WidgetCtl_Interface:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1369   .data.WidgetCtl_Interface:00000000 WidgetCtl_Interface
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1375   .data.WidgetDraw_Interface:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1379   .data.WidgetDraw_Interface:00000000 WidgetDraw_Interface
+C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s:1388   .data.Widget_Mng:00000000 $d
+
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc41Bzpd.s 			page 38
+
 
 UNDEFINED SYMBOLS
+SrvOled
 GenDsp_Interface
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccOjpToO.s 			page 32
-
-
 free
 malloc
-SrvOled
