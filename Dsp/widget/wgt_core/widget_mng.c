@@ -9,7 +9,8 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .widget_used_size = 0,
     .remain_size = 0,
     .max_display_cache = 0,
-};
+    .widget_dsp_list = NULL};
+
 static Widget_Handle CurActive_Widget = 0;
 static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
 static uint8_t **widget_blackboard;
@@ -177,6 +178,9 @@ static bool Widget_Show(void)
         return false;
 
     GetCur_Active_Widget()->on_show = true;
+
+    List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+
     return true;
 }
 
@@ -186,6 +190,8 @@ static bool Widget_Hide(void)
         return false;
 
     GetCur_Active_Widget()->on_show = false;
+
+    List_Delete_Item(GetCur_Active_Widget()->item, NULL);
     return true;
 }
 
