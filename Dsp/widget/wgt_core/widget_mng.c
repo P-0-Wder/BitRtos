@@ -178,8 +178,6 @@ static bool Widget_Show(void)
     if (GetCur_Active_Widget() == NULL)
         return false;
 
-    GetCur_Active_Widget()->on_show = true;
-
     List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
 
     return true;
@@ -189,8 +187,6 @@ static bool Widget_Hide(void)
 {
     if (GetCur_Active_Widget() == NULL)
         return false;
-
-    GetCur_Active_Widget()->on_show = false;
 
     List_Delete_Item(GetCur_Active_Widget()->item, NULL);
     return true;
@@ -296,20 +292,6 @@ static bool Widget_FreshAll(void)
             return false;
         }
     }
-}
-
-static void Widget_CtlShow(void)
-{
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-
-    tmp->on_show = true;
-}
-
-static void Widget_CtlHide(void)
-{
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-
-    tmp->on_show = false;
 }
 
 static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)

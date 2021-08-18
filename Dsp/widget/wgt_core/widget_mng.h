@@ -84,7 +84,6 @@ typedef struct
     bool use_frame;
     uint8_t frame_line_size;
     bool is_selected;
-    bool on_show;
 
     uint8_t on_layer;
     uint8_t cord_x;
