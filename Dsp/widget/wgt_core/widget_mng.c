@@ -1,6 +1,7 @@
 #include "widget_mng.h"
 #include "SrvOled.h"
 #include "linked_list.h"
+#include "runtime.h"
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
@@ -15,7 +16,7 @@ static uint8_t **widget_blackboard;
 
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
-static void Widget_Fusion(void);
+static void Widget_Fusion(item_obj *itm, Widget_Handle hdl, void *arg);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
@@ -130,22 +131,10 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
         return WIDGET_CREATE_ERROR;
 
     widget_tmp->item->mode = by_order;
+    widget_tmp->item->compare_callback = NULL;
     widget_tmp->item->data = (Widget_Handle)widget_tmp;
 
-    if (MonitorDataObj.widget_list == NULL)
-    {
-        widget_tmp->item->prv = NULL;
-
-        MonitorDataObj.widget_list = widget_tmp->item;
-    }
-    else
-    {
-        MonitorDataObj.widget_list->nxt = widget_tmp->item;
-        widget_tmp->item->prv = MonitorDataObj.widget_list;
-    }
-
-    widget_tmp->item->compare_callback = NULL;
-    widget_tmp->item->nxt = NULL;
+    List_Insert_Item(MonitorDataObj.widget_list, widget_tmp->item);
 
     return (Widget_Handle)widget_tmp;
 }
@@ -161,6 +150,7 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     height = ((WidgetObj_TypeDef *)(*hdl))->height;
     width = ((WidgetObj_TypeDef *)(*hdl))->width;
 
+    free(((WidgetObj_TypeDef *)(*hdl))->item);
     free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
 
     for (uint8_t h = 0; h < height; h++)
@@ -175,6 +165,15 @@ static bool Widget_Deleted(Widget_Handle *hdl)
         return false;
 
     *hdl = 0;
+    return true;
+}
+
+static bool Widget_SetFreshFrq(uint8_t frq)
+{
+    if (frq > Fresh_FRQ_100Hz)
+        return false;
+
+    MonitorDataObj.fresh_duration = frq;
     return true;
 }
 
@@ -239,20 +238,17 @@ static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
     return widget_tmp->Dsp;
 }
 
-static void Widget_Fusion(void)
+static void Widget_Fusion(item_obj *itm, Widget_Handle hdl, void *arg)
 {
-    if (MonitorDataObj.created_widget > 0)
-    {
-        for (uint8_t widget_index = 0; widget_index < MonitorDataObj.created_widget; widget_index++)
-        {
-        }
-    }
 }
 
 //fresh all widget
 static bool Widget_FreshAll(void)
 {
     WidgetObj_TypeDef *tmp = NULL;
+
+    //use time difference drive widget fresh
+    WidgetFresh_State = Fresh_State_Reguler;
 
     while (true)
     {
@@ -268,8 +264,15 @@ static bool Widget_FreshAll(void)
             break;
 
         case Fresh_State_Reguler:
-            Widget_Fusion();
-            SrvOled.fresh(widget_blackboard);
+            if (MonitorDataObj.created_widget > 0)
+            {
+                List_traverse(MonitorDataObj.widget_list, Widget_Fusion, NULL);
+                SrvOled.fresh(widget_blackboard);
+            }
+            WidgetFresh_State = Fresh_State_Sleep;
+            return true;
+
+        case Fresh_State_Sleep:
             return true;
 
         case Fresh_State_DrvError:

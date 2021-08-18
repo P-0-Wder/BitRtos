@@ -19,18 +19,33 @@
 
 #define MAX_SUB_WIDGET_NUM 8
 
+#define MAX_FRESH_FRQ 500
+
 typedef GenFont_List Widget_Font;
 typedef uint32_t Widget_Handle;
+
+typedef enum
+{
+    Fresh_FRQ_1Hz = 0,
+    Fresh_FRQ_5Hz,
+    Fresh_FRQ_10Hz,
+    Fresh_FRQ_20Hz,
+    Fresh_FRQ_25Hz,
+    Fresh_FRQ_50Hz,
+    Fresh_FRQ_100Hz,
+} Widget_FreshFrq_List;
 
 typedef enum
 {
     Fresh_State_DrvInit,
     Fresh_State_DrvError,
     Fresh_State_Reguler,
+    Fresh_State_Sleep,
 } WidgetFresh_State_List;
 
 typedef struct
 {
+    uint8_t fresh_duration;
     uint8_t created_widget;
     uint16_t widget_used_size;
     uint16_t remain_size;
@@ -94,6 +109,7 @@ typedef struct
     Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
+    bool (*set_freshFrq)(uint8_t frq);
     bool (*fresh_all)(void);
 } Widget_GenProcFunc_TypeDef;
 
