@@ -284,9 +284,13 @@ clean:
 
 # *** EOF ***
 
+#OPENOCD := openocd -f interface/stlink.cfg \
+#        -f target/stm32f4x.cfg \
+
 OPENOCD := openocd -f interface/cmsis-dap.cfg \
         -c 'transport select swd' \
         -f target/stm32f4x.cfg \
+
 # download your program
 flash: all
 	$(OPENOCD) -c init \
