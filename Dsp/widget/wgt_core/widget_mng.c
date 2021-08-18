@@ -245,12 +245,15 @@ static void Widget_ClearBlackBoard(void)
 
 static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 {
-    for (uint8_t col = obj->cord_x; col < SrvOled.get_range().width; col++)
+    for (uint8_t col = obj->cord_x; col < obj->width; col++)
     {
-        for (uint8_t row = obj->cord_y; row < SrvOled.get_range().height; row++)
+        for (uint8_t row = obj->cord_y; row < obj->height; row++)
         {
             //clear current widget area coordinateß first
             widget_blackboard[col][row] = 0;
+
+            //then set coordinate value
+            widget_blackboard[col][row] = obj->pixel_map[col - obj->cord_x][row - obj->cord_y];
         }
     }
 }
