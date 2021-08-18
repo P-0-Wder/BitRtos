@@ -134,9 +134,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     if (MonitorDataObj.widget_list == NULL)
     {
-        widget_tmp->item->nxt = NULL;
         widget_tmp->item->prv = NULL;
-        widget_tmp->item->compare_callback = NULL;
 
         MonitorDataObj.widget_list = widget_tmp->item;
     }
@@ -145,6 +143,9 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
         MonitorDataObj.widget_list->nxt = widget_tmp->item;
         widget_tmp->item->prv = MonitorDataObj.widget_list;
     }
+
+    widget_tmp->item->compare_callback = NULL;
+    widget_tmp->item->nxt = NULL;
 
     return (Widget_Handle)widget_tmp;
 }
