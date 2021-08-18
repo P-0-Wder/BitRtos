@@ -39,6 +39,7 @@ typedef enum
 {
     Fresh_State_DrvInit,
     Fresh_State_DrvError,
+    Fresh_State_Prepare,
     Fresh_State_Reguler,
     Fresh_State_Sleep,
 } WidgetFresh_State_List;

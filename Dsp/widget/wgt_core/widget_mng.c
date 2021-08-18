@@ -17,7 +17,8 @@ static uint8_t **widget_blackboard;
 
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
-static void Widget_Fusion(WidgetObj_TypeDef *hdl, void *arg);
+static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
+static void Widget_ClearBlackBoard(void);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
@@ -238,13 +239,16 @@ static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
     return widget_tmp->Dsp;
 }
 
-static void Widget_Fusion(WidgetObj_TypeDef *obj, void *arg)
+static void Widget_ClearBlackBoard(void)
 {
-    /* clear entire widget first */
     for (uint8_t height = 0; height < SrvOled.get_range().height; height++)
     {
         memset(&widget_blackboard[0][height], NULL, SrvOled.get_range().width);
     }
+}
+
+static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
+{
 }
 
 //fresh all widget
@@ -262,15 +266,21 @@ static bool Widget_FreshAll(void)
         case Fresh_State_DrvInit:
             if (SrvOled.init())
             {
-                WidgetFresh_State = Fresh_State_Reguler;
+                WidgetFresh_State = Fresh_State_Prepare;
             }
             else
                 WidgetFresh_State = Fresh_State_DrvError;
             break;
 
+        case Fresh_State_Prepare:
+            Widget_ClearBlackBoard();
+            WidgetFresh_State = Fresh_State_Reguler;
+            break;
+
         case Fresh_State_Reguler:
             if (MonitorDataObj.created_widget > 0)
             {
+                List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL);
                 SrvOled.fresh(widget_blackboard);
             }
             WidgetFresh_State = Fresh_State_Sleep;
