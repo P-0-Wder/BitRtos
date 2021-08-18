@@ -8,6 +8,7 @@
 #include <string.h>
 #include "GenDsp.h"
 #include "pixel.h"
+#include "linked_list.h"
 
 #define WIDGET_OPR_ERROR 0
 #define WIDGET_CREATE_ERROR WIDGET_OPR_ERROR
@@ -98,6 +99,7 @@ typedef struct
     char *name;
 
     uint8_t level;
+    item_obj *item;
 } WidgetObj_TypeDef;
 
 typedef struct

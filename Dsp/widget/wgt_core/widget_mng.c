@@ -1,6 +1,7 @@
 #include "widget_mng.h"
 #include "SrvOled.h"
 #include "runtime.h"
+#include "linked_list.h"
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
@@ -122,6 +123,13 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     widget_tmp->Dsp = &WidgetDraw_Interface;
     widget_tmp->Ctl = &WidgetCtl_Interface;
+
+    widget_tmp->item = (item_obj *)malloc(sizeof(item_obj));
+
+    if (widget_tmp->item == NULL)
+        return WIDGET_CREATE_ERROR;
+
+    List_ItemInit(widget_tmp->item, widget_tmp);
 
     return (Widget_Handle)widget_tmp;
 }
