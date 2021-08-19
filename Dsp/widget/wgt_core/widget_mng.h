@@ -26,13 +26,13 @@ typedef uint32_t Widget_Handle;
 
 typedef enum
 {
-    Fresh_FRQ_1Hz = 0,
-    Fresh_FRQ_5Hz,
-    Fresh_FRQ_10Hz,
-    Fresh_FRQ_20Hz,
-    Fresh_FRQ_25Hz,
-    Fresh_FRQ_50Hz,
-    Fresh_FRQ_100Hz,
+    Fresh_FRQ_1Hz = 1,
+    Fresh_FRQ_5Hz = 5,
+    Fresh_FRQ_10Hz = 10,
+    Fresh_FRQ_20Hz = 20,
+    Fresh_FRQ_25Hz = 25,
+    Fresh_FRQ_50Hz = 50,
+    Fresh_FRQ_100Hz = 100,
 } Widget_FreshFrq_List;
 
 typedef enum
@@ -46,6 +46,7 @@ typedef enum
 
 typedef struct
 {
+    uint32_t LstFreshRT;
     uint8_t fresh_duration;
     uint8_t created_widget;
     uint16_t widget_used_size;
@@ -62,13 +63,13 @@ typedef enum
 
 typedef struct
 {
-    void (*draw_point)(uint8_t **map, uint8_t x, uint8_t y, bool set);
-    void (*draw_circle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_size);
-    void (*draw_char)(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv);
-    void (*draw_str)(GenFont_List font, uint8_t **map, char *str, uint8_t x, uint8_t y, bool col_inv);
-    void (*draw_num)(GenFont_List font, uint8_t **map, uint32_t num, uint8_t x, uint8_t y, bool col_inv);
-    void (*draw_rectangle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
-    void (*draw_line)(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_width);
+    void (*draw_point)(uint8_t x, uint8_t y, bool set);
+    void (*draw_circle)(uint8_t x, uint8_t y, uint8_t radius, uint8_t line_size);
+    void (*draw_char)(GenFont_List font, char c, uint8_t x, uint8_t y, bool col_inv);
+    void (*draw_str)(GenFont_List font, char *str, uint8_t x, uint8_t y, bool col_inv);
+    void (*draw_num)(GenFont_List font, uint32_t num, uint8_t x, uint8_t y, bool col_inv);
+    void (*draw_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
+    void (*draw_line)(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_width);
 } Widget_DrawFunc_TypeDef;
 
 typedef struct
@@ -76,7 +77,7 @@ typedef struct
     bool (*Show)(void);
     bool (*Hide)(void);
     bool (*Move)(uint8_t x, uint8_t y);
-    Widget_DrawFunc_TypeDef *(*Draw)(Widget_Handle hdl);
+    Widget_DrawFunc_TypeDef *(*Draw)(void);
 } Widget_Control_TypeDef;
 
 typedef struct
@@ -85,7 +86,6 @@ typedef struct
     uint8_t frame_line_size;
     bool is_selected;
 
-    uint8_t on_layer;
     uint8_t cord_x;
     uint8_t cord_y;
     uint8_t width;
@@ -105,10 +105,11 @@ typedef struct
 
 typedef struct
 {
-    Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
+    Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
     bool (*set_freshFrq)(uint8_t frq);
+    bool (*trigger_fresh)(void);
     bool (*fresh_all)(void);
 } Widget_GenProcFunc_TypeDef;
 

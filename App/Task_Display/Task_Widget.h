@@ -7,6 +7,7 @@
 typedef enum
 {
     TaskWdiget_State_Init,
+    TaskWidget_State_CheckFresh,
     TaskWidget_State_Fresh,
 } TaskWidget_State_List;
 

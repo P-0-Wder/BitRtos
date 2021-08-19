@@ -5,6 +5,7 @@
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
+    .LstFreshRT = 0,
     .created_widget = 0,
     .widget_used_size = 0,
     .remain_size = 0,
@@ -21,7 +22,7 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
 static void Widget_ClearBlackBoard(void);
 
 /* external widget manager function definition */
-static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
+static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
 static Widget_Control_TypeDef *Widget_CtlInterface(void);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
@@ -30,6 +31,7 @@ static bool Widget_FreshAll(void);
 static bool Widget_Show(void);
 static bool Widget_Hide(void);
 static bool Widget_MoveTo(uint8_t x, uint8_t y);
+static bool Widget_CheckFlashTrigger(void);
 static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
 
 /* widget draw function interface */
@@ -63,9 +65,10 @@ Widget_GenProcFunc_TypeDef Widget_Mng = {
     .Delete = Widget_Deleted,
     .Control = Widget_CtlInterface,
     .fresh_all = Widget_FreshAll,
+    .trigger_fresh = Widget_CheckFlashTrigger,
 };
 
-static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
+static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -100,7 +103,6 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->height = height;
 
     widget_tmp->name = name;
-    widget_tmp->on_layer = DEFAULT_LAYER;
 
     if (MonitorDataObj.remain_size < (height * width))
         return WIDGET_CREATE_ERROR;
@@ -132,6 +134,8 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
         return WIDGET_CREATE_ERROR;
 
     List_ItemInit(widget_tmp->item, widget_tmp);
+
+    widget_tmp->use_frame = show_frame;
 
     return (Widget_Handle)widget_tmp;
 }
@@ -173,10 +177,32 @@ static bool Widget_SetFreshFrq(uint8_t frq)
     return true;
 }
 
+static bool Widget_CheckFlashTrigger(void)
+{
+    uint32_t RT = Get_CurrentRunningMs();
+
+    if ((RT - MonitorDataObj.LstFreshRT) >= MonitorDataObj.fresh_duration)
+    {
+        MonitorDataObj.LstFreshRT = RT;
+        return true;
+    }
+    else
+        return false;
+}
+
 static bool Widget_Show(void)
 {
     if (GetCur_Active_Widget() == NULL)
         return false;
+
+    if (GetCur_Active_Widget()->use_frame)
+    {
+        Widget_DrawRectangle(GetCur_Active_Widget()->cord_x,
+                             GetCur_Active_Widget()->cord_y,
+                             GetCur_Active_Widget()->width,
+                             GetCur_Active_Widget()->height,
+                             1);
+    }
 
     List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
     WidgetFresh_State = Fresh_State_Prepare;
