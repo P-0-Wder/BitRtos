@@ -179,6 +179,7 @@ static bool Widget_Show(void)
         return false;
 
     List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+    WidgetFresh_State = Fresh_State_Prepare;
 
     return true;
 }
@@ -189,6 +190,8 @@ static bool Widget_Hide(void)
         return false;
 
     List_Delete_Item(GetCur_Active_Widget()->item, NULL);
+    WidgetFresh_State = Fresh_State_Prepare;
+
     return true;
 }
 
@@ -245,15 +248,22 @@ static void Widget_ClearBlackBoard(void)
 
 static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 {
-    for (uint8_t col = obj->cord_x; col < obj->width; col++)
+    if ((obj->cord_x == 0) &&
+        (obj->cord_y == 0) &&
+        (obj->width == SrvOled.get_range().width) &&
+        (obj->height == SrvOled.get_range().height))
+    {
+        for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
+        {
+            memcpy(&widget_blackboard[0][row], obj->pixel_map, SrvOled.get_range().width);
+        }
+    }
+    else
     {
         for (uint8_t row = obj->cord_y; row < obj->height; row++)
         {
-            //clear current widget area coordinateß first
-            widget_blackboard[col][row] = 0;
-
-            //then set coordinate value
-            widget_blackboard[col][row] = obj->pixel_map[col - obj->cord_x][row - obj->cord_y];
+            memset(&widget_blackboard[obj->cord_x][row], 0x00, obj->width);
+            memcpy(&widget_blackboard[obj->cord_x][row], &obj->pixel_map[obj->cord_x][row], obj->width);
         }
     }
 }
@@ -262,9 +272,6 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 static bool Widget_FreshAll(void)
 {
     WidgetObj_TypeDef *tmp = NULL;
-
-    //use time difference drive widget fresh
-    WidgetFresh_State = Fresh_State_Reguler;
 
     while (true)
     {
