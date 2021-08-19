@@ -9,6 +9,7 @@ static Widget_Handle test2;
 static Widget_Handle test3;
 
 /* external function definition */
+Task_Handler TaskWidget_Hdl = 0;
 
 /* internal function definition */
 
@@ -24,7 +25,7 @@ static void TaskWidget_Init(void)
     Widget_Mng.Control(test2)->Draw()->draw_char(Font_12, '2', 8, 2, false);
     Widget_Mng.Control(test2)->Show();
 
-    test3 = Widget_Mng.Create(24, 30, 80, 20, "test2", true);
+    test3 = Widget_Mng.Create(24, 30, 80, 20, "test3", true);
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '2', 8, 2, false);
     Widget_Mng.Control(test3)->Show();
 }

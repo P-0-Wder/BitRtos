@@ -95,7 +95,7 @@ typedef struct
     uint8_t Sub_Widget_Num;
 
     Widget_DrawFunc_TypeDef *Dsp; //widget draw function block
-    Widget_DrawFunc_TypeDef *Ctl; //widget control function block
+    Widget_Control_TypeDef *Ctl;  //widget control function block
 
     char *name;
 

@@ -2,6 +2,7 @@
 #include "SrvOled.h"
 #include "runtime.h"
 #include "linked_list.h"
+#include "GenDsp.h"
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {

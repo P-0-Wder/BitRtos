@@ -15,7 +15,8 @@ Objects/main.o: USER/main.c SYS/runtime/runtime.h Bsp/periph_gpio.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
  SYS/task_manager/task_manager.h SYS/task_manager/task_manager_cfg.h \
- SYS/data_structure/binary_tree.h SYS/data_structure/linked_list.h
+ SYS/data_structure/binary_tree.h SYS/data_structure/linked_list.h \
+ App/Task_Display/Task_Widget.h
 SYS/runtime/runtime.h:
 Bsp/periph_gpio.h:
 USER/stm32f4xx.h:
@@ -55,3 +56,4 @@ SYS/task_manager/task_manager.h:
 SYS/task_manager/task_manager_cfg.h:
 SYS/data_structure/binary_tree.h:
 SYS/data_structure/linked_list.h:
+App/Task_Display/Task_Widget.h:

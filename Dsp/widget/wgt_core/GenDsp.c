@@ -57,9 +57,9 @@ static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
         for (uint8_t bit_index = 0; bit_index < 8; bit_index++)
         {
             if (temp & 0x80)
-                OLED_DrawPoint(x, y, col_inv);
+                GenDsp_DrawPoint(map, x, y, col_inv);
             else
-                OLED_DrawPoint(x, y, !col_inv);
+                GenDsp_DrawPoint(map, x, y, !col_inv);
 
             temp <<= 1;
 
@@ -102,7 +102,7 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
     uint8_t uRow = start_x;
     uint8_t uCol = start_y;
 
-    int incx, incy, uRow, uCol;
+    int8_t incx, incy;
 
     if (delta_x > 0)
     {
