@@ -178,6 +178,15 @@ static bool Widget_Show(void)
     if (GetCur_Active_Widget() == NULL)
         return false;
 
+    if (GetCur_Active_Widget()->use_frame)
+    {
+        Widget_DrawRectangle(GetCur_Active_Widget()->cord_x,
+                             GetCur_Active_Widget()->cord_y,
+                             GetCur_Active_Widget()->width,
+                             GetCur_Active_Widget()->height,
+                             1);
+    }
+
     List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
 
     return true;
@@ -245,15 +254,28 @@ static void Widget_ClearBlackBoard(void)
 
 static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 {
-    for (uint8_t col = obj->cord_x; col < obj->width; col++)
+    if ((obj->cord_x = 0) &&
+        (obj->cord_y == 0) &&
+        (obj->width == SrvOled.get_range().width) &&
+        (obj->height == SrvOled.get_range().height))
     {
-        for (uint8_t row = obj->cord_y; row < obj->height; row++)
+        for (uint8_t height = 0; height < SrvOled.get_range().height; height++)
         {
-            //clear current widget area coordinateß first
-            widget_blackboard[col][row] = 0;
+            memset(&widget_blackboard[0][height], &obj->pixel_map[0][height], SrvOled.get_range().width);
+        }
+    }
+    else
+    {
+        for (uint8_t col = obj->cord_x; col < obj->width; col++)
+        {
+            for (uint8_t row = obj->cord_y; row < obj->height; row++)
+            {
+                //clear current widget area coordinateß first
+                widget_blackboard[col][row] = 0;
 
-            //then set coordinate value
-            widget_blackboard[col][row] = obj->pixel_map[col - obj->cord_x][row - obj->cord_y];
+                //then set coordinate value
+                widget_blackboard[col][row] = obj->pixel_map[col - obj->cord_x][row - obj->cord_y];
+            }
         }
     }
 }

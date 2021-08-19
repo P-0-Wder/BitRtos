@@ -49,6 +49,7 @@ SYS/crc/crc16.c \
 Dsp/screen/font/oledfont.c \
 Dsp/screen/device/oled1306.c \
 Dsp/screen/service/SrvOled.c \
+Dsp/widget/wgt_core/GenDsp.c \
 Dsp/widget/wgt_core/widget_mng.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
@@ -120,6 +121,7 @@ USB/core/usbd_usr.c \
 USER/stm32f4xx_it.c\
 USER/system_stm32f4xx.c \
 USER/main.c \
+App/Task_Display/Task_Widget.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -210,6 +212,7 @@ C_INCLUDES =  \
 -IUSB/config \
 -IUSB/core \
 -IUSER \
+-ITask_Widget \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

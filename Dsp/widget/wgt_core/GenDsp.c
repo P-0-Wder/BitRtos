@@ -102,7 +102,7 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
     uint8_t uRow = start_x;
     uint8_t uCol = start_y;
 
-    int incx, incy, uRow, uCol;
+    int incx, incy;
 
     if (delta_x > 0)
     {
