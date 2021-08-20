@@ -29,6 +29,7 @@ static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
 
 /* external widget control function */
+static bool Widget_SetFreshFrq(uint8_t frq);
 static bool Widget_Show(void);
 static bool Widget_Hide(void);
 static bool Widget_MoveTo(uint8_t x, uint8_t y);
@@ -64,6 +65,7 @@ static Widget_Control_TypeDef WidgetCtl_Interface = {
 };
 
 Widget_GenProcFunc_TypeDef Widget_Mng = {
+    .set_freshFrq = Widget_SetFreshFrq,
     .Create = Widget_Create,
     .Delete = Widget_Deleted,
     .Control = Widget_CtlInterface,

@@ -68,7 +68,7 @@ int main(void)
 
 	SystemInit();
 
-	TaskWidget_Hdl = Task_Create("Widget", TASK_EXEC_1KHZ, Group_0, Task_Priority_0, TaskWidget_Core, 200);
+	TaskWidget_Hdl = Task_Create("Widget", TASK_EXEC_1KHZ, Group_0, Task_Priority_0, TaskWidget_Core, 500);
 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_4KHZ, Group_0, Task_Priority_1, Task_test_1, 200);
 	test2_tsk_hdl = Task_Create("test 2", TASK_EXEC_2KHZ, Group_0, Task_Priority_2, Task_test_2, 200);
 	test3_tsk_hdl = Task_Create("test 3", TASK_EXEC_1KHZ, Group_0, Task_Priority_3, Task_test_3, 200);
