@@ -26,13 +26,20 @@ typedef uint32_t Widget_Handle;
 
 typedef enum
 {
-    Fresh_FRQ_1Hz = 0,
-    Fresh_FRQ_5Hz,
-    Fresh_FRQ_10Hz,
-    Fresh_FRQ_20Hz,
-    Fresh_FRQ_25Hz,
-    Fresh_FRQ_50Hz,
-    Fresh_FRQ_100Hz,
+    Widget_NoExist = 0,
+    Widget_Showing,
+    Widget_Hiding,
+} WidgetDsp_Status_List;
+
+typedef enum
+{
+    Fresh_FRQ_1Hz = 1,
+    Fresh_FRQ_5Hz = 5,
+    Fresh_FRQ_10Hz = 10,
+    Fresh_FRQ_20Hz = 20,
+    Fresh_FRQ_25Hz = 25,
+    Fresh_FRQ_50Hz = 50,
+    Fresh_FRQ_100Hz = 100,
 } Widget_FreshFrq_List;
 
 typedef enum
@@ -46,6 +53,7 @@ typedef enum
 
 typedef struct
 {
+    uint32_t LstFreshRT;
     uint8_t fresh_duration;
     uint8_t created_widget;
     uint16_t widget_used_size;
@@ -76,6 +84,7 @@ typedef struct
     bool (*Show)(void);
     bool (*Hide)(void);
     bool (*Move)(uint8_t x, uint8_t y);
+    WidgetDsp_Status_List (*Dsp_status)(void);
     Widget_DrawFunc_TypeDef *(*Draw)(void);
 } Widget_Control_TypeDef;
 
@@ -84,8 +93,8 @@ typedef struct
     bool use_frame;
     uint8_t frame_line_size;
     bool is_selected;
+    bool show_state;
 
-    uint8_t on_layer;
     uint8_t cord_x;
     uint8_t cord_y;
     uint8_t width;
@@ -95,7 +104,7 @@ typedef struct
     uint8_t Sub_Widget_Num;
 
     Widget_DrawFunc_TypeDef *Dsp; //widget draw function block
-    Widget_DrawFunc_TypeDef *Ctl; //widget control function block
+    Widget_Control_TypeDef *Ctl;  //widget control function block
 
     char *name;
 
@@ -105,10 +114,11 @@ typedef struct
 
 typedef struct
 {
-    Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
+    Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
     bool (*set_freshFrq)(uint8_t frq);
+    bool (*trigger_fresh)(void);
     bool (*fresh_all)(void);
 } Widget_GenProcFunc_TypeDef;
 

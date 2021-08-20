@@ -49,8 +49,8 @@ SYS/crc/crc16.c \
 Dsp/screen/font/oledfont.c \
 Dsp/screen/device/oled1306.c \
 Dsp/screen/service/SrvOled.c \
-Dsp/widget/wgt_core/GenDsp.c \
 Dsp/widget/wgt_core/widget_mng.c \
+Dsp/wgt_core/GenDsp.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
 FWLIB/src/stm32f4xx_can.c \
@@ -212,7 +212,7 @@ C_INCLUDES =  \
 -IUSB/config \
 -IUSB/core \
 -IUSER \
--ITask_Widget \
+-IApp/Task_Display \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

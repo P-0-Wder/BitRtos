@@ -2,9 +2,11 @@
 #include "SrvOled.h"
 #include "runtime.h"
 #include "linked_list.h"
+#include "GenDsp.h"
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
+    .LstFreshRT = 0,
     .created_widget = 0,
     .widget_used_size = 0,
     .remain_size = 0,
@@ -21,7 +23,7 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
 static void Widget_ClearBlackBoard(void);
 
 /* external widget manager function definition */
-static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name);
+static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
 static Widget_Control_TypeDef *Widget_CtlInterface(void);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
@@ -30,7 +32,9 @@ static bool Widget_FreshAll(void);
 static bool Widget_Show(void);
 static bool Widget_Hide(void);
 static bool Widget_MoveTo(uint8_t x, uint8_t y);
+static bool Widget_CheckFlashTrigger(void);
 static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
+static WidgetDsp_Status_List Widget_DspStatus(void);
 
 /* widget draw function interface */
 static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set);
@@ -56,6 +60,7 @@ static Widget_Control_TypeDef WidgetCtl_Interface = {
     .Hide = Widget_Hide,
     .Move = Widget_MoveTo,
     .Draw = Widget_DrawInterface,
+    .Dsp_status = Widget_DspStatus,
 };
 
 Widget_GenProcFunc_TypeDef Widget_Mng = {
@@ -63,9 +68,10 @@ Widget_GenProcFunc_TypeDef Widget_Mng = {
     .Delete = Widget_Deleted,
     .Control = Widget_CtlInterface,
     .fresh_all = Widget_FreshAll,
+    .trigger_fresh = Widget_CheckFlashTrigger,
 };
 
-static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name)
+static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -100,7 +106,6 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->height = height;
 
     widget_tmp->name = name;
-    widget_tmp->on_layer = DEFAULT_LAYER;
 
     if (MonitorDataObj.remain_size < (height * width))
         return WIDGET_CREATE_ERROR;
@@ -132,6 +137,9 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
         return WIDGET_CREATE_ERROR;
 
     List_ItemInit(widget_tmp->item, widget_tmp);
+
+    widget_tmp->use_frame = show_frame;
+    widget_tmp->show_state = false;
 
     return (Widget_Handle)widget_tmp;
 }
@@ -173,6 +181,19 @@ static bool Widget_SetFreshFrq(uint8_t frq)
     return true;
 }
 
+static bool Widget_CheckFlashTrigger(void)
+{
+    uint32_t RT = Get_CurrentRunningMs();
+
+    if ((RT - MonitorDataObj.LstFreshRT) >= MonitorDataObj.fresh_duration)
+    {
+        MonitorDataObj.LstFreshRT = RT;
+        return true;
+    }
+    else
+        return false;
+}
+
 static bool Widget_Show(void)
 {
     if (GetCur_Active_Widget() == NULL)
@@ -187,7 +208,10 @@ static bool Widget_Show(void)
                              1);
     }
 
+    GetCur_Active_Widget()->show_state = true;
+
     List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+    WidgetFresh_State = Fresh_State_Prepare;
 
     return true;
 }
@@ -198,7 +222,23 @@ static bool Widget_Hide(void)
         return false;
 
     List_Delete_Item(GetCur_Active_Widget()->item, NULL);
+    WidgetFresh_State = Fresh_State_Prepare;
+    GetCur_Active_Widget()->show_state = false;
+
     return true;
+}
+
+static WidgetDsp_Status_List Widget_DspStatus(void)
+{
+    if (GetCur_Active_Widget() == NULL)
+        return Widget_NoExist;
+
+    if (GetCur_Active_Widget()->show_state)
+    {
+        return Widget_Showing;
+    }
+
+    return Widget_Hiding;
 }
 
 static bool Widget_MoveTo(uint8_t x, uint8_t y)
@@ -254,28 +294,22 @@ static void Widget_ClearBlackBoard(void)
 
 static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 {
-    if ((obj->cord_x = 0) &&
+    if ((obj->cord_x == 0) &&
         (obj->cord_y == 0) &&
         (obj->width == SrvOled.get_range().width) &&
         (obj->height == SrvOled.get_range().height))
     {
-        for (uint8_t height = 0; height < SrvOled.get_range().height; height++)
+        for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
         {
-            memset(&widget_blackboard[0][height], &obj->pixel_map[0][height], SrvOled.get_range().width);
+            memcpy(&widget_blackboard[0][row], obj->pixel_map, SrvOled.get_range().width);
         }
     }
     else
     {
-        for (uint8_t col = obj->cord_x; col < obj->width; col++)
+        for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
         {
-            for (uint8_t row = obj->cord_y; row < obj->height; row++)
-            {
-                //clear current widget area coordinateß first
-                widget_blackboard[col][row] = 0;
-
-                //then set coordinate value
-                widget_blackboard[col][row] = obj->pixel_map[col - obj->cord_x][row - obj->cord_y];
-            }
+            memset(&widget_blackboard[obj->cord_x][row], 0x00, obj->width);
+            memcpy(&widget_blackboard[obj->cord_x][row], &obj->pixel_map[obj->cord_x][row], obj->width);
         }
     }
 }
@@ -284,9 +318,6 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 static bool Widget_FreshAll(void)
 {
     WidgetObj_TypeDef *tmp = NULL;
-
-    //use time difference drive widget fresh
-    WidgetFresh_State = Fresh_State_Reguler;
 
     while (true)
     {
