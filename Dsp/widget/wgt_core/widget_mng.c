@@ -89,7 +89,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
         for (uint8_t column_index = 0; column_index < SrvOled.get_range().height; column_index++)
         {
-            widget_blackboard[column_index] = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().width);
+            widget_blackboard[column_index] = (uint8_t *)malloc(SrvOled.get_range().width);
 
             if (widget_blackboard[column_index] == NULL)
                 return WIDGET_CREATE_ERROR;
@@ -121,7 +121,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     {
         widget_tmp->pixel_map[h] = (uint8_t *)malloc(width);
 
-        if (widget_tmp->pixel_map == NULL)
+        if (widget_tmp->pixel_map[h] == NULL)
             return WIDGET_CREATE_ERROR;
     }
 
