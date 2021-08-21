@@ -14,7 +14,7 @@
 #define WIDGET_CREATE_ERROR WIDGET_OPR_ERROR
 #define WIDGET_DELETE_ERROR WIDGET_OPR_ERROR
 
-#define MAX_WIDGET_CACHE_PAGE 8 //64k for widget display
+#define MAX_WIDGET_CACHE_PAGE 5 //40k for widget display
 #define DEFAULT_LAYER 0
 
 #define MAX_SUB_WIDGET_NUM 8
@@ -56,9 +56,9 @@ typedef struct
     uint32_t LstFreshRT;
     uint8_t fresh_duration;
     uint8_t created_widget;
-    uint16_t widget_used_size;
-    uint16_t remain_size;
-    uint16_t max_display_cache;
+    uint32_t widget_used_size;
+    uint32_t remain_size;
+    uint32_t max_display_cache;
     list_obj *widget_dsp_list;
 } Widget_MonitorData_TypeDef;
 

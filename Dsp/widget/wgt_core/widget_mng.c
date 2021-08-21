@@ -79,10 +79,12 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     if (MonitorDataObj.max_display_cache == 0)
     {
-        MonitorDataObj.max_display_cache = (SrvOled.get_range().height * SrvOled.get_range().width) * MAX_WIDGET_CACHE_PAGE;
+        MonitorDataObj.max_display_cache = (SrvOled.get_range().height * SrvOled.get_range().width);
+        MonitorDataObj.max_display_cache *= MAX_WIDGET_CACHE_PAGE;
+
         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
 
-        widget_blackboard = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().height);
+        widget_blackboard = (uint8_t **)malloc(SrvOled.get_range().height);
 
         if (widget_blackboard == NULL)
             return WIDGET_CREATE_ERROR;
