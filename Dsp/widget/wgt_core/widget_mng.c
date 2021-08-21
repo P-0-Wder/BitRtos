@@ -24,7 +24,7 @@ static void Widget_ClearBlackBoard(void);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
-static Widget_Control_TypeDef *Widget_CtlInterface(void);
+static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
 
@@ -264,12 +264,14 @@ static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void)
     return GetCur_Active_Widget()->Dsp;
 }
 
-static Widget_Control_TypeDef *Widget_CtlInterface(void)
+static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl)
 {
-    if (GetCur_Active_Widget() == NULL)
+    if (hdl == 0)
         return NULL;
 
-    return GetCur_Active_Widget()->Ctl;
+    CurActive_Widget = hdl;
+
+    return ((WidgetObj_TypeDef *)CurActive_Widget)->Ctl;
 }
 
 static WidgetObj_TypeDef *GetCur_Active_Widget(void)
