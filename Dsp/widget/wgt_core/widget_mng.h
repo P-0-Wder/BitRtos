@@ -44,7 +44,7 @@ typedef enum
 
 typedef enum
 {
-    Fresh_State_DrvInit,
+    Fresh_State_DrvInit = 0,
     Fresh_State_DrvError,
     Fresh_State_Prepare,
     Fresh_State_Reguler,

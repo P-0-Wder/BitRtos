@@ -14,6 +14,7 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .widget_dsp_list = NULL};
 
 static Widget_Handle CurActive_Widget = 0;
+static uint8_t WidgetFresh_Reg = 1 << Fresh_State_DrvInit;
 static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
 static uint8_t **widget_blackboard;
 
@@ -318,6 +319,10 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
             memcpy(&widget_blackboard[obj->cord_x][row], &obj->pixel_map[obj->cord_x][row], obj->width);
         }
     }
+}
+
+static void Widget_SetFreshState(WidgetFresh_State_List state)
+{
 }
 
 //fresh all widget
