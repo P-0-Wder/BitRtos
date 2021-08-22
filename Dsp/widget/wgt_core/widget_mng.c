@@ -342,14 +342,14 @@ static bool Widget_FreshAll(void)
     static uint8_t reg_checker = 0;
     WidgetObj_TypeDef *tmp = NULL;
 
-    while (true)
+    while (WidgetFresh_State)
     {
         if ((1 << reg_checker) & WidgetFresh_State)
         {
             WIdget_ClearFreshState(reg_checker);
         }
 
-        switch ((uint8_t)WidgetFresh_State)
+        switch (reg_checker)
         {
         case Fresh_State_DrvInit:
             if (SrvOled.init())
