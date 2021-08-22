@@ -5,6 +5,7 @@
 #include "GenDsp.h"
 
 #define Set_FreshStateBIT(x) 1 << x
+#define Clr_FreshStateBIT(x) 0 << x
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
@@ -16,7 +17,7 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .widget_dsp_list = NULL};
 
 static Widget_Handle CurActive_Widget = 0;
-static uint8_t WidgetFresh_Reg = 1 << Fresh_State_DrvInit;
+static uint8_t WidgetFresh_Reg = Set_FreshStateBIT(Fresh_State_DrvInit);
 static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
 static uint8_t **widget_blackboard;
 
@@ -24,6 +25,8 @@ static uint8_t **widget_blackboard;
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
 static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
 static void Widget_ClearBlackBoard(void);
+static void WIdget_ClearFreshState(WidgetFresh_State_List state);
+static void Widget_SetFreshState(WidgetFresh_State_List state);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
@@ -218,7 +221,7 @@ static bool Widget_Show(void)
     GetCur_Active_Widget()->show_state = true;
 
     List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
-    WidgetFresh_State = Fresh_State_Prepare;
+    Widget_SetFreshState(Fresh_State_Prepare);
 
     return true;
 }
@@ -325,6 +328,12 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 
 static void Widget_SetFreshState(WidgetFresh_State_List state)
 {
+    WidgetFresh_Reg |= Set_FreshStateBIT(state);
+}
+
+static void WIdget_ClearFreshState(WidgetFresh_State_List state)
+{
+    WidgetFresh_Reg &= Clr_FreshStateBIT(state);
 }
 
 //fresh all widget
