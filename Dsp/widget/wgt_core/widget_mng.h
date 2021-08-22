@@ -49,6 +49,7 @@ typedef enum
     Fresh_State_Prepare,
     Fresh_State_Reguler,
     Fresh_State_Sleep,
+    Fresh_State_Sum,
 } WidgetFresh_State_List;
 
 typedef struct

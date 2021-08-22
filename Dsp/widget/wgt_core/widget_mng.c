@@ -339,10 +339,16 @@ static void WIdget_ClearFreshState(WidgetFresh_State_List state)
 //fresh all widget
 static bool Widget_FreshAll(void)
 {
+    static uint8_t reg_checker = 0;
     WidgetObj_TypeDef *tmp = NULL;
 
     while (true)
     {
+        if ((1 << reg_checker) & WidgetFresh_State)
+        {
+            WIdget_ClearFreshState(reg_checker);
+        }
+
         switch ((uint8_t)WidgetFresh_State)
         {
         case Fresh_State_DrvInit:
@@ -376,6 +382,13 @@ static bool Widget_FreshAll(void)
 
         default:
             return false;
+        }
+
+        reg_checker++;
+
+        if (reg_checker == Fresh_State_Sum)
+        {
+            reg_checker = 0;
         }
     }
 }
