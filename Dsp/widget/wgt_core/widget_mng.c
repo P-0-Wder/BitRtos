@@ -205,8 +205,8 @@ static bool Widget_Show(void)
 
     if (GetCur_Active_Widget()->use_frame)
     {
-        Widget_DrawRectangle(GetCur_Active_Widget()->cord_x,
-                             GetCur_Active_Widget()->cord_y,
+        Widget_DrawRectangle(0,
+                             0,
                              GetCur_Active_Widget()->width,
                              GetCur_Active_Widget()->height,
                              1);
