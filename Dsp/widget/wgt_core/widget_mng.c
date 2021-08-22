@@ -4,6 +4,8 @@
 #include "linked_list.h"
 #include "GenDsp.h"
 
+#define Set_FreshStateBIT(x) 1 << x
+
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
     .LstFreshRT = 0,
