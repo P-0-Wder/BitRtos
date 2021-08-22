@@ -36,9 +36,9 @@ GeneralDispalyProc_TypeDef GenDsp_Interface = {
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set)
 {
     if (set)
-        map[x][y] = 1;
+        map[y][x] = 1;
     else
-        map[x][y] = 0;
+        map[y][x] = 0;
 }
 
 static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv)

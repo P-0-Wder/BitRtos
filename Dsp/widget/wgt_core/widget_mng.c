@@ -369,8 +369,8 @@ static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
     GenDsp_Interface.draw_point(tmp->pixel_map,
-                                x + tmp->cord_x,
-                                y + tmp->cord_y,
+                                x,
+                                y,
                                 set);
 }
 
@@ -381,8 +381,8 @@ static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, 
     GenDsp_Interface.draw_num(font,
                               tmp->pixel_map,
                               num,
-                              x + tmp->cord_x,
-                              y + tmp->cord_y,
+                              x,
+                              y,
                               col_cnv);
 }
 
@@ -393,8 +393,8 @@ static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y
     GenDsp_Interface.draw_char(font,
                                tmp->pixel_map,
                                char_dsp,
-                               x + tmp->cord_x,
-                               y + tmp->cord_y,
+                               x,
+                               y,
                                col_cnv);
 }
 
@@ -405,8 +405,8 @@ static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y
     GenDsp_Interface.draw_str(font,
                               tmp->pixel_map,
                               str_dsp,
-                              x + tmp->cord_x,
-                              y + tmp->cord_y,
+                              x,
+                              y,
                               col_cnv);
 }
 
@@ -415,10 +415,10 @@ static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uin
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
     GenDsp_Interface.draw_line(tmp->pixel_map,
-                               start_x + tmp->cord_x,
-                               start_y + tmp->cord_y,
-                               end_x + tmp->cord_x,
-                               end_y + tmp->cord_y,
+                               start_x,
+                               start_y,
+                               end_x,
+                               end_y,
                                line_size);
 }
 
@@ -427,8 +427,8 @@ static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
     GenDsp_Interface.draw_circle(tmp->pixel_map,
-                                 center_x + tmp->cord_x,
-                                 center_y + tmp->cord_y,
+                                 center_x,
+                                 center_y,
                                  radius,
                                  line_size);
 }
@@ -438,8 +438,8 @@ static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
     GenDsp_Interface.draw_rectangle(tmp->pixel_map,
-                                    x + tmp->cord_x,
-                                    y + tmp->cord_y,
+                                    x,
+                                    y,
                                     width,
                                     height,
                                     line_size);
