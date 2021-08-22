@@ -331,7 +331,7 @@ static void Widget_SetFreshState(WidgetFresh_State_List state)
     WidgetFresh_Reg |= Set_FreshStateBIT(state);
 }
 
-static void WIdget_ClearFreshState(WidgetFresh_State_List state)
+static void Widget_ClearFreshState(WidgetFresh_State_List state)
 {
     WidgetFresh_Reg &= Clr_FreshStateBIT(state);
 }
@@ -346,7 +346,7 @@ static bool Widget_FreshAll(void)
     {
         if ((1 << reg_checker) & WidgetFresh_State)
         {
-            WIdget_ClearFreshState(reg_checker);
+            Widget_ClearFreshState(reg_checker);
         }
 
         switch (reg_checker)
@@ -354,15 +354,15 @@ static bool Widget_FreshAll(void)
         case Fresh_State_DrvInit:
             if (SrvOled.init())
             {
-                WidgetFresh_State = Fresh_State_Prepare;
+                Widget_SetFreshState(Fresh_State_Prepare);
             }
             else
-                WidgetFresh_State = Fresh_State_DrvError;
+                Widget_SetFreshState(Fresh_State_DrvError);
             break;
 
         case Fresh_State_Prepare:
             Widget_ClearBlackBoard();
-            WidgetFresh_State = Fresh_State_Reguler;
+            Widget_SetFreshState(Fresh_State_Reguler);
             break;
 
         case Fresh_State_Reguler:
@@ -371,7 +371,7 @@ static bool Widget_FreshAll(void)
                 List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL);
                 SrvOled.fresh(widget_blackboard);
             }
-            WidgetFresh_State = Fresh_State_Sleep;
+            Widget_SetFreshState(Fresh_State_Sleep);
             return true;
 
         case Fresh_State_Sleep:
