@@ -362,42 +362,42 @@ static bool Widget_FreshAll(void)
     {
         if ((1 << reg_checker) & Widget_GetFreshState())
         {
+            switch (reg_checker)
+            {
+            case Fresh_State_DrvInit:
+                if (SrvOled.init())
+                {
+                    Widget_SetFreshState(Fresh_State_Prepare);
+                }
+                else
+                    Widget_SetFreshState(Fresh_State_DrvError);
+                break;
+
+            case Fresh_State_Prepare:
+                Widget_ClearBlackBoard();
+                Widget_SetFreshState(Fresh_State_Reguler);
+                break;
+
+            case Fresh_State_Reguler:
+                if (MonitorDataObj.created_widget > 0)
+                {
+                    List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL);
+                    SrvOled.fresh(widget_blackboard);
+                }
+                Widget_SetFreshState(Fresh_State_Sleep);
+                return true;
+
+            case Fresh_State_Sleep:
+                return true;
+
+            case Fresh_State_DrvError:
+                return false;
+
+            default:
+                return false;
+            }
+
             Widget_ClearFreshState(reg_checker);
-        }
-
-        switch (reg_checker)
-        {
-        case Fresh_State_DrvInit:
-            if (SrvOled.init())
-            {
-                Widget_SetFreshState(Fresh_State_Prepare);
-            }
-            else
-                Widget_SetFreshState(Fresh_State_DrvError);
-            break;
-
-        case Fresh_State_Prepare:
-            Widget_ClearBlackBoard();
-            Widget_SetFreshState(Fresh_State_Reguler);
-            break;
-
-        case Fresh_State_Reguler:
-            if (MonitorDataObj.created_widget > 0)
-            {
-                List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL);
-                SrvOled.fresh(widget_blackboard);
-            }
-            Widget_SetFreshState(Fresh_State_Sleep);
-            return true;
-
-        case Fresh_State_Sleep:
-            return true;
-
-        case Fresh_State_DrvError:
-            return false;
-
-        default:
-            return false;
         }
 
         reg_checker++;
