@@ -167,7 +167,7 @@ static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
 	{
 		for (uint8_t column_index = 0; column_index < OLED_MAX_HEIGHT; column_index++)
 		{
-			blackboard[row_index][column_index / COLUMN_SIZE].val |= map[row_index][column_index] << (column_index % COLUMN_SIZE);
+			blackboard[column_index / COLUMN_SIZE][row_index].val |= map[row_index][column_index] << (column_index % COLUMN_SIZE);
 		}
 	}
 	return true;
