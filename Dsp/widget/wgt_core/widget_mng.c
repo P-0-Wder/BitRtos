@@ -398,10 +398,15 @@ static bool Widget_FreshAll(void)
             case Fresh_State_Reguler:
                 if (MonitorDataObj.created_widget > 0)
                 {
-                    List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL);
-                    SrvOled.fresh(widget_blackboard);
+                    if (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL) == list_no_error)
+                    {
+                        SrvOled.fresh(widget_blackboard);
+                    }
+                    else
+                        Widget_SetFreshState(Fresh_State_DrvError);
+
+                    Widget_SetFreshState(Fresh_State_Sleep);
                 }
-                Widget_SetFreshState(Fresh_State_Sleep);
                 break;
 
             case Fresh_State_Sleep:

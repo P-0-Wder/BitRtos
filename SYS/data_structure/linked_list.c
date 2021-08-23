@@ -181,6 +181,10 @@ void List_Insert_Item(list_obj *list, item_obj *item)
             break;
         }
     }
+    else if (list == NULL)
+    {
+        list = item;
+    }
 }
 
 list_error_code List_traverse(list_obj *list, list_traverse_callback callback, void *arg)
