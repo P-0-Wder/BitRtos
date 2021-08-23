@@ -32,7 +32,7 @@ SrvOled_TypeDef SrvOled = {
 static void SrvOled_BusInit(SPI_List BusID)
 {
     BusInit_Structure.SPIx = BusID;
-    BusInit_Structure.speed = SPI_CLOCK_INITIALIZATON;
+    BusInit_Structure.speed = SPI_CLOCK_ULTRAFAST;
     BusInit_Structure.CPOL = SPI_CPOL_High;
     BusInit_Structure.CPHA = SPI_CPHA_2Edge;
 
@@ -74,10 +74,10 @@ static void SrvOled_DCPin_Ctl(Oled_DC_State_List state)
 
     if (state == Oled_DC_Enable)
     {
-        level = GPIO_LOW;
+        level = GPIO_HIGH;
     }
     else if (state == Oled_DC_Disable)
-        level = GPIO_HIGH;
+        level = GPIO_LOW;
 
     GenGPIO_Drv.set(&DC_IO_Obj, level);
 }
@@ -88,10 +88,10 @@ static void SrvOled_RSPin_Ctl(Oled_RS_State_List state)
 
     if (state == Oled_RS_Enable)
     {
-        level = GPIO_LOW;
+        level = GPIO_HIGH;
     }
     else if (state == Oled_RS_Disable)
-        level = GPIO_HIGH;
+        level = GPIO_LOW;
 
     GenGPIO_Drv.set(&RS_IO_Obj, level);
 }
