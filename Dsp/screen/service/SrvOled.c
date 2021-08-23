@@ -8,6 +8,7 @@
 static Oled_Obj_TypeDef Oled1306Obj;
 static DrvGPIO_Obj_TypeDef DC_IO_Obj;
 static DrvGPIO_Obj_TypeDef RS_IO_Obj;
+static DrvSpi_Obj_TypeDef BusInit_Structure;
 static bool SrvPerInit_State = false;
 static bool SrvInit_State = false;
 
@@ -30,8 +31,6 @@ SrvOled_TypeDef SrvOled = {
 
 static void SrvOled_BusInit(SPI_List BusID)
 {
-    static DrvSpi_Obj_TypeDef BusInit_Structure;
-
     BusInit_Structure.SPIx = BusID;
     BusInit_Structure.speed = SPI_CLOCK_INITIALIZATON;
     BusInit_Structure.CPOL = SPI_CPOL_High;
@@ -55,6 +54,7 @@ static void SrvOled_DCPin_Init(void)
     DC_IO_Obj.IO_Type = GPIO_Output;
 
     GenGPIO_Drv.open(&DC_IO_Obj, DC_IO_Obj.IO_Type);
+    GenGPIO_Drv.set(&DC_IO_Obj, HI);
 }
 
 static void SrvOled_RSPin_Init(void)
@@ -65,6 +65,7 @@ static void SrvOled_RSPin_Init(void)
     RS_IO_Obj.IO_Type = GPIO_Output;
 
     GenGPIO_Drv.open(&RS_IO_Obj, RS_IO_Obj.IO_Type);
+    GenGPIO_Drv.set(&RS_IO_Obj, HI);
 }
 
 static void SrvOled_DCPin_Ctl(Oled_DC_State_List state)
