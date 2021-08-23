@@ -44,9 +44,11 @@ typedef enum
     Oled_Display_Disable,
 } Oled_Enable_State_List;
 
+#pragma pack(1)
 typedef struct
 {
     Oled_BusInterface_TypeList Bus;
+    void *BusObj;
     uint8_t BusID;
 
     void (*rs_init)(void);
@@ -58,6 +60,7 @@ typedef struct
     bool (*bus_init)(uint8_t ID);
     bool (*bus_transmit)(uint8_t tx_data);
 } Oled_Obj_TypeDef;
+#pragma pack()
 
 typedef struct
 {
