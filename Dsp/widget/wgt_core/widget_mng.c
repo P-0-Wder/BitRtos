@@ -403,11 +403,14 @@ static bool Widget_FreshAll(void)
                         SrvOled.fresh(widget_blackboard);
                     }
                     else
+                    {
                         Widget_SetFreshState(Fresh_State_DrvError);
+                        break;
+                    }
 
                     Widget_SetFreshState(Fresh_State_Sleep);
+                    break;
                 }
-                break;
 
             case Fresh_State_Sleep:
                 Widget_ClearAllFreshState();
