@@ -60,7 +60,7 @@ typedef struct
     uint32_t widget_used_size;
     uint32_t remain_size;
     uint32_t max_display_cache;
-    list_obj widget_dsp_list;
+    list_obj *widget_dsp_list;
 } Widget_MonitorData_TypeDef;
 
 typedef enum

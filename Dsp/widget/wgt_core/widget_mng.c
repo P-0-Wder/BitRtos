@@ -14,13 +14,7 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .widget_used_size = 0,
     .remain_size = 0,
     .max_display_cache = 0,
-    .widget_dsp_list = {
-        .mode = by_order,
-        .compare_callback = NULL,
-        .prv = NULL,
-        .nxt = NULL,
-        .data = NULL},
-};
+    .widget_dsp_list = NULL};
 
 static Widget_Handle CurActive_Widget = 0;
 static uint8_t WidgetFresh_Reg = Set_FreshStateBIT(Fresh_State_DrvInit);
@@ -155,6 +149,11 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     List_ItemInit(widget_tmp->item, widget_tmp);
 
+    if (MonitorDataObj.widget_dsp_list == NULL)
+    {
+        MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
+    }
+
     widget_tmp->use_frame = show_frame;
     widget_tmp->show_state = false;
 
@@ -231,8 +230,6 @@ static bool Widget_Show(void)
     {
         List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
     }
-    else
-        MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
 
     Widget_SetFreshState(Fresh_State_Prepare);
 
