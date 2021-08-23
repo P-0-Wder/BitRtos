@@ -23,7 +23,7 @@ static uint8_t **widget_blackboard;
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
 static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
-static void Widget_ClearBlackBoard(void);
+static bool Widget_ClearBlackBoard(void);
 static void WIdget_ClearFreshState(WidgetFresh_State_List state);
 static void Widget_SetFreshState(WidgetFresh_State_List state);
 static void Widget_ClearAllFreshState(void);
@@ -297,12 +297,25 @@ static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
     return widget_tmp->Dsp;
 }
 
-static void Widget_ClearBlackBoard(void)
+static bool Widget_ClearBlackBoard(void)
 {
-    for (uint8_t height = 0; height < SrvOled.get_range().height; height++)
+    uint8_t width_max = SrvOled.get_range().width;
+    uint8_t height_max = SrvOled.get_range().height;
+
+    for (uint8_t height = 0; height < height_max; height++)
     {
-        memset(&widget_blackboard[0][height], NULL, SrvOled.get_range().width);
+        for (uint8_t width = 0; width < width_max; width++)
+        {
+            if (widget_blackboard != NULL)
+            {
+                widget_blackboard[height][width] = 0x00;
+            }
+            else
+                return false;
+        }
     }
+
+    return true;
 }
 
 static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
@@ -374,8 +387,12 @@ static bool Widget_FreshAll(void)
                 break;
 
             case Fresh_State_Prepare:
-                Widget_ClearBlackBoard();
-                Widget_SetFreshState(Fresh_State_Reguler);
+                if (Widget_ClearBlackBoard())
+                {
+                    Widget_SetFreshState(Fresh_State_Reguler);
+                }
+                else
+                    Widget_SetFreshState(Fresh_State_DrvError);
                 break;
 
             case Fresh_State_Reguler:
