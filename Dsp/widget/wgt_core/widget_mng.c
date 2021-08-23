@@ -385,9 +385,10 @@ static bool Widget_FreshAll(void)
                     SrvOled.fresh(widget_blackboard);
                 }
                 Widget_SetFreshState(Fresh_State_Sleep);
-                return true;
+                break;
 
             case Fresh_State_Sleep:
+                Widget_ClearFreshState(reg_checker);
                 return true;
 
             case Fresh_State_DrvError:
@@ -396,8 +397,6 @@ static bool Widget_FreshAll(void)
             default:
                 return false;
             }
-
-            Widget_ClearFreshState(reg_checker);
         }
 
         reg_checker++;
