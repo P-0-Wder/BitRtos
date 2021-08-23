@@ -181,7 +181,7 @@ void List_Insert_Item(list_obj *list, item_obj *item)
             break;
         }
     }
-    else if (list == NULL)
+    else if ((list == NULL) && (item != NULL))
     {
         list = item;
     }

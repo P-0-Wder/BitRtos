@@ -14,7 +14,13 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .widget_used_size = 0,
     .remain_size = 0,
     .max_display_cache = 0,
-    .widget_dsp_list = NULL};
+    .widget_dsp_list = {
+        .mode = by_order,
+        .compare_callback = NULL,
+        .prv = NULL,
+        .nxt = NULL,
+        .data = NULL},
+};
 
 static Widget_Handle CurActive_Widget = 0;
 static uint8_t WidgetFresh_Reg = Set_FreshStateBIT(Fresh_State_DrvInit);
@@ -221,7 +227,13 @@ static bool Widget_Show(void)
 
     GetCur_Active_Widget()->show_state = true;
 
-    List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+    if (MonitorDataObj.widget_dsp_list != NULL)
+    {
+        List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+    }
+    else
+        MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
+
     Widget_SetFreshState(Fresh_State_Prepare);
 
     return true;
