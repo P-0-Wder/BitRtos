@@ -388,7 +388,7 @@ static bool Widget_FreshAll(void)
                 break;
 
             case Fresh_State_Sleep:
-                Widget_ClearFreshState(reg_checker);
+                Widget_ClearAllFreshState();
                 return true;
 
             case Fresh_State_DrvError:
