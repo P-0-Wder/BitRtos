@@ -5,7 +5,7 @@
 #include "GenDsp.h"
 
 #define Set_FreshStateBIT(x) 1 << x
-#define Clr_FreshStateBIT(x) 0 << x
+#define Clr_FreshStateBIT(x) ~(1 << x)
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
