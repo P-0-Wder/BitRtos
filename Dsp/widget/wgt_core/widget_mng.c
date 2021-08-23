@@ -151,7 +151,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     if (MonitorDataObj.widget_dsp_list == NULL)
     {
-        MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
+        MonitorDataObj.widget_dsp_list = widget_tmp->item;
     }
 
     widget_tmp->use_frame = show_frame;
@@ -343,8 +343,8 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
     {
         for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
         {
-            memset(&widget_blackboard[obj->cord_x][row], 0x00, obj->width);
-            memcpy(&widget_blackboard[obj->cord_x][row], &obj->pixel_map[obj->cord_x][row], obj->width);
+            memset(&widget_blackboard[row], 0x00, obj->width);
+            memcpy(&widget_blackboard[row], &obj->pixel_map[obj->cord_x][row], obj->width);
         }
     }
 }
