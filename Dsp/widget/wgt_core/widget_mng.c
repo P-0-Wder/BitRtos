@@ -18,7 +18,6 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
 
 static Widget_Handle CurActive_Widget = 0;
 static uint8_t WidgetFresh_Reg = Set_FreshStateBIT(Fresh_State_DrvInit);
-static WidgetFresh_State_List WidgetFresh_State = Fresh_State_DrvInit;
 static uint8_t **widget_blackboard;
 
 /* internal function */
@@ -27,6 +26,8 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
 static void Widget_ClearBlackBoard(void);
 static void WIdget_ClearFreshState(WidgetFresh_State_List state);
 static void Widget_SetFreshState(WidgetFresh_State_List state);
+static void Widget_ClearAllFreshState(void);
+static uint8_t Widget_GetFreshState(void);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
@@ -232,7 +233,7 @@ static bool Widget_Hide(void)
         return false;
 
     List_Delete_Item(GetCur_Active_Widget()->item, NULL);
-    WidgetFresh_State = Fresh_State_Prepare;
+    Widget_SetFreshState(Fresh_State_Prepare);
     GetCur_Active_Widget()->show_state = false;
 
     return true;
@@ -326,8 +327,23 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
     }
 }
 
+static uint8_t Widget_GetFreshState(void)
+{
+    return WidgetFresh_Reg;
+}
+
+static void Widget_ClearAllFreshState(void)
+{
+    WidgetFresh_Reg = 0;
+}
+
 static void Widget_SetFreshState(WidgetFresh_State_List state)
 {
+    if (WidgetFresh_Reg & (1 << Fresh_State_DrvError))
+    {
+        return;
+    }
+
     WidgetFresh_Reg |= Set_FreshStateBIT(state);
 }
 
@@ -342,9 +358,9 @@ static bool Widget_FreshAll(void)
     static uint8_t reg_checker = 0;
     WidgetObj_TypeDef *tmp = NULL;
 
-    while (WidgetFresh_State)
+    while (Widget_GetFreshState())
     {
-        if ((1 << reg_checker) & WidgetFresh_State)
+        if ((1 << reg_checker) & Widget_GetFreshState())
         {
             Widget_ClearFreshState(reg_checker);
         }
