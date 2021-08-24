@@ -40,7 +40,7 @@ static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Wri
 
 	Oled_Obj->bus_transmit(data);
 
-	Oled_Obj->rs_ctl(Oled_RS_Disable);
+	Oled_Obj->rs_ctl(Oled_RS_Enable);
 }
 
 static void Oled_EnableControl(Oled_Obj_TypeDef *Oled_Obj, Oled_Enable_State_List state)
@@ -57,7 +57,7 @@ static void Oled_EnableControl(Oled_Obj_TypeDef *Oled_Obj, Oled_Enable_State_Lis
 
 	for (uint8_t i = 0; i < sizeof(OledEnable_CMD); i++)
 	{
-		Oled_TransmitByte(Oled_Obj, OledEnable_CMD[i], Oled_Write_CMD);
+		Oled_TransmitByte(Oled_Obj, Enb_CMD_Buff[i], Oled_Write_CMD);
 	}
 }
 
@@ -119,6 +119,7 @@ static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)
 
 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
 	{
+
 		Oled_TransmitByte(Oled_Obj, (0xb0 + c), Oled_Write_CMD);
 		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
 		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
@@ -126,7 +127,8 @@ static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)
 		//can use spi dma for transmit
 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
 		{
-			Oled_TransmitByte(Oled_Obj, blackboard[r][c], Oled_Write_CMD);
+			blackboard[r][c] = 1;
+			Oled_TransmitByte(Oled_Obj, blackboard[r][c], Oled_Write_Data);
 		}
 	}
 
@@ -143,7 +145,7 @@ static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj)
 
 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
 		{
-			Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
+			Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_Data);
 		}
 	}
 }

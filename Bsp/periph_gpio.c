@@ -388,10 +388,10 @@ void GPIO_Set_IO_LEVEL(GPIO_TypeDef *GPIO_Port, uint16_t pin, IO_LEVEL level)
 {
 	switch ((uint8_t)level)
 	{
-	case HI:
+	case LO:
 		GPIO_ResetBits(GPIO_Port, pin);
 		break;
-	case LO:
+	case HI:
 		GPIO_SetBits(GPIO_Port, pin);
 		break;
 	default:

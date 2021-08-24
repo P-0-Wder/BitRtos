@@ -380,6 +380,12 @@ static bool Widget_FreshAll(void)
     static uint8_t reg_checker = 0;
     WidgetObj_TypeDef *tmp = NULL;
 
+    if (Widget_GetFreshState() & Set_FreshStateBIT(Fresh_State_Sleep))
+    {
+        Widget_SetFreshState(Fresh_State_Prepare);
+        reg_checker = 0;
+    }
+
     while (Widget_GetFreshState())
     {
         if ((1 << reg_checker) & Widget_GetFreshState())
@@ -389,6 +395,7 @@ static bool Widget_FreshAll(void)
             case Fresh_State_DrvInit:
                 if (SrvOled.init())
                 {
+                    Widget_ClearFreshState(Fresh_State_DrvInit);
                     Widget_SetFreshState(Fresh_State_Prepare);
                 }
                 else
@@ -398,6 +405,7 @@ static bool Widget_FreshAll(void)
             case Fresh_State_Prepare:
                 if (Widget_ClearBlackBoard())
                 {
+                    Widget_ClearFreshState(Fresh_State_Prepare);
                     Widget_SetFreshState(Fresh_State_Reguler);
                 }
                 else
@@ -417,12 +425,12 @@ static bool Widget_FreshAll(void)
                         break;
                     }
 
+                    Widget_ClearFreshState(Fresh_State_Reguler);
                     Widget_SetFreshState(Fresh_State_Sleep);
                 }
                 break;
 
             case Fresh_State_Sleep:
-                Widget_ClearAllFreshState();
                 return true;
 
             case Fresh_State_DrvError:
