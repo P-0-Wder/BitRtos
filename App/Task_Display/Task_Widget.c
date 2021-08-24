@@ -21,7 +21,7 @@ static void TaskWidget_Init(void)
     //test2 = Widget_Mng.Create(32, 0, 40, 20, "test2", true);
     //test3 = Widget_Mng.Create(24, 30, 80, 20, "test3", true);
 
-    Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, false);
+    //Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, false);
     Widget_Mng.Control(test1)->Show();
 
     //Widget_Mng.Control(test2)->Draw()->draw_char(Font_12, '2', 8, 2, false);

@@ -336,15 +336,15 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
     {
         for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
         {
-            memcpy(&widget_blackboard[0][row], obj->pixel_map, SrvOled.get_range().width);
+            memcpy(&widget_blackboard[row][0], obj->pixel_map, SrvOled.get_range().width);
         }
     }
     else
     {
-        for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
+        for (uint8_t row = obj->cord_y; row < obj->height; row++)
         {
-            memset(&widget_blackboard[0][row], 0x00, obj->width);
-            memcpy(&widget_blackboard[0][row], &obj->pixel_map[obj->cord_x][row], obj->width);
+            memset(&widget_blackboard[row][obj->cord_x], 0x00, obj->width);
+            memcpy(&widget_blackboard[row][obj->cord_x], &obj->pixel_map[row][0], obj->width);
         }
     }
 }
