@@ -418,8 +418,8 @@ static bool Widget_FreshAll(void)
                     }
 
                     Widget_SetFreshState(Fresh_State_Sleep);
-                    break;
                 }
+                break;
 
             case Fresh_State_Sleep:
                 Widget_ClearAllFreshState();
