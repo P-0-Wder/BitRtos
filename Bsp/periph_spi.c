@@ -38,9 +38,6 @@ void periph_SPI_Init(SPI_List SPIx, SPIClockSpeed_e speed, uint16_t CPOL, uint16
 		RCC_APB1PeriphClockCmd(SPI_CLK[SPIx], ENABLE);
 	}
 
-	SPI_InitStructure.SPI_CPOL = CPOL;
-	SPI_InitStructure.SPI_CPHA = CPHA;
-
 	SPI_I2S_DeInit(SPI_PORT[SPIx]);
 	SPI_Cmd(SPI_PORT[SPIx], DISABLE);
 
@@ -49,6 +46,8 @@ void periph_SPI_Init(SPI_List SPIx, SPIClockSpeed_e speed, uint16_t CPOL, uint16
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+	SPI_InitStructure.SPI_CPOL = CPOL;
+	SPI_InitStructure.SPI_CPHA = CPHA;
 	SPI_InitStructure.SPI_CRCPolynomial = 7;
 	SPI_InitStructure.SPI_BaudRatePrescaler = divisorMap[(uint8_t)speed];
 	SPI_Init(SPI_PORT[SPIx], &SPI_InitStructure);

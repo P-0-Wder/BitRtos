@@ -33,14 +33,14 @@ static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Wri
 {
 	if (type == Oled_Write_CMD)
 	{
-		Oled_Obj->rs_ctl(Oled_RS_Disable);
+		Oled_Obj->dc_ctl(Oled_RS_Disable);
 	}
 	else
-		Oled_Obj->rs_ctl(Oled_RS_Enable);
+		Oled_Obj->dc_ctl(Oled_RS_Enable);
 
 	Oled_Obj->bus_transmit(data);
 
-	Oled_Obj->rs_ctl(Oled_RS_Enable);
+	Oled_Obj->dc_ctl(Oled_RS_Enable);
 }
 
 static void Oled_EnableControl(Oled_Obj_TypeDef *Oled_Obj, Oled_Enable_State_List state)
@@ -127,7 +127,6 @@ static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)
 		//can use spi dma for transmit
 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
 		{
-			blackboard[r][c] = 1;
 			Oled_TransmitByte(Oled_Obj, blackboard[r][c], Oled_Write_Data);
 		}
 	}
