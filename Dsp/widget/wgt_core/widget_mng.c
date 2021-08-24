@@ -91,7 +91,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
 
-        widget_blackboard = (uint8_t **)malloc(SrvOled.get_range().height);
+        widget_blackboard = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().height);
 
         if (widget_blackboard == NULL)
             return WIDGET_CREATE_ERROR;
@@ -148,11 +148,6 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
         return WIDGET_CREATE_ERROR;
 
     List_ItemInit(widget_tmp->item, widget_tmp);
-
-    if (MonitorDataObj.widget_dsp_list == NULL)
-    {
-        MonitorDataObj.widget_dsp_list = widget_tmp->item;
-    }
 
     widget_tmp->use_frame = show_frame;
     widget_tmp->show_state = false;
@@ -229,6 +224,11 @@ static bool Widget_Show(void)
     if (MonitorDataObj.widget_dsp_list != NULL)
     {
         List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+    }
+    else
+    {
+        MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
+        List_Init(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item, by_order, NULL);
     }
 
     Widget_SetFreshState(Fresh_State_Prepare);
@@ -343,8 +343,8 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
     {
         for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
         {
-            memset(&widget_blackboard[row], 0x00, obj->width);
-            memcpy(&widget_blackboard[row], &obj->pixel_map[obj->cord_x][row], obj->width);
+            memset(&widget_blackboard[0][row], 0x00, obj->width);
+            memcpy(&widget_blackboard[0][row], &obj->pixel_map[obj->cord_x][row], obj->width);
         }
     }
 }

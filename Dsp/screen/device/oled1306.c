@@ -1,7 +1,7 @@
 #include "oled1306.h"
 #include "delay.h"
 
-static Pixel_Block_TypeDef blackboard[OLED_MAX_WIDTH][COLUMN_SIZE];
+static uint8_t blackboard[OLED_MAX_WIDTH][COLUMN_SIZE];
 
 /* const static variable */
 const uint8_t OledEnable_CMD[2] = {0X14, 0XAF};
@@ -126,7 +126,7 @@ static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)
 		//can use spi dma for transmit
 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
 		{
-			Oled_TransmitByte(Oled_Obj, blackboard[r][c].val, Oled_Write_CMD);
+			Oled_TransmitByte(Oled_Obj, blackboard[r][c], Oled_Write_CMD);
 		}
 	}
 
@@ -160,6 +160,8 @@ static uint8_t Oled_GetMax_Height(void)
 
 static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
 {
+	volatile uint8_t tmp = 0;
+
 	if ((Oled_Obj == NULL) || (map == NULL))
 		return false;
 
@@ -167,7 +169,7 @@ static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
 	{
 		for (uint8_t column_index = 0; column_index < OLED_MAX_HEIGHT; column_index++)
 		{
-			blackboard[row_index][column_index / COLUMN_SIZE].val |= map[column_index][row_index] << (column_index % COLUMN_SIZE);
+			blackboard[row_index][column_index / COLUMN_SIZE] |= map[column_index][row_index] << (column_index % COLUMN_SIZE);
 		}
 	}
 	return true;
