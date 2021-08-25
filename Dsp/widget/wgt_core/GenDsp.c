@@ -92,16 +92,6 @@ static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, uint8
     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
 }
 
-/*** just for debug ***/
-static void GenDsp_DrawVertical_Line(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t len)
-{
-}
-
-static void GenDsp_DrawHorizon_Line(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t len)
-{
-}
-/*** just for debug ***/
-
 static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_sidth)
 {
     uint8_t xerr = 0;
@@ -114,76 +104,59 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
 
     int8_t incx, incy;
 
-    if (start_x - end_x == 0)
+    if (delta_x > 0)
     {
-        if (start_y - end_y == 0)
-            return;
-
-        GenDsp_DrawVertical_Line(map, start_x, start_y, end_y - start_y);
+        incx = 1;
     }
-    else if (start_y - end_y == 0)
+    else if (delta_x == 0)
     {
-        if (start_x - end_x == 0)
-            return;
-
-        GenDsp_DrawHorizon_Line(map, start_x, start_y, end_x - start_x);
+        incx = 0;
     }
     else
     {
-        if (delta_x > 0)
-        {
-            incx = 1;
-        }
-        else if (delta_x == 0)
-        {
-            incx = 0;
-        }
-        else
-        {
-            incx = -1;
-            delta_x = -delta_x;
-        }
+        incx = -1;
+        delta_x = -delta_x;
+    }
 
-        if (delta_y > 0)
-        {
-            incy = 1;
-        }
-        else if (delta_y == 0)
-        {
-            incy = 0;
-        }
-        else
-        {
-            incy = -1;
-            delta_y = -delta_y;
-        }
+    if (delta_y > 0)
+    {
+        incy = 1;
+    }
+    else if (delta_y == 0)
+    {
+        incy = 0;
+    }
+    else
+    {
+        incy = -1;
+        delta_y = -delta_y;
+    }
 
-        if (delta_x > delta_y)
+    if (delta_x > delta_y)
+    {
+        distance = delta_x;
+    }
+    else
+    {
+        distance = delta_y;
+    }
+
+    for (uint8_t t = 0; t <= distance + 1; t++)
+    {
+        GenDsp_DrawPoint(map, uRow, uCol, true);
+
+        xerr += delta_x;
+        yerr += delta_y;
+
+        if (xerr > distance)
         {
-            distance = delta_x;
+            xerr -= distance;
+            uRow += incx;
         }
-        else
+        if (yerr > distance)
         {
-            distance = delta_y;
-        }
-
-        for (uint8_t t = 0; t <= distance + 1; t++)
-        {
-            GenDsp_DrawPoint(map, uRow, uCol, true);
-
-            xerr += delta_x;
-            yerr += delta_y;
-
-            if (xerr > distance)
-            {
-                xerr -= distance;
-                uRow += incx;
-            }
-            if (yerr > distance)
-            {
-                yerr -= distance;
-                uCol += incy;
-            }
+            yerr -= distance;
+            uCol += incy;
         }
     }
 }
