@@ -132,6 +132,8 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
         if (widget_tmp->pixel_map[h] == NULL)
             return WIDGET_CREATE_ERROR;
+
+        memset(widget_tmp->pixel_map[h], NULL, width);
     }
 
     MonitorDataObj.remain_size -= width * height;
