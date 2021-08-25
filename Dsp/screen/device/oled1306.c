@@ -1,8 +1,6 @@
 #include "oled1306.h"
 #include "delay.h"
 
-static uint8_t blackboard[OLED_MAX_WIDTH][COLUMN_SIZE];
-
 /* const static variable */
 const uint8_t OledEnable_CMD[2] = {0X14, 0XAF};
 const uint8_t OledDisable_CMD[2] = {0X10, 0XAE};
@@ -150,13 +148,12 @@ static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
 		{
 			uint8_t tmp = 0;
 
-			for (uint8_t i = 0; i < ROW_SIZE; i++)
+			for (i = 0; i < ROW_SIZE; i++)
 			{
 				tmp |= map[row_index * ROW_SIZE + i][column_index] << i;
 			}
 
-			blackboard[column_index][row_index] = tmp;
-			Oled_TransmitByte(Oled_Obj, blackboard[column_index][row_index], Oled_Write_Data);
+			Oled_TransmitByte(Oled_Obj, tmp, Oled_Write_Data);
 		}
 	}
 	return true;
