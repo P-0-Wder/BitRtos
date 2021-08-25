@@ -92,6 +92,7 @@ static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, uint8
     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
 }
 
+/*** just for debug ***/
 static void GenDsp_DrawVertical_Line(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t len)
 {
 }
@@ -99,6 +100,7 @@ static void GenDsp_DrawVertical_Line(uint8_t **map, uint8_t start_x, uint8_t sta
 static void GenDsp_DrawHorizon_Line(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t len)
 {
 }
+/*** just for debug ***/
 
 static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_sidth)
 {
