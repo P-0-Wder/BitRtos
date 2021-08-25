@@ -28,12 +28,15 @@ static void WIdget_ClearFreshState(WidgetFresh_State_List state);
 static void Widget_SetFreshState(WidgetFresh_State_List state);
 static void Widget_ClearAllFreshState(void);
 static uint8_t Widget_GetFreshState(void);
+static bool Widget_Calib_X(uint8_t x_set);
+static bool Widget_Calib_Y(uint8_t y_set);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
+static bool Widget_Calib(void);
 
 /* external widget control function */
 static bool Widget_SetFreshFrq(uint8_t frq);
@@ -450,6 +453,10 @@ static bool Widget_FreshAll(void)
             reg_checker = 0;
         }
     }
+}
+
+static bool Widget_Calib(void)
+{
 }
 
 static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
