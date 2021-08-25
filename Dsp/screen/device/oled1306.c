@@ -14,7 +14,6 @@ static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj);
 static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map);
 static uint8_t Oled_GetMax_Width(void);
 static uint8_t Oled_GetMax_Height(void);
-static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val);
 
 /* internal function */
 static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Write_Type type);
@@ -22,7 +21,7 @@ static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Wri
 Oled_GenProcFunc_TypeDef DrvOled = {
 	.init = Oled_Init,
 	.enable_set = Oled_EnableControl,
-	.fresh = Oled_Refresh,
+	.fresh = Oled_MapUpdate,
 	.clear = Oled_Clear,
 	.get_max_height = Oled_GetMax_Height,
 	.get_max_width = Oled_GetMax_Width,
@@ -109,31 +108,6 @@ static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj)
 	return true;
 }
 
-static bool Oled_Refresh(Oled_Obj_TypeDef *Oled_Obj, uint8_t **val)
-{
-	//update pixel map
-	if (!Oled_MapUpdate(Oled_Obj, val))
-	{
-		return false;
-	}
-
-	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
-	{
-
-		Oled_TransmitByte(Oled_Obj, (0xb0 + c), Oled_Write_CMD);
-		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
-		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
-
-		//can use spi dma for transmit
-		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
-		{
-			Oled_TransmitByte(Oled_Obj, blackboard[r][c], Oled_Write_Data);
-		}
-	}
-
-	return true;
-}
-
 static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj)
 {
 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
@@ -161,16 +135,28 @@ static uint8_t Oled_GetMax_Height(void)
 
 static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
 {
-	volatile uint8_t tmp = 0;
+	uint8_t i = 0;
 
 	if ((Oled_Obj == NULL) || (map == NULL))
 		return false;
 
-	for (uint8_t row_index = 0; row_index < OLED_MAX_WIDTH; row_index++)
+	for (uint8_t row_index = 0; row_index < ROW_SIZE; row_index++)
 	{
-		for (uint8_t column_index = 0; column_index < OLED_MAX_HEIGHT; column_index++)
+		Oled_TransmitByte(Oled_Obj, (0xb0 + row_index), Oled_Write_CMD);
+		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
+		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
+
+		for (uint8_t column_index = 0; column_index < OLED_MAX_WIDTH; column_index++)
 		{
-			blackboard[row_index][column_index / COLUMN_SIZE] |= map[column_index][row_index] << (column_index % COLUMN_SIZE);
+			uint8_t tmp = 0;
+
+			for (uint8_t i = 0; i < ROW_SIZE; i++)
+			{
+				tmp |= map[row_index * ROW_SIZE + i][column_index] << i;
+			}
+
+			blackboard[column_index][row_index] = tmp;
+			Oled_TransmitByte(Oled_Obj, blackboard[column_index][row_index], Oled_Write_Data);
 		}
 	}
 	return true;

@@ -6,8 +6,8 @@
 #include <string.h>
 #include "pixel.h"
 
-#define COLUMN_SIZE 8
-#define ROW_SIZE 1
+#define COLUMN_SIZE 128
+#define ROW_SIZE 8
 
 #define OLED_MAX_HEIGHT 64
 #define OLED_MAX_WIDTH 128
