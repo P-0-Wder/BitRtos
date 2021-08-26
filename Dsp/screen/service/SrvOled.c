@@ -20,6 +20,8 @@ static void SrvOled_BusInit(SPI_List BusID);
 static bool SrvOled_Init(void);
 static bool SrvOled_Fresh(uint8_t **bit_map);
 static SrvOled_DspRange SrvOled_GetDev_DspRange(void);
+static bool SrvOled_Routate(SrvOled_Routate_Direction_Def routate_dir);
+static bool SrvOled_Mirror(SrvOled_Mirror_Direction_Def mirror_dir);
 
 SrvOled_TypeDef SrvOled = {
     .init = SrvOled_Init,
@@ -150,4 +152,12 @@ static SrvOled_DspRange SrvOled_GetDev_DspRange(void)
     range.height = DrvOled.get_max_height();
 
     return range;
+}
+
+static bool SrvOled_Routate(SrvOled_Routate_Direction_Def routate_dir)
+{
+}
+
+static bool SrvOled_Mirror(SrvOled_Mirror_Direction_Def mirror_dir)
+{
 }
