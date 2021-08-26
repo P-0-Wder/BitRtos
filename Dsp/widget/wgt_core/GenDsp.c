@@ -94,8 +94,8 @@ static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, uint8
 
 static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_sidth)
 {
-    uint8_t xerr = 0;
-    uint8_t yerr = 0;
+    int8_t xerr = 0;
+    int8_t yerr = 0;
     int8_t delta_x = end_x - start_x;
     int8_t delta_y = end_y - start_y;
     uint8_t distance;
@@ -186,8 +186,12 @@ static void GenDsp_DrawCircle(uint8_t **map, uint8_t center_x, uint8_t center_y,
 
 static void GenDsp_DrawRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size)
 {
-    GenDsp_DrawLen(map, x, y, x + width, y, line_size);
-    GenDsp_DrawLen(map, x, y, x, y + height, line_size);
-    GenDsp_DrawLen(map, x + width, y, x + width, y + height, line_size);
-    GenDsp_DrawLen(map, x, y + height, x + width, y + height, line_size);
+    uint8_t x_tmp = x + width - 1;
+    uint8_t y_tmp = y + height - 1;
+
+    GenDsp_DrawLen(map, x, y, x_tmp, y, line_size);
+    GenDsp_DrawLen(map, x, y, x, y_tmp, line_size);
+
+    GenDsp_DrawLen(map, x_tmp, y, x_tmp, y_tmp, line_size);
+    GenDsp_DrawLen(map, x, y_tmp, x_tmp, y_tmp, line_size);
 }
