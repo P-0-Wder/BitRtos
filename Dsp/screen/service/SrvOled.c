@@ -22,6 +22,7 @@ static bool SrvOled_Fresh(uint8_t **bit_map);
 static SrvOled_DspRange SrvOled_GetDev_DspRange(void);
 static bool SrvOled_Routate(SrvOled_Routate_Direction_Def routate_dir);
 static bool SrvOled_Mirror(SrvOled_Mirror_Direction_Def mirror_dir);
+static bool SrvOled_SetBright(SrvOled_Bright_Level level);
 
 SrvOled_TypeDef SrvOled = {
     .init = SrvOled_Init,
@@ -159,5 +160,9 @@ static bool SrvOled_Routate(SrvOled_Routate_Direction_Def routate_dir)
 }
 
 static bool SrvOled_Mirror(SrvOled_Mirror_Direction_Def mirror_dir)
+{
+}
+
+static bool SrvOled_SetBright(SrvOled_Bright_Level level)
 {
 }

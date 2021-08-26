@@ -21,9 +21,6 @@ static void GenDsp_DrawRad(uint8_t **map, uint8_t center_x, uint8_t center_y, ui
 
 GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_img = NULL,
-    .init_rollbar = NULL,
-    .draw_Roller_bar = NULL,
-    .draw_process_bar = NULL,
     .draw_str = GenDsp_DrawStr,
     .draw_num = GenDsp_DrawNum,
     .draw_line = GenDsp_DrawLen,
