@@ -1,5 +1,6 @@
 Objects/oled1306.o: Dsp/screen/device/oled1306.c \
- Dsp/screen/device/oled1306.h Dsp/pixel.h SYS/delay/delay.h \
+ Dsp/screen/device/oled1306.h Dsp/pixel.h \
+ Dsp/screen/OledIO_Definition/Oled_DspProp_Def.h SYS/delay/delay.h \
  SYS/common/sys.h USER/stm32f4xx.h F4_CORE/core_cm4.h \
  F4_CORE/core_cmInstr.h F4_CORE/core_cmFunc.h F4_CORE/core_cmSimd.h \
  USER/system_stm32f4xx.h USER/stm32f4xx_conf.h FWLIB/inc/stm32f4xx_adc.h \
@@ -17,6 +18,7 @@ Objects/oled1306.o: Dsp/screen/device/oled1306.c \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h
 Dsp/screen/device/oled1306.h:
 Dsp/pixel.h:
+Dsp/screen/OledIO_Definition/Oled_DspProp_Def.h:
 SYS/delay/delay.h:
 SYS/common/sys.h:
 USER/stm32f4xx.h:
