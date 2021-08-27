@@ -38,6 +38,12 @@ static void Widget_ClearErrorState(Widget_Error_TypeDef error);
 static void Widget_clearAllErrorState(Widget_Error_TypeDef error);
 static void Widget_SetErrorState(Widget_Error_TypeDef error);
 static uint8_t Widget_GetError(void);
+static bool Widget_RoutateBlackboard(void);
+static bool Widget_MirrorBlackboard(void);
+
+/* external widget manager config function definition */
+static bool Widget_ConfigDisplay_RoutateDir(Oled_Routate_Direction_Def dir);
+static bool Widget_ConfigDisplay_MirrorDir(Oled_Mirror_Direction_Def dir);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
@@ -81,7 +87,13 @@ static Widget_Control_TypeDef WidgetCtl_Interface = {
     .Dsp_status = Widget_DspStatus,
 };
 
+static Widget_Config_TypeDef Widget_Config = {
+    .mirror = Widget_ConfigDisplay_MirrorDir,
+    .routate = Widget_ConfigDisplay_RoutateDir,
+};
+
 Widget_GenProcFunc_TypeDef Widget_Mng = {
+    .config_all = &Widget_Config,
     .set_freshFrq = Widget_SetFreshFrq,
     .Create = Widget_Create,
     .Delete = Widget_Deleted,
@@ -213,6 +225,64 @@ static bool Widget_CheckFlashTrigger(void)
     }
     else
         return false;
+}
+
+static bool Widget_ConfigDisplay_RoutateDir(Oled_Routate_Direction_Def dir)
+{
+    MonitorDataObj.routate_dir = dir;
+
+    return true;
+}
+
+static bool Widget_ConfigDisplay_MirrorDir(Oled_Mirror_Direction_Def dir)
+{
+    MonitorDataObj.mirror_dir = dir;
+
+    return true;
+}
+
+static bool Widget_RoutateBlackboard(void)
+{
+}
+
+static bool Widget_MirrorBlackboard(void)
+{
+    uint8_t *matrix_column_buff_start = NULL;
+    uint8_t *matrix_column_buff_end = NULL;
+    uint8_t *matrix_column_buff_tmp = NULL;
+
+    switch (MonitorDataObj.mirror_dir)
+    {
+    case Oled_MirrorX:
+        matrix_column_buff_start = (uint8_t *)mallc(SrvOled.get_range().height);
+        matrix_column_buff_end = (uint8_t *)mallc(SrvOled.get_range().height);
+        matrix_column_buff_tmp = (uint8_t *)mallc(SrvOled.get_range().height);
+
+        if (matrix_column_buff_start == NULL ||
+            matrix_column_buff_end == NULL ||
+            matrix_column_buff_tmp == NULL)
+        {
+            return false;
+        }
+
+        for (uint8_t column = 0; column < SrvOled.get_range().width; column++)
+        {
+        }
+
+        free(matrix_column_buff_start);
+        free(matrix_column_buff_end);
+        free(matrix_column_buff_tmp);
+
+        break;
+
+    case Oled_MirrorY:
+        break;
+
+    default:
+        return false;
+    }
+
+    return true;
 }
 
 static bool Widget_Show(void)

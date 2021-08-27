@@ -72,6 +72,9 @@ typedef struct
     uint32_t remain_size;
     uint32_t max_display_cache;
     list_obj *widget_dsp_list;
+
+    Oled_Routate_Direction_Def routate_dir;
+    Oled_Mirror_Direction_Def mirror_dir;
 } Widget_MonitorData_TypeDef;
 
 typedef enum
@@ -126,6 +129,13 @@ typedef struct
 
 typedef struct
 {
+    bool (*mirror)(Oled_Mirror_Direction_Def dir);
+    bool (*routate)(Oled_Routate_Direction_Def dir);
+} Widget_Config_TypeDef;
+
+typedef struct
+{
+    Widget_Config_TypeDef *config_all;
     Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
