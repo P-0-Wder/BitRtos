@@ -23,12 +23,11 @@ static SrvOled_DspRange SrvOled_GetDev_DspRange(void);
 static bool SrvOled_Routate(Oled_Routate_Direction_Def routate_dir);
 static bool SrvOled_Mirror(Oled_Mirror_Direction_Def mirror_dir);
 static bool SrvOled_SetBright(Oled_Bright_Level level);
-static bool SrvOled_Routate(Oled_Routate_Direction_Def routate_dir);
-static bool SrvOled_Mirror(Oled_Mirror_Direction_Def mirror_dir);
 static bool SrvOled_SetBright(Oled_Bright_Level level);
 
 SrvOled_TypeDef SrvOled = {
     .init = SrvOled_Init,
+    .bright = SrvOled_SetBright,
     .fresh = SrvOled_Fresh,
     .get_range = SrvOled_GetDev_DspRange,
 };
@@ -156,22 +155,6 @@ static SrvOled_DspRange SrvOled_GetDev_DspRange(void)
     range.height = DrvOled.get_max_height();
 
     return range;
-}
-
-static bool SrvOled_Routate(Oled_Routate_Direction_Def routate_dir)
-{
-    if (SrvOled.routate == NULL)
-        return false;
-
-    return SrvOled.routate(routate_dir);
-}
-
-static bool SrvOled_Mirror(Oled_Mirror_Direction_Def mirror_dir)
-{
-    if (SrvOled.mirror == NULL)
-        return false;
-
-    return SrvOled.mirror(mirror_dir);
 }
 
 static bool SrvOled_SetBright(Oled_Bright_Level level)

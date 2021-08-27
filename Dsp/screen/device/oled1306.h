@@ -69,8 +69,6 @@ typedef struct
     bool (*enable_set)(Oled_Obj_TypeDef *Obj, Oled_Enable_State_List state);
     bool (*fresh)(Oled_Obj_TypeDef *Obj, uint8_t **map);
     bool (*clear)(Oled_Obj_TypeDef *Obj);
-    bool (*routate)(Oled_Routate_Direction_Def dir);
-    bool (*mirror)(Oled_Mirror_Direction_Def dir);
     bool (*bright)(Oled_Bright_Level lvl);
     uint8_t (*get_max_width)(void);
     uint8_t (*get_max_height)(void);

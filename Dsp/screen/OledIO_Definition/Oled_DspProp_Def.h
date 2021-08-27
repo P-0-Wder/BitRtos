@@ -8,12 +8,16 @@ typedef enum
 
     Oled_RoutateRight_90deg,
     Oled_RoutateRight_180deg,
+
+    Oled_Routate_None,
 } Oled_Routate_Direction_Def;
 
 typedef enum
 {
     Oled_MirrorX,
     Oled_MirrorY,
+
+    Oled_Mirror_None,
 } Oled_Mirror_Direction_Def;
 
 typedef enum

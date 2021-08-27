@@ -15,8 +15,6 @@ typedef struct
 {
     bool (*init)(void);
     bool (*fresh)(uint8_t **bit_map);
-    bool (*routate)(Oled_Routate_Direction_Def routate_dir);
-    bool (*mirror)(Oled_Mirror_Direction_Def mirror_dir);
     bool (*bright)(Oled_Bright_Level level);
     SrvOled_DspRange (*get_range)(void);
 } SrvOled_TypeDef;

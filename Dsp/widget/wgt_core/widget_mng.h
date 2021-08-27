@@ -9,6 +9,7 @@
 #include "GenDsp.h"
 #include "pixel.h"
 #include "linked_list.h"
+#include "Oled_DspProp_Def.h"
 
 #define WIDGET_OPR_ERROR 0
 #define WIDGET_CREATE_ERROR WIDGET_OPR_ERROR
@@ -16,6 +17,8 @@
 
 #define MAX_WIDGET_CACHE_PAGE 5 //40k for widget display
 #define DEFAULT_LAYER 0
+
+#define WIDGET_CONFIG_ALL 0xFFFFFFFF
 
 #define MAX_SUB_WIDGET_NUM 8
 

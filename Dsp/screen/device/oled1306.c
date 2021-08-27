@@ -12,6 +12,7 @@ static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj);
 static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map);
 static uint8_t Oled_GetMax_Width(void);
 static uint8_t Oled_GetMax_Height(void);
+static bool Oled_SetBright(Oled_Bright_Level lvl);
 
 /* internal function */
 static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Write_Type type);
@@ -21,6 +22,7 @@ Oled_GenProcFunc_TypeDef DrvOled = {
 	.enable_set = Oled_EnableControl,
 	.fresh = Oled_MapUpdate,
 	.clear = Oled_Clear,
+	.bright = Oled_SetBright,
 	.get_max_height = Oled_GetMax_Height,
 	.get_max_width = Oled_GetMax_Width,
 };
@@ -156,5 +158,10 @@ static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
 			Oled_TransmitByte(Oled_Obj, tmp, Oled_Write_Data);
 		}
 	}
+	return true;
+}
+
+static bool Oled_SetBright(Oled_Bright_Level lvl)
+{
 	return true;
 }
