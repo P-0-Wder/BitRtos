@@ -20,7 +20,7 @@ static void TaskWidget_Init(void)
     Widget_Mng.config_all->mirror(Oled_MirrorX);
 
     test1 = Widget_Mng.Create(0, 0, 30, 20, "test1", true);
-    test2 = Widget_Mng.Create(32, 0, 40, 20, "test2", true);
+    test2 = Widget_Mng.Create(35, 10, 40, 20, "test2", true);
     test3 = Widget_Mng.Create(24, 30, 70, 20, "test3", true);
 
     Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
