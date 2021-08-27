@@ -427,7 +427,7 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
     }
     else
     {
-        for (uint8_t row = obj->cord_y; row < obj->height; row++)
+        for (uint8_t row = obj->cord_y; row < (obj->cord_y + obj->height); row++)
         {
             memset(&widget_blackboard[row][obj->cord_x], 0x00, obj->width);
             memcpy(&widget_blackboard[row][obj->cord_x], obj->pixel_map[row - obj->cord_y], obj->width);
