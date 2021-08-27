@@ -54,6 +54,7 @@ typedef enum
 
 typedef struct
 {
+    uint8_t on_show;
     uint32_t LstFreshRT;
     uint8_t fresh_duration;
     uint8_t created_widget;

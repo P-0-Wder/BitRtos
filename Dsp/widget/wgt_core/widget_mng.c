@@ -9,6 +9,7 @@
 
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
+    .on_show = 0,
     .LstFreshRT = 0,
     .created_widget = 0,
     .widget_used_size = 0,
@@ -28,15 +29,12 @@ static void WIdget_ClearFreshState(WidgetFresh_State_List state);
 static void Widget_SetFreshState(WidgetFresh_State_List state);
 static void Widget_ClearAllFreshState(void);
 static uint8_t Widget_GetFreshState(void);
-static bool Widget_Calib_X(uint8_t x_set);
-static bool Widget_Calib_Y(uint8_t y_set);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
-static bool Widget_Calib(void);
 
 /* external widget control function */
 static bool Widget_SetFreshFrq(uint8_t frq);
@@ -135,8 +133,6 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
         if (widget_tmp->pixel_map[h] == NULL)
             return WIDGET_CREATE_ERROR;
-
-        memset(widget_tmp->pixel_map[h], NULL, width);
     }
 
     MonitorDataObj.remain_size -= width * height;
@@ -238,12 +234,14 @@ static bool Widget_Show(void)
 
     Widget_SetFreshState(Fresh_State_Prepare);
 
+    MonitorDataObj.on_show++;
+
     return true;
 }
 
 static bool Widget_Hide(void)
 {
-    if (GetCur_Active_Widget() == NULL)
+    if ((GetCur_Active_Widget() == NULL) || (MonitorDataObj.on_show <= 1))
         return false;
 
     List_Delete_Item(GetCur_Active_Widget()->item, NULL);
@@ -341,15 +339,15 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
     {
         for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
         {
-            memcpy(&widget_blackboard[row][0], &obj->pixel_map[row][0], SrvOled.get_range().width);
+            memcpy(&widget_blackboard[row][0], obj->pixel_map, SrvOled.get_range().width);
         }
     }
     else
     {
-        for (uint8_t row = obj->cord_y; row < (obj->cord_y + obj->height); row++)
+        for (uint8_t row = obj->cord_y; row < obj->height; row++)
         {
             memset(&widget_blackboard[row][obj->cord_x], 0x00, obj->width);
-            memcpy(&widget_blackboard[row][obj->cord_x], &obj->pixel_map[row - obj->cord_y][0], obj->width);
+            memcpy(&widget_blackboard[row][obj->cord_x], &obj->pixel_map[row][0], obj->width);
         }
     }
 }
@@ -420,7 +418,7 @@ static bool Widget_FreshAll(void)
             case Fresh_State_Reguler:
                 if (MonitorDataObj.created_widget > 0)
                 {
-                    if (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL) == list_no_error)
+                    if ((MonitorDataObj.on_show >= 1) && (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL) == list_no_error))
                     {
                         SrvOled.fresh(widget_blackboard);
                     }
@@ -453,10 +451,6 @@ static bool Widget_FreshAll(void)
             reg_checker = 0;
         }
     }
-}
-
-static bool Widget_Calib(void)
-{
 }
 
 static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
