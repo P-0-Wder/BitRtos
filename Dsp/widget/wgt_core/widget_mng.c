@@ -275,6 +275,9 @@ static bool Widget_MirrorBlackboard(void)
         }
         break;
 
+    case Oled_Mirror_None:
+        break;
+
     default:
         return false;
     }
@@ -538,6 +541,8 @@ static bool Widget_FreshAll(void)
                     {
                         if (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL) == list_no_error)
                         {
+                            Widget_RoutateBlackboard();
+                            Widget_MirrorBlackboard();
                             SrvOled.fresh(widget_blackboard);
                         }
                         else
