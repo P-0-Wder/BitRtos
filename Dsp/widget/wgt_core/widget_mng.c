@@ -7,6 +7,9 @@
 #define Set_FreshStateBIT(x) 1 << x
 #define Clr_FreshStateBIT(x) ~(1 << x)
 
+#define Set_ErrorStateBIT(x) Set_FreshStateBIT(x)
+#define Clr_ErrorStateBIT(x) Clr_FreshStateBIT(x)
+
 /* internal variable */
 Widget_MonitorData_TypeDef MonitorDataObj = {
     .on_show = 0,
@@ -20,6 +23,7 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
 static Widget_Handle CurActive_Widget = 0;
 static uint8_t WidgetFresh_Reg = Set_FreshStateBIT(Fresh_State_DrvInit);
 static uint8_t **widget_blackboard;
+static uint8_t Error_Code;
 
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
@@ -29,6 +33,11 @@ static void WIdget_ClearFreshState(WidgetFresh_State_List state);
 static void Widget_SetFreshState(WidgetFresh_State_List state);
 static void Widget_ClearAllFreshState(void);
 static uint8_t Widget_GetFreshState(void);
+static bool Widgte_CheckErrorState(Widget_Error_TypeDef error);
+static void Widget_ClearErrorState(Widget_Error_TypeDef error);
+static void Widget_clearAllErrorState(Widget_Error_TypeDef error);
+static void Widget_SetErrorState(Widget_Error_TypeDef error);
+static uint8_t Widget_GetError(void);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
@@ -352,6 +361,43 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
     }
 }
 
+static uint8_t Widget_GetError(void)
+{
+    return Error_Code;
+}
+
+static void Widget_SetErrorState(Widget_Error_TypeDef error)
+{
+    Error_Code |= Set_ErrorStateBIT(error);
+}
+
+static void Widget_clearAllErrorState(Widget_Error_TypeDef error)
+{
+    Error_Code = 0;
+}
+
+static void Widget_ClearErrorState(Widget_Error_TypeDef error)
+{
+    Error_Code &= Clr_ErrorStateBIT(error);
+}
+
+static bool Widgte_CheckErrorState(Widget_Error_TypeDef error)
+{
+    uint8_t check_error = 0;
+
+    if (Error_Code == 0)
+        return false;
+
+    check_error |= Set_ErrorStateBIT(error);
+
+    if (Error_Code & check_error)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
 static uint8_t Widget_GetFreshState(void)
 {
     return WidgetFresh_Reg;
@@ -402,7 +448,10 @@ static bool Widget_FreshAll(void)
                     Widget_SetFreshState(Fresh_State_Prepare);
                 }
                 else
+                {
+                    Widget_SetErrorState(Widget_ScreenInit_Error);
                     Widget_SetFreshState(Fresh_State_DrvError);
+                }
                 break;
 
             case Fresh_State_Prepare:
@@ -418,12 +467,22 @@ static bool Widget_FreshAll(void)
             case Fresh_State_Reguler:
                 if (MonitorDataObj.created_widget > 0)
                 {
-                    if ((MonitorDataObj.on_show >= 1) && (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL) == list_no_error))
+                    if (MonitorDataObj.on_show >= 1)
                     {
-                        SrvOled.fresh(widget_blackboard);
+                        if (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL) == list_no_error)
+                        {
+                            SrvOled.fresh(widget_blackboard);
+                        }
+                        else
+                        {
+                            Widget_SetErrorState(Widget_DisplapList_Error);
+                            Widget_SetFreshState(Fresh_State_DrvError);
+                            break;
+                        }
                     }
                     else
                     {
+                        Widget_SetErrorState(Widget_DisplayItem_None);
                         Widget_SetFreshState(Fresh_State_DrvError);
                         break;
                     }

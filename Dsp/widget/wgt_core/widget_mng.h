@@ -52,6 +52,13 @@ typedef enum
     Fresh_State_Sum,
 } WidgetFresh_State_List;
 
+typedef enum
+{
+    Widget_ScreenInit_Error = 0,
+    Widget_DisplapList_Error,
+    Widget_DisplayItem_None,
+} Widget_Error_TypeDef;
+
 typedef struct
 {
     uint8_t on_show;
