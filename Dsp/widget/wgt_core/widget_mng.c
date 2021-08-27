@@ -124,6 +124,8 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
             if (widget_blackboard[column_index] == NULL)
                 return WIDGET_CREATE_ERROR;
+
+            memset(widget_blackboard[column_index], NULL, SrvOled.get_range().width);
         }
     }
 
@@ -154,6 +156,8 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
         if (widget_tmp->pixel_map[h] == NULL)
             return WIDGET_CREATE_ERROR;
+
+        memset(widget_tmp->pixel_map[h], NULL, width);
     }
 
     MonitorDataObj.remain_size -= width * height;
@@ -252,7 +256,7 @@ static bool Widget_MirrorBlackboard(void)
     switch (MonitorDataObj.mirror_dir)
     {
     case Oled_MirrorX:
-        for (uint8_t column = 0; column < SrvOled.get_range().width; column++)
+        for (uint8_t column = 0; column < SrvOled.get_range().width / 2; column++)
         {
             for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
             {
@@ -264,7 +268,7 @@ static bool Widget_MirrorBlackboard(void)
         break;
 
     case Oled_MirrorY:
-        for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
+        for (uint8_t row = 0; row < SrvOled.get_range().height / 2; row++)
         {
             for (uint8_t column = 0; column < SrvOled.get_range().width; column++)
             {

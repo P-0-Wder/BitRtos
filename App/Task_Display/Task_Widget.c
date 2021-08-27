@@ -17,6 +17,8 @@ static void TaskWidget_Init(void)
 {
     Widget_Mng.set_freshFrq(Fresh_FRQ_50Hz);
 
+    Widget_Mng.config_all->mirror(Oled_MirrorX);
+
     test1 = Widget_Mng.Create(0, 0, 30, 20, "test1", true);
     test2 = Widget_Mng.Create(32, 0, 40, 20, "test2", true);
     test3 = Widget_Mng.Create(24, 30, 70, 20, "test3", true);
@@ -33,8 +35,6 @@ static void TaskWidget_Init(void)
 
 void TaskWidget_Core(Task_Handler self)
 {
-    static uint16_t hide = 0;
-
     switch ((uint8_t)TaskWidget_State)
     {
     case TaskWdiget_State_Init:
