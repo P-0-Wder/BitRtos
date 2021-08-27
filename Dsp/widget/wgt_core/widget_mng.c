@@ -247,35 +247,32 @@ static bool Widget_RoutateBlackboard(void)
 
 static bool Widget_MirrorBlackboard(void)
 {
-    uint8_t *matrix_column_buff_start = NULL;
-    uint8_t *matrix_column_buff_end = NULL;
-    uint8_t *matrix_column_buff_tmp = NULL;
+    uint8_t matrix_column_tmp = 0;
 
     switch (MonitorDataObj.mirror_dir)
     {
     case Oled_MirrorX:
-        matrix_column_buff_start = (uint8_t *)mallc(SrvOled.get_range().height);
-        matrix_column_buff_end = (uint8_t *)mallc(SrvOled.get_range().height);
-        matrix_column_buff_tmp = (uint8_t *)mallc(SrvOled.get_range().height);
-
-        if (matrix_column_buff_start == NULL ||
-            matrix_column_buff_end == NULL ||
-            matrix_column_buff_tmp == NULL)
-        {
-            return false;
-        }
-
         for (uint8_t column = 0; column < SrvOled.get_range().width; column++)
         {
+            for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
+            {
+                matrix_column_tmp = widget_blackboard[row][column];
+                widget_blackboard[row][column] = widget_blackboard[row][SrvOled.get_range().width - 1 - column];
+                widget_blackboard[row][SrvOled.get_range().width - 1 - column] = matrix_column_tmp;
+            }
         }
-
-        free(matrix_column_buff_start);
-        free(matrix_column_buff_end);
-        free(matrix_column_buff_tmp);
-
         break;
 
     case Oled_MirrorY:
+        for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
+        {
+            for (uint8_t column = 0; column < SrvOled.get_range().width; column++)
+            {
+                matrix_column_tmp = widget_blackboard[row][column];
+                widget_blackboard[row][column] = widget_blackboard[SrvOled.get_range().height - 1 - row][column];
+                widget_blackboard[SrvOled.get_range().height - 1 - row][column] = matrix_column_tmp;
+            }
+        }
         break;
 
     default:
