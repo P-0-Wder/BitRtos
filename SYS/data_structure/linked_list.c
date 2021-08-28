@@ -116,6 +116,19 @@ void List_ItemInit(item_obj *obj, void *arg)
     }
 }
 
+void List_InsertToPrv(list_obj *list, item_obj *item)
+{
+    if (list->nxt != NULL)
+    {
+        List_InsertToPrv(list->prv, item);
+    }
+    else
+    {
+        list->prv = item;
+        item->nxt = list;
+    }
+}
+
 void List_InsertByOrder(list_obj *list, item_obj *item)
 {
     if (list->nxt != NULL)
@@ -169,9 +182,14 @@ void List_Insert_Item(list_obj *list, item_obj *item)
 
         switch (list->mode)
         {
+        case to_front:
+            List_InsertToPrv(list, item);
+            break;
+
         case by_order:
             List_InsertByOrder(list, item);
             break;
+
         case by_condition:
             List_InsertByCondition(list, item);
             break;
@@ -187,16 +205,21 @@ void List_Insert_Item(list_obj *list, item_obj *item)
     }
 }
 
-list_error_code List_traverse(list_obj *list, list_traverse_callback callback, void *arg)
+list_error_code List_traverse(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial)
 {
     if (list != NULL)
     {
-        if (list->nxt != NULL)
+        if ((callback != NULL) && (cb_serial == pre_callback))
         {
-            List_traverse(list->nxt, callback, arg);
+            callback(list, list->data, arg);
         }
 
-        if (callback != NULL)
+        if (list->nxt != NULL)
+        {
+            List_traverse(list->nxt, callback, arg, cb_serial);
+        }
+
+        if ((callback != NULL) && (cb_serial == sub_callback))
         {
             callback(list, list->data, arg);
         }

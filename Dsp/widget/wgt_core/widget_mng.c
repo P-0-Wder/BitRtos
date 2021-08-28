@@ -543,7 +543,7 @@ static bool Widget_FreshAll(void)
                 {
                     if (MonitorDataObj.on_show >= 1)
                     {
-                        if (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL) == list_no_error)
+                        if (List_traverse(MonitorDataObj.widget_dsp_list, Widget_Fusion, NULL, pre_callback) == list_no_error)
                         {
                             Widget_RoutateBlackboard();
                             Widget_MirrorBlackboard();

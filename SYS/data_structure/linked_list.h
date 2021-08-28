@@ -22,9 +22,16 @@ typedef enum
 
 typedef enum
 {
+    to_front,
     by_order,
     by_condition,
 } list_arrangement_mode;
+
+typedef enum
+{
+    pre_callback = 0,
+    sub_callback,
+} listtrv_callback_serial;
 
 typedef void *(*item_compare_callback)(void *arg_1, void *arg_2);
 typedef void (*item_datareset_callback)(void *data);
@@ -50,7 +57,7 @@ void List_InsertByOrder(list_obj *list, item_obj *item);
 void List_InsertByCondition(list_obj *list, item_obj *item);
 void List_Insert_Item(list_obj *list, item_obj *item);
 
-list_error_code List_traverse(list_obj *list, list_traverse_callback callback, void *arg);
+list_error_code List_traverse(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial);
 list_error_code List_ItemClear(item_obj *item);
 list_error_code List_Delete_Item(item_obj *item, item_datareset_callback callback);
 list_error_code List_DecBelowID(item_obj *obj);

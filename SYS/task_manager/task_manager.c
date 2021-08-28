@@ -1001,7 +1001,7 @@ void Task_Scheduler(void)
     if (TskSys_state != TaskSys_Start)
         return;
 
-    List_traverse(&TskCrt_RegList.list, Task_CrtList_TraversePoll_callback, NULL);
+    List_traverse(&TskCrt_RegList.list, Task_CrtList_TraversePoll_callback, NULL, sub_callback);
 
     NxtRunTsk_Ptr = Task_Get_HighestRank_RdyTask();
 
