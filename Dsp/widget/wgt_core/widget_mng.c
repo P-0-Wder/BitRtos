@@ -417,8 +417,8 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 {
     if ((obj->cord_x == 0) &&
         (obj->cord_y == 0) &&
-        (obj->width == SrvOled.get_range().width) &&
-        (obj->height == SrvOled.get_range().height))
+        (obj->width >= SrvOled.get_range().width) &&
+        (obj->height >= SrvOled.get_range().height))
     {
         for (uint8_t row = 0; row < SrvOled.get_range().height; row++)
         {
