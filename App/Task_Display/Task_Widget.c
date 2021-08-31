@@ -23,19 +23,20 @@ static void TaskWidget_Init(void)
     test1 = Widget_Mng.Create(20, 2, 25, 20, "test1", true);
     test2 = Widget_Mng.Create(50, 5, 50, 20, "test2", true);
     test3 = Widget_Mng.Create(15, 15, 100, 40, "test3", true);
-    test4 = Widget_Mng.Create(0, 0, 124, 64, "test4", true);
+    test4 = Widget_Mng.Create(0, 0, 120, 64, "test4", true);
 
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
+    Widget_Mng.Control(test4)->Draw()->draw_str(Font_12, "test", 90, 50, true);
     Widget_Mng.Control(test4)->Show();
 
     Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
-    Widget_Mng.Control(test1)->Show();
+    //Widget_Mng.Control(test1)->Show();
 
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
-    Widget_Mng.Control(test3)->Show();
+    //Widget_Mng.Control(test3)->Show();
 
     Widget_Mng.Control(test2)->Draw()->draw_char(Font_12, '2', 8, 2, true);
-    Widget_Mng.Control(test2)->Show();
+    //Widget_Mng.Control(test2)->Show();
 }
 
 void TaskWidget_Core(Task_Handler self)
