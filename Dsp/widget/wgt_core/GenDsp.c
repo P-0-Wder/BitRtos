@@ -25,6 +25,7 @@ GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_str = GenDsp_DrawStr,
     .draw_num = GenDsp_DrawNum,
     .draw_line = GenDsp_DrawLen,
+    .str_len = GenDsp_GetStrLen,
     .draw_char = GenDsp_DrawChar,
     .draw_point = GenDsp_DrawPoint,
     .draw_circle = GenDsp_DrawCircle,

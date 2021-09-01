@@ -27,6 +27,7 @@ typedef struct
     void (*draw_rectangle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
     void (*draw_line)(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_width);
     void (*draw_img)(uint8_t **map);
+    uint8_t (*str_len)(GenFont_List font, char *str);
 } GeneralDispalyProc_TypeDef;
 
 extern GeneralDispalyProc_TypeDef GenDsp_Interface;
