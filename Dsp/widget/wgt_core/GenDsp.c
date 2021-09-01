@@ -95,7 +95,7 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
     int8_t yerr = 0;
     int8_t delta_x = end_x - start_x;
     int8_t delta_y = end_y - start_y;
-    uint8_t distance;
+    int16_t distance;
     uint8_t uRow = start_x;
     uint8_t uCol = start_y;
 
@@ -138,19 +138,19 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
         distance = delta_y;
     }
 
-    for (uint8_t t = 0; t <= distance + 1; t++)
+    for (uint8_t t = 0; t < distance; t++)
     {
         GenDsp_DrawPoint(map, uRow, uCol, true);
 
         xerr += delta_x;
         yerr += delta_y;
 
-        if (xerr > distance)
+        if (xerr >= distance)
         {
             xerr -= distance;
             uRow += incx;
         }
-        if (yerr > distance)
+        if (yerr >= distance)
         {
             yerr -= distance;
             uCol += incy;
