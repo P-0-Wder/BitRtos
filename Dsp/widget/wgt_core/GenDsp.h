@@ -19,6 +19,15 @@ typedef enum
 
 typedef struct
 {
+    uint8_t x;
+    uint8_t y;
+    uint8_t width;
+    uint8_t heigh;
+} GenDsp_DspArea_Limit_Range;
+
+typedef struct
+{
+    void (*set_range)(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
     void (*draw_point)(uint8_t **map, uint8_t x, uint8_t y, bool set);
     void (*draw_circle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_size);
     void (*draw_char)(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv);

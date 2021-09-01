@@ -6,11 +6,18 @@
 #define DegToRad(x) x / (180 / M_PI)
 
 /* internal variable */
+GenDsp_DspArea_Limit_Range DspRange = {
+    .width = 0,
+    .heigh = 0,
+    .x = 0,
+    .y = 0,
+};
 
 /* internal function definition */
 
 /* external draw funtion definition */
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set);
+static void GenDsp_SetRange(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv);
 static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, uint8_t x, uint8_t y, bool col_inv);
 static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, uint8_t x, uint8_t y, bool col_inv);
@@ -27,13 +34,25 @@ GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_line = GenDsp_DrawLen,
     .str_len = GenDsp_GetStrLen,
     .draw_char = GenDsp_DrawChar,
+    .set_range = GenDsp_SetRange,
     .draw_point = GenDsp_DrawPoint,
     .draw_circle = GenDsp_DrawCircle,
     .draw_rectangle = GenDsp_DrawRectangle,
 };
 
+static void GenDsp_SetRange(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+{
+    DspRange.heigh = height;
+    DspRange.width = width;
+    DspRange.x = x;
+    DspRange.y = y;
+}
+
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set)
 {
+    if ((x > DspRange.x + DspRange.width) || (y > DspRange.y + DspRange.heigh))
+        return;
+
     if (set)
         map[y][x] = 1;
     else
@@ -55,6 +74,9 @@ static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
 
         for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
         {
+            if (x > (DspRange.x + DspRange.width))
+                return;
+
             if (temp & 0x80)
                 GenDsp_DrawPoint(map, x, y, col_inv);
             else

@@ -593,6 +593,11 @@ static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
     GenDsp_Interface.draw_point(tmp->pixel_map,
                                 x,
                                 y,
@@ -602,6 +607,11 @@ static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set)
 static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
 
     GenDsp_Interface.draw_num(font,
                               tmp->pixel_map,
@@ -615,6 +625,11 @@ static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
     GenDsp_Interface.draw_char(font,
                                tmp->pixel_map,
                                char_dsp,
@@ -626,6 +641,11 @@ static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y
 static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
 
     GenDsp_Interface.draw_str(font,
                               tmp->pixel_map,
@@ -639,6 +659,11 @@ static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uin
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
     GenDsp_Interface.draw_line(tmp->pixel_map,
                                start_x,
                                start_y,
@@ -651,6 +676,11 @@ static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
     GenDsp_Interface.draw_circle(tmp->pixel_map,
                                  center_x,
                                  center_y,
@@ -661,6 +691,11 @@ static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius
 static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
 
     GenDsp_Interface.draw_rectangle(tmp->pixel_map,
                                     x,
