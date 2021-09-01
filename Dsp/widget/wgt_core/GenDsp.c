@@ -18,6 +18,7 @@ static void GenDsp_DrawCircle(uint8_t **map, uint8_t center_x, uint8_t center_y,
 static void GenDsp_DrawRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
 static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_sidth);
 static void GenDsp_DrawRad(uint8_t **map, uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size, int8_t angle);
+static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str);
 
 GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_img = NULL,
@@ -51,7 +52,7 @@ static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
         else
             temp = oled_asc2_1608[c][t]; //调用1608字体
 
-        for (uint8_t bit_index = 0; bit_index < 8; bit_index++)
+        for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
         {
             if (temp & 0x80)
                 GenDsp_DrawPoint(map, x, y, col_inv);
@@ -76,7 +77,7 @@ static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, uint8_t 
     while (*str != '\0')
     {
         GenDsp_DrawChar(font, map, *str, x, y, col_inv);
-        x += 8;
+        x += FONT_WIDTH;
         str++;
     }
 }
@@ -87,6 +88,19 @@ static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, uint8
 
     sprintf(num_buff, "%d", num);
     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+}
+
+static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str)
+{
+    uint8_t len = 0;
+
+    while (*str != '\0')
+    {
+        len += FONT_WIDTH;
+        str++;
+    }
+
+    return len;
 }
 
 static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_sidth)

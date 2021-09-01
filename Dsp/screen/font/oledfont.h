@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define FONT_WIDTH 8
+
 typedef enum
 {
     Font_12 = 12,
