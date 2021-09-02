@@ -18,7 +18,7 @@ GenDsp_DspArea_Limit_Range DspRange = {
 /* external draw funtion definition */
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set);
 static void GenDsp_SetRange(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
-static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv);
+static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv);
 static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, uint8_t x, uint8_t y, bool col_inv);
 static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, uint8_t x, uint8_t y, bool col_inv);
 static void GenDsp_DrawCircle(uint8_t **map, uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size);
@@ -50,7 +50,7 @@ static void GenDsp_SetRange(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
 
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set)
 {
-    if ((x > DspRange.x + DspRange.width) || (y > DspRange.y + DspRange.heigh))
+    if ((x >= DspRange.x + DspRange.width) || (y >= DspRange.y + DspRange.heigh))
         return;
 
     if (set)
@@ -59,23 +59,26 @@ static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set)
         map[y][x] = 0;
 }
 
-static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv)
+static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv)
 {
     uint8_t temp;
     uint8_t y0 = y;
     c -= ' ';
 
+    if ((DspRange.x + DspRange.width) <= x)
+        return false;
+
     for (uint8_t t = 0; t < font; t++)
     {
-        if (font == 12)
-            temp = oled_asc2_1206[c][t]; //调用1206字体
+        if (font == Font_12)
+            temp = oled_asc2_1206[c][t];
         else
-            temp = oled_asc2_1608[c][t]; //调用1608字体
+            temp = oled_asc2_1608[c][t];
 
         for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
         {
-            if (x > (DspRange.x + DspRange.width))
-                return;
+            if ((DspRange.x + DspRange.width) <= x)
+                return false;
 
             if (temp & 0x80)
                 GenDsp_DrawPoint(map, x, y, col_inv);
@@ -85,7 +88,7 @@ static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
             temp <<= 1;
 
             y++;
-            if ((y - y0) == font)
+            if ((y - y0) >= font)
             {
                 y = y0;
                 x++;
@@ -93,15 +96,21 @@ static void GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
             }
         }
     }
+
+    return true;
 }
 
 static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, uint8_t x, uint8_t y, bool col_inv)
 {
     while (*str != '\0')
     {
-        GenDsp_DrawChar(font, map, *str, x, y, col_inv);
-        x += FONT_WIDTH;
-        str++;
+        if (GenDsp_DrawChar(font, map, *str, x, y, col_inv))
+        {
+            x += FONT_WIDTH;
+            str++;
+        }
+        else
+            return;
     }
 }
 
@@ -175,7 +184,7 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
         distance = delta_y;
     }
 
-    for (uint8_t t = 0; t < distance; t++)
+    for (uint8_t t = 0; t < distance + 1; t++)
     {
         GenDsp_DrawPoint(map, uRow, uCol, true);
 

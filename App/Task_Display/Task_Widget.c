@@ -26,14 +26,14 @@ static void TaskWidget_Init(void)
     test4 = Widget_Mng.Create(0, 0, 128, 64, "test4", true);
 
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
-    Widget_Mng.Control(test4)->Draw()->draw_str(Font_12, "test widget", 60, 50, true);
+    Widget_Mng.Control(test4)->Draw()->draw_str(Font_12, "test widget", 120, 50, true);
     Widget_Mng.Control(test4)->Show();
 
     Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
     Widget_Mng.Control(test1)->Show();
 
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
-    Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "test widget", 85, 28, true);
+    Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "test widget", 74, 28, true);
     Widget_Mng.Control(test3)->Show();
 
     Widget_Mng.Control(test2)->Draw()->draw_char(Font_12, '2', 8, 2, true);
