@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include "GenDsp.h"
-#include "pixel.h"
 #include "linked_list.h"
 #include "Oled_DspProp_Def.h"
 

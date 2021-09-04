@@ -1,5 +1,4 @@
 #include "GenDsp.h"
-#include "pixel.h"
 #include "oledfont.h"
 #include <math.h>
 
@@ -65,7 +64,7 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
     uint8_t y0 = y;
     c -= ' ';
 
-    if ((DspRange.x + DspRange.width) <= x)
+    if (DspRange.width <= x)
         return false;
 
     for (uint8_t t = 0; t < font; t++)
@@ -92,6 +91,7 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
             {
                 y = y0;
                 x++;
+
                 break;
             }
         }
@@ -110,7 +110,7 @@ static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, uint8_t 
             str++;
         }
         else
-            return;
+            break;
     }
 }
 

@@ -1,5 +1,5 @@
 Objects/SrvOled.o: Dsp/screen/service/SrvOled.c \
- Dsp/screen/device/oled1306.h Dsp/pixel.h \
+ Dsp/screen/device/oled1306.h \
  Dsp/screen/OledIO_Definition/Oled_DspProp_Def.h Drv/drv_spi.h \
  Bsp/periph_spi.h FWLIB/inc/stm32f4xx_spi.h USER/stm32f4xx.h \
  F4_CORE/core_cm4.h F4_CORE/core_cmInstr.h F4_CORE/core_cmFunc.h \
@@ -19,7 +19,6 @@ Objects/SrvOled.o: Dsp/screen/service/SrvOled.c \
  SYS/data_structure/queue.h Drv/drv_gpio.h Bsp/periph_gpio.h \
  Dsp/screen/OledIO_Definition/OledIO_Def.h Dsp/screen/service/SrvOled.h
 Dsp/screen/device/oled1306.h:
-Dsp/pixel.h:
 Dsp/screen/OledIO_Definition/Oled_DspProp_Def.h:
 Drv/drv_spi.h:
 Bsp/periph_spi.h:

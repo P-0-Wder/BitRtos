@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include "pixel.h"
 #include "Oled_DspProp_Def.h"
 
 #define COLUMN_SIZE 128

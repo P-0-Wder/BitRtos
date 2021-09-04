@@ -142,7 +142,6 @@ static bool SrvOled_Fresh(uint8_t **bit_map)
     if (!SrvInit_State)
         return false;
 
-    //hardfault triggerd
     DrvOled.fresh(&Oled1306Obj, bit_map);
     return true;
 }
