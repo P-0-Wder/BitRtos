@@ -9,6 +9,12 @@
 
 #define MAX_DSP_NUM_LEN 10
 
+#define DRAW_UPPER_RIGHT 0x01
+#define DRAW_UPPER_LEFT 0x02
+#define DRAW_LOWER_LEFT 0x04
+#define DRAW_LOWER_RIGHT 0x08
+#define DRAW_ALL (DRAW_UPPER_RIGHT | DRAW_UPPER_LEFT | DRAW_LOWER_RIGHT | DRAW_LOWER_LEFT)
+
 typedef Font_List GenFont_List;
 
 typedef enum

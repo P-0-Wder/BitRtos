@@ -32,6 +32,7 @@ static void TaskWidget_Init(void)
     Widget_Mng.Control(test1)->Show();
 
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
+    Widget_Mng.Control(test3)->Draw()->draw_circle(50, 20, 5, 1);
     Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "test widget", 78, 28, true);
     Widget_Mng.Control(test3)->Show();
 

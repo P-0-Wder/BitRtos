@@ -204,27 +204,84 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
     }
 }
 
-static void GenDsp_DrawRad(uint8_t **map, uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size, int8_t angle)
+static void GenDsp_Draw_Circle_Section(uint8_t **map, uint8_t x, uint8_t y, uint8_t x0, uint8_t y0, uint8_t option)
 {
-    float angle_rad = DegToRad(angle);
-    uint8_t x_tmp = 0;
-    uint8_t y_tmp = 0;
-
-    if (angle < 0)
-        angle += 360;
-
-    for (uint8_t angle_tmp = 0; angle_tmp < angle; angle_tmp++)
+    /* upper right */
+    if (option & DRAW_UPPER_RIGHT)
     {
-        x_tmp = center_x + sin(angle_rad) * radius;
-        y_tmp = center_y - cos(angle_rad) * radius;
+        GenDsp_DrawLen(map, x0, y0, x0 + x, y0 - y, 1);
+        GenDsp_DrawLen(map, x0, y0, x0 + y, y0 - x, 1);
+    }
 
-        GenDsp_DrawPoint(map, x_tmp, y_tmp, true);
+    /* upper left */
+    if (option & DRAW_UPPER_LEFT)
+    {
+        GenDsp_DrawLen(map, x0, y0, x0 - x, y0 - y, 1);
+        GenDsp_DrawLen(map, x0, y0, x0 - y, y0 - x, 1);
+    }
+
+    /* lower right */
+    if (option & DRAW_LOWER_RIGHT)
+    {
+        GenDsp_DrawLen(map, x0, y0, x0 + x, y0 + y, 1);
+        GenDsp_DrawLen(map, x0, y0, x0 + y, y0 + x, 1);
+    }
+
+    /* lower left */
+    if (option & DRAW_LOWER_LEFT)
+    {
+        GenDsp_DrawLen(map, x0, y0, x0 - x, y0 + y, 1);
+        GenDsp_DrawLen(map, x0, y0, x0 - y, y0 + x, 1);
     }
 }
 
-static void GenDsp_DrawCircle(uint8_t **map, uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size)
+static void GenDsp_Draw_Circle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad, uint8_t option)
 {
-    GenDsp_DrawRad(map, center_x, center_y, radius, line_size, 360);
+    int8_t f;
+    int8_t ddF_x;
+    int8_t ddF_y;
+    uint8_t x;
+    uint8_t y;
+
+    f = 1;
+    f -= rad;
+    ddF_x = 1;
+    ddF_y = 0;
+    ddF_y -= rad;
+    ddF_y *= 2;
+    x = 0;
+    y = rad;
+
+    GenDsp_Draw_Circle_Section(map, x, y, x0, y0, option);
+
+    while (x < y)
+    {
+        if (f >= 0)
+        {
+            y--;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x++;
+        ddF_x += 2;
+        f += ddF_x;
+
+        GenDsp_Draw_Circle_Section(map, x, y, x0, y0, option);
+    }
+}
+
+void GenDsp_DrawCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad, uint8_t option)
+{
+    /* check for bounding box */
+#ifdef U8G2_WITH_INTERSECTION
+    {
+        if (u8g2_IsIntersection(u8g2, x0 - rad, y0 - rad, x0 + rad + 1, y0 + rad + 1) == 0)
+            return;
+    }
+#endif /* U8G2_WITH_INTERSECTION */
+
+    /* draw circle */
+    GenDsp_Draw_Circle(map, x0, y0, rad, DRAW_ALL);
 }
 
 static void GenDsp_DrawRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size)
