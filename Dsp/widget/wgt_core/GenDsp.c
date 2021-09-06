@@ -209,29 +209,29 @@ static void GenDsp_Draw_Circle_Section(uint8_t **map, uint8_t x, uint8_t y, uint
     /* upper right */
     if (option & DRAW_UPPER_RIGHT)
     {
-        GenDsp_DrawLen(map, x0, y0, x0 + x, y0 - y, 1);
-        GenDsp_DrawLen(map, x0, y0, x0 + y, y0 - x, 1);
+        GenDsp_DrawPoint(map, x0 + x, y0 - y, 1);
+        GenDsp_DrawPoint(map, x0 + y, y0 - x, 1);
     }
 
     /* upper left */
     if (option & DRAW_UPPER_LEFT)
     {
-        GenDsp_DrawLen(map, x0, y0, x0 - x, y0 - y, 1);
-        GenDsp_DrawLen(map, x0, y0, x0 - y, y0 - x, 1);
+        GenDsp_DrawPoint(map, x0 - x, y0 - y, 1);
+        GenDsp_DrawPoint(map, x0 - y, y0 - x, 1);
     }
 
     /* lower right */
     if (option & DRAW_LOWER_RIGHT)
     {
-        GenDsp_DrawLen(map, x0, y0, x0 + x, y0 + y, 1);
-        GenDsp_DrawLen(map, x0, y0, x0 + y, y0 + x, 1);
+        GenDsp_DrawPoint(map, x0 + x, y0 + y, 1);
+        GenDsp_DrawPoint(map, x0 + y, y0 + x, 1);
     }
 
     /* lower left */
     if (option & DRAW_LOWER_LEFT)
     {
-        GenDsp_DrawLen(map, x0, y0, x0 - x, y0 + y, 1);
-        GenDsp_DrawLen(map, x0, y0, x0 - y, y0 + x, 1);
+        GenDsp_DrawPoint(map, x0 - x, y0 + y, 1);
+        GenDsp_DrawPoint(map, x0 - y, y0 + x, 1);
     }
 }
 
