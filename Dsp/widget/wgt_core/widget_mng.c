@@ -140,6 +140,9 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->width = width;
     widget_tmp->height = height;
 
+    widget_tmp->frame_line_size = 1;
+    widget_tmp->is_selected = false;
+
     widget_tmp->name = name;
 
     if (MonitorDataObj.remain_size < (height * width))
