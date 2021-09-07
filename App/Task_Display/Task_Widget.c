@@ -47,32 +47,36 @@ static void TestWidget_Dynamic_Dsp(void)
     {
         rad--;
 
-        if (rad <= 1)
+        if (rad <= 2)
             change = false;
     }
 
     if (!move)
     {
-        dis++;
+        dis += 2;
 
-        if (dis > 10)
+        if (dis > 20)
+        {
+            Widget_Mng.Control(test1)->Show();
             move = true;
+        }
     }
     else
     {
-        dis--;
+        dis -= 2;
 
-        if (rad <= 1)
+        if (rad <= 2)
+        {
+            Widget_Mng.Control(test1)->Hide();
             move = false;
+        }
     }
 
     Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
     Widget_Mng.Control(test4)->Show();
 
-    Widget_Mng.Control(test1)->Clear();
     Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
-    Widget_Mng.Control(test1)->Show();
 
     Widget_Mng.Control(test3)->Clear();
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
