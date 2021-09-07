@@ -306,21 +306,24 @@ static bool Widget_Show(void)
                              1);
     }
 
-    GetCur_Active_Widget()->show_state = true;
-
-    if (MonitorDataObj.widget_dsp_list != NULL)
+    if (!GetCur_Active_Widget()->show_state)
     {
-        List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
-    }
-    else
-    {
-        MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
-        List_Init(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item, by_order, NULL);
-    }
+        GetCur_Active_Widget()->show_state = true;
 
-    Widget_SetFreshState(Fresh_State_Prepare);
+        if (MonitorDataObj.widget_dsp_list != NULL)
+        {
+            List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+        }
+        else
+        {
+            MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
+            List_Init(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item, by_order, NULL);
+        }
 
-    MonitorDataObj.on_show++;
+        Widget_SetFreshState(Fresh_State_Prepare);
+
+        MonitorDataObj.on_show++;
+    }
 
     return true;
 }
@@ -330,9 +333,12 @@ static bool Widget_Hide(void)
     if ((GetCur_Active_Widget() == NULL) || (MonitorDataObj.on_show <= 1))
         return false;
 
-    List_Delete_Item(GetCur_Active_Widget()->item, NULL);
-    Widget_SetFreshState(Fresh_State_Prepare);
-    GetCur_Active_Widget()->show_state = false;
+    if (GetCur_Active_Widget()->show_state)
+    {
+        List_Delete_Item(GetCur_Active_Widget()->item, NULL);
+        Widget_SetFreshState(Fresh_State_Prepare);
+        GetCur_Active_Widget()->show_state = false;
+    }
 
     return true;
 }
