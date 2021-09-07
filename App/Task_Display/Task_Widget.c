@@ -2,6 +2,8 @@
 #include "task_manager.h"
 #include "widget_mng.h"
 
+/* this task only for test */
+
 /* internal variable */
 static TaskWidget_State_List TaskWidget_State = TaskWdiget_State_Init;
 static Widget_Handle test1;
@@ -76,7 +78,7 @@ static void TestWidget_Dynamic_Dsp(void)
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
     Widget_Mng.Control(test3)->Move(15 + dis, 15);
     Widget_Mng.Control(test3)->Draw()->draw_circle(35, 20, rad, 1);
-    Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "test widget", 78, 28, true);
+    Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "8_B!T0", 15, 22, true);
     Widget_Mng.Control(test3)->Show();
 
     Widget_Mng.Control(test2)->Clear();
