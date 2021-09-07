@@ -57,6 +57,7 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (dis > 20)
         {
+            Widget_Mng.Control(test1)->Clear();
             Widget_Mng.Control(test1)->Show();
             move = true;
         }

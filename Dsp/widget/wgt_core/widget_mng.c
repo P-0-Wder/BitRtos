@@ -368,6 +368,8 @@ static bool Widget_Hide(void)
         List_Delete_Item(GetCur_Active_Widget()->item, NULL);
         Widget_SetFreshState(Fresh_State_Prepare);
         GetCur_Active_Widget()->show_state = false;
+
+        MonitorDataObj.on_show--;
     }
 
     return true;
