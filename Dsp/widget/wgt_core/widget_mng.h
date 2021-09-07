@@ -61,6 +61,13 @@ typedef enum
     Widget_DisplayItem_None,
 } Widget_Error_TypeDef;
 
+typedef enum
+{
+    Auto_Cache_Clear = 0,
+    Manual_Cache_Clear,
+    Condition_Cache_Clear,
+} Widget_DspCacheClear_Type;
+
 typedef struct
 {
     uint8_t on_show;
@@ -124,6 +131,8 @@ typedef struct
 
     uint8_t level;
     item_obj *item;
+
+    Widget_DspCacheClear_Type CacheClear_Type;
 } WidgetObj_TypeDef;
 
 typedef struct

@@ -40,6 +40,7 @@ static void Widget_SetErrorState(Widget_Error_TypeDef error);
 static uint8_t Widget_GetError(void);
 static bool Widget_RoutateBlackboard(void);
 static bool Widget_MirrorBlackboard(void);
+static bool Widget_ClearDspCache(void);
 
 /* external widget manager config function definition */
 static bool Widget_ConfigDisplay_RoutateDir(Oled_Routate_Direction_Def dir);
@@ -287,6 +288,19 @@ static bool Widget_MirrorBlackboard(void)
 
     default:
         return false;
+    }
+
+    return true;
+}
+
+static bool Widget_ClearDspCache(void)
+{
+    if (GetCur_Active_Widget() == NULL)
+        return false;
+
+    for (uint8_t i = 0; i < GetCur_Active_Widget()->height; i++)
+    {
+        memset(GetCur_Active_Widget()->pixel_map[i], NULL, GetCur_Active_Widget()->width);
     }
 
     return true;
