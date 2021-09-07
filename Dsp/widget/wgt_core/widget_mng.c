@@ -56,6 +56,7 @@ static bool Widget_FreshAll(void);
 static bool Widget_SetFreshFrq(uint8_t frq);
 static bool Widget_Show(void);
 static bool Widget_Hide(void);
+static bool Widget_Clear(void);
 static bool Widget_MoveTo(uint8_t x, uint8_t y);
 static bool Widget_CheckFlashTrigger(void);
 static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
@@ -85,6 +86,7 @@ static Widget_Control_TypeDef WidgetCtl_Interface = {
     .Hide = Widget_Hide,
     .Move = Widget_MoveTo,
     .Draw = Widget_DrawInterface,
+    .Clear = Widget_Clear,
     .Dsp_status = Widget_DspStatus,
 };
 
@@ -183,6 +185,19 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->show_state = false;
 
     return (Widget_Handle)widget_tmp;
+}
+
+static bool Widget_Clear(void)
+{
+    if (GetCur_Active_Widget() == NULL)
+        return false;
+
+    for (uint8_t row = 0; row < GetCur_Active_Widget()->height; row++)
+    {
+        memset(GetCur_Active_Widget()->pixel_map[row], NULL, GetCur_Active_Widget()->width);
+    }
+
+    return true;
 }
 
 static bool Widget_Deleted(Widget_Handle *hdl)

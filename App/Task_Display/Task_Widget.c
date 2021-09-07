@@ -22,7 +22,7 @@ static void TaskWidget_Init(void)
 
     test1 = Widget_Mng.Create(20, 2, 25, 20, "test1", true);
     test2 = Widget_Mng.Create(50, 5, 50, 20, "test2", true);
-    test3 = Widget_Mng.Create(15, 15, 100, 40, "test3", true);
+    test3 = Widget_Mng.Create(15, 15, 70, 40, "test3", true);
     test4 = Widget_Mng.Create(0, 0, 128, 64, "test4", true);
 }
 
@@ -31,11 +31,14 @@ static void TestWidget_Dynamic_Dsp(void)
     static uint8_t rad = 0;
     static bool change = false;
 
+    static uint8_t dis = 0;
+    static bool move = false;
+
     if (!change)
     {
         rad++;
 
-        if (rad > 15)
+        if (rad > 10)
             change = true;
     }
     else
@@ -46,17 +49,38 @@ static void TestWidget_Dynamic_Dsp(void)
             change = false;
     }
 
+    if (!move)
+    {
+        dis++;
+
+        if (dis > 10)
+            move = true;
+    }
+    else
+    {
+        dis--;
+
+        if (rad <= 1)
+            move = false;
+    }
+
+    Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
     Widget_Mng.Control(test4)->Show();
 
+    Widget_Mng.Control(test1)->Clear();
     Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
     Widget_Mng.Control(test1)->Show();
 
+    Widget_Mng.Control(test3)->Clear();
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
-    Widget_Mng.Control(test3)->Draw()->draw_circle(50, 20, rad, 1);
+    Widget_Mng.Control(test3)->Move(15 + dis, 15);
+    Widget_Mng.Control(test3)->Draw()->draw_circle(35, 20, rad, 1);
     Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "test widget", 78, 28, true);
     Widget_Mng.Control(test3)->Show();
 
+    Widget_Mng.Control(test2)->Clear();
+    Widget_Mng.Control(test2)->Move(50, 5 + dis);
     Widget_Mng.Control(test2)->Draw()->draw_char(Font_12, '2', 8, 2, true);
     Widget_Mng.Control(test2)->Show();
 }

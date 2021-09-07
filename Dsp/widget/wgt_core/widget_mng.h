@@ -23,6 +23,8 @@
 
 #define MAX_FRESH_FRQ 500
 
+#define DEFAULT_CACHE_CLEAR_TYPE Auto_Cache_Clear
+
 typedef GenFont_List Widget_Font;
 typedef uint32_t Widget_Handle;
 
@@ -61,13 +63,6 @@ typedef enum
     Widget_DisplayItem_None,
 } Widget_Error_TypeDef;
 
-typedef enum
-{
-    Auto_Cache_Clear = 0,
-    Manual_Cache_Clear,
-    Condition_Cache_Clear,
-} Widget_DspCacheClear_Type;
-
 typedef struct
 {
     uint8_t on_show;
@@ -105,6 +100,7 @@ typedef struct
     bool (*Show)(void);
     bool (*Hide)(void);
     bool (*Move)(uint8_t x, uint8_t y);
+    bool (*Clear)(void);
     WidgetDsp_Status_List (*Dsp_status)(void);
     Widget_DrawFunc_TypeDef *(*Draw)(void);
 } Widget_Control_TypeDef;
@@ -131,8 +127,6 @@ typedef struct
 
     uint8_t level;
     item_obj *item;
-
-    Widget_DspCacheClear_Type CacheClear_Type;
 } WidgetObj_TypeDef;
 
 typedef struct
