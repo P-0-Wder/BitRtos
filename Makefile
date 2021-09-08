@@ -50,6 +50,7 @@ Dsp/screen/font/oledfont.c \
 Dsp/screen/device/oled1306.c \
 Dsp/screen/service/SrvOled.c \
 Dsp/widget/wgt_core/widget_mng.c \
+Dsp/widget/wgt_core/UI_Controller.c \
 Dsp/wgt_core/GenDsp.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
