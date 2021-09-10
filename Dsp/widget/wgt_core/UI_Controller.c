@@ -96,10 +96,22 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
     return true;
 }
 
+/* use group control the combo box */
 static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
 {
     if (Obj->Gen_Data.widget_hdl == 0)
         return false;
+
+    return true;
+}
+
+static bool UI_Move(UI_GeneralData_TypeDef *Obj, uint8_t x, uint8_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->x = x;
+    Obj->y = y;
 
     return true;
 }
