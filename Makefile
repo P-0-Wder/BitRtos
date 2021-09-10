@@ -279,7 +279,7 @@ $(BUILD_DIR):
 # -rd /s /q $(BUILD_DIR)
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	-rd /s /q $(BUILD_DIR)
 	
 #######################################
 # dependencies
@@ -291,8 +291,7 @@ clean:
 #OPENOCD := openocd -f interface/stlink.cfg \
 #        -f target/stm32f4x.cfg \
 
-OPENOCD := openocd -f interface/cmsis-dap.cfg \
-        -c 'transport select swd' \
+OPENOCD := openocd -f interface/stlink-v2.cfg \
         -f target/stm32f4x.cfg \
 
 # download your program
