@@ -105,6 +105,8 @@ static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
     return true;
 }
 
+/******************************* general function *********************************/
+
 static bool UI_Move(UI_GeneralData_TypeDef *Obj, uint8_t x, uint8_t y)
 {
     if (Obj == NULL)
