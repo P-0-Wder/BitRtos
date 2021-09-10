@@ -63,12 +63,12 @@ typedef struct
 
 typedef struct
 {
-    /* data */
+    UI_GeneralData_TypeDef Gen_Data;
 } UI_VerticalBarObj_TypeDef;
 
 typedef struct
 {
-    /* data */
+    UI_GeneralData_TypeDef Gen_Data;
 } UI_HorizonBarObj_TypeDef;
 
 typedef struct
