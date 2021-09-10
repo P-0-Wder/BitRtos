@@ -64,7 +64,7 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
     return true;
 }
 
-static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 {
     if (Obj->Gen_Data.widget_hdl == 0)
         return false;
@@ -72,7 +72,7 @@ static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t x, uint8_t
     return true;
 }
 
-static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
     if (Obj->Gen_Data.widget_hdl == 0)
         return false;
@@ -80,7 +80,7 @@ static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t x, uint8_t 
     return true;
 }
 
-static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint8_t pcnt)
+static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 {
     if (Obj->Gen_Data.widget_hdl == 0)
         return false;
@@ -88,7 +88,7 @@ static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t x, ui
     return true;
 }
 
-static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state)
+static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
 {
     if (Obj->Gen_Data.widget_hdl == 0)
         return false;
@@ -96,7 +96,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, uint8_t x, uint8_t y, u
     return true;
 }
 
-static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
+static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
 {
     if (Obj->Gen_Data.widget_hdl == 0)
         return false;
