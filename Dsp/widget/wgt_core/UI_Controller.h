@@ -6,6 +6,8 @@
 #include <string.h>
 
 #define LABEL_COMBINE(x) x##" : "
+#define MAX_DROP_ITEM 20
+#define MAX_COMBOBOX_ITEM 20
 
 typedef int (*gen_callback)(uint32_t arg, uint32_t len);
 
@@ -74,18 +76,18 @@ typedef struct
 
 typedef struct
 {
-    char *label;
-    uint8_t item_num;
-    /* data */
-} UI_ComboBox_Group_TypeDef;
-
-typedef struct
-{
     UI_GeneralData_TypeDef Gen_Data;
     uint8_t item_num;
     uint32_t group_ptr;
-    /* data */
+    bool checked;
 } UI_ComboBoxObj_TypeDef;
+
+typedef struct
+{
+    char *label;
+    uint8_t item_num;
+    UI_ComboBoxObj_TypeDef Obj[MAX_COMBOBOX_ITEM];
+} UI_ComboBox_Group_TypeDef;
 
 typedef struct
 {
@@ -98,14 +100,6 @@ typedef struct
 
 typedef struct
 {
-    UI_GeneralData_TypeDef Gen_Data;
-    uint8_t max_item_num;
-    uint8_t item_height;
-    uint8_t item_width;
-} UI_DropListObj_TypeDef;
-
-typedef struct
-{
     char *name;
     bool selected;
     bool active;
@@ -115,9 +109,19 @@ typedef struct
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
+    uint8_t item_num;
+    uint8_t item_height;
+    uint8_t item_width;
+    UI_DropItemObj_TypeDef item[MAX_DROP_ITEM];
+} UI_DropListObj_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
     int32_t range;
     char *input_dig;
     int32_t dig;
+    bool inputing;
 } UI_DigInputObj_TypeDef;
 
 typedef struct
@@ -125,6 +129,7 @@ typedef struct
     UI_GeneralData_TypeDef Gen_Data;
     uint8_t max_input_len;
     char *input_str;
+    bool inputing;
 } UI_StrInputObj_TypeDef;
 
 /* ui process function block */
