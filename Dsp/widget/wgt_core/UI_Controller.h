@@ -71,7 +71,9 @@ typedef struct
 
 typedef struct
 {
-    /* data */
+    UI_GeneralData_TypeDef Gen_Data;
+    uint8_t frame_size;
+    bool checked;
 } UI_CheckBoxObj_TypeDef;
 
 typedef struct
@@ -92,7 +94,6 @@ typedef struct
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
-    uint8_t frame_size;
     bool check_state;
     UI_Button_Type type;
     gen_callback callback;
