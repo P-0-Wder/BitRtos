@@ -5,6 +5,16 @@
 #include <stdint.h>
 #include <string.h>
 
+#define LABEL_COMBINE(x) x##" : "
+
+typedef int (*gen_callback)(uint32_t arg, uint32_t len);
+
+typedef enum
+{
+    Auto_Reset = 0,
+    No_Reset,
+} UI_Button_Type;
+
 typedef enum
 {
     ProcBar_Move_Left = 0,
@@ -32,6 +42,8 @@ typedef struct
 
     uint8_t width;
     uint8_t height;
+
+    ProcessBar_MoveDir_TypeDef Mv_Dir;
 } UI_ProcessBarObj_TypeDef;
 
 typedef struct
@@ -71,7 +83,7 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
     uint8_t item_num;
-    uint32_t group_prt;
+    uint32_t group_ptr;
     /* data */
 } UI_ComboBoxObj_TypeDef;
 
@@ -79,7 +91,9 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
     uint8_t frame_size;
-    /* data */
+    bool check_state;
+    UI_Button_Type type;
+    gen_callback callback;
 } UI_ButtonObj_TypeDef;
 
 typedef struct
@@ -92,18 +106,25 @@ typedef struct
 
 typedef struct
 {
+    char *name;
+    bool selected;
+    bool active;
+    gen_callback callback;
 } UI_DropItemObj_TypeDef;
 
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
     int32_t range;
+    char *input_dig;
+    int32_t dig;
 } UI_DigInputObj_TypeDef;
 
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
     uint8_t max_input_len;
+    char *input_str;
 } UI_StrInputObj_TypeDef;
 
 /* ui process function block */
