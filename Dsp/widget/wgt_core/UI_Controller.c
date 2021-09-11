@@ -26,12 +26,15 @@ static bool UI_LabelDsp_Control(UI_GeneralData_TypeDef *GenData, bool state)
     return true;
 }
 
-static bool UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, UI_Draw UI_Fraw_Func)
+static bool UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, UI_Draw UI_Fraw_Func, uint8_t x, uint8_t y)
 {
     GenData->label = label;
     GenData->label_dsp = false;
     GenData->label_roll = false;
     GenData->DrawPoint = UI_Fraw_Func;
+
+    GenData->x = x;
+    GenData->y = y;
 }
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
@@ -41,10 +44,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Fu
 
     Obj->Gen_Data.DrawPoint = NULL;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func);
-
-    Obj->Gen_Data.x = x;
-    Obj->Gen_Data.y = y;
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
 
     Obj->width = width;
     Obj->height = height;
@@ -65,7 +65,7 @@ static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_Draw UI_Fraw_F
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func);
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
 
     return true;
 }
@@ -76,16 +76,23 @@ static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Fu
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
 
     return true;
 }
 
-static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint8_t pcnt)
+static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint32_t range)
 {
     if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+
+    Obj->radius = radius;
+    Obj->percent = 0.0;
+    Obj->range = range;
+    Obj->cur_val = 0;
 
     return true;
 }
@@ -96,6 +103,7 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, 
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
 
     return true;
 }
@@ -106,6 +114,7 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, 
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
 
     return true;
 }
