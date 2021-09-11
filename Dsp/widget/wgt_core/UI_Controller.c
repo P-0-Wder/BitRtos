@@ -6,12 +6,36 @@
 
 /******************************* init function *********************************/
 
+static bool UI_LabelRoll_Control(UI_GeneralData_TypeDef *GenData, bool state)
+{
+    if ((GenData == NULL) || (!GenData->label_dsp))
+        return false;
+
+    GenData->label_roll = state;
+
+    return true;
+}
+
+static bool UI_LabelDsp_Control(UI_GeneralData_TypeDef *GenData, bool state)
+{
+    if (GenData == NULL)
+        return false;
+
+    GenData->label_dsp = state;
+
+    return true;
+}
+
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPonit UI_DrawPoint_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t pcnt)
 {
     if ((UI_DrawPoint_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
+
+    Obj->Gen_Data.label = label;
+    Obj->Gen_Data.label_dsp = false;
+    Obj->Gen_Data.label_roll = false;
 
     return true;
 }
