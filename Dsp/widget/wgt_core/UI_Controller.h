@@ -21,8 +21,9 @@ typedef enum
 
 typedef enum
 {
-    ProcBar_Move_Left = 0,
-    ProcBar_Move_Right,
+    ProcBar_MoveDir_Default = 0,
+    ProcBar_MoveDir_Left = 0,
+    ProcBar_MoveDir_Right = 1,
 } ProcessBar_MoveDir_TypeDef;
 
 typedef struct
@@ -43,8 +44,9 @@ typedef struct
     UI_GeneralData_TypeDef Gen_Data;
 
     float percent;
+
     uint32_t range;
-    uint32_t cur_var;
+    uint32_t cur_val;
 
     uint8_t width;
     uint8_t height;
