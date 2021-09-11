@@ -26,22 +26,22 @@ static bool UI_LabelDsp_Control(UI_GeneralData_TypeDef *GenData, bool state)
     return true;
 }
 
-static bool UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, UI_DrawPonit UI_DrawPoint_Func)
+static bool UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, UI_Draw UI_Fraw_Func)
 {
     GenData->label = label;
     GenData->label_dsp = false;
     GenData->label_roll = false;
-    GenData->DrawPoint = UI_DrawPoint_Func;
+    GenData->DrawPoint = UI_Fraw_Func;
 }
 
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPonit UI_DrawPoint_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
 {
-    if ((UI_DrawPoint_Func == NULL) || (Obj == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_DrawPoint_Func);
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func);
 
     Obj->Gen_Data.x = x;
     Obj->Gen_Data.y = y;
@@ -59,9 +59,20 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPonit UI_Dr
     return true;
 }
 
-static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_DrawPonit UI_DrawPoint_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
-    if ((UI_DrawPoint_Func == NULL) || (Obj == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
+        return false;
+
+    Obj->Gen_Data.DrawPoint = NULL;
+    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func);
+
+    return true;
+}
+
+static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+{
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
@@ -69,9 +80,9 @@ static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_DrawPonit UI_D
     return true;
 }
 
-static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_DrawPonit UI_DrawPoint_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint8_t pcnt)
 {
-    if ((UI_DrawPoint_Func == NULL) || (Obj == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
@@ -79,9 +90,9 @@ static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_DrawPonit UI_Dr
     return true;
 }
 
-static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_DrawPonit UI_DrawPoint_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint8_t pcnt)
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state)
 {
-    if ((UI_DrawPoint_Func == NULL) || (Obj == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
@@ -89,19 +100,9 @@ static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_DrawPonit
     return true;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_DrawPonit UI_DrawPoint_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state)
+static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
 {
-    if ((UI_DrawPoint_Func == NULL) || (Obj == NULL))
-        return false;
-
-    Obj->Gen_Data.DrawPoint = NULL;
-
-    return true;
-}
-
-static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_DrawPonit UI_DrawPoint_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
-{
-    if ((UI_DrawPoint_Func == NULL) || (Obj == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;

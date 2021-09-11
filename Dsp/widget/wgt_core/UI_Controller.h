@@ -9,7 +9,7 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 
-typedef bool (*UI_DrawPonit)(uint8_t x, uint8_t y);
+typedef bool (*UI_Draw)(uint8_t x, uint8_t y);
 
 typedef int (*gen_callback)(uint32_t arg, uint32_t len);
 
@@ -36,7 +36,7 @@ typedef struct
     bool label_roll;
     bool label_dsp;
 
-    UI_DrawPonit DrawPoint;
+    UI_Draw DrawPoint;
 } UI_GeneralData_TypeDef;
 
 typedef struct
