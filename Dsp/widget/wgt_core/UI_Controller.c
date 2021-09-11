@@ -1,4 +1,5 @@
 #include "UI_Controller.h"
+#include <stdlib.h>
 
 /* internal function */
 
@@ -97,11 +98,27 @@ static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_Draw UI_F
     return true;
 }
 
-static bool UI_ComboGroup_Init()
+static UI_Group_Handler UI_ComboGroup_Create(char *label)
 {
+    UI_ComboBox_Group_TypeDef *ComboGroup_Tmp = NULL;
+
+    ComboGroup_Tmp = (UI_ComboBox_Group_TypeDef *)malloc(sizeof(UI_ComboBox_Group_TypeDef));
+
+    if (ComboGroup_Tmp == NULL)
+        return 0;
+
+    ComboGroup_Tmp->item_num = 0;
+    ComboGroup_Tmp->label = label;
+
+    for (uint8_t i = 0; i < MAX_COMBOBOX_ITEM; i++)
+    {
+        ComboGroup_Tmp->Obj[i] = NULL;
+    }
+
+    return (uint32_t)ComboGroup_Tmp;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Group_Handler group, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
 {
     if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;

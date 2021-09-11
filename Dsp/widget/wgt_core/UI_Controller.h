@@ -9,8 +9,7 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 
-typedef uint32_t ComboBox_Group_Handler;
-typedef uint32_t DropList_Group_Handler;
+typedef uint32_t UI_Group_Handler;
 
 typedef bool (*UI_Draw)(uint8_t x, uint8_t y);
 
@@ -97,7 +96,7 @@ typedef struct
 {
     char *label;
     uint8_t item_num;
-    UI_ComboBoxObj_TypeDef Obj[MAX_COMBOBOX_ITEM];
+    UI_ComboBoxObj_TypeDef *Obj[MAX_COMBOBOX_ITEM];
 } UI_ComboBox_Group_TypeDef;
 
 typedef struct
