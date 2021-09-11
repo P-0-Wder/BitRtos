@@ -97,13 +97,20 @@ static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_Draw UI_F
     return true;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state)
+static bool UI_ComboGroup_Init()
+{
+}
+
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
 {
     if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
     UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+
+    Obj->checked = false;
+    Obj->frame_size = frame_size;
 
     return true;
 }

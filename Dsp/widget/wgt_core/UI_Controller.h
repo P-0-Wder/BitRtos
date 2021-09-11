@@ -9,6 +9,9 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 
+typedef uint32_t ComboBox_Group_Handler;
+typedef uint32_t DropList_Group_Handler;
+
 typedef bool (*UI_Draw)(uint8_t x, uint8_t y);
 
 typedef int (*gen_callback)(uint32_t arg, uint32_t len);
