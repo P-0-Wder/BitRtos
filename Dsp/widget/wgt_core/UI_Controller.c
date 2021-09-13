@@ -208,9 +208,45 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
 
     for (uint8_t row = 0; row < Obj->frame_size; row++)
     {
-    }
+        for (uint8_t column = 0; column < Obj->frame_size; column++)
+        {
+            if ((row == 0) || (row == Obj->frame_size - 1))
+            {
+                Obj->Gen_Data.DrawPoint(column, row, true);
+            }
+            else if ((row == 1) || (row == (Obj->frame_size - 1)))
+            {
+                if ((column == 0) || (column == (Obj->frame_size - 1)))
+                {
+                    Obj->Gen_Data.DrawPoint(column, row, true);
+                }
+                else
+                    Obj->Gen_Data.DrawPoint(column, row, false);
+            }
+            else if ((row > 2) && (row < Obj->frame_size - 3))
+            {
+                if ((column == 0) && (column == (Obj->frame_size - 1)))
+                {
+                    Obj->Gen_Data.DrawPoint(column, row, true);
+                }
+                else if ((column == 1) && (column == (Obj->frame_size - 1)))
+                {
+                    Obj->Gen_Data.DrawPoint(column, row, false);
+                }
+                else if ((column > 2) && (column < (Obj->frame_size - 3)))
+                {
+                    if (Obj->checked)
+                    {
+                        Obj->Gen_Data.DrawPoint(column, row, true);
+                    }
+                    else
+                        Obj->Gen_Data.DrawPoint(column, row, false);
+                }
+            }
+        }
 
-    return true;
+        return true;
+    }
 }
 
 /* use group control the combo box */
