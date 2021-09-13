@@ -159,6 +159,7 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
     Obj->DrawCircle = UI_Draw_Func;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    Obj->item_id = group->item_num;
 
     if (group->item_num == 0)
     {

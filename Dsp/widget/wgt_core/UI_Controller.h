@@ -94,7 +94,7 @@ typedef struct
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
-    uint8_t item_num;
+    uint8_t item_id;
     void *group_ptr;
     bool checked;
 
