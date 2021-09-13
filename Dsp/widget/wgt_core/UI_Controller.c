@@ -217,6 +217,14 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
 
     Obj->checked = state;
 
+    for (uint8_t i = 0; i < Obj->frame_size; i++)
+    {
+        if (((i > 1) && (Obj->checked)) || (i == 0))
+        {
+            Obj->DrawRectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->frame_size - i, Obj->frame_size - i, 1);
+        }
+    }
+
     return true;
 }
 
