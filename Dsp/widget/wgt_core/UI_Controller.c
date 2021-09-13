@@ -204,6 +204,8 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
     if (Obj->Gen_Data.DrawPoint == NULL)
         return false;
 
+    Obj->checked = state;
+
     return true;
 }
 
