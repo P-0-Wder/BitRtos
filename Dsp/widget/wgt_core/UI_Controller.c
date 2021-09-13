@@ -144,7 +144,7 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, 
 
 static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL) || (group == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL) || (group == NULL) || (group->item_num >= MAX_COMBOBOX_ITEM))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
