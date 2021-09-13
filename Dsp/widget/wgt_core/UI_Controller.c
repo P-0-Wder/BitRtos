@@ -125,11 +125,7 @@ static UI_ComboBox_Group_TypeDef *UI_ComboGroup_Create(char *label)
 
 static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
 {
-    if (group == NULL)
-    {
-    }
-
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL) || (group == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
