@@ -150,6 +150,18 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
     Obj->Gen_Data.DrawPoint = NULL;
     UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
 
+    if (group->item_num == 0)
+    {
+        Obj->checked = true;
+    }
+    else
+        Obj->checked = false;
+
+    Obj->group_ptr = group;
+
+    group->Obj[group->item_num] = Obj;
+    group->item_num++;
+
     return true;
 }
 

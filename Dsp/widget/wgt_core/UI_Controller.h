@@ -86,7 +86,7 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
     uint8_t item_num;
-    uint32_t group_ptr;
+    void *group_ptr;
     bool checked;
 } UI_ComboBoxObj_TypeDef;
 
