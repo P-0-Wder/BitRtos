@@ -100,6 +100,9 @@ static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_Draw UI_F
 
 static bool UI_ComboBoxGroup_Init(UI_ComboBox_Group_TypeDef *group, char *label)
 {
+    if (group == NULL)
+        return false;
+
     group->item_num = 0;
     group->label = label;
 
@@ -107,6 +110,8 @@ static bool UI_ComboBoxGroup_Init(UI_ComboBox_Group_TypeDef *group, char *label)
     {
         group->Obj[i] = NULL;
     }
+
+    return true;
 }
 
 static UI_ComboBox_Group_TypeDef *UI_ComboGroup_Create(char *label)
@@ -123,9 +128,9 @@ static UI_ComboBox_Group_TypeDef *UI_ComboGroup_Create(char *label)
     return ComboGroup_Tmp;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL) || (group == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
@@ -137,9 +142,9 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
     return true;
 }
 
-static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
+static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
+    if ((UI_Fraw_Func == NULL) || (Obj == NULL) || (group == NULL))
         return false;
 
     Obj->Gen_Data.DrawPoint = NULL;
