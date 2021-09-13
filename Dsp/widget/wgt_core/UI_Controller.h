@@ -9,7 +9,9 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 
-typedef bool (*UI_Draw)(uint8_t x, uint8_t y, bool state);
+typedef bool (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
+typedef bool (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_width);
+typedef bool (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius);
 
 typedef int (*gen_callback)(uint32_t arg, uint32_t len);
 
@@ -35,8 +37,6 @@ typedef struct
     uint8_t line_width;
     bool label_roll;
     bool label_dsp;
-
-    UI_Draw DrawPoint;
 } UI_GeneralData_TypeDef;
 
 typedef struct
@@ -52,6 +52,7 @@ typedef struct
     uint8_t height;
 
     ProcessBar_MoveDir_TypeDef Mv_Dir;
+    UI_DrawPoint DrawPoint;
 } UI_ProcessBarObj_TypeDef;
 
 typedef struct
@@ -63,16 +64,22 @@ typedef struct
     uint32_t cur_val;
 
     uint8_t radius;
+
+    UI_DrawPoint DrawPoint;
 } UI_ProcessCircleObj_TypeDef;
 
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
+
+    UI_DrawPoint DrawPoint;
 } UI_VerticalBarObj_TypeDef;
 
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
+
+    UI_DrawPoint DrawPoint;
 } UI_HorizonBarObj_TypeDef;
 
 typedef struct
@@ -80,6 +87,8 @@ typedef struct
     UI_GeneralData_TypeDef Gen_Data;
     uint8_t frame_size;
     bool checked;
+
+    UI_DrawRectangle DrawRectangle;
 } UI_CheckBoxObj_TypeDef;
 
 typedef struct
@@ -88,6 +97,8 @@ typedef struct
     uint8_t item_num;
     void *group_ptr;
     bool checked;
+
+    UI_DrawCircle DrawCircle;
 } UI_ComboBoxObj_TypeDef;
 
 typedef struct

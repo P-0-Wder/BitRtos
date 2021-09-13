@@ -27,25 +27,25 @@ static bool UI_LabelDsp_Control(UI_GeneralData_TypeDef *GenData, bool state)
     return true;
 }
 
-static bool UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, UI_Draw UI_Fraw_Func, uint8_t x, uint8_t y)
+static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
 {
     GenData->label = label;
     GenData->label_dsp = false;
     GenData->label_roll = false;
-    GenData->DrawPoint = UI_Fraw_Func;
 
     GenData->x = x;
     GenData->y = y;
 }
 
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
+    if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
 
-    Obj->Gen_Data.DrawPoint = NULL;
+    Obj->DrawPoint = NULL;
+    Obj->DrawPoint = UI_Draw_Func;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     Obj->width = width;
     Obj->height = height;
@@ -60,35 +60,41 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Fu
     return true;
 }
 
-static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
+    if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
 
-    Obj->Gen_Data.DrawPoint = NULL;
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+    Obj->DrawPoint = NULL;
+    Obj->DrawPoint = UI_Draw_Func;
+
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     return true;
 }
 
-static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
+    if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
 
-    Obj->Gen_Data.DrawPoint = NULL;
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+    Obj->DrawPoint = NULL;
+    Obj->DrawPoint = UI_Draw_Func;
+
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     return true;
 }
 
-static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint32_t range)
+static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint32_t range)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL))
+    if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
 
-    Obj->Gen_Data.DrawPoint = NULL;
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+    Obj->DrawPoint = NULL;
+    Obj->DrawPoint = UI_Draw_Func;
+
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     Obj->radius = radius;
     Obj->percent = 0.0;
@@ -128,13 +134,15 @@ static UI_ComboBox_Group_TypeDef *UI_ComboGroup_Create(char *label)
     return ComboGroup_Tmp;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL) || (frame_size <= 4))
+    if ((UI_Draw_Func == NULL) || (Obj == NULL) || (frame_size <= 4))
         return false;
 
-    Obj->Gen_Data.DrawPoint = NULL;
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+    Obj->DrawRectangle = NULL;
+    Obj->DrawRectangle = UI_Draw_Func;
+
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     Obj->checked = false;
     Obj->frame_size = frame_size;
@@ -142,13 +150,15 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_Draw UI_Fraw_Func, 
     return true;
 }
 
-static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, UI_Draw UI_Fraw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
+static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, UI_DrawCircle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
 {
-    if ((UI_Fraw_Func == NULL) || (Obj == NULL) || (group == NULL) || (group->item_num >= MAX_COMBOBOX_ITEM))
+    if ((UI_Draw_Func == NULL) || (Obj == NULL) || (group == NULL) || (group->item_num >= MAX_COMBOBOX_ITEM))
         return false;
 
-    Obj->Gen_Data.DrawPoint = NULL;
-    UI_GenData_Init(&Obj->Gen_Data, label, UI_Fraw_Func, x, y);
+    Obj->DrawCircle = NULL;
+    Obj->DrawCircle = UI_Draw_Func;
+
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     if (group->item_num == 0)
     {
@@ -169,7 +179,7 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
 
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
 {
-    if (Obj->Gen_Data.DrawPoint == NULL)
+    if (Obj->DrawPoint == NULL)
         return false;
 
     return true;
@@ -177,7 +187,7 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if (Obj->Gen_Data.DrawPoint == NULL)
+    if (Obj->DrawPoint == NULL)
         return false;
 
     return true;
@@ -185,7 +195,7 @@ static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if (Obj->Gen_Data.DrawPoint == NULL)
+    if (Obj->DrawPoint == NULL)
         return false;
 
     return true;
@@ -193,7 +203,7 @@ static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 {
-    if (Obj->Gen_Data.DrawPoint == NULL)
+    if (Obj->DrawPoint == NULL)
         return false;
 
     return true;
@@ -201,58 +211,18 @@ static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
 {
-    if (Obj->Gen_Data.DrawPoint == NULL)
+    if (Obj->DrawRectangle == NULL)
         return false;
 
     Obj->checked = state;
 
-    for (uint8_t row = 0; row < Obj->frame_size; row++)
-    {
-        for (uint8_t column = 0; column < Obj->frame_size; column++)
-        {
-            if ((row == 0) || (row == Obj->frame_size - 1))
-            {
-                Obj->Gen_Data.DrawPoint(column, row, true);
-            }
-            else if ((row == 1) || (row == (Obj->frame_size - 1)))
-            {
-                if ((column == 0) || (column == (Obj->frame_size - 1)))
-                {
-                    Obj->Gen_Data.DrawPoint(column, row, true);
-                }
-                else
-                    Obj->Gen_Data.DrawPoint(column, row, false);
-            }
-            else if ((row > 2) && (row < Obj->frame_size - 3))
-            {
-                if ((column == 0) && (column == (Obj->frame_size - 1)))
-                {
-                    Obj->Gen_Data.DrawPoint(column, row, true);
-                }
-                else if ((column == 1) && (column == (Obj->frame_size - 1)))
-                {
-                    Obj->Gen_Data.DrawPoint(column, row, false);
-                }
-                else if ((column > 2) && (column < (Obj->frame_size - 3)))
-                {
-                    if (Obj->checked)
-                    {
-                        Obj->Gen_Data.DrawPoint(column, row, true);
-                    }
-                    else
-                        Obj->Gen_Data.DrawPoint(column, row, false);
-                }
-            }
-        }
-
-        return true;
-    }
+    return true;
 }
 
 /* use group control the combo box */
 static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
 {
-    if (Obj->Gen_Data.DrawPoint == NULL)
+    if (Obj->DrawCircle == NULL)
         return false;
 
     return true;
