@@ -192,6 +192,16 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
     return true;
 }
 
+static bool UI_DigInput_Init()
+{
+    return true;
+}
+
+static bool UI_StrInput_Init()
+{
+    return true;
+}
+
 /******************************* control function *********************************/
 
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
@@ -280,6 +290,18 @@ static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
     }
 
     group->Obj[Obj->item_id]->checked = Obj->checked;
+
+    return true;
+}
+
+static bool UI_DigInput_Ctl()
+{
+
+    return true;
+}
+
+static bool UI_StrInput_Ctl()
+{
 
     return true;
 }
