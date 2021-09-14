@@ -1,0 +1,3060 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"usb_dcd_int.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DCD_HandleResume_ISR,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DCD_HandleResume_ISR:
+  26              	.LVL0:
+  27              	.LFB127:
+  28              		.file 1 "USB/core/usb_dcd_int.c"
+   1:USB/core/usb_dcd_int.c **** /**
+   2:USB/core/usb_dcd_int.c ****   ******************************************************************************
+   3:USB/core/usb_dcd_int.c ****   * @file    usb_dcd_int.c
+   4:USB/core/usb_dcd_int.c ****   * @author  MCD Application Team
+   5:USB/core/usb_dcd_int.c ****   * @version V2.1.0
+   6:USB/core/usb_dcd_int.c ****   * @date    19-March-2012
+   7:USB/core/usb_dcd_int.c ****   * @brief   Peripheral Device interrupt subroutines
+   8:USB/core/usb_dcd_int.c ****   ******************************************************************************
+   9:USB/core/usb_dcd_int.c ****   * @attention
+  10:USB/core/usb_dcd_int.c ****   *
+  11:USB/core/usb_dcd_int.c ****   * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  12:USB/core/usb_dcd_int.c ****   *
+  13:USB/core/usb_dcd_int.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  14:USB/core/usb_dcd_int.c ****   * You may not use this file except in compliance with the License.
+  15:USB/core/usb_dcd_int.c ****   * You may obtain a copy of the License at:
+  16:USB/core/usb_dcd_int.c ****   *
+  17:USB/core/usb_dcd_int.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  18:USB/core/usb_dcd_int.c ****   *
+  19:USB/core/usb_dcd_int.c ****   * Unless required by applicable law or agreed to in writing, software 
+  20:USB/core/usb_dcd_int.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  21:USB/core/usb_dcd_int.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  22:USB/core/usb_dcd_int.c ****   * See the License for the specific language governing permissions and
+  23:USB/core/usb_dcd_int.c ****   * limitations under the License.
+  24:USB/core/usb_dcd_int.c ****   *
+  25:USB/core/usb_dcd_int.c ****   ******************************************************************************
+  26:USB/core/usb_dcd_int.c ****   */
+  27:USB/core/usb_dcd_int.c **** 
+  28:USB/core/usb_dcd_int.c **** /* Includes ------------------------------------------------------------------*/
+  29:USB/core/usb_dcd_int.c **** #include "usb_dcd_int.h"
+  30:USB/core/usb_dcd_int.c **** /** @addtogroup USB_OTG_DRIVER
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 2
+
+
+  31:USB/core/usb_dcd_int.c **** * @{
+  32:USB/core/usb_dcd_int.c **** */
+  33:USB/core/usb_dcd_int.c **** 
+  34:USB/core/usb_dcd_int.c **** /** @defgroup USB_DCD_INT 
+  35:USB/core/usb_dcd_int.c **** * @brief This file contains the interrupt subroutines for the Device mode.
+  36:USB/core/usb_dcd_int.c **** * @{
+  37:USB/core/usb_dcd_int.c **** */
+  38:USB/core/usb_dcd_int.c **** 
+  39:USB/core/usb_dcd_int.c **** 
+  40:USB/core/usb_dcd_int.c **** /** @defgroup USB_DCD_INT_Private_Defines
+  41:USB/core/usb_dcd_int.c **** * @{
+  42:USB/core/usb_dcd_int.c **** */ 
+  43:USB/core/usb_dcd_int.c **** /**
+  44:USB/core/usb_dcd_int.c **** * @}
+  45:USB/core/usb_dcd_int.c **** */ 
+  46:USB/core/usb_dcd_int.c **** 
+  47:USB/core/usb_dcd_int.c **** 
+  48:USB/core/usb_dcd_int.c **** /** @defgroup USB_DCD_INT_Private_TypesDefinitions
+  49:USB/core/usb_dcd_int.c **** * @{
+  50:USB/core/usb_dcd_int.c **** */ 
+  51:USB/core/usb_dcd_int.c **** /**
+  52:USB/core/usb_dcd_int.c **** * @}
+  53:USB/core/usb_dcd_int.c **** */ 
+  54:USB/core/usb_dcd_int.c **** 
+  55:USB/core/usb_dcd_int.c **** 
+  56:USB/core/usb_dcd_int.c **** 
+  57:USB/core/usb_dcd_int.c **** /** @defgroup USB_DCD_INT_Private_Macros
+  58:USB/core/usb_dcd_int.c **** * @{
+  59:USB/core/usb_dcd_int.c **** */ 
+  60:USB/core/usb_dcd_int.c **** /**
+  61:USB/core/usb_dcd_int.c **** * @}
+  62:USB/core/usb_dcd_int.c **** */ 
+  63:USB/core/usb_dcd_int.c **** 
+  64:USB/core/usb_dcd_int.c **** 
+  65:USB/core/usb_dcd_int.c **** /** @defgroup USB_DCD_INT_Private_Variables
+  66:USB/core/usb_dcd_int.c **** * @{
+  67:USB/core/usb_dcd_int.c **** */ 
+  68:USB/core/usb_dcd_int.c **** /**
+  69:USB/core/usb_dcd_int.c **** * @}
+  70:USB/core/usb_dcd_int.c **** */ 
+  71:USB/core/usb_dcd_int.c **** 
+  72:USB/core/usb_dcd_int.c **** 
+  73:USB/core/usb_dcd_int.c **** /** @defgroup USB_DCD_INT_Private_FunctionPrototypes
+  74:USB/core/usb_dcd_int.c **** * @{
+  75:USB/core/usb_dcd_int.c **** */ 
+  76:USB/core/usb_dcd_int.c **** /* static functions */
+  77:USB/core/usb_dcd_int.c **** static uint32_t DCD_ReadDevInEP (USB_OTG_CORE_HANDLE *pdev, uint8_t epnum);
+  78:USB/core/usb_dcd_int.c **** 
+  79:USB/core/usb_dcd_int.c **** /* Interrupt Handlers */
+  80:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleInEP_ISR(USB_OTG_CORE_HANDLE *pdev);
+  81:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleOutEP_ISR(USB_OTG_CORE_HANDLE *pdev);
+  82:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleSof_ISR(USB_OTG_CORE_HANDLE *pdev);
+  83:USB/core/usb_dcd_int.c **** 
+  84:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleRxStatusQueueLevel_ISR(USB_OTG_CORE_HANDLE *pdev);
+  85:USB/core/usb_dcd_int.c **** static uint32_t DCD_WriteEmptyTxFifo(USB_OTG_CORE_HANDLE *pdev , uint32_t epnum);
+  86:USB/core/usb_dcd_int.c **** 
+  87:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleUsbReset_ISR(USB_OTG_CORE_HANDLE *pdev);
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 3
+
+
+  88:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleEnumDone_ISR(USB_OTG_CORE_HANDLE *pdev);
+  89:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleResume_ISR(USB_OTG_CORE_HANDLE *pdev);
+  90:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleUSBSuspend_ISR(USB_OTG_CORE_HANDLE *pdev);
+  91:USB/core/usb_dcd_int.c **** 
+  92:USB/core/usb_dcd_int.c **** static uint32_t DCD_IsoINIncomplete_ISR(USB_OTG_CORE_HANDLE *pdev);
+  93:USB/core/usb_dcd_int.c **** static uint32_t DCD_IsoOUTIncomplete_ISR(USB_OTG_CORE_HANDLE *pdev);
+  94:USB/core/usb_dcd_int.c **** #ifdef VBUS_SENSING_ENABLED
+  95:USB/core/usb_dcd_int.c **** static uint32_t DCD_SessionRequest_ISR(USB_OTG_CORE_HANDLE *pdev);
+  96:USB/core/usb_dcd_int.c **** static uint32_t DCD_OTG_ISR(USB_OTG_CORE_HANDLE *pdev);
+  97:USB/core/usb_dcd_int.c **** #endif
+  98:USB/core/usb_dcd_int.c **** 
+  99:USB/core/usb_dcd_int.c **** /**
+ 100:USB/core/usb_dcd_int.c **** * @}
+ 101:USB/core/usb_dcd_int.c **** */ 
+ 102:USB/core/usb_dcd_int.c **** 
+ 103:USB/core/usb_dcd_int.c **** 
+ 104:USB/core/usb_dcd_int.c **** /** @defgroup USB_DCD_INT_Private_Functions
+ 105:USB/core/usb_dcd_int.c **** * @{
+ 106:USB/core/usb_dcd_int.c **** */ 
+ 107:USB/core/usb_dcd_int.c **** 
+ 108:USB/core/usb_dcd_int.c **** 
+ 109:USB/core/usb_dcd_int.c **** #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED  
+ 110:USB/core/usb_dcd_int.c **** /**
+ 111:USB/core/usb_dcd_int.c **** * @brief  USBD_OTG_EP1OUT_ISR_Handler
+ 112:USB/core/usb_dcd_int.c **** *         handles all USB Interrupts
+ 113:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 114:USB/core/usb_dcd_int.c **** * @retval status
+ 115:USB/core/usb_dcd_int.c **** */
+ 116:USB/core/usb_dcd_int.c **** uint32_t USBD_OTG_EP1OUT_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
+ 117:USB/core/usb_dcd_int.c **** {
+ 118:USB/core/usb_dcd_int.c ****   
+ 119:USB/core/usb_dcd_int.c ****   USB_OTG_DOEPINTn_TypeDef  doepint;
+ 120:USB/core/usb_dcd_int.c ****   USB_OTG_DEPXFRSIZ_TypeDef  deptsiz;  
+ 121:USB/core/usb_dcd_int.c ****   
+ 122:USB/core/usb_dcd_int.c ****   doepint.d32 = USB_OTG_READ_REG32(&pdev->regs.OUTEP_REGS[1]->DOEPINT);
+ 123:USB/core/usb_dcd_int.c ****   doepint.d32&= USB_OTG_READ_REG32(&pdev->regs.DREGS->DOUTEP1MSK);
+ 124:USB/core/usb_dcd_int.c ****   
+ 125:USB/core/usb_dcd_int.c ****   /* Transfer complete */
+ 126:USB/core/usb_dcd_int.c ****   if ( doepint.b.xfercompl )
+ 127:USB/core/usb_dcd_int.c ****   {
+ 128:USB/core/usb_dcd_int.c ****     /* Clear the bit in DOEPINTn for this interrupt */
+ 129:USB/core/usb_dcd_int.c ****     CLEAR_OUT_EP_INTR(1, xfercompl);
+ 130:USB/core/usb_dcd_int.c ****     if (pdev->cfg.dma_enable == 1)
+ 131:USB/core/usb_dcd_int.c ****     {
+ 132:USB/core/usb_dcd_int.c ****       deptsiz.d32 = USB_OTG_READ_REG32(&(pdev->regs.OUTEP_REGS[1]->DOEPTSIZ));
+ 133:USB/core/usb_dcd_int.c ****       /*ToDo : handle more than one single MPS size packet */
+ 134:USB/core/usb_dcd_int.c ****       pdev->dev.out_ep[1].xfer_count = pdev->dev.out_ep[1].maxpacket - \
+ 135:USB/core/usb_dcd_int.c ****         deptsiz.b.xfersize;
+ 136:USB/core/usb_dcd_int.c ****     }    
+ 137:USB/core/usb_dcd_int.c ****     /* Inform upper layer: data ready */
+ 138:USB/core/usb_dcd_int.c ****     /* RX COMPLETE */
+ 139:USB/core/usb_dcd_int.c ****     USBD_DCD_INT_fops->DataOutStage(pdev , 1);
+ 140:USB/core/usb_dcd_int.c ****     
+ 141:USB/core/usb_dcd_int.c ****   }
+ 142:USB/core/usb_dcd_int.c ****   
+ 143:USB/core/usb_dcd_int.c ****   /* Endpoint disable  */
+ 144:USB/core/usb_dcd_int.c ****   if ( doepint.b.epdisabled )
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 4
+
+
+ 145:USB/core/usb_dcd_int.c ****   {
+ 146:USB/core/usb_dcd_int.c ****     /* Clear the bit in DOEPINTn for this interrupt */
+ 147:USB/core/usb_dcd_int.c ****     CLEAR_OUT_EP_INTR(1, epdisabled);
+ 148:USB/core/usb_dcd_int.c ****   }
+ 149:USB/core/usb_dcd_int.c **** 
+ 150:USB/core/usb_dcd_int.c ****   return 1;
+ 151:USB/core/usb_dcd_int.c **** }
+ 152:USB/core/usb_dcd_int.c **** 
+ 153:USB/core/usb_dcd_int.c **** /**
+ 154:USB/core/usb_dcd_int.c **** * @brief  USBD_OTG_EP1IN_ISR_Handler
+ 155:USB/core/usb_dcd_int.c **** *         handles all USB Interrupts
+ 156:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 157:USB/core/usb_dcd_int.c **** * @retval status
+ 158:USB/core/usb_dcd_int.c **** */
+ 159:USB/core/usb_dcd_int.c **** uint32_t USBD_OTG_EP1IN_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
+ 160:USB/core/usb_dcd_int.c **** {
+ 161:USB/core/usb_dcd_int.c ****   
+ 162:USB/core/usb_dcd_int.c ****   USB_OTG_DIEPINTn_TypeDef  diepint;
+ 163:USB/core/usb_dcd_int.c ****   uint32_t fifoemptymsk, msk, emp;
+ 164:USB/core/usb_dcd_int.c ****   
+ 165:USB/core/usb_dcd_int.c ****   msk = USB_OTG_READ_REG32(&pdev->regs.DREGS->DINEP1MSK);
+ 166:USB/core/usb_dcd_int.c ****   emp = USB_OTG_READ_REG32(&pdev->regs.DREGS->DIEPEMPMSK);
+ 167:USB/core/usb_dcd_int.c ****   msk |= ((emp >> 1 ) & 0x1) << 7;
+ 168:USB/core/usb_dcd_int.c ****   diepint.d32  = USB_OTG_READ_REG32(&pdev->regs.INEP_REGS[1]->DIEPINT) & msk;  
+ 169:USB/core/usb_dcd_int.c ****   
+ 170:USB/core/usb_dcd_int.c ****   if ( diepint.b.xfercompl )
+ 171:USB/core/usb_dcd_int.c ****   {
+ 172:USB/core/usb_dcd_int.c ****     fifoemptymsk = 0x1 << 1;
+ 173:USB/core/usb_dcd_int.c ****     USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DIEPEMPMSK, fifoemptymsk, 0);
+ 174:USB/core/usb_dcd_int.c ****     CLEAR_IN_EP_INTR(1, xfercompl);
+ 175:USB/core/usb_dcd_int.c ****     /* TX COMPLETE */
+ 176:USB/core/usb_dcd_int.c ****     USBD_DCD_INT_fops->DataInStage(pdev , 1);
+ 177:USB/core/usb_dcd_int.c ****   }
+ 178:USB/core/usb_dcd_int.c ****   if ( diepint.b.epdisabled )
+ 179:USB/core/usb_dcd_int.c ****   {
+ 180:USB/core/usb_dcd_int.c ****     CLEAR_IN_EP_INTR(1, epdisabled);
+ 181:USB/core/usb_dcd_int.c ****   }  
+ 182:USB/core/usb_dcd_int.c ****   if ( diepint.b.timeout )
+ 183:USB/core/usb_dcd_int.c ****   {
+ 184:USB/core/usb_dcd_int.c ****     CLEAR_IN_EP_INTR(1, timeout);
+ 185:USB/core/usb_dcd_int.c ****   }
+ 186:USB/core/usb_dcd_int.c ****   if (diepint.b.intktxfemp)
+ 187:USB/core/usb_dcd_int.c ****   {
+ 188:USB/core/usb_dcd_int.c ****     CLEAR_IN_EP_INTR(1, intktxfemp);
+ 189:USB/core/usb_dcd_int.c ****   }
+ 190:USB/core/usb_dcd_int.c ****   if (diepint.b.inepnakeff)
+ 191:USB/core/usb_dcd_int.c ****   {
+ 192:USB/core/usb_dcd_int.c ****     CLEAR_IN_EP_INTR(1, inepnakeff);
+ 193:USB/core/usb_dcd_int.c ****   }
+ 194:USB/core/usb_dcd_int.c ****   if (diepint.b.emptyintr)
+ 195:USB/core/usb_dcd_int.c ****   {
+ 196:USB/core/usb_dcd_int.c ****     DCD_WriteEmptyTxFifo(pdev , 1);
+ 197:USB/core/usb_dcd_int.c ****     CLEAR_IN_EP_INTR(1, emptyintr);
+ 198:USB/core/usb_dcd_int.c ****   }
+ 199:USB/core/usb_dcd_int.c ****   return 1;
+ 200:USB/core/usb_dcd_int.c **** }
+ 201:USB/core/usb_dcd_int.c **** #endif
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 5
+
+
+ 202:USB/core/usb_dcd_int.c **** 
+ 203:USB/core/usb_dcd_int.c **** /**
+ 204:USB/core/usb_dcd_int.c **** * @brief  STM32_USBF_OTG_ISR_Handler
+ 205:USB/core/usb_dcd_int.c **** *         handles all USB Interrupts
+ 206:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 207:USB/core/usb_dcd_int.c **** * @retval status
+ 208:USB/core/usb_dcd_int.c **** */
+ 209:USB/core/usb_dcd_int.c **** uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
+ 210:USB/core/usb_dcd_int.c **** {
+ 211:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintr_status;
+ 212:USB/core/usb_dcd_int.c ****   uint32_t retval = 0;
+ 213:USB/core/usb_dcd_int.c ****   
+ 214:USB/core/usb_dcd_int.c ****   if (USB_OTG_IsDeviceMode(pdev)) /* ensure that we are in device mode */
+ 215:USB/core/usb_dcd_int.c ****   {
+ 216:USB/core/usb_dcd_int.c ****     gintr_status.d32 = USB_OTG_ReadCoreItr(pdev);
+ 217:USB/core/usb_dcd_int.c ****     if (!gintr_status.d32) /* avoid spurious interrupt */
+ 218:USB/core/usb_dcd_int.c ****     {
+ 219:USB/core/usb_dcd_int.c ****       return 0;
+ 220:USB/core/usb_dcd_int.c ****     }
+ 221:USB/core/usb_dcd_int.c ****     
+ 222:USB/core/usb_dcd_int.c ****     if (gintr_status.b.outepintr)
+ 223:USB/core/usb_dcd_int.c ****     {
+ 224:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleOutEP_ISR(pdev);
+ 225:USB/core/usb_dcd_int.c ****     }    
+ 226:USB/core/usb_dcd_int.c ****     
+ 227:USB/core/usb_dcd_int.c ****     if (gintr_status.b.inepint)
+ 228:USB/core/usb_dcd_int.c ****     {
+ 229:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleInEP_ISR(pdev);
+ 230:USB/core/usb_dcd_int.c ****     }
+ 231:USB/core/usb_dcd_int.c ****     
+ 232:USB/core/usb_dcd_int.c ****     if (gintr_status.b.modemismatch)
+ 233:USB/core/usb_dcd_int.c ****     {
+ 234:USB/core/usb_dcd_int.c ****       USB_OTG_GINTSTS_TypeDef  gintsts;
+ 235:USB/core/usb_dcd_int.c ****       
+ 236:USB/core/usb_dcd_int.c ****       /* Clear interrupt */
+ 237:USB/core/usb_dcd_int.c ****       gintsts.d32 = 0;
+ 238:USB/core/usb_dcd_int.c ****       gintsts.b.modemismatch = 1;
+ 239:USB/core/usb_dcd_int.c ****       USB_OTG_WRITE_REG32(&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+ 240:USB/core/usb_dcd_int.c ****     }
+ 241:USB/core/usb_dcd_int.c ****     
+ 242:USB/core/usb_dcd_int.c ****     if (gintr_status.b.wkupintr)
+ 243:USB/core/usb_dcd_int.c ****     {
+ 244:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleResume_ISR(pdev);
+ 245:USB/core/usb_dcd_int.c ****     }
+ 246:USB/core/usb_dcd_int.c ****     
+ 247:USB/core/usb_dcd_int.c ****     if (gintr_status.b.usbsuspend)
+ 248:USB/core/usb_dcd_int.c ****     {
+ 249:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleUSBSuspend_ISR(pdev);
+ 250:USB/core/usb_dcd_int.c ****     }
+ 251:USB/core/usb_dcd_int.c ****     if (gintr_status.b.sofintr)
+ 252:USB/core/usb_dcd_int.c ****     {
+ 253:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleSof_ISR(pdev);
+ 254:USB/core/usb_dcd_int.c ****       
+ 255:USB/core/usb_dcd_int.c ****     }
+ 256:USB/core/usb_dcd_int.c ****     
+ 257:USB/core/usb_dcd_int.c ****     if (gintr_status.b.rxstsqlvl)
+ 258:USB/core/usb_dcd_int.c ****     {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 6
+
+
+ 259:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleRxStatusQueueLevel_ISR(pdev);
+ 260:USB/core/usb_dcd_int.c ****       
+ 261:USB/core/usb_dcd_int.c ****     }
+ 262:USB/core/usb_dcd_int.c ****     
+ 263:USB/core/usb_dcd_int.c ****     if (gintr_status.b.usbreset)
+ 264:USB/core/usb_dcd_int.c ****     {
+ 265:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleUsbReset_ISR(pdev);
+ 266:USB/core/usb_dcd_int.c ****       
+ 267:USB/core/usb_dcd_int.c ****     }
+ 268:USB/core/usb_dcd_int.c ****     if (gintr_status.b.enumdone)
+ 269:USB/core/usb_dcd_int.c ****     {
+ 270:USB/core/usb_dcd_int.c ****       retval |= DCD_HandleEnumDone_ISR(pdev);
+ 271:USB/core/usb_dcd_int.c ****     }
+ 272:USB/core/usb_dcd_int.c ****     
+ 273:USB/core/usb_dcd_int.c ****     if (gintr_status.b.incomplisoin)
+ 274:USB/core/usb_dcd_int.c ****     {
+ 275:USB/core/usb_dcd_int.c ****       retval |= DCD_IsoINIncomplete_ISR(pdev);
+ 276:USB/core/usb_dcd_int.c ****     }
+ 277:USB/core/usb_dcd_int.c **** 
+ 278:USB/core/usb_dcd_int.c ****     if (gintr_status.b.incomplisoout)
+ 279:USB/core/usb_dcd_int.c ****     {
+ 280:USB/core/usb_dcd_int.c ****       retval |= DCD_IsoOUTIncomplete_ISR(pdev);
+ 281:USB/core/usb_dcd_int.c ****     }    
+ 282:USB/core/usb_dcd_int.c **** #ifdef VBUS_SENSING_ENABLED
+ 283:USB/core/usb_dcd_int.c ****     if (gintr_status.b.sessreqintr)
+ 284:USB/core/usb_dcd_int.c ****     {
+ 285:USB/core/usb_dcd_int.c ****       retval |= DCD_SessionRequest_ISR(pdev);
+ 286:USB/core/usb_dcd_int.c ****     }
+ 287:USB/core/usb_dcd_int.c **** 
+ 288:USB/core/usb_dcd_int.c ****     if (gintr_status.b.otgintr)
+ 289:USB/core/usb_dcd_int.c ****     {
+ 290:USB/core/usb_dcd_int.c ****       retval |= DCD_OTG_ISR(pdev);
+ 291:USB/core/usb_dcd_int.c ****     }   
+ 292:USB/core/usb_dcd_int.c **** #endif    
+ 293:USB/core/usb_dcd_int.c ****   }
+ 294:USB/core/usb_dcd_int.c ****   return retval;
+ 295:USB/core/usb_dcd_int.c **** }
+ 296:USB/core/usb_dcd_int.c **** 
+ 297:USB/core/usb_dcd_int.c **** #ifdef VBUS_SENSING_ENABLED
+ 298:USB/core/usb_dcd_int.c **** /**
+ 299:USB/core/usb_dcd_int.c **** * @brief  DCD_SessionRequest_ISR
+ 300:USB/core/usb_dcd_int.c **** *         Indicates that the USB_OTG controller has detected a connection
+ 301:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 302:USB/core/usb_dcd_int.c **** * @retval status
+ 303:USB/core/usb_dcd_int.c **** */
+ 304:USB/core/usb_dcd_int.c **** static uint32_t DCD_SessionRequest_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 305:USB/core/usb_dcd_int.c **** {
+ 306:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;  
+ 307:USB/core/usb_dcd_int.c ****   USBD_DCD_INT_fops->DevConnected (pdev);
+ 308:USB/core/usb_dcd_int.c **** 
+ 309:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ 310:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 311:USB/core/usb_dcd_int.c ****   gintsts.b.sessreqintr = 1;
+ 312:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32 (&pdev->regs.GREGS->GINTSTS, gintsts.d32);   
+ 313:USB/core/usb_dcd_int.c ****   return 1;
+ 314:USB/core/usb_dcd_int.c **** }
+ 315:USB/core/usb_dcd_int.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 7
+
+
+ 316:USB/core/usb_dcd_int.c **** /**
+ 317:USB/core/usb_dcd_int.c **** * @brief  DCD_OTG_ISR
+ 318:USB/core/usb_dcd_int.c **** *         Indicates that the USB_OTG controller has detected an OTG event:
+ 319:USB/core/usb_dcd_int.c **** *                 used to detect the end of session i.e. disconnection
+ 320:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 321:USB/core/usb_dcd_int.c **** * @retval status
+ 322:USB/core/usb_dcd_int.c **** */
+ 323:USB/core/usb_dcd_int.c **** static uint32_t DCD_OTG_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 324:USB/core/usb_dcd_int.c **** {
+ 325:USB/core/usb_dcd_int.c **** 
+ 326:USB/core/usb_dcd_int.c ****   USB_OTG_GOTGINT_TypeDef  gotgint;
+ 327:USB/core/usb_dcd_int.c **** 
+ 328:USB/core/usb_dcd_int.c ****   gotgint.d32 = USB_OTG_READ_REG32(&pdev->regs.GREGS->GOTGINT);
+ 329:USB/core/usb_dcd_int.c ****   
+ 330:USB/core/usb_dcd_int.c ****   if (gotgint.b.sesenddet)
+ 331:USB/core/usb_dcd_int.c ****   {
+ 332:USB/core/usb_dcd_int.c ****     USBD_DCD_INT_fops->DevDisconnected (pdev);
+ 333:USB/core/usb_dcd_int.c ****   }
+ 334:USB/core/usb_dcd_int.c ****   /* Clear OTG interrupt */
+ 335:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32(&pdev->regs.GREGS->GOTGINT, gotgint.d32); 
+ 336:USB/core/usb_dcd_int.c ****   return 1;
+ 337:USB/core/usb_dcd_int.c **** }
+ 338:USB/core/usb_dcd_int.c **** #endif
+ 339:USB/core/usb_dcd_int.c **** /**
+ 340:USB/core/usb_dcd_int.c **** * @brief  DCD_HandleResume_ISR
+ 341:USB/core/usb_dcd_int.c **** *         Indicates that the USB_OTG controller has detected a resume or
+ 342:USB/core/usb_dcd_int.c **** *                 remote Wake-up sequence
+ 343:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 344:USB/core/usb_dcd_int.c **** * @retval status
+ 345:USB/core/usb_dcd_int.c **** */
+ 346:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleResume_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 347:USB/core/usb_dcd_int.c **** {
+  29              		.loc 1 347 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 347 1 is_stmt 0 view .LVU1
+  34 0000 10B5     		push	{r4, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 4, -8
+  38              		.cfi_offset 14, -4
+  39 0002 0446     		mov	r4, r0
+ 348:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;
+  40              		.loc 1 348 3 is_stmt 1 view .LVU2
+ 349:USB/core/usb_dcd_int.c ****   USB_OTG_DCTL_TypeDef     devctl;
+  41              		.loc 1 349 3 view .LVU3
+ 350:USB/core/usb_dcd_int.c ****   USB_OTG_PCGCCTL_TypeDef  power;
+  42              		.loc 1 350 3 view .LVU4
+ 351:USB/core/usb_dcd_int.c ****   
+ 352:USB/core/usb_dcd_int.c ****   if(pdev->cfg.low_power)
+  43              		.loc 1 352 3 view .LVU5
+  44              		.loc 1 352 15 is_stmt 0 view .LVU6
+  45 0004 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+  46              		.loc 1 352 5 view .LVU7
+  47 0006 43B1     		cbz	r3, .L2
+ 353:USB/core/usb_dcd_int.c ****   {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 8
+
+
+ 354:USB/core/usb_dcd_int.c ****     /* un-gate USB Core clock */
+ 355:USB/core/usb_dcd_int.c ****     power.d32 = USB_OTG_READ_REG32(&pdev->regs.PCGCCTL);
+  48              		.loc 1 355 5 is_stmt 1 view .LVU8
+  49              		.loc 1 355 17 is_stmt 0 view .LVU9
+  50 0008 D0F80C31 		ldr	r3, [r0, #268]
+ 356:USB/core/usb_dcd_int.c ****     power.b.gatehclk = 0;
+  51              		.loc 1 356 5 is_stmt 1 view .LVU10
+  52              		.loc 1 356 22 is_stmt 0 view .LVU11
+  53 000c 6FF34103 		bfc	r3, #1, #1
+  54              	.LVL1:
+ 357:USB/core/usb_dcd_int.c ****     power.b.stoppclk = 0;
+  55              		.loc 1 357 5 is_stmt 1 view .LVU12
+  56              		.loc 1 357 22 is_stmt 0 view .LVU13
+  57 0010 6FF30003 		bfc	r3, #0, #1
+ 358:USB/core/usb_dcd_int.c ****     USB_OTG_WRITE_REG32(pdev->regs.PCGCCTL, power.d32);
+  58              		.loc 1 358 5 is_stmt 1 view .LVU14
+  59 0014 D0F80C21 		ldr	r2, [r0, #268]
+  60 0018 1360     		str	r3, [r2]
+  61              	.L2:
+ 359:USB/core/usb_dcd_int.c ****   }
+ 360:USB/core/usb_dcd_int.c ****   
+ 361:USB/core/usb_dcd_int.c ****   /* Clear the Remote Wake-up Signaling */
+ 362:USB/core/usb_dcd_int.c ****   devctl.d32 = 0;
+  62              		.loc 1 362 3 view .LVU15
+ 363:USB/core/usb_dcd_int.c ****   devctl.b.rmtwkupsig = 1;
+  63              		.loc 1 363 3 view .LVU16
+ 364:USB/core/usb_dcd_int.c ****   USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DCTL, devctl.d32, 0);
+  64              		.loc 1 364 3 view .LVU17
+  65 001a 2269     		ldr	r2, [r4, #16]
+  66 001c 5368     		ldr	r3, [r2, #4]
+  67              	.LVL2:
+  68              		.loc 1 364 3 is_stmt 0 view .LVU18
+  69 001e 23F00103 		bic	r3, r3, #1
+  70 0022 5360     		str	r3, [r2, #4]
+ 365:USB/core/usb_dcd_int.c ****   
+ 366:USB/core/usb_dcd_int.c ****   /* Inform upper layer by the Resume Event */
+ 367:USB/core/usb_dcd_int.c ****   USBD_DCD_INT_fops->Resume (pdev);
+  71              		.loc 1 367 3 is_stmt 1 view .LVU19
+  72              		.loc 1 367 20 is_stmt 0 view .LVU20
+  73 0024 054B     		ldr	r3, .L4
+  74 0026 1B68     		ldr	r3, [r3]
+  75 0028 9B69     		ldr	r3, [r3, #24]
+  76              		.loc 1 367 3 view .LVU21
+  77 002a 2046     		mov	r0, r4
+  78              	.LVL3:
+  79              		.loc 1 367 3 view .LVU22
+  80 002c 9847     		blx	r3
+  81              	.LVL4:
+ 368:USB/core/usb_dcd_int.c ****   
+ 369:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ 370:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+  82              		.loc 1 370 3 is_stmt 1 view .LVU23
+ 371:USB/core/usb_dcd_int.c ****   gintsts.b.wkupintr = 1;
+  83              		.loc 1 371 3 view .LVU24
+ 372:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32 (&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+  84              		.loc 1 372 3 view .LVU25
+  85 002e E368     		ldr	r3, [r4, #12]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 9
+
+
+  86 0030 4FF00042 		mov	r2, #-2147483648
+  87 0034 5A61     		str	r2, [r3, #20]
+ 373:USB/core/usb_dcd_int.c ****   return 1;
+  88              		.loc 1 373 3 view .LVU26
+ 374:USB/core/usb_dcd_int.c **** }
+  89              		.loc 1 374 1 is_stmt 0 view .LVU27
+  90 0036 0120     		movs	r0, #1
+  91 0038 10BD     		pop	{r4, pc}
+  92              	.LVL5:
+  93              	.L5:
+  94              		.loc 1 374 1 view .LVU28
+  95 003a 00BF     		.align	2
+  96              	.L4:
+  97 003c 00000000 		.word	USBD_DCD_INT_fops
+  98              		.cfi_endproc
+  99              	.LFE127:
+ 101              		.section	.text.DCD_HandleUSBSuspend_ISR,"ax",%progbits
+ 102              		.align	1
+ 103              		.syntax unified
+ 104              		.thumb
+ 105              		.thumb_func
+ 106              		.fpu fpv4-sp-d16
+ 108              	DCD_HandleUSBSuspend_ISR:
+ 109              	.LVL6:
+ 110              	.LFB128:
+ 375:USB/core/usb_dcd_int.c **** 
+ 376:USB/core/usb_dcd_int.c **** /**
+ 377:USB/core/usb_dcd_int.c **** * @brief  USB_OTG_HandleUSBSuspend_ISR
+ 378:USB/core/usb_dcd_int.c **** *         Indicates that SUSPEND state has been detected on the USB
+ 379:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 380:USB/core/usb_dcd_int.c **** * @retval status
+ 381:USB/core/usb_dcd_int.c **** */
+ 382:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleUSBSuspend_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 383:USB/core/usb_dcd_int.c **** {
+ 111              		.loc 1 383 1 is_stmt 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ args = 0, pretend = 0, frame = 8
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115              		.loc 1 383 1 is_stmt 0 view .LVU30
+ 116 0000 10B5     		push	{r4, lr}
+ 117              	.LCFI1:
+ 118              		.cfi_def_cfa_offset 8
+ 119              		.cfi_offset 4, -8
+ 120              		.cfi_offset 14, -4
+ 121 0002 82B0     		sub	sp, sp, #8
+ 122              	.LCFI2:
+ 123              		.cfi_def_cfa_offset 16
+ 124 0004 0446     		mov	r4, r0
+ 384:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;
+ 125              		.loc 1 384 3 is_stmt 1 view .LVU31
+ 385:USB/core/usb_dcd_int.c ****   USB_OTG_PCGCCTL_TypeDef  power;
+ 126              		.loc 1 385 3 view .LVU32
+ 386:USB/core/usb_dcd_int.c ****   USB_OTG_DSTS_TypeDef     dsts;
+ 127              		.loc 1 386 3 view .LVU33
+ 387:USB/core/usb_dcd_int.c ****   __IO uint8_t prev_status = 0;
+ 128              		.loc 1 387 3 view .LVU34
+ 129              		.loc 1 387 16 is_stmt 0 view .LVU35
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 10
+
+
+ 130 0006 0023     		movs	r3, #0
+ 131 0008 8DF80730 		strb	r3, [sp, #7]
+ 388:USB/core/usb_dcd_int.c ****   
+ 389:USB/core/usb_dcd_int.c ****   prev_status = pdev->dev.device_status;
+ 132              		.loc 1 389 3 is_stmt 1 view .LVU36
+ 133              		.loc 1 389 26 is_stmt 0 view .LVU37
+ 134 000c 90F81231 		ldrb	r3, [r0, #274]	@ zero_extendqisi2
+ 135              		.loc 1 389 15 view .LVU38
+ 136 0010 8DF80730 		strb	r3, [sp, #7]
+ 390:USB/core/usb_dcd_int.c ****   USBD_DCD_INT_fops->Suspend (pdev);      
+ 137              		.loc 1 390 3 is_stmt 1 view .LVU39
+ 138              		.loc 1 390 20 is_stmt 0 view .LVU40
+ 139 0014 164B     		ldr	r3, .L10
+ 140 0016 1B68     		ldr	r3, [r3]
+ 141 0018 5B69     		ldr	r3, [r3, #20]
+ 142              		.loc 1 390 3 view .LVU41
+ 143 001a 9847     		blx	r3
+ 144              	.LVL7:
+ 391:USB/core/usb_dcd_int.c ****   
+ 392:USB/core/usb_dcd_int.c ****   dsts.d32 = USB_OTG_READ_REG32(&pdev->regs.DREGS->DSTS);
+ 145              		.loc 1 392 3 is_stmt 1 view .LVU42
+ 146              		.loc 1 392 14 is_stmt 0 view .LVU43
+ 147 001c 2369     		ldr	r3, [r4, #16]
+ 148 001e 9968     		ldr	r1, [r3, #8]
+ 393:USB/core/usb_dcd_int.c ****     
+ 394:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ 395:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 149              		.loc 1 395 3 is_stmt 1 view .LVU44
+ 396:USB/core/usb_dcd_int.c ****   gintsts.b.usbsuspend = 1;
+ 150              		.loc 1 396 3 view .LVU45
+ 397:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32(&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+ 151              		.loc 1 397 3 view .LVU46
+ 152 0020 E368     		ldr	r3, [r4, #12]
+ 153 0022 4FF40062 		mov	r2, #2048
+ 154 0026 5A61     		str	r2, [r3, #20]
+ 398:USB/core/usb_dcd_int.c ****   
+ 399:USB/core/usb_dcd_int.c ****   if((pdev->cfg.low_power) && (dsts.b.suspsts == 1)  && 
+ 155              		.loc 1 399 3 view .LVU47
+ 156              		.loc 1 399 16 is_stmt 0 view .LVU48
+ 157 0028 A37A     		ldrb	r3, [r4, #10]	@ zero_extendqisi2
+ 158              		.loc 1 399 5 view .LVU49
+ 159 002a 33B1     		cbz	r3, .L7
+ 160              		.loc 1 399 28 discriminator 1 view .LVU50
+ 161 002c 11F0010F 		tst	r1, #1
+ 162 0030 03D0     		beq	.L7
+ 400:USB/core/usb_dcd_int.c ****     (pdev->dev.connection_status == 1) && 
+ 163              		.loc 1 400 15 discriminator 2 view .LVU51
+ 164 0032 94F81531 		ldrb	r3, [r4, #277]	@ zero_extendqisi2
+ 399:USB/core/usb_dcd_int.c ****     (pdev->dev.connection_status == 1) && 
+ 165              		.loc 1 399 54 discriminator 2 view .LVU52
+ 166 0036 012B     		cmp	r3, #1
+ 167 0038 02D0     		beq	.L9
+ 168              	.L7:
+ 401:USB/core/usb_dcd_int.c ****     (prev_status  == USB_OTG_CONFIGURED))
+ 402:USB/core/usb_dcd_int.c ****   {
+ 403:USB/core/usb_dcd_int.c **** 	/*  switch-off the clocks */
+ 404:USB/core/usb_dcd_int.c ****     power.d32 = 0;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 11
+
+
+ 405:USB/core/usb_dcd_int.c ****     power.b.stoppclk = 1;
+ 406:USB/core/usb_dcd_int.c ****     USB_OTG_MODIFY_REG32(pdev->regs.PCGCCTL, 0, power.d32);  
+ 407:USB/core/usb_dcd_int.c ****     
+ 408:USB/core/usb_dcd_int.c ****     power.b.gatehclk = 1;
+ 409:USB/core/usb_dcd_int.c ****     USB_OTG_MODIFY_REG32(pdev->regs.PCGCCTL, 0, power.d32);
+ 410:USB/core/usb_dcd_int.c ****     
+ 411:USB/core/usb_dcd_int.c ****     /* Request to enter Sleep mode after exit from current ISR */
+ 412:USB/core/usb_dcd_int.c ****     SCB->SCR |= (SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk);
+ 413:USB/core/usb_dcd_int.c ****   }
+ 414:USB/core/usb_dcd_int.c ****   return 1;
+ 169              		.loc 1 414 3 is_stmt 1 view .LVU53
+ 415:USB/core/usb_dcd_int.c **** }
+ 170              		.loc 1 415 1 is_stmt 0 view .LVU54
+ 171 003a 0120     		movs	r0, #1
+ 172 003c 02B0     		add	sp, sp, #8
+ 173              	.LCFI3:
+ 174              		.cfi_remember_state
+ 175              		.cfi_def_cfa_offset 8
+ 176              		@ sp needed
+ 177 003e 10BD     		pop	{r4, pc}
+ 178              	.LVL8:
+ 179              	.L9:
+ 180              	.LCFI4:
+ 181              		.cfi_restore_state
+ 401:USB/core/usb_dcd_int.c ****     (prev_status  == USB_OTG_CONFIGURED))
+ 182              		.loc 1 401 19 view .LVU55
+ 183 0040 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 184 0044 DBB2     		uxtb	r3, r3
+ 400:USB/core/usb_dcd_int.c ****     (prev_status  == USB_OTG_CONFIGURED))
+ 185              		.loc 1 400 40 view .LVU56
+ 186 0046 032B     		cmp	r3, #3
+ 187 0048 F7D1     		bne	.L7
+ 404:USB/core/usb_dcd_int.c ****     power.b.stoppclk = 1;
+ 188              		.loc 1 404 5 is_stmt 1 view .LVU57
+ 405:USB/core/usb_dcd_int.c ****     USB_OTG_MODIFY_REG32(pdev->regs.PCGCCTL, 0, power.d32);  
+ 189              		.loc 1 405 5 view .LVU58
+ 406:USB/core/usb_dcd_int.c ****     
+ 190              		.loc 1 406 5 view .LVU59
+ 191 004a D4F80C21 		ldr	r2, [r4, #268]
+ 192 004e 1368     		ldr	r3, [r2]
+ 193 0050 43F00103 		orr	r3, r3, #1
+ 194 0054 1360     		str	r3, [r2]
+ 408:USB/core/usb_dcd_int.c ****     USB_OTG_MODIFY_REG32(pdev->regs.PCGCCTL, 0, power.d32);
+ 195              		.loc 1 408 5 view .LVU60
+ 409:USB/core/usb_dcd_int.c ****     
+ 196              		.loc 1 409 5 view .LVU61
+ 197 0056 D4F80C21 		ldr	r2, [r4, #268]
+ 198 005a 1368     		ldr	r3, [r2]
+ 199 005c 43F00303 		orr	r3, r3, #3
+ 200 0060 1360     		str	r3, [r2]
+ 412:USB/core/usb_dcd_int.c ****   }
+ 201              		.loc 1 412 5 view .LVU62
+ 412:USB/core/usb_dcd_int.c ****   }
+ 202              		.loc 1 412 14 is_stmt 0 view .LVU63
+ 203 0062 044A     		ldr	r2, .L10+4
+ 204 0064 1369     		ldr	r3, [r2, #16]
+ 205 0066 43F00603 		orr	r3, r3, #6
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 12
+
+
+ 206 006a 1361     		str	r3, [r2, #16]
+ 207 006c E5E7     		b	.L7
+ 208              	.L11:
+ 209 006e 00BF     		.align	2
+ 210              	.L10:
+ 211 0070 00000000 		.word	USBD_DCD_INT_fops
+ 212 0074 00ED00E0 		.word	-536810240
+ 213              		.cfi_endproc
+ 214              	.LFE128:
+ 216              		.section	.text.DCD_HandleSof_ISR,"ax",%progbits
+ 217              		.align	1
+ 218              		.syntax unified
+ 219              		.thumb
+ 220              		.thumb_func
+ 221              		.fpu fpv4-sp-d16
+ 223              	DCD_HandleSof_ISR:
+ 224              	.LVL9:
+ 225              	.LFB131:
+ 416:USB/core/usb_dcd_int.c **** 
+ 417:USB/core/usb_dcd_int.c **** /**
+ 418:USB/core/usb_dcd_int.c **** * @brief  DCD_HandleInEP_ISR
+ 419:USB/core/usb_dcd_int.c **** *         Indicates that an IN EP has a pending Interrupt
+ 420:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 421:USB/core/usb_dcd_int.c **** * @retval status
+ 422:USB/core/usb_dcd_int.c **** */
+ 423:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleInEP_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 424:USB/core/usb_dcd_int.c **** {
+ 425:USB/core/usb_dcd_int.c ****   USB_OTG_DIEPINTn_TypeDef  diepint;
+ 426:USB/core/usb_dcd_int.c ****   
+ 427:USB/core/usb_dcd_int.c ****   uint32_t ep_intr;
+ 428:USB/core/usb_dcd_int.c ****   uint32_t epnum = 0;
+ 429:USB/core/usb_dcd_int.c ****   uint32_t fifoemptymsk;
+ 430:USB/core/usb_dcd_int.c ****   diepint.d32 = 0;
+ 431:USB/core/usb_dcd_int.c ****   ep_intr = USB_OTG_ReadDevAllInEPItr(pdev);
+ 432:USB/core/usb_dcd_int.c ****   
+ 433:USB/core/usb_dcd_int.c ****   while ( ep_intr )
+ 434:USB/core/usb_dcd_int.c ****   {
+ 435:USB/core/usb_dcd_int.c ****     if (ep_intr&0x1) /* In ITR */
+ 436:USB/core/usb_dcd_int.c ****     {
+ 437:USB/core/usb_dcd_int.c ****       diepint.d32 = DCD_ReadDevInEP(pdev , epnum); /* Get In ITR status */
+ 438:USB/core/usb_dcd_int.c ****       if ( diepint.b.xfercompl )
+ 439:USB/core/usb_dcd_int.c ****       {
+ 440:USB/core/usb_dcd_int.c ****         fifoemptymsk = 0x1 << epnum;
+ 441:USB/core/usb_dcd_int.c ****         USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DIEPEMPMSK, fifoemptymsk, 0);
+ 442:USB/core/usb_dcd_int.c ****         CLEAR_IN_EP_INTR(epnum, xfercompl);
+ 443:USB/core/usb_dcd_int.c ****         /* TX COMPLETE */
+ 444:USB/core/usb_dcd_int.c ****         USBD_DCD_INT_fops->DataInStage(pdev , epnum);
+ 445:USB/core/usb_dcd_int.c ****         
+ 446:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 447:USB/core/usb_dcd_int.c ****         {
+ 448:USB/core/usb_dcd_int.c ****           if((epnum == 0) && (pdev->dev.device_state == USB_OTG_EP0_STATUS_IN))
+ 449:USB/core/usb_dcd_int.c ****           {
+ 450:USB/core/usb_dcd_int.c ****             /* prepare to rx more setup packets */
+ 451:USB/core/usb_dcd_int.c ****             USB_OTG_EP0_OutStart(pdev);
+ 452:USB/core/usb_dcd_int.c ****           }
+ 453:USB/core/usb_dcd_int.c ****         }           
+ 454:USB/core/usb_dcd_int.c ****       }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 13
+
+
+ 455:USB/core/usb_dcd_int.c ****       if ( diepint.b.timeout )
+ 456:USB/core/usb_dcd_int.c ****       {
+ 457:USB/core/usb_dcd_int.c ****         CLEAR_IN_EP_INTR(epnum, timeout);
+ 458:USB/core/usb_dcd_int.c ****       }
+ 459:USB/core/usb_dcd_int.c ****       if (diepint.b.intktxfemp)
+ 460:USB/core/usb_dcd_int.c ****       {
+ 461:USB/core/usb_dcd_int.c ****         CLEAR_IN_EP_INTR(epnum, intktxfemp);
+ 462:USB/core/usb_dcd_int.c ****       }
+ 463:USB/core/usb_dcd_int.c ****       if (diepint.b.inepnakeff)
+ 464:USB/core/usb_dcd_int.c ****       {
+ 465:USB/core/usb_dcd_int.c ****         CLEAR_IN_EP_INTR(epnum, inepnakeff);
+ 466:USB/core/usb_dcd_int.c ****       }
+ 467:USB/core/usb_dcd_int.c ****       if ( diepint.b.epdisabled )
+ 468:USB/core/usb_dcd_int.c ****       {
+ 469:USB/core/usb_dcd_int.c ****         CLEAR_IN_EP_INTR(epnum, epdisabled);
+ 470:USB/core/usb_dcd_int.c ****       }       
+ 471:USB/core/usb_dcd_int.c ****       if (diepint.b.emptyintr)
+ 472:USB/core/usb_dcd_int.c ****       {
+ 473:USB/core/usb_dcd_int.c ****         
+ 474:USB/core/usb_dcd_int.c ****         DCD_WriteEmptyTxFifo(pdev , epnum);
+ 475:USB/core/usb_dcd_int.c ****         
+ 476:USB/core/usb_dcd_int.c ****         CLEAR_IN_EP_INTR(epnum, emptyintr);
+ 477:USB/core/usb_dcd_int.c ****       }
+ 478:USB/core/usb_dcd_int.c ****     }
+ 479:USB/core/usb_dcd_int.c ****     epnum++;
+ 480:USB/core/usb_dcd_int.c ****     ep_intr >>= 1;
+ 481:USB/core/usb_dcd_int.c ****   }
+ 482:USB/core/usb_dcd_int.c ****   
+ 483:USB/core/usb_dcd_int.c ****   return 1;
+ 484:USB/core/usb_dcd_int.c **** }
+ 485:USB/core/usb_dcd_int.c **** 
+ 486:USB/core/usb_dcd_int.c **** /**
+ 487:USB/core/usb_dcd_int.c **** * @brief  DCD_HandleOutEP_ISR
+ 488:USB/core/usb_dcd_int.c **** *         Indicates that an OUT EP has a pending Interrupt
+ 489:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 490:USB/core/usb_dcd_int.c **** * @retval status
+ 491:USB/core/usb_dcd_int.c **** */
+ 492:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleOutEP_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 493:USB/core/usb_dcd_int.c **** {
+ 494:USB/core/usb_dcd_int.c ****   uint32_t ep_intr;
+ 495:USB/core/usb_dcd_int.c ****   USB_OTG_DOEPINTn_TypeDef  doepint;
+ 496:USB/core/usb_dcd_int.c ****   USB_OTG_DEPXFRSIZ_TypeDef  deptsiz;
+ 497:USB/core/usb_dcd_int.c ****   uint32_t epnum = 0;
+ 498:USB/core/usb_dcd_int.c ****   
+ 499:USB/core/usb_dcd_int.c ****   doepint.d32 = 0;
+ 500:USB/core/usb_dcd_int.c ****   
+ 501:USB/core/usb_dcd_int.c ****   /* Read in the device interrupt bits */
+ 502:USB/core/usb_dcd_int.c ****   ep_intr = USB_OTG_ReadDevAllOutEp_itr(pdev);
+ 503:USB/core/usb_dcd_int.c ****   
+ 504:USB/core/usb_dcd_int.c ****   while ( ep_intr )
+ 505:USB/core/usb_dcd_int.c ****   {
+ 506:USB/core/usb_dcd_int.c ****     if (ep_intr&0x1)
+ 507:USB/core/usb_dcd_int.c ****     {
+ 508:USB/core/usb_dcd_int.c ****       
+ 509:USB/core/usb_dcd_int.c ****       doepint.d32 = USB_OTG_ReadDevOutEP_itr(pdev, epnum);
+ 510:USB/core/usb_dcd_int.c ****       
+ 511:USB/core/usb_dcd_int.c ****       /* Transfer complete */
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 14
+
+
+ 512:USB/core/usb_dcd_int.c ****       if ( doepint.b.xfercompl )
+ 513:USB/core/usb_dcd_int.c ****       {
+ 514:USB/core/usb_dcd_int.c ****         /* Clear the bit in DOEPINTn for this interrupt */
+ 515:USB/core/usb_dcd_int.c ****         CLEAR_OUT_EP_INTR(epnum, xfercompl);
+ 516:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 517:USB/core/usb_dcd_int.c ****         {
+ 518:USB/core/usb_dcd_int.c ****           deptsiz.d32 = USB_OTG_READ_REG32(&(pdev->regs.OUTEP_REGS[epnum]->DOEPTSIZ));
+ 519:USB/core/usb_dcd_int.c ****           /*ToDo : handle more than one single MPS size packet */
+ 520:USB/core/usb_dcd_int.c ****           pdev->dev.out_ep[epnum].xfer_count = pdev->dev.out_ep[epnum].maxpacket - \
+ 521:USB/core/usb_dcd_int.c ****             deptsiz.b.xfersize;
+ 522:USB/core/usb_dcd_int.c ****         }
+ 523:USB/core/usb_dcd_int.c ****         /* Inform upper layer: data ready */
+ 524:USB/core/usb_dcd_int.c ****         /* RX COMPLETE */
+ 525:USB/core/usb_dcd_int.c ****         USBD_DCD_INT_fops->DataOutStage(pdev , epnum);
+ 526:USB/core/usb_dcd_int.c ****         
+ 527:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 528:USB/core/usb_dcd_int.c ****         {
+ 529:USB/core/usb_dcd_int.c ****           if((epnum == 0) && (pdev->dev.device_state == USB_OTG_EP0_STATUS_OUT))
+ 530:USB/core/usb_dcd_int.c ****           {
+ 531:USB/core/usb_dcd_int.c ****             /* prepare to rx more setup packets */
+ 532:USB/core/usb_dcd_int.c ****             USB_OTG_EP0_OutStart(pdev);
+ 533:USB/core/usb_dcd_int.c ****           }
+ 534:USB/core/usb_dcd_int.c ****         }        
+ 535:USB/core/usb_dcd_int.c ****       }
+ 536:USB/core/usb_dcd_int.c ****       /* Endpoint disable  */
+ 537:USB/core/usb_dcd_int.c ****       if ( doepint.b.epdisabled )
+ 538:USB/core/usb_dcd_int.c ****       {
+ 539:USB/core/usb_dcd_int.c ****         /* Clear the bit in DOEPINTn for this interrupt */
+ 540:USB/core/usb_dcd_int.c ****         CLEAR_OUT_EP_INTR(epnum, epdisabled);
+ 541:USB/core/usb_dcd_int.c ****       }
+ 542:USB/core/usb_dcd_int.c ****       /* Setup Phase Done (control EPs) */
+ 543:USB/core/usb_dcd_int.c ****       if ( doepint.b.setup )
+ 544:USB/core/usb_dcd_int.c ****       {
+ 545:USB/core/usb_dcd_int.c ****         
+ 546:USB/core/usb_dcd_int.c ****         /* inform the upper layer that a setup packet is available */
+ 547:USB/core/usb_dcd_int.c ****         /* SETUP COMPLETE */
+ 548:USB/core/usb_dcd_int.c ****         USBD_DCD_INT_fops->SetupStage(pdev);
+ 549:USB/core/usb_dcd_int.c ****         CLEAR_OUT_EP_INTR(epnum, setup);
+ 550:USB/core/usb_dcd_int.c ****       }
+ 551:USB/core/usb_dcd_int.c ****     }
+ 552:USB/core/usb_dcd_int.c ****     epnum++;
+ 553:USB/core/usb_dcd_int.c ****     ep_intr >>= 1;
+ 554:USB/core/usb_dcd_int.c ****   }
+ 555:USB/core/usb_dcd_int.c ****   return 1;
+ 556:USB/core/usb_dcd_int.c **** }
+ 557:USB/core/usb_dcd_int.c **** 
+ 558:USB/core/usb_dcd_int.c **** /**
+ 559:USB/core/usb_dcd_int.c **** * @brief  DCD_HandleSof_ISR
+ 560:USB/core/usb_dcd_int.c **** *         Handles the SOF Interrupts
+ 561:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 562:USB/core/usb_dcd_int.c **** * @retval status
+ 563:USB/core/usb_dcd_int.c **** */
+ 564:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleSof_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 565:USB/core/usb_dcd_int.c **** {
+ 226              		.loc 1 565 1 is_stmt 1 view -0
+ 227              		.cfi_startproc
+ 228              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 15
+
+
+ 229              		@ frame_needed = 0, uses_anonymous_args = 0
+ 230              		.loc 1 565 1 is_stmt 0 view .LVU65
+ 231 0000 10B5     		push	{r4, lr}
+ 232              	.LCFI5:
+ 233              		.cfi_def_cfa_offset 8
+ 234              		.cfi_offset 4, -8
+ 235              		.cfi_offset 14, -4
+ 236 0002 0446     		mov	r4, r0
+ 566:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  GINTSTS;
+ 237              		.loc 1 566 3 is_stmt 1 view .LVU66
+ 567:USB/core/usb_dcd_int.c ****   
+ 568:USB/core/usb_dcd_int.c ****   
+ 569:USB/core/usb_dcd_int.c ****   USBD_DCD_INT_fops->SOF(pdev);
+ 238              		.loc 1 569 3 view .LVU67
+ 239              		.loc 1 569 20 is_stmt 0 view .LVU68
+ 240 0004 044B     		ldr	r3, .L14
+ 241 0006 1B68     		ldr	r3, [r3]
+ 242 0008 DB68     		ldr	r3, [r3, #12]
+ 243              		.loc 1 569 3 view .LVU69
+ 244 000a 9847     		blx	r3
+ 245              	.LVL10:
+ 570:USB/core/usb_dcd_int.c ****   
+ 571:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ 572:USB/core/usb_dcd_int.c ****   GINTSTS.d32 = 0;
+ 246              		.loc 1 572 3 is_stmt 1 view .LVU70
+ 573:USB/core/usb_dcd_int.c ****   GINTSTS.b.sofintr = 1;
+ 247              		.loc 1 573 3 view .LVU71
+ 574:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32 (&pdev->regs.GREGS->GINTSTS, GINTSTS.d32);
+ 248              		.loc 1 574 3 view .LVU72
+ 249 000c E368     		ldr	r3, [r4, #12]
+ 250 000e 0822     		movs	r2, #8
+ 251 0010 5A61     		str	r2, [r3, #20]
+ 575:USB/core/usb_dcd_int.c ****   
+ 576:USB/core/usb_dcd_int.c ****   return 1;
+ 252              		.loc 1 576 3 view .LVU73
+ 577:USB/core/usb_dcd_int.c **** }
+ 253              		.loc 1 577 1 is_stmt 0 view .LVU74
+ 254 0012 0120     		movs	r0, #1
+ 255 0014 10BD     		pop	{r4, pc}
+ 256              	.LVL11:
+ 257              	.L15:
+ 258              		.loc 1 577 1 view .LVU75
+ 259 0016 00BF     		.align	2
+ 260              	.L14:
+ 261 0018 00000000 		.word	USBD_DCD_INT_fops
+ 262              		.cfi_endproc
+ 263              	.LFE131:
+ 265              		.section	.text.DCD_IsoINIncomplete_ISR,"ax",%progbits
+ 266              		.align	1
+ 267              		.syntax unified
+ 268              		.thumb
+ 269              		.thumb_func
+ 270              		.fpu fpv4-sp-d16
+ 272              	DCD_IsoINIncomplete_ISR:
+ 273              	.LVL12:
+ 274              	.LFB136:
+ 578:USB/core/usb_dcd_int.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 16
+
+
+ 579:USB/core/usb_dcd_int.c **** /**
+ 580:USB/core/usb_dcd_int.c **** * @brief  DCD_HandleRxStatusQueueLevel_ISR
+ 581:USB/core/usb_dcd_int.c **** *         Handles the Rx Status Queue Level Interrupt
+ 582:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 583:USB/core/usb_dcd_int.c **** * @retval status
+ 584:USB/core/usb_dcd_int.c **** */
+ 585:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleRxStatusQueueLevel_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 586:USB/core/usb_dcd_int.c **** {
+ 587:USB/core/usb_dcd_int.c ****   USB_OTG_GINTMSK_TypeDef  int_mask;
+ 588:USB/core/usb_dcd_int.c ****   USB_OTG_DRXSTS_TypeDef   status;
+ 589:USB/core/usb_dcd_int.c ****   USB_OTG_EP *ep;
+ 590:USB/core/usb_dcd_int.c ****   
+ 591:USB/core/usb_dcd_int.c ****   /* Disable the Rx Status Queue Level interrupt */
+ 592:USB/core/usb_dcd_int.c ****   int_mask.d32 = 0;
+ 593:USB/core/usb_dcd_int.c ****   int_mask.b.rxstsqlvl = 1;
+ 594:USB/core/usb_dcd_int.c ****   USB_OTG_MODIFY_REG32( &pdev->regs.GREGS->GINTMSK, int_mask.d32, 0);
+ 595:USB/core/usb_dcd_int.c ****   
+ 596:USB/core/usb_dcd_int.c ****   /* Get the Status from the top of the FIFO */
+ 597:USB/core/usb_dcd_int.c ****   status.d32 = USB_OTG_READ_REG32( &pdev->regs.GREGS->GRXSTSP );
+ 598:USB/core/usb_dcd_int.c ****   
+ 599:USB/core/usb_dcd_int.c ****   ep = &pdev->dev.out_ep[status.b.epnum];
+ 600:USB/core/usb_dcd_int.c ****   
+ 601:USB/core/usb_dcd_int.c ****   switch (status.b.pktsts)
+ 602:USB/core/usb_dcd_int.c ****   {
+ 603:USB/core/usb_dcd_int.c ****   case STS_GOUT_NAK:
+ 604:USB/core/usb_dcd_int.c ****     break;
+ 605:USB/core/usb_dcd_int.c ****   case STS_DATA_UPDT:
+ 606:USB/core/usb_dcd_int.c ****     if (status.b.bcnt)
+ 607:USB/core/usb_dcd_int.c ****     {
+ 608:USB/core/usb_dcd_int.c ****       USB_OTG_ReadPacket(pdev,ep->xfer_buff, status.b.bcnt);
+ 609:USB/core/usb_dcd_int.c ****       ep->xfer_buff += status.b.bcnt;
+ 610:USB/core/usb_dcd_int.c ****       ep->xfer_count += status.b.bcnt;
+ 611:USB/core/usb_dcd_int.c ****     }
+ 612:USB/core/usb_dcd_int.c ****     break;
+ 613:USB/core/usb_dcd_int.c ****   case STS_XFER_COMP:
+ 614:USB/core/usb_dcd_int.c ****     break;
+ 615:USB/core/usb_dcd_int.c ****   case STS_SETUP_COMP:
+ 616:USB/core/usb_dcd_int.c ****     break;
+ 617:USB/core/usb_dcd_int.c ****   case STS_SETUP_UPDT:
+ 618:USB/core/usb_dcd_int.c ****     /* Copy the setup packet received in FIFO into the setup buffer in RAM */
+ 619:USB/core/usb_dcd_int.c ****     USB_OTG_ReadPacket(pdev , pdev->dev.setup_packet, 8);
+ 620:USB/core/usb_dcd_int.c ****     ep->xfer_count += status.b.bcnt;
+ 621:USB/core/usb_dcd_int.c ****     break;
+ 622:USB/core/usb_dcd_int.c ****   default:
+ 623:USB/core/usb_dcd_int.c ****     break;
+ 624:USB/core/usb_dcd_int.c ****   }
+ 625:USB/core/usb_dcd_int.c ****   
+ 626:USB/core/usb_dcd_int.c ****   /* Enable the Rx Status Queue Level interrupt */
+ 627:USB/core/usb_dcd_int.c ****   USB_OTG_MODIFY_REG32( &pdev->regs.GREGS->GINTMSK, 0, int_mask.d32);
+ 628:USB/core/usb_dcd_int.c ****   
+ 629:USB/core/usb_dcd_int.c ****   return 1;
+ 630:USB/core/usb_dcd_int.c **** }
+ 631:USB/core/usb_dcd_int.c **** 
+ 632:USB/core/usb_dcd_int.c **** /**
+ 633:USB/core/usb_dcd_int.c **** * @brief  DCD_WriteEmptyTxFifo
+ 634:USB/core/usb_dcd_int.c **** *         check FIFO for the next packet to be loaded
+ 635:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 17
+
+
+ 636:USB/core/usb_dcd_int.c **** * @retval status
+ 637:USB/core/usb_dcd_int.c **** */
+ 638:USB/core/usb_dcd_int.c **** static uint32_t DCD_WriteEmptyTxFifo(USB_OTG_CORE_HANDLE *pdev, uint32_t epnum)
+ 639:USB/core/usb_dcd_int.c **** {
+ 640:USB/core/usb_dcd_int.c ****   USB_OTG_DTXFSTSn_TypeDef  txstatus;
+ 641:USB/core/usb_dcd_int.c ****   USB_OTG_EP *ep;
+ 642:USB/core/usb_dcd_int.c ****   uint32_t len = 0;
+ 643:USB/core/usb_dcd_int.c ****   uint32_t len32b;
+ 644:USB/core/usb_dcd_int.c ****   txstatus.d32 = 0;
+ 645:USB/core/usb_dcd_int.c ****   
+ 646:USB/core/usb_dcd_int.c ****   ep = &pdev->dev.in_ep[epnum];    
+ 647:USB/core/usb_dcd_int.c ****   
+ 648:USB/core/usb_dcd_int.c ****   len = ep->xfer_len - ep->xfer_count;
+ 649:USB/core/usb_dcd_int.c ****   
+ 650:USB/core/usb_dcd_int.c ****   if (len > ep->maxpacket)
+ 651:USB/core/usb_dcd_int.c ****   {
+ 652:USB/core/usb_dcd_int.c ****     len = ep->maxpacket;
+ 653:USB/core/usb_dcd_int.c ****   }
+ 654:USB/core/usb_dcd_int.c ****   
+ 655:USB/core/usb_dcd_int.c ****   len32b = (len + 3) / 4;
+ 656:USB/core/usb_dcd_int.c ****   txstatus.d32 = USB_OTG_READ_REG32( &pdev->regs.INEP_REGS[epnum]->DTXFSTS);
+ 657:USB/core/usb_dcd_int.c ****   
+ 658:USB/core/usb_dcd_int.c ****   
+ 659:USB/core/usb_dcd_int.c ****   
+ 660:USB/core/usb_dcd_int.c ****   while  (txstatus.b.txfspcavail > len32b &&
+ 661:USB/core/usb_dcd_int.c ****           ep->xfer_count < ep->xfer_len &&
+ 662:USB/core/usb_dcd_int.c ****             ep->xfer_len != 0)
+ 663:USB/core/usb_dcd_int.c ****   {
+ 664:USB/core/usb_dcd_int.c ****     /* Write the FIFO */
+ 665:USB/core/usb_dcd_int.c ****     len = ep->xfer_len - ep->xfer_count;
+ 666:USB/core/usb_dcd_int.c ****     
+ 667:USB/core/usb_dcd_int.c ****     if (len > ep->maxpacket)
+ 668:USB/core/usb_dcd_int.c ****     {
+ 669:USB/core/usb_dcd_int.c ****       len = ep->maxpacket;
+ 670:USB/core/usb_dcd_int.c ****     }
+ 671:USB/core/usb_dcd_int.c ****     len32b = (len + 3) / 4;
+ 672:USB/core/usb_dcd_int.c ****     
+ 673:USB/core/usb_dcd_int.c ****     USB_OTG_WritePacket (pdev , ep->xfer_buff, epnum, len);
+ 674:USB/core/usb_dcd_int.c ****     
+ 675:USB/core/usb_dcd_int.c ****     ep->xfer_buff  += len;
+ 676:USB/core/usb_dcd_int.c ****     ep->xfer_count += len;
+ 677:USB/core/usb_dcd_int.c ****     
+ 678:USB/core/usb_dcd_int.c ****     txstatus.d32 = USB_OTG_READ_REG32(&pdev->regs.INEP_REGS[epnum]->DTXFSTS);
+ 679:USB/core/usb_dcd_int.c ****   }
+ 680:USB/core/usb_dcd_int.c ****   
+ 681:USB/core/usb_dcd_int.c ****   return 1;
+ 682:USB/core/usb_dcd_int.c **** }
+ 683:USB/core/usb_dcd_int.c **** 
+ 684:USB/core/usb_dcd_int.c **** /**
+ 685:USB/core/usb_dcd_int.c **** * @brief  DCD_HandleUsbReset_ISR
+ 686:USB/core/usb_dcd_int.c **** *         This interrupt occurs when a USB Reset is detected
+ 687:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 688:USB/core/usb_dcd_int.c **** * @retval status
+ 689:USB/core/usb_dcd_int.c **** */
+ 690:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleUsbReset_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 691:USB/core/usb_dcd_int.c **** {
+ 692:USB/core/usb_dcd_int.c ****   USB_OTG_DAINT_TypeDef    daintmsk;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 18
+
+
+ 693:USB/core/usb_dcd_int.c ****   USB_OTG_DOEPMSK_TypeDef  doepmsk;
+ 694:USB/core/usb_dcd_int.c ****   USB_OTG_DIEPMSK_TypeDef  diepmsk;
+ 695:USB/core/usb_dcd_int.c ****   USB_OTG_DCFG_TypeDef     dcfg;
+ 696:USB/core/usb_dcd_int.c ****   USB_OTG_DCTL_TypeDef     dctl;
+ 697:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;
+ 698:USB/core/usb_dcd_int.c ****   uint32_t i;
+ 699:USB/core/usb_dcd_int.c ****   
+ 700:USB/core/usb_dcd_int.c ****   dctl.d32 = 0;
+ 701:USB/core/usb_dcd_int.c ****   daintmsk.d32 = 0;
+ 702:USB/core/usb_dcd_int.c ****   doepmsk.d32 = 0;
+ 703:USB/core/usb_dcd_int.c ****   diepmsk.d32 = 0;
+ 704:USB/core/usb_dcd_int.c ****   dcfg.d32 = 0;
+ 705:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 706:USB/core/usb_dcd_int.c ****   
+ 707:USB/core/usb_dcd_int.c ****   /* Clear the Remote Wake-up Signaling */
+ 708:USB/core/usb_dcd_int.c ****   dctl.b.rmtwkupsig = 1;
+ 709:USB/core/usb_dcd_int.c ****   USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DCTL, dctl.d32, 0 );
+ 710:USB/core/usb_dcd_int.c ****   
+ 711:USB/core/usb_dcd_int.c ****   /* Flush the Tx FIFO */
+ 712:USB/core/usb_dcd_int.c ****   USB_OTG_FlushTxFifo(pdev ,  0 );
+ 713:USB/core/usb_dcd_int.c ****   
+ 714:USB/core/usb_dcd_int.c ****   for (i = 0; i < pdev->cfg.dev_endpoints ; i++)
+ 715:USB/core/usb_dcd_int.c ****   {
+ 716:USB/core/usb_dcd_int.c ****     USB_OTG_WRITE_REG32( &pdev->regs.INEP_REGS[i]->DIEPINT, 0xFF);
+ 717:USB/core/usb_dcd_int.c ****     USB_OTG_WRITE_REG32( &pdev->regs.OUTEP_REGS[i]->DOEPINT, 0xFF);
+ 718:USB/core/usb_dcd_int.c ****   }
+ 719:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DAINT, 0xFFFFFFFF );
+ 720:USB/core/usb_dcd_int.c ****   
+ 721:USB/core/usb_dcd_int.c ****   daintmsk.ep.in = 1;
+ 722:USB/core/usb_dcd_int.c ****   daintmsk.ep.out = 1;
+ 723:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DAINTMSK, daintmsk.d32 );
+ 724:USB/core/usb_dcd_int.c ****   
+ 725:USB/core/usb_dcd_int.c ****   doepmsk.b.setup = 1;
+ 726:USB/core/usb_dcd_int.c ****   doepmsk.b.xfercompl = 1;
+ 727:USB/core/usb_dcd_int.c ****   doepmsk.b.epdisabled = 1;
+ 728:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DOEPMSK, doepmsk.d32 );
+ 729:USB/core/usb_dcd_int.c **** #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED   
+ 730:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DOUTEP1MSK, doepmsk.d32 );
+ 731:USB/core/usb_dcd_int.c **** #endif
+ 732:USB/core/usb_dcd_int.c ****   diepmsk.b.xfercompl = 1;
+ 733:USB/core/usb_dcd_int.c ****   diepmsk.b.timeout = 1;
+ 734:USB/core/usb_dcd_int.c ****   diepmsk.b.epdisabled = 1;
+ 735:USB/core/usb_dcd_int.c **** 
+ 736:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DIEPMSK, diepmsk.d32 );
+ 737:USB/core/usb_dcd_int.c **** #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED  
+ 738:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DINEP1MSK, diepmsk.d32 );
+ 739:USB/core/usb_dcd_int.c **** #endif
+ 740:USB/core/usb_dcd_int.c ****   /* Reset Device Address */
+ 741:USB/core/usb_dcd_int.c ****   dcfg.d32 = USB_OTG_READ_REG32( &pdev->regs.DREGS->DCFG);
+ 742:USB/core/usb_dcd_int.c ****   dcfg.b.devaddr = 0;
+ 743:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DCFG, dcfg.d32);
+ 744:USB/core/usb_dcd_int.c ****   
+ 745:USB/core/usb_dcd_int.c ****   
+ 746:USB/core/usb_dcd_int.c ****   /* setup EP0 to receive SETUP packets */
+ 747:USB/core/usb_dcd_int.c ****   USB_OTG_EP0_OutStart(pdev);
+ 748:USB/core/usb_dcd_int.c ****   
+ 749:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 19
+
+
+ 750:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 751:USB/core/usb_dcd_int.c ****   gintsts.b.usbreset = 1;
+ 752:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32 (&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+ 753:USB/core/usb_dcd_int.c ****   
+ 754:USB/core/usb_dcd_int.c ****   /*Reset internal state machine */
+ 755:USB/core/usb_dcd_int.c ****   USBD_DCD_INT_fops->Reset(pdev);
+ 756:USB/core/usb_dcd_int.c ****   return 1;
+ 757:USB/core/usb_dcd_int.c **** }
+ 758:USB/core/usb_dcd_int.c **** 
+ 759:USB/core/usb_dcd_int.c **** /**
+ 760:USB/core/usb_dcd_int.c **** * @brief  DCD_HandleEnumDone_ISR
+ 761:USB/core/usb_dcd_int.c **** *         Read the device status register and set the device speed
+ 762:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 763:USB/core/usb_dcd_int.c **** * @retval status
+ 764:USB/core/usb_dcd_int.c **** */
+ 765:USB/core/usb_dcd_int.c **** static uint32_t DCD_HandleEnumDone_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 766:USB/core/usb_dcd_int.c **** {
+ 767:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;
+ 768:USB/core/usb_dcd_int.c ****   USB_OTG_GUSBCFG_TypeDef  gusbcfg;
+ 769:USB/core/usb_dcd_int.c ****   
+ 770:USB/core/usb_dcd_int.c ****   USB_OTG_EP0Activate(pdev);
+ 771:USB/core/usb_dcd_int.c ****   
+ 772:USB/core/usb_dcd_int.c ****   /* Set USB turn-around time based on device speed and PHY interface. */
+ 773:USB/core/usb_dcd_int.c ****   gusbcfg.d32 = USB_OTG_READ_REG32(&pdev->regs.GREGS->GUSBCFG);
+ 774:USB/core/usb_dcd_int.c ****   
+ 775:USB/core/usb_dcd_int.c ****   /* Full or High speed */
+ 776:USB/core/usb_dcd_int.c ****   if ( USB_OTG_GetDeviceSpeed(pdev) == USB_SPEED_HIGH)
+ 777:USB/core/usb_dcd_int.c ****   {
+ 778:USB/core/usb_dcd_int.c ****     pdev->cfg.speed            = USB_OTG_SPEED_HIGH;
+ 779:USB/core/usb_dcd_int.c ****     pdev->cfg.mps              = USB_OTG_HS_MAX_PACKET_SIZE ;    
+ 780:USB/core/usb_dcd_int.c ****     gusbcfg.b.usbtrdtim = 9;
+ 781:USB/core/usb_dcd_int.c ****   }
+ 782:USB/core/usb_dcd_int.c ****   else
+ 783:USB/core/usb_dcd_int.c ****   {
+ 784:USB/core/usb_dcd_int.c ****     pdev->cfg.speed            = USB_OTG_SPEED_FULL;
+ 785:USB/core/usb_dcd_int.c ****     pdev->cfg.mps              = USB_OTG_FS_MAX_PACKET_SIZE ;  
+ 786:USB/core/usb_dcd_int.c ****     gusbcfg.b.usbtrdtim = 5;
+ 787:USB/core/usb_dcd_int.c ****   }
+ 788:USB/core/usb_dcd_int.c ****   
+ 789:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32(&pdev->regs.GREGS->GUSBCFG, gusbcfg.d32);
+ 790:USB/core/usb_dcd_int.c ****   
+ 791:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ 792:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 793:USB/core/usb_dcd_int.c ****   gintsts.b.enumdone = 1;
+ 794:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.GREGS->GINTSTS, gintsts.d32 );
+ 795:USB/core/usb_dcd_int.c ****   return 1;
+ 796:USB/core/usb_dcd_int.c **** }
+ 797:USB/core/usb_dcd_int.c **** 
+ 798:USB/core/usb_dcd_int.c **** 
+ 799:USB/core/usb_dcd_int.c **** /**
+ 800:USB/core/usb_dcd_int.c **** * @brief  DCD_IsoINIncomplete_ISR
+ 801:USB/core/usb_dcd_int.c **** *         handle the ISO IN incomplete interrupt
+ 802:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 803:USB/core/usb_dcd_int.c **** * @retval status
+ 804:USB/core/usb_dcd_int.c **** */
+ 805:USB/core/usb_dcd_int.c **** static uint32_t DCD_IsoINIncomplete_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 806:USB/core/usb_dcd_int.c **** {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 20
+
+
+ 275              		.loc 1 806 1 is_stmt 1 view -0
+ 276              		.cfi_startproc
+ 277              		@ args = 0, pretend = 0, frame = 0
+ 278              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279              		.loc 1 806 1 is_stmt 0 view .LVU77
+ 280 0000 10B5     		push	{r4, lr}
+ 281              	.LCFI6:
+ 282              		.cfi_def_cfa_offset 8
+ 283              		.cfi_offset 4, -8
+ 284              		.cfi_offset 14, -4
+ 285 0002 0446     		mov	r4, r0
+ 807:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef gintsts;  
+ 286              		.loc 1 807 3 is_stmt 1 view .LVU78
+ 808:USB/core/usb_dcd_int.c ****   
+ 809:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 287              		.loc 1 809 3 view .LVU79
+ 810:USB/core/usb_dcd_int.c **** 
+ 811:USB/core/usb_dcd_int.c ****   USBD_DCD_INT_fops->IsoINIncomplete (pdev); 
+ 288              		.loc 1 811 3 view .LVU80
+ 289              		.loc 1 811 20 is_stmt 0 view .LVU81
+ 290 0004 044B     		ldr	r3, .L18
+ 291 0006 1B68     		ldr	r3, [r3]
+ 292 0008 DB69     		ldr	r3, [r3, #28]
+ 293              		.loc 1 811 3 view .LVU82
+ 294 000a 9847     		blx	r3
+ 295              	.LVL13:
+ 812:USB/core/usb_dcd_int.c ****   
+ 813:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ 814:USB/core/usb_dcd_int.c ****   gintsts.b.incomplisoin = 1;
+ 296              		.loc 1 814 3 is_stmt 1 view .LVU83
+ 815:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32(&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+ 297              		.loc 1 815 3 view .LVU84
+ 298 000c E368     		ldr	r3, [r4, #12]
+ 299 000e 4FF48012 		mov	r2, #1048576
+ 300 0012 5A61     		str	r2, [r3, #20]
+ 816:USB/core/usb_dcd_int.c ****   
+ 817:USB/core/usb_dcd_int.c ****   return 1;
+ 301              		.loc 1 817 3 view .LVU85
+ 818:USB/core/usb_dcd_int.c **** }
+ 302              		.loc 1 818 1 is_stmt 0 view .LVU86
+ 303 0014 0120     		movs	r0, #1
+ 304 0016 10BD     		pop	{r4, pc}
+ 305              	.LVL14:
+ 306              	.L19:
+ 307              		.loc 1 818 1 view .LVU87
+ 308              		.align	2
+ 309              	.L18:
+ 310 0018 00000000 		.word	USBD_DCD_INT_fops
+ 311              		.cfi_endproc
+ 312              	.LFE136:
+ 314              		.section	.text.DCD_IsoOUTIncomplete_ISR,"ax",%progbits
+ 315              		.align	1
+ 316              		.syntax unified
+ 317              		.thumb
+ 318              		.thumb_func
+ 319              		.fpu fpv4-sp-d16
+ 321              	DCD_IsoOUTIncomplete_ISR:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 21
+
+
+ 322              	.LVL15:
+ 323              	.LFB137:
+ 819:USB/core/usb_dcd_int.c **** 
+ 820:USB/core/usb_dcd_int.c **** /**
+ 821:USB/core/usb_dcd_int.c **** * @brief  DCD_IsoOUTIncomplete_ISR
+ 822:USB/core/usb_dcd_int.c **** *         handle the ISO OUT incomplete interrupt
+ 823:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 824:USB/core/usb_dcd_int.c **** * @retval status
+ 825:USB/core/usb_dcd_int.c **** */
+ 826:USB/core/usb_dcd_int.c **** static uint32_t DCD_IsoOUTIncomplete_ISR(USB_OTG_CORE_HANDLE *pdev)
+ 827:USB/core/usb_dcd_int.c **** {
+ 324              		.loc 1 827 1 is_stmt 1 view -0
+ 325              		.cfi_startproc
+ 326              		@ args = 0, pretend = 0, frame = 0
+ 327              		@ frame_needed = 0, uses_anonymous_args = 0
+ 328              		.loc 1 827 1 is_stmt 0 view .LVU89
+ 329 0000 10B5     		push	{r4, lr}
+ 330              	.LCFI7:
+ 331              		.cfi_def_cfa_offset 8
+ 332              		.cfi_offset 4, -8
+ 333              		.cfi_offset 14, -4
+ 334 0002 0446     		mov	r4, r0
+ 828:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef gintsts;  
+ 335              		.loc 1 828 3 is_stmt 1 view .LVU90
+ 829:USB/core/usb_dcd_int.c ****   
+ 830:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 336              		.loc 1 830 3 view .LVU91
+ 831:USB/core/usb_dcd_int.c **** 
+ 832:USB/core/usb_dcd_int.c ****   USBD_DCD_INT_fops->IsoOUTIncomplete (pdev); 
+ 337              		.loc 1 832 3 view .LVU92
+ 338              		.loc 1 832 20 is_stmt 0 view .LVU93
+ 339 0004 044B     		ldr	r3, .L22
+ 340 0006 1B68     		ldr	r3, [r3]
+ 341 0008 1B6A     		ldr	r3, [r3, #32]
+ 342              		.loc 1 832 3 view .LVU94
+ 343 000a 9847     		blx	r3
+ 344              	.LVL16:
+ 833:USB/core/usb_dcd_int.c ****   
+ 834:USB/core/usb_dcd_int.c ****   /* Clear interrupt */
+ 835:USB/core/usb_dcd_int.c ****   gintsts.b.incomplisoout = 1;
+ 345              		.loc 1 835 3 is_stmt 1 view .LVU95
+ 836:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32(&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+ 346              		.loc 1 836 3 view .LVU96
+ 347 000c E368     		ldr	r3, [r4, #12]
+ 348 000e 4FF40012 		mov	r2, #2097152
+ 349 0012 5A61     		str	r2, [r3, #20]
+ 837:USB/core/usb_dcd_int.c ****   return 1;
+ 350              		.loc 1 837 3 view .LVU97
+ 838:USB/core/usb_dcd_int.c **** }
+ 351              		.loc 1 838 1 is_stmt 0 view .LVU98
+ 352 0014 0120     		movs	r0, #1
+ 353 0016 10BD     		pop	{r4, pc}
+ 354              	.LVL17:
+ 355              	.L23:
+ 356              		.loc 1 838 1 view .LVU99
+ 357              		.align	2
+ 358              	.L22:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 22
+
+
+ 359 0018 00000000 		.word	USBD_DCD_INT_fops
+ 360              		.cfi_endproc
+ 361              	.LFE137:
+ 363              		.section	.text.DCD_ReadDevInEP,"ax",%progbits
+ 364              		.align	1
+ 365              		.syntax unified
+ 366              		.thumb
+ 367              		.thumb_func
+ 368              		.fpu fpv4-sp-d16
+ 370              	DCD_ReadDevInEP:
+ 371              	.LVL18:
+ 372              	.LFB138:
+ 839:USB/core/usb_dcd_int.c **** /**
+ 840:USB/core/usb_dcd_int.c **** * @brief  DCD_ReadDevInEP
+ 841:USB/core/usb_dcd_int.c **** *         Reads ep flags
+ 842:USB/core/usb_dcd_int.c **** * @param  pdev: device instance
+ 843:USB/core/usb_dcd_int.c **** * @retval status
+ 844:USB/core/usb_dcd_int.c **** */
+ 845:USB/core/usb_dcd_int.c **** static uint32_t DCD_ReadDevInEP (USB_OTG_CORE_HANDLE *pdev, uint8_t epnum)
+ 846:USB/core/usb_dcd_int.c **** {
+ 373              		.loc 1 846 1 is_stmt 1 view -0
+ 374              		.cfi_startproc
+ 375              		@ args = 0, pretend = 0, frame = 0
+ 376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 377              		@ link register save eliminated.
+ 378              		.loc 1 846 1 is_stmt 0 view .LVU101
+ 379 0000 10B4     		push	{r4}
+ 380              	.LCFI8:
+ 381              		.cfi_def_cfa_offset 4
+ 382              		.cfi_offset 4, -4
+ 847:USB/core/usb_dcd_int.c ****   uint32_t v, msk, emp;
+ 383              		.loc 1 847 3 is_stmt 1 view .LVU102
+ 848:USB/core/usb_dcd_int.c ****   msk = USB_OTG_READ_REG32(&pdev->regs.DREGS->DIEPMSK);
+ 384              		.loc 1 848 3 view .LVU103
+ 385              		.loc 1 848 9 is_stmt 0 view .LVU104
+ 386 0002 0269     		ldr	r2, [r0, #16]
+ 387              		.loc 1 848 7 view .LVU105
+ 388 0004 1469     		ldr	r4, [r2, #16]
+ 389              	.LVL19:
+ 849:USB/core/usb_dcd_int.c ****   emp = USB_OTG_READ_REG32(&pdev->regs.DREGS->DIEPEMPMSK);
+ 390              		.loc 1 849 3 is_stmt 1 view .LVU106
+ 391              		.loc 1 849 7 is_stmt 0 view .LVU107
+ 392 0006 536B     		ldr	r3, [r2, #52]
+ 393              	.LVL20:
+ 850:USB/core/usb_dcd_int.c ****   msk |= ((emp >> epnum) & 0x1) << 7;
+ 394              		.loc 1 850 3 is_stmt 1 view .LVU108
+ 395              		.loc 1 850 16 is_stmt 0 view .LVU109
+ 396 0008 CB40     		lsrs	r3, r3, r1
+ 397              	.LVL21:
+ 398              		.loc 1 850 33 view .LVU110
+ 399 000a DB01     		lsls	r3, r3, #7
+ 400 000c DBB2     		uxtb	r3, r3
+ 401              		.loc 1 850 7 view .LVU111
+ 402 000e 2343     		orrs	r3, r3, r4
+ 403              	.LVL22:
+ 851:USB/core/usb_dcd_int.c ****   v = USB_OTG_READ_REG32(&pdev->regs.INEP_REGS[epnum]->DIEPINT) & msk;
+ 404              		.loc 1 851 3 is_stmt 1 view .LVU112
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 23
+
+
+ 405              		.loc 1 851 7 is_stmt 0 view .LVU113
+ 406 0010 0431     		adds	r1, r1, #4
+ 407              	.LVL23:
+ 408              		.loc 1 851 7 view .LVU114
+ 409 0012 00EB8100 		add	r0, r0, r1, lsl #2
+ 410              	.LVL24:
+ 411              		.loc 1 851 7 view .LVU115
+ 412 0016 8268     		ldr	r2, [r0, #8]
+ 413 0018 9068     		ldr	r0, [r2, #8]
+ 414              	.LVL25:
+ 852:USB/core/usb_dcd_int.c ****   return v;
+ 415              		.loc 1 852 3 is_stmt 1 view .LVU116
+ 853:USB/core/usb_dcd_int.c **** }
+ 416              		.loc 1 853 1 is_stmt 0 view .LVU117
+ 417 001a 1840     		ands	r0, r0, r3
+ 418              	.LVL26:
+ 419              		.loc 1 853 1 view .LVU118
+ 420 001c 5DF8044B 		ldr	r4, [sp], #4
+ 421              	.LCFI9:
+ 422              		.cfi_restore 4
+ 423              		.cfi_def_cfa_offset 0
+ 424 0020 7047     		bx	lr
+ 425              		.cfi_endproc
+ 426              	.LFE138:
+ 428              		.section	.text.DCD_HandleOutEP_ISR,"ax",%progbits
+ 429              		.align	1
+ 430              		.syntax unified
+ 431              		.thumb
+ 432              		.thumb_func
+ 433              		.fpu fpv4-sp-d16
+ 435              	DCD_HandleOutEP_ISR:
+ 436              	.LVL27:
+ 437              	.LFB130:
+ 493:USB/core/usb_dcd_int.c ****   uint32_t ep_intr;
+ 438              		.loc 1 493 1 is_stmt 1 view -0
+ 439              		.cfi_startproc
+ 440              		@ args = 0, pretend = 0, frame = 0
+ 441              		@ frame_needed = 0, uses_anonymous_args = 0
+ 493:USB/core/usb_dcd_int.c ****   uint32_t ep_intr;
+ 442              		.loc 1 493 1 is_stmt 0 view .LVU120
+ 443 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 444              	.LCFI10:
+ 445              		.cfi_def_cfa_offset 24
+ 446              		.cfi_offset 4, -24
+ 447              		.cfi_offset 5, -20
+ 448              		.cfi_offset 6, -16
+ 449              		.cfi_offset 7, -12
+ 450              		.cfi_offset 8, -8
+ 451              		.cfi_offset 14, -4
+ 452 0004 8046     		mov	r8, r0
+ 494:USB/core/usb_dcd_int.c ****   USB_OTG_DOEPINTn_TypeDef  doepint;
+ 453              		.loc 1 494 3 is_stmt 1 view .LVU121
+ 495:USB/core/usb_dcd_int.c ****   USB_OTG_DEPXFRSIZ_TypeDef  deptsiz;
+ 454              		.loc 1 495 3 view .LVU122
+ 496:USB/core/usb_dcd_int.c ****   uint32_t epnum = 0;
+ 455              		.loc 1 496 3 view .LVU123
+ 497:USB/core/usb_dcd_int.c ****   
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 24
+
+
+ 456              		.loc 1 497 3 view .LVU124
+ 457              	.LVL28:
+ 499:USB/core/usb_dcd_int.c ****   
+ 458              		.loc 1 499 3 view .LVU125
+ 502:USB/core/usb_dcd_int.c ****   
+ 459              		.loc 1 502 3 view .LVU126
+ 502:USB/core/usb_dcd_int.c ****   
+ 460              		.loc 1 502 13 is_stmt 0 view .LVU127
+ 461 0006 FFF7FEFF 		bl	USB_OTG_ReadDevAllOutEp_itr
+ 462              	.LVL29:
+ 502:USB/core/usb_dcd_int.c ****   
+ 463              		.loc 1 502 13 view .LVU128
+ 464 000a 0446     		mov	r4, r0
+ 465              	.LVL30:
+ 504:USB/core/usb_dcd_int.c ****   {
+ 466              		.loc 1 504 3 is_stmt 1 view .LVU129
+ 497:USB/core/usb_dcd_int.c ****   
+ 467              		.loc 1 497 12 is_stmt 0 view .LVU130
+ 468 000c 0025     		movs	r5, #0
+ 504:USB/core/usb_dcd_int.c ****   {
+ 469              		.loc 1 504 9 view .LVU131
+ 470 000e 2CE0     		b	.L27
+ 471              	.LVL31:
+ 472              	.L35:
+ 518:USB/core/usb_dcd_int.c ****           /*ToDo : handle more than one single MPS size packet */
+ 473              		.loc 1 518 11 is_stmt 1 view .LVU132
+ 518:USB/core/usb_dcd_int.c ****           /*ToDo : handle more than one single MPS size packet */
+ 474              		.loc 1 518 25 is_stmt 0 view .LVU133
+ 475 0010 05F11403 		add	r3, r5, #20
+ 476 0014 08EB8303 		add	r3, r8, r3, lsl #2
+ 477 0018 5B68     		ldr	r3, [r3, #4]
+ 478 001a 1969     		ldr	r1, [r3, #16]
+ 520:USB/core/usb_dcd_int.c ****             deptsiz.b.xfersize;
+ 479              		.loc 1 520 11 is_stmt 1 view .LVU134
+ 520:USB/core/usb_dcd_int.c ****             deptsiz.b.xfersize;
+ 480              		.loc 1 520 71 is_stmt 0 view .LVU135
+ 481 001c 05EB8503 		add	r3, r5, r5, lsl #2
+ 482 0020 08EBC303 		add	r3, r8, r3, lsl #3
+ 483 0024 D3F87C23 		ldr	r2, [r3, #892]
+ 521:USB/core/usb_dcd_int.c ****         }
+ 484              		.loc 1 521 22 view .LVU136
+ 485 0028 C1F31201 		ubfx	r1, r1, #0, #19
+ 520:USB/core/usb_dcd_int.c ****             deptsiz.b.xfersize;
+ 486              		.loc 1 520 82 view .LVU137
+ 487 002c 521A     		subs	r2, r2, r1
+ 520:USB/core/usb_dcd_int.c ****             deptsiz.b.xfersize;
+ 488              		.loc 1 520 46 view .LVU138
+ 489 002e C3F88C23 		str	r2, [r3, #908]
+ 490 0032 32E0     		b	.L30
+ 491              	.LVL32:
+ 492              	.L29:
+ 537:USB/core/usb_dcd_int.c ****       {
+ 493              		.loc 1 537 7 is_stmt 1 view .LVU139
+ 537:USB/core/usb_dcd_int.c ****       {
+ 494              		.loc 1 537 10 is_stmt 0 view .LVU140
+ 495 0034 16F0020F 		tst	r6, #2
+ 496 0038 06D0     		beq	.L31
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 25
+
+
+ 540:USB/core/usb_dcd_int.c ****       }
+ 497              		.loc 1 540 9 is_stmt 1 view .LVU141
+ 540:USB/core/usb_dcd_int.c ****       }
+ 498              		.loc 1 540 9 view .LVU142
+ 499 003a 0226     		movs	r6, #2
+ 500              	.LVL33:
+ 540:USB/core/usb_dcd_int.c ****       }
+ 501              		.loc 1 540 9 view .LVU143
+ 502 003c 05F11403 		add	r3, r5, #20
+ 503 0040 08EB8303 		add	r3, r8, r3, lsl #2
+ 504 0044 5B68     		ldr	r3, [r3, #4]
+ 505              	.LVL34:
+ 540:USB/core/usb_dcd_int.c ****       }
+ 506              		.loc 1 540 9 is_stmt 0 view .LVU144
+ 507 0046 9E60     		str	r6, [r3, #8]
+ 508              	.L31:
+ 540:USB/core/usb_dcd_int.c ****       }
+ 509              		.loc 1 540 45 is_stmt 1 discriminator 1 view .LVU145
+ 543:USB/core/usb_dcd_int.c ****       {
+ 510              		.loc 1 543 7 discriminator 1 view .LVU146
+ 543:USB/core/usb_dcd_int.c ****       {
+ 511              		.loc 1 543 10 is_stmt 0 discriminator 1 view .LVU147
+ 512 0048 16F0080F 		tst	r6, #8
+ 513 004c 0BD0     		beq	.L28
+ 548:USB/core/usb_dcd_int.c ****         CLEAR_OUT_EP_INTR(epnum, setup);
+ 514              		.loc 1 548 9 is_stmt 1 view .LVU148
+ 548:USB/core/usb_dcd_int.c ****         CLEAR_OUT_EP_INTR(epnum, setup);
+ 515              		.loc 1 548 26 is_stmt 0 view .LVU149
+ 516 004e 1E4B     		ldr	r3, .L36
+ 517 0050 1B68     		ldr	r3, [r3]
+ 518 0052 9B68     		ldr	r3, [r3, #8]
+ 548:USB/core/usb_dcd_int.c ****         CLEAR_OUT_EP_INTR(epnum, setup);
+ 519              		.loc 1 548 9 view .LVU150
+ 520 0054 4046     		mov	r0, r8
+ 521 0056 9847     		blx	r3
+ 522              	.LVL35:
+ 549:USB/core/usb_dcd_int.c ****       }
+ 523              		.loc 1 549 9 is_stmt 1 view .LVU151
+ 549:USB/core/usb_dcd_int.c ****       }
+ 524              		.loc 1 549 9 view .LVU152
+ 549:USB/core/usb_dcd_int.c ****       }
+ 525              		.loc 1 549 9 view .LVU153
+ 526 0058 05F11403 		add	r3, r5, #20
+ 527 005c 08EB8303 		add	r3, r8, r3, lsl #2
+ 528 0060 5B68     		ldr	r3, [r3, #4]
+ 529 0062 0822     		movs	r2, #8
+ 530 0064 9A60     		str	r2, [r3, #8]
+ 531              	.L28:
+ 549:USB/core/usb_dcd_int.c ****       }
+ 532              		.loc 1 549 40 discriminator 1 view .LVU154
+ 552:USB/core/usb_dcd_int.c ****     ep_intr >>= 1;
+ 533              		.loc 1 552 5 discriminator 1 view .LVU155
+ 552:USB/core/usb_dcd_int.c ****     ep_intr >>= 1;
+ 534              		.loc 1 552 10 is_stmt 0 discriminator 1 view .LVU156
+ 535 0066 0135     		adds	r5, r5, #1
+ 536              	.LVL36:
+ 553:USB/core/usb_dcd_int.c ****   }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 26
+
+
+ 537              		.loc 1 553 5 is_stmt 1 discriminator 1 view .LVU157
+ 553:USB/core/usb_dcd_int.c ****   }
+ 538              		.loc 1 553 13 is_stmt 0 discriminator 1 view .LVU158
+ 539 0068 6408     		lsrs	r4, r4, #1
+ 540              	.LVL37:
+ 541              	.L27:
+ 504:USB/core/usb_dcd_int.c ****   {
+ 542              		.loc 1 504 9 is_stmt 1 view .LVU159
+ 543 006a 54B3     		cbz	r4, .L34
+ 506:USB/core/usb_dcd_int.c ****     {
+ 544              		.loc 1 506 5 view .LVU160
+ 506:USB/core/usb_dcd_int.c ****     {
+ 545              		.loc 1 506 8 is_stmt 0 view .LVU161
+ 546 006c 14F0010F 		tst	r4, #1
+ 547 0070 F9D0     		beq	.L28
+ 509:USB/core/usb_dcd_int.c ****       
+ 548              		.loc 1 509 7 is_stmt 1 view .LVU162
+ 509:USB/core/usb_dcd_int.c ****       
+ 549              		.loc 1 509 21 is_stmt 0 view .LVU163
+ 550 0072 EFB2     		uxtb	r7, r5
+ 551 0074 3946     		mov	r1, r7
+ 552 0076 4046     		mov	r0, r8
+ 553 0078 FFF7FEFF 		bl	USB_OTG_ReadDevOutEP_itr
+ 554              	.LVL38:
+ 555 007c 0646     		mov	r6, r0
+ 556              	.LVL39:
+ 512:USB/core/usb_dcd_int.c ****       {
+ 557              		.loc 1 512 7 is_stmt 1 view .LVU164
+ 512:USB/core/usb_dcd_int.c ****       {
+ 558              		.loc 1 512 10 is_stmt 0 view .LVU165
+ 559 007e 10F0010F 		tst	r0, #1
+ 560 0082 D7D0     		beq	.L29
+ 515:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 561              		.loc 1 515 9 is_stmt 1 view .LVU166
+ 515:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 562              		.loc 1 515 9 view .LVU167
+ 563 0084 0126     		movs	r6, #1
+ 564              	.LVL40:
+ 515:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 565              		.loc 1 515 9 view .LVU168
+ 566 0086 05F11403 		add	r3, r5, #20
+ 567 008a 08EB8303 		add	r3, r8, r3, lsl #2
+ 568 008e 5B68     		ldr	r3, [r3, #4]
+ 569              	.LVL41:
+ 515:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 570              		.loc 1 515 9 is_stmt 0 view .LVU169
+ 571 0090 9E60     		str	r6, [r3, #8]
+ 515:USB/core/usb_dcd_int.c ****         if (pdev->cfg.dma_enable == 1)
+ 572              		.loc 1 515 44 is_stmt 1 view .LVU170
+ 516:USB/core/usb_dcd_int.c ****         {
+ 573              		.loc 1 516 9 view .LVU171
+ 516:USB/core/usb_dcd_int.c ****         {
+ 574              		.loc 1 516 22 is_stmt 0 view .LVU172
+ 575 0092 98F80330 		ldrb	r3, [r8, #3]	@ zero_extendqisi2
+ 516:USB/core/usb_dcd_int.c ****         {
+ 576              		.loc 1 516 12 view .LVU173
+ 577 0096 B342     		cmp	r3, r6
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 27
+
+
+ 578              	.LVL42:
+ 516:USB/core/usb_dcd_int.c ****         {
+ 579              		.loc 1 516 12 view .LVU174
+ 580 0098 BAD0     		beq	.L35
+ 581              	.L30:
+ 525:USB/core/usb_dcd_int.c ****         
+ 582              		.loc 1 525 9 is_stmt 1 view .LVU175
+ 525:USB/core/usb_dcd_int.c ****         
+ 583              		.loc 1 525 26 is_stmt 0 view .LVU176
+ 584 009a 0B4B     		ldr	r3, .L36
+ 585 009c 1B68     		ldr	r3, [r3]
+ 586 009e 1B68     		ldr	r3, [r3]
+ 525:USB/core/usb_dcd_int.c ****         
+ 587              		.loc 1 525 9 view .LVU177
+ 588 00a0 3946     		mov	r1, r7
+ 589 00a2 4046     		mov	r0, r8
+ 590 00a4 9847     		blx	r3
+ 591              	.LVL43:
+ 527:USB/core/usb_dcd_int.c ****         {
+ 592              		.loc 1 527 9 is_stmt 1 view .LVU178
+ 527:USB/core/usb_dcd_int.c ****         {
+ 593              		.loc 1 527 22 is_stmt 0 view .LVU179
+ 594 00a6 98F80330 		ldrb	r3, [r8, #3]	@ zero_extendqisi2
+ 527:USB/core/usb_dcd_int.c ****         {
+ 595              		.loc 1 527 12 view .LVU180
+ 596 00aa 012B     		cmp	r3, #1
+ 597 00ac C2D1     		bne	.L29
+ 529:USB/core/usb_dcd_int.c ****           {
+ 598              		.loc 1 529 11 is_stmt 1 view .LVU181
+ 529:USB/core/usb_dcd_int.c ****           {
+ 599              		.loc 1 529 13 is_stmt 0 view .LVU182
+ 600 00ae 002D     		cmp	r5, #0
+ 601 00b0 C0D1     		bne	.L29
+ 529:USB/core/usb_dcd_int.c ****           {
+ 602              		.loc 1 529 40 discriminator 1 view .LVU183
+ 603 00b2 98F81131 		ldrb	r3, [r8, #273]	@ zero_extendqisi2
+ 529:USB/core/usb_dcd_int.c ****           {
+ 604              		.loc 1 529 27 discriminator 1 view .LVU184
+ 605 00b6 052B     		cmp	r3, #5
+ 606 00b8 BCD1     		bne	.L29
+ 532:USB/core/usb_dcd_int.c ****           }
+ 607              		.loc 1 532 13 is_stmt 1 view .LVU185
+ 608 00ba 4046     		mov	r0, r8
+ 609 00bc FFF7FEFF 		bl	USB_OTG_EP0_OutStart
+ 610              	.LVL44:
+ 611 00c0 B8E7     		b	.L29
+ 612              	.LVL45:
+ 613              	.L34:
+ 555:USB/core/usb_dcd_int.c **** }
+ 614              		.loc 1 555 3 view .LVU186
+ 556:USB/core/usb_dcd_int.c **** 
+ 615              		.loc 1 556 1 is_stmt 0 view .LVU187
+ 616 00c2 0120     		movs	r0, #1
+ 617 00c4 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 618              	.LVL46:
+ 619              	.L37:
+ 556:USB/core/usb_dcd_int.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 28
+
+
+ 620              		.loc 1 556 1 view .LVU188
+ 621              		.align	2
+ 622              	.L36:
+ 623 00c8 00000000 		.word	USBD_DCD_INT_fops
+ 624              		.cfi_endproc
+ 625              	.LFE130:
+ 627              		.section	.text.DCD_WriteEmptyTxFifo,"ax",%progbits
+ 628              		.align	1
+ 629              		.syntax unified
+ 630              		.thumb
+ 631              		.thumb_func
+ 632              		.fpu fpv4-sp-d16
+ 634              	DCD_WriteEmptyTxFifo:
+ 635              	.LVL47:
+ 636              	.LFB133:
+ 639:USB/core/usb_dcd_int.c ****   USB_OTG_DTXFSTSn_TypeDef  txstatus;
+ 637              		.loc 1 639 1 is_stmt 1 view -0
+ 638              		.cfi_startproc
+ 639              		@ args = 0, pretend = 0, frame = 0
+ 640              		@ frame_needed = 0, uses_anonymous_args = 0
+ 639:USB/core/usb_dcd_int.c ****   USB_OTG_DTXFSTSn_TypeDef  txstatus;
+ 641              		.loc 1 639 1 is_stmt 0 view .LVU190
+ 642 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 643              	.LCFI11:
+ 644              		.cfi_def_cfa_offset 24
+ 645              		.cfi_offset 4, -24
+ 646              		.cfi_offset 5, -20
+ 647              		.cfi_offset 6, -16
+ 648              		.cfi_offset 7, -12
+ 649              		.cfi_offset 8, -8
+ 650              		.cfi_offset 14, -4
+ 651 0004 0746     		mov	r7, r0
+ 652 0006 0C46     		mov	r4, r1
+ 640:USB/core/usb_dcd_int.c ****   USB_OTG_EP *ep;
+ 653              		.loc 1 640 3 is_stmt 1 view .LVU191
+ 641:USB/core/usb_dcd_int.c ****   uint32_t len = 0;
+ 654              		.loc 1 641 3 view .LVU192
+ 642:USB/core/usb_dcd_int.c ****   uint32_t len32b;
+ 655              		.loc 1 642 3 view .LVU193
+ 656              	.LVL48:
+ 643:USB/core/usb_dcd_int.c ****   txstatus.d32 = 0;
+ 657              		.loc 1 643 3 view .LVU194
+ 644:USB/core/usb_dcd_int.c ****   
+ 658              		.loc 1 644 3 view .LVU195
+ 646:USB/core/usb_dcd_int.c ****   
+ 659              		.loc 1 646 3 view .LVU196
+ 648:USB/core/usb_dcd_int.c ****   
+ 660              		.loc 1 648 3 view .LVU197
+ 648:USB/core/usb_dcd_int.c ****   
+ 661              		.loc 1 648 11 is_stmt 0 view .LVU198
+ 662 0008 01EB8103 		add	r3, r1, r1, lsl #2
+ 663 000c 00EBC303 		add	r3, r0, r3, lsl #3
+ 664 0010 D3F83021 		ldr	r2, [r3, #304]
+ 648:USB/core/usb_dcd_int.c ****   
+ 665              		.loc 1 648 26 view .LVU199
+ 666 0014 D3F83411 		ldr	r1, [r3, #308]
+ 667              	.LVL49:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 29
+
+
+ 648:USB/core/usb_dcd_int.c ****   
+ 668              		.loc 1 648 7 view .LVU200
+ 669 0018 521A     		subs	r2, r2, r1
+ 670              	.LVL50:
+ 650:USB/core/usb_dcd_int.c ****   {
+ 671              		.loc 1 650 3 is_stmt 1 view .LVU201
+ 650:USB/core/usb_dcd_int.c ****   {
+ 672              		.loc 1 650 15 is_stmt 0 view .LVU202
+ 673 001a D3F82431 		ldr	r3, [r3, #292]
+ 650:USB/core/usb_dcd_int.c ****   {
+ 674              		.loc 1 650 6 view .LVU203
+ 675 001e 9342     		cmp	r3, r2
+ 676 0020 00D3     		bcc	.L39
+ 648:USB/core/usb_dcd_int.c ****   
+ 677              		.loc 1 648 7 view .LVU204
+ 678 0022 1346     		mov	r3, r2
+ 679              	.L39:
+ 680              	.LVL51:
+ 655:USB/core/usb_dcd_int.c ****   txstatus.d32 = USB_OTG_READ_REG32( &pdev->regs.INEP_REGS[epnum]->DTXFSTS);
+ 681              		.loc 1 655 3 is_stmt 1 view .LVU205
+ 655:USB/core/usb_dcd_int.c ****   txstatus.d32 = USB_OTG_READ_REG32( &pdev->regs.INEP_REGS[epnum]->DTXFSTS);
+ 682              		.loc 1 655 17 is_stmt 0 view .LVU206
+ 683 0024 03F10308 		add	r8, r3, #3
+ 655:USB/core/usb_dcd_int.c ****   txstatus.d32 = USB_OTG_READ_REG32( &pdev->regs.INEP_REGS[epnum]->DTXFSTS);
+ 684              		.loc 1 655 10 view .LVU207
+ 685 0028 4FEA9808 		lsr	r8, r8, #2
+ 686              	.LVL52:
+ 656:USB/core/usb_dcd_int.c ****   
+ 687              		.loc 1 656 3 is_stmt 1 view .LVU208
+ 656:USB/core/usb_dcd_int.c ****   
+ 688              		.loc 1 656 18 is_stmt 0 view .LVU209
+ 689 002c 231D     		adds	r3, r4, #4
+ 690              	.LVL53:
+ 656:USB/core/usb_dcd_int.c ****   
+ 691              		.loc 1 656 18 view .LVU210
+ 692 002e 07EB8303 		add	r3, r7, r3, lsl #2
+ 693 0032 9B68     		ldr	r3, [r3, #8]
+ 694 0034 9B69     		ldr	r3, [r3, #24]
+ 695              	.LVL54:
+ 660:USB/core/usb_dcd_int.c ****           ep->xfer_count < ep->xfer_len &&
+ 696              		.loc 1 660 3 is_stmt 1 view .LVU211
+ 660:USB/core/usb_dcd_int.c ****           ep->xfer_count < ep->xfer_len &&
+ 697              		.loc 1 660 10 is_stmt 0 view .LVU212
+ 698 0036 1DE0     		b	.L40
+ 699              	.LVL55:
+ 700              	.L41:
+ 671:USB/core/usb_dcd_int.c ****     
+ 701              		.loc 1 671 5 is_stmt 1 view .LVU213
+ 671:USB/core/usb_dcd_int.c ****     
+ 702              		.loc 1 671 19 is_stmt 0 view .LVU214
+ 703 0038 06F10308 		add	r8, r6, #3
+ 704              	.LVL56:
+ 671:USB/core/usb_dcd_int.c ****     
+ 705              		.loc 1 671 12 view .LVU215
+ 706 003c 4FEA9808 		lsr	r8, r8, #2
+ 707              	.LVL57:
+ 673:USB/core/usb_dcd_int.c ****     
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 30
+
+
+ 708              		.loc 1 673 5 is_stmt 1 view .LVU216
+ 709 0040 04EB8405 		add	r5, r4, r4, lsl #2
+ 710 0044 07EBC505 		add	r5, r7, r5, lsl #3
+ 711 0048 B3B2     		uxth	r3, r6
+ 712 004a E2B2     		uxtb	r2, r4
+ 713 004c D5F82811 		ldr	r1, [r5, #296]
+ 714 0050 3846     		mov	r0, r7
+ 715 0052 FFF7FEFF 		bl	USB_OTG_WritePacket
+ 716              	.LVL58:
+ 675:USB/core/usb_dcd_int.c ****     ep->xfer_count += len;
+ 717              		.loc 1 675 5 view .LVU217
+ 675:USB/core/usb_dcd_int.c ****     ep->xfer_count += len;
+ 718              		.loc 1 675 20 is_stmt 0 view .LVU218
+ 719 0056 D5F82831 		ldr	r3, [r5, #296]
+ 720 005a 3344     		add	r3, r3, r6
+ 721 005c C5F82831 		str	r3, [r5, #296]
+ 676:USB/core/usb_dcd_int.c ****     
+ 722              		.loc 1 676 5 is_stmt 1 view .LVU219
+ 676:USB/core/usb_dcd_int.c ****     
+ 723              		.loc 1 676 20 is_stmt 0 view .LVU220
+ 724 0060 D5F83431 		ldr	r3, [r5, #308]
+ 725 0064 3344     		add	r3, r3, r6
+ 726 0066 C5F83431 		str	r3, [r5, #308]
+ 678:USB/core/usb_dcd_int.c ****   }
+ 727              		.loc 1 678 5 is_stmt 1 view .LVU221
+ 678:USB/core/usb_dcd_int.c ****   }
+ 728              		.loc 1 678 20 is_stmt 0 view .LVU222
+ 729 006a 231D     		adds	r3, r4, #4
+ 730 006c 07EB8303 		add	r3, r7, r3, lsl #2
+ 731 0070 9B68     		ldr	r3, [r3, #8]
+ 732 0072 9B69     		ldr	r3, [r3, #24]
+ 733              	.LVL59:
+ 734              	.L40:
+ 660:USB/core/usb_dcd_int.c ****           ep->xfer_count < ep->xfer_len &&
+ 735              		.loc 1 660 10 is_stmt 1 view .LVU223
+ 660:USB/core/usb_dcd_int.c ****           ep->xfer_count < ep->xfer_len &&
+ 736              		.loc 1 660 21 is_stmt 0 view .LVU224
+ 737 0074 9BB2     		uxth	r3, r3
+ 738              	.LVL60:
+ 660:USB/core/usb_dcd_int.c ****           ep->xfer_count < ep->xfer_len &&
+ 739              		.loc 1 660 10 view .LVU225
+ 740 0076 4345     		cmp	r3, r8
+ 741 0078 15D9     		bls	.L42
+ 661:USB/core/usb_dcd_int.c ****             ep->xfer_len != 0)
+ 742              		.loc 1 661 13 discriminator 1 view .LVU226
+ 743 007a 04EB8402 		add	r2, r4, r4, lsl #2
+ 744 007e 07EBC202 		add	r2, r7, r2, lsl #3
+ 745 0082 D2F83411 		ldr	r1, [r2, #308]
+ 661:USB/core/usb_dcd_int.c ****             ep->xfer_len != 0)
+ 746              		.loc 1 661 30 discriminator 1 view .LVU227
+ 747 0086 D2F83031 		ldr	r3, [r2, #304]
+ 660:USB/core/usb_dcd_int.c ****           ep->xfer_count < ep->xfer_len &&
+ 748              		.loc 1 660 43 discriminator 1 view .LVU228
+ 749 008a 9942     		cmp	r1, r3
+ 750 008c 0BD2     		bcs	.L42
+ 661:USB/core/usb_dcd_int.c ****             ep->xfer_len != 0)
+ 751              		.loc 1 661 41 view .LVU229
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 31
+
+
+ 752 008e 53B1     		cbz	r3, .L42
+ 665:USB/core/usb_dcd_int.c ****     
+ 753              		.loc 1 665 5 is_stmt 1 view .LVU230
+ 665:USB/core/usb_dcd_int.c ****     
+ 754              		.loc 1 665 9 is_stmt 0 view .LVU231
+ 755 0090 5B1A     		subs	r3, r3, r1
+ 756              	.LVL61:
+ 667:USB/core/usb_dcd_int.c ****     {
+ 757              		.loc 1 667 5 is_stmt 1 view .LVU232
+ 667:USB/core/usb_dcd_int.c ****     {
+ 758              		.loc 1 667 17 is_stmt 0 view .LVU233
+ 759 0092 04EB8402 		add	r2, r4, r4, lsl #2
+ 760 0096 07EBC202 		add	r2, r7, r2, lsl #3
+ 761 009a D2F82461 		ldr	r6, [r2, #292]
+ 667:USB/core/usb_dcd_int.c ****     {
+ 762              		.loc 1 667 8 view .LVU234
+ 763 009e 9E42     		cmp	r6, r3
+ 764 00a0 CAD3     		bcc	.L41
+ 665:USB/core/usb_dcd_int.c ****     
+ 765              		.loc 1 665 9 view .LVU235
+ 766 00a2 1E46     		mov	r6, r3
+ 767 00a4 C8E7     		b	.L41
+ 768              	.LVL62:
+ 769              	.L42:
+ 681:USB/core/usb_dcd_int.c **** }
+ 770              		.loc 1 681 3 is_stmt 1 view .LVU236
+ 682:USB/core/usb_dcd_int.c **** 
+ 771              		.loc 1 682 1 is_stmt 0 view .LVU237
+ 772 00a6 0120     		movs	r0, #1
+ 773 00a8 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 682:USB/core/usb_dcd_int.c **** 
+ 774              		.loc 1 682 1 view .LVU238
+ 775              		.cfi_endproc
+ 776              	.LFE133:
+ 778              		.section	.text.DCD_HandleInEP_ISR,"ax",%progbits
+ 779              		.align	1
+ 780              		.syntax unified
+ 781              		.thumb
+ 782              		.thumb_func
+ 783              		.fpu fpv4-sp-d16
+ 785              	DCD_HandleInEP_ISR:
+ 786              	.LVL63:
+ 787              	.LFB129:
+ 424:USB/core/usb_dcd_int.c ****   USB_OTG_DIEPINTn_TypeDef  diepint;
+ 788              		.loc 1 424 1 is_stmt 1 view -0
+ 789              		.cfi_startproc
+ 790              		@ args = 0, pretend = 0, frame = 0
+ 791              		@ frame_needed = 0, uses_anonymous_args = 0
+ 424:USB/core/usb_dcd_int.c ****   USB_OTG_DIEPINTn_TypeDef  diepint;
+ 792              		.loc 1 424 1 is_stmt 0 view .LVU240
+ 793 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 794              	.LCFI12:
+ 795              		.cfi_def_cfa_offset 24
+ 796              		.cfi_offset 4, -24
+ 797              		.cfi_offset 5, -20
+ 798              		.cfi_offset 6, -16
+ 799              		.cfi_offset 7, -12
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 32
+
+
+ 800              		.cfi_offset 8, -8
+ 801              		.cfi_offset 14, -4
+ 802 0004 8046     		mov	r8, r0
+ 425:USB/core/usb_dcd_int.c ****   
+ 803              		.loc 1 425 3 is_stmt 1 view .LVU241
+ 427:USB/core/usb_dcd_int.c ****   uint32_t epnum = 0;
+ 804              		.loc 1 427 3 view .LVU242
+ 428:USB/core/usb_dcd_int.c ****   uint32_t fifoemptymsk;
+ 805              		.loc 1 428 3 view .LVU243
+ 806              	.LVL64:
+ 429:USB/core/usb_dcd_int.c ****   diepint.d32 = 0;
+ 807              		.loc 1 429 3 view .LVU244
+ 430:USB/core/usb_dcd_int.c ****   ep_intr = USB_OTG_ReadDevAllInEPItr(pdev);
+ 808              		.loc 1 430 3 view .LVU245
+ 431:USB/core/usb_dcd_int.c ****   
+ 809              		.loc 1 431 3 view .LVU246
+ 431:USB/core/usb_dcd_int.c ****   
+ 810              		.loc 1 431 13 is_stmt 0 view .LVU247
+ 811 0006 FFF7FEFF 		bl	USB_OTG_ReadDevAllInEPItr
+ 812              	.LVL65:
+ 431:USB/core/usb_dcd_int.c ****   
+ 813              		.loc 1 431 13 view .LVU248
+ 814 000a 0446     		mov	r4, r0
+ 815              	.LVL66:
+ 433:USB/core/usb_dcd_int.c ****   {
+ 816              		.loc 1 433 3 is_stmt 1 view .LVU249
+ 428:USB/core/usb_dcd_int.c ****   uint32_t fifoemptymsk;
+ 817              		.loc 1 428 12 is_stmt 0 view .LVU250
+ 818 000c 0027     		movs	r7, #0
+ 433:USB/core/usb_dcd_int.c ****   {
+ 819              		.loc 1 433 9 view .LVU251
+ 820 000e 28E0     		b	.L46
+ 821              	.LVL67:
+ 822              	.L48:
+ 455:USB/core/usb_dcd_int.c ****       {
+ 823              		.loc 1 455 7 is_stmt 1 view .LVU252
+ 455:USB/core/usb_dcd_int.c ****       {
+ 824              		.loc 1 455 10 is_stmt 0 view .LVU253
+ 825 0010 15F0080F 		tst	r5, #8
+ 826 0014 05D0     		beq	.L49
+ 457:USB/core/usb_dcd_int.c ****       }
+ 827              		.loc 1 457 9 is_stmt 1 view .LVU254
+ 457:USB/core/usb_dcd_int.c ****       }
+ 828              		.loc 1 457 9 view .LVU255
+ 829 0016 0825     		movs	r5, #8
+ 830              	.LVL68:
+ 457:USB/core/usb_dcd_int.c ****       }
+ 831              		.loc 1 457 9 view .LVU256
+ 832 0018 3B1D     		adds	r3, r7, #4
+ 833 001a 08EB8303 		add	r3, r8, r3, lsl #2
+ 834 001e 9B68     		ldr	r3, [r3, #8]
+ 835              	.LVL69:
+ 457:USB/core/usb_dcd_int.c ****       }
+ 836              		.loc 1 457 9 is_stmt 0 view .LVU257
+ 837 0020 9D60     		str	r5, [r3, #8]
+ 838              	.L49:
+ 457:USB/core/usb_dcd_int.c ****       }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 33
+
+
+ 839              		.loc 1 457 41 is_stmt 1 discriminator 1 view .LVU258
+ 459:USB/core/usb_dcd_int.c ****       {
+ 840              		.loc 1 459 7 discriminator 1 view .LVU259
+ 459:USB/core/usb_dcd_int.c ****       {
+ 841              		.loc 1 459 10 is_stmt 0 discriminator 1 view .LVU260
+ 842 0022 15F0100F 		tst	r5, #16
+ 843 0026 05D0     		beq	.L50
+ 461:USB/core/usb_dcd_int.c ****       }
+ 844              		.loc 1 461 9 is_stmt 1 view .LVU261
+ 461:USB/core/usb_dcd_int.c ****       }
+ 845              		.loc 1 461 9 view .LVU262
+ 846 0028 1025     		movs	r5, #16
+ 847              	.LVL70:
+ 461:USB/core/usb_dcd_int.c ****       }
+ 848              		.loc 1 461 9 view .LVU263
+ 849 002a 3B1D     		adds	r3, r7, #4
+ 850 002c 08EB8303 		add	r3, r8, r3, lsl #2
+ 851 0030 9B68     		ldr	r3, [r3, #8]
+ 852              	.LVL71:
+ 461:USB/core/usb_dcd_int.c ****       }
+ 853              		.loc 1 461 9 is_stmt 0 view .LVU264
+ 854 0032 9D60     		str	r5, [r3, #8]
+ 855              	.L50:
+ 461:USB/core/usb_dcd_int.c ****       }
+ 856              		.loc 1 461 44 is_stmt 1 discriminator 1 view .LVU265
+ 463:USB/core/usb_dcd_int.c ****       {
+ 857              		.loc 1 463 7 discriminator 1 view .LVU266
+ 463:USB/core/usb_dcd_int.c ****       {
+ 858              		.loc 1 463 10 is_stmt 0 discriminator 1 view .LVU267
+ 859 0034 15F0400F 		tst	r5, #64
+ 860 0038 05D0     		beq	.L51
+ 465:USB/core/usb_dcd_int.c ****       }
+ 861              		.loc 1 465 9 is_stmt 1 view .LVU268
+ 465:USB/core/usb_dcd_int.c ****       }
+ 862              		.loc 1 465 9 view .LVU269
+ 863 003a 4025     		movs	r5, #64
+ 864              	.LVL72:
+ 465:USB/core/usb_dcd_int.c ****       }
+ 865              		.loc 1 465 9 view .LVU270
+ 866 003c 3B1D     		adds	r3, r7, #4
+ 867 003e 08EB8303 		add	r3, r8, r3, lsl #2
+ 868 0042 9B68     		ldr	r3, [r3, #8]
+ 869              	.LVL73:
+ 465:USB/core/usb_dcd_int.c ****       }
+ 870              		.loc 1 465 9 is_stmt 0 view .LVU271
+ 871 0044 9D60     		str	r5, [r3, #8]
+ 872              	.L51:
+ 465:USB/core/usb_dcd_int.c ****       }
+ 873              		.loc 1 465 44 is_stmt 1 discriminator 1 view .LVU272
+ 467:USB/core/usb_dcd_int.c ****       {
+ 874              		.loc 1 467 7 discriminator 1 view .LVU273
+ 467:USB/core/usb_dcd_int.c ****       {
+ 875              		.loc 1 467 10 is_stmt 0 discriminator 1 view .LVU274
+ 876 0046 15F0020F 		tst	r5, #2
+ 877 004a 05D0     		beq	.L52
+ 469:USB/core/usb_dcd_int.c ****       }       
+ 878              		.loc 1 469 9 is_stmt 1 view .LVU275
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 34
+
+
+ 469:USB/core/usb_dcd_int.c ****       }       
+ 879              		.loc 1 469 9 view .LVU276
+ 880 004c 0225     		movs	r5, #2
+ 881              	.LVL74:
+ 469:USB/core/usb_dcd_int.c ****       }       
+ 882              		.loc 1 469 9 view .LVU277
+ 883 004e 3B1D     		adds	r3, r7, #4
+ 884 0050 08EB8303 		add	r3, r8, r3, lsl #2
+ 885 0054 9B68     		ldr	r3, [r3, #8]
+ 886              	.LVL75:
+ 469:USB/core/usb_dcd_int.c ****       }       
+ 887              		.loc 1 469 9 is_stmt 0 view .LVU278
+ 888 0056 9D60     		str	r5, [r3, #8]
+ 889              	.L52:
+ 469:USB/core/usb_dcd_int.c ****       }       
+ 890              		.loc 1 469 44 is_stmt 1 discriminator 1 view .LVU279
+ 471:USB/core/usb_dcd_int.c ****       {
+ 891              		.loc 1 471 7 discriminator 1 view .LVU280
+ 471:USB/core/usb_dcd_int.c ****       {
+ 892              		.loc 1 471 10 is_stmt 0 discriminator 1 view .LVU281
+ 893 0058 15F0800F 		tst	r5, #128
+ 894 005c 32D1     		bne	.L55
+ 895              	.L47:
+ 476:USB/core/usb_dcd_int.c ****       }
+ 896              		.loc 1 476 43 is_stmt 1 discriminator 1 view .LVU282
+ 479:USB/core/usb_dcd_int.c ****     ep_intr >>= 1;
+ 897              		.loc 1 479 5 discriminator 1 view .LVU283
+ 479:USB/core/usb_dcd_int.c ****     ep_intr >>= 1;
+ 898              		.loc 1 479 10 is_stmt 0 discriminator 1 view .LVU284
+ 899 005e 0137     		adds	r7, r7, #1
+ 900              	.LVL76:
+ 480:USB/core/usb_dcd_int.c ****   }
+ 901              		.loc 1 480 5 is_stmt 1 discriminator 1 view .LVU285
+ 480:USB/core/usb_dcd_int.c ****   }
+ 902              		.loc 1 480 13 is_stmt 0 discriminator 1 view .LVU286
+ 903 0060 6408     		lsrs	r4, r4, #1
+ 904              	.LVL77:
+ 905              	.L46:
+ 433:USB/core/usb_dcd_int.c ****   {
+ 906              		.loc 1 433 9 is_stmt 1 view .LVU287
+ 907 0062 002C     		cmp	r4, #0
+ 908 0064 39D0     		beq	.L56
+ 435:USB/core/usb_dcd_int.c ****     {
+ 909              		.loc 1 435 5 view .LVU288
+ 435:USB/core/usb_dcd_int.c ****     {
+ 910              		.loc 1 435 8 is_stmt 0 view .LVU289
+ 911 0066 14F0010F 		tst	r4, #1
+ 912 006a F8D0     		beq	.L47
+ 437:USB/core/usb_dcd_int.c ****       if ( diepint.b.xfercompl )
+ 913              		.loc 1 437 7 is_stmt 1 view .LVU290
+ 437:USB/core/usb_dcd_int.c ****       if ( diepint.b.xfercompl )
+ 914              		.loc 1 437 21 is_stmt 0 view .LVU291
+ 915 006c FEB2     		uxtb	r6, r7
+ 916 006e 3146     		mov	r1, r6
+ 917 0070 4046     		mov	r0, r8
+ 918 0072 FFF7FEFF 		bl	DCD_ReadDevInEP
+ 919              	.LVL78:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 35
+
+
+ 920 0076 0546     		mov	r5, r0
+ 921              	.LVL79:
+ 438:USB/core/usb_dcd_int.c ****       {
+ 922              		.loc 1 438 7 is_stmt 1 view .LVU292
+ 438:USB/core/usb_dcd_int.c ****       {
+ 923              		.loc 1 438 10 is_stmt 0 view .LVU293
+ 924 0078 10F0010F 		tst	r0, #1
+ 925 007c C8D0     		beq	.L48
+ 440:USB/core/usb_dcd_int.c ****         USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DIEPEMPMSK, fifoemptymsk, 0);
+ 926              		.loc 1 440 9 is_stmt 1 view .LVU294
+ 440:USB/core/usb_dcd_int.c ****         USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DIEPEMPMSK, fifoemptymsk, 0);
+ 927              		.loc 1 440 28 is_stmt 0 view .LVU295
+ 928 007e 0123     		movs	r3, #1
+ 929 0080 03FA07F0 		lsl	r0, r3, r7
+ 930              	.LVL80:
+ 441:USB/core/usb_dcd_int.c ****         CLEAR_IN_EP_INTR(epnum, xfercompl);
+ 931              		.loc 1 441 9 is_stmt 1 view .LVU296
+ 932 0084 D8F81010 		ldr	r1, [r8, #16]
+ 933 0088 4A6B     		ldr	r2, [r1, #52]
+ 934 008a 22EA0002 		bic	r2, r2, r0
+ 935 008e 4A63     		str	r2, [r1, #52]
+ 442:USB/core/usb_dcd_int.c ****         /* TX COMPLETE */
+ 936              		.loc 1 442 9 view .LVU297
+ 442:USB/core/usb_dcd_int.c ****         /* TX COMPLETE */
+ 937              		.loc 1 442 9 view .LVU298
+ 938 0090 1D46     		mov	r5, r3
+ 442:USB/core/usb_dcd_int.c ****         /* TX COMPLETE */
+ 939              		.loc 1 442 9 view .LVU299
+ 940 0092 3A1D     		adds	r2, r7, #4
+ 941 0094 08EB8202 		add	r2, r8, r2, lsl #2
+ 942 0098 9268     		ldr	r2, [r2, #8]
+ 943 009a 9360     		str	r3, [r2, #8]
+ 442:USB/core/usb_dcd_int.c ****         /* TX COMPLETE */
+ 944              		.loc 1 442 43 view .LVU300
+ 444:USB/core/usb_dcd_int.c ****         
+ 945              		.loc 1 444 9 view .LVU301
+ 444:USB/core/usb_dcd_int.c ****         
+ 946              		.loc 1 444 26 is_stmt 0 view .LVU302
+ 947 009c 104B     		ldr	r3, .L57
+ 948 009e 1B68     		ldr	r3, [r3]
+ 949 00a0 5B68     		ldr	r3, [r3, #4]
+ 444:USB/core/usb_dcd_int.c ****         
+ 950              		.loc 1 444 9 view .LVU303
+ 951 00a2 3146     		mov	r1, r6
+ 952 00a4 4046     		mov	r0, r8
+ 953              	.LVL81:
+ 444:USB/core/usb_dcd_int.c ****         
+ 954              		.loc 1 444 9 view .LVU304
+ 955 00a6 9847     		blx	r3
+ 956              	.LVL82:
+ 446:USB/core/usb_dcd_int.c ****         {
+ 957              		.loc 1 446 9 is_stmt 1 view .LVU305
+ 446:USB/core/usb_dcd_int.c ****         {
+ 958              		.loc 1 446 22 is_stmt 0 view .LVU306
+ 959 00a8 98F80330 		ldrb	r3, [r8, #3]	@ zero_extendqisi2
+ 446:USB/core/usb_dcd_int.c ****         {
+ 960              		.loc 1 446 12 view .LVU307
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 36
+
+
+ 961 00ac AB42     		cmp	r3, r5
+ 962 00ae AFD1     		bne	.L48
+ 448:USB/core/usb_dcd_int.c ****           {
+ 963              		.loc 1 448 11 is_stmt 1 view .LVU308
+ 448:USB/core/usb_dcd_int.c ****           {
+ 964              		.loc 1 448 13 is_stmt 0 view .LVU309
+ 965 00b0 002F     		cmp	r7, #0
+ 966 00b2 ADD1     		bne	.L48
+ 448:USB/core/usb_dcd_int.c ****           {
+ 967              		.loc 1 448 40 discriminator 1 view .LVU310
+ 968 00b4 98F81131 		ldrb	r3, [r8, #273]	@ zero_extendqisi2
+ 448:USB/core/usb_dcd_int.c ****           {
+ 969              		.loc 1 448 27 discriminator 1 view .LVU311
+ 970 00b8 042B     		cmp	r3, #4
+ 971 00ba A9D1     		bne	.L48
+ 451:USB/core/usb_dcd_int.c ****           }
+ 972              		.loc 1 451 13 is_stmt 1 view .LVU312
+ 973 00bc 4046     		mov	r0, r8
+ 974 00be FFF7FEFF 		bl	USB_OTG_EP0_OutStart
+ 975              	.LVL83:
+ 976 00c2 A5E7     		b	.L48
+ 977              	.LVL84:
+ 978              	.L55:
+ 474:USB/core/usb_dcd_int.c ****         
+ 979              		.loc 1 474 9 view .LVU313
+ 980 00c4 3946     		mov	r1, r7
+ 981 00c6 4046     		mov	r0, r8
+ 982 00c8 FFF7FEFF 		bl	DCD_WriteEmptyTxFifo
+ 983              	.LVL85:
+ 476:USB/core/usb_dcd_int.c ****       }
+ 984              		.loc 1 476 9 view .LVU314
+ 476:USB/core/usb_dcd_int.c ****       }
+ 985              		.loc 1 476 9 view .LVU315
+ 476:USB/core/usb_dcd_int.c ****       }
+ 986              		.loc 1 476 9 view .LVU316
+ 987 00cc 3B1D     		adds	r3, r7, #4
+ 988 00ce 08EB8303 		add	r3, r8, r3, lsl #2
+ 989 00d2 9B68     		ldr	r3, [r3, #8]
+ 990 00d4 8022     		movs	r2, #128
+ 991 00d6 9A60     		str	r2, [r3, #8]
+ 992 00d8 C1E7     		b	.L47
+ 993              	.L56:
+ 483:USB/core/usb_dcd_int.c **** }
+ 994              		.loc 1 483 3 view .LVU317
+ 484:USB/core/usb_dcd_int.c **** 
+ 995              		.loc 1 484 1 is_stmt 0 view .LVU318
+ 996 00da 0120     		movs	r0, #1
+ 997 00dc BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 998              	.LVL86:
+ 999              	.L58:
+ 484:USB/core/usb_dcd_int.c **** 
+ 1000              		.loc 1 484 1 view .LVU319
+ 1001              		.align	2
+ 1002              	.L57:
+ 1003 00e0 00000000 		.word	USBD_DCD_INT_fops
+ 1004              		.cfi_endproc
+ 1005              	.LFE129:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 37
+
+
+ 1007              		.section	.text.DCD_HandleRxStatusQueueLevel_ISR,"ax",%progbits
+ 1008              		.align	1
+ 1009              		.syntax unified
+ 1010              		.thumb
+ 1011              		.thumb_func
+ 1012              		.fpu fpv4-sp-d16
+ 1014              	DCD_HandleRxStatusQueueLevel_ISR:
+ 1015              	.LVL87:
+ 1016              	.LFB132:
+ 586:USB/core/usb_dcd_int.c ****   USB_OTG_GINTMSK_TypeDef  int_mask;
+ 1017              		.loc 1 586 1 is_stmt 1 view -0
+ 1018              		.cfi_startproc
+ 1019              		@ args = 0, pretend = 0, frame = 0
+ 1020              		@ frame_needed = 0, uses_anonymous_args = 0
+ 586:USB/core/usb_dcd_int.c ****   USB_OTG_GINTMSK_TypeDef  int_mask;
+ 1021              		.loc 1 586 1 is_stmt 0 view .LVU321
+ 1022 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 1023              	.LCFI13:
+ 1024              		.cfi_def_cfa_offset 24
+ 1025              		.cfi_offset 4, -24
+ 1026              		.cfi_offset 5, -20
+ 1027              		.cfi_offset 6, -16
+ 1028              		.cfi_offset 7, -12
+ 1029              		.cfi_offset 8, -8
+ 1030              		.cfi_offset 14, -4
+ 1031 0004 0446     		mov	r4, r0
+ 587:USB/core/usb_dcd_int.c ****   USB_OTG_DRXSTS_TypeDef   status;
+ 1032              		.loc 1 587 3 is_stmt 1 view .LVU322
+ 588:USB/core/usb_dcd_int.c ****   USB_OTG_EP *ep;
+ 1033              		.loc 1 588 3 view .LVU323
+ 589:USB/core/usb_dcd_int.c ****   
+ 1034              		.loc 1 589 3 view .LVU324
+ 592:USB/core/usb_dcd_int.c ****   int_mask.b.rxstsqlvl = 1;
+ 1035              		.loc 1 592 3 view .LVU325
+ 593:USB/core/usb_dcd_int.c ****   USB_OTG_MODIFY_REG32( &pdev->regs.GREGS->GINTMSK, int_mask.d32, 0);
+ 1036              		.loc 1 593 3 view .LVU326
+ 594:USB/core/usb_dcd_int.c ****   
+ 1037              		.loc 1 594 3 view .LVU327
+ 1038 0006 C268     		ldr	r2, [r0, #12]
+ 1039 0008 9369     		ldr	r3, [r2, #24]
+ 1040 000a 23F01003 		bic	r3, r3, #16
+ 1041 000e 9361     		str	r3, [r2, #24]
+ 597:USB/core/usb_dcd_int.c ****   
+ 1042              		.loc 1 597 3 view .LVU328
+ 597:USB/core/usb_dcd_int.c ****   
+ 1043              		.loc 1 597 16 is_stmt 0 view .LVU329
+ 1044 0010 C368     		ldr	r3, [r0, #12]
+ 1045 0012 1D6A     		ldr	r5, [r3, #32]
+ 599:USB/core/usb_dcd_int.c ****   
+ 1046              		.loc 1 599 3 is_stmt 1 view .LVU330
+ 599:USB/core/usb_dcd_int.c ****   
+ 1047              		.loc 1 599 34 is_stmt 0 view .LVU331
+ 1048 0014 05F00F06 		and	r6, r5, #15
+ 1049              	.LVL88:
+ 601:USB/core/usb_dcd_int.c ****   {
+ 1050              		.loc 1 601 3 is_stmt 1 view .LVU332
+ 601:USB/core/usb_dcd_int.c ****   {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 38
+
+
+ 1051              		.loc 1 601 19 is_stmt 0 view .LVU333
+ 1052 0018 C5F34343 		ubfx	r3, r5, #17, #4
+ 601:USB/core/usb_dcd_int.c ****   {
+ 1053              		.loc 1 601 3 view .LVU334
+ 1054 001c 022B     		cmp	r3, #2
+ 1055 001e 09D0     		beq	.L60
+ 1056 0020 062B     		cmp	r3, #6
+ 1057 0022 21D0     		beq	.L61
+ 1058              	.LVL89:
+ 1059              	.L62:
+ 627:USB/core/usb_dcd_int.c ****   
+ 1060              		.loc 1 627 3 is_stmt 1 view .LVU335
+ 1061 0024 E268     		ldr	r2, [r4, #12]
+ 1062 0026 9369     		ldr	r3, [r2, #24]
+ 1063 0028 43F01003 		orr	r3, r3, #16
+ 1064 002c 9361     		str	r3, [r2, #24]
+ 629:USB/core/usb_dcd_int.c **** }
+ 1065              		.loc 1 629 3 view .LVU336
+ 630:USB/core/usb_dcd_int.c **** 
+ 1066              		.loc 1 630 1 is_stmt 0 view .LVU337
+ 1067 002e 0120     		movs	r0, #1
+ 1068 0030 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 1069              	.LVL90:
+ 1070              	.L60:
+ 606:USB/core/usb_dcd_int.c ****     {
+ 1071              		.loc 1 606 5 is_stmt 1 view .LVU338
+ 606:USB/core/usb_dcd_int.c ****     {
+ 1072              		.loc 1 606 8 is_stmt 0 view .LVU339
+ 1073 0034 47F6F073 		movw	r3, #32752
+ 1074 0038 2B42     		tst	r3, r5
+ 1075 003a F3D0     		beq	.L62
+ 608:USB/core/usb_dcd_int.c ****       ep->xfer_buff += status.b.bcnt;
+ 1076              		.loc 1 608 7 is_stmt 1 view .LVU340
+ 608:USB/core/usb_dcd_int.c ****       ep->xfer_buff += status.b.bcnt;
+ 1077              		.loc 1 608 54 is_stmt 0 view .LVU341
+ 1078 003c C5F30A15 		ubfx	r5, r5, #4, #11
+ 608:USB/core/usb_dcd_int.c ****       ep->xfer_buff += status.b.bcnt;
+ 1079              		.loc 1 608 7 view .LVU342
+ 1080 0040 06EB8607 		add	r7, r6, r6, lsl #2
+ 1081 0044 00EBC707 		add	r7, r0, r7, lsl #3
+ 1082 0048 2A46     		mov	r2, r5
+ 1083 004a D7F88013 		ldr	r1, [r7, #896]
+ 1084 004e FFF7FEFF 		bl	USB_OTG_ReadPacket
+ 1085              	.LVL91:
+ 609:USB/core/usb_dcd_int.c ****       ep->xfer_count += status.b.bcnt;
+ 1086              		.loc 1 609 7 is_stmt 1 view .LVU343
+ 609:USB/core/usb_dcd_int.c ****       ep->xfer_count += status.b.bcnt;
+ 1087              		.loc 1 609 21 is_stmt 0 view .LVU344
+ 1088 0052 D7F88033 		ldr	r3, [r7, #896]
+ 1089 0056 2B44     		add	r3, r3, r5
+ 1090 0058 C7F88033 		str	r3, [r7, #896]
+ 610:USB/core/usb_dcd_int.c ****     }
+ 1091              		.loc 1 610 7 is_stmt 1 view .LVU345
+ 610:USB/core/usb_dcd_int.c ****     }
+ 1092              		.loc 1 610 22 is_stmt 0 view .LVU346
+ 1093 005c D7F88C33 		ldr	r3, [r7, #908]
+ 1094 0060 1D44     		add	r5, r5, r3
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 39
+
+
+ 1095 0062 C7F88C53 		str	r5, [r7, #908]
+ 1096 0066 DDE7     		b	.L62
+ 1097              	.LVL92:
+ 1098              	.L61:
+ 619:USB/core/usb_dcd_int.c ****     ep->xfer_count += status.b.bcnt;
+ 1099              		.loc 1 619 5 is_stmt 1 view .LVU347
+ 1100 0068 0822     		movs	r2, #8
+ 1101 006a 00F2CC51 		addw	r1, r0, #1484
+ 1102 006e FFF7FEFF 		bl	USB_OTG_ReadPacket
+ 1103              	.LVL93:
+ 620:USB/core/usb_dcd_int.c ****     break;
+ 1104              		.loc 1 620 5 view .LVU348
+ 620:USB/core/usb_dcd_int.c ****     break;
+ 1105              		.loc 1 620 31 is_stmt 0 view .LVU349
+ 1106 0072 C5F30A15 		ubfx	r5, r5, #4, #11
+ 620:USB/core/usb_dcd_int.c ****     break;
+ 1107              		.loc 1 620 20 view .LVU350
+ 1108 0076 06EB8603 		add	r3, r6, r6, lsl #2
+ 1109 007a 04EBC303 		add	r3, r4, r3, lsl #3
+ 1110 007e D3F88C23 		ldr	r2, [r3, #908]
+ 1111 0082 1544     		add	r5, r5, r2
+ 1112 0084 C3F88C53 		str	r5, [r3, #908]
+ 621:USB/core/usb_dcd_int.c ****   default:
+ 1113              		.loc 1 621 5 is_stmt 1 view .LVU351
+ 1114 0088 CCE7     		b	.L62
+ 1115              		.cfi_endproc
+ 1116              	.LFE132:
+ 1118              		.section	.text.DCD_HandleUsbReset_ISR,"ax",%progbits
+ 1119              		.align	1
+ 1120              		.syntax unified
+ 1121              		.thumb
+ 1122              		.thumb_func
+ 1123              		.fpu fpv4-sp-d16
+ 1125              	DCD_HandleUsbReset_ISR:
+ 1126              	.LVL94:
+ 1127              	.LFB134:
+ 691:USB/core/usb_dcd_int.c ****   USB_OTG_DAINT_TypeDef    daintmsk;
+ 1128              		.loc 1 691 1 view -0
+ 1129              		.cfi_startproc
+ 1130              		@ args = 0, pretend = 0, frame = 0
+ 1131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 691:USB/core/usb_dcd_int.c ****   USB_OTG_DAINT_TypeDef    daintmsk;
+ 1132              		.loc 1 691 1 is_stmt 0 view .LVU353
+ 1133 0000 70B5     		push	{r4, r5, r6, lr}
+ 1134              	.LCFI14:
+ 1135              		.cfi_def_cfa_offset 16
+ 1136              		.cfi_offset 4, -16
+ 1137              		.cfi_offset 5, -12
+ 1138              		.cfi_offset 6, -8
+ 1139              		.cfi_offset 14, -4
+ 1140 0002 0546     		mov	r5, r0
+ 692:USB/core/usb_dcd_int.c ****   USB_OTG_DOEPMSK_TypeDef  doepmsk;
+ 1141              		.loc 1 692 3 is_stmt 1 view .LVU354
+ 693:USB/core/usb_dcd_int.c ****   USB_OTG_DIEPMSK_TypeDef  diepmsk;
+ 1142              		.loc 1 693 3 view .LVU355
+ 694:USB/core/usb_dcd_int.c ****   USB_OTG_DCFG_TypeDef     dcfg;
+ 1143              		.loc 1 694 3 view .LVU356
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 40
+
+
+ 695:USB/core/usb_dcd_int.c ****   USB_OTG_DCTL_TypeDef     dctl;
+ 1144              		.loc 1 695 3 view .LVU357
+ 696:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;
+ 1145              		.loc 1 696 3 view .LVU358
+ 697:USB/core/usb_dcd_int.c ****   uint32_t i;
+ 1146              		.loc 1 697 3 view .LVU359
+ 698:USB/core/usb_dcd_int.c ****   
+ 1147              		.loc 1 698 3 view .LVU360
+ 700:USB/core/usb_dcd_int.c ****   daintmsk.d32 = 0;
+ 1148              		.loc 1 700 3 view .LVU361
+ 701:USB/core/usb_dcd_int.c ****   doepmsk.d32 = 0;
+ 1149              		.loc 1 701 3 view .LVU362
+ 701:USB/core/usb_dcd_int.c ****   doepmsk.d32 = 0;
+ 1150              		.loc 1 701 16 is_stmt 0 view .LVU363
+ 1151 0004 0024     		movs	r4, #0
+ 1152              	.LVL95:
+ 702:USB/core/usb_dcd_int.c ****   diepmsk.d32 = 0;
+ 1153              		.loc 1 702 3 is_stmt 1 view .LVU364
+ 703:USB/core/usb_dcd_int.c ****   dcfg.d32 = 0;
+ 1154              		.loc 1 703 3 view .LVU365
+ 703:USB/core/usb_dcd_int.c ****   dcfg.d32 = 0;
+ 1155              		.loc 1 703 15 is_stmt 0 view .LVU366
+ 1156 0006 2646     		mov	r6, r4
+ 1157              	.LVL96:
+ 704:USB/core/usb_dcd_int.c ****   gintsts.d32 = 0;
+ 1158              		.loc 1 704 3 is_stmt 1 view .LVU367
+ 705:USB/core/usb_dcd_int.c ****   
+ 1159              		.loc 1 705 3 view .LVU368
+ 708:USB/core/usb_dcd_int.c ****   USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DCTL, dctl.d32, 0 );
+ 1160              		.loc 1 708 3 view .LVU369
+ 709:USB/core/usb_dcd_int.c ****   
+ 1161              		.loc 1 709 3 view .LVU370
+ 1162 0008 0269     		ldr	r2, [r0, #16]
+ 1163 000a 5368     		ldr	r3, [r2, #4]
+ 1164 000c 23F00103 		bic	r3, r3, #1
+ 1165 0010 5360     		str	r3, [r2, #4]
+ 712:USB/core/usb_dcd_int.c ****   
+ 1166              		.loc 1 712 3 view .LVU371
+ 1167 0012 2146     		mov	r1, r4
+ 1168 0014 FFF7FEFF 		bl	USB_OTG_FlushTxFifo
+ 1169              	.LVL97:
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1170              		.loc 1 714 3 view .LVU372
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1171              		.loc 1 714 10 is_stmt 0 view .LVU373
+ 1172 0018 2146     		mov	r1, r4
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1173              		.loc 1 714 3 view .LVU374
+ 1174 001a 0CE0     		b	.L65
+ 1175              	.LVL98:
+ 1176              	.L66:
+ 716:USB/core/usb_dcd_int.c ****     USB_OTG_WRITE_REG32( &pdev->regs.OUTEP_REGS[i]->DOEPINT, 0xFF);
+ 1177              		.loc 1 716 5 is_stmt 1 discriminator 3 view .LVU375
+ 1178 001c 0B1D     		adds	r3, r1, #4
+ 1179 001e 05EB8303 		add	r3, r5, r3, lsl #2
+ 1180 0022 9B68     		ldr	r3, [r3, #8]
+ 1181 0024 FF22     		movs	r2, #255
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 41
+
+
+ 1182 0026 9A60     		str	r2, [r3, #8]
+ 717:USB/core/usb_dcd_int.c ****   }
+ 1183              		.loc 1 717 5 discriminator 3 view .LVU376
+ 1184 0028 01F11403 		add	r3, r1, #20
+ 1185 002c 05EB8303 		add	r3, r5, r3, lsl #2
+ 1186 0030 5B68     		ldr	r3, [r3, #4]
+ 1187 0032 9A60     		str	r2, [r3, #8]
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1188              		.loc 1 714 45 discriminator 3 view .LVU377
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1189              		.loc 1 714 46 is_stmt 0 discriminator 3 view .LVU378
+ 1190 0034 0131     		adds	r1, r1, #1
+ 1191              	.LVL99:
+ 1192              	.L65:
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1193              		.loc 1 714 15 is_stmt 1 discriminator 1 view .LVU379
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1194              		.loc 1 714 28 is_stmt 0 discriminator 1 view .LVU380
+ 1195 0036 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+ 714:USB/core/usb_dcd_int.c ****   {
+ 1196              		.loc 1 714 3 discriminator 1 view .LVU381
+ 1197 0038 8B42     		cmp	r3, r1
+ 1198 003a EFD8     		bhi	.L66
+ 719:USB/core/usb_dcd_int.c ****   
+ 1199              		.loc 1 719 3 is_stmt 1 view .LVU382
+ 1200 003c 2B69     		ldr	r3, [r5, #16]
+ 1201 003e 4FF0FF32 		mov	r2, #-1
+ 1202 0042 9A61     		str	r2, [r3, #24]
+ 721:USB/core/usb_dcd_int.c ****   daintmsk.ep.out = 1;
+ 1203              		.loc 1 721 3 view .LVU383
+ 722:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DAINTMSK, daintmsk.d32 );
+ 1204              		.loc 1 722 3 view .LVU384
+ 723:USB/core/usb_dcd_int.c ****   
+ 1205              		.loc 1 723 3 view .LVU385
+ 1206 0044 2B69     		ldr	r3, [r5, #16]
+ 1207 0046 4FF00112 		mov	r2, #65537
+ 1208 004a DA61     		str	r2, [r3, #28]
+ 725:USB/core/usb_dcd_int.c ****   doepmsk.b.xfercompl = 1;
+ 1209              		.loc 1 725 3 view .LVU386
+ 726:USB/core/usb_dcd_int.c ****   doepmsk.b.epdisabled = 1;
+ 1210              		.loc 1 726 3 view .LVU387
+ 727:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DOEPMSK, doepmsk.d32 );
+ 1211              		.loc 1 727 3 view .LVU388
+ 727:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DOEPMSK, doepmsk.d32 );
+ 1212              		.loc 1 727 24 is_stmt 0 view .LVU389
+ 1213 004c 0B24     		movs	r4, #11
+ 1214              	.LVL100:
+ 728:USB/core/usb_dcd_int.c **** #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED   
+ 1215              		.loc 1 728 3 is_stmt 1 view .LVU390
+ 1216 004e 2B69     		ldr	r3, [r5, #16]
+ 1217              	.LVL101:
+ 728:USB/core/usb_dcd_int.c **** #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED   
+ 1218              		.loc 1 728 3 is_stmt 0 view .LVU391
+ 1219 0050 5C61     		str	r4, [r3, #20]
+ 732:USB/core/usb_dcd_int.c ****   diepmsk.b.timeout = 1;
+ 1220              		.loc 1 732 3 is_stmt 1 view .LVU392
+ 733:USB/core/usb_dcd_int.c ****   diepmsk.b.epdisabled = 1;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 42
+
+
+ 1221              		.loc 1 733 3 view .LVU393
+ 734:USB/core/usb_dcd_int.c **** 
+ 1222              		.loc 1 734 3 view .LVU394
+ 1223              	.LVL102:
+ 734:USB/core/usb_dcd_int.c **** 
+ 1224              		.loc 1 734 24 is_stmt 0 view .LVU395
+ 1225 0052 2643     		orrs	r6, r6, r4
+ 1226              	.LVL103:
+ 736:USB/core/usb_dcd_int.c **** #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED  
+ 1227              		.loc 1 736 3 is_stmt 1 view .LVU396
+ 1228 0054 2B69     		ldr	r3, [r5, #16]
+ 1229              	.LVL104:
+ 736:USB/core/usb_dcd_int.c **** #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED  
+ 1230              		.loc 1 736 3 is_stmt 0 view .LVU397
+ 1231 0056 1E61     		str	r6, [r3, #16]
+ 741:USB/core/usb_dcd_int.c ****   dcfg.b.devaddr = 0;
+ 1232              		.loc 1 741 3 is_stmt 1 view .LVU398
+ 741:USB/core/usb_dcd_int.c ****   dcfg.b.devaddr = 0;
+ 1233              		.loc 1 741 14 is_stmt 0 view .LVU399
+ 1234 0058 2A69     		ldr	r2, [r5, #16]
+ 1235 005a 1368     		ldr	r3, [r2]
+ 742:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DCFG, dcfg.d32);
+ 1236              		.loc 1 742 3 is_stmt 1 view .LVU400
+ 742:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.DREGS->DCFG, dcfg.d32);
+ 1237              		.loc 1 742 18 is_stmt 0 view .LVU401
+ 1238 005c 6FF30A13 		bfc	r3, #4, #7
+ 1239              	.LVL105:
+ 743:USB/core/usb_dcd_int.c ****   
+ 1240              		.loc 1 743 3 is_stmt 1 view .LVU402
+ 1241 0060 1360     		str	r3, [r2]
+ 747:USB/core/usb_dcd_int.c ****   
+ 1242              		.loc 1 747 3 view .LVU403
+ 1243 0062 2846     		mov	r0, r5
+ 1244 0064 FFF7FEFF 		bl	USB_OTG_EP0_OutStart
+ 1245              	.LVL106:
+ 750:USB/core/usb_dcd_int.c ****   gintsts.b.usbreset = 1;
+ 1246              		.loc 1 750 3 view .LVU404
+ 751:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32 (&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+ 1247              		.loc 1 751 3 view .LVU405
+ 752:USB/core/usb_dcd_int.c ****   
+ 1248              		.loc 1 752 3 view .LVU406
+ 1249 0068 EB68     		ldr	r3, [r5, #12]
+ 1250 006a 4FF48052 		mov	r2, #4096
+ 1251 006e 5A61     		str	r2, [r3, #20]
+ 755:USB/core/usb_dcd_int.c ****   return 1;
+ 1252              		.loc 1 755 3 view .LVU407
+ 755:USB/core/usb_dcd_int.c ****   return 1;
+ 1253              		.loc 1 755 20 is_stmt 0 view .LVU408
+ 1254 0070 034B     		ldr	r3, .L68
+ 1255 0072 1B68     		ldr	r3, [r3]
+ 1256 0074 1B69     		ldr	r3, [r3, #16]
+ 755:USB/core/usb_dcd_int.c ****   return 1;
+ 1257              		.loc 1 755 3 view .LVU409
+ 1258 0076 2846     		mov	r0, r5
+ 1259 0078 9847     		blx	r3
+ 1260              	.LVL107:
+ 756:USB/core/usb_dcd_int.c **** }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 43
+
+
+ 1261              		.loc 1 756 3 is_stmt 1 view .LVU410
+ 757:USB/core/usb_dcd_int.c **** 
+ 1262              		.loc 1 757 1 is_stmt 0 view .LVU411
+ 1263 007a 0120     		movs	r0, #1
+ 1264 007c 70BD     		pop	{r4, r5, r6, pc}
+ 1265              	.LVL108:
+ 1266              	.L69:
+ 757:USB/core/usb_dcd_int.c **** 
+ 1267              		.loc 1 757 1 view .LVU412
+ 1268 007e 00BF     		.align	2
+ 1269              	.L68:
+ 1270 0080 00000000 		.word	USBD_DCD_INT_fops
+ 1271              		.cfi_endproc
+ 1272              	.LFE134:
+ 1274              		.section	.text.DCD_HandleEnumDone_ISR,"ax",%progbits
+ 1275              		.align	1
+ 1276              		.syntax unified
+ 1277              		.thumb
+ 1278              		.thumb_func
+ 1279              		.fpu fpv4-sp-d16
+ 1281              	DCD_HandleEnumDone_ISR:
+ 1282              	.LVL109:
+ 1283              	.LFB135:
+ 766:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;
+ 1284              		.loc 1 766 1 is_stmt 1 view -0
+ 1285              		.cfi_startproc
+ 1286              		@ args = 0, pretend = 0, frame = 0
+ 1287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 766:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintsts;
+ 1288              		.loc 1 766 1 is_stmt 0 view .LVU414
+ 1289 0000 38B5     		push	{r3, r4, r5, lr}
+ 1290              	.LCFI15:
+ 1291              		.cfi_def_cfa_offset 16
+ 1292              		.cfi_offset 3, -16
+ 1293              		.cfi_offset 4, -12
+ 1294              		.cfi_offset 5, -8
+ 1295              		.cfi_offset 14, -4
+ 1296 0002 0446     		mov	r4, r0
+ 767:USB/core/usb_dcd_int.c ****   USB_OTG_GUSBCFG_TypeDef  gusbcfg;
+ 1297              		.loc 1 767 3 is_stmt 1 view .LVU415
+ 768:USB/core/usb_dcd_int.c ****   
+ 1298              		.loc 1 768 3 view .LVU416
+ 770:USB/core/usb_dcd_int.c ****   
+ 1299              		.loc 1 770 3 view .LVU417
+ 1300 0004 FFF7FEFF 		bl	USB_OTG_EP0Activate
+ 1301              	.LVL110:
+ 773:USB/core/usb_dcd_int.c ****   
+ 1302              		.loc 1 773 3 view .LVU418
+ 773:USB/core/usb_dcd_int.c ****   
+ 1303              		.loc 1 773 17 is_stmt 0 view .LVU419
+ 1304 0008 E368     		ldr	r3, [r4, #12]
+ 1305 000a DD68     		ldr	r5, [r3, #12]
+ 1306              	.LVL111:
+ 776:USB/core/usb_dcd_int.c ****   {
+ 1307              		.loc 1 776 3 is_stmt 1 view .LVU420
+ 776:USB/core/usb_dcd_int.c ****   {
+ 1308              		.loc 1 776 8 is_stmt 0 view .LVU421
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 44
+
+
+ 1309 000c 2046     		mov	r0, r4
+ 1310 000e FFF7FEFF 		bl	USB_OTG_GetDeviceSpeed
+ 1311              	.LVL112:
+ 776:USB/core/usb_dcd_int.c ****   {
+ 1312              		.loc 1 776 6 view .LVU422
+ 1313 0012 0328     		cmp	r0, #3
+ 1314 0014 0ED0     		beq	.L74
+ 784:USB/core/usb_dcd_int.c ****     pdev->cfg.mps              = USB_OTG_FS_MAX_PACKET_SIZE ;  
+ 1315              		.loc 1 784 5 is_stmt 1 view .LVU423
+ 784:USB/core/usb_dcd_int.c ****     pdev->cfg.mps              = USB_OTG_FS_MAX_PACKET_SIZE ;  
+ 1316              		.loc 1 784 32 is_stmt 0 view .LVU424
+ 1317 0016 0123     		movs	r3, #1
+ 1318 0018 A370     		strb	r3, [r4, #2]
+ 785:USB/core/usb_dcd_int.c ****     gusbcfg.b.usbtrdtim = 5;
+ 1319              		.loc 1 785 5 is_stmt 1 view .LVU425
+ 785:USB/core/usb_dcd_int.c ****     gusbcfg.b.usbtrdtim = 5;
+ 1320              		.loc 1 785 32 is_stmt 0 view .LVU426
+ 1321 001a 4023     		movs	r3, #64
+ 1322 001c A380     		strh	r3, [r4, #4]	@ movhi
+ 786:USB/core/usb_dcd_int.c ****   }
+ 1323              		.loc 1 786 5 is_stmt 1 view .LVU427
+ 786:USB/core/usb_dcd_int.c ****   }
+ 1324              		.loc 1 786 25 is_stmt 0 view .LVU428
+ 1325 001e 0523     		movs	r3, #5
+ 1326 0020 63F38D25 		bfi	r5, r3, #10, #4
+ 1327              	.L72:
+ 789:USB/core/usb_dcd_int.c ****   
+ 1328              		.loc 1 789 3 is_stmt 1 view .LVU429
+ 1329 0024 E368     		ldr	r3, [r4, #12]
+ 1330 0026 DD60     		str	r5, [r3, #12]
+ 792:USB/core/usb_dcd_int.c ****   gintsts.b.enumdone = 1;
+ 1331              		.loc 1 792 3 view .LVU430
+ 793:USB/core/usb_dcd_int.c ****   USB_OTG_WRITE_REG32( &pdev->regs.GREGS->GINTSTS, gintsts.d32 );
+ 1332              		.loc 1 793 3 view .LVU431
+ 794:USB/core/usb_dcd_int.c ****   return 1;
+ 1333              		.loc 1 794 3 view .LVU432
+ 1334 0028 E368     		ldr	r3, [r4, #12]
+ 1335 002a 4FF40052 		mov	r2, #8192
+ 1336 002e 5A61     		str	r2, [r3, #20]
+ 795:USB/core/usb_dcd_int.c **** }
+ 1337              		.loc 1 795 3 view .LVU433
+ 796:USB/core/usb_dcd_int.c **** 
+ 1338              		.loc 1 796 1 is_stmt 0 view .LVU434
+ 1339 0030 0120     		movs	r0, #1
+ 1340 0032 38BD     		pop	{r3, r4, r5, pc}
+ 1341              	.LVL113:
+ 1342              	.L74:
+ 778:USB/core/usb_dcd_int.c ****     pdev->cfg.mps              = USB_OTG_HS_MAX_PACKET_SIZE ;    
+ 1343              		.loc 1 778 5 is_stmt 1 view .LVU435
+ 778:USB/core/usb_dcd_int.c ****     pdev->cfg.mps              = USB_OTG_HS_MAX_PACKET_SIZE ;    
+ 1344              		.loc 1 778 32 is_stmt 0 view .LVU436
+ 1345 0034 0023     		movs	r3, #0
+ 1346 0036 A370     		strb	r3, [r4, #2]
+ 779:USB/core/usb_dcd_int.c ****     gusbcfg.b.usbtrdtim = 9;
+ 1347              		.loc 1 779 5 is_stmt 1 view .LVU437
+ 779:USB/core/usb_dcd_int.c ****     gusbcfg.b.usbtrdtim = 9;
+ 1348              		.loc 1 779 32 is_stmt 0 view .LVU438
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 45
+
+
+ 1349 0038 4FF40073 		mov	r3, #512
+ 1350 003c A380     		strh	r3, [r4, #4]	@ movhi
+ 780:USB/core/usb_dcd_int.c ****   }
+ 1351              		.loc 1 780 5 is_stmt 1 view .LVU439
+ 780:USB/core/usb_dcd_int.c ****   }
+ 1352              		.loc 1 780 25 is_stmt 0 view .LVU440
+ 1353 003e 0923     		movs	r3, #9
+ 1354 0040 63F38D25 		bfi	r5, r3, #10, #4
+ 1355 0044 EEE7     		b	.L72
+ 1356              		.cfi_endproc
+ 1357              	.LFE135:
+ 1359              		.section	.text.USBD_OTG_ISR_Handler,"ax",%progbits
+ 1360              		.align	1
+ 1361              		.global	USBD_OTG_ISR_Handler
+ 1362              		.syntax unified
+ 1363              		.thumb
+ 1364              		.thumb_func
+ 1365              		.fpu fpv4-sp-d16
+ 1367              	USBD_OTG_ISR_Handler:
+ 1368              	.LVL114:
+ 1369              	.LFB126:
+ 210:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintr_status;
+ 1370              		.loc 1 210 1 is_stmt 1 view -0
+ 1371              		.cfi_startproc
+ 1372              		@ args = 0, pretend = 0, frame = 0
+ 1373              		@ frame_needed = 0, uses_anonymous_args = 0
+ 210:USB/core/usb_dcd_int.c ****   USB_OTG_GINTSTS_TypeDef  gintr_status;
+ 1374              		.loc 1 210 1 is_stmt 0 view .LVU442
+ 1375 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 1376              	.LCFI16:
+ 1377              		.cfi_def_cfa_offset 32
+ 1378              		.cfi_offset 3, -32
+ 1379              		.cfi_offset 4, -28
+ 1380              		.cfi_offset 5, -24
+ 1381              		.cfi_offset 6, -20
+ 1382              		.cfi_offset 7, -16
+ 1383              		.cfi_offset 8, -12
+ 1384              		.cfi_offset 9, -8
+ 1385              		.cfi_offset 14, -4
+ 1386 0004 0446     		mov	r4, r0
+ 211:USB/core/usb_dcd_int.c ****   uint32_t retval = 0;
+ 1387              		.loc 1 211 3 is_stmt 1 view .LVU443
+ 212:USB/core/usb_dcd_int.c ****   
+ 1388              		.loc 1 212 3 view .LVU444
+ 1389              	.LVL115:
+ 214:USB/core/usb_dcd_int.c ****   {
+ 1390              		.loc 1 214 3 view .LVU445
+ 214:USB/core/usb_dcd_int.c ****   {
+ 1391              		.loc 1 214 7 is_stmt 0 view .LVU446
+ 1392 0006 FFF7FEFF 		bl	USB_OTG_IsDeviceMode
+ 1393              	.LVL116:
+ 214:USB/core/usb_dcd_int.c ****   {
+ 1394              		.loc 1 214 6 view .LVU447
+ 1395 000a 18B9     		cbnz	r0, .L91
+ 212:USB/core/usb_dcd_int.c ****   
+ 1396              		.loc 1 212 12 view .LVU448
+ 1397 000c 0025     		movs	r5, #0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 46
+
+
+ 1398              	.LVL117:
+ 1399              	.L75:
+ 295:USB/core/usb_dcd_int.c **** 
+ 1400              		.loc 1 295 1 view .LVU449
+ 1401 000e 2846     		mov	r0, r5
+ 1402 0010 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 1403              	.LVL118:
+ 1404              	.L91:
+ 216:USB/core/usb_dcd_int.c ****     if (!gintr_status.d32) /* avoid spurious interrupt */
+ 1405              		.loc 1 216 5 is_stmt 1 view .LVU450
+ 216:USB/core/usb_dcd_int.c ****     if (!gintr_status.d32) /* avoid spurious interrupt */
+ 1406              		.loc 1 216 24 is_stmt 0 view .LVU451
+ 1407 0014 2046     		mov	r0, r4
+ 1408 0016 FFF7FEFF 		bl	USB_OTG_ReadCoreItr
+ 1409              	.LVL119:
+ 217:USB/core/usb_dcd_int.c ****     {
+ 1410              		.loc 1 217 5 is_stmt 1 view .LVU452
+ 217:USB/core/usb_dcd_int.c ****     {
+ 1411              		.loc 1 217 8 is_stmt 0 view .LVU453
+ 1412 001a 0646     		mov	r6, r0
+ 1413 001c 0028     		cmp	r0, #0
+ 1414 001e 5BD0     		beq	.L88
+ 222:USB/core/usb_dcd_int.c ****     {
+ 1415              		.loc 1 222 5 is_stmt 1 view .LVU454
+ 1416 0020 C0F30747 		ubfx	r7, r0, #16, #8
+ 222:USB/core/usb_dcd_int.c ****     {
+ 1417              		.loc 1 222 8 is_stmt 0 view .LVU455
+ 1418 0024 10F4002F 		tst	r0, #524288
+ 1419 0028 29D1     		bne	.L92
+ 212:USB/core/usb_dcd_int.c ****   
+ 1420              		.loc 1 212 12 view .LVU456
+ 1421 002a 0025     		movs	r5, #0
+ 1422              	.LVL120:
+ 1423              	.L77:
+ 227:USB/core/usb_dcd_int.c ****     {
+ 1424              		.loc 1 227 5 is_stmt 1 view .LVU457
+ 227:USB/core/usb_dcd_int.c ****     {
+ 1425              		.loc 1 227 8 is_stmt 0 view .LVU458
+ 1426 002c 17F0040F 		tst	r7, #4
+ 1427 0030 2AD1     		bne	.L93
+ 1428              	.L78:
+ 232:USB/core/usb_dcd_int.c ****     {
+ 1429              		.loc 1 232 5 is_stmt 1 view .LVU459
+ 1430 0032 5FFA86F9 		uxtb	r9, r6
+ 232:USB/core/usb_dcd_int.c ****     {
+ 1431              		.loc 1 232 8 is_stmt 0 view .LVU460
+ 1432 0036 16F0020F 		tst	r6, #2
+ 1433 003a 02D0     		beq	.L79
+ 1434              	.LBB2:
+ 234:USB/core/usb_dcd_int.c ****       
+ 1435              		.loc 1 234 7 is_stmt 1 view .LVU461
+ 237:USB/core/usb_dcd_int.c ****       gintsts.b.modemismatch = 1;
+ 1436              		.loc 1 237 7 view .LVU462
+ 238:USB/core/usb_dcd_int.c ****       USB_OTG_WRITE_REG32(&pdev->regs.GREGS->GINTSTS, gintsts.d32);
+ 1437              		.loc 1 238 7 view .LVU463
+ 239:USB/core/usb_dcd_int.c ****     }
+ 1438              		.loc 1 239 7 view .LVU464
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 47
+
+
+ 1439 003c E368     		ldr	r3, [r4, #12]
+ 1440 003e 0222     		movs	r2, #2
+ 1441 0040 5A61     		str	r2, [r3, #20]
+ 1442              	.L79:
+ 239:USB/core/usb_dcd_int.c ****     }
+ 1443              		.loc 1 239 7 is_stmt 0 view .LVU465
+ 1444              	.LBE2:
+ 242:USB/core/usb_dcd_int.c ****     {
+ 1445              		.loc 1 242 5 is_stmt 1 view .LVU466
+ 242:USB/core/usb_dcd_int.c ****     {
+ 1446              		.loc 1 242 8 is_stmt 0 view .LVU467
+ 1447 0042 002E     		cmp	r6, #0
+ 1448 0044 25DB     		blt	.L94
+ 1449              	.L80:
+ 247:USB/core/usb_dcd_int.c ****     {
+ 1450              		.loc 1 247 5 is_stmt 1 view .LVU468
+ 1451 0046 C6F30728 		ubfx	r8, r6, #8, #8
+ 247:USB/core/usb_dcd_int.c ****     {
+ 1452              		.loc 1 247 8 is_stmt 0 view .LVU469
+ 1453 004a 16F4006F 		tst	r6, #2048
+ 1454 004e 25D1     		bne	.L95
+ 1455              	.L81:
+ 251:USB/core/usb_dcd_int.c ****     {
+ 1456              		.loc 1 251 5 is_stmt 1 view .LVU470
+ 251:USB/core/usb_dcd_int.c ****     {
+ 1457              		.loc 1 251 8 is_stmt 0 view .LVU471
+ 1458 0050 19F0080F 		tst	r9, #8
+ 1459 0054 27D1     		bne	.L96
+ 1460              	.L82:
+ 257:USB/core/usb_dcd_int.c ****     {
+ 1461              		.loc 1 257 5 is_stmt 1 view .LVU472
+ 257:USB/core/usb_dcd_int.c ****     {
+ 1462              		.loc 1 257 8 is_stmt 0 view .LVU473
+ 1463 0056 19F0100F 		tst	r9, #16
+ 1464 005a 29D1     		bne	.L97
+ 1465              	.L83:
+ 263:USB/core/usb_dcd_int.c ****     {
+ 1466              		.loc 1 263 5 is_stmt 1 view .LVU474
+ 263:USB/core/usb_dcd_int.c ****     {
+ 1467              		.loc 1 263 8 is_stmt 0 view .LVU475
+ 1468 005c 18F0100F 		tst	r8, #16
+ 1469 0060 2BD1     		bne	.L98
+ 1470              	.L84:
+ 268:USB/core/usb_dcd_int.c ****     {
+ 1471              		.loc 1 268 5 is_stmt 1 view .LVU476
+ 268:USB/core/usb_dcd_int.c ****     {
+ 1472              		.loc 1 268 8 is_stmt 0 view .LVU477
+ 1473 0062 18F0200F 		tst	r8, #32
+ 1474 0066 2DD1     		bne	.L99
+ 1475              	.L85:
+ 273:USB/core/usb_dcd_int.c ****     {
+ 1476              		.loc 1 273 5 is_stmt 1 view .LVU478
+ 273:USB/core/usb_dcd_int.c ****     {
+ 1477              		.loc 1 273 8 is_stmt 0 view .LVU479
+ 1478 0068 17F0100F 		tst	r7, #16
+ 1479 006c 2FD1     		bne	.L100
+ 1480              	.L86:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 48
+
+
+ 278:USB/core/usb_dcd_int.c ****     {
+ 1481              		.loc 1 278 5 is_stmt 1 view .LVU480
+ 278:USB/core/usb_dcd_int.c ****     {
+ 1482              		.loc 1 278 8 is_stmt 0 view .LVU481
+ 1483 006e 17F0200F 		tst	r7, #32
+ 1484 0072 CCD0     		beq	.L75
+ 280:USB/core/usb_dcd_int.c ****     }    
+ 1485              		.loc 1 280 7 is_stmt 1 view .LVU482
+ 280:USB/core/usb_dcd_int.c ****     }    
+ 1486              		.loc 1 280 17 is_stmt 0 view .LVU483
+ 1487 0074 2046     		mov	r0, r4
+ 1488 0076 FFF7FEFF 		bl	DCD_IsoOUTIncomplete_ISR
+ 1489              	.LVL121:
+ 280:USB/core/usb_dcd_int.c ****     }    
+ 1490              		.loc 1 280 14 view .LVU484
+ 1491 007a 0543     		orrs	r5, r5, r0
+ 1492              	.LVL122:
+ 280:USB/core/usb_dcd_int.c ****     }    
+ 1493              		.loc 1 280 14 view .LVU485
+ 1494 007c C7E7     		b	.L75
+ 1495              	.LVL123:
+ 1496              	.L92:
+ 224:USB/core/usb_dcd_int.c ****     }    
+ 1497              		.loc 1 224 7 is_stmt 1 view .LVU486
+ 224:USB/core/usb_dcd_int.c ****     }    
+ 1498              		.loc 1 224 17 is_stmt 0 view .LVU487
+ 1499 007e 2046     		mov	r0, r4
+ 1500 0080 FFF7FEFF 		bl	DCD_HandleOutEP_ISR
+ 1501              	.LVL124:
+ 1502 0084 0546     		mov	r5, r0
+ 1503              	.LVL125:
+ 224:USB/core/usb_dcd_int.c ****     }    
+ 1504              		.loc 1 224 17 view .LVU488
+ 1505 0086 D1E7     		b	.L77
+ 1506              	.LVL126:
+ 1507              	.L93:
+ 229:USB/core/usb_dcd_int.c ****     }
+ 1508              		.loc 1 229 7 is_stmt 1 view .LVU489
+ 229:USB/core/usb_dcd_int.c ****     }
+ 1509              		.loc 1 229 17 is_stmt 0 view .LVU490
+ 1510 0088 2046     		mov	r0, r4
+ 1511 008a FFF7FEFF 		bl	DCD_HandleInEP_ISR
+ 1512              	.LVL127:
+ 229:USB/core/usb_dcd_int.c ****     }
+ 1513              		.loc 1 229 14 view .LVU491
+ 1514 008e 0543     		orrs	r5, r5, r0
+ 1515              	.LVL128:
+ 229:USB/core/usb_dcd_int.c ****     }
+ 1516              		.loc 1 229 14 view .LVU492
+ 1517 0090 CFE7     		b	.L78
+ 1518              	.L94:
+ 244:USB/core/usb_dcd_int.c ****     }
+ 1519              		.loc 1 244 7 is_stmt 1 view .LVU493
+ 244:USB/core/usb_dcd_int.c ****     }
+ 1520              		.loc 1 244 17 is_stmt 0 view .LVU494
+ 1521 0092 2046     		mov	r0, r4
+ 1522 0094 FFF7FEFF 		bl	DCD_HandleResume_ISR
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 49
+
+
+ 1523              	.LVL129:
+ 244:USB/core/usb_dcd_int.c ****     }
+ 1524              		.loc 1 244 14 view .LVU495
+ 1525 0098 0543     		orrs	r5, r5, r0
+ 1526              	.LVL130:
+ 244:USB/core/usb_dcd_int.c ****     }
+ 1527              		.loc 1 244 14 view .LVU496
+ 1528 009a D4E7     		b	.L80
+ 1529              	.L95:
+ 249:USB/core/usb_dcd_int.c ****     }
+ 1530              		.loc 1 249 7 is_stmt 1 view .LVU497
+ 249:USB/core/usb_dcd_int.c ****     }
+ 1531              		.loc 1 249 17 is_stmt 0 view .LVU498
+ 1532 009c 2046     		mov	r0, r4
+ 1533 009e FFF7FEFF 		bl	DCD_HandleUSBSuspend_ISR
+ 1534              	.LVL131:
+ 249:USB/core/usb_dcd_int.c ****     }
+ 1535              		.loc 1 249 14 view .LVU499
+ 1536 00a2 0543     		orrs	r5, r5, r0
+ 1537              	.LVL132:
+ 249:USB/core/usb_dcd_int.c ****     }
+ 1538              		.loc 1 249 14 view .LVU500
+ 1539 00a4 D4E7     		b	.L81
+ 1540              	.L96:
+ 253:USB/core/usb_dcd_int.c ****       
+ 1541              		.loc 1 253 7 is_stmt 1 view .LVU501
+ 253:USB/core/usb_dcd_int.c ****       
+ 1542              		.loc 1 253 17 is_stmt 0 view .LVU502
+ 1543 00a6 2046     		mov	r0, r4
+ 1544 00a8 FFF7FEFF 		bl	DCD_HandleSof_ISR
+ 1545              	.LVL133:
+ 253:USB/core/usb_dcd_int.c ****       
+ 1546              		.loc 1 253 14 view .LVU503
+ 1547 00ac 0543     		orrs	r5, r5, r0
+ 1548              	.LVL134:
+ 253:USB/core/usb_dcd_int.c ****       
+ 1549              		.loc 1 253 14 view .LVU504
+ 1550 00ae D2E7     		b	.L82
+ 1551              	.L97:
+ 259:USB/core/usb_dcd_int.c ****       
+ 1552              		.loc 1 259 7 is_stmt 1 view .LVU505
+ 259:USB/core/usb_dcd_int.c ****       
+ 1553              		.loc 1 259 17 is_stmt 0 view .LVU506
+ 1554 00b0 2046     		mov	r0, r4
+ 1555 00b2 FFF7FEFF 		bl	DCD_HandleRxStatusQueueLevel_ISR
+ 1556              	.LVL135:
+ 259:USB/core/usb_dcd_int.c ****       
+ 1557              		.loc 1 259 14 view .LVU507
+ 1558 00b6 0543     		orrs	r5, r5, r0
+ 1559              	.LVL136:
+ 259:USB/core/usb_dcd_int.c ****       
+ 1560              		.loc 1 259 14 view .LVU508
+ 1561 00b8 D0E7     		b	.L83
+ 1562              	.L98:
+ 265:USB/core/usb_dcd_int.c ****       
+ 1563              		.loc 1 265 7 is_stmt 1 view .LVU509
+ 265:USB/core/usb_dcd_int.c ****       
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 50
+
+
+ 1564              		.loc 1 265 17 is_stmt 0 view .LVU510
+ 1565 00ba 2046     		mov	r0, r4
+ 1566 00bc FFF7FEFF 		bl	DCD_HandleUsbReset_ISR
+ 1567              	.LVL137:
+ 265:USB/core/usb_dcd_int.c ****       
+ 1568              		.loc 1 265 14 view .LVU511
+ 1569 00c0 0543     		orrs	r5, r5, r0
+ 1570              	.LVL138:
+ 265:USB/core/usb_dcd_int.c ****       
+ 1571              		.loc 1 265 14 view .LVU512
+ 1572 00c2 CEE7     		b	.L84
+ 1573              	.L99:
+ 270:USB/core/usb_dcd_int.c ****     }
+ 1574              		.loc 1 270 7 is_stmt 1 view .LVU513
+ 270:USB/core/usb_dcd_int.c ****     }
+ 1575              		.loc 1 270 17 is_stmt 0 view .LVU514
+ 1576 00c4 2046     		mov	r0, r4
+ 1577 00c6 FFF7FEFF 		bl	DCD_HandleEnumDone_ISR
+ 1578              	.LVL139:
+ 270:USB/core/usb_dcd_int.c ****     }
+ 1579              		.loc 1 270 14 view .LVU515
+ 1580 00ca 0543     		orrs	r5, r5, r0
+ 1581              	.LVL140:
+ 270:USB/core/usb_dcd_int.c ****     }
+ 1582              		.loc 1 270 14 view .LVU516
+ 1583 00cc CCE7     		b	.L85
+ 1584              	.L100:
+ 275:USB/core/usb_dcd_int.c ****     }
+ 1585              		.loc 1 275 7 is_stmt 1 view .LVU517
+ 275:USB/core/usb_dcd_int.c ****     }
+ 1586              		.loc 1 275 17 is_stmt 0 view .LVU518
+ 1587 00ce 2046     		mov	r0, r4
+ 1588 00d0 FFF7FEFF 		bl	DCD_IsoINIncomplete_ISR
+ 1589              	.LVL141:
+ 275:USB/core/usb_dcd_int.c ****     }
+ 1590              		.loc 1 275 14 view .LVU519
+ 1591 00d4 0543     		orrs	r5, r5, r0
+ 1592              	.LVL142:
+ 275:USB/core/usb_dcd_int.c ****     }
+ 1593              		.loc 1 275 14 view .LVU520
+ 1594 00d6 CAE7     		b	.L86
+ 1595              	.LVL143:
+ 1596              	.L88:
+ 219:USB/core/usb_dcd_int.c ****     }
+ 1597              		.loc 1 219 14 view .LVU521
+ 1598 00d8 0546     		mov	r5, r0
+ 1599              	.LVL144:
+ 219:USB/core/usb_dcd_int.c ****     }
+ 1600              		.loc 1 219 14 view .LVU522
+ 1601 00da 98E7     		b	.L75
+ 1602              		.cfi_endproc
+ 1603              	.LFE126:
+ 1605              		.text
+ 1606              	.Letext0:
+ 1607              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 1608              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 1609              		.file 4 "F4_CORE/core_cm4.h"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 51
+
+
+ 1610              		.file 5 "USB/core/usb_regs.h"
+ 1611              		.file 6 "USB/core/usb_core.h"
+ 1612              		.file 7 "USB/core/usb_dcd_int.h"
+ 1613              		.file 8 "USB/core/usb_defines.h"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s 			page 52
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_dcd_int.c
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:18     .text.DCD_HandleResume_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:25     .text.DCD_HandleResume_ISR:00000000 DCD_HandleResume_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:97     .text.DCD_HandleResume_ISR:0000003c $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:102    .text.DCD_HandleUSBSuspend_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:108    .text.DCD_HandleUSBSuspend_ISR:00000000 DCD_HandleUSBSuspend_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:211    .text.DCD_HandleUSBSuspend_ISR:00000070 $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:217    .text.DCD_HandleSof_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:223    .text.DCD_HandleSof_ISR:00000000 DCD_HandleSof_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:261    .text.DCD_HandleSof_ISR:00000018 $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:266    .text.DCD_IsoINIncomplete_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:272    .text.DCD_IsoINIncomplete_ISR:00000000 DCD_IsoINIncomplete_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:310    .text.DCD_IsoINIncomplete_ISR:00000018 $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:315    .text.DCD_IsoOUTIncomplete_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:321    .text.DCD_IsoOUTIncomplete_ISR:00000000 DCD_IsoOUTIncomplete_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:359    .text.DCD_IsoOUTIncomplete_ISR:00000018 $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:364    .text.DCD_ReadDevInEP:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:370    .text.DCD_ReadDevInEP:00000000 DCD_ReadDevInEP
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:429    .text.DCD_HandleOutEP_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:435    .text.DCD_HandleOutEP_ISR:00000000 DCD_HandleOutEP_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:623    .text.DCD_HandleOutEP_ISR:000000c8 $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:628    .text.DCD_WriteEmptyTxFifo:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:634    .text.DCD_WriteEmptyTxFifo:00000000 DCD_WriteEmptyTxFifo
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:779    .text.DCD_HandleInEP_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:785    .text.DCD_HandleInEP_ISR:00000000 DCD_HandleInEP_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1003   .text.DCD_HandleInEP_ISR:000000e0 $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1008   .text.DCD_HandleRxStatusQueueLevel_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1014   .text.DCD_HandleRxStatusQueueLevel_ISR:00000000 DCD_HandleRxStatusQueueLevel_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1119   .text.DCD_HandleUsbReset_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1125   .text.DCD_HandleUsbReset_ISR:00000000 DCD_HandleUsbReset_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1270   .text.DCD_HandleUsbReset_ISR:00000080 $d
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1275   .text.DCD_HandleEnumDone_ISR:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1281   .text.DCD_HandleEnumDone_ISR:00000000 DCD_HandleEnumDone_ISR
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1360   .text.USBD_OTG_ISR_Handler:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cc1ajgrx.s:1367   .text.USBD_OTG_ISR_Handler:00000000 USBD_OTG_ISR_Handler
+
+UNDEFINED SYMBOLS
+USBD_DCD_INT_fops
+USB_OTG_ReadDevAllOutEp_itr
+USB_OTG_ReadDevOutEP_itr
+USB_OTG_EP0_OutStart
+USB_OTG_WritePacket
+USB_OTG_ReadDevAllInEPItr
+USB_OTG_ReadPacket
+USB_OTG_FlushTxFifo
+USB_OTG_EP0Activate
+USB_OTG_GetDeviceSpeed
+USB_OTG_IsDeviceMode
+USB_OTG_ReadCoreItr

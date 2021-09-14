@@ -1,0 +1,1786 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"queue.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Queue_GetState,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	Queue_GetState:
+  26              	.LVL0:
+  27              	.LFB128:
+  28              		.file 1 "SYS/data_structure/queue.c"
+   1:SYS/data_structure/queue.c **** #include "queue.h"
+   2:SYS/data_structure/queue.c **** #include <stdio.h>
+   3:SYS/data_structure/queue.c **** #include <string.h>
+   4:SYS/data_structure/queue.c **** 
+   5:SYS/data_structure/queue.c **** static uint8_t Cur_Crtd_Queue = 0;
+   6:SYS/data_structure/queue.c **** 
+   7:SYS/data_structure/queue.c **** Queue_state Queue_Init(queue_s *queue, char *name, QueueData_OutType type)
+   8:SYS/data_structure/queue.c **** {
+   9:SYS/data_structure/queue.c ****     if (Cur_Crtd_Queue < MAX_QUEUE_NUM)
+  10:SYS/data_structure/queue.c ****     {
+  11:SYS/data_structure/queue.c ****         Cur_Crtd_Queue++;
+  12:SYS/data_structure/queue.c ****         queue->state = Queue_ok;
+  13:SYS/data_structure/queue.c ****     }
+  14:SYS/data_structure/queue.c ****     else
+  15:SYS/data_structure/queue.c ****         queue->state = Queue_CreateFailed;
+  16:SYS/data_structure/queue.c **** 
+  17:SYS/data_structure/queue.c ****     memset(queue->buff, NULL, QUEUE_MAX_SIZE);
+  18:SYS/data_structure/queue.c ****     queue->name = name;
+  19:SYS/data_structure/queue.c ****     queue->end_pos = 0;
+  20:SYS/data_structure/queue.c ****     queue->head_pos = 0;
+  21:SYS/data_structure/queue.c ****     queue->size = 0;
+  22:SYS/data_structure/queue.c ****     queue->output_type = type;
+  23:SYS/data_structure/queue.c **** 
+  24:SYS/data_structure/queue.c ****     for (uint8_t i = 0; i < QUEUE_ERROR_TYPENUM; i++)
+  25:SYS/data_structure/queue.c ****     {
+  26:SYS/data_structure/queue.c ****         queue->error_times[i] = 0;
+  27:SYS/data_structure/queue.c ****     }
+  28:SYS/data_structure/queue.c ****     queue->total_error_times = 0;
+  29:SYS/data_structure/queue.c **** 
+  30:SYS/data_structure/queue.c ****     return queue->state;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 2
+
+
+  31:SYS/data_structure/queue.c **** }
+  32:SYS/data_structure/queue.c **** 
+  33:SYS/data_structure/queue.c **** Queue_state Queue_Reset(queue_s *queue)
+  34:SYS/data_structure/queue.c **** {
+  35:SYS/data_structure/queue.c ****     return Queue_init(queue, queue->name);
+  36:SYS/data_structure/queue.c **** }
+  37:SYS/data_structure/queue.c **** 
+  38:SYS/data_structure/queue.c **** static Queue_state Queue_GetState(queue_s *queue)
+  39:SYS/data_structure/queue.c **** {
+  29              		.loc 1 39 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  40:SYS/data_structure/queue.c ****     if ((queue->head_pos == queue->end_pos) || (queue->size == 0))
+  34              		.loc 1 40 5 view .LVU1
+  35              		.loc 1 40 15 is_stmt 0 view .LVU2
+  36 0000 0189     		ldrh	r1, [r0, #8]
+  37              		.loc 1 40 34 view .LVU3
+  38 0002 4389     		ldrh	r3, [r0, #10]
+  39              		.loc 1 40 8 view .LVU4
+  40 0004 9942     		cmp	r1, r3
+  41 0006 0FD0     		beq	.L2
+  42              		.loc 1 40 54 discriminator 1 view .LVU5
+  43 0008 8288     		ldrh	r2, [r0, #4]
+  44              		.loc 1 40 45 discriminator 1 view .LVU6
+  45 000a 6AB1     		cbz	r2, .L2
+  41:SYS/data_structure/queue.c ****     {
+  42:SYS/data_structure/queue.c ****         queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_empty)]++;
+  43:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  44:SYS/data_structure/queue.c ****         queue->state = Queue_empty;
+  45:SYS/data_structure/queue.c ****         return Queue_empty;
+  46:SYS/data_structure/queue.c ****     }
+  47:SYS/data_structure/queue.c **** 
+  48:SYS/data_structure/queue.c ****     if (((queue->end_pos + 1) % QUEUE_MAX_SIZE) == queue->head_pos)
+  46              		.loc 1 48 5 is_stmt 1 view .LVU7
+  47              		.loc 1 48 26 is_stmt 0 view .LVU8
+  48 000c 0133     		adds	r3, r3, #1
+  49              		.loc 1 48 31 view .LVU9
+  50 000e 5A42     		rsbs	r2, r3, #0
+  51 0010 C3F30803 		ubfx	r3, r3, #0, #9
+  52 0014 C2F30802 		ubfx	r2, r2, #0, #9
+  53 0018 58BF     		it	pl
+  54 001a 5342     		rsbpl	r3, r2, #0
+  55              		.loc 1 48 8 view .LVU10
+  56 001c 8B42     		cmp	r3, r1
+  57 001e 11D0     		beq	.L6
+  49:SYS/data_structure/queue.c ****     {
+  50:SYS/data_structure/queue.c ****         queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_full)]++;
+  51:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  52:SYS/data_structure/queue.c ****         queue->state = Queue_full;
+  53:SYS/data_structure/queue.c ****         return Queue_full;
+  54:SYS/data_structure/queue.c ****     }
+  55:SYS/data_structure/queue.c **** 
+  56:SYS/data_structure/queue.c ****     queue->state = Queue_ok;
+  58              		.loc 1 56 5 is_stmt 1 view .LVU11
+  59              		.loc 1 56 18 is_stmt 0 view .LVU12
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 3
+
+
+  60 0020 0023     		movs	r3, #0
+  61 0022 8371     		strb	r3, [r0, #6]
+  57:SYS/data_structure/queue.c ****     return Queue_ok;
+  62              		.loc 1 57 5 is_stmt 1 view .LVU13
+  63              		.loc 1 57 12 is_stmt 0 view .LVU14
+  64 0024 1846     		mov	r0, r3
+  65              	.LVL1:
+  58:SYS/data_structure/queue.c **** }
+  66              		.loc 1 58 1 view .LVU15
+  67 0026 7047     		bx	lr
+  68              	.LVL2:
+  69              	.L2:
+  42:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  70              		.loc 1 42 9 is_stmt 1 view .LVU16
+  42:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  71              		.loc 1 42 27 is_stmt 0 view .LVU17
+  72 0028 D0F81832 		ldr	r3, [r0, #536]
+  42:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  73              		.loc 1 42 63 view .LVU18
+  74 002c 0133     		adds	r3, r3, #1
+  75 002e C0F81832 		str	r3, [r0, #536]
+  43:SYS/data_structure/queue.c ****         queue->state = Queue_empty;
+  76              		.loc 1 43 9 is_stmt 1 view .LVU19
+  43:SYS/data_structure/queue.c ****         queue->state = Queue_empty;
+  77              		.loc 1 43 14 is_stmt 0 view .LVU20
+  78 0032 D0F82032 		ldr	r3, [r0, #544]
+  43:SYS/data_structure/queue.c ****         queue->state = Queue_empty;
+  79              		.loc 1 43 33 view .LVU21
+  80 0036 0133     		adds	r3, r3, #1
+  81 0038 C0F82032 		str	r3, [r0, #544]
+  44:SYS/data_structure/queue.c ****         return Queue_empty;
+  82              		.loc 1 44 9 is_stmt 1 view .LVU22
+  44:SYS/data_structure/queue.c ****         return Queue_empty;
+  83              		.loc 1 44 22 is_stmt 0 view .LVU23
+  84 003c 0423     		movs	r3, #4
+  85 003e 8371     		strb	r3, [r0, #6]
+  45:SYS/data_structure/queue.c ****     }
+  86              		.loc 1 45 9 is_stmt 1 view .LVU24
+  45:SYS/data_structure/queue.c ****     }
+  87              		.loc 1 45 16 is_stmt 0 view .LVU25
+  88 0040 1846     		mov	r0, r3
+  89              	.LVL3:
+  45:SYS/data_structure/queue.c ****     }
+  90              		.loc 1 45 16 view .LVU26
+  91 0042 7047     		bx	lr
+  92              	.LVL4:
+  93              	.L6:
+  50:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  94              		.loc 1 50 9 is_stmt 1 view .LVU27
+  50:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  95              		.loc 1 50 27 is_stmt 0 view .LVU28
+  96 0044 D0F81C32 		ldr	r3, [r0, #540]
+  50:SYS/data_structure/queue.c ****         queue->total_error_times++;
+  97              		.loc 1 50 62 view .LVU29
+  98 0048 0133     		adds	r3, r3, #1
+  99 004a C0F81C32 		str	r3, [r0, #540]
+  51:SYS/data_structure/queue.c ****         queue->state = Queue_full;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 4
+
+
+ 100              		.loc 1 51 9 is_stmt 1 view .LVU30
+  51:SYS/data_structure/queue.c ****         queue->state = Queue_full;
+ 101              		.loc 1 51 14 is_stmt 0 view .LVU31
+ 102 004e D0F82032 		ldr	r3, [r0, #544]
+  51:SYS/data_structure/queue.c ****         queue->state = Queue_full;
+ 103              		.loc 1 51 33 view .LVU32
+ 104 0052 0133     		adds	r3, r3, #1
+ 105 0054 C0F82032 		str	r3, [r0, #544]
+  52:SYS/data_structure/queue.c ****         return Queue_full;
+ 106              		.loc 1 52 9 is_stmt 1 view .LVU33
+  52:SYS/data_structure/queue.c ****         return Queue_full;
+ 107              		.loc 1 52 22 is_stmt 0 view .LVU34
+ 108 0058 0523     		movs	r3, #5
+ 109 005a 8371     		strb	r3, [r0, #6]
+  53:SYS/data_structure/queue.c ****     }
+ 110              		.loc 1 53 9 is_stmt 1 view .LVU35
+  53:SYS/data_structure/queue.c ****     }
+ 111              		.loc 1 53 16 is_stmt 0 view .LVU36
+ 112 005c 1846     		mov	r0, r3
+ 113              	.LVL5:
+  53:SYS/data_structure/queue.c ****     }
+ 114              		.loc 1 53 16 view .LVU37
+ 115 005e 7047     		bx	lr
+ 116              		.cfi_endproc
+ 117              	.LFE128:
+ 119              		.section	.text.Queue_Init,"ax",%progbits
+ 120              		.align	1
+ 121              		.global	Queue_Init
+ 122              		.syntax unified
+ 123              		.thumb
+ 124              		.thumb_func
+ 125              		.fpu fpv4-sp-d16
+ 127              	Queue_Init:
+ 128              	.LVL6:
+ 129              	.LFB126:
+   8:SYS/data_structure/queue.c ****     if (Cur_Crtd_Queue < MAX_QUEUE_NUM)
+ 130              		.loc 1 8 1 is_stmt 1 view -0
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+   8:SYS/data_structure/queue.c ****     if (Cur_Crtd_Queue < MAX_QUEUE_NUM)
+ 134              		.loc 1 8 1 is_stmt 0 view .LVU39
+ 135 0000 70B5     		push	{r4, r5, r6, lr}
+ 136              	.LCFI0:
+ 137              		.cfi_def_cfa_offset 16
+ 138              		.cfi_offset 4, -16
+ 139              		.cfi_offset 5, -12
+ 140              		.cfi_offset 6, -8
+ 141              		.cfi_offset 14, -4
+ 142 0002 0446     		mov	r4, r0
+ 143 0004 0E46     		mov	r6, r1
+ 144 0006 1546     		mov	r5, r2
+   9:SYS/data_structure/queue.c ****     {
+ 145              		.loc 1 9 5 is_stmt 1 view .LVU40
+   9:SYS/data_structure/queue.c ****     {
+ 146              		.loc 1 9 24 is_stmt 0 view .LVU41
+ 147 0008 144B     		ldr	r3, .L13
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 5
+
+
+ 148 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+   9:SYS/data_structure/queue.c ****     {
+ 149              		.loc 1 9 8 view .LVU42
+ 150 000c 092B     		cmp	r3, #9
+ 151 000e 13D8     		bhi	.L8
+  11:SYS/data_structure/queue.c ****         queue->state = Queue_ok;
+ 152              		.loc 1 11 9 is_stmt 1 view .LVU43
+  11:SYS/data_structure/queue.c ****         queue->state = Queue_ok;
+ 153              		.loc 1 11 23 is_stmt 0 view .LVU44
+ 154 0010 0133     		adds	r3, r3, #1
+ 155 0012 124A     		ldr	r2, .L13
+ 156              	.LVL7:
+  11:SYS/data_structure/queue.c ****         queue->state = Queue_ok;
+ 157              		.loc 1 11 23 view .LVU45
+ 158 0014 1370     		strb	r3, [r2]
+  12:SYS/data_structure/queue.c ****     }
+ 159              		.loc 1 12 9 is_stmt 1 view .LVU46
+  12:SYS/data_structure/queue.c ****     }
+ 160              		.loc 1 12 22 is_stmt 0 view .LVU47
+ 161 0016 0023     		movs	r3, #0
+ 162 0018 8371     		strb	r3, [r0, #6]
+ 163              	.L9:
+  17:SYS/data_structure/queue.c ****     queue->name = name;
+ 164              		.loc 1 17 5 is_stmt 1 view .LVU48
+ 165 001a 4FF40072 		mov	r2, #512
+ 166 001e 0021     		movs	r1, #0
+ 167              	.LVL8:
+  17:SYS/data_structure/queue.c ****     queue->name = name;
+ 168              		.loc 1 17 5 is_stmt 0 view .LVU49
+ 169 0020 04F10C00 		add	r0, r4, #12
+ 170              	.LVL9:
+  17:SYS/data_structure/queue.c ****     queue->name = name;
+ 171              		.loc 1 17 5 view .LVU50
+ 172 0024 FFF7FEFF 		bl	memset
+ 173              	.LVL10:
+  18:SYS/data_structure/queue.c ****     queue->end_pos = 0;
+ 174              		.loc 1 18 5 is_stmt 1 view .LVU51
+  18:SYS/data_structure/queue.c ****     queue->end_pos = 0;
+ 175              		.loc 1 18 17 is_stmt 0 view .LVU52
+ 176 0028 2660     		str	r6, [r4]
+  19:SYS/data_structure/queue.c ****     queue->head_pos = 0;
+ 177              		.loc 1 19 5 is_stmt 1 view .LVU53
+  19:SYS/data_structure/queue.c ****     queue->head_pos = 0;
+ 178              		.loc 1 19 20 is_stmt 0 view .LVU54
+ 179 002a 0023     		movs	r3, #0
+ 180 002c 6381     		strh	r3, [r4, #10]	@ movhi
+  20:SYS/data_structure/queue.c ****     queue->size = 0;
+ 181              		.loc 1 20 5 is_stmt 1 view .LVU55
+  20:SYS/data_structure/queue.c ****     queue->size = 0;
+ 182              		.loc 1 20 21 is_stmt 0 view .LVU56
+ 183 002e 2381     		strh	r3, [r4, #8]	@ movhi
+  21:SYS/data_structure/queue.c ****     queue->output_type = type;
+ 184              		.loc 1 21 5 is_stmt 1 view .LVU57
+  21:SYS/data_structure/queue.c ****     queue->output_type = type;
+ 185              		.loc 1 21 17 is_stmt 0 view .LVU58
+ 186 0030 A380     		strh	r3, [r4, #4]	@ movhi
+  22:SYS/data_structure/queue.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 6
+
+
+ 187              		.loc 1 22 5 is_stmt 1 view .LVU59
+  22:SYS/data_structure/queue.c **** 
+ 188              		.loc 1 22 24 is_stmt 0 view .LVU60
+ 189 0032 84F80C52 		strb	r5, [r4, #524]
+  24:SYS/data_structure/queue.c ****     {
+ 190              		.loc 1 24 5 is_stmt 1 view .LVU61
+ 191              	.LBB2:
+  24:SYS/data_structure/queue.c ****     {
+ 192              		.loc 1 24 10 view .LVU62
+ 193              	.LVL11:
+  24:SYS/data_structure/queue.c ****     {
+ 194              		.loc 1 24 5 is_stmt 0 view .LVU63
+ 195 0036 09E0     		b	.L10
+ 196              	.LVL12:
+ 197              	.L8:
+  24:SYS/data_structure/queue.c ****     {
+ 198              		.loc 1 24 5 view .LVU64
+ 199              	.LBE2:
+  15:SYS/data_structure/queue.c **** 
+ 200              		.loc 1 15 9 is_stmt 1 view .LVU65
+  15:SYS/data_structure/queue.c **** 
+ 201              		.loc 1 15 22 is_stmt 0 view .LVU66
+ 202 0038 0623     		movs	r3, #6
+ 203 003a 8371     		strb	r3, [r0, #6]
+ 204 003c EDE7     		b	.L9
+ 205              	.LVL13:
+ 206              	.L11:
+ 207              	.LBB3:
+  26:SYS/data_structure/queue.c ****     }
+ 208              		.loc 1 26 9 is_stmt 1 discriminator 3 view .LVU67
+  26:SYS/data_structure/queue.c ****     }
+ 209              		.loc 1 26 31 is_stmt 0 discriminator 3 view .LVU68
+ 210 003e 03F18402 		add	r2, r3, #132
+ 211 0042 0021     		movs	r1, #0
+ 212 0044 44F82210 		str	r1, [r4, r2, lsl #2]
+  24:SYS/data_structure/queue.c ****     {
+ 213              		.loc 1 24 50 is_stmt 1 discriminator 3 view .LVU69
+  24:SYS/data_structure/queue.c ****     {
+ 214              		.loc 1 24 51 is_stmt 0 discriminator 3 view .LVU70
+ 215 0048 0133     		adds	r3, r3, #1
+ 216              	.LVL14:
+  24:SYS/data_structure/queue.c ****     {
+ 217              		.loc 1 24 51 discriminator 3 view .LVU71
+ 218 004a DBB2     		uxtb	r3, r3
+ 219              	.LVL15:
+ 220              	.L10:
+  24:SYS/data_structure/queue.c ****     {
+ 221              		.loc 1 24 25 is_stmt 1 discriminator 1 view .LVU72
+  24:SYS/data_structure/queue.c ****     {
+ 222              		.loc 1 24 5 is_stmt 0 discriminator 1 view .LVU73
+ 223 004c 032B     		cmp	r3, #3
+ 224 004e F6D9     		bls	.L11
+ 225              	.LBE3:
+  28:SYS/data_structure/queue.c **** 
+ 226              		.loc 1 28 5 is_stmt 1 view .LVU74
+  28:SYS/data_structure/queue.c **** 
+ 227              		.loc 1 28 30 is_stmt 0 view .LVU75
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 7
+
+
+ 228 0050 0023     		movs	r3, #0
+ 229              	.LVL16:
+  28:SYS/data_structure/queue.c **** 
+ 230              		.loc 1 28 30 view .LVU76
+ 231 0052 C4F82032 		str	r3, [r4, #544]
+  30:SYS/data_structure/queue.c **** }
+ 232              		.loc 1 30 5 is_stmt 1 view .LVU77
+  31:SYS/data_structure/queue.c **** 
+ 233              		.loc 1 31 1 is_stmt 0 view .LVU78
+ 234 0056 A079     		ldrb	r0, [r4, #6]	@ zero_extendqisi2
+ 235 0058 70BD     		pop	{r4, r5, r6, pc}
+ 236              	.LVL17:
+ 237              	.L14:
+  31:SYS/data_structure/queue.c **** 
+ 238              		.loc 1 31 1 view .LVU79
+ 239 005a 00BF     		.align	2
+ 240              	.L13:
+ 241 005c 00000000 		.word	.LANCHOR0
+ 242              		.cfi_endproc
+ 243              	.LFE126:
+ 245              		.section	.text.Queue_Reset,"ax",%progbits
+ 246              		.align	1
+ 247              		.global	Queue_Reset
+ 248              		.syntax unified
+ 249              		.thumb
+ 250              		.thumb_func
+ 251              		.fpu fpv4-sp-d16
+ 253              	Queue_Reset:
+ 254              	.LVL18:
+ 255              	.LFB127:
+  34:SYS/data_structure/queue.c ****     return Queue_init(queue, queue->name);
+ 256              		.loc 1 34 1 is_stmt 1 view -0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 0
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+  34:SYS/data_structure/queue.c ****     return Queue_init(queue, queue->name);
+ 260              		.loc 1 34 1 is_stmt 0 view .LVU81
+ 261 0000 08B5     		push	{r3, lr}
+ 262              	.LCFI1:
+ 263              		.cfi_def_cfa_offset 8
+ 264              		.cfi_offset 3, -8
+ 265              		.cfi_offset 14, -4
+  35:SYS/data_structure/queue.c **** }
+ 266              		.loc 1 35 5 is_stmt 1 view .LVU82
+  35:SYS/data_structure/queue.c **** }
+ 267              		.loc 1 35 12 is_stmt 0 view .LVU83
+ 268 0002 0168     		ldr	r1, [r0]
+ 269 0004 FFF7FEFF 		bl	Queue_init
+ 270              	.LVL19:
+  36:SYS/data_structure/queue.c **** 
+ 271              		.loc 1 36 1 view .LVU84
+ 272 0008 C0B2     		uxtb	r0, r0
+ 273 000a 08BD     		pop	{r3, pc}
+ 274              		.cfi_endproc
+ 275              	.LFE127:
+ 277              		.section	.text.Queue_PushChar,"ax",%progbits
+ 278              		.align	1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 8
+
+
+ 279              		.global	Queue_PushChar
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ 283              		.fpu fpv4-sp-d16
+ 285              	Queue_PushChar:
+ 286              	.LVL20:
+ 287              	.LFB129:
+  59:SYS/data_structure/queue.c **** 
+  60:SYS/data_structure/queue.c **** Queue_state Queue_PushChar(queue_s *queue, char data)
+  61:SYS/data_structure/queue.c **** {
+ 288              		.loc 1 61 1 is_stmt 1 view -0
+ 289              		.cfi_startproc
+ 290              		@ args = 0, pretend = 0, frame = 0
+ 291              		@ frame_needed = 0, uses_anonymous_args = 0
+ 292              		.loc 1 61 1 is_stmt 0 view .LVU86
+ 293 0000 10B5     		push	{r4, lr}
+ 294              	.LCFI2:
+ 295              		.cfi_def_cfa_offset 8
+ 296              		.cfi_offset 4, -8
+ 297              		.cfi_offset 14, -4
+ 298 0002 0446     		mov	r4, r0
+  62:SYS/data_structure/queue.c ****     if (queue->state == Queue_ok)
+ 299              		.loc 1 62 5 is_stmt 1 view .LVU87
+ 300              		.loc 1 62 14 is_stmt 0 view .LVU88
+ 301 0004 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 302              		.loc 1 62 8 view .LVU89
+ 303 0006 0BB1     		cbz	r3, .L20
+ 304              	.LVL21:
+ 305              	.L18:
+  63:SYS/data_structure/queue.c ****     {
+  64:SYS/data_structure/queue.c ****         queue->buff[queue->end_pos] = data;
+  65:SYS/data_structure/queue.c **** 
+  66:SYS/data_structure/queue.c ****         queue->end_pos = (queue->end_pos + 1) % QUEUE_MAX_SIZE;
+  67:SYS/data_structure/queue.c ****         queue->size++;
+  68:SYS/data_structure/queue.c **** 
+  69:SYS/data_structure/queue.c ****         Queue_GetState(queue);
+  70:SYS/data_structure/queue.c ****     }
+  71:SYS/data_structure/queue.c **** 
+  72:SYS/data_structure/queue.c ****     return queue->state;
+ 306              		.loc 1 72 5 is_stmt 1 view .LVU90
+  73:SYS/data_structure/queue.c **** }
+ 307              		.loc 1 73 1 is_stmt 0 view .LVU91
+ 308 0008 A079     		ldrb	r0, [r4, #6]	@ zero_extendqisi2
+ 309 000a 10BD     		pop	{r4, pc}
+ 310              	.LVL22:
+ 311              	.L20:
+  64:SYS/data_structure/queue.c **** 
+ 312              		.loc 1 64 9 is_stmt 1 view .LVU92
+  64:SYS/data_structure/queue.c **** 
+ 313              		.loc 1 64 26 is_stmt 0 view .LVU93
+ 314 000c 4389     		ldrh	r3, [r0, #10]
+  64:SYS/data_structure/queue.c **** 
+ 315              		.loc 1 64 37 view .LVU94
+ 316 000e C218     		adds	r2, r0, r3
+ 317 0010 1173     		strb	r1, [r2, #12]
+  66:SYS/data_structure/queue.c ****         queue->size++;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 9
+
+
+ 318              		.loc 1 66 9 is_stmt 1 view .LVU95
+  66:SYS/data_structure/queue.c ****         queue->size++;
+ 319              		.loc 1 66 42 is_stmt 0 view .LVU96
+ 320 0012 0133     		adds	r3, r3, #1
+  66:SYS/data_structure/queue.c ****         queue->size++;
+ 321              		.loc 1 66 47 view .LVU97
+ 322 0014 5A42     		rsbs	r2, r3, #0
+ 323 0016 C3F30803 		ubfx	r3, r3, #0, #9
+ 324 001a C2F30802 		ubfx	r2, r2, #0, #9
+ 325 001e 58BF     		it	pl
+ 326 0020 5342     		rsbpl	r3, r2, #0
+  66:SYS/data_structure/queue.c ****         queue->size++;
+ 327              		.loc 1 66 24 view .LVU98
+ 328 0022 4381     		strh	r3, [r0, #10]	@ movhi
+  67:SYS/data_structure/queue.c **** 
+ 329              		.loc 1 67 9 is_stmt 1 view .LVU99
+  67:SYS/data_structure/queue.c **** 
+ 330              		.loc 1 67 14 is_stmt 0 view .LVU100
+ 331 0024 8388     		ldrh	r3, [r0, #4]
+  67:SYS/data_structure/queue.c **** 
+ 332              		.loc 1 67 20 view .LVU101
+ 333 0026 0133     		adds	r3, r3, #1
+ 334 0028 8380     		strh	r3, [r0, #4]	@ movhi
+  69:SYS/data_structure/queue.c ****     }
+ 335              		.loc 1 69 9 is_stmt 1 view .LVU102
+ 336 002a FFF7FEFF 		bl	Queue_GetState
+ 337              	.LVL23:
+  69:SYS/data_structure/queue.c ****     }
+ 338              		.loc 1 69 9 is_stmt 0 view .LVU103
+ 339 002e EBE7     		b	.L18
+ 340              		.cfi_endproc
+ 341              	.LFE129:
+ 343              		.section	.text.Queue_PushLenChar,"ax",%progbits
+ 344              		.align	1
+ 345              		.global	Queue_PushLenChar
+ 346              		.syntax unified
+ 347              		.thumb
+ 348              		.thumb_func
+ 349              		.fpu fpv4-sp-d16
+ 351              	Queue_PushLenChar:
+ 352              	.LVL24:
+ 353              	.LFB130:
+  74:SYS/data_structure/queue.c **** 
+  75:SYS/data_structure/queue.c **** Queue_state Queue_PushLenChar(queue_s *queue, uint16_t len, char *data)
+  76:SYS/data_structure/queue.c **** {
+ 354              		.loc 1 76 1 is_stmt 1 view -0
+ 355              		.cfi_startproc
+ 356              		@ args = 0, pretend = 0, frame = 0
+ 357              		@ frame_needed = 0, uses_anonymous_args = 0
+ 358              		.loc 1 76 1 is_stmt 0 view .LVU105
+ 359 0000 10B5     		push	{r4, lr}
+ 360              	.LCFI3:
+ 361              		.cfi_def_cfa_offset 8
+ 362              		.cfi_offset 4, -8
+ 363              		.cfi_offset 14, -4
+ 364 0002 0446     		mov	r4, r0
+  77:SYS/data_structure/queue.c ****     if ((queue->state == Queue_ok) || (queue->state == Queue_empty))
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 10
+
+
+ 365              		.loc 1 77 5 is_stmt 1 view .LVU106
+ 366              		.loc 1 77 15 is_stmt 0 view .LVU107
+ 367 0004 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 368              		.loc 1 77 8 view .LVU108
+ 369 0006 0BB1     		cbz	r3, .L22
+ 370              		.loc 1 77 36 discriminator 1 view .LVU109
+ 371 0008 042B     		cmp	r3, #4
+ 372 000a 1CD1     		bne	.L23
+ 373              	.L22:
+  78:SYS/data_structure/queue.c ****     {
+  79:SYS/data_structure/queue.c ****         if (len <= (QUEUE_MAX_SIZE - queue->size))
+ 374              		.loc 1 79 9 is_stmt 1 view .LVU110
+ 375              		.loc 1 79 43 is_stmt 0 view .LVU111
+ 376 000c B4F804E0 		ldrh	lr, [r4, #4]
+ 377              		.loc 1 79 36 view .LVU112
+ 378 0010 CEF50073 		rsb	r3, lr, #512
+ 379              		.loc 1 79 12 view .LVU113
+ 380 0014 9942     		cmp	r1, r3
+ 381 0016 18DC     		bgt	.L31
+ 382              	.LBB4:
+  80:SYS/data_structure/queue.c ****         {
+  81:SYS/data_structure/queue.c ****             for (uint16_t index = 0; index < len; index++)
+ 383              		.loc 1 81 27 view .LVU114
+ 384 0018 0023     		movs	r3, #0
+ 385 001a 08E0     		b	.L24
+ 386              	.LVL25:
+ 387              	.L26:
+  82:SYS/data_structure/queue.c ****             {
+  83:SYS/data_structure/queue.c ****                 queue->buff[queue->end_pos + index] = data[index];
+ 388              		.loc 1 83 17 is_stmt 1 discriminator 3 view .LVU115
+ 389              		.loc 1 83 34 is_stmt 0 discriminator 3 view .LVU116
+ 390 001c B4F80AC0 		ldrh	ip, [r4, #10]
+ 391              		.loc 1 83 44 discriminator 3 view .LVU117
+ 392 0020 9C44     		add	ip, ip, r3
+ 393              		.loc 1 83 59 discriminator 3 view .LVU118
+ 394 0022 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 395              		.loc 1 83 53 discriminator 3 view .LVU119
+ 396 0024 A444     		add	ip, ip, r4
+ 397 0026 8CF80C00 		strb	r0, [ip, #12]
+  81:SYS/data_structure/queue.c ****             {
+ 398              		.loc 1 81 51 is_stmt 1 discriminator 3 view .LVU120
+  81:SYS/data_structure/queue.c ****             {
+ 399              		.loc 1 81 56 is_stmt 0 discriminator 3 view .LVU121
+ 400 002a 0133     		adds	r3, r3, #1
+ 401              	.LVL26:
+  81:SYS/data_structure/queue.c ****             {
+ 402              		.loc 1 81 56 discriminator 3 view .LVU122
+ 403 002c 9BB2     		uxth	r3, r3
+ 404              	.LVL27:
+ 405              	.L24:
+  81:SYS/data_structure/queue.c ****             {
+ 406              		.loc 1 81 38 is_stmt 1 discriminator 1 view .LVU123
+  81:SYS/data_structure/queue.c ****             {
+ 407              		.loc 1 81 13 is_stmt 0 discriminator 1 view .LVU124
+ 408 002e 8B42     		cmp	r3, r1
+ 409 0030 F4D3     		bcc	.L26
+ 410              	.LBE4:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 11
+
+
+  84:SYS/data_structure/queue.c ****             }
+  85:SYS/data_structure/queue.c **** 
+  86:SYS/data_structure/queue.c ****             queue->end_pos = (queue->end_pos + len) % QUEUE_MAX_SIZE;
+ 411              		.loc 1 86 13 is_stmt 1 view .LVU125
+ 412              		.loc 1 86 36 is_stmt 0 view .LVU126
+ 413 0032 6389     		ldrh	r3, [r4, #10]
+ 414              	.LVL28:
+ 415              		.loc 1 86 53 view .LVU127
+ 416 0034 0B44     		add	r3, r3, r1
+ 417 0036 C3F30803 		ubfx	r3, r3, #0, #9
+ 418              		.loc 1 86 28 view .LVU128
+ 419 003a 6381     		strh	r3, [r4, #10]	@ movhi
+  87:SYS/data_structure/queue.c ****             queue->size += len;
+ 420              		.loc 1 87 13 is_stmt 1 view .LVU129
+ 421              		.loc 1 87 25 is_stmt 0 view .LVU130
+ 422 003c 7144     		add	r1, r1, lr
+ 423              	.LVL29:
+ 424              		.loc 1 87 25 view .LVU131
+ 425 003e A180     		strh	r1, [r4, #4]	@ movhi
+  88:SYS/data_structure/queue.c ****             Queue_GetState(queue);
+ 426              		.loc 1 88 13 is_stmt 1 view .LVU132
+ 427 0040 2046     		mov	r0, r4
+ 428 0042 FFF7FEFF 		bl	Queue_GetState
+ 429              	.LVL30:
+ 430              	.L23:
+  89:SYS/data_structure/queue.c ****         }
+  90:SYS/data_structure/queue.c ****         else
+  91:SYS/data_structure/queue.c ****         {
+  92:SYS/data_structure/queue.c ****             queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_overflow_w)]++;
+  93:SYS/data_structure/queue.c ****             queue->total_error_times++;
+  94:SYS/data_structure/queue.c ****             return Queue_overflow_w;
+  95:SYS/data_structure/queue.c ****         }
+  96:SYS/data_structure/queue.c ****     }
+  97:SYS/data_structure/queue.c **** 
+  98:SYS/data_structure/queue.c ****     return queue->state;
+ 431              		.loc 1 98 5 view .LVU133
+ 432              		.loc 1 98 17 is_stmt 0 view .LVU134
+ 433 0046 A079     		ldrb	r0, [r4, #6]	@ zero_extendqisi2
+ 434              	.L27:
+  99:SYS/data_structure/queue.c **** }
+ 435              		.loc 1 99 1 view .LVU135
+ 436 0048 10BD     		pop	{r4, pc}
+ 437              	.LVL31:
+ 438              	.L31:
+  92:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 439              		.loc 1 92 13 is_stmt 1 view .LVU136
+  92:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 440              		.loc 1 92 31 is_stmt 0 view .LVU137
+ 441 004a D4F81032 		ldr	r3, [r4, #528]
+  92:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 442              		.loc 1 92 72 view .LVU138
+ 443 004e 0133     		adds	r3, r3, #1
+ 444 0050 C4F81032 		str	r3, [r4, #528]
+  93:SYS/data_structure/queue.c ****             return Queue_overflow_w;
+ 445              		.loc 1 93 13 is_stmt 1 view .LVU139
+  93:SYS/data_structure/queue.c ****             return Queue_overflow_w;
+ 446              		.loc 1 93 18 is_stmt 0 view .LVU140
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 12
+
+
+ 447 0054 D4F82032 		ldr	r3, [r4, #544]
+  93:SYS/data_structure/queue.c ****             return Queue_overflow_w;
+ 448              		.loc 1 93 37 view .LVU141
+ 449 0058 0133     		adds	r3, r3, #1
+ 450 005a C4F82032 		str	r3, [r4, #544]
+  94:SYS/data_structure/queue.c ****         }
+ 451              		.loc 1 94 13 is_stmt 1 view .LVU142
+  94:SYS/data_structure/queue.c ****         }
+ 452              		.loc 1 94 20 is_stmt 0 view .LVU143
+ 453 005e 0220     		movs	r0, #2
+ 454              	.LVL32:
+  94:SYS/data_structure/queue.c ****         }
+ 455              		.loc 1 94 20 view .LVU144
+ 456 0060 F2E7     		b	.L27
+ 457              		.cfi_endproc
+ 458              	.LFE130:
+ 460              		.section	.text.Queue_PopCharFromFront,"ax",%progbits
+ 461              		.align	1
+ 462              		.global	Queue_PopCharFromFront
+ 463              		.syntax unified
+ 464              		.thumb
+ 465              		.thumb_func
+ 466              		.fpu fpv4-sp-d16
+ 468              	Queue_PopCharFromFront:
+ 469              	.LVL33:
+ 470              	.LFB131:
+ 100:SYS/data_structure/queue.c **** 
+ 101:SYS/data_structure/queue.c **** Queue_state Queue_PopCharFromFront(queue_s *queue, char *out_data)
+ 102:SYS/data_structure/queue.c **** {
+ 471              		.loc 1 102 1 is_stmt 1 view -0
+ 472              		.cfi_startproc
+ 473              		@ args = 0, pretend = 0, frame = 0
+ 474              		@ frame_needed = 0, uses_anonymous_args = 0
+ 475              		.loc 1 102 1 is_stmt 0 view .LVU146
+ 476 0000 10B5     		push	{r4, lr}
+ 477              	.LCFI4:
+ 478              		.cfi_def_cfa_offset 8
+ 479              		.cfi_offset 4, -8
+ 480              		.cfi_offset 14, -4
+ 481 0002 0446     		mov	r4, r0
+ 103:SYS/data_structure/queue.c ****     if ((queue->state == Queue_ok) || (queue->state == Queue_full))
+ 482              		.loc 1 103 5 is_stmt 1 view .LVU147
+ 483              		.loc 1 103 15 is_stmt 0 view .LVU148
+ 484 0004 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 485              		.loc 1 103 8 view .LVU149
+ 486 0006 0BB1     		cbz	r3, .L33
+ 487              		.loc 1 103 36 discriminator 1 view .LVU150
+ 488 0008 052B     		cmp	r3, #5
+ 489 000a 0DD1     		bne	.L34
+ 490              	.L33:
+ 104:SYS/data_structure/queue.c ****     {
+ 105:SYS/data_structure/queue.c ****         *out_data = queue->buff[queue->head_pos];
+ 491              		.loc 1 105 9 is_stmt 1 view .LVU151
+ 492              		.loc 1 105 38 is_stmt 0 view .LVU152
+ 493 000c 2389     		ldrh	r3, [r4, #8]
+ 494              		.loc 1 105 32 view .LVU153
+ 495 000e 2344     		add	r3, r3, r4
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 13
+
+
+ 496 0010 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 497              		.loc 1 105 19 view .LVU154
+ 498 0012 0B70     		strb	r3, [r1]
+ 106:SYS/data_structure/queue.c ****         queue->buff[queue->head_pos] = NULL;
+ 499              		.loc 1 106 9 is_stmt 1 view .LVU155
+ 500              		.loc 1 106 26 is_stmt 0 view .LVU156
+ 501 0014 2389     		ldrh	r3, [r4, #8]
+ 502              		.loc 1 106 38 view .LVU157
+ 503 0016 2344     		add	r3, r3, r4
+ 504 0018 0022     		movs	r2, #0
+ 505 001a 1A73     		strb	r2, [r3, #12]
+ 107:SYS/data_structure/queue.c **** 
+ 108:SYS/data_structure/queue.c ****         queue->head_pos == (queue->head_pos + 1) % QUEUE_MAX_SIZE;
+ 506              		.loc 1 108 9 is_stmt 1 view .LVU158
+ 109:SYS/data_structure/queue.c ****         queue->size--;
+ 507              		.loc 1 109 9 view .LVU159
+ 508              		.loc 1 109 14 is_stmt 0 view .LVU160
+ 509 001c A388     		ldrh	r3, [r4, #4]
+ 510              		.loc 1 109 20 view .LVU161
+ 511 001e 013B     		subs	r3, r3, #1
+ 512 0020 A380     		strh	r3, [r4, #4]	@ movhi
+ 110:SYS/data_structure/queue.c **** 
+ 111:SYS/data_structure/queue.c ****         Queue_GetState(queue);
+ 513              		.loc 1 111 9 is_stmt 1 view .LVU162
+ 514 0022 2046     		mov	r0, r4
+ 515              	.LVL34:
+ 516              		.loc 1 111 9 is_stmt 0 view .LVU163
+ 517 0024 FFF7FEFF 		bl	Queue_GetState
+ 518              	.LVL35:
+ 519              	.L34:
+ 112:SYS/data_structure/queue.c ****     }
+ 113:SYS/data_structure/queue.c **** 
+ 114:SYS/data_structure/queue.c ****     return queue->state;
+ 520              		.loc 1 114 5 is_stmt 1 view .LVU164
+ 115:SYS/data_structure/queue.c **** }
+ 521              		.loc 1 115 1 is_stmt 0 view .LVU165
+ 522 0028 A079     		ldrb	r0, [r4, #6]	@ zero_extendqisi2
+ 523 002a 10BD     		pop	{r4, pc}
+ 524              		.loc 1 115 1 view .LVU166
+ 525              		.cfi_endproc
+ 526              	.LFE131:
+ 528              		.section	.text.Queue_PopCharFromBack,"ax",%progbits
+ 529              		.align	1
+ 530              		.global	Queue_PopCharFromBack
+ 531              		.syntax unified
+ 532              		.thumb
+ 533              		.thumb_func
+ 534              		.fpu fpv4-sp-d16
+ 536              	Queue_PopCharFromBack:
+ 537              	.LVL36:
+ 538              	.LFB132:
+ 116:SYS/data_structure/queue.c **** 
+ 117:SYS/data_structure/queue.c **** //still have bug in this func fix when i start to use it hahahahha boooyaaaaa
+ 118:SYS/data_structure/queue.c **** Queue_state Queue_PopCharFromBack(queue_s *queue, char *out_data)
+ 119:SYS/data_structure/queue.c **** {
+ 539              		.loc 1 119 1 is_stmt 1 view -0
+ 540              		.cfi_startproc
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 14
+
+
+ 541              		@ args = 0, pretend = 0, frame = 0
+ 542              		@ frame_needed = 0, uses_anonymous_args = 0
+ 543              		.loc 1 119 1 is_stmt 0 view .LVU168
+ 544 0000 10B5     		push	{r4, lr}
+ 545              	.LCFI5:
+ 546              		.cfi_def_cfa_offset 8
+ 547              		.cfi_offset 4, -8
+ 548              		.cfi_offset 14, -4
+ 549 0002 0446     		mov	r4, r0
+ 120:SYS/data_structure/queue.c ****     if ((queue->state == Queue_ok) || (queue->state == Queue_full))
+ 550              		.loc 1 120 5 is_stmt 1 view .LVU169
+ 551              		.loc 1 120 15 is_stmt 0 view .LVU170
+ 552 0004 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 553              		.loc 1 120 8 view .LVU171
+ 554 0006 0BB1     		cbz	r3, .L37
+ 555              		.loc 1 120 36 discriminator 1 view .LVU172
+ 556 0008 052B     		cmp	r3, #5
+ 557 000a 17D1     		bne	.L38
+ 558              	.L37:
+ 121:SYS/data_structure/queue.c ****     {
+ 122:SYS/data_structure/queue.c ****         *out_data = queue->buff[queue->end_pos - 1];
+ 559              		.loc 1 122 9 is_stmt 1 view .LVU173
+ 560              		.loc 1 122 38 is_stmt 0 view .LVU174
+ 561 000c 6389     		ldrh	r3, [r4, #10]
+ 562              		.loc 1 122 48 view .LVU175
+ 563 000e 013B     		subs	r3, r3, #1
+ 564              		.loc 1 122 32 view .LVU176
+ 565 0010 2344     		add	r3, r3, r4
+ 566 0012 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 567              		.loc 1 122 19 view .LVU177
+ 568 0014 0B70     		strb	r3, [r1]
+ 123:SYS/data_structure/queue.c ****         queue->buff[queue->end_pos - 1] = NULL;
+ 569              		.loc 1 123 9 is_stmt 1 view .LVU178
+ 570              		.loc 1 123 26 is_stmt 0 view .LVU179
+ 571 0016 6389     		ldrh	r3, [r4, #10]
+ 572              		.loc 1 123 36 view .LVU180
+ 573 0018 013B     		subs	r3, r3, #1
+ 574              		.loc 1 123 41 view .LVU181
+ 575 001a E218     		adds	r2, r4, r3
+ 576 001c 0021     		movs	r1, #0
+ 577              	.LVL37:
+ 578              		.loc 1 123 41 view .LVU182
+ 579 001e 1173     		strb	r1, [r2, #12]
+ 124:SYS/data_structure/queue.c **** 
+ 125:SYS/data_structure/queue.c ****         queue->end_pos = (queue->end_pos - 1) % QUEUE_MAX_SIZE;
+ 580              		.loc 1 125 9 is_stmt 1 view .LVU183
+ 581              		.loc 1 125 47 is_stmt 0 view .LVU184
+ 582 0020 CA1A     		subs	r2, r1, r3
+ 583 0022 C3F30803 		ubfx	r3, r3, #0, #9
+ 584 0026 C2F30802 		ubfx	r2, r2, #0, #9
+ 585 002a 58BF     		it	pl
+ 586 002c 5342     		rsbpl	r3, r2, #0
+ 587              		.loc 1 125 24 view .LVU185
+ 588 002e 6381     		strh	r3, [r4, #10]	@ movhi
+ 126:SYS/data_structure/queue.c ****         queue->size--;
+ 589              		.loc 1 126 9 is_stmt 1 view .LVU186
+ 590              		.loc 1 126 14 is_stmt 0 view .LVU187
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 15
+
+
+ 591 0030 A388     		ldrh	r3, [r4, #4]
+ 592              		.loc 1 126 20 view .LVU188
+ 593 0032 013B     		subs	r3, r3, #1
+ 594 0034 A380     		strh	r3, [r4, #4]	@ movhi
+ 127:SYS/data_structure/queue.c **** 
+ 128:SYS/data_structure/queue.c ****         Queue_GetState(queue);
+ 595              		.loc 1 128 9 is_stmt 1 view .LVU189
+ 596 0036 2046     		mov	r0, r4
+ 597              	.LVL38:
+ 598              		.loc 1 128 9 is_stmt 0 view .LVU190
+ 599 0038 FFF7FEFF 		bl	Queue_GetState
+ 600              	.LVL39:
+ 601              	.L38:
+ 129:SYS/data_structure/queue.c ****     }
+ 130:SYS/data_structure/queue.c **** 
+ 131:SYS/data_structure/queue.c ****     return queue->state;
+ 602              		.loc 1 131 5 is_stmt 1 view .LVU191
+ 132:SYS/data_structure/queue.c **** }
+ 603              		.loc 1 132 1 is_stmt 0 view .LVU192
+ 604 003c A079     		ldrb	r0, [r4, #6]	@ zero_extendqisi2
+ 605 003e 10BD     		pop	{r4, pc}
+ 606              		.loc 1 132 1 view .LVU193
+ 607              		.cfi_endproc
+ 608              	.LFE132:
+ 610              		.section	.text.Queue_Dump,"ax",%progbits
+ 611              		.align	1
+ 612              		.global	Queue_Dump
+ 613              		.syntax unified
+ 614              		.thumb
+ 615              		.thumb_func
+ 616              		.fpu fpv4-sp-d16
+ 618              	Queue_Dump:
+ 619              	.LVL40:
+ 620              	.LFB133:
+ 133:SYS/data_structure/queue.c **** 
+ 134:SYS/data_structure/queue.c **** Queue_state Queue_Dump(queue_s *queue, char *out_data)
+ 135:SYS/data_structure/queue.c **** {
+ 621              		.loc 1 135 1 is_stmt 1 view -0
+ 622              		.cfi_startproc
+ 623              		@ args = 0, pretend = 0, frame = 0
+ 624              		@ frame_needed = 0, uses_anonymous_args = 0
+ 625              		@ link register save eliminated.
+ 626              		.loc 1 135 1 is_stmt 0 view .LVU195
+ 627 0000 8446     		mov	ip, r0
+ 136:SYS/data_structure/queue.c **** 
+ 137:SYS/data_structure/queue.c ****     for (uint16_t index = 0; index < queue->size; index++)
+ 628              		.loc 1 137 5 is_stmt 1 view .LVU196
+ 629              	.LBB5:
+ 630              		.loc 1 137 10 view .LVU197
+ 631              	.LVL41:
+ 632              		.loc 1 137 19 is_stmt 0 view .LVU198
+ 633 0002 0023     		movs	r3, #0
+ 634              		.loc 1 137 5 view .LVU199
+ 635 0004 0AE0     		b	.L41
+ 636              	.LVL42:
+ 637              	.L42:
+ 138:SYS/data_structure/queue.c ****     {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 16
+
+
+ 139:SYS/data_structure/queue.c ****         if (queue->output_type == Queue_FIFO)
+ 140:SYS/data_structure/queue.c ****         {
+ 141:SYS/data_structure/queue.c ****             out_data[index] = queue->buff[index];
+ 142:SYS/data_structure/queue.c ****         }
+ 143:SYS/data_structure/queue.c ****         else
+ 144:SYS/data_structure/queue.c ****         {
+ 145:SYS/data_structure/queue.c ****             out_data[index] = queue->buff[queue->size - 1 - index];
+ 638              		.loc 1 145 13 is_stmt 1 view .LVU200
+ 639              		.loc 1 145 55 is_stmt 0 view .LVU201
+ 640 0006 013A     		subs	r2, r2, #1
+ 641              		.loc 1 145 59 view .LVU202
+ 642 0008 D21A     		subs	r2, r2, r3
+ 643              		.loc 1 145 42 view .LVU203
+ 644 000a 6244     		add	r2, r2, ip
+ 645 000c 127B     		ldrb	r2, [r2, #12]	@ zero_extendqisi2
+ 646              		.loc 1 145 29 view .LVU204
+ 647 000e CA54     		strb	r2, [r1, r3]
+ 648              	.L43:
+ 146:SYS/data_structure/queue.c ****         }
+ 147:SYS/data_structure/queue.c **** 
+ 148:SYS/data_structure/queue.c ****         queue->buff[index] = NULL;
+ 649              		.loc 1 148 9 is_stmt 1 discriminator 2 view .LVU205
+ 650              		.loc 1 148 28 is_stmt 0 discriminator 2 view .LVU206
+ 651 0010 0CEB0302 		add	r2, ip, r3
+ 652 0014 0020     		movs	r0, #0
+ 653 0016 1073     		strb	r0, [r2, #12]
+ 137:SYS/data_structure/queue.c ****     {
+ 654              		.loc 1 137 51 is_stmt 1 discriminator 2 view .LVU207
+ 137:SYS/data_structure/queue.c ****     {
+ 655              		.loc 1 137 56 is_stmt 0 discriminator 2 view .LVU208
+ 656 0018 0133     		adds	r3, r3, #1
+ 657              	.LVL43:
+ 137:SYS/data_structure/queue.c ****     {
+ 658              		.loc 1 137 56 discriminator 2 view .LVU209
+ 659 001a 9BB2     		uxth	r3, r3
+ 660              	.LVL44:
+ 661              	.L41:
+ 137:SYS/data_structure/queue.c ****     {
+ 662              		.loc 1 137 30 is_stmt 1 discriminator 1 view .LVU210
+ 137:SYS/data_structure/queue.c ****     {
+ 663              		.loc 1 137 43 is_stmt 0 discriminator 1 view .LVU211
+ 664 001c BCF80420 		ldrh	r2, [ip, #4]
+ 137:SYS/data_structure/queue.c ****     {
+ 665              		.loc 1 137 5 discriminator 1 view .LVU212
+ 666 0020 9A42     		cmp	r2, r3
+ 667 0022 08D9     		bls	.L45
+ 139:SYS/data_structure/queue.c ****         {
+ 668              		.loc 1 139 9 is_stmt 1 view .LVU213
+ 139:SYS/data_structure/queue.c ****         {
+ 669              		.loc 1 139 18 is_stmt 0 view .LVU214
+ 670 0024 9CF80C02 		ldrb	r0, [ip, #524]	@ zero_extendqisi2
+ 139:SYS/data_structure/queue.c ****         {
+ 671              		.loc 1 139 12 view .LVU215
+ 672 0028 0028     		cmp	r0, #0
+ 673 002a ECD1     		bne	.L42
+ 141:SYS/data_structure/queue.c ****         }
+ 674              		.loc 1 141 13 is_stmt 1 view .LVU216
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 17
+
+
+ 141:SYS/data_structure/queue.c ****         }
+ 675              		.loc 1 141 42 is_stmt 0 view .LVU217
+ 676 002c 0CEB0302 		add	r2, ip, r3
+ 677 0030 127B     		ldrb	r2, [r2, #12]	@ zero_extendqisi2
+ 141:SYS/data_structure/queue.c ****         }
+ 678              		.loc 1 141 29 view .LVU218
+ 679 0032 CA54     		strb	r2, [r1, r3]
+ 680 0034 ECE7     		b	.L43
+ 681              	.L45:
+ 141:SYS/data_structure/queue.c ****         }
+ 682              		.loc 1 141 29 view .LVU219
+ 683              	.LBE5:
+ 149:SYS/data_structure/queue.c ****     }
+ 150:SYS/data_structure/queue.c **** 
+ 151:SYS/data_structure/queue.c ****     queue->size = 0;
+ 684              		.loc 1 151 5 is_stmt 1 view .LVU220
+ 685              		.loc 1 151 17 is_stmt 0 view .LVU221
+ 686 0036 0023     		movs	r3, #0
+ 687              	.LVL45:
+ 688              		.loc 1 151 17 view .LVU222
+ 689 0038 ACF80430 		strh	r3, [ip, #4]	@ movhi
+ 152:SYS/data_structure/queue.c ****     queue->end_pos = 0;
+ 690              		.loc 1 152 5 is_stmt 1 view .LVU223
+ 691              		.loc 1 152 20 is_stmt 0 view .LVU224
+ 692 003c ACF80A30 		strh	r3, [ip, #10]	@ movhi
+ 153:SYS/data_structure/queue.c ****     queue->head_pos = 0;
+ 693              		.loc 1 153 5 is_stmt 1 view .LVU225
+ 694              		.loc 1 153 21 is_stmt 0 view .LVU226
+ 695 0040 ACF80830 		strh	r3, [ip, #8]	@ movhi
+ 154:SYS/data_structure/queue.c ****     queue->state = Queue_empty;
+ 696              		.loc 1 154 5 is_stmt 1 view .LVU227
+ 697              		.loc 1 154 18 is_stmt 0 view .LVU228
+ 698 0044 0420     		movs	r0, #4
+ 699 0046 8CF80600 		strb	r0, [ip, #6]
+ 155:SYS/data_structure/queue.c **** 
+ 156:SYS/data_structure/queue.c ****     return queue->state;
+ 700              		.loc 1 156 5 is_stmt 1 view .LVU229
+ 157:SYS/data_structure/queue.c **** }
+ 701              		.loc 1 157 1 is_stmt 0 view .LVU230
+ 702 004a 7047     		bx	lr
+ 703              		.cfi_endproc
+ 704              	.LFE133:
+ 706              		.section	.text.Queue_PopLenCharFromFront,"ax",%progbits
+ 707              		.align	1
+ 708              		.global	Queue_PopLenCharFromFront
+ 709              		.syntax unified
+ 710              		.thumb
+ 711              		.thumb_func
+ 712              		.fpu fpv4-sp-d16
+ 714              	Queue_PopLenCharFromFront:
+ 715              	.LVL46:
+ 716              	.LFB134:
+ 158:SYS/data_structure/queue.c **** 
+ 159:SYS/data_structure/queue.c **** Queue_state Queue_PopLenCharFromFront(queue_s *queue, uint16_t len, char *out_buff)
+ 160:SYS/data_structure/queue.c **** {
+ 717              		.loc 1 160 1 is_stmt 1 view -0
+ 718              		.cfi_startproc
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 18
+
+
+ 719              		@ args = 0, pretend = 0, frame = 0
+ 720              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161:SYS/data_structure/queue.c ****     static uint32_t test = 0;
+ 721              		.loc 1 161 5 view .LVU232
+ 162:SYS/data_structure/queue.c ****     if ((queue->state == Queue_ok) || (queue->state == Queue_full))
+ 722              		.loc 1 162 5 view .LVU233
+ 723              		.loc 1 162 15 is_stmt 0 view .LVU234
+ 724 0000 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 725              		.loc 1 162 8 view .LVU235
+ 726 0002 0BB1     		cbz	r3, .L47
+ 727              		.loc 1 162 36 discriminator 1 view .LVU236
+ 728 0004 052B     		cmp	r3, #5
+ 729 0006 4ED1     		bne	.L54
+ 730              	.L47:
+ 163:SYS/data_structure/queue.c ****     {
+ 164:SYS/data_structure/queue.c ****         if (len <= queue->size)
+ 731              		.loc 1 164 9 is_stmt 1 view .LVU237
+ 732              		.loc 1 164 25 is_stmt 0 view .LVU238
+ 733 0008 8388     		ldrh	r3, [r0, #4]
+ 734              		.loc 1 164 12 view .LVU239
+ 735 000a 8B42     		cmp	r3, r1
+ 736 000c 3BD3     		bcc	.L60
+ 160:SYS/data_structure/queue.c ****     static uint32_t test = 0;
+ 737              		.loc 1 160 1 view .LVU240
+ 738 000e 10B5     		push	{r4, lr}
+ 739              	.LCFI6:
+ 740              		.cfi_def_cfa_offset 8
+ 741              		.cfi_offset 4, -8
+ 742              		.cfi_offset 14, -4
+ 743              	.LBB6:
+ 165:SYS/data_structure/queue.c ****         {
+ 166:SYS/data_structure/queue.c ****             for (uint16_t index = 0; index < len; index++)
+ 744              		.loc 1 166 27 view .LVU241
+ 745 0010 0023     		movs	r3, #0
+ 746 0012 17E0     		b	.L49
+ 747              	.LVL47:
+ 748              	.L51:
+ 167:SYS/data_structure/queue.c ****             {
+ 168:SYS/data_structure/queue.c ****                 if (queue->output_type == Queue_FIFO)
+ 169:SYS/data_structure/queue.c ****                 {
+ 170:SYS/data_structure/queue.c ****                     //FIFO
+ 171:SYS/data_structure/queue.c ****                     out_buff[index] = queue->buff[queue->head_pos + index];
+ 172:SYS/data_structure/queue.c ****                     queue->buff[queue->head_pos + index] = NULL;
+ 173:SYS/data_structure/queue.c ****                 }
+ 174:SYS/data_structure/queue.c ****                 else
+ 175:SYS/data_structure/queue.c ****                 {
+ 176:SYS/data_structure/queue.c ****                     //LIFO
+ 177:SYS/data_structure/queue.c ****                     out_buff[index] = queue->buff[queue->head_pos + len - 1 - index];
+ 749              		.loc 1 177 21 is_stmt 1 view .LVU242
+ 750              		.loc 1 177 56 is_stmt 0 view .LVU243
+ 751 0014 B0F808C0 		ldrh	ip, [r0, #8]
+ 752              		.loc 1 177 67 view .LVU244
+ 753 0018 8C44     		add	ip, ip, r1
+ 754              		.loc 1 177 73 view .LVU245
+ 755 001a 0CF1FF3C 		add	ip, ip, #-1
+ 756              		.loc 1 177 77 view .LVU246
+ 757 001e ACEB030C 		sub	ip, ip, r3
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 19
+
+
+ 758              		.loc 1 177 50 view .LVU247
+ 759 0022 8444     		add	ip, ip, r0
+ 760 0024 9CF80C40 		ldrb	r4, [ip, #12]	@ zero_extendqisi2
+ 761              		.loc 1 177 37 view .LVU248
+ 762 0028 D454     		strb	r4, [r2, r3]
+ 178:SYS/data_structure/queue.c ****                     queue->buff[queue->head_pos + len - 1 - index] = NULL;
+ 763              		.loc 1 178 21 is_stmt 1 view .LVU249
+ 764              		.loc 1 178 38 is_stmt 0 view .LVU250
+ 765 002a B0F808C0 		ldrh	ip, [r0, #8]
+ 766              		.loc 1 178 49 view .LVU251
+ 767 002e 8C44     		add	ip, ip, r1
+ 768              		.loc 1 178 55 view .LVU252
+ 769 0030 0CF1FF3C 		add	ip, ip, #-1
+ 770              		.loc 1 178 59 view .LVU253
+ 771 0034 ACEB030C 		sub	ip, ip, r3
+ 772              		.loc 1 178 68 view .LVU254
+ 773 0038 8444     		add	ip, ip, r0
+ 774 003a 0024     		movs	r4, #0
+ 775 003c 8CF80C40 		strb	r4, [ip, #12]
+ 776              	.L52:
+ 166:SYS/data_structure/queue.c ****             {
+ 777              		.loc 1 166 51 is_stmt 1 discriminator 2 view .LVU255
+ 166:SYS/data_structure/queue.c ****             {
+ 778              		.loc 1 166 56 is_stmt 0 discriminator 2 view .LVU256
+ 779 0040 0133     		adds	r3, r3, #1
+ 780              	.LVL48:
+ 166:SYS/data_structure/queue.c ****             {
+ 781              		.loc 1 166 56 discriminator 2 view .LVU257
+ 782 0042 9BB2     		uxth	r3, r3
+ 783              	.LVL49:
+ 784              	.L49:
+ 166:SYS/data_structure/queue.c ****             {
+ 785              		.loc 1 166 38 is_stmt 1 discriminator 1 view .LVU258
+ 166:SYS/data_structure/queue.c ****             {
+ 786              		.loc 1 166 13 is_stmt 0 discriminator 1 view .LVU259
+ 787 0044 8B42     		cmp	r3, r1
+ 788 0046 12D2     		bcs	.L61
+ 168:SYS/data_structure/queue.c ****                 {
+ 789              		.loc 1 168 17 is_stmt 1 view .LVU260
+ 168:SYS/data_structure/queue.c ****                 {
+ 790              		.loc 1 168 26 is_stmt 0 view .LVU261
+ 791 0048 90F80C42 		ldrb	r4, [r0, #524]	@ zero_extendqisi2
+ 168:SYS/data_structure/queue.c ****                 {
+ 792              		.loc 1 168 20 view .LVU262
+ 793 004c 002C     		cmp	r4, #0
+ 794 004e E1D1     		bne	.L51
+ 171:SYS/data_structure/queue.c ****                     queue->buff[queue->head_pos + index] = NULL;
+ 795              		.loc 1 171 21 is_stmt 1 view .LVU263
+ 171:SYS/data_structure/queue.c ****                     queue->buff[queue->head_pos + index] = NULL;
+ 796              		.loc 1 171 56 is_stmt 0 view .LVU264
+ 797 0050 B0F808C0 		ldrh	ip, [r0, #8]
+ 171:SYS/data_structure/queue.c ****                     queue->buff[queue->head_pos + index] = NULL;
+ 798              		.loc 1 171 67 view .LVU265
+ 799 0054 9C44     		add	ip, ip, r3
+ 171:SYS/data_structure/queue.c ****                     queue->buff[queue->head_pos + index] = NULL;
+ 800              		.loc 1 171 50 view .LVU266
+ 801 0056 8444     		add	ip, ip, r0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 20
+
+
+ 802 0058 9CF80C40 		ldrb	r4, [ip, #12]	@ zero_extendqisi2
+ 171:SYS/data_structure/queue.c ****                     queue->buff[queue->head_pos + index] = NULL;
+ 803              		.loc 1 171 37 view .LVU267
+ 804 005c D454     		strb	r4, [r2, r3]
+ 172:SYS/data_structure/queue.c ****                 }
+ 805              		.loc 1 172 21 is_stmt 1 view .LVU268
+ 172:SYS/data_structure/queue.c ****                 }
+ 806              		.loc 1 172 38 is_stmt 0 view .LVU269
+ 807 005e B0F808C0 		ldrh	ip, [r0, #8]
+ 172:SYS/data_structure/queue.c ****                 }
+ 808              		.loc 1 172 49 view .LVU270
+ 809 0062 9C44     		add	ip, ip, r3
+ 172:SYS/data_structure/queue.c ****                 }
+ 810              		.loc 1 172 58 view .LVU271
+ 811 0064 8444     		add	ip, ip, r0
+ 812 0066 0024     		movs	r4, #0
+ 813 0068 8CF80C40 		strb	r4, [ip, #12]
+ 814 006c E8E7     		b	.L52
+ 815              	.L61:
+ 172:SYS/data_structure/queue.c ****                 }
+ 816              		.loc 1 172 58 view .LVU272
+ 817              	.LBE6:
+ 179:SYS/data_structure/queue.c ****                 }
+ 180:SYS/data_structure/queue.c ****             }
+ 181:SYS/data_structure/queue.c **** 
+ 182:SYS/data_structure/queue.c ****             queue->size -= len;
+ 818              		.loc 1 182 13 is_stmt 1 view .LVU273
+ 819              		.loc 1 182 25 is_stmt 0 view .LVU274
+ 820 006e 8388     		ldrh	r3, [r0, #4]
+ 821              	.LVL50:
+ 822              		.loc 1 182 25 view .LVU275
+ 823 0070 5B1A     		subs	r3, r3, r1
+ 824 0072 8380     		strh	r3, [r0, #4]	@ movhi
+ 183:SYS/data_structure/queue.c ****             queue->head_pos = (queue->head_pos + len) % QUEUE_MAX_SIZE;
+ 825              		.loc 1 183 13 is_stmt 1 view .LVU276
+ 826              		.loc 1 183 37 is_stmt 0 view .LVU277
+ 827 0074 0389     		ldrh	r3, [r0, #8]
+ 828              		.loc 1 183 55 view .LVU278
+ 829 0076 1944     		add	r1, r1, r3
+ 830              	.LVL51:
+ 831              		.loc 1 183 55 view .LVU279
+ 832 0078 C1F30801 		ubfx	r1, r1, #0, #9
+ 833              		.loc 1 183 29 view .LVU280
+ 834 007c 0181     		strh	r1, [r0, #8]	@ movhi
+ 184:SYS/data_structure/queue.c **** 
+ 185:SYS/data_structure/queue.c ****             Queue_GetState(queue);
+ 835              		.loc 1 185 13 is_stmt 1 view .LVU281
+ 836 007e FFF7FEFF 		bl	Queue_GetState
+ 837              	.LVL52:
+ 186:SYS/data_structure/queue.c ****             return Queue_ok;
+ 838              		.loc 1 186 13 view .LVU282
+ 839              		.loc 1 186 20 is_stmt 0 view .LVU283
+ 840 0082 0020     		movs	r0, #0
+ 187:SYS/data_structure/queue.c ****         }
+ 188:SYS/data_structure/queue.c ****         else
+ 189:SYS/data_structure/queue.c ****         {
+ 190:SYS/data_structure/queue.c ****             test++;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 21
+
+
+ 191:SYS/data_structure/queue.c ****             //count error num
+ 192:SYS/data_structure/queue.c ****             queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_overlimit_r)]++;
+ 193:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 194:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 195:SYS/data_structure/queue.c ****         }
+ 196:SYS/data_structure/queue.c ****     }
+ 197:SYS/data_structure/queue.c ****     else
+ 198:SYS/data_structure/queue.c ****     {
+ 199:SYS/data_structure/queue.c ****         return Queue_empty;
+ 200:SYS/data_structure/queue.c ****     }
+ 201:SYS/data_structure/queue.c **** }
+ 841              		.loc 1 201 1 view .LVU284
+ 842 0084 10BD     		pop	{r4, pc}
+ 843              	.LVL53:
+ 844              	.L60:
+ 845              	.LCFI7:
+ 846              		.cfi_def_cfa_offset 0
+ 847              		.cfi_restore 4
+ 848              		.cfi_restore 14
+ 190:SYS/data_structure/queue.c ****             //count error num
+ 849              		.loc 1 190 13 is_stmt 1 view .LVU285
+ 190:SYS/data_structure/queue.c ****             //count error num
+ 850              		.loc 1 190 17 is_stmt 0 view .LVU286
+ 851 0086 094A     		ldr	r2, .L62
+ 852              	.LVL54:
+ 190:SYS/data_structure/queue.c ****             //count error num
+ 853              		.loc 1 190 17 view .LVU287
+ 854 0088 1368     		ldr	r3, [r2]
+ 855 008a 0133     		adds	r3, r3, #1
+ 856 008c 1360     		str	r3, [r2]
+ 192:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 857              		.loc 1 192 13 is_stmt 1 view .LVU288
+ 192:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 858              		.loc 1 192 31 is_stmt 0 view .LVU289
+ 859 008e D0F81432 		ldr	r3, [r0, #532]
+ 192:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 860              		.loc 1 192 73 view .LVU290
+ 861 0092 0133     		adds	r3, r3, #1
+ 862 0094 C0F81432 		str	r3, [r0, #532]
+ 193:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 863              		.loc 1 193 13 is_stmt 1 view .LVU291
+ 193:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 864              		.loc 1 193 18 is_stmt 0 view .LVU292
+ 865 0098 D0F82032 		ldr	r3, [r0, #544]
+ 193:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 866              		.loc 1 193 37 view .LVU293
+ 867 009c 0133     		adds	r3, r3, #1
+ 868 009e C0F82032 		str	r3, [r0, #544]
+ 194:SYS/data_structure/queue.c ****         }
+ 869              		.loc 1 194 13 is_stmt 1 view .LVU294
+ 194:SYS/data_structure/queue.c ****         }
+ 870              		.loc 1 194 20 is_stmt 0 view .LVU295
+ 871 00a2 0320     		movs	r0, #3
+ 872              	.LVL55:
+ 194:SYS/data_structure/queue.c ****         }
+ 873              		.loc 1 194 20 view .LVU296
+ 874 00a4 7047     		bx	lr
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 22
+
+
+ 875              	.LVL56:
+ 876              	.L54:
+ 199:SYS/data_structure/queue.c ****     }
+ 877              		.loc 1 199 16 view .LVU297
+ 878 00a6 0420     		movs	r0, #4
+ 879              	.LVL57:
+ 880              		.loc 1 201 1 view .LVU298
+ 881 00a8 7047     		bx	lr
+ 882              	.L63:
+ 883 00aa 00BF     		.align	2
+ 884              	.L62:
+ 885 00ac 00000000 		.word	.LANCHOR1
+ 886              		.cfi_endproc
+ 887              	.LFE134:
+ 889              		.section	.text.Queue_PopLenCharFromBack,"ax",%progbits
+ 890              		.align	1
+ 891              		.global	Queue_PopLenCharFromBack
+ 892              		.syntax unified
+ 893              		.thumb
+ 894              		.thumb_func
+ 895              		.fpu fpv4-sp-d16
+ 897              	Queue_PopLenCharFromBack:
+ 898              	.LVL58:
+ 899              	.LFB135:
+ 202:SYS/data_structure/queue.c **** 
+ 203:SYS/data_structure/queue.c **** //func describe same as Queue_PopCharFromBack
+ 204:SYS/data_structure/queue.c **** Queue_state Queue_PopLenCharFromBack(queue_s *queue, uint16_t len, char *out_buff)
+ 205:SYS/data_structure/queue.c **** {
+ 900              		.loc 1 205 1 is_stmt 1 view -0
+ 901              		.cfi_startproc
+ 902              		@ args = 0, pretend = 0, frame = 0
+ 903              		@ frame_needed = 0, uses_anonymous_args = 0
+ 904              		.loc 1 205 1 is_stmt 0 view .LVU300
+ 905 0000 10B5     		push	{r4, lr}
+ 906              	.LCFI8:
+ 907              		.cfi_def_cfa_offset 8
+ 908              		.cfi_offset 4, -8
+ 909              		.cfi_offset 14, -4
+ 910 0002 0446     		mov	r4, r0
+ 206:SYS/data_structure/queue.c ****     if ((queue->state == Queue_ok) || (queue->state == Queue_full))
+ 911              		.loc 1 206 5 is_stmt 1 view .LVU301
+ 912              		.loc 1 206 15 is_stmt 0 view .LVU302
+ 913 0004 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 914              		.loc 1 206 8 view .LVU303
+ 915 0006 0BB1     		cbz	r3, .L65
+ 916              		.loc 1 206 36 discriminator 1 view .LVU304
+ 917 0008 052B     		cmp	r3, #5
+ 918 000a 3BD1     		bne	.L66
+ 919              	.L65:
+ 207:SYS/data_structure/queue.c ****     {
+ 208:SYS/data_structure/queue.c ****         if (len < queue->size)
+ 920              		.loc 1 208 9 is_stmt 1 view .LVU305
+ 921              		.loc 1 208 24 is_stmt 0 view .LVU306
+ 922 000c A388     		ldrh	r3, [r4, #4]
+ 923              		.loc 1 208 12 view .LVU307
+ 924 000e 8B42     		cmp	r3, r1
+ 925 0010 3AD9     		bls	.L76
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 23
+
+
+ 926              	.LBB7:
+ 209:SYS/data_structure/queue.c ****         {
+ 210:SYS/data_structure/queue.c ****             for (uint16_t index = 0; index < len; index++)
+ 927              		.loc 1 210 27 view .LVU308
+ 928 0012 0023     		movs	r3, #0
+ 929 0014 0FE0     		b	.L67
+ 930              	.LVL59:
+ 931              	.L78:
+ 211:SYS/data_structure/queue.c ****             {
+ 212:SYS/data_structure/queue.c ****                 if (queue->output_type == Queue_LIFO)
+ 213:SYS/data_structure/queue.c ****                 {
+ 214:SYS/data_structure/queue.c ****                     out_buff[index] = queue->buff[(queue->end_pos - 1) - index];
+ 932              		.loc 1 214 21 is_stmt 1 view .LVU309
+ 933              		.loc 1 214 57 is_stmt 0 view .LVU310
+ 934 0016 6089     		ldrh	r0, [r4, #10]
+ 935              		.loc 1 214 67 view .LVU311
+ 936 0018 0138     		subs	r0, r0, #1
+ 937              		.loc 1 214 72 view .LVU312
+ 938 001a C01A     		subs	r0, r0, r3
+ 939              		.loc 1 214 50 view .LVU313
+ 940 001c 2044     		add	r0, r0, r4
+ 941 001e 007B     		ldrb	r0, [r0, #12]	@ zero_extendqisi2
+ 942              		.loc 1 214 37 view .LVU314
+ 943 0020 D054     		strb	r0, [r2, r3]
+ 215:SYS/data_structure/queue.c ****                     queue->buff[(queue->end_pos - 1) - index] = NULL;
+ 944              		.loc 1 215 21 is_stmt 1 view .LVU315
+ 945              		.loc 1 215 39 is_stmt 0 view .LVU316
+ 946 0022 6089     		ldrh	r0, [r4, #10]
+ 947              		.loc 1 215 49 view .LVU317
+ 948 0024 0138     		subs	r0, r0, #1
+ 949              		.loc 1 215 54 view .LVU318
+ 950 0026 C01A     		subs	r0, r0, r3
+ 951              		.loc 1 215 63 view .LVU319
+ 952 0028 2044     		add	r0, r0, r4
+ 953 002a 4FF0000C 		mov	ip, #0
+ 954 002e 80F80CC0 		strb	ip, [r0, #12]
+ 955              	.L70:
+ 210:SYS/data_structure/queue.c ****             {
+ 956              		.loc 1 210 51 is_stmt 1 discriminator 2 view .LVU320
+ 210:SYS/data_structure/queue.c ****             {
+ 957              		.loc 1 210 56 is_stmt 0 discriminator 2 view .LVU321
+ 958 0032 0133     		adds	r3, r3, #1
+ 959              	.LVL60:
+ 210:SYS/data_structure/queue.c ****             {
+ 960              		.loc 1 210 56 discriminator 2 view .LVU322
+ 961 0034 9BB2     		uxth	r3, r3
+ 962              	.LVL61:
+ 963              	.L67:
+ 210:SYS/data_structure/queue.c ****             {
+ 964              		.loc 1 210 38 is_stmt 1 discriminator 1 view .LVU323
+ 210:SYS/data_structure/queue.c ****             {
+ 965              		.loc 1 210 13 is_stmt 0 discriminator 1 view .LVU324
+ 966 0036 8B42     		cmp	r3, r1
+ 967 0038 14D2     		bcs	.L77
+ 212:SYS/data_structure/queue.c ****                 {
+ 968              		.loc 1 212 17 is_stmt 1 view .LVU325
+ 212:SYS/data_structure/queue.c ****                 {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 24
+
+
+ 969              		.loc 1 212 26 is_stmt 0 view .LVU326
+ 970 003a 94F80C02 		ldrb	r0, [r4, #524]	@ zero_extendqisi2
+ 212:SYS/data_structure/queue.c ****                 {
+ 971              		.loc 1 212 20 view .LVU327
+ 972 003e 0128     		cmp	r0, #1
+ 973 0040 E9D0     		beq	.L78
+ 216:SYS/data_structure/queue.c ****                 }
+ 217:SYS/data_structure/queue.c ****                 else
+ 218:SYS/data_structure/queue.c ****                 {
+ 219:SYS/data_structure/queue.c ****                     out_buff[index] = queue->buff[(queue->end_pos - 1 - len) + index];
+ 974              		.loc 1 219 21 is_stmt 1 view .LVU328
+ 975              		.loc 1 219 57 is_stmt 0 view .LVU329
+ 976 0042 6089     		ldrh	r0, [r4, #10]
+ 977              		.loc 1 219 67 view .LVU330
+ 978 0044 0138     		subs	r0, r0, #1
+ 979              		.loc 1 219 71 view .LVU331
+ 980 0046 401A     		subs	r0, r0, r1
+ 981              		.loc 1 219 78 view .LVU332
+ 982 0048 1844     		add	r0, r0, r3
+ 983              		.loc 1 219 50 view .LVU333
+ 984 004a 2044     		add	r0, r0, r4
+ 985 004c 007B     		ldrb	r0, [r0, #12]	@ zero_extendqisi2
+ 986              		.loc 1 219 37 view .LVU334
+ 987 004e D054     		strb	r0, [r2, r3]
+ 220:SYS/data_structure/queue.c ****                     queue->buff[(queue->end_pos - 1 - len) + index] = NULL;
+ 988              		.loc 1 220 21 is_stmt 1 view .LVU335
+ 989              		.loc 1 220 39 is_stmt 0 view .LVU336
+ 990 0050 6089     		ldrh	r0, [r4, #10]
+ 991              		.loc 1 220 49 view .LVU337
+ 992 0052 0138     		subs	r0, r0, #1
+ 993              		.loc 1 220 53 view .LVU338
+ 994 0054 401A     		subs	r0, r0, r1
+ 995              		.loc 1 220 60 view .LVU339
+ 996 0056 1844     		add	r0, r0, r3
+ 997              		.loc 1 220 69 view .LVU340
+ 998 0058 2044     		add	r0, r0, r4
+ 999 005a 4FF0000C 		mov	ip, #0
+ 1000 005e 80F80CC0 		strb	ip, [r0, #12]
+ 1001 0062 E6E7     		b	.L70
+ 1002              	.L77:
+ 1003              		.loc 1 220 69 view .LVU341
+ 1004              	.LBE7:
+ 221:SYS/data_structure/queue.c ****                 }
+ 222:SYS/data_structure/queue.c ****             }
+ 223:SYS/data_structure/queue.c **** 
+ 224:SYS/data_structure/queue.c ****             queue->size -= len;
+ 1005              		.loc 1 224 13 is_stmt 1 view .LVU342
+ 1006              		.loc 1 224 25 is_stmt 0 view .LVU343
+ 1007 0064 A388     		ldrh	r3, [r4, #4]
+ 1008              	.LVL62:
+ 1009              		.loc 1 224 25 view .LVU344
+ 1010 0066 5B1A     		subs	r3, r3, r1
+ 1011 0068 A380     		strh	r3, [r4, #4]	@ movhi
+ 225:SYS/data_structure/queue.c ****             queue->end_pos = (queue->end_pos - len) % QUEUE_MAX_SIZE;
+ 1012              		.loc 1 225 13 is_stmt 1 view .LVU345
+ 1013              		.loc 1 225 36 is_stmt 0 view .LVU346
+ 1014 006a 6389     		ldrh	r3, [r4, #10]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 25
+
+
+ 1015              		.loc 1 225 46 view .LVU347
+ 1016 006c 591A     		subs	r1, r3, r1
+ 1017              	.LVL63:
+ 1018              		.loc 1 225 53 view .LVU348
+ 1019 006e 4B42     		rsbs	r3, r1, #0
+ 1020 0070 C1F30801 		ubfx	r1, r1, #0, #9
+ 1021 0074 C3F30803 		ubfx	r3, r3, #0, #9
+ 1022 0078 58BF     		it	pl
+ 1023 007a 5942     		rsbpl	r1, r3, #0
+ 1024              		.loc 1 225 28 view .LVU349
+ 1025 007c 6181     		strh	r1, [r4, #10]	@ movhi
+ 226:SYS/data_structure/queue.c **** 
+ 227:SYS/data_structure/queue.c ****             Queue_GetState(queue);
+ 1026              		.loc 1 227 13 is_stmt 1 view .LVU350
+ 1027 007e 2046     		mov	r0, r4
+ 1028 0080 FFF7FEFF 		bl	Queue_GetState
+ 1029              	.LVL64:
+ 1030              	.L66:
+ 228:SYS/data_structure/queue.c ****         }
+ 229:SYS/data_structure/queue.c ****         else
+ 230:SYS/data_structure/queue.c ****         {
+ 231:SYS/data_structure/queue.c ****             queue->error_times[GET_QUEUE_ERROR_INDEX(Queue_overlimit_r)]++;
+ 232:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 233:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 234:SYS/data_structure/queue.c ****         }
+ 235:SYS/data_structure/queue.c ****     }
+ 236:SYS/data_structure/queue.c **** 
+ 237:SYS/data_structure/queue.c ****     return queue->state;
+ 1031              		.loc 1 237 5 view .LVU351
+ 1032              		.loc 1 237 17 is_stmt 0 view .LVU352
+ 1033 0084 A079     		ldrb	r0, [r4, #6]	@ zero_extendqisi2
+ 1034              	.L72:
+ 238:SYS/data_structure/queue.c **** }
+ 1035              		.loc 1 238 1 view .LVU353
+ 1036 0086 10BD     		pop	{r4, pc}
+ 1037              	.LVL65:
+ 1038              	.L76:
+ 231:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 1039              		.loc 1 231 13 is_stmt 1 view .LVU354
+ 231:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 1040              		.loc 1 231 31 is_stmt 0 view .LVU355
+ 1041 0088 D4F81432 		ldr	r3, [r4, #532]
+ 231:SYS/data_structure/queue.c ****             queue->total_error_times++;
+ 1042              		.loc 1 231 73 view .LVU356
+ 1043 008c 0133     		adds	r3, r3, #1
+ 1044 008e C4F81432 		str	r3, [r4, #532]
+ 232:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 1045              		.loc 1 232 13 is_stmt 1 view .LVU357
+ 232:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 1046              		.loc 1 232 18 is_stmt 0 view .LVU358
+ 1047 0092 D4F82032 		ldr	r3, [r4, #544]
+ 232:SYS/data_structure/queue.c ****             return Queue_overlimit_r;
+ 1048              		.loc 1 232 37 view .LVU359
+ 1049 0096 0133     		adds	r3, r3, #1
+ 1050 0098 C4F82032 		str	r3, [r4, #544]
+ 233:SYS/data_structure/queue.c ****         }
+ 1051              		.loc 1 233 13 is_stmt 1 view .LVU360
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 26
+
+
+ 233:SYS/data_structure/queue.c ****         }
+ 1052              		.loc 1 233 20 is_stmt 0 view .LVU361
+ 1053 009c 0320     		movs	r0, #3
+ 1054              	.LVL66:
+ 233:SYS/data_structure/queue.c ****         }
+ 1055              		.loc 1 233 20 view .LVU362
+ 1056 009e F2E7     		b	.L72
+ 1057              		.cfi_endproc
+ 1058              	.LFE135:
+ 1060              		.section	.text.Queue_CheckData,"ax",%progbits
+ 1061              		.align	1
+ 1062              		.global	Queue_CheckData
+ 1063              		.syntax unified
+ 1064              		.thumb
+ 1065              		.thumb_func
+ 1066              		.fpu fpv4-sp-d16
+ 1068              	Queue_CheckData:
+ 1069              	.LVL67:
+ 1070              	.LFB136:
+ 239:SYS/data_structure/queue.c **** 
+ 240:SYS/data_structure/queue.c **** Queue_CheckOut_u Queue_CheckData(queue_s queue, uint16_t index)
+ 241:SYS/data_structure/queue.c **** {
+ 1071              		.loc 1 241 1 is_stmt 1 view -0
+ 1072              		.cfi_startproc
+ 1073              		@ args = 552, pretend = 16, frame = 0
+ 1074              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1075              		@ link register save eliminated.
+ 1076              		.loc 1 241 1 is_stmt 0 view .LVU364
+ 1077 0000 84B0     		sub	sp, sp, #16
+ 1078              	.LCFI9:
+ 1079              		.cfi_def_cfa_offset 16
+ 1080 0002 8DE80F00 		stm	sp, {r0, r1, r2, r3}
+ 1081 0006 BDF82432 		ldrh	r3, [sp, #548]
+ 242:SYS/data_structure/queue.c ****     Queue_CheckOut_u Data_tmp;
+ 1082              		.loc 1 242 5 is_stmt 1 view .LVU365
+ 243:SYS/data_structure/queue.c ****     Data_tmp.reg.value = 0;
+ 1083              		.loc 1 243 5 view .LVU366
+ 1084              		.loc 1 243 24 is_stmt 0 view .LVU367
+ 1085 000a 4FF00000 		mov	r0, #0	@ movhi
+ 1086              	.LVL68:
+ 244:SYS/data_structure/queue.c **** 
+ 245:SYS/data_structure/queue.c ****     if (queue.state != Queue_empty)
+ 1087              		.loc 1 245 5 is_stmt 1 view .LVU368
+ 1088              		.loc 1 245 14 is_stmt 0 view .LVU369
+ 1089 000e 9DF80620 		ldrb	r2, [sp, #6]	@ zero_extendqisi2
+ 1090              		.loc 1 245 8 view .LVU370
+ 1091 0012 042A     		cmp	r2, #4
+ 1092 0014 17D0     		beq	.L80
+ 246:SYS/data_structure/queue.c ****     {
+ 247:SYS/data_structure/queue.c ****         if ((index < QUEUE_MAX_SIZE) && (index <= queue.size))
+ 1093              		.loc 1 247 9 is_stmt 1 view .LVU371
+ 1094              		.loc 1 247 12 is_stmt 0 view .LVU372
+ 1095 0016 B3F5007F 		cmp	r3, #512
+ 1096 001a 0FD2     		bcs	.L81
+ 1097              		.loc 1 247 56 discriminator 1 view .LVU373
+ 1098 001c BDF80420 		ldrh	r2, [sp, #4]
+ 1099              		.loc 1 247 38 discriminator 1 view .LVU374
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 27
+
+
+ 1100 0020 9A42     		cmp	r2, r3
+ 1101 0022 0BD3     		bcc	.L81
+ 248:SYS/data_structure/queue.c ****         {
+ 249:SYS/data_structure/queue.c ****             Data_tmp.reg.state = Queue_ok;
+ 1102              		.loc 1 249 13 is_stmt 1 view .LVU375
+ 1103              		.loc 1 249 32 is_stmt 0 view .LVU376
+ 1104 0024 6FF30700 		bfc	r0, #0, #8
+ 1105              	.LVL69:
+ 250:SYS/data_structure/queue.c ****             Data_tmp.reg.value = queue.buff[(index + queue.head_pos) % QUEUE_MAX_SIZE];
+ 1106              		.loc 1 250 13 is_stmt 1 view .LVU377
+ 1107              		.loc 1 250 59 is_stmt 0 view .LVU378
+ 1108 0028 BDF80820 		ldrh	r2, [sp, #8]
+ 1109              		.loc 1 250 70 view .LVU379
+ 1110 002c 1344     		add	r3, r3, r2
+ 1111 002e C3F30803 		ubfx	r3, r3, #0, #9
+ 1112              		.loc 1 250 44 view .LVU380
+ 1113 0032 6B44     		add	r3, r3, sp
+ 1114 0034 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 1115              		.loc 1 250 32 view .LVU381
+ 1116 0036 63F30F20 		bfi	r0, r3, #8, #8
+ 1117              		.loc 1 250 32 view .LVU382
+ 1118 003a 02E0     		b	.L82
+ 1119              	.LVL70:
+ 1120              	.L81:
+ 251:SYS/data_structure/queue.c ****         }
+ 252:SYS/data_structure/queue.c ****         else
+ 253:SYS/data_structure/queue.c ****         {
+ 254:SYS/data_structure/queue.c ****             Data_tmp.reg.state = Queue_CheckErrorPos;
+ 1121              		.loc 1 254 13 is_stmt 1 view .LVU383
+ 1122              		.loc 1 254 32 is_stmt 0 view .LVU384
+ 1123 003c 0123     		movs	r3, #1
+ 1124 003e 63F30700 		bfi	r0, r3, #0, #8
+ 1125              	.LVL71:
+ 1126              	.L82:
+ 255:SYS/data_structure/queue.c ****         }
+ 256:SYS/data_structure/queue.c ****     }
+ 257:SYS/data_structure/queue.c ****     else
+ 258:SYS/data_structure/queue.c ****     {
+ 259:SYS/data_structure/queue.c ****         Data_tmp.reg.state = Queue_empty;
+ 260:SYS/data_structure/queue.c ****     }
+ 261:SYS/data_structure/queue.c **** 
+ 262:SYS/data_structure/queue.c ****     return Data_tmp;
+ 1127              		.loc 1 262 5 is_stmt 1 view .LVU385
+ 1128              	.LVL72:
+ 263:SYS/data_structure/queue.c **** }
+ 1129              		.loc 1 263 1 is_stmt 0 view .LVU386
+ 1130 0042 04B0     		add	sp, sp, #16
+ 1131              	.LCFI10:
+ 1132              		.cfi_remember_state
+ 1133              		.cfi_def_cfa_offset 0
+ 1134 0044 7047     		bx	lr
+ 1135              	.L80:
+ 1136              	.LCFI11:
+ 1137              		.cfi_restore_state
+ 259:SYS/data_structure/queue.c ****     }
+ 1138              		.loc 1 259 9 is_stmt 1 view .LVU387
+ 259:SYS/data_structure/queue.c ****     }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 28
+
+
+ 1139              		.loc 1 259 28 is_stmt 0 view .LVU388
+ 1140 0046 0423     		movs	r3, #4
+ 1141 0048 63F30700 		bfi	r0, r3, #0, #8
+ 1142              	.LVL73:
+ 259:SYS/data_structure/queue.c ****     }
+ 1143              		.loc 1 259 28 view .LVU389
+ 1144 004c F9E7     		b	.L82
+ 1145              		.cfi_endproc
+ 1146              	.LFE136:
+ 1148              		.section	.text.Queue_Output_ErrorTimes,"ax",%progbits
+ 1149              		.align	1
+ 1150              		.global	Queue_Output_ErrorTimes
+ 1151              		.syntax unified
+ 1152              		.thumb
+ 1153              		.thumb_func
+ 1154              		.fpu fpv4-sp-d16
+ 1156              	Queue_Output_ErrorTimes:
+ 1157              	.LFB137:
+ 264:SYS/data_structure/queue.c **** 
+ 265:SYS/data_structure/queue.c **** void Queue_Output_ErrorTimes(queue_s queue)
+ 266:SYS/data_structure/queue.c **** {
+ 1158              		.loc 1 266 1 is_stmt 1 view -0
+ 1159              		.cfi_startproc
+ 1160              		@ args = 548, pretend = 16, frame = 0
+ 1161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1162              		@ link register save eliminated.
+ 1163 0000 84B0     		sub	sp, sp, #16
+ 1164              	.LCFI12:
+ 1165              		.cfi_def_cfa_offset 16
+ 1166 0002 8DE80F00 		stm	sp, {r0, r1, r2, r3}
+ 267:SYS/data_structure/queue.c ****     if (queue.total_error_times)
+ 1167              		.loc 1 267 5 view .LVU391
+ 1168              		.loc 1 267 14 is_stmt 0 view .LVU392
+ 1169 0006 889B     		ldr	r3, [sp, #544]
+ 1170              		.loc 1 267 8 view .LVU393
+ 1171 0008 33B9     		cbnz	r3, .L88
+ 1172              	.L84:
+ 268:SYS/data_structure/queue.c ****     {
+ 269:SYS/data_structure/queue.c ****         for (uint8_t i = 0; i < QUEUE_ERROR_TYPENUM; i++)
+ 270:SYS/data_structure/queue.c ****         {
+ 271:SYS/data_structure/queue.c ****             if (queue.error_times[i])
+ 272:SYS/data_structure/queue.c ****             {
+ 273:SYS/data_structure/queue.c ****                 switch (i + Queue_overflow_w)
+ 274:SYS/data_structure/queue.c ****                 {
+ 275:SYS/data_structure/queue.c ****                 case Queue_overflow_w:
+ 276:SYS/data_structure/queue.c ****                     break;
+ 277:SYS/data_structure/queue.c **** 
+ 278:SYS/data_structure/queue.c ****                 case Queue_overlimit_r:
+ 279:SYS/data_structure/queue.c ****                     break;
+ 280:SYS/data_structure/queue.c **** 
+ 281:SYS/data_structure/queue.c ****                 case Queue_empty:
+ 282:SYS/data_structure/queue.c ****                     break;
+ 283:SYS/data_structure/queue.c **** 
+ 284:SYS/data_structure/queue.c ****                 case Queue_full:
+ 285:SYS/data_structure/queue.c ****                     break;
+ 286:SYS/data_structure/queue.c **** 
+ 287:SYS/data_structure/queue.c ****                 case Queue_CreateFailed:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 29
+
+
+ 288:SYS/data_structure/queue.c ****                     break;
+ 289:SYS/data_structure/queue.c ****                 }
+ 290:SYS/data_structure/queue.c ****             }
+ 291:SYS/data_structure/queue.c ****         }
+ 292:SYS/data_structure/queue.c ****     }
+ 293:SYS/data_structure/queue.c **** }
+ 1173              		.loc 1 293 1 view .LVU394
+ 1174 000a 04B0     		add	sp, sp, #16
+ 1175              	.LCFI13:
+ 1176              		.cfi_remember_state
+ 1177              		.cfi_def_cfa_offset 0
+ 1178 000c 7047     		bx	lr
+ 1179              	.LVL74:
+ 1180              	.L87:
+ 1181              	.LCFI14:
+ 1182              		.cfi_restore_state
+ 1183              	.LBB8:
+ 271:SYS/data_structure/queue.c ****             {
+ 1184              		.loc 1 271 13 is_stmt 1 view .LVU395
+ 269:SYS/data_structure/queue.c ****         {
+ 1185              		.loc 1 269 54 view .LVU396
+ 269:SYS/data_structure/queue.c ****         {
+ 1186              		.loc 1 269 55 is_stmt 0 view .LVU397
+ 1187 000e 0133     		adds	r3, r3, #1
+ 1188              	.LVL75:
+ 269:SYS/data_structure/queue.c ****         {
+ 1189              		.loc 1 269 55 view .LVU398
+ 1190 0010 DBB2     		uxtb	r3, r3
+ 1191              	.LVL76:
+ 1192              	.L85:
+ 269:SYS/data_structure/queue.c ****         {
+ 1193              		.loc 1 269 29 is_stmt 1 discriminator 1 view .LVU399
+ 269:SYS/data_structure/queue.c ****         {
+ 1194              		.loc 1 269 9 is_stmt 0 discriminator 1 view .LVU400
+ 1195 0012 032B     		cmp	r3, #3
+ 1196 0014 FBD9     		bls	.L87
+ 1197 0016 F8E7     		b	.L84
+ 1198              	.LVL77:
+ 1199              	.L88:
+ 269:SYS/data_structure/queue.c ****         {
+ 1200              		.loc 1 269 22 view .LVU401
+ 1201 0018 0023     		movs	r3, #0
+ 1202 001a FAE7     		b	.L85
+ 1203              	.LBE8:
+ 1204              		.cfi_endproc
+ 1205              	.LFE137:
+ 1207              		.section	.bss.Cur_Crtd_Queue,"aw",%nobits
+ 1208              		.set	.LANCHOR0,. + 0
+ 1211              	Cur_Crtd_Queue:
+ 1212 0000 00       		.space	1
+ 1213              		.section	.bss.test.0,"aw",%nobits
+ 1214              		.align	2
+ 1215              		.set	.LANCHOR1,. + 0
+ 1218              	test.0:
+ 1219 0000 00000000 		.space	4
+ 1220              		.text
+ 1221              	.Letext0:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 30
+
+
+ 1222              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 1223              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 1224              		.file 4 "SYS/data_structure/queue.h"
+ 1225              		.file 5 "<built-in>"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 queue.c
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:18     .text.Queue_GetState:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:25     .text.Queue_GetState:00000000 Queue_GetState
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:120    .text.Queue_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:127    .text.Queue_Init:00000000 Queue_Init
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:241    .text.Queue_Init:0000005c $d
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:246    .text.Queue_Reset:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:253    .text.Queue_Reset:00000000 Queue_Reset
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:278    .text.Queue_PushChar:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:285    .text.Queue_PushChar:00000000 Queue_PushChar
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:344    .text.Queue_PushLenChar:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:351    .text.Queue_PushLenChar:00000000 Queue_PushLenChar
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:461    .text.Queue_PopCharFromFront:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:468    .text.Queue_PopCharFromFront:00000000 Queue_PopCharFromFront
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:529    .text.Queue_PopCharFromBack:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:536    .text.Queue_PopCharFromBack:00000000 Queue_PopCharFromBack
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:611    .text.Queue_Dump:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:618    .text.Queue_Dump:00000000 Queue_Dump
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:707    .text.Queue_PopLenCharFromFront:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:714    .text.Queue_PopLenCharFromFront:00000000 Queue_PopLenCharFromFront
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:885    .text.Queue_PopLenCharFromFront:000000ac $d
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:890    .text.Queue_PopLenCharFromBack:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:897    .text.Queue_PopLenCharFromBack:00000000 Queue_PopLenCharFromBack
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1061   .text.Queue_CheckData:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1068   .text.Queue_CheckData:00000000 Queue_CheckData
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1149   .text.Queue_Output_ErrorTimes:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1156   .text.Queue_Output_ErrorTimes:00000000 Queue_Output_ErrorTimes
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1211   .bss.Cur_Crtd_Queue:00000000 Cur_Crtd_Queue
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1212   .bss.Cur_Crtd_Queue:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1214   .bss.test.0:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccSg8Qbv.s:1218   .bss.test.0:00000000 test.0
+
+UNDEFINED SYMBOLS
+memset
+Queue_init
