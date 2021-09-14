@@ -68,40 +68,6 @@ static uint32_t DMA_TX_FinishFlag[Serial_Port_Sum] = {DMA_FLAG_TCIF7,
 													  DMA_FLAG_TCIF7};
 #endif
 
-#if (MATEKF411)
-static void (*Seril_IO_Init[Serial_Port_Sum])(void) = {GPIO_USART1_IO_Init,
-													   GPIO_USART2_IO_Init,
-													   GPIO_USART6_IO_Init};
-
-static void (*RCC_APBPeriphClockCmd[Serial_Port_Sum])(uint32_t RCC_APB2Periph, FunctionalState NewState) = {RCC_APB2PeriphClockCmd,
-																											RCC_APB1PeriphClockCmd,
-																											RCC_APB2PeriphClockCmd};
-
-static uint32_t RCC_APBPeriph_SerialCLK[Serial_Port_Sum] = {RCC_APB2Periph_USART1,
-															RCC_APB1Periph_USART2,
-															RCC_APB2Periph_USART6};
-
-static USART_TypeDef *Serial_Port[Serial_Port_Sum] = {USART1,
-													  USART2,
-													  USART6};
-
-static uint8_t Serial_IRQ_Channel[Serial_Port_Sum] = {USART1_IRQn,
-													  USART2_IRQn,
-													  USART6_IRQn};
-
-static uint32_t Serial_DMA_CLK[Serial_Port_Sum] = {Serial1_DMA_CLK,
-												   Serial2_DMA_CLK,
-												   Serial6_DMA_CLK};
-
-static uint32_t Serial_DMA_Channel[Serial_Port_Sum] = {Serial1_DMA_Channel,
-													   Serial2_DMA_Channel,
-													   Serial6_DMA_Channel};
-
-static DMA_Stream_TypeDef *Serial_DMA_Stream[Serial_Port_Sum] = {Serial1_DMA_Stream,
-																 Serial2_DMA_Stream,
-																 Serial6_DMA_Stream};
-#endif
-
 static void USART_Structure_Normal_Setting(USART_InitTypeDef *USART_InitStructure, uint32_t bound)
 {
 	USART_InitStructure->USART_BaudRate = bound;
