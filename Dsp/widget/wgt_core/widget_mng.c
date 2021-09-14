@@ -211,6 +211,8 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     height = ((WidgetObj_TypeDef *)(*hdl))->height;
     width = ((WidgetObj_TypeDef *)(*hdl))->width;
 
+    free(((WidgetObj_TypeDef *)(*hdl))->item);
+
     free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
 
     for (uint8_t h = 0; h < height; h++)
@@ -223,6 +225,8 @@ static bool Widget_Deleted(Widget_Handle *hdl)
 
     if (MonitorDataObj.remain_size > MonitorDataObj.max_display_cache)
         return false;
+
+    free(*hdl);
 
     *hdl = 0;
     return true;
