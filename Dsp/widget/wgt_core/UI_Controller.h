@@ -37,6 +37,8 @@ typedef struct
     uint8_t line_width;
     bool label_roll;
     bool label_dsp;
+
+    bool selected;
 } UI_GeneralData_TypeDef;
 
 typedef struct

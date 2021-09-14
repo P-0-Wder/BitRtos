@@ -35,6 +35,18 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
 
     GenData->x = x;
     GenData->y = y;
+
+    GenData->selected = false;
+}
+
+static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
+{
+    if (GenData == NULL)
+        return false;
+
+    GenData->selected = select;
+
+    return true;
 }
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
@@ -143,6 +155,7 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_DrawRectangle UI_Dr
     Obj->DrawRectangle = UI_Draw_Func;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    Obj->Gen_Data.label_dsp = true;
 
     Obj->checked = false;
     Obj->frame_size = frame_size;
@@ -160,6 +173,8 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
     Obj->radius = radius;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    Obj->Gen_Data.label_dsp = true;
+
     Obj->item_id = group->item_num;
 
     if (group->item_num == 0)
