@@ -196,7 +196,7 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
 
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
 {
-    if (Obj->DrawPoint == NULL)
+    if ((Obj->DrawPoint == NULL) || (!Obj->Gen_Data.selected))
         return false;
 
     return true;
@@ -204,7 +204,7 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if (Obj->DrawPoint == NULL)
+    if ((Obj->DrawPoint == NULL) || (!Obj->Gen_Data.selected))
         return false;
 
     return true;
@@ -212,7 +212,7 @@ static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if (Obj->DrawPoint == NULL)
+    if ((Obj->DrawPoint == NULL) || (!Obj->Gen_Data.selected))
         return false;
 
     return true;
@@ -220,7 +220,7 @@ static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 {
-    if (Obj->DrawPoint == NULL)
+    if ((Obj->DrawPoint == NULL) && (!Obj->Gen_Data.selected))
         return false;
 
     return true;
@@ -228,7 +228,7 @@ static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
 {
-    if (Obj->DrawRectangle == NULL)
+    if ((Obj->DrawRectangle == NULL) || (!Obj->Gen_Data.selected))
         return false;
 
     Obj->checked = state;
@@ -249,7 +249,7 @@ static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
 {
     UI_ComboBox_Group_TypeDef *group = NULL;
 
-    if (Obj->DrawCircle == NULL)
+    if ((Obj->DrawCircle == NULL) || (!Obj->Gen_Data.selected))
         return false;
 
     group = (UI_ComboBox_Group_TypeDef *)Obj->group_ptr;
