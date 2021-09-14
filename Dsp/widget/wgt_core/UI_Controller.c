@@ -157,6 +157,7 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
 
     Obj->DrawCircle = NULL;
     Obj->DrawCircle = UI_Draw_Func;
+    Obj->radius = radius;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
     Obj->item_id = group->item_num;
@@ -245,6 +246,21 @@ static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
         if (Obj->checked)
         {
             group->Obj[i]->checked = false;
+        }
+    }
+
+    for (uint8_t i = 0; i < Obj->radius; i++)
+    {
+        if (i != 1)
+        {
+            if (i == 0)
+            {
+                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius);
+            }
+            else if (Obj->checked)
+            {
+                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius - i);
+            }
         }
     }
 

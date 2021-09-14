@@ -97,6 +97,7 @@ typedef struct
     uint8_t item_id;
     void *group_ptr;
     bool checked;
+    uint8_t radius;
 
     UI_DrawCircle DrawCircle;
 } UI_ComboBoxObj_TypeDef;
