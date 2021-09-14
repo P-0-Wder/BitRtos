@@ -6,6 +6,8 @@
 #define Serial_Port_Sum 4
 
 #define SBUS_BOUND 100000
+#define Serial_921600 921600
+#define Serial_460800 460800
 #define Serial_115200 115200
 #define Serial_57600 57600
 #define Serial_38400 38400
