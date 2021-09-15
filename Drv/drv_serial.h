@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include "periph_serial.h"
 
 #define SERIAL_MAX_RECLEN 1024
 
@@ -29,7 +30,7 @@ typedef enum
 
 typedef struct
 {
-    bool (*ctl)(DrvSerial_CMD_List cmd, uint32_t data);
+    bool (*ctl)(Serial_List portx, DrvSerial_CMD_List cmd, uint32_t data);
     bool (*read)(uint8_t *data, uint16_t len);
     bool (*write)(uint8_t *data, uint16_t len);
 } DrvSerial_GenProcFunc_TypeDef;

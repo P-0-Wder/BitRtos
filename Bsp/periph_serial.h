@@ -27,6 +27,7 @@ typedef enum
 	Serial_2 = 1,
 	Serial_3 = 2,
 	Serial_6 = 3,
+	Serial_VCP = 4,
 } Serial_List;
 #endif
 
