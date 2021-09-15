@@ -102,6 +102,24 @@ Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id)
 	return IRQ_Callback[serial_id];
 }
 
+Serial_DMA_IRQ_Callback Serial_Get_DMA_IRQ_Callback(Serial_List serial_id)
+{
+	if (serial_id >= Serial_Port_Sum)
+		return NULL;
+
+	return DMAIrq_Callback[serial_id];
+}
+
+bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, Serial_DMA_IRQ_Callback callback)
+{
+	if (serial_id >= Serial_Port_Sum)
+		return false;
+
+	DMAIrq_Callback[serial_id] = callback;
+
+	return true;
+}
+
 bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback)
 {
 	if (serial_id >= Serial_Port_Sum)

@@ -54,7 +54,10 @@ void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len);
 void Serial_DMA_TX_IRQSetting(Serial_List serial_id);
 void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len);
 
-Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id);
+Serial_IRQ_Callback Serial_Get_IRQ_RxCallback(Serial_List serial_id);
+Serial_DMA_IRQ_Callback Serial_Get_DMA_RxIRQ_Callback(Serial_List serial_id);
+
 bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback);
+bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, Serial_DMA_IRQ_Callback callback);
 
 #endif

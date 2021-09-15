@@ -17,6 +17,7 @@ typedef enum
     DrvSerial_6 = Serial_6,
     DrvSerial_Vcp,
     DrvSerial_Sum,
+    DrvSerial_None,
 } DrvSerial_Port_List;
 
 typedef enum
@@ -24,14 +25,15 @@ typedef enum
     DrvSerial_MODE_Normal = 0,
     DrvSerial_MODE_DMA_Rx,
     DrvSerial_MODE_DMA_TxRx,
+    DrvSerial_MODE_None,
 } DrvSerial_PortMode_List;
 
 typedef enum
 {
     DrvSerial_Open = 0,
     DrvSerial_Close,
-    DrvSerial_Set_Baudrate,
-    DrvSerial_Set_IRQCallback,
+    DrvSerial_Set_RxIRQCallback,
+    DrvSerial_Set_TxIRQCallback,
 } DrvSerial_CMD_List;
 
 typedef struct

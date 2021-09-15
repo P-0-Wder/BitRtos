@@ -22,41 +22,52 @@ DrvSerial_GenProcFunc_TypeDef DrvSerial = {
 
 static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t len)
 {
-    DrvSerial_Config_Typedef *data_tmp = NULL;
-
     switch ((uint8_t)cmd)
     {
     case DrvSerial_Open:
         if (len != sizeof(DrvSerial_Config_Typedef))
             return;
 
-        data_tmp = (DrvSerial_Config_Typedef *)data;
+        ((DrvSerial_Config_Typedef *)data)->port = portx;
 
         if (portx != DrvSerial_Vcp)
         {
-            switch ((uint8_t)(data_tmp->mode))
+            switch ((uint8_t)(((DrvSerial_Config_Typedef *)data)->mode))
             {
             case DrvSerial_MODE_Normal:
-                Serial_IRQ_RX_Init(portx, data_tmp->baudrate,
-                                   data_tmp->PreemptionPriority,
-                                   data_tmp->SubPriority, Serial_Normal);
+                Serial_IRQ_RX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate,
+                                   ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+                                   ((DrvSerial_Config_Typedef *)data)->SubPriority, Serial_Normal);
+
+                Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
+
+                ((DrvSerial_Config_Typedef *)data)->inuse = true;
                 break;
 
             case DrvSerial_MODE_DMA_Rx:
-                Serial_DMA_RX_Init(portx, data_tmp->baudrate,
-                                   data_tmp->PreemptionPriority,
-                                   data_tmp->SubPriority,
+                Serial_DMA_RX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate,
+                                   ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+                                   ((DrvSerial_Config_Typedef *)data)->SubPriority,
                                    (uint32_t)&Serial_RX_Buff[portx],
                                    SERIAL_MAX_RECLEN, Serial_Normal);
+
+                Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
+
+                ((DrvSerial_Config_Typedef *)data)->inuse = true;
                 break;
 
             case DrvSerial_MODE_DMA_TxRx:
-                Serial_DMA_RXTX_Init(portx, data_tmp->baudrate,
-                                     data_tmp->PreemptionPriority,
-                                     data_tmp->SubPriority,
+                Serial_DMA_RXTX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate,
+                                     ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+                                     ((DrvSerial_Config_Typedef *)data)->SubPriority,
                                      (uint32_t)&Serial_RX_Buff[portx],
                                      (uint32_t)&Serial_TX_Buff[portx],
                                      SERIAL_MAX_RECLEN, Serial_Normal);
+
+                Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
+                Serial_Set_DMAIRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->DmaIrq_Callback);
+
+                ((DrvSerial_Config_Typedef *)data)->inuse = true;
                 break;
 
             default:
@@ -70,12 +81,21 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
         break;
 
     case DrvSerial_Close:
+        Serial_Deinit(portx);
+        ((DrvSerial_Config_Typedef *)data)->port = DrvSerial_None;
+        ((DrvSerial_Config_Typedef *)data)->mode = DrvSerial_MODE_None;
+        ((DrvSerial_Config_Typedef *)data)->PreemptionPriority = 0;
+        ((DrvSerial_Config_Typedef *)data)->SubPriority = 0;
+        ((DrvSerial_Config_Typedef *)data)->baudrate = 0;
+        ((DrvSerial_Config_Typedef *)data)->DmaIrq_Callback = NULL;
+        ((DrvSerial_Config_Typedef *)data)->inuse = false;
+        ((DrvSerial_Config_Typedef *)data)->Irq_Callback = NULL;
         break;
 
-    case DrvSerial_Set_Baudrate:
+    case DrvSerial_Set_TxIRQCallback:
         break;
 
-    case DrvSerial_Set_IRQCallback:
+    case DrvSerial_Set_RxIRQCallback:
         break;
 
     default:
