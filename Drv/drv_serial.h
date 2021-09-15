@@ -9,8 +9,6 @@
 
 #define SERIAL_MAX_RECLEN 1024
 
-typedef void (*serial_rx_callback)(uint8_t *data, uint16_t len);
-
 typedef enum
 {
     DrvSerial_1 = Serial_1,
@@ -44,6 +42,9 @@ typedef struct
     uint8_t PreemptionPriority;
     uint8_t SubPriority;
     DrvSerial_PortMode_List mode;
+
+    Serial_IRQ_Callback Irq_Callback;
+    Serial_DMA_IRQ_Callback DmaIrq_Callback;
 } DrvSerial_Config_Typedef;
 
 typedef struct
