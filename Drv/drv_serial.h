@@ -18,13 +18,13 @@ typedef enum
     DrvSerial_3 = Serial_3,
     DrvSerial_6 = Serial_6,
     DrvSerial_Vcp,
+    DrvSerial_Sum,
 } DrvSerial_Port_List;
 
 typedef enum
 {
     DrvSerial_MODE_Normal = 0,
     DrvSerial_MODE_DMA_Rx,
-    DrvSerial_MODE_DMA_Tx,
     DrvSerial_MODE_DMA_TxRx,
 } DrvSerial_PortMode_List;
 

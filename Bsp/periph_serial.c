@@ -151,6 +151,18 @@ void Serial_DMA_TX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPr
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 }
 
+void Serial_Deinit(Serial_List Serial)
+{
+	USART_DeInit(Serial_Port[Serial]);
+
+	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, DISABLE);
+	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
+	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
+	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, DISABLE);
+
+	USART_Cmd(Serial_Port[Serial], DISABLE);
+}
+
 void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t SubPriority, uint32_t RX_Buff, uint32_t TX_Buff, uint16_t Buff_Size, Serial_Func_Type type)
 {
 	USART_InitTypeDef USART_InitStructure;
