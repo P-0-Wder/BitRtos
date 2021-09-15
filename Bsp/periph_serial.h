@@ -30,15 +30,6 @@ typedef enum
 } Serial_List;
 #endif
 
-#if (MATEKF411)
-typedef enum
-{
-	Serial_1 = 0,
-	Serial_2,
-	Serial_6,
-} Serial_List;
-#endif
-
 typedef enum
 {
 	IRQ,

@@ -106,6 +106,7 @@ Bsp/periph_timer.c \
 Bsp/periph_dma_irq.c \
 Drv/drv_spi.c \
 Drv/drv_gpio.c \
+Drv/drv_serial.c \
 USB/config/vcp.c \
 USB/config/tm_stm32f4_usb_vcp.c \
 USB/core/usb_bsp.c \
