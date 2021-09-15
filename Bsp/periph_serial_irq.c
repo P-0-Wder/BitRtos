@@ -14,11 +14,6 @@ void USART1_IRQHandler(void)
 	static u8 rec_len = 0;
 	static u8 rec_enable = 0;
 
-	if (USART_GetITStatus(USART1, USART_IT_TXE) == RESET)
-	{
-		USART_ITConfig(USART1, USART_IT_TC, DISABLE);
-	}
-
 	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
 		rec = USART_ReceiveData(USART1);
@@ -44,11 +39,6 @@ void USART2_IRQHandler(void)
 {
 	uint8_t rec;
 
-	if (USART_GetITStatus(USART2, USART_IT_TXE) == RESET)
-	{
-		USART_ITConfig(USART2, USART_IT_TC, DISABLE);
-	}
-
 	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
 	{
 		rec = USART_ReceiveData(USART2);
@@ -72,11 +62,6 @@ void USART2_IRQHandler(void)
 void USART3_IRQHandler(void)
 {
 	uint8_t rec;
-
-	if (USART_GetITStatus(USART3, USART_IT_TXE) == RESET)
-	{
-		USART_ITConfig(USART3, USART_IT_TC, DISABLE);
-	}
 
 	if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
 	{

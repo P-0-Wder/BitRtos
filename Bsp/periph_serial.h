@@ -2,6 +2,8 @@
 #define __PERIPH_SERIAL_H
 
 #include "stm32f4xx.h"
+#include <string.h>
+#include <stdbool.h>
 
 #define Serial_Port_Sum 4
 
@@ -12,6 +14,9 @@
 #define Serial_57600 57600
 #define Serial_38400 38400
 #define Serial_9600 9600
+
+typedef void (*Serial_IRQ_Callback)(uint8_t *data, uint8_t len);
+typedef void (*Serial_DMA_IRQ_Callback)(uint8_t *data, uint8_t len);
 
 typedef enum
 {
@@ -48,5 +53,8 @@ void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len);
 
 void Serial_DMA_TX_IRQSetting(Serial_List serial_id);
 void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len);
+
+Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id);
+bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback);
 
 #endif

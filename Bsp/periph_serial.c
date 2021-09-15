@@ -6,6 +6,9 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_dma.h"
 
+Serial_IRQ_Callback IRQ_Callback[Serial_Port_Sum] = {NULL};
+Serial_DMA_IRQ_Callback DMAIrq_Callback[Serial_Port_Sum] = {NULL};
+
 #ifdef STM32F40XX
 static void (*Serial_IO_Init[Serial_Port_Sum])(void) = {GPIO_USART1_IO_Init,
 														GPIO_USART2_IO_Init,
@@ -90,6 +93,24 @@ static void USART_Structure_SBus_Setting(USART_InitTypeDef *USART_InitStructure,
 
 static void (*Serial_Structure_Setting[Serial_Func_Sum])(USART_InitTypeDef *USART_InitStructure, uint32_t bound) = {USART_Structure_Normal_Setting,
 																													USART_Structure_SBus_Setting};
+
+Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id)
+{
+	if (serial_id >= Serial_Port_Sum)
+		return NULL;
+
+	return IRQ_Callback[serial_id];
+}
+
+bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback)
+{
+	if (serial_id >= Serial_Port_Sum)
+		return false;
+
+	IRQ_Callback[serial_id] = callback;
+
+	return true;
+}
 
 void Serial_IRQ_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t SubPriority, Serial_Func_Type type)
 {

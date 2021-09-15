@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -56,676 +56,603 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 1
   15:Bsp/periph_serial_irq.c **** 	static u8 rec_enable = 0;
   40              		.loc 1 15 2 view .LVU3
   16:Bsp/periph_serial_irq.c **** 
-  17:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART1, USART_IT_TXE) == RESET)
+  17:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
   41              		.loc 1 17 2 view .LVU4
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 2
 
 
   42              		.loc 1 17 6 is_stmt 0 view .LVU5
-  43 0002 40F22771 		movw	r1, #1831
-  44 0006 1F48     		ldr	r0, .L9
+  43 0002 40F22551 		movw	r1, #1317
+  44 0006 1748     		ldr	r0, .L7
   45 0008 FFF7FEFF 		bl	USART_GetITStatus
   46              	.LVL0:
   47              		.loc 1 17 5 view .LVU6
-  48 000c 60B1     		cbz	r0, .L6
+  48 000c 30B9     		cbnz	r0, .L5
   49              	.L2:
   18:Bsp/periph_serial_irq.c **** 	{
-  19:Bsp/periph_serial_irq.c **** 		USART_ITConfig(USART1, USART_IT_TC, DISABLE);
-  20:Bsp/periph_serial_irq.c **** 	}
-  21:Bsp/periph_serial_irq.c **** 
-  22:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-  50              		.loc 1 22 2 is_stmt 1 view .LVU7
-  51              		.loc 1 22 6 is_stmt 0 view .LVU8
-  52 000e 40F22551 		movw	r1, #1317
-  53 0012 1C48     		ldr	r0, .L9
+  19:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART1);
+  20:Bsp/periph_serial_irq.c **** 
+  21:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+  22:Bsp/periph_serial_irq.c **** 	}
+  23:Bsp/periph_serial_irq.c **** 
+  24:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
+  50              		.loc 1 24 2 is_stmt 1 view .LVU7
+  51              		.loc 1 24 6 is_stmt 0 view .LVU8
+  52 000e 40F22441 		movw	r1, #1060
+  53 0012 1448     		ldr	r0, .L7
   54 0014 FFF7FEFF 		bl	USART_GetITStatus
   55              	.LVL1:
-  56              		.loc 1 22 5 view .LVU9
-  57 0018 80B9     		cbnz	r0, .L7
-  58              	.L3:
-  23:Bsp/periph_serial_irq.c **** 	{
-  24:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART1);
-  25:Bsp/periph_serial_irq.c **** 
-  26:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-  27:Bsp/periph_serial_irq.c **** 	}
-  28:Bsp/periph_serial_irq.c **** 
-  29:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
-  59              		.loc 1 29 2 is_stmt 1 view .LVU10
-  60              		.loc 1 29 6 is_stmt 0 view .LVU11
-  61 001a 40F22441 		movw	r1, #1060
-  62 001e 1948     		ldr	r0, .L9
-  63 0020 FFF7FEFF 		bl	USART_GetITStatus
-  64              	.LVL2:
-  65              		.loc 1 29 5 view .LVU12
-  66 0024 A0B9     		cbnz	r0, .L8
-  67              	.L1:
-  30:Bsp/periph_serial_irq.c **** 	{
-  31:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial1_DMA_RX_Stream, DISABLE);
-  32:Bsp/periph_serial_irq.c **** 
-  33:Bsp/periph_serial_irq.c **** 		rec = USART1->DR;
-  34:Bsp/periph_serial_irq.c **** 		rec = USART1->SR;
-  35:Bsp/periph_serial_irq.c **** 
-  36:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial1_DMA_RX_Stream);
-  37:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
-  38:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial1_DMA_RX_Stream, PCK_MAX);
-  39:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial1_DMA_RX_Stream, ENABLE);
-  40:Bsp/periph_serial_irq.c **** 	}
-  41:Bsp/periph_serial_irq.c **** }
-  68              		.loc 1 41 1 view .LVU13
-  69 0026 10BD     		pop	{r4, pc}
-  70              	.L6:
-  19:Bsp/periph_serial_irq.c **** 	}
-  71              		.loc 1 19 3 is_stmt 1 view .LVU14
-  72 0028 0022     		movs	r2, #0
-  73 002a 40F22661 		movw	r1, #1574
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 3
+  56              		.loc 1 24 5 view .LVU9
+  57 0018 50B9     		cbnz	r0, .L6
+  58              	.L1:
+  25:Bsp/periph_serial_irq.c **** 	{
+  26:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial1_DMA_RX_Stream, DISABLE);
+  27:Bsp/periph_serial_irq.c **** 
+  28:Bsp/periph_serial_irq.c **** 		rec = USART1->DR;
+  29:Bsp/periph_serial_irq.c **** 		rec = USART1->SR;
+  30:Bsp/periph_serial_irq.c **** 
+  31:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial1_DMA_RX_Stream);
+  32:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
+  33:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial1_DMA_RX_Stream, PCK_MAX);
+  34:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial1_DMA_RX_Stream, ENABLE);
+  35:Bsp/periph_serial_irq.c **** 	}
+  36:Bsp/periph_serial_irq.c **** }
+  59              		.loc 1 36 1 view .LVU10
+  60 001a 10BD     		pop	{r4, pc}
+  61              	.L5:
+  19:Bsp/periph_serial_irq.c **** 
+  62              		.loc 1 19 3 is_stmt 1 view .LVU11
+  19:Bsp/periph_serial_irq.c **** 
+  63              		.loc 1 19 9 is_stmt 0 view .LVU12
+  64 001c 114C     		ldr	r4, .L7
+  65 001e 2046     		mov	r0, r4
+  66 0020 FFF7FEFF 		bl	USART_ReceiveData
+  67              	.LVL2:
+  21:Bsp/periph_serial_irq.c **** 	}
+  68              		.loc 1 21 3 is_stmt 1 view .LVU13
+  69 0024 40F22551 		movw	r1, #1317
+  70 0028 2046     		mov	r0, r4
+  71 002a FFF7FEFF 		bl	USART_ClearITPendingBit
+  72              	.LVL3:
+  73 002e EEE7     		b	.L2
+  74              	.L6:
+  26:Bsp/periph_serial_irq.c **** 
+  75              		.loc 1 26 3 view .LVU14
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 3
 
 
-  74 002e 00F18040 		add	r0, r0, #1073741824
-  75 0032 00F58830 		add	r0, r0, #69632
-  76 0036 FFF7FEFF 		bl	USART_ITConfig
-  77              	.LVL3:
-  78 003a E8E7     		b	.L2
-  79              	.L7:
-  24:Bsp/periph_serial_irq.c **** 
-  80              		.loc 1 24 3 view .LVU15
-  24:Bsp/periph_serial_irq.c **** 
-  81              		.loc 1 24 9 is_stmt 0 view .LVU16
-  82 003c 114C     		ldr	r4, .L9
-  83 003e 2046     		mov	r0, r4
-  84 0040 FFF7FEFF 		bl	USART_ReceiveData
-  85              	.LVL4:
-  26:Bsp/periph_serial_irq.c **** 	}
-  86              		.loc 1 26 3 is_stmt 1 view .LVU17
-  87 0044 40F22551 		movw	r1, #1317
-  88 0048 2046     		mov	r0, r4
-  89 004a FFF7FEFF 		bl	USART_ClearITPendingBit
-  90              	.LVL5:
-  91 004e E4E7     		b	.L3
-  92              	.L8:
-  31:Bsp/periph_serial_irq.c **** 
-  93              		.loc 1 31 3 view .LVU18
-  94 0050 0D4C     		ldr	r4, .L9+4
-  95 0052 0021     		movs	r1, #0
-  96 0054 2046     		mov	r0, r4
-  97 0056 FFF7FEFF 		bl	DMA_Cmd
-  98              	.LVL6:
-  33:Bsp/periph_serial_irq.c **** 		rec = USART1->SR;
-  99              		.loc 1 33 3 view .LVU19
-  33:Bsp/periph_serial_irq.c **** 		rec = USART1->SR;
- 100              		.loc 1 33 15 is_stmt 0 view .LVU20
- 101 005a 0A4B     		ldr	r3, .L9
- 102 005c 9A88     		ldrh	r2, [r3, #4]
- 103              	.LVL7:
-  34:Bsp/periph_serial_irq.c **** 
- 104              		.loc 1 34 3 is_stmt 1 view .LVU21
-  34:Bsp/periph_serial_irq.c **** 
- 105              		.loc 1 34 15 is_stmt 0 view .LVU22
- 106 005e 1B88     		ldrh	r3, [r3]
-  36:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
- 107              		.loc 1 36 3 is_stmt 1 view .LVU23
-  36:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
- 108              		.loc 1 36 9 is_stmt 0 view .LVU24
- 109 0060 2046     		mov	r0, r4
- 110 0062 FFF7FEFF 		bl	DMA_GetCurrDataCounter
- 111              	.LVL8:
-  37:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial1_DMA_RX_Stream, PCK_MAX);
- 112              		.loc 1 37 3 is_stmt 1 view .LVU25
- 113 0066 0949     		ldr	r1, .L9+8
- 114 0068 2046     		mov	r0, r4
- 115 006a FFF7FEFF 		bl	DMA_ClearFlag
- 116              	.LVL9:
-  38:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial1_DMA_RX_Stream, ENABLE);
- 117              		.loc 1 38 3 view .LVU26
- 118 006e 4FF48071 		mov	r1, #256
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 4
+  76 0030 0D4C     		ldr	r4, .L7+4
+  77 0032 0021     		movs	r1, #0
+  78 0034 2046     		mov	r0, r4
+  79 0036 FFF7FEFF 		bl	DMA_Cmd
+  80              	.LVL4:
+  28:Bsp/periph_serial_irq.c **** 		rec = USART1->SR;
+  81              		.loc 1 28 3 view .LVU15
+  28:Bsp/periph_serial_irq.c **** 		rec = USART1->SR;
+  82              		.loc 1 28 15 is_stmt 0 view .LVU16
+  83 003a 0A4B     		ldr	r3, .L7
+  84 003c 9A88     		ldrh	r2, [r3, #4]
+  85              	.LVL5:
+  29:Bsp/periph_serial_irq.c **** 
+  86              		.loc 1 29 3 is_stmt 1 view .LVU17
+  29:Bsp/periph_serial_irq.c **** 
+  87              		.loc 1 29 15 is_stmt 0 view .LVU18
+  88 003e 1B88     		ldrh	r3, [r3]
+  31:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
+  89              		.loc 1 31 3 is_stmt 1 view .LVU19
+  31:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
+  90              		.loc 1 31 9 is_stmt 0 view .LVU20
+  91 0040 2046     		mov	r0, r4
+  92 0042 FFF7FEFF 		bl	DMA_GetCurrDataCounter
+  93              	.LVL6:
+  32:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial1_DMA_RX_Stream, PCK_MAX);
+  94              		.loc 1 32 3 is_stmt 1 view .LVU21
+  95 0046 0949     		ldr	r1, .L7+8
+  96 0048 2046     		mov	r0, r4
+  97 004a FFF7FEFF 		bl	DMA_ClearFlag
+  98              	.LVL7:
+  33:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial1_DMA_RX_Stream, ENABLE);
+  99              		.loc 1 33 3 view .LVU22
+ 100 004e 4FF48071 		mov	r1, #256
+ 101 0052 2046     		mov	r0, r4
+ 102 0054 FFF7FEFF 		bl	DMA_SetCurrDataCounter
+ 103              	.LVL8:
+  34:Bsp/periph_serial_irq.c **** 	}
+ 104              		.loc 1 34 3 view .LVU23
+ 105 0058 0121     		movs	r1, #1
+ 106 005a 2046     		mov	r0, r4
+ 107 005c FFF7FEFF 		bl	DMA_Cmd
+ 108              	.LVL9:
+ 109              		.loc 1 36 1 is_stmt 0 view .LVU24
+ 110 0060 DBE7     		b	.L1
+ 111              	.L8:
+ 112 0062 00BF     		.align	2
+ 113              	.L7:
+ 114 0064 00100140 		.word	1073811456
+ 115 0068 88640240 		.word	1073898632
+ 116 006c 00080020 		.word	536872960
+ 117              		.cfi_endproc
+ 118              	.LFE123:
+ 120              		.section	.text.USART2_IRQHandler,"ax",%progbits
+ 121              		.align	1
+ 122              		.global	USART2_IRQHandler
+ 123              		.syntax unified
+ 124              		.thumb
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 4
 
 
- 119 0072 2046     		mov	r0, r4
- 120 0074 FFF7FEFF 		bl	DMA_SetCurrDataCounter
- 121              	.LVL10:
-  39:Bsp/periph_serial_irq.c **** 	}
- 122              		.loc 1 39 3 view .LVU27
- 123 0078 0121     		movs	r1, #1
- 124 007a 2046     		mov	r0, r4
- 125 007c FFF7FEFF 		bl	DMA_Cmd
- 126              	.LVL11:
- 127              		.loc 1 41 1 is_stmt 0 view .LVU28
- 128 0080 D1E7     		b	.L1
- 129              	.L10:
- 130 0082 00BF     		.align	2
- 131              	.L9:
- 132 0084 00100140 		.word	1073811456
- 133 0088 88640240 		.word	1073898632
- 134 008c 00080020 		.word	536872960
- 135              		.cfi_endproc
- 136              	.LFE123:
- 138              		.section	.text.USART2_IRQHandler,"ax",%progbits
- 139              		.align	1
- 140              		.global	USART2_IRQHandler
- 141              		.syntax unified
- 142              		.thumb
- 143              		.thumb_func
- 144              		.fpu fpv4-sp-d16
- 146              	USART2_IRQHandler:
- 147              	.LFB124:
-  42:Bsp/periph_serial_irq.c **** 
-  43:Bsp/periph_serial_irq.c **** void USART2_IRQHandler(void)
-  44:Bsp/periph_serial_irq.c **** {
- 148              		.loc 1 44 1 is_stmt 1 view -0
- 149              		.cfi_startproc
- 150              		@ args = 0, pretend = 0, frame = 0
- 151              		@ frame_needed = 0, uses_anonymous_args = 0
- 152 0000 10B5     		push	{r4, lr}
- 153              	.LCFI1:
- 154              		.cfi_def_cfa_offset 8
- 155              		.cfi_offset 4, -8
- 156              		.cfi_offset 14, -4
-  45:Bsp/periph_serial_irq.c **** 	uint8_t rec;
- 157              		.loc 1 45 2 view .LVU30
-  46:Bsp/periph_serial_irq.c **** 
-  47:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART2, USART_IT_TXE) == RESET)
- 158              		.loc 1 47 2 view .LVU31
- 159              		.loc 1 47 6 is_stmt 0 view .LVU32
- 160 0002 40F22771 		movw	r1, #1831
- 161 0006 1D48     		ldr	r0, .L19
- 162 0008 FFF7FEFF 		bl	USART_GetITStatus
- 163              	.LVL12:
- 164              		.loc 1 47 5 view .LVU33
- 165 000c 60B1     		cbz	r0, .L16
- 166              	.L12:
-  48:Bsp/periph_serial_irq.c **** 	{
-  49:Bsp/periph_serial_irq.c **** 		USART_ITConfig(USART2, USART_IT_TC, DISABLE);
-  50:Bsp/periph_serial_irq.c **** 	}
+ 125              		.thumb_func
+ 126              		.fpu fpv4-sp-d16
+ 128              	USART2_IRQHandler:
+ 129              	.LFB124:
+  37:Bsp/periph_serial_irq.c **** 
+  38:Bsp/periph_serial_irq.c **** void USART2_IRQHandler(void)
+  39:Bsp/periph_serial_irq.c **** {
+ 130              		.loc 1 39 1 is_stmt 1 view -0
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134 0000 10B5     		push	{r4, lr}
+ 135              	.LCFI1:
+ 136              		.cfi_def_cfa_offset 8
+ 137              		.cfi_offset 4, -8
+ 138              		.cfi_offset 14, -4
+  40:Bsp/periph_serial_irq.c **** 	uint8_t rec;
+ 139              		.loc 1 40 2 view .LVU26
+  41:Bsp/periph_serial_irq.c **** 
+  42:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
+ 140              		.loc 1 42 2 view .LVU27
+ 141              		.loc 1 42 6 is_stmt 0 view .LVU28
+ 142 0002 40F22551 		movw	r1, #1317
+ 143 0006 1748     		ldr	r0, .L15
+ 144 0008 FFF7FEFF 		bl	USART_GetITStatus
+ 145              	.LVL10:
+ 146              		.loc 1 42 5 view .LVU29
+ 147 000c 30B9     		cbnz	r0, .L13
+ 148              	.L10:
+  43:Bsp/periph_serial_irq.c **** 	{
+  44:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART2);
+  45:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+  46:Bsp/periph_serial_irq.c **** 	}
+  47:Bsp/periph_serial_irq.c **** 
+  48:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART2, USART_IT_IDLE) != RESET)
+ 149              		.loc 1 48 2 is_stmt 1 view .LVU30
+ 150              		.loc 1 48 6 is_stmt 0 view .LVU31
+ 151 000e 40F22441 		movw	r1, #1060
+ 152 0012 1448     		ldr	r0, .L15
+ 153 0014 FFF7FEFF 		bl	USART_GetITStatus
+ 154              	.LVL11:
+ 155              		.loc 1 48 5 view .LVU32
+ 156 0018 50B9     		cbnz	r0, .L14
+ 157              	.L9:
+  49:Bsp/periph_serial_irq.c **** 	{
+  50:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial2_DMA_RX_Stream, DISABLE);
   51:Bsp/periph_serial_irq.c **** 
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 5
+  52:Bsp/periph_serial_irq.c **** 		rec = USART2->DR;
+  53:Bsp/periph_serial_irq.c **** 		rec = USART2->SR;
+  54:Bsp/periph_serial_irq.c **** 
+  55:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial2_DMA_RX_Stream);
+  56:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial2_DMA_RX_Stream, DMA_FLAG_TCIF5);
+  57:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial2_DMA_RX_Stream, PCK_MAX);
+  58:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial2_DMA_RX_Stream, ENABLE);
+  59:Bsp/periph_serial_irq.c **** 	}
+  60:Bsp/periph_serial_irq.c **** }
+ 158              		.loc 1 60 1 view .LVU33
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 5
 
 
-  52:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
- 167              		.loc 1 52 2 is_stmt 1 view .LVU34
- 168              		.loc 1 52 6 is_stmt 0 view .LVU35
- 169 000e 40F22551 		movw	r1, #1317
- 170 0012 1A48     		ldr	r0, .L19
- 171 0014 FFF7FEFF 		bl	USART_GetITStatus
- 172              	.LVL13:
- 173              		.loc 1 52 5 view .LVU36
- 174 0018 68B9     		cbnz	r0, .L17
- 175              	.L13:
-  53:Bsp/periph_serial_irq.c **** 	{
-  54:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART2);
-  55:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-  56:Bsp/periph_serial_irq.c **** 	}
-  57:Bsp/periph_serial_irq.c **** 
-  58:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART2, USART_IT_IDLE) != RESET)
- 176              		.loc 1 58 2 is_stmt 1 view .LVU37
- 177              		.loc 1 58 6 is_stmt 0 view .LVU38
- 178 001a 40F22441 		movw	r1, #1060
- 179 001e 1748     		ldr	r0, .L19
- 180 0020 FFF7FEFF 		bl	USART_GetITStatus
- 181              	.LVL14:
- 182              		.loc 1 58 5 view .LVU39
- 183 0024 88B9     		cbnz	r0, .L18
- 184              	.L11:
-  59:Bsp/periph_serial_irq.c **** 	{
-  60:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial2_DMA_RX_Stream, DISABLE);
+ 159 001a 10BD     		pop	{r4, pc}
+ 160              	.L13:
+  44:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+ 161              		.loc 1 44 3 is_stmt 1 view .LVU34
+  44:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+ 162              		.loc 1 44 9 is_stmt 0 view .LVU35
+ 163 001c 114C     		ldr	r4, .L15
+ 164 001e 2046     		mov	r0, r4
+ 165 0020 FFF7FEFF 		bl	USART_ReceiveData
+ 166              	.LVL12:
+  45:Bsp/periph_serial_irq.c **** 	}
+ 167              		.loc 1 45 3 is_stmt 1 view .LVU36
+ 168 0024 40F22551 		movw	r1, #1317
+ 169 0028 2046     		mov	r0, r4
+ 170 002a FFF7FEFF 		bl	USART_ClearITPendingBit
+ 171              	.LVL13:
+ 172 002e EEE7     		b	.L10
+ 173              	.L14:
+  50:Bsp/periph_serial_irq.c **** 
+ 174              		.loc 1 50 3 view .LVU37
+ 175 0030 0D4C     		ldr	r4, .L15+4
+ 176 0032 0021     		movs	r1, #0
+ 177 0034 2046     		mov	r0, r4
+ 178 0036 FFF7FEFF 		bl	DMA_Cmd
+ 179              	.LVL14:
+  52:Bsp/periph_serial_irq.c **** 		rec = USART2->SR;
+ 180              		.loc 1 52 3 view .LVU38
+  52:Bsp/periph_serial_irq.c **** 		rec = USART2->SR;
+ 181              		.loc 1 52 15 is_stmt 0 view .LVU39
+ 182 003a 0A4B     		ldr	r3, .L15
+ 183 003c 9A88     		ldrh	r2, [r3, #4]
+ 184              	.LVL15:
+  53:Bsp/periph_serial_irq.c **** 
+ 185              		.loc 1 53 3 is_stmt 1 view .LVU40
+  53:Bsp/periph_serial_irq.c **** 
+ 186              		.loc 1 53 15 is_stmt 0 view .LVU41
+ 187 003e 1B88     		ldrh	r3, [r3]
+  55:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial2_DMA_RX_Stream, DMA_FLAG_TCIF5);
+ 188              		.loc 1 55 3 is_stmt 1 view .LVU42
+  55:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial2_DMA_RX_Stream, DMA_FLAG_TCIF5);
+ 189              		.loc 1 55 9 is_stmt 0 view .LVU43
+ 190 0040 2046     		mov	r0, r4
+ 191 0042 FFF7FEFF 		bl	DMA_GetCurrDataCounter
+ 192              	.LVL16:
+  56:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial2_DMA_RX_Stream, PCK_MAX);
+ 193              		.loc 1 56 3 is_stmt 1 view .LVU44
+ 194 0046 0949     		ldr	r1, .L15+8
+ 195 0048 2046     		mov	r0, r4
+ 196 004a FFF7FEFF 		bl	DMA_ClearFlag
+ 197              	.LVL17:
+  57:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial2_DMA_RX_Stream, ENABLE);
+ 198              		.loc 1 57 3 view .LVU45
+ 199 004e 4FF48071 		mov	r1, #256
+ 200 0052 2046     		mov	r0, r4
+ 201 0054 FFF7FEFF 		bl	DMA_SetCurrDataCounter
+ 202              	.LVL18:
+  58:Bsp/periph_serial_irq.c **** 	}
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 6
+
+
+ 203              		.loc 1 58 3 view .LVU46
+ 204 0058 0121     		movs	r1, #1
+ 205 005a 2046     		mov	r0, r4
+ 206 005c FFF7FEFF 		bl	DMA_Cmd
+ 207              	.LVL19:
+ 208              		.loc 1 60 1 is_stmt 0 view .LVU47
+ 209 0060 DBE7     		b	.L9
+ 210              	.L16:
+ 211 0062 00BF     		.align	2
+ 212              	.L15:
+ 213 0064 00440040 		.word	1073759232
+ 214 0068 88600240 		.word	1073897608
+ 215 006c 00080020 		.word	536872960
+ 216              		.cfi_endproc
+ 217              	.LFE124:
+ 219              		.section	.text.USART3_IRQHandler,"ax",%progbits
+ 220              		.align	1
+ 221              		.global	USART3_IRQHandler
+ 222              		.syntax unified
+ 223              		.thumb
+ 224              		.thumb_func
+ 225              		.fpu fpv4-sp-d16
+ 227              	USART3_IRQHandler:
+ 228              	.LFB125:
   61:Bsp/periph_serial_irq.c **** 
-  62:Bsp/periph_serial_irq.c **** 		rec = USART2->DR;
-  63:Bsp/periph_serial_irq.c **** 		rec = USART2->SR;
-  64:Bsp/periph_serial_irq.c **** 
-  65:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial2_DMA_RX_Stream);
-  66:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial2_DMA_RX_Stream, DMA_FLAG_TCIF5);
-  67:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial2_DMA_RX_Stream, PCK_MAX);
-  68:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial2_DMA_RX_Stream, ENABLE);
-  69:Bsp/periph_serial_irq.c **** 	}
-  70:Bsp/periph_serial_irq.c **** }
- 185              		.loc 1 70 1 view .LVU40
- 186 0026 10BD     		pop	{r4, pc}
- 187              	.L16:
-  49:Bsp/periph_serial_irq.c **** 	}
- 188              		.loc 1 49 3 is_stmt 1 view .LVU41
- 189 0028 0022     		movs	r2, #0
- 190 002a 40F22661 		movw	r1, #1574
- 191 002e 1348     		ldr	r0, .L19
- 192 0030 FFF7FEFF 		bl	USART_ITConfig
- 193              	.LVL15:
- 194 0034 EBE7     		b	.L12
- 195              	.L17:
-  54:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
- 196              		.loc 1 54 3 view .LVU42
-  54:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
- 197              		.loc 1 54 9 is_stmt 0 view .LVU43
- 198 0036 114C     		ldr	r4, .L19
- 199 0038 2046     		mov	r0, r4
- 200 003a FFF7FEFF 		bl	USART_ReceiveData
- 201              	.LVL16:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 6
-
-
-  55:Bsp/periph_serial_irq.c **** 	}
- 202              		.loc 1 55 3 is_stmt 1 view .LVU44
- 203 003e 40F22551 		movw	r1, #1317
- 204 0042 2046     		mov	r0, r4
- 205 0044 FFF7FEFF 		bl	USART_ClearITPendingBit
- 206              	.LVL17:
- 207 0048 E7E7     		b	.L13
- 208              	.L18:
-  60:Bsp/periph_serial_irq.c **** 
- 209              		.loc 1 60 3 view .LVU45
- 210 004a 0D4C     		ldr	r4, .L19+4
- 211 004c 0021     		movs	r1, #0
- 212 004e 2046     		mov	r0, r4
- 213 0050 FFF7FEFF 		bl	DMA_Cmd
- 214              	.LVL18:
-  62:Bsp/periph_serial_irq.c **** 		rec = USART2->SR;
- 215              		.loc 1 62 3 view .LVU46
-  62:Bsp/periph_serial_irq.c **** 		rec = USART2->SR;
- 216              		.loc 1 62 15 is_stmt 0 view .LVU47
- 217 0054 094B     		ldr	r3, .L19
- 218 0056 9A88     		ldrh	r2, [r3, #4]
- 219              	.LVL19:
-  63:Bsp/periph_serial_irq.c **** 
- 220              		.loc 1 63 3 is_stmt 1 view .LVU48
-  63:Bsp/periph_serial_irq.c **** 
- 221              		.loc 1 63 15 is_stmt 0 view .LVU49
- 222 0058 1B88     		ldrh	r3, [r3]
-  65:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial2_DMA_RX_Stream, DMA_FLAG_TCIF5);
- 223              		.loc 1 65 3 is_stmt 1 view .LVU50
-  65:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial2_DMA_RX_Stream, DMA_FLAG_TCIF5);
- 224              		.loc 1 65 9 is_stmt 0 view .LVU51
- 225 005a 2046     		mov	r0, r4
- 226 005c FFF7FEFF 		bl	DMA_GetCurrDataCounter
- 227              	.LVL20:
-  66:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial2_DMA_RX_Stream, PCK_MAX);
- 228              		.loc 1 66 3 is_stmt 1 view .LVU52
- 229 0060 0849     		ldr	r1, .L19+8
- 230 0062 2046     		mov	r0, r4
- 231 0064 FFF7FEFF 		bl	DMA_ClearFlag
- 232              	.LVL21:
-  67:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial2_DMA_RX_Stream, ENABLE);
- 233              		.loc 1 67 3 view .LVU53
- 234 0068 4FF48071 		mov	r1, #256
- 235 006c 2046     		mov	r0, r4
- 236 006e FFF7FEFF 		bl	DMA_SetCurrDataCounter
- 237              	.LVL22:
-  68:Bsp/periph_serial_irq.c **** 	}
- 238              		.loc 1 68 3 view .LVU54
- 239 0072 0121     		movs	r1, #1
- 240 0074 2046     		mov	r0, r4
- 241 0076 FFF7FEFF 		bl	DMA_Cmd
- 242              	.LVL23:
- 243              		.loc 1 70 1 is_stmt 0 view .LVU55
- 244 007a D4E7     		b	.L11
- 245              	.L20:
- 246              		.align	2
- 247              	.L19:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 7
-
-
- 248 007c 00440040 		.word	1073759232
- 249 0080 88600240 		.word	1073897608
- 250 0084 00080020 		.word	536872960
- 251              		.cfi_endproc
- 252              	.LFE124:
- 254              		.section	.text.USART3_IRQHandler,"ax",%progbits
- 255              		.align	1
- 256              		.global	USART3_IRQHandler
- 257              		.syntax unified
- 258              		.thumb
- 259              		.thumb_func
- 260              		.fpu fpv4-sp-d16
- 262              	USART3_IRQHandler:
- 263              	.LFB125:
+  62:Bsp/periph_serial_irq.c **** void USART3_IRQHandler(void)
+  63:Bsp/periph_serial_irq.c **** {
+ 229              		.loc 1 63 1 is_stmt 1 view -0
+ 230              		.cfi_startproc
+ 231              		@ args = 0, pretend = 0, frame = 0
+ 232              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233 0000 10B5     		push	{r4, lr}
+ 234              	.LCFI2:
+ 235              		.cfi_def_cfa_offset 8
+ 236              		.cfi_offset 4, -8
+ 237              		.cfi_offset 14, -4
+  64:Bsp/periph_serial_irq.c **** 	uint8_t rec;
+ 238              		.loc 1 64 2 view .LVU49
+  65:Bsp/periph_serial_irq.c **** 
+  66:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
+ 239              		.loc 1 66 2 view .LVU50
+ 240              		.loc 1 66 6 is_stmt 0 view .LVU51
+ 241 0002 40F22551 		movw	r1, #1317
+ 242 0006 1748     		ldr	r0, .L23
+ 243 0008 FFF7FEFF 		bl	USART_GetITStatus
+ 244              	.LVL20:
+ 245              		.loc 1 66 5 view .LVU52
+ 246 000c 30B9     		cbnz	r0, .L21
+ 247              	.L18:
+  67:Bsp/periph_serial_irq.c **** 	{
+  68:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART3);
+  69:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
+  70:Bsp/periph_serial_irq.c **** 	}
   71:Bsp/periph_serial_irq.c **** 
-  72:Bsp/periph_serial_irq.c **** void USART3_IRQHandler(void)
-  73:Bsp/periph_serial_irq.c **** {
- 264              		.loc 1 73 1 is_stmt 1 view -0
- 265              		.cfi_startproc
- 266              		@ args = 0, pretend = 0, frame = 0
- 267              		@ frame_needed = 0, uses_anonymous_args = 0
- 268 0000 10B5     		push	{r4, lr}
- 269              	.LCFI2:
- 270              		.cfi_def_cfa_offset 8
- 271              		.cfi_offset 4, -8
- 272              		.cfi_offset 14, -4
-  74:Bsp/periph_serial_irq.c **** 	uint8_t rec;
- 273              		.loc 1 74 2 view .LVU57
+  72:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART3, USART_IT_IDLE) != RESET)
+ 248              		.loc 1 72 2 is_stmt 1 view .LVU53
+ 249              		.loc 1 72 6 is_stmt 0 view .LVU54
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 7
+
+
+ 250 000e 40F22441 		movw	r1, #1060
+ 251 0012 1448     		ldr	r0, .L23
+ 252 0014 FFF7FEFF 		bl	USART_GetITStatus
+ 253              	.LVL21:
+ 254              		.loc 1 72 5 view .LVU55
+ 255 0018 50B9     		cbnz	r0, .L22
+ 256              	.L17:
+  73:Bsp/periph_serial_irq.c **** 	{
+  74:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial3_DMA_RX_Stream, DISABLE);
   75:Bsp/periph_serial_irq.c **** 
-  76:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART3, USART_IT_TXE) == RESET)
- 274              		.loc 1 76 2 view .LVU58
- 275              		.loc 1 76 6 is_stmt 0 view .LVU59
- 276 0002 40F22771 		movw	r1, #1831
- 277 0006 1D48     		ldr	r0, .L29
- 278 0008 FFF7FEFF 		bl	USART_GetITStatus
- 279              	.LVL24:
- 280              		.loc 1 76 5 view .LVU60
- 281 000c 60B1     		cbz	r0, .L26
- 282              	.L22:
-  77:Bsp/periph_serial_irq.c **** 	{
-  78:Bsp/periph_serial_irq.c **** 		USART_ITConfig(USART3, USART_IT_TC, DISABLE);
-  79:Bsp/periph_serial_irq.c **** 	}
-  80:Bsp/periph_serial_irq.c **** 
-  81:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
- 283              		.loc 1 81 2 is_stmt 1 view .LVU61
- 284              		.loc 1 81 6 is_stmt 0 view .LVU62
- 285 000e 40F22551 		movw	r1, #1317
- 286 0012 1A48     		ldr	r0, .L29
- 287 0014 FFF7FEFF 		bl	USART_GetITStatus
- 288              	.LVL25:
- 289              		.loc 1 81 5 view .LVU63
- 290 0018 68B9     		cbnz	r0, .L27
- 291              	.L23:
-  82:Bsp/periph_serial_irq.c **** 	{
-  83:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART3);
-  84:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
-  85:Bsp/periph_serial_irq.c **** 	}
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 8
+  76:Bsp/periph_serial_irq.c **** 		rec = USART3->DR;
+  77:Bsp/periph_serial_irq.c **** 		rec = USART3->SR;
+  78:Bsp/periph_serial_irq.c **** 
+  79:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial3_DMA_RX_Stream);
+  80:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial3_DMA_RX_Stream, DMA_FLAG_TCIF1);
+  81:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial3_DMA_RX_Stream, PCK_MAX);
+  82:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial3_DMA_RX_Stream, ENABLE);
+  83:Bsp/periph_serial_irq.c **** 	}
+  84:Bsp/periph_serial_irq.c **** }
+ 257              		.loc 1 84 1 view .LVU56
+ 258 001a 10BD     		pop	{r4, pc}
+ 259              	.L21:
+  68:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
+ 260              		.loc 1 68 3 is_stmt 1 view .LVU57
+  68:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
+ 261              		.loc 1 68 9 is_stmt 0 view .LVU58
+ 262 001c 114C     		ldr	r4, .L23
+ 263 001e 2046     		mov	r0, r4
+ 264 0020 FFF7FEFF 		bl	USART_ReceiveData
+ 265              	.LVL22:
+  69:Bsp/periph_serial_irq.c **** 	}
+ 266              		.loc 1 69 3 is_stmt 1 view .LVU59
+ 267 0024 40F22551 		movw	r1, #1317
+ 268 0028 2046     		mov	r0, r4
+ 269 002a FFF7FEFF 		bl	USART_ClearITPendingBit
+ 270              	.LVL23:
+ 271 002e EEE7     		b	.L18
+ 272              	.L22:
+  74:Bsp/periph_serial_irq.c **** 
+ 273              		.loc 1 74 3 view .LVU60
+ 274 0030 0D4C     		ldr	r4, .L23+4
+ 275 0032 0021     		movs	r1, #0
+ 276 0034 2046     		mov	r0, r4
+ 277 0036 FFF7FEFF 		bl	DMA_Cmd
+ 278              	.LVL24:
+  76:Bsp/periph_serial_irq.c **** 		rec = USART3->SR;
+ 279              		.loc 1 76 3 view .LVU61
+  76:Bsp/periph_serial_irq.c **** 		rec = USART3->SR;
+ 280              		.loc 1 76 15 is_stmt 0 view .LVU62
+ 281 003a 0A4B     		ldr	r3, .L23
+ 282 003c 9A88     		ldrh	r2, [r3, #4]
+ 283              	.LVL25:
+  77:Bsp/periph_serial_irq.c **** 
+ 284              		.loc 1 77 3 is_stmt 1 view .LVU63
+  77:Bsp/periph_serial_irq.c **** 
+ 285              		.loc 1 77 15 is_stmt 0 view .LVU64
+ 286 003e 1B88     		ldrh	r3, [r3]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 8
 
 
-  86:Bsp/periph_serial_irq.c **** 
-  87:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART3, USART_IT_IDLE) != RESET)
- 292              		.loc 1 87 2 is_stmt 1 view .LVU64
- 293              		.loc 1 87 6 is_stmt 0 view .LVU65
- 294 001a 40F22441 		movw	r1, #1060
- 295 001e 1748     		ldr	r0, .L29
- 296 0020 FFF7FEFF 		bl	USART_GetITStatus
- 297              	.LVL26:
- 298              		.loc 1 87 5 view .LVU66
- 299 0024 88B9     		cbnz	r0, .L28
- 300              	.L21:
-  88:Bsp/periph_serial_irq.c **** 	{
-  89:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial3_DMA_RX_Stream, DISABLE);
-  90:Bsp/periph_serial_irq.c **** 
-  91:Bsp/periph_serial_irq.c **** 		rec = USART3->DR;
-  92:Bsp/periph_serial_irq.c **** 		rec = USART3->SR;
-  93:Bsp/periph_serial_irq.c **** 
-  94:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial3_DMA_RX_Stream);
-  95:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial3_DMA_RX_Stream, DMA_FLAG_TCIF1);
-  96:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial3_DMA_RX_Stream, PCK_MAX);
-  97:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial3_DMA_RX_Stream, ENABLE);
-  98:Bsp/periph_serial_irq.c **** 	}
-  99:Bsp/periph_serial_irq.c **** }
- 301              		.loc 1 99 1 view .LVU67
- 302 0026 10BD     		pop	{r4, pc}
- 303              	.L26:
-  78:Bsp/periph_serial_irq.c **** 	}
- 304              		.loc 1 78 3 is_stmt 1 view .LVU68
- 305 0028 0022     		movs	r2, #0
- 306 002a 40F22661 		movw	r1, #1574
- 307 002e 1348     		ldr	r0, .L29
- 308 0030 FFF7FEFF 		bl	USART_ITConfig
- 309              	.LVL27:
- 310 0034 EBE7     		b	.L22
- 311              	.L27:
-  83:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
- 312              		.loc 1 83 3 view .LVU69
-  83:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
- 313              		.loc 1 83 9 is_stmt 0 view .LVU70
- 314 0036 114C     		ldr	r4, .L29
- 315 0038 2046     		mov	r0, r4
- 316 003a FFF7FEFF 		bl	USART_ReceiveData
- 317              	.LVL28:
-  84:Bsp/periph_serial_irq.c **** 	}
- 318              		.loc 1 84 3 is_stmt 1 view .LVU71
- 319 003e 40F22551 		movw	r1, #1317
- 320 0042 2046     		mov	r0, r4
- 321 0044 FFF7FEFF 		bl	USART_ClearITPendingBit
- 322              	.LVL29:
- 323 0048 E7E7     		b	.L23
- 324              	.L28:
+  79:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial3_DMA_RX_Stream, DMA_FLAG_TCIF1);
+ 287              		.loc 1 79 3 is_stmt 1 view .LVU65
+  79:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial3_DMA_RX_Stream, DMA_FLAG_TCIF1);
+ 288              		.loc 1 79 9 is_stmt 0 view .LVU66
+ 289 0040 2046     		mov	r0, r4
+ 290 0042 FFF7FEFF 		bl	DMA_GetCurrDataCounter
+ 291              	.LVL26:
+  80:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial3_DMA_RX_Stream, PCK_MAX);
+ 292              		.loc 1 80 3 is_stmt 1 view .LVU67
+ 293 0046 0949     		ldr	r1, .L23+8
+ 294 0048 2046     		mov	r0, r4
+ 295 004a FFF7FEFF 		bl	DMA_ClearFlag
+ 296              	.LVL27:
+  81:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial3_DMA_RX_Stream, ENABLE);
+ 297              		.loc 1 81 3 view .LVU68
+ 298 004e 4FF48071 		mov	r1, #256
+ 299 0052 2046     		mov	r0, r4
+ 300 0054 FFF7FEFF 		bl	DMA_SetCurrDataCounter
+ 301              	.LVL28:
+  82:Bsp/periph_serial_irq.c **** 	}
+ 302              		.loc 1 82 3 view .LVU69
+ 303 0058 0121     		movs	r1, #1
+ 304 005a 2046     		mov	r0, r4
+ 305 005c FFF7FEFF 		bl	DMA_Cmd
+ 306              	.LVL29:
+ 307              		.loc 1 84 1 is_stmt 0 view .LVU70
+ 308 0060 DBE7     		b	.L17
+ 309              	.L24:
+ 310 0062 00BF     		.align	2
+ 311              	.L23:
+ 312 0064 00480040 		.word	1073760256
+ 313 0068 28600240 		.word	1073897512
+ 314 006c 00080010 		.word	268437504
+ 315              		.cfi_endproc
+ 316              	.LFE125:
+ 318              		.section	.text.USART6_IRQHandler,"ax",%progbits
+ 319              		.align	1
+ 320              		.global	USART6_IRQHandler
+ 321              		.syntax unified
+ 322              		.thumb
+ 323              		.thumb_func
+ 324              		.fpu fpv4-sp-d16
+ 326              	USART6_IRQHandler:
+ 327              	.LFB126:
+  85:Bsp/periph_serial_irq.c **** 
+  86:Bsp/periph_serial_irq.c **** void USART6_IRQHandler(void)
+  87:Bsp/periph_serial_irq.c **** {
+ 328              		.loc 1 87 1 is_stmt 1 view -0
+ 329              		.cfi_startproc
+ 330              		@ args = 0, pretend = 0, frame = 0
+ 331              		@ frame_needed = 0, uses_anonymous_args = 0
+ 332 0000 10B5     		push	{r4, lr}
+ 333              	.LCFI3:
+ 334              		.cfi_def_cfa_offset 8
+ 335              		.cfi_offset 4, -8
+ 336              		.cfi_offset 14, -4
+  88:Bsp/periph_serial_irq.c **** 	uint8_t rec;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 9
+
+
+ 337              		.loc 1 88 2 view .LVU72
   89:Bsp/periph_serial_irq.c **** 
- 325              		.loc 1 89 3 view .LVU72
- 326 004a 0D4C     		ldr	r4, .L29+4
- 327 004c 0021     		movs	r1, #0
- 328 004e 2046     		mov	r0, r4
- 329 0050 FFF7FEFF 		bl	DMA_Cmd
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 9
-
-
- 330              	.LVL30:
-  91:Bsp/periph_serial_irq.c **** 		rec = USART3->SR;
- 331              		.loc 1 91 3 view .LVU73
-  91:Bsp/periph_serial_irq.c **** 		rec = USART3->SR;
- 332              		.loc 1 91 15 is_stmt 0 view .LVU74
- 333 0054 094B     		ldr	r3, .L29
- 334 0056 9A88     		ldrh	r2, [r3, #4]
- 335              	.LVL31:
-  92:Bsp/periph_serial_irq.c **** 
- 336              		.loc 1 92 3 is_stmt 1 view .LVU75
-  92:Bsp/periph_serial_irq.c **** 
- 337              		.loc 1 92 15 is_stmt 0 view .LVU76
- 338 0058 1B88     		ldrh	r3, [r3]
-  94:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial3_DMA_RX_Stream, DMA_FLAG_TCIF1);
- 339              		.loc 1 94 3 is_stmt 1 view .LVU77
-  94:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial3_DMA_RX_Stream, DMA_FLAG_TCIF1);
- 340              		.loc 1 94 9 is_stmt 0 view .LVU78
- 341 005a 2046     		mov	r0, r4
- 342 005c FFF7FEFF 		bl	DMA_GetCurrDataCounter
- 343              	.LVL32:
-  95:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial3_DMA_RX_Stream, PCK_MAX);
- 344              		.loc 1 95 3 is_stmt 1 view .LVU79
- 345 0060 0849     		ldr	r1, .L29+8
- 346 0062 2046     		mov	r0, r4
- 347 0064 FFF7FEFF 		bl	DMA_ClearFlag
- 348              	.LVL33:
-  96:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial3_DMA_RX_Stream, ENABLE);
- 349              		.loc 1 96 3 view .LVU80
- 350 0068 4FF48071 		mov	r1, #256
- 351 006c 2046     		mov	r0, r4
- 352 006e FFF7FEFF 		bl	DMA_SetCurrDataCounter
- 353              	.LVL34:
-  97:Bsp/periph_serial_irq.c **** 	}
- 354              		.loc 1 97 3 view .LVU81
- 355 0072 0121     		movs	r1, #1
- 356 0074 2046     		mov	r0, r4
- 357 0076 FFF7FEFF 		bl	DMA_Cmd
- 358              	.LVL35:
- 359              		.loc 1 99 1 is_stmt 0 view .LVU82
- 360 007a D4E7     		b	.L21
- 361              	.L30:
- 362              		.align	2
- 363              	.L29:
- 364 007c 00480040 		.word	1073760256
- 365 0080 28600240 		.word	1073897512
- 366 0084 00080010 		.word	268437504
- 367              		.cfi_endproc
- 368              	.LFE125:
- 370              		.section	.text.USART6_IRQHandler,"ax",%progbits
- 371              		.align	1
- 372              		.global	USART6_IRQHandler
- 373              		.syntax unified
- 374              		.thumb
- 375              		.thumb_func
- 376              		.fpu fpv4-sp-d16
- 378              	USART6_IRQHandler:
- 379              	.LFB126:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 10
-
-
+  90:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART6, USART_IT_TXE) == RESET)
+ 338              		.loc 1 90 2 view .LVU73
+ 339              		.loc 1 90 6 is_stmt 0 view .LVU74
+ 340 0002 40F22771 		movw	r1, #1831
+ 341 0006 1D48     		ldr	r0, .L33
+ 342 0008 FFF7FEFF 		bl	USART_GetITStatus
+ 343              	.LVL30:
+ 344              		.loc 1 90 5 view .LVU75
+ 345 000c 60B1     		cbz	r0, .L30
+ 346              	.L26:
+  91:Bsp/periph_serial_irq.c **** 	{
+  92:Bsp/periph_serial_irq.c **** 		USART_ITConfig(USART6, USART_IT_TC, DISABLE);
+  93:Bsp/periph_serial_irq.c **** 	}
+  94:Bsp/periph_serial_irq.c **** 
+  95:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)
+ 347              		.loc 1 95 2 is_stmt 1 view .LVU76
+ 348              		.loc 1 95 6 is_stmt 0 view .LVU77
+ 349 000e 40F22551 		movw	r1, #1317
+ 350 0012 1A48     		ldr	r0, .L33
+ 351 0014 FFF7FEFF 		bl	USART_GetITStatus
+ 352              	.LVL31:
+ 353              		.loc 1 95 5 view .LVU78
+ 354 0018 68B9     		cbnz	r0, .L31
+ 355              	.L27:
+  96:Bsp/periph_serial_irq.c **** 	{
+  97:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART6);
+  98:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
+  99:Bsp/periph_serial_irq.c **** 	}
  100:Bsp/periph_serial_irq.c **** 
- 101:Bsp/periph_serial_irq.c **** void USART6_IRQHandler(void)
- 102:Bsp/periph_serial_irq.c **** {
- 380              		.loc 1 102 1 is_stmt 1 view -0
- 381              		.cfi_startproc
- 382              		@ args = 0, pretend = 0, frame = 0
- 383              		@ frame_needed = 0, uses_anonymous_args = 0
- 384 0000 10B5     		push	{r4, lr}
- 385              	.LCFI3:
- 386              		.cfi_def_cfa_offset 8
- 387              		.cfi_offset 4, -8
- 388              		.cfi_offset 14, -4
- 103:Bsp/periph_serial_irq.c **** 	uint8_t rec;
- 389              		.loc 1 103 2 view .LVU84
+ 101:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART6, USART_IT_IDLE) != RESET)
+ 356              		.loc 1 101 2 is_stmt 1 view .LVU79
+ 357              		.loc 1 101 6 is_stmt 0 view .LVU80
+ 358 001a 40F22441 		movw	r1, #1060
+ 359 001e 1748     		ldr	r0, .L33
+ 360 0020 FFF7FEFF 		bl	USART_GetITStatus
+ 361              	.LVL32:
+ 362              		.loc 1 101 5 view .LVU81
+ 363 0024 88B9     		cbnz	r0, .L32
+ 364              	.L25:
+ 102:Bsp/periph_serial_irq.c **** 	{
+ 103:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial6_DMA_RX_Stream, DISABLE);
  104:Bsp/periph_serial_irq.c **** 
- 105:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART6, USART_IT_TXE) == RESET)
- 390              		.loc 1 105 2 view .LVU85
- 391              		.loc 1 105 6 is_stmt 0 view .LVU86
- 392 0002 40F22771 		movw	r1, #1831
- 393 0006 1D48     		ldr	r0, .L39
- 394 0008 FFF7FEFF 		bl	USART_GetITStatus
- 395              	.LVL36:
- 396              		.loc 1 105 5 view .LVU87
- 397 000c 60B1     		cbz	r0, .L36
- 398              	.L32:
- 106:Bsp/periph_serial_irq.c **** 	{
- 107:Bsp/periph_serial_irq.c **** 		USART_ITConfig(USART6, USART_IT_TC, DISABLE);
- 108:Bsp/periph_serial_irq.c **** 	}
- 109:Bsp/periph_serial_irq.c **** 
- 110:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)
- 399              		.loc 1 110 2 is_stmt 1 view .LVU88
- 400              		.loc 1 110 6 is_stmt 0 view .LVU89
- 401 000e 40F22551 		movw	r1, #1317
- 402 0012 1A48     		ldr	r0, .L39
- 403 0014 FFF7FEFF 		bl	USART_GetITStatus
- 404              	.LVL37:
- 405              		.loc 1 110 5 view .LVU90
- 406 0018 68B9     		cbnz	r0, .L37
- 407              	.L33:
- 111:Bsp/periph_serial_irq.c **** 	{
- 112:Bsp/periph_serial_irq.c **** 		rec = USART_ReceiveData(USART6);
- 113:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
- 114:Bsp/periph_serial_irq.c **** 	}
- 115:Bsp/periph_serial_irq.c **** 
- 116:Bsp/periph_serial_irq.c **** 	if (USART_GetITStatus(USART6, USART_IT_IDLE) != RESET)
- 408              		.loc 1 116 2 is_stmt 1 view .LVU91
- 409              		.loc 1 116 6 is_stmt 0 view .LVU92
- 410 001a 40F22441 		movw	r1, #1060
- 411 001e 1748     		ldr	r0, .L39
- 412 0020 FFF7FEFF 		bl	USART_GetITStatus
- 413              	.LVL38:
- 414              		.loc 1 116 5 view .LVU93
- 415 0024 88B9     		cbnz	r0, .L38
- 416              	.L31:
- 117:Bsp/periph_serial_irq.c **** 	{
- 118:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial6_DMA_RX_Stream, DISABLE);
- 119:Bsp/periph_serial_irq.c **** 
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 11
+ 105:Bsp/periph_serial_irq.c **** 		rec = USART6->DR;
+ 106:Bsp/periph_serial_irq.c **** 		rec = USART6->SR;
+ 107:Bsp/periph_serial_irq.c **** 
+ 108:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial6_DMA_RX_Stream);
+ 109:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial6_DMA_RX_Stream, DMA_FLAG_TCIF1);
+ 110:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial6_DMA_RX_Stream, PCK_MAX);
+ 111:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial6_DMA_RX_Stream, ENABLE);
+ 112:Bsp/periph_serial_irq.c **** 	}
+ 113:Bsp/periph_serial_irq.c **** }
+ 365              		.loc 1 113 1 view .LVU82
+ 366 0026 10BD     		pop	{r4, pc}
+ 367              	.L30:
+  92:Bsp/periph_serial_irq.c **** 	}
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 10
 
 
- 120:Bsp/periph_serial_irq.c **** 		rec = USART6->DR;
- 121:Bsp/periph_serial_irq.c **** 		rec = USART6->SR;
- 122:Bsp/periph_serial_irq.c **** 
- 123:Bsp/periph_serial_irq.c **** 		rec = DMA_GetCurrDataCounter(Serial6_DMA_RX_Stream);
- 124:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial6_DMA_RX_Stream, DMA_FLAG_TCIF1);
- 125:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial6_DMA_RX_Stream, PCK_MAX);
- 126:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial6_DMA_RX_Stream, ENABLE);
- 127:Bsp/periph_serial_irq.c **** 	}
- 128:Bsp/periph_serial_irq.c **** }
- 417              		.loc 1 128 1 view .LVU94
- 418 0026 10BD     		pop	{r4, pc}
- 419              	.L36:
- 107:Bsp/periph_serial_irq.c **** 	}
- 420              		.loc 1 107 3 is_stmt 1 view .LVU95
- 421 0028 0022     		movs	r2, #0
- 422 002a 40F22661 		movw	r1, #1574
- 423 002e 1348     		ldr	r0, .L39
- 424 0030 FFF7FEFF 		bl	USART_ITConfig
- 425              	.LVL39:
- 426 0034 EBE7     		b	.L32
- 427              	.L37:
- 112:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
- 428              		.loc 1 112 3 view .LVU96
- 112:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
- 429              		.loc 1 112 9 is_stmt 0 view .LVU97
- 430 0036 114C     		ldr	r4, .L39
- 431 0038 2046     		mov	r0, r4
- 432 003a FFF7FEFF 		bl	USART_ReceiveData
- 433              	.LVL40:
- 113:Bsp/periph_serial_irq.c **** 	}
- 434              		.loc 1 113 3 is_stmt 1 view .LVU98
- 435 003e 40F22551 		movw	r1, #1317
- 436 0042 2046     		mov	r0, r4
- 437 0044 FFF7FEFF 		bl	USART_ClearITPendingBit
- 438              	.LVL41:
- 439 0048 E7E7     		b	.L33
- 440              	.L38:
- 118:Bsp/periph_serial_irq.c **** 
- 441              		.loc 1 118 3 view .LVU99
- 442 004a 0D4C     		ldr	r4, .L39+4
- 443 004c 0021     		movs	r1, #0
- 444 004e 2046     		mov	r0, r4
- 445 0050 FFF7FEFF 		bl	DMA_Cmd
- 446              	.LVL42:
- 120:Bsp/periph_serial_irq.c **** 		rec = USART6->SR;
- 447              		.loc 1 120 3 view .LVU100
- 120:Bsp/periph_serial_irq.c **** 		rec = USART6->SR;
- 448              		.loc 1 120 15 is_stmt 0 view .LVU101
- 449 0054 094B     		ldr	r3, .L39
- 450 0056 9A88     		ldrh	r2, [r3, #4]
- 451              	.LVL43:
- 121:Bsp/periph_serial_irq.c **** 
- 452              		.loc 1 121 3 is_stmt 1 view .LVU102
- 121:Bsp/periph_serial_irq.c **** 
- 453              		.loc 1 121 15 is_stmt 0 view .LVU103
- 454 0058 1B88     		ldrh	r3, [r3]
- 123:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial6_DMA_RX_Stream, DMA_FLAG_TCIF1);
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 12
+ 368              		.loc 1 92 3 is_stmt 1 view .LVU83
+ 369 0028 0022     		movs	r2, #0
+ 370 002a 40F22661 		movw	r1, #1574
+ 371 002e 1348     		ldr	r0, .L33
+ 372 0030 FFF7FEFF 		bl	USART_ITConfig
+ 373              	.LVL33:
+ 374 0034 EBE7     		b	.L26
+ 375              	.L31:
+  97:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
+ 376              		.loc 1 97 3 view .LVU84
+  97:Bsp/periph_serial_irq.c **** 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
+ 377              		.loc 1 97 9 is_stmt 0 view .LVU85
+ 378 0036 114C     		ldr	r4, .L33
+ 379 0038 2046     		mov	r0, r4
+ 380 003a FFF7FEFF 		bl	USART_ReceiveData
+ 381              	.LVL34:
+  98:Bsp/periph_serial_irq.c **** 	}
+ 382              		.loc 1 98 3 is_stmt 1 view .LVU86
+ 383 003e 40F22551 		movw	r1, #1317
+ 384 0042 2046     		mov	r0, r4
+ 385 0044 FFF7FEFF 		bl	USART_ClearITPendingBit
+ 386              	.LVL35:
+ 387 0048 E7E7     		b	.L27
+ 388              	.L32:
+ 103:Bsp/periph_serial_irq.c **** 
+ 389              		.loc 1 103 3 view .LVU87
+ 390 004a 0D4C     		ldr	r4, .L33+4
+ 391 004c 0021     		movs	r1, #0
+ 392 004e 2046     		mov	r0, r4
+ 393 0050 FFF7FEFF 		bl	DMA_Cmd
+ 394              	.LVL36:
+ 105:Bsp/periph_serial_irq.c **** 		rec = USART6->SR;
+ 395              		.loc 1 105 3 view .LVU88
+ 105:Bsp/periph_serial_irq.c **** 		rec = USART6->SR;
+ 396              		.loc 1 105 15 is_stmt 0 view .LVU89
+ 397 0054 094B     		ldr	r3, .L33
+ 398 0056 9A88     		ldrh	r2, [r3, #4]
+ 399              	.LVL37:
+ 106:Bsp/periph_serial_irq.c **** 
+ 400              		.loc 1 106 3 is_stmt 1 view .LVU90
+ 106:Bsp/periph_serial_irq.c **** 
+ 401              		.loc 1 106 15 is_stmt 0 view .LVU91
+ 402 0058 1B88     		ldrh	r3, [r3]
+ 108:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial6_DMA_RX_Stream, DMA_FLAG_TCIF1);
+ 403              		.loc 1 108 3 is_stmt 1 view .LVU92
+ 108:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial6_DMA_RX_Stream, DMA_FLAG_TCIF1);
+ 404              		.loc 1 108 9 is_stmt 0 view .LVU93
+ 405 005a 2046     		mov	r0, r4
+ 406 005c FFF7FEFF 		bl	DMA_GetCurrDataCounter
+ 407              	.LVL38:
+ 109:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial6_DMA_RX_Stream, PCK_MAX);
+ 408              		.loc 1 109 3 is_stmt 1 view .LVU94
+ 409 0060 0849     		ldr	r1, .L33+8
+ 410 0062 2046     		mov	r0, r4
+ 411 0064 FFF7FEFF 		bl	DMA_ClearFlag
+ 412              	.LVL39:
+ 110:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial6_DMA_RX_Stream, ENABLE);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 11
 
 
- 455              		.loc 1 123 3 is_stmt 1 view .LVU104
- 123:Bsp/periph_serial_irq.c **** 		DMA_ClearFlag(Serial6_DMA_RX_Stream, DMA_FLAG_TCIF1);
- 456              		.loc 1 123 9 is_stmt 0 view .LVU105
- 457 005a 2046     		mov	r0, r4
- 458 005c FFF7FEFF 		bl	DMA_GetCurrDataCounter
- 459              	.LVL44:
- 124:Bsp/periph_serial_irq.c **** 		DMA_SetCurrDataCounter(Serial6_DMA_RX_Stream, PCK_MAX);
- 460              		.loc 1 124 3 is_stmt 1 view .LVU106
- 461 0060 0849     		ldr	r1, .L39+8
- 462 0062 2046     		mov	r0, r4
- 463 0064 FFF7FEFF 		bl	DMA_ClearFlag
- 464              	.LVL45:
- 125:Bsp/periph_serial_irq.c **** 		DMA_Cmd(Serial6_DMA_RX_Stream, ENABLE);
- 465              		.loc 1 125 3 view .LVU107
- 466 0068 4FF48071 		mov	r1, #256
- 467 006c 2046     		mov	r0, r4
- 468 006e FFF7FEFF 		bl	DMA_SetCurrDataCounter
- 469              	.LVL46:
- 126:Bsp/periph_serial_irq.c **** 	}
- 470              		.loc 1 126 3 view .LVU108
- 471 0072 0121     		movs	r1, #1
- 472 0074 2046     		mov	r0, r4
- 473 0076 FFF7FEFF 		bl	DMA_Cmd
- 474              	.LVL47:
- 475              		.loc 1 128 1 is_stmt 0 view .LVU109
- 476 007a D4E7     		b	.L31
- 477              	.L40:
- 478              		.align	2
- 479              	.L39:
- 480 007c 00140140 		.word	1073812480
- 481 0080 28640240 		.word	1073898536
- 482 0084 00080010 		.word	268437504
- 483              		.cfi_endproc
- 484              	.LFE126:
- 486              		.text
- 487              	.Letext0:
- 488              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
- 489              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
- 490              		.file 4 "USER/stm32f4xx.h"
- 491              		.file 5 "FWLIB/inc/stm32f4xx_usart.h"
- 492              		.file 6 "FWLIB/inc/stm32f4xx_dma.h"
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s 			page 13
+ 413              		.loc 1 110 3 view .LVU95
+ 414 0068 4FF48071 		mov	r1, #256
+ 415 006c 2046     		mov	r0, r4
+ 416 006e FFF7FEFF 		bl	DMA_SetCurrDataCounter
+ 417              	.LVL40:
+ 111:Bsp/periph_serial_irq.c **** 	}
+ 418              		.loc 1 111 3 view .LVU96
+ 419 0072 0121     		movs	r1, #1
+ 420 0074 2046     		mov	r0, r4
+ 421 0076 FFF7FEFF 		bl	DMA_Cmd
+ 422              	.LVL41:
+ 423              		.loc 1 113 1 is_stmt 0 view .LVU97
+ 424 007a D4E7     		b	.L25
+ 425              	.L34:
+ 426              		.align	2
+ 427              	.L33:
+ 428 007c 00140140 		.word	1073812480
+ 429 0080 28640240 		.word	1073898536
+ 430 0084 00080010 		.word	268437504
+ 431              		.cfi_endproc
+ 432              	.LFE126:
+ 434              		.text
+ 435              	.Letext0:
+ 436              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 437              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 438              		.file 4 "USER/stm32f4xx.h"
+ 439              		.file 5 "FWLIB/inc/stm32f4xx_usart.h"
+ 440              		.file 6 "FWLIB/inc/stm32f4xx_dma.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s 			page 12
 
 
 DEFINED SYMBOLS
-                            *ABS*:00000000 periph_serial_irq.c
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:18     .text.USART1_IRQHandler:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:26     .text.USART1_IRQHandler:00000000 USART1_IRQHandler
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:132    .text.USART1_IRQHandler:00000084 $d
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:139    .text.USART2_IRQHandler:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:146    .text.USART2_IRQHandler:00000000 USART2_IRQHandler
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:248    .text.USART2_IRQHandler:0000007c $d
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:255    .text.USART3_IRQHandler:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:262    .text.USART3_IRQHandler:00000000 USART3_IRQHandler
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:364    .text.USART3_IRQHandler:0000007c $d
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:371    .text.USART6_IRQHandler:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:378    .text.USART6_IRQHandler:00000000 USART6_IRQHandler
-C:\Users\huav\AppData\Local\Temp\ccJNdoJB.s:480    .text.USART6_IRQHandler:0000007c $d
+                            *ABS*:0000000000000000 periph_serial_irq.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:18     .text.USART1_IRQHandler:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:26     .text.USART1_IRQHandler:0000000000000000 USART1_IRQHandler
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:114    .text.USART1_IRQHandler:0000000000000064 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:121    .text.USART2_IRQHandler:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:128    .text.USART2_IRQHandler:0000000000000000 USART2_IRQHandler
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:213    .text.USART2_IRQHandler:0000000000000064 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:220    .text.USART3_IRQHandler:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:227    .text.USART3_IRQHandler:0000000000000000 USART3_IRQHandler
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:312    .text.USART3_IRQHandler:0000000000000064 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:319    .text.USART6_IRQHandler:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:326    .text.USART6_IRQHandler:0000000000000000 USART6_IRQHandler
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccomDM2x.s:428    .text.USART6_IRQHandler:000000000000007c $d
 
 UNDEFINED SYMBOLS
 USART_GetITStatus
-USART_ITConfig
 USART_ReceiveData
 USART_ClearITPendingBit
 DMA_Cmd
 DMA_GetCurrDataCounter
 DMA_ClearFlag
 DMA_SetCurrDataCounter
+USART_ITConfig

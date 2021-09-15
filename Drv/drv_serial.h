@@ -38,7 +38,17 @@ typedef enum
 
 typedef struct
 {
-    bool (*ctl)(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data);
+    bool inuse;
+    uint32_t baudrate;
+    DrvSerial_Port_List port;
+    uint8_t PreemptionPriority;
+    uint8_t SubPriority;
+    DrvSerial_PortMode_List mode;
+} DrvSerial_Config_Typedef;
+
+typedef struct
+{
+    bool (*ctl)(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t len);
     bool (*read)(uint8_t *data, uint16_t len);
     bool (*write)(uint8_t *data, uint16_t len);
 } DrvSerial_GenProcFunc_TypeDef;
