@@ -11,7 +11,7 @@ static uint8_t Serial_RX_Buff[DrvSerial_Sum][SERIAL_MAX_RECLEN];
 
 /* external function */
 static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t len);
-static bool DrvSerial_Write(uint8_t *data, uint16_t len);
+static bool DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len);
 
 /* external virable */
 DrvSerial_GenProcFunc_TypeDef DrvSerial = {
@@ -105,6 +105,6 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
     return true;
 }
 
-static bool DrvSerial_Write(uint8_t *data, uint16_t len)
+static bool DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len)
 {
 }

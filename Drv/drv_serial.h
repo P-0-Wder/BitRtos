@@ -30,6 +30,13 @@ typedef enum
 
 typedef enum
 {
+    DrvSerial_Send_Async = 0,
+    DrvSerial_Send_Sync,
+    DrvSerial_send_None,
+} DrvSerial_SendMode_List;
+
+typedef enum
+{
     DrvSerial_Open = 0,
     DrvSerial_Close,
     DrvSerial_Set_RxIRQCallback,
@@ -47,6 +54,8 @@ typedef struct
 
     Serial_IRQ_Callback Irq_Callback;
     Serial_DMA_IRQ_Callback DmaIrq_Callback;
+
+    DrvSerial_SendMode_List send_mode;
 } DrvSerial_Config_Typedef;
 
 typedef struct
