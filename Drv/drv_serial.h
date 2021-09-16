@@ -63,8 +63,8 @@ typedef struct
 typedef struct
 {
     bool (*ctl)(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t len);
-    bool (*read)(uint8_t *data, uint16_t len);
-    bool (*write)(uint8_t *data, uint16_t len);
+    bool (*read)(DrvSerial_Port_List portx, uint8_t *data, uint16_t len);
+    bool (*write)(DrvSerial_Port_List portx, uint8_t *data, uint16_t len, DrvSerial_SendMode_List mode);
 } DrvSerial_GenProcFunc_TypeDef;
 
 extern DrvSerial_GenProcFunc_TypeDef DrvSerial;
