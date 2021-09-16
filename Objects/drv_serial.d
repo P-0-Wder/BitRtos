@@ -13,8 +13,8 @@ Objects/drv_serial.o: Drv/drv_serial.c Drv/drv_serial.h \
  FWLIB/inc/stm32f4xx_wwdg.h FWLIB/inc/misc.h FWLIB/inc/stm32f4xx_cryp.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
- FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h USB/config/vcp.h \
- USB/config/tm_stm32f4_usb_vcp.h USB/config/defines.h \
+ FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_dma.h \
+ USB/config/vcp.h USB/config/tm_stm32f4_usb_vcp.h USB/config/defines.h \
  USB/core/usbd_cdc_core.h USB/core/usbd_ioreq.h USB/core/usbd_def.h \
  USB/core/usbd_conf.h USB/core/usb_conf.h USB/config/defines.h \
  USB/core/usbd_core.h USB/core/usb_dcd.h USB/core/usb_core.h \
@@ -55,6 +55,7 @@ FWLIB/inc/stm32f4xx_can.h:
 FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
+Bsp/periph_dma.h:
 USB/config/vcp.h:
 USB/config/tm_stm32f4_usb_vcp.h:
 USB/config/defines.h:

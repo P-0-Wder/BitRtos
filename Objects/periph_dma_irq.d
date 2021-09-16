@@ -14,7 +14,7 @@ Objects/periph_dma_irq.o: Bsp/periph_dma_irq.c Bsp/periph_dma_irq.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
- Bsp/periph_serial.h Bsp/periph_gpio.h
+ Bsp/periph_serial.h Bsp/periph_dma.h Bsp/periph_gpio.h
 Bsp/periph_dma_irq.h:
 USER/stm32f4xx.h:
 F4_CORE/core_cm4.h:
@@ -50,4 +50,5 @@ FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 Bsp/periph_serial.h:
+Bsp/periph_dma.h:
 Bsp/periph_gpio.h:

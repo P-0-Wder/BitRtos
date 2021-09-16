@@ -1,4 +1,4 @@
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -37,111 +37,110 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 1
    7:Bsp/periph_serial.c **** #include "stm32f4xx_dma.h"
    8:Bsp/periph_serial.c **** 
    9:Bsp/periph_serial.c **** Serial_IRQ_Callback IRQ_Callback[Serial_Port_Sum] = {NULL};
-  10:Bsp/periph_serial.c **** Serial_DMA_IRQ_Callback DMAIrq_Callback[Serial_Port_Sum] = {NULL};
-  11:Bsp/periph_serial.c **** 
-  12:Bsp/periph_serial.c **** #ifdef STM32F40XX
-  13:Bsp/periph_serial.c **** static void (*Serial_IO_Init[Serial_Port_Sum])(void) = {GPIO_USART1_IO_Init,
-  14:Bsp/periph_serial.c **** 														GPIO_USART2_IO_Init,
-  15:Bsp/periph_serial.c **** 														GPIO_USART3_IO_Init,
-  16:Bsp/periph_serial.c **** 														GPIO_USART6_IO_Init};
-  17:Bsp/periph_serial.c **** 
-  18:Bsp/periph_serial.c **** static void (*RCC_APBPeriphClockCmd[Serial_Port_Sum])(uint32_t RCC_APB2Periph, FunctionalState NewS
+  10:Bsp/periph_serial.c **** 
+  11:Bsp/periph_serial.c **** #ifdef STM32F40XX
+  12:Bsp/periph_serial.c **** static void (*Serial_IO_Init[Serial_Port_Sum])(void) = {GPIO_USART1_IO_Init,
+  13:Bsp/periph_serial.c **** 														GPIO_USART2_IO_Init,
+  14:Bsp/periph_serial.c **** 														GPIO_USART3_IO_Init,
+  15:Bsp/periph_serial.c **** 														GPIO_USART6_IO_Init};
+  16:Bsp/periph_serial.c **** 
+  17:Bsp/periph_serial.c **** static void (*RCC_APBPeriphClockCmd[Serial_Port_Sum])(uint32_t RCC_APB2Periph, FunctionalState NewS
+  18:Bsp/periph_serial.c **** 																											RCC_APB1PeriphClockCmd,
   19:Bsp/periph_serial.c **** 																											RCC_APB1PeriphClockCmd,
-  20:Bsp/periph_serial.c **** 																											RCC_APB1PeriphClockCmd,
-  21:Bsp/periph_serial.c **** 																											RCC_APB2PeriphClockCmd};
-  22:Bsp/periph_serial.c **** 
-  23:Bsp/periph_serial.c **** static uint32_t RCC_APBPeriph_SerialCLK[Serial_Port_Sum] = {RCC_APB2Periph_USART1,
-  24:Bsp/periph_serial.c **** 															RCC_APB1Periph_USART2,
-  25:Bsp/periph_serial.c **** 															RCC_APB1Periph_USART3,
-  26:Bsp/periph_serial.c **** 															RCC_APB2Periph_USART6};
-  27:Bsp/periph_serial.c **** 
-  28:Bsp/periph_serial.c **** USART_TypeDef *Serial_Port[Serial_Port_Sum] = {USART1,
-  29:Bsp/periph_serial.c **** 											   USART2,
-  30:Bsp/periph_serial.c **** 											   USART3,
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 2
+  20:Bsp/periph_serial.c **** 																											RCC_APB2PeriphClockCmd};
+  21:Bsp/periph_serial.c **** 
+  22:Bsp/periph_serial.c **** static uint32_t RCC_APBPeriph_SerialCLK[Serial_Port_Sum] = {RCC_APB2Periph_USART1,
+  23:Bsp/periph_serial.c **** 															RCC_APB1Periph_USART2,
+  24:Bsp/periph_serial.c **** 															RCC_APB1Periph_USART3,
+  25:Bsp/periph_serial.c **** 															RCC_APB2Periph_USART6};
+  26:Bsp/periph_serial.c **** 
+  27:Bsp/periph_serial.c **** USART_TypeDef *Serial_Port[Serial_Port_Sum] = {USART1,
+  28:Bsp/periph_serial.c **** 											   USART2,
+  29:Bsp/periph_serial.c **** 											   USART3,
+  30:Bsp/periph_serial.c **** 											   USART6};
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 2
 
 
-  31:Bsp/periph_serial.c **** 											   USART6};
-  32:Bsp/periph_serial.c **** 
-  33:Bsp/periph_serial.c **** static uint8_t Serial_RX_IRQ_Channel[Serial_Port_Sum] = {USART1_IRQn,
-  34:Bsp/periph_serial.c **** 														 USART2_IRQn,
-  35:Bsp/periph_serial.c **** 														 USART3_IRQn,
-  36:Bsp/periph_serial.c **** 														 USART6_IRQn};
-  37:Bsp/periph_serial.c **** 
-  38:Bsp/periph_serial.c **** static uint8_t Serial_DMA_TX_IRQ_Channel[Serial_Port_Sum] = {DMA2_Stream7_IRQn,
-  39:Bsp/periph_serial.c **** 															 DMA1_Stream6_IRQn,
-  40:Bsp/periph_serial.c **** 															 DMA1_Stream3_IRQn,
-  41:Bsp/periph_serial.c **** 															 DMA2_Stream7_IRQn};
-  42:Bsp/periph_serial.c **** 
-  43:Bsp/periph_serial.c **** static uint32_t Serial_DMA_CLK[Serial_Port_Sum] = {Serial1_DMA_CLK,
-  44:Bsp/periph_serial.c **** 												   Serial2_DMA_CLK,
-  45:Bsp/periph_serial.c **** 												   Serial3_DMA_CLK,
-  46:Bsp/periph_serial.c **** 												   Serial6_DMA_CLK};
-  47:Bsp/periph_serial.c **** 
-  48:Bsp/periph_serial.c **** static uint32_t Serial_DMA_RX_Channel[Serial_Port_Sum] = {Serial1_DMA_RX_Channel,
-  49:Bsp/periph_serial.c **** 														  Serial2_DMA_RX_Channel,
-  50:Bsp/periph_serial.c **** 														  Serial3_DMA_RX_Channel,
-  51:Bsp/periph_serial.c **** 														  Serial6_DMA_RX_Channel};
-  52:Bsp/periph_serial.c **** 
-  53:Bsp/periph_serial.c **** static DMA_Stream_TypeDef *Serial_DMA_RX_Stream[Serial_Port_Sum] = {Serial1_DMA_RX_Stream,
-  54:Bsp/periph_serial.c **** 																	Serial2_DMA_RX_Stream,
-  55:Bsp/periph_serial.c **** 																	Serial3_DMA_RX_Stream,
-  56:Bsp/periph_serial.c **** 																	Serial6_DMA_RX_Stream};
-  57:Bsp/periph_serial.c **** 
-  58:Bsp/periph_serial.c **** static uint32_t Serial_DMA_TX_Channel[Serial_Port_Sum] = {Serial1_DMA_TX_Channel,
-  59:Bsp/periph_serial.c **** 														  Serial2_DMA_TX_Channel,
-  60:Bsp/periph_serial.c **** 														  Serial3_DMA_TX_Channel,
-  61:Bsp/periph_serial.c **** 														  Serial6_DMA_TX_Channel};
-  62:Bsp/periph_serial.c **** 
-  63:Bsp/periph_serial.c **** static DMA_Stream_TypeDef *Serial_DMA_TX_Stream[Serial_Port_Sum] = {Serial1_DMA_TX_Stream,
-  64:Bsp/periph_serial.c **** 																	Serial2_DMA_TX_Stream,
-  65:Bsp/periph_serial.c **** 																	Serial3_DMA_TX_Stream,
-  66:Bsp/periph_serial.c **** 																	Serial6_DMA_TX_Stream};
-  67:Bsp/periph_serial.c **** 
-  68:Bsp/periph_serial.c **** static uint32_t DMA_TX_FinishFlag[Serial_Port_Sum] = {DMA_FLAG_TCIF7,
-  69:Bsp/periph_serial.c **** 													  DMA_FLAG_TCIF6,
-  70:Bsp/periph_serial.c **** 													  DMA_FLAG_TCIF3,
-  71:Bsp/periph_serial.c **** 													  DMA_FLAG_TCIF7};
-  72:Bsp/periph_serial.c **** #endif
-  73:Bsp/periph_serial.c **** 
-  74:Bsp/periph_serial.c **** static void USART_Structure_Normal_Setting(USART_InitTypeDef *USART_InitStructure, uint32_t bound)
-  75:Bsp/periph_serial.c **** {
-  29              		.loc 1 75 1 view -0
+  31:Bsp/periph_serial.c **** 
+  32:Bsp/periph_serial.c **** static uint8_t Serial_RX_IRQ_Channel[Serial_Port_Sum] = {USART1_IRQn,
+  33:Bsp/periph_serial.c **** 														 USART2_IRQn,
+  34:Bsp/periph_serial.c **** 														 USART3_IRQn,
+  35:Bsp/periph_serial.c **** 														 USART6_IRQn};
+  36:Bsp/periph_serial.c **** 
+  37:Bsp/periph_serial.c **** static uint8_t Serial_DMA_TX_IRQ_Channel[Serial_Port_Sum] = {DMA2_Stream7_IRQn,
+  38:Bsp/periph_serial.c **** 															 DMA1_Stream6_IRQn,
+  39:Bsp/periph_serial.c **** 															 DMA1_Stream3_IRQn,
+  40:Bsp/periph_serial.c **** 															 DMA2_Stream7_IRQn};
+  41:Bsp/periph_serial.c **** 
+  42:Bsp/periph_serial.c **** static uint32_t Serial_DMA_CLK[Serial_Port_Sum] = {Serial1_DMA_CLK,
+  43:Bsp/periph_serial.c **** 												   Serial2_DMA_CLK,
+  44:Bsp/periph_serial.c **** 												   Serial3_DMA_CLK,
+  45:Bsp/periph_serial.c **** 												   Serial6_DMA_CLK};
+  46:Bsp/periph_serial.c **** 
+  47:Bsp/periph_serial.c **** static uint32_t Serial_DMA_RX_Channel[Serial_Port_Sum] = {Serial1_DMA_RX_Channel,
+  48:Bsp/periph_serial.c **** 														  Serial2_DMA_RX_Channel,
+  49:Bsp/periph_serial.c **** 														  Serial3_DMA_RX_Channel,
+  50:Bsp/periph_serial.c **** 														  Serial6_DMA_RX_Channel};
+  51:Bsp/periph_serial.c **** 
+  52:Bsp/periph_serial.c **** static DMA_Stream_TypeDef *Serial_DMA_RX_Stream[Serial_Port_Sum] = {Serial1_DMA_RX_Stream,
+  53:Bsp/periph_serial.c **** 																	Serial2_DMA_RX_Stream,
+  54:Bsp/periph_serial.c **** 																	Serial3_DMA_RX_Stream,
+  55:Bsp/periph_serial.c **** 																	Serial6_DMA_RX_Stream};
+  56:Bsp/periph_serial.c **** 
+  57:Bsp/periph_serial.c **** static uint32_t Serial_DMA_TX_Channel[Serial_Port_Sum] = {Serial1_DMA_TX_Channel,
+  58:Bsp/periph_serial.c **** 														  Serial2_DMA_TX_Channel,
+  59:Bsp/periph_serial.c **** 														  Serial3_DMA_TX_Channel,
+  60:Bsp/periph_serial.c **** 														  Serial6_DMA_TX_Channel};
+  61:Bsp/periph_serial.c **** 
+  62:Bsp/periph_serial.c **** static DMA_Stream_TypeDef *Serial_DMA_TX_Stream[Serial_Port_Sum] = {Serial1_DMA_TX_Stream,
+  63:Bsp/periph_serial.c **** 																	Serial2_DMA_TX_Stream,
+  64:Bsp/periph_serial.c **** 																	Serial3_DMA_TX_Stream,
+  65:Bsp/periph_serial.c **** 																	Serial6_DMA_TX_Stream};
+  66:Bsp/periph_serial.c **** 
+  67:Bsp/periph_serial.c **** static uint32_t DMA_TX_FinishFlag[Serial_Port_Sum] = {DMA_FLAG_TCIF7,
+  68:Bsp/periph_serial.c **** 													  DMA_FLAG_TCIF6,
+  69:Bsp/periph_serial.c **** 													  DMA_FLAG_TCIF3,
+  70:Bsp/periph_serial.c **** 													  DMA_FLAG_TCIF7};
+  71:Bsp/periph_serial.c **** #endif
+  72:Bsp/periph_serial.c **** 
+  73:Bsp/periph_serial.c **** static void USART_Structure_Normal_Setting(USART_InitTypeDef *USART_InitStructure, uint32_t bound)
+  74:Bsp/periph_serial.c **** {
+  29              		.loc 1 74 1 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
   33              		@ link register save eliminated.
-  76:Bsp/periph_serial.c **** 	USART_InitStructure->USART_BaudRate = bound;
-  34              		.loc 1 76 2 view .LVU1
-  35              		.loc 1 76 38 is_stmt 0 view .LVU2
+  75:Bsp/periph_serial.c **** 	USART_InitStructure->USART_BaudRate = bound;
+  34              		.loc 1 75 2 view .LVU1
+  35              		.loc 1 75 38 is_stmt 0 view .LVU2
   36 0000 0160     		str	r1, [r0]
-  77:Bsp/periph_serial.c **** 	USART_InitStructure->USART_WordLength = USART_WordLength_8b;
-  37              		.loc 1 77 2 is_stmt 1 view .LVU3
-  38              		.loc 1 77 40 is_stmt 0 view .LVU4
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 3
-
-
+  76:Bsp/periph_serial.c **** 	USART_InitStructure->USART_WordLength = USART_WordLength_8b;
+  37              		.loc 1 76 2 is_stmt 1 view .LVU3
+  38              		.loc 1 76 40 is_stmt 0 view .LVU4
   39 0002 0023     		movs	r3, #0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 3
+
+
   40 0004 8380     		strh	r3, [r0, #4]	@ movhi
-  78:Bsp/periph_serial.c **** 	USART_InitStructure->USART_StopBits = USART_StopBits_1;
-  41              		.loc 1 78 2 is_stmt 1 view .LVU5
-  42              		.loc 1 78 38 is_stmt 0 view .LVU6
+  77:Bsp/periph_serial.c **** 	USART_InitStructure->USART_StopBits = USART_StopBits_1;
+  41              		.loc 1 77 2 is_stmt 1 view .LVU5
+  42              		.loc 1 77 38 is_stmt 0 view .LVU6
   43 0006 C380     		strh	r3, [r0, #6]	@ movhi
-  79:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Parity = USART_Parity_No;
-  44              		.loc 1 79 2 is_stmt 1 view .LVU7
-  45              		.loc 1 79 36 is_stmt 0 view .LVU8
+  78:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Parity = USART_Parity_No;
+  44              		.loc 1 78 2 is_stmt 1 view .LVU7
+  45              		.loc 1 78 36 is_stmt 0 view .LVU8
   46 0008 0381     		strh	r3, [r0, #8]	@ movhi
-  80:Bsp/periph_serial.c **** 	USART_InitStructure->USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  47              		.loc 1 80 2 is_stmt 1 view .LVU9
-  48              		.loc 1 80 49 is_stmt 0 view .LVU10
+  79:Bsp/periph_serial.c **** 	USART_InitStructure->USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  47              		.loc 1 79 2 is_stmt 1 view .LVU9
+  48              		.loc 1 79 49 is_stmt 0 view .LVU10
   49 000a 8381     		strh	r3, [r0, #12]	@ movhi
-  81:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  50              		.loc 1 81 2 is_stmt 1 view .LVU11
-  51              		.loc 1 81 34 is_stmt 0 view .LVU12
+  80:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  50              		.loc 1 80 2 is_stmt 1 view .LVU11
+  51              		.loc 1 80 34 is_stmt 0 view .LVU12
   52 000c 0C23     		movs	r3, #12
   53 000e 4381     		strh	r3, [r0, #10]	@ movhi
-  82:Bsp/periph_serial.c **** }
-  54              		.loc 1 82 1 view .LVU13
+  81:Bsp/periph_serial.c **** }
+  54              		.loc 1 81 1 view .LVU13
   55 0010 7047     		bx	lr
   56              		.cfi_endproc
   57              	.LFE123:
@@ -154,48 +153,48 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 1
   66              	USART_Structure_SBus_Setting:
   67              	.LVL1:
   68              	.LFB124:
-  83:Bsp/periph_serial.c **** 
-  84:Bsp/periph_serial.c **** static void USART_Structure_SBus_Setting(USART_InitTypeDef *USART_InitStructure, uint32_t bound)
-  85:Bsp/periph_serial.c **** {
-  69              		.loc 1 85 1 is_stmt 1 view -0
+  82:Bsp/periph_serial.c **** 
+  83:Bsp/periph_serial.c **** static void USART_Structure_SBus_Setting(USART_InitTypeDef *USART_InitStructure, uint32_t bound)
+  84:Bsp/periph_serial.c **** {
+  69              		.loc 1 84 1 is_stmt 1 view -0
   70              		.cfi_startproc
   71              		@ args = 0, pretend = 0, frame = 0
   72              		@ frame_needed = 0, uses_anonymous_args = 0
   73              		@ link register save eliminated.
-  86:Bsp/periph_serial.c **** 	USART_InitStructure->USART_BaudRate = bound;
-  74              		.loc 1 86 2 view .LVU15
-  75              		.loc 1 86 38 is_stmt 0 view .LVU16
+  85:Bsp/periph_serial.c **** 	USART_InitStructure->USART_BaudRate = bound;
+  74              		.loc 1 85 2 view .LVU15
+  75              		.loc 1 85 38 is_stmt 0 view .LVU16
   76 0000 0160     		str	r1, [r0]
-  87:Bsp/periph_serial.c **** 	USART_InitStructure->USART_WordLength = USART_WordLength_9b;
-  77              		.loc 1 87 2 is_stmt 1 view .LVU17
-  78              		.loc 1 87 40 is_stmt 0 view .LVU18
+  86:Bsp/periph_serial.c **** 	USART_InitStructure->USART_WordLength = USART_WordLength_9b;
+  77              		.loc 1 86 2 is_stmt 1 view .LVU17
+  78              		.loc 1 86 40 is_stmt 0 view .LVU18
   79 0002 4FF48053 		mov	r3, #4096
   80 0006 8380     		strh	r3, [r0, #4]	@ movhi
-  88:Bsp/periph_serial.c **** 	USART_InitStructure->USART_StopBits = USART_StopBits_2;
-  81              		.loc 1 88 2 is_stmt 1 view .LVU19
-  82              		.loc 1 88 38 is_stmt 0 view .LVU20
+  87:Bsp/periph_serial.c **** 	USART_InitStructure->USART_StopBits = USART_StopBits_2;
+  81              		.loc 1 87 2 is_stmt 1 view .LVU19
+  82              		.loc 1 87 38 is_stmt 0 view .LVU20
   83 0008 4FF40053 		mov	r3, #8192
   84 000c C380     		strh	r3, [r0, #6]	@ movhi
-  89:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Parity = USART_Parity_Even;
-  85              		.loc 1 89 2 is_stmt 1 view .LVU21
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 4
+  88:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Parity = USART_Parity_Even;
+  85              		.loc 1 88 2 is_stmt 1 view .LVU21
+  86              		.loc 1 88 36 is_stmt 0 view .LVU22
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 4
 
 
-  86              		.loc 1 89 36 is_stmt 0 view .LVU22
   87 000e 4FF48063 		mov	r3, #1024
   88 0012 0381     		strh	r3, [r0, #8]	@ movhi
-  90:Bsp/periph_serial.c **** 	USART_InitStructure->USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  89              		.loc 1 90 2 is_stmt 1 view .LVU23
-  90              		.loc 1 90 49 is_stmt 0 view .LVU24
+  89:Bsp/periph_serial.c **** 	USART_InitStructure->USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  89              		.loc 1 89 2 is_stmt 1 view .LVU23
+  90              		.loc 1 89 49 is_stmt 0 view .LVU24
   91 0014 0023     		movs	r3, #0
   92 0016 8381     		strh	r3, [r0, #12]	@ movhi
-  91:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  93              		.loc 1 91 2 is_stmt 1 view .LVU25
-  94              		.loc 1 91 34 is_stmt 0 view .LVU26
+  90:Bsp/periph_serial.c **** 	USART_InitStructure->USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  93              		.loc 1 90 2 is_stmt 1 view .LVU25
+  94              		.loc 1 90 34 is_stmt 0 view .LVU26
   95 0018 0C23     		movs	r3, #12
   96 001a 4381     		strh	r3, [r0, #10]	@ movhi
-  92:Bsp/periph_serial.c **** }
-  97              		.loc 1 92 1 view .LVU27
+  91:Bsp/periph_serial.c **** }
+  97              		.loc 1 91 1 view .LVU27
   98 001c 7047     		bx	lr
   99              		.cfi_endproc
  100              	.LFE124:
@@ -209,43 +208,43 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 1
  110              	Serial_Get_IRQ_Callback:
  111              	.LVL2:
  112              	.LFB125:
-  93:Bsp/periph_serial.c **** 
-  94:Bsp/periph_serial.c **** static void (*Serial_Structure_Setting[Serial_Func_Sum])(USART_InitTypeDef *USART_InitStructure, ui
-  95:Bsp/periph_serial.c **** 																													USART_Structure_SBus_Setting};
-  96:Bsp/periph_serial.c **** 
-  97:Bsp/periph_serial.c **** Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id)
-  98:Bsp/periph_serial.c **** {
- 113              		.loc 1 98 1 is_stmt 1 view -0
+  92:Bsp/periph_serial.c **** 
+  93:Bsp/periph_serial.c **** static void (*Serial_Structure_Setting[Serial_Func_Sum])(USART_InitTypeDef *USART_InitStructure, ui
+  94:Bsp/periph_serial.c **** 																													USART_Structure_SBus_Setting};
+  95:Bsp/periph_serial.c **** 
+  96:Bsp/periph_serial.c **** Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id)
+  97:Bsp/periph_serial.c **** {
+ 113              		.loc 1 97 1 is_stmt 1 view -0
  114              		.cfi_startproc
  115              		@ args = 0, pretend = 0, frame = 0
  116              		@ frame_needed = 0, uses_anonymous_args = 0
  117              		@ link register save eliminated.
-  99:Bsp/periph_serial.c **** 	if (serial_id >= Serial_Port_Sum)
- 118              		.loc 1 99 2 view .LVU29
- 119              		.loc 1 99 5 is_stmt 0 view .LVU30
+  98:Bsp/periph_serial.c **** 	if (serial_id >= Serial_Port_Sum)
+ 118              		.loc 1 98 2 view .LVU29
+ 119              		.loc 1 98 5 is_stmt 0 view .LVU30
  120 0000 0328     		cmp	r0, #3
  121 0002 03D8     		bhi	.L5
- 100:Bsp/periph_serial.c **** 		return NULL;
- 101:Bsp/periph_serial.c **** 
- 102:Bsp/periph_serial.c **** 	return IRQ_Callback[serial_id];
- 122              		.loc 1 102 2 is_stmt 1 view .LVU31
- 123              		.loc 1 102 21 is_stmt 0 view .LVU32
+  99:Bsp/periph_serial.c **** 		return NULL;
+ 100:Bsp/periph_serial.c **** 
+ 101:Bsp/periph_serial.c **** 	return IRQ_Callback[serial_id];
+ 122              		.loc 1 101 2 is_stmt 1 view .LVU31
+ 123              		.loc 1 101 21 is_stmt 0 view .LVU32
  124 0004 024B     		ldr	r3, .L6
  125 0006 53F82000 		ldr	r0, [r3, r0, lsl #2]
  126              	.LVL3:
- 127              		.loc 1 102 21 view .LVU33
+ 127              		.loc 1 101 21 view .LVU33
  128 000a 7047     		bx	lr
  129              	.LVL4:
  130              	.L5:
- 100:Bsp/periph_serial.c **** 		return NULL;
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 5
+  99:Bsp/periph_serial.c **** 		return NULL;
+ 131              		.loc 1 99 10 view .LVU34
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 5
 
 
- 131              		.loc 1 100 10 view .LVU34
  132 000c 0020     		movs	r0, #0
  133              	.LVL5:
- 103:Bsp/periph_serial.c **** }
- 134              		.loc 1 103 1 view .LVU35
+ 102:Bsp/periph_serial.c **** }
+ 134              		.loc 1 102 1 view .LVU35
  135 000e 7047     		bx	lr
  136              	.L7:
  137              		.align	2
@@ -253,1580 +252,1601 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 1
  139 0010 00000000 		.word	.LANCHOR0
  140              		.cfi_endproc
  141              	.LFE125:
- 143              		.section	.text.Serial_Get_DMA_IRQ_Callback,"ax",%progbits
+ 143              		.section	.text.Serial_Set_DMAIRQ_Callback,"ax",%progbits
  144              		.align	1
- 145              		.global	Serial_Get_DMA_IRQ_Callback
+ 145              		.global	Serial_Set_DMAIRQ_Callback
  146              		.syntax unified
  147              		.thumb
  148              		.thumb_func
  149              		.fpu fpv4-sp-d16
- 151              	Serial_Get_DMA_IRQ_Callback:
+ 151              	Serial_Set_DMAIRQ_Callback:
  152              	.LVL6:
  153              	.LFB126:
- 104:Bsp/periph_serial.c **** 
- 105:Bsp/periph_serial.c **** Serial_DMA_IRQ_Callback Serial_Get_DMA_IRQ_Callback(Serial_List serial_id)
- 106:Bsp/periph_serial.c **** {
- 154              		.loc 1 106 1 is_stmt 1 view -0
+ 103:Bsp/periph_serial.c **** 
+ 104:Bsp/periph_serial.c **** bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, dma_irq_callback callback)
+ 105:Bsp/periph_serial.c **** {
+ 154              		.loc 1 105 1 is_stmt 1 view -0
  155              		.cfi_startproc
  156              		@ args = 0, pretend = 0, frame = 0
  157              		@ frame_needed = 0, uses_anonymous_args = 0
- 158              		@ link register save eliminated.
- 107:Bsp/periph_serial.c **** 	if (serial_id >= Serial_Port_Sum)
- 159              		.loc 1 107 2 view .LVU37
- 160              		.loc 1 107 5 is_stmt 0 view .LVU38
- 161 0000 0328     		cmp	r0, #3
- 162 0002 03D8     		bhi	.L10
- 108:Bsp/periph_serial.c **** 		return NULL;
- 109:Bsp/periph_serial.c **** 
- 110:Bsp/periph_serial.c **** 	return DMAIrq_Callback[serial_id];
- 163              		.loc 1 110 2 is_stmt 1 view .LVU39
- 164              		.loc 1 110 24 is_stmt 0 view .LVU40
- 165 0004 024B     		ldr	r3, .L11
- 166 0006 53F82000 		ldr	r0, [r3, r0, lsl #2]
- 167              	.LVL7:
- 168              		.loc 1 110 24 view .LVU41
- 169 000a 7047     		bx	lr
- 170              	.LVL8:
- 171              	.L10:
- 108:Bsp/periph_serial.c **** 		return NULL;
- 172              		.loc 1 108 10 view .LVU42
- 173 000c 0020     		movs	r0, #0
- 174              	.LVL9:
- 111:Bsp/periph_serial.c **** }
- 175              		.loc 1 111 1 view .LVU43
- 176 000e 7047     		bx	lr
- 177              	.L12:
- 178              		.align	2
- 179              	.L11:
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 6
+ 106:Bsp/periph_serial.c **** 	uint8_t dma_id = 0;
+ 158              		.loc 1 106 2 view .LVU37
+ 107:Bsp/periph_serial.c **** 	uint8_t stream_id = 0;
+ 159              		.loc 1 107 2 view .LVU38
+ 108:Bsp/periph_serial.c **** 
+ 109:Bsp/periph_serial.c **** 	if (serial_id >= Serial_Port_Sum)
+ 160              		.loc 1 109 2 view .LVU39
+ 161              		.loc 1 109 5 is_stmt 0 view .LVU40
+ 162 0000 0328     		cmp	r0, #3
+ 163 0002 13D8     		bhi	.L15
+ 105:Bsp/periph_serial.c **** 	uint8_t dma_id = 0;
+ 164              		.loc 1 105 1 view .LVU41
+ 165 0004 08B5     		push	{r3, lr}
+ 166              	.LCFI0:
+ 167              		.cfi_def_cfa_offset 8
+ 168              		.cfi_offset 3, -8
+ 169              		.cfi_offset 14, -4
+ 170 0006 0A46     		mov	r2, r1
+ 110:Bsp/periph_serial.c **** 		return false;
+ 111:Bsp/periph_serial.c **** 
+ 112:Bsp/periph_serial.c **** 	switch (serial_id)
+ 171              		.loc 1 112 2 is_stmt 1 view .LVU42
+ 172 0008 0328     		cmp	r0, #3
+ 173 000a 08D8     		bhi	.L8
+ 174 000c DFE800F0 		tbb	[pc, r0]
+ 175              	.L12:
+ 176 0010 02       		.byte	(.L11-.L12)/2
+ 177 0011 0B       		.byte	(.L16-.L12)/2
+ 178 0012 08       		.byte	(.L13-.L12)/2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 6
 
 
- 180 0010 00000000 		.word	.LANCHOR1
- 181              		.cfi_endproc
- 182              	.LFE126:
- 184              		.section	.text.Serial_Set_DMAIRQ_Callback,"ax",%progbits
- 185              		.align	1
- 186              		.global	Serial_Set_DMAIRQ_Callback
- 187              		.syntax unified
- 188              		.thumb
- 189              		.thumb_func
- 190              		.fpu fpv4-sp-d16
- 192              	Serial_Set_DMAIRQ_Callback:
- 193              	.LVL10:
- 194              	.LFB127:
- 112:Bsp/periph_serial.c **** 
- 113:Bsp/periph_serial.c **** bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, Serial_DMA_IRQ_Callback callback)
- 114:Bsp/periph_serial.c **** {
- 195              		.loc 1 114 1 is_stmt 1 view -0
- 196              		.cfi_startproc
- 197              		@ args = 0, pretend = 0, frame = 0
- 198              		@ frame_needed = 0, uses_anonymous_args = 0
- 199              		@ link register save eliminated.
- 115:Bsp/periph_serial.c **** 	if (serial_id >= Serial_Port_Sum)
- 200              		.loc 1 115 2 view .LVU45
- 201              		.loc 1 115 5 is_stmt 0 view .LVU46
- 202 0000 0328     		cmp	r0, #3
- 203 0002 04D8     		bhi	.L15
- 116:Bsp/periph_serial.c **** 		return false;
- 117:Bsp/periph_serial.c **** 
- 118:Bsp/periph_serial.c **** 	DMAIrq_Callback[serial_id] = callback;
- 204              		.loc 1 118 2 is_stmt 1 view .LVU47
- 205              		.loc 1 118 29 is_stmt 0 view .LVU48
- 206 0004 034B     		ldr	r3, .L16
- 207 0006 43F82010 		str	r1, [r3, r0, lsl #2]
- 119:Bsp/periph_serial.c **** 
- 120:Bsp/periph_serial.c **** 	return true;
- 208              		.loc 1 120 2 is_stmt 1 view .LVU49
- 209              		.loc 1 120 9 is_stmt 0 view .LVU50
- 210 000a 0120     		movs	r0, #1
- 211              	.LVL11:
- 212              		.loc 1 120 9 view .LVU51
- 213 000c 7047     		bx	lr
- 214              	.LVL12:
- 215              	.L15:
- 116:Bsp/periph_serial.c **** 		return false;
- 216              		.loc 1 116 10 view .LVU52
- 217 000e 0020     		movs	r0, #0
- 218              	.LVL13:
- 121:Bsp/periph_serial.c **** }
- 219              		.loc 1 121 1 view .LVU53
- 220 0010 7047     		bx	lr
- 221              	.L17:
- 222 0012 00BF     		.align	2
- 223              	.L16:
- 224 0014 00000000 		.word	.LANCHOR1
- 225              		.cfi_endproc
- 226              	.LFE127:
- 228              		.section	.text.Serial_Set_IRQ_Callback,"ax",%progbits
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 7
-
-
- 229              		.align	1
- 230              		.global	Serial_Set_IRQ_Callback
- 231              		.syntax unified
- 232              		.thumb
- 233              		.thumb_func
- 234              		.fpu fpv4-sp-d16
- 236              	Serial_Set_IRQ_Callback:
- 237              	.LVL14:
- 238              	.LFB128:
- 122:Bsp/periph_serial.c **** 
- 123:Bsp/periph_serial.c **** bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback)
- 124:Bsp/periph_serial.c **** {
- 239              		.loc 1 124 1 is_stmt 1 view -0
- 240              		.cfi_startproc
- 241              		@ args = 0, pretend = 0, frame = 0
- 242              		@ frame_needed = 0, uses_anonymous_args = 0
- 243              		@ link register save eliminated.
- 125:Bsp/periph_serial.c **** 	if (serial_id >= Serial_Port_Sum)
- 244              		.loc 1 125 2 view .LVU55
- 245              		.loc 1 125 5 is_stmt 0 view .LVU56
- 246 0000 0328     		cmp	r0, #3
- 247 0002 04D8     		bhi	.L20
- 126:Bsp/periph_serial.c **** 		return false;
- 127:Bsp/periph_serial.c **** 
- 128:Bsp/periph_serial.c **** 	IRQ_Callback[serial_id] = callback;
- 248              		.loc 1 128 2 is_stmt 1 view .LVU57
- 249              		.loc 1 128 26 is_stmt 0 view .LVU58
- 250 0004 034B     		ldr	r3, .L21
- 251 0006 43F82010 		str	r1, [r3, r0, lsl #2]
- 129:Bsp/periph_serial.c **** 
- 130:Bsp/periph_serial.c **** 	return true;
- 252              		.loc 1 130 2 is_stmt 1 view .LVU59
- 253              		.loc 1 130 9 is_stmt 0 view .LVU60
- 254 000a 0120     		movs	r0, #1
- 255              	.LVL15:
- 256              		.loc 1 130 9 view .LVU61
- 257 000c 7047     		bx	lr
- 258              	.LVL16:
- 259              	.L20:
- 126:Bsp/periph_serial.c **** 		return false;
- 260              		.loc 1 126 10 view .LVU62
- 261 000e 0020     		movs	r0, #0
- 262              	.LVL17:
- 131:Bsp/periph_serial.c **** }
- 263              		.loc 1 131 1 view .LVU63
- 264 0010 7047     		bx	lr
- 265              	.L22:
- 266 0012 00BF     		.align	2
- 267              	.L21:
- 268 0014 00000000 		.word	.LANCHOR0
- 269              		.cfi_endproc
- 270              	.LFE128:
- 272              		.section	.text.Serial_IRQ_RX_Init,"ax",%progbits
- 273              		.align	1
- 274              		.global	Serial_IRQ_RX_Init
- 275              		.syntax unified
- 276              		.thumb
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 8
-
-
- 277              		.thumb_func
- 278              		.fpu fpv4-sp-d16
- 280              	Serial_IRQ_RX_Init:
- 281              	.LVL18:
- 282              	.LFB129:
- 132:Bsp/periph_serial.c **** 
- 133:Bsp/periph_serial.c **** void Serial_IRQ_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t Sub
- 134:Bsp/periph_serial.c **** {
- 283              		.loc 1 134 1 is_stmt 1 view -0
- 284              		.cfi_startproc
- 285              		@ args = 4, pretend = 0, frame = 16
- 286              		@ frame_needed = 0, uses_anonymous_args = 0
- 287              		.loc 1 134 1 is_stmt 0 view .LVU65
- 288 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 289              	.LCFI0:
- 290              		.cfi_def_cfa_offset 20
- 291              		.cfi_offset 4, -20
- 292              		.cfi_offset 5, -16
- 293              		.cfi_offset 6, -12
- 294              		.cfi_offset 7, -8
- 295              		.cfi_offset 14, -4
- 296 0002 85B0     		sub	sp, sp, #20
- 297              	.LCFI1:
- 298              		.cfi_def_cfa_offset 40
- 299 0004 0446     		mov	r4, r0
- 300 0006 0F46     		mov	r7, r1
- 301 0008 1546     		mov	r5, r2
- 302 000a 1E46     		mov	r6, r3
- 135:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
- 303              		.loc 1 135 2 is_stmt 1 view .LVU66
- 136:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
- 304              		.loc 1 136 2 view .LVU67
- 305              		.loc 1 136 16 is_stmt 0 view .LVU68
- 306 000c 174B     		ldr	r3, .L25
- 307              	.LVL19:
- 308              		.loc 1 136 16 view .LVU69
- 309 000e 53F82030 		ldr	r3, [r3, r0, lsl #2]
- 310              		.loc 1 136 2 view .LVU70
- 311 0012 9847     		blx	r3
- 312              	.LVL20:
+ 179 0013 02       		.byte	(.L11-.L12)/2
+ 180              		.p2align 1
+ 181              	.L11:
+ 109:Bsp/periph_serial.c **** 		return false;
+ 182              		.loc 1 109 5 is_stmt 0 view .LVU43
+ 183 0014 0721     		movs	r1, #7
+ 184              	.LVL7:
+ 109:Bsp/periph_serial.c **** 		return false;
+ 185              		.loc 1 109 5 view .LVU44
+ 186 0016 0120     		movs	r0, #1
+ 187              	.LVL8:
+ 188              	.L14:
+ 113:Bsp/periph_serial.c **** 	{
+ 114:Bsp/periph_serial.c **** 	case Serial_1:
+ 115:Bsp/periph_serial.c **** 		dma_id = DMA_2;
+ 116:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_7;
+ 117:Bsp/periph_serial.c **** 		break;
+ 118:Bsp/periph_serial.c **** 
+ 119:Bsp/periph_serial.c **** 	case Serial_2:
+ 120:Bsp/periph_serial.c **** 		dma_id = DMA_1;
+ 121:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_6;
+ 122:Bsp/periph_serial.c **** 		break;
+ 123:Bsp/periph_serial.c **** 
+ 124:Bsp/periph_serial.c **** 	case Serial_3:
+ 125:Bsp/periph_serial.c **** 		dma_id = DMA_1;
+ 126:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_3;
+ 127:Bsp/periph_serial.c **** 		break;
+ 128:Bsp/periph_serial.c **** 
+ 129:Bsp/periph_serial.c **** 	case Serial_6:
+ 130:Bsp/periph_serial.c **** 		dma_id = DMA_2;
+ 131:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_7;
+ 132:Bsp/periph_serial.c **** 		break;
+ 133:Bsp/periph_serial.c **** 
+ 134:Bsp/periph_serial.c **** 	default:
+ 135:Bsp/periph_serial.c **** 		return;
+ 136:Bsp/periph_serial.c **** 	}
  137:Bsp/periph_serial.c **** 
- 138:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
- 313              		.loc 1 138 2 is_stmt 1 view .LVU71
- 314              		.loc 1 138 23 is_stmt 0 view .LVU72
- 315 0014 164B     		ldr	r3, .L25+4
- 316 0016 53F82430 		ldr	r3, [r3, r4, lsl #2]
- 317              		.loc 1 138 2 view .LVU73
- 318 001a 0121     		movs	r1, #1
- 319 001c 154A     		ldr	r2, .L25+8
- 320 001e 52F82400 		ldr	r0, [r2, r4, lsl #2]
- 321 0022 9847     		blx	r3
- 322              	.LVL21:
+ 138:Bsp/periph_serial.c **** 	periph_Set_DMA_IRQCallback(dma_id, stream_id, callback);
+ 189              		.loc 1 138 2 is_stmt 1 view .LVU45
+ 190 0018 FFF7FEFF 		bl	periph_Set_DMA_IRQCallback
+ 191              	.LVL9:
  139:Bsp/periph_serial.c **** 
- 140:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
- 323              		.loc 1 140 2 is_stmt 1 view .LVU74
- 324              		.loc 1 140 26 is_stmt 0 view .LVU75
- 325 0024 9DF82820 		ldrb	r2, [sp, #40]	@ zero_extendqisi2
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 9
+ 140:Bsp/periph_serial.c **** 	return true;
+ 192              		.loc 1 140 2 view .LVU46
+ 193              		.loc 1 140 9 is_stmt 0 view .LVU47
+ 194 001c 0120     		movs	r0, #1
+ 195              	.L8:
+ 141:Bsp/periph_serial.c **** }
+ 196              		.loc 1 141 1 view .LVU48
+ 197 001e 08BD     		pop	{r3, pc}
+ 198              	.LVL10:
+ 199              	.L13:
+ 125:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_3;
+ 200              		.loc 1 125 3 is_stmt 1 view .LVU49
+ 126:Bsp/periph_serial.c **** 		break;
+ 201              		.loc 1 126 3 view .LVU50
+ 127:Bsp/periph_serial.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 7
 
 
- 326 0028 134B     		ldr	r3, .L25+12
- 327 002a 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 328              		.loc 1 140 2 view .LVU76
- 329 002e 3946     		mov	r1, r7
- 330 0030 6846     		mov	r0, sp
- 331 0032 9847     		blx	r3
- 332              	.LVL22:
- 141:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
- 333              		.loc 1 141 2 is_stmt 1 view .LVU77
- 334 0034 114F     		ldr	r7, .L25+16
- 335              	.LVL23:
- 336              		.loc 1 141 2 is_stmt 0 view .LVU78
- 337 0036 6946     		mov	r1, sp
- 338 0038 57F82400 		ldr	r0, [r7, r4, lsl #2]
- 339 003c FFF7FEFF 		bl	USART_Init
- 340              	.LVL24:
- 142:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], ENABLE);
- 341              		.loc 1 142 2 is_stmt 1 view .LVU79
- 342 0040 0121     		movs	r1, #1
- 343 0042 57F82400 		ldr	r0, [r7, r4, lsl #2]
- 344 0046 FFF7FEFF 		bl	USART_Cmd
- 345              	.LVL25:
- 143:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, ENABLE);
- 346              		.loc 1 143 2 view .LVU80
- 347 004a 0122     		movs	r2, #1
- 348 004c 40F22551 		movw	r1, #1317
- 349 0050 57F82400 		ldr	r0, [r7, r4, lsl #2]
- 350 0054 FFF7FEFF 		bl	USART_ITConfig
- 351              	.LVL26:
- 144:Bsp/periph_serial.c **** 
- 145:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENAB
- 352              		.loc 1 145 2 view .LVU81
- 353 0058 0123     		movs	r3, #1
- 354 005a 3246     		mov	r2, r6
- 355 005c 2946     		mov	r1, r5
- 356 005e 0848     		ldr	r0, .L25+20
- 357 0060 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
- 358 0062 FFF7FEFF 		bl	periph_nvic_Structure_Setting
- 359              	.LVL27:
- 146:Bsp/periph_serial.c **** }
- 360              		.loc 1 146 1 is_stmt 0 view .LVU82
- 361 0066 05B0     		add	sp, sp, #20
- 362              	.LCFI2:
- 363              		.cfi_def_cfa_offset 20
- 364              		@ sp needed
- 365 0068 F0BD     		pop	{r4, r5, r6, r7, pc}
- 366              	.LVL28:
- 367              	.L26:
- 368              		.loc 1 146 1 view .LVU83
- 369 006a 00BF     		.align	2
- 370              	.L25:
- 371 006c 00000000 		.word	.LANCHOR2
- 372 0070 00000000 		.word	.LANCHOR3
- 373 0074 00000000 		.word	.LANCHOR4
- 374 0078 00000000 		.word	.LANCHOR5
- 375 007c 00000000 		.word	.LANCHOR6
- 376 0080 00000000 		.word	.LANCHOR7
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 10
+ 202              		.loc 1 127 3 view .LVU51
+ 126:Bsp/periph_serial.c **** 		break;
+ 203              		.loc 1 126 13 is_stmt 0 view .LVU52
+ 204 0020 0321     		movs	r1, #3
+ 205              	.LVL11:
+ 125:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_3;
+ 206              		.loc 1 125 10 view .LVU53
+ 207 0022 0020     		movs	r0, #0
+ 208              	.LVL12:
+ 127:Bsp/periph_serial.c **** 
+ 209              		.loc 1 127 3 view .LVU54
+ 210 0024 F8E7     		b	.L14
+ 211              	.LVL13:
+ 212              	.L16:
+ 121:Bsp/periph_serial.c **** 		break;
+ 213              		.loc 1 121 13 view .LVU55
+ 214 0026 0621     		movs	r1, #6
+ 215              	.LVL14:
+ 120:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_6;
+ 216              		.loc 1 120 10 view .LVU56
+ 217 0028 0020     		movs	r0, #0
+ 218              	.LVL15:
+ 120:Bsp/periph_serial.c **** 		stream_id = DMA_Stream_6;
+ 219              		.loc 1 120 10 view .LVU57
+ 220 002a F5E7     		b	.L14
+ 221              	.LVL16:
+ 222              	.L15:
+ 223              	.LCFI1:
+ 224              		.cfi_def_cfa_offset 0
+ 225              		.cfi_restore 3
+ 226              		.cfi_restore 14
+ 110:Bsp/periph_serial.c **** 
+ 227              		.loc 1 110 10 view .LVU58
+ 228 002c 0020     		movs	r0, #0
+ 229              	.LVL17:
+ 230              		.loc 1 141 1 view .LVU59
+ 231 002e 7047     		bx	lr
+ 232              		.cfi_endproc
+ 233              	.LFE126:
+ 235              		.section	.text.Serial_Set_IRQ_Callback,"ax",%progbits
+ 236              		.align	1
+ 237              		.global	Serial_Set_IRQ_Callback
+ 238              		.syntax unified
+ 239              		.thumb
+ 240              		.thumb_func
+ 241              		.fpu fpv4-sp-d16
+ 243              	Serial_Set_IRQ_Callback:
+ 244              	.LVL18:
+ 245              	.LFB127:
+ 142:Bsp/periph_serial.c **** 
+ 143:Bsp/periph_serial.c **** bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback)
+ 144:Bsp/periph_serial.c **** {
+ 246              		.loc 1 144 1 is_stmt 1 view -0
+ 247              		.cfi_startproc
+ 248              		@ args = 0, pretend = 0, frame = 0
+ 249              		@ frame_needed = 0, uses_anonymous_args = 0
+ 250              		@ link register save eliminated.
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 8
 
 
- 377              		.cfi_endproc
- 378              	.LFE129:
- 380              		.section	.text.Serial_DMA_RX_Init,"ax",%progbits
- 381              		.align	1
- 382              		.global	Serial_DMA_RX_Init
- 383              		.syntax unified
- 384              		.thumb
- 385              		.thumb_func
- 386              		.fpu fpv4-sp-d16
- 388              	Serial_DMA_RX_Init:
- 389              	.LVL29:
- 390              	.LFB130:
+ 145:Bsp/periph_serial.c **** 	if (serial_id >= Serial_Port_Sum)
+ 251              		.loc 1 145 2 view .LVU61
+ 252              		.loc 1 145 5 is_stmt 0 view .LVU62
+ 253 0000 0328     		cmp	r0, #3
+ 254 0002 04D8     		bhi	.L23
+ 146:Bsp/periph_serial.c **** 		return false;
  147:Bsp/periph_serial.c **** 
- 148:Bsp/periph_serial.c **** void Serial_DMA_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t Sub
- 149:Bsp/periph_serial.c **** {
- 391              		.loc 1 149 1 is_stmt 1 view -0
- 392              		.cfi_startproc
- 393              		@ args = 12, pretend = 0, frame = 80
- 394              		@ frame_needed = 0, uses_anonymous_args = 0
- 395              		.loc 1 149 1 is_stmt 0 view .LVU85
- 396 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 397              	.LCFI3:
- 398              		.cfi_def_cfa_offset 20
- 399              		.cfi_offset 4, -20
- 400              		.cfi_offset 5, -16
- 401              		.cfi_offset 6, -12
- 402              		.cfi_offset 7, -8
- 403              		.cfi_offset 14, -4
- 404 0002 97B0     		sub	sp, sp, #92
- 405              	.LCFI4:
- 406              		.cfi_def_cfa_offset 112
- 407 0004 0446     		mov	r4, r0
- 408 0006 0D46     		mov	r5, r1
- 409 0008 1646     		mov	r6, r2
- 410 000a 1F46     		mov	r7, r3
- 150:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
- 411              		.loc 1 150 2 is_stmt 1 view .LVU86
- 151:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_InitStructure;
- 412              		.loc 1 151 2 view .LVU87
+ 148:Bsp/periph_serial.c **** 	IRQ_Callback[serial_id] = callback;
+ 255              		.loc 1 148 2 is_stmt 1 view .LVU63
+ 256              		.loc 1 148 26 is_stmt 0 view .LVU64
+ 257 0004 034B     		ldr	r3, .L24
+ 258 0006 43F82010 		str	r1, [r3, r0, lsl #2]
+ 149:Bsp/periph_serial.c **** 
+ 150:Bsp/periph_serial.c **** 	return true;
+ 259              		.loc 1 150 2 is_stmt 1 view .LVU65
+ 260              		.loc 1 150 9 is_stmt 0 view .LVU66
+ 261 000a 0120     		movs	r0, #1
+ 262              	.LVL19:
+ 263              		.loc 1 150 9 view .LVU67
+ 264 000c 7047     		bx	lr
+ 265              	.LVL20:
+ 266              	.L23:
+ 146:Bsp/periph_serial.c **** 		return false;
+ 267              		.loc 1 146 10 view .LVU68
+ 268 000e 0020     		movs	r0, #0
+ 269              	.LVL21:
+ 151:Bsp/periph_serial.c **** }
+ 270              		.loc 1 151 1 view .LVU69
+ 271 0010 7047     		bx	lr
+ 272              	.L25:
+ 273 0012 00BF     		.align	2
+ 274              	.L24:
+ 275 0014 00000000 		.word	.LANCHOR0
+ 276              		.cfi_endproc
+ 277              	.LFE127:
+ 279              		.section	.text.Serial_IRQ_RX_Init,"ax",%progbits
+ 280              		.align	1
+ 281              		.global	Serial_IRQ_RX_Init
+ 282              		.syntax unified
+ 283              		.thumb
+ 284              		.thumb_func
+ 285              		.fpu fpv4-sp-d16
+ 287              	Serial_IRQ_RX_Init:
+ 288              	.LVL22:
+ 289              	.LFB128:
  152:Bsp/periph_serial.c **** 
- 153:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
- 413              		.loc 1 153 2 view .LVU88
- 414              		.loc 1 153 16 is_stmt 0 view .LVU89
- 415 000c 314B     		ldr	r3, .L29
- 416              	.LVL30:
- 417              		.loc 1 153 16 view .LVU90
- 418 000e 53F82030 		ldr	r3, [r3, r0, lsl #2]
- 419              		.loc 1 153 2 view .LVU91
- 420 0012 9847     		blx	r3
- 421              	.LVL31:
- 154:Bsp/periph_serial.c **** 
- 155:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
- 422              		.loc 1 155 2 is_stmt 1 view .LVU92
- 423              		.loc 1 155 23 is_stmt 0 view .LVU93
- 424 0014 304B     		ldr	r3, .L29+4
- 425 0016 53F82430 		ldr	r3, [r3, r4, lsl #2]
- 426              		.loc 1 155 2 view .LVU94
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 11
+ 153:Bsp/periph_serial.c **** void Serial_IRQ_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t Sub
+ 154:Bsp/periph_serial.c **** {
+ 290              		.loc 1 154 1 is_stmt 1 view -0
+ 291              		.cfi_startproc
+ 292              		@ args = 4, pretend = 0, frame = 16
+ 293              		@ frame_needed = 0, uses_anonymous_args = 0
+ 294              		.loc 1 154 1 is_stmt 0 view .LVU71
+ 295 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 296              	.LCFI2:
+ 297              		.cfi_def_cfa_offset 20
+ 298              		.cfi_offset 4, -20
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 9
 
 
- 427 001a 0121     		movs	r1, #1
- 428 001c 2F4A     		ldr	r2, .L29+8
- 429 001e 52F82400 		ldr	r0, [r2, r4, lsl #2]
- 430 0022 9847     		blx	r3
- 431              	.LVL32:
- 156:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
- 432              		.loc 1 156 2 is_stmt 1 view .LVU95
- 433              		.loc 1 156 26 is_stmt 0 view .LVU96
- 434 0024 9DF87820 		ldrb	r2, [sp, #120]	@ zero_extendqisi2
- 435 0028 2D4B     		ldr	r3, .L29+12
- 436 002a 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 437              		.loc 1 156 2 view .LVU97
- 438 002e 2946     		mov	r1, r5
- 439 0030 12A8     		add	r0, sp, #72
- 440 0032 9847     		blx	r3
- 441              	.LVL33:
- 157:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
- 442              		.loc 1 157 2 is_stmt 1 view .LVU98
- 443 0034 2B4D     		ldr	r5, .L29+16
- 444              	.LVL34:
- 445              		.loc 1 157 2 is_stmt 0 view .LVU99
- 446 0036 12A9     		add	r1, sp, #72
- 447 0038 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 448 003c FFF7FEFF 		bl	USART_Init
- 449              	.LVL35:
- 158:Bsp/periph_serial.c **** 
- 159:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, DISABLE);
- 450              		.loc 1 159 2 is_stmt 1 view .LVU100
- 451 0040 0022     		movs	r2, #0
- 452 0042 40F22551 		movw	r1, #1317
- 453 0046 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 454 004a FFF7FEFF 		bl	USART_ITConfig
- 455              	.LVL36:
- 160:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
- 456              		.loc 1 160 2 view .LVU101
- 457 004e 0022     		movs	r2, #0
- 458 0050 40F22661 		movw	r1, #1574
- 459 0054 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 460 0058 FFF7FEFF 		bl	USART_ITConfig
- 461              	.LVL37:
- 161:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
- 462              		.loc 1 161 2 view .LVU102
- 463 005c 0022     		movs	r2, #0
- 464 005e 40F22771 		movw	r1, #1831
- 465 0062 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 466 0066 FFF7FEFF 		bl	USART_ITConfig
- 467              	.LVL38:
- 162:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, ENABLE);
- 468              		.loc 1 162 2 view .LVU103
- 469 006a 0122     		movs	r2, #1
- 470 006c 40F22441 		movw	r1, #1060
- 471 0070 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 472 0074 FFF7FEFF 		bl	USART_ITConfig
- 473              	.LVL39:
- 163:Bsp/periph_serial.c **** 
- 164:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Rx, ENABLE);
- 474              		.loc 1 164 2 view .LVU104
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 12
+ 299              		.cfi_offset 5, -16
+ 300              		.cfi_offset 6, -12
+ 301              		.cfi_offset 7, -8
+ 302              		.cfi_offset 14, -4
+ 303 0002 85B0     		sub	sp, sp, #20
+ 304              	.LCFI3:
+ 305              		.cfi_def_cfa_offset 40
+ 306 0004 0446     		mov	r4, r0
+ 307 0006 0F46     		mov	r7, r1
+ 308 0008 1546     		mov	r5, r2
+ 309 000a 1E46     		mov	r6, r3
+ 155:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
+ 310              		.loc 1 155 2 is_stmt 1 view .LVU72
+ 156:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
+ 311              		.loc 1 156 2 view .LVU73
+ 312              		.loc 1 156 16 is_stmt 0 view .LVU74
+ 313 000c 174B     		ldr	r3, .L28
+ 314              	.LVL23:
+ 315              		.loc 1 156 16 view .LVU75
+ 316 000e 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 317              		.loc 1 156 2 view .LVU76
+ 318 0012 9847     		blx	r3
+ 319              	.LVL24:
+ 157:Bsp/periph_serial.c **** 
+ 158:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
+ 320              		.loc 1 158 2 is_stmt 1 view .LVU77
+ 321              		.loc 1 158 23 is_stmt 0 view .LVU78
+ 322 0014 164B     		ldr	r3, .L28+4
+ 323 0016 53F82430 		ldr	r3, [r3, r4, lsl #2]
+ 324              		.loc 1 158 2 view .LVU79
+ 325 001a 0121     		movs	r1, #1
+ 326 001c 154A     		ldr	r2, .L28+8
+ 327 001e 52F82400 		ldr	r0, [r2, r4, lsl #2]
+ 328 0022 9847     		blx	r3
+ 329              	.LVL25:
+ 159:Bsp/periph_serial.c **** 
+ 160:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
+ 330              		.loc 1 160 2 is_stmt 1 view .LVU80
+ 331              		.loc 1 160 26 is_stmt 0 view .LVU81
+ 332 0024 9DF82820 		ldrb	r2, [sp, #40]	@ zero_extendqisi2
+ 333 0028 134B     		ldr	r3, .L28+12
+ 334 002a 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 335              		.loc 1 160 2 view .LVU82
+ 336 002e 3946     		mov	r1, r7
+ 337 0030 6846     		mov	r0, sp
+ 338 0032 9847     		blx	r3
+ 339              	.LVL26:
+ 161:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
+ 340              		.loc 1 161 2 is_stmt 1 view .LVU83
+ 341 0034 114F     		ldr	r7, .L28+16
+ 342              	.LVL27:
+ 343              		.loc 1 161 2 is_stmt 0 view .LVU84
+ 344 0036 6946     		mov	r1, sp
+ 345 0038 57F82400 		ldr	r0, [r7, r4, lsl #2]
+ 346 003c FFF7FEFF 		bl	USART_Init
+ 347              	.LVL28:
+ 162:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], ENABLE);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 10
 
 
- 475 0078 0122     		movs	r2, #1
- 476 007a 4021     		movs	r1, #64
- 477 007c 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 478 0080 FFF7FEFF 		bl	USART_DMACmd
- 479              	.LVL40:
- 165:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_InitStructure, Serial_DMA_RX_Channel[Serial], (uint32_t)&Serial_Port[Serial
- 480              		.loc 1 165 2 view .LVU105
- 481              		.loc 1 165 93 is_stmt 0 view .LVU106
- 482 0084 55F82420 		ldr	r2, [r5, r4, lsl #2]
- 483              		.loc 1 165 2 view .LVU107
- 484 0088 0223     		movs	r3, #2
- 485 008a 0193     		str	r3, [sp, #4]
- 486 008c BDF87430 		ldrh	r3, [sp, #116]
- 487 0090 0093     		str	r3, [sp]
- 488 0092 1C9B     		ldr	r3, [sp, #112]
- 489 0094 0432     		adds	r2, r2, #4
- 490 0096 1449     		ldr	r1, .L29+20
- 491 0098 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 492 009c 03A8     		add	r0, sp, #12
- 493 009e FFF7FEFF 		bl	periph_DMA_Serial
- 494              	.LVL41:
- 166:Bsp/periph_serial.c **** 	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_RX_Stream[Serial], &DMA_InitStructur
- 495              		.loc 1 166 2 is_stmt 1 view .LVU108
- 496 00a2 0123     		movs	r3, #1
- 497 00a4 03AA     		add	r2, sp, #12
- 498 00a6 1149     		ldr	r1, .L29+24
- 499 00a8 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 500 00ac 1048     		ldr	r0, .L29+28
- 501 00ae 50F82400 		ldr	r0, [r0, r4, lsl #2]
- 502 00b2 FFF7FEFF 		bl	periph_DMA_WithoutIRQ_Init
- 503              	.LVL42:
+ 348              		.loc 1 162 2 is_stmt 1 view .LVU85
+ 349 0040 0121     		movs	r1, #1
+ 350 0042 57F82400 		ldr	r0, [r7, r4, lsl #2]
+ 351 0046 FFF7FEFF 		bl	USART_Cmd
+ 352              	.LVL29:
+ 163:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, ENABLE);
+ 353              		.loc 1 163 2 view .LVU86
+ 354 004a 0122     		movs	r2, #1
+ 355 004c 40F22551 		movw	r1, #1317
+ 356 0050 57F82400 		ldr	r0, [r7, r4, lsl #2]
+ 357 0054 FFF7FEFF 		bl	USART_ITConfig
+ 358              	.LVL30:
+ 164:Bsp/periph_serial.c **** 
+ 165:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENAB
+ 359              		.loc 1 165 2 view .LVU87
+ 360 0058 0123     		movs	r3, #1
+ 361 005a 3246     		mov	r2, r6
+ 362 005c 2946     		mov	r1, r5
+ 363 005e 0848     		ldr	r0, .L28+20
+ 364 0060 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
+ 365 0062 FFF7FEFF 		bl	periph_nvic_Structure_Setting
+ 366              	.LVL31:
+ 166:Bsp/periph_serial.c **** }
+ 367              		.loc 1 166 1 is_stmt 0 view .LVU88
+ 368 0066 05B0     		add	sp, sp, #20
+ 369              	.LCFI4:
+ 370              		.cfi_def_cfa_offset 20
+ 371              		@ sp needed
+ 372 0068 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 373              	.LVL32:
+ 374              	.L29:
+ 375              		.loc 1 166 1 view .LVU89
+ 376 006a 00BF     		.align	2
+ 377              	.L28:
+ 378 006c 00000000 		.word	.LANCHOR1
+ 379 0070 00000000 		.word	.LANCHOR2
+ 380 0074 00000000 		.word	.LANCHOR3
+ 381 0078 00000000 		.word	.LANCHOR4
+ 382 007c 00000000 		.word	.LANCHOR5
+ 383 0080 00000000 		.word	.LANCHOR6
+ 384              		.cfi_endproc
+ 385              	.LFE128:
+ 387              		.section	.text.Serial_DMA_RX_Init,"ax",%progbits
+ 388              		.align	1
+ 389              		.global	Serial_DMA_RX_Init
+ 390              		.syntax unified
+ 391              		.thumb
+ 392              		.thumb_func
+ 393              		.fpu fpv4-sp-d16
+ 395              	Serial_DMA_RX_Init:
+ 396              	.LVL33:
+ 397              	.LFB129:
  167:Bsp/periph_serial.c **** 
- 168:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENAB
- 504              		.loc 1 168 2 view .LVU109
- 505 00b6 0123     		movs	r3, #1
- 506 00b8 3A46     		mov	r2, r7
- 507 00ba 3146     		mov	r1, r6
- 508 00bc 0D48     		ldr	r0, .L29+32
- 509 00be 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
- 510 00c0 FFF7FEFF 		bl	periph_nvic_Structure_Setting
- 511              	.LVL43:
- 169:Bsp/periph_serial.c **** 
- 170:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], ENABLE);
- 512              		.loc 1 170 2 view .LVU110
- 513 00c4 0121     		movs	r1, #1
- 514 00c6 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 515 00ca FFF7FEFF 		bl	USART_Cmd
- 516              	.LVL44:
- 171:Bsp/periph_serial.c **** }
- 517              		.loc 1 171 1 is_stmt 0 view .LVU111
- 518 00ce 17B0     		add	sp, sp, #92
- 519              	.LCFI5:
- 520              		.cfi_def_cfa_offset 20
- 521              		@ sp needed
- 522 00d0 F0BD     		pop	{r4, r5, r6, r7, pc}
- 523              	.LVL45:
- 524              	.L30:
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 13
+ 168:Bsp/periph_serial.c **** void Serial_DMA_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t Sub
+ 169:Bsp/periph_serial.c **** {
+ 398              		.loc 1 169 1 is_stmt 1 view -0
+ 399              		.cfi_startproc
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 11
 
 
- 525              		.loc 1 171 1 view .LVU112
- 526 00d2 00BF     		.align	2
- 527              	.L29:
- 528 00d4 00000000 		.word	.LANCHOR2
- 529 00d8 00000000 		.word	.LANCHOR3
- 530 00dc 00000000 		.word	.LANCHOR4
- 531 00e0 00000000 		.word	.LANCHOR5
- 532 00e4 00000000 		.word	.LANCHOR6
- 533 00e8 00000000 		.word	.LANCHOR8
- 534 00ec 00000000 		.word	.LANCHOR9
- 535 00f0 00000000 		.word	.LANCHOR10
- 536 00f4 00000000 		.word	.LANCHOR7
- 537              		.cfi_endproc
- 538              	.LFE130:
- 540              		.section	.text.Serial_DMA_TX_Init,"ax",%progbits
- 541              		.align	1
- 542              		.global	Serial_DMA_TX_Init
- 543              		.syntax unified
- 544              		.thumb
- 545              		.thumb_func
- 546              		.fpu fpv4-sp-d16
- 548              	Serial_DMA_TX_Init:
- 549              	.LVL46:
- 550              	.LFB131:
+ 400              		@ args = 12, pretend = 0, frame = 80
+ 401              		@ frame_needed = 0, uses_anonymous_args = 0
+ 402              		.loc 1 169 1 is_stmt 0 view .LVU91
+ 403 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 404              	.LCFI5:
+ 405              		.cfi_def_cfa_offset 20
+ 406              		.cfi_offset 4, -20
+ 407              		.cfi_offset 5, -16
+ 408              		.cfi_offset 6, -12
+ 409              		.cfi_offset 7, -8
+ 410              		.cfi_offset 14, -4
+ 411 0002 97B0     		sub	sp, sp, #92
+ 412              	.LCFI6:
+ 413              		.cfi_def_cfa_offset 112
+ 414 0004 0446     		mov	r4, r0
+ 415 0006 0D46     		mov	r5, r1
+ 416 0008 1646     		mov	r6, r2
+ 417 000a 1F46     		mov	r7, r3
+ 170:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
+ 418              		.loc 1 170 2 is_stmt 1 view .LVU92
+ 171:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_InitStructure;
+ 419              		.loc 1 171 2 view .LVU93
  172:Bsp/periph_serial.c **** 
- 173:Bsp/periph_serial.c **** void Serial_DMA_TX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t Sub
- 174:Bsp/periph_serial.c **** {
- 551              		.loc 1 174 1 is_stmt 1 view -0
- 552              		.cfi_startproc
- 553              		@ args = 12, pretend = 0, frame = 80
- 554              		@ frame_needed = 0, uses_anonymous_args = 0
- 555              		.loc 1 174 1 is_stmt 0 view .LVU114
- 556 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 557              	.LCFI6:
- 558              		.cfi_def_cfa_offset 24
- 559              		.cfi_offset 4, -24
- 560              		.cfi_offset 5, -20
- 561              		.cfi_offset 6, -16
- 562              		.cfi_offset 7, -12
- 563              		.cfi_offset 8, -8
- 564              		.cfi_offset 14, -4
- 565 0004 96B0     		sub	sp, sp, #88
- 566              	.LCFI7:
- 567              		.cfi_def_cfa_offset 112
- 568 0006 0446     		mov	r4, r0
- 569 0008 0E46     		mov	r6, r1
- 570 000a 9046     		mov	r8, r2
- 571 000c 1D46     		mov	r5, r3
- 175:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
- 572              		.loc 1 175 2 is_stmt 1 view .LVU115
- 176:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_TX_InitStructure;
- 573              		.loc 1 176 2 view .LVU116
- 177:Bsp/periph_serial.c **** 
- 178:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
- 574              		.loc 1 178 2 view .LVU117
- 575              		.loc 1 178 16 is_stmt 0 view .LVU118
- 576 000e 254B     		ldr	r3, .L33
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 14
+ 173:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
+ 420              		.loc 1 173 2 view .LVU94
+ 421              		.loc 1 173 16 is_stmt 0 view .LVU95
+ 422 000c 314B     		ldr	r3, .L32
+ 423              	.LVL34:
+ 424              		.loc 1 173 16 view .LVU96
+ 425 000e 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 426              		.loc 1 173 2 view .LVU97
+ 427 0012 9847     		blx	r3
+ 428              	.LVL35:
+ 174:Bsp/periph_serial.c **** 
+ 175:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
+ 429              		.loc 1 175 2 is_stmt 1 view .LVU98
+ 430              		.loc 1 175 23 is_stmt 0 view .LVU99
+ 431 0014 304B     		ldr	r3, .L32+4
+ 432 0016 53F82430 		ldr	r3, [r3, r4, lsl #2]
+ 433              		.loc 1 175 2 view .LVU100
+ 434 001a 0121     		movs	r1, #1
+ 435 001c 2F4A     		ldr	r2, .L32+8
+ 436 001e 52F82400 		ldr	r0, [r2, r4, lsl #2]
+ 437 0022 9847     		blx	r3
+ 438              	.LVL36:
+ 176:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
+ 439              		.loc 1 176 2 is_stmt 1 view .LVU101
+ 440              		.loc 1 176 26 is_stmt 0 view .LVU102
+ 441 0024 9DF87820 		ldrb	r2, [sp, #120]	@ zero_extendqisi2
+ 442 0028 2D4B     		ldr	r3, .L32+12
+ 443 002a 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 444              		.loc 1 176 2 view .LVU103
+ 445 002e 2946     		mov	r1, r5
+ 446 0030 12A8     		add	r0, sp, #72
+ 447 0032 9847     		blx	r3
+ 448              	.LVL37:
+ 177:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 12
 
 
- 577              	.LVL47:
- 578              		.loc 1 178 16 view .LVU119
- 579 0010 53F82030 		ldr	r3, [r3, r0, lsl #2]
- 580              		.loc 1 178 2 view .LVU120
- 581 0014 9847     		blx	r3
- 582              	.LVL48:
- 179:Bsp/periph_serial.c **** 
- 180:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
- 583              		.loc 1 180 2 is_stmt 1 view .LVU121
- 584              		.loc 1 180 23 is_stmt 0 view .LVU122
- 585 0016 244B     		ldr	r3, .L33+4
- 586 0018 53F82430 		ldr	r3, [r3, r4, lsl #2]
- 587              		.loc 1 180 2 view .LVU123
- 588 001c 0121     		movs	r1, #1
- 589 001e 234A     		ldr	r2, .L33+8
- 590 0020 52F82400 		ldr	r0, [r2, r4, lsl #2]
- 591 0024 9847     		blx	r3
- 592              	.LVL49:
- 181:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
- 593              		.loc 1 181 2 is_stmt 1 view .LVU124
- 594              		.loc 1 181 26 is_stmt 0 view .LVU125
- 595 0026 9DF87820 		ldrb	r2, [sp, #120]	@ zero_extendqisi2
- 596 002a 214B     		ldr	r3, .L33+12
- 597 002c 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 598              		.loc 1 181 2 view .LVU126
- 599 0030 3146     		mov	r1, r6
- 600 0032 12A8     		add	r0, sp, #72
- 601 0034 9847     		blx	r3
- 602              	.LVL50:
- 182:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
- 603              		.loc 1 182 2 is_stmt 1 view .LVU127
- 604 0036 1F4E     		ldr	r6, .L33+16
- 605              	.LVL51:
- 606              		.loc 1 182 2 is_stmt 0 view .LVU128
- 607 0038 12A9     		add	r1, sp, #72
- 608 003a 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 609 003e FFF7FEFF 		bl	USART_Init
- 610              	.LVL52:
+ 449              		.loc 1 177 2 is_stmt 1 view .LVU104
+ 450 0034 2B4D     		ldr	r5, .L32+16
+ 451              	.LVL38:
+ 452              		.loc 1 177 2 is_stmt 0 view .LVU105
+ 453 0036 12A9     		add	r1, sp, #72
+ 454 0038 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 455 003c FFF7FEFF 		bl	USART_Init
+ 456              	.LVL39:
+ 178:Bsp/periph_serial.c **** 
+ 179:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, DISABLE);
+ 457              		.loc 1 179 2 is_stmt 1 view .LVU106
+ 458 0040 0022     		movs	r2, #0
+ 459 0042 40F22551 		movw	r1, #1317
+ 460 0046 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 461 004a FFF7FEFF 		bl	USART_ITConfig
+ 462              	.LVL40:
+ 180:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
+ 463              		.loc 1 180 2 view .LVU107
+ 464 004e 0022     		movs	r2, #0
+ 465 0050 40F22661 		movw	r1, #1574
+ 466 0054 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 467 0058 FFF7FEFF 		bl	USART_ITConfig
+ 468              	.LVL41:
+ 181:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
+ 469              		.loc 1 181 2 view .LVU108
+ 470 005c 0022     		movs	r2, #0
+ 471 005e 40F22771 		movw	r1, #1831
+ 472 0062 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 473 0066 FFF7FEFF 		bl	USART_ITConfig
+ 474              	.LVL42:
+ 182:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, ENABLE);
+ 475              		.loc 1 182 2 view .LVU109
+ 476 006a 0122     		movs	r2, #1
+ 477 006c 40F22441 		movw	r1, #1060
+ 478 0070 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 479 0074 FFF7FEFF 		bl	USART_ITConfig
+ 480              	.LVL43:
  183:Bsp/periph_serial.c **** 
- 184:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Tx, ENABLE);
- 611              		.loc 1 184 2 is_stmt 1 view .LVU129
- 612 0042 0122     		movs	r2, #1
- 613 0044 8021     		movs	r1, #128
- 614 0046 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 615 004a FFF7FEFF 		bl	USART_DMACmd
- 616              	.LVL53:
- 185:Bsp/periph_serial.c **** 
- 186:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_TX_InitStructure, Serial_DMA_TX_Channel[Serial], (uint32_t)&Serial_Port[Ser
- 617              		.loc 1 186 2 view .LVU130
- 618              		.loc 1 186 96 is_stmt 0 view .LVU131
- 619 004e 56F82420 		ldr	r2, [r6, r4, lsl #2]
- 620              		.loc 1 186 2 view .LVU132
- 621 0052 0127     		movs	r7, #1
- 622 0054 0197     		str	r7, [sp, #4]
- 623 0056 BDF87430 		ldrh	r3, [sp, #116]
- 624 005a 0093     		str	r3, [sp]
- 625 005c 1C9B     		ldr	r3, [sp, #112]
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 15
+ 184:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Rx, ENABLE);
+ 481              		.loc 1 184 2 view .LVU110
+ 482 0078 0122     		movs	r2, #1
+ 483 007a 4021     		movs	r1, #64
+ 484 007c 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 485 0080 FFF7FEFF 		bl	USART_DMACmd
+ 486              	.LVL44:
+ 185:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_InitStructure, Serial_DMA_RX_Channel[Serial], (uint32_t)&Serial_Port[Serial
+ 487              		.loc 1 185 2 view .LVU111
+ 488              		.loc 1 185 93 is_stmt 0 view .LVU112
+ 489 0084 55F82420 		ldr	r2, [r5, r4, lsl #2]
+ 490              		.loc 1 185 2 view .LVU113
+ 491 0088 0223     		movs	r3, #2
+ 492 008a 0193     		str	r3, [sp, #4]
+ 493 008c BDF87430 		ldrh	r3, [sp, #116]
+ 494 0090 0093     		str	r3, [sp]
+ 495 0092 1C9B     		ldr	r3, [sp, #112]
+ 496 0094 0432     		adds	r2, r2, #4
+ 497 0096 1449     		ldr	r1, .L32+20
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 13
 
 
- 626 005e 0432     		adds	r2, r2, #4
- 627 0060 1549     		ldr	r1, .L33+20
- 628 0062 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 629 0066 03A8     		add	r0, sp, #12
- 630 0068 FFF7FEFF 		bl	periph_DMA_Serial
- 631              	.LVL54:
- 187:Bsp/periph_serial.c **** 	periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructur
- 632              		.loc 1 187 2 is_stmt 1 view .LVU133
- 633 006c 0023     		movs	r3, #0
- 634 006e 0093     		str	r3, [sp]
- 635 0070 1023     		movs	r3, #16
- 636 0072 03AA     		add	r2, sp, #12
- 637 0074 1149     		ldr	r1, .L33+24
- 638 0076 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 639 007a 1148     		ldr	r0, .L33+28
- 640 007c 50F82400 		ldr	r0, [r0, r4, lsl #2]
- 641 0080 FFF7FEFF 		bl	periph_DMA_WithIRQ_Init
- 642              	.LVL55:
- 188:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority +
- 643              		.loc 1 188 2 view .LVU134
- 644 0084 3D44     		add	r5, r5, r7
- 645 0086 3B46     		mov	r3, r7
- 646 0088 EAB2     		uxtb	r2, r5
- 647 008a 4146     		mov	r1, r8
- 648 008c 0D48     		ldr	r0, .L33+32
- 649 008e 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
- 650 0090 FFF7FEFF 		bl	periph_nvic_Structure_Setting
- 651              	.LVL56:
+ 498 0098 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 499 009c 03A8     		add	r0, sp, #12
+ 500 009e FFF7FEFF 		bl	periph_DMA_Serial
+ 501              	.LVL45:
+ 186:Bsp/periph_serial.c **** 	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_RX_Stream[Serial], &DMA_InitStructur
+ 502              		.loc 1 186 2 is_stmt 1 view .LVU114
+ 503 00a2 0123     		movs	r3, #1
+ 504 00a4 03AA     		add	r2, sp, #12
+ 505 00a6 1149     		ldr	r1, .L32+24
+ 506 00a8 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 507 00ac 1048     		ldr	r0, .L32+28
+ 508 00ae 50F82400 		ldr	r0, [r0, r4, lsl #2]
+ 509 00b2 FFF7FEFF 		bl	periph_DMA_WithoutIRQ_Init
+ 510              	.LVL46:
+ 187:Bsp/periph_serial.c **** 
+ 188:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENAB
+ 511              		.loc 1 188 2 view .LVU115
+ 512 00b6 0123     		movs	r3, #1
+ 513 00b8 3A46     		mov	r2, r7
+ 514 00ba 3146     		mov	r1, r6
+ 515 00bc 0D48     		ldr	r0, .L32+32
+ 516 00be 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
+ 517 00c0 FFF7FEFF 		bl	periph_nvic_Structure_Setting
+ 518              	.LVL47:
  189:Bsp/periph_serial.c **** 
  190:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], ENABLE);
- 652              		.loc 1 190 2 view .LVU135
- 653 0094 3946     		mov	r1, r7
- 654 0096 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 655 009a FFF7FEFF 		bl	USART_Cmd
- 656              	.LVL57:
+ 519              		.loc 1 190 2 view .LVU116
+ 520 00c4 0121     		movs	r1, #1
+ 521 00c6 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 522 00ca FFF7FEFF 		bl	USART_Cmd
+ 523              	.LVL48:
  191:Bsp/periph_serial.c **** }
- 657              		.loc 1 191 1 is_stmt 0 view .LVU136
- 658 009e 16B0     		add	sp, sp, #88
- 659              	.LCFI8:
- 660              		.cfi_def_cfa_offset 24
- 661              		@ sp needed
- 662 00a0 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 663              	.LVL58:
- 664              	.L34:
- 665              		.loc 1 191 1 view .LVU137
- 666              		.align	2
- 667              	.L33:
- 668 00a4 00000000 		.word	.LANCHOR2
- 669 00a8 00000000 		.word	.LANCHOR3
- 670 00ac 00000000 		.word	.LANCHOR4
- 671 00b0 00000000 		.word	.LANCHOR5
- 672 00b4 00000000 		.word	.LANCHOR6
- 673 00b8 00000000 		.word	.LANCHOR11
- 674 00bc 00000000 		.word	.LANCHOR12
- 675 00c0 00000000 		.word	.LANCHOR10
- 676 00c4 00000000 		.word	.LANCHOR13
- 677              		.cfi_endproc
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 16
+ 524              		.loc 1 191 1 is_stmt 0 view .LVU117
+ 525 00ce 17B0     		add	sp, sp, #92
+ 526              	.LCFI7:
+ 527              		.cfi_def_cfa_offset 20
+ 528              		@ sp needed
+ 529 00d0 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 530              	.LVL49:
+ 531              	.L33:
+ 532              		.loc 1 191 1 view .LVU118
+ 533 00d2 00BF     		.align	2
+ 534              	.L32:
+ 535 00d4 00000000 		.word	.LANCHOR1
+ 536 00d8 00000000 		.word	.LANCHOR2
+ 537 00dc 00000000 		.word	.LANCHOR3
+ 538 00e0 00000000 		.word	.LANCHOR4
+ 539 00e4 00000000 		.word	.LANCHOR5
+ 540 00e8 00000000 		.word	.LANCHOR7
+ 541 00ec 00000000 		.word	.LANCHOR8
+ 542 00f0 00000000 		.word	.LANCHOR9
+ 543 00f4 00000000 		.word	.LANCHOR6
+ 544              		.cfi_endproc
+ 545              	.LFE129:
+ 547              		.section	.text.Serial_DMA_TX_Init,"ax",%progbits
+ 548              		.align	1
+ 549              		.global	Serial_DMA_TX_Init
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 14
 
 
- 678              	.LFE131:
- 680              		.section	.text.Serial_Deinit,"ax",%progbits
- 681              		.align	1
- 682              		.global	Serial_Deinit
- 683              		.syntax unified
- 684              		.thumb
- 685              		.thumb_func
- 686              		.fpu fpv4-sp-d16
- 688              	Serial_Deinit:
- 689              	.LVL59:
- 690              	.LFB132:
+ 550              		.syntax unified
+ 551              		.thumb
+ 552              		.thumb_func
+ 553              		.fpu fpv4-sp-d16
+ 555              	Serial_DMA_TX_Init:
+ 556              	.LVL50:
+ 557              	.LFB130:
  192:Bsp/periph_serial.c **** 
- 193:Bsp/periph_serial.c **** bool Serial_Deinit(Serial_List Serial)
+ 193:Bsp/periph_serial.c **** void Serial_DMA_TX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t Sub
  194:Bsp/periph_serial.c **** {
- 691              		.loc 1 194 1 is_stmt 1 view -0
- 692              		.cfi_startproc
- 693              		@ args = 0, pretend = 0, frame = 0
- 694              		@ frame_needed = 0, uses_anonymous_args = 0
- 195:Bsp/periph_serial.c **** 	if (Serial >= Serial_Port_Sum)
- 695              		.loc 1 195 2 view .LVU139
- 696              		.loc 1 195 5 is_stmt 0 view .LVU140
- 697 0000 0328     		cmp	r0, #3
- 698 0002 01D9     		bls	.L42
- 196:Bsp/periph_serial.c **** 		return false;
- 699              		.loc 1 196 10 view .LVU141
- 700 0004 0020     		movs	r0, #0
- 701              	.LVL60:
+ 558              		.loc 1 194 1 is_stmt 1 view -0
+ 559              		.cfi_startproc
+ 560              		@ args = 12, pretend = 0, frame = 80
+ 561              		@ frame_needed = 0, uses_anonymous_args = 0
+ 562              		.loc 1 194 1 is_stmt 0 view .LVU120
+ 563 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 564              	.LCFI8:
+ 565              		.cfi_def_cfa_offset 24
+ 566              		.cfi_offset 4, -24
+ 567              		.cfi_offset 5, -20
+ 568              		.cfi_offset 6, -16
+ 569              		.cfi_offset 7, -12
+ 570              		.cfi_offset 8, -8
+ 571              		.cfi_offset 14, -4
+ 572 0004 96B0     		sub	sp, sp, #88
+ 573              	.LCFI9:
+ 574              		.cfi_def_cfa_offset 112
+ 575 0006 0446     		mov	r4, r0
+ 576 0008 0E46     		mov	r6, r1
+ 577 000a 9046     		mov	r8, r2
+ 578 000c 1D46     		mov	r5, r3
+ 195:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
+ 579              		.loc 1 195 2 is_stmt 1 view .LVU121
+ 196:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_TX_InitStructure;
+ 580              		.loc 1 196 2 view .LVU122
  197:Bsp/periph_serial.c **** 
- 198:Bsp/periph_serial.c **** 	IRQ_Callback[Serial] = NULL;
- 199:Bsp/periph_serial.c **** 	DMAIrq_Callback[Serial] = NULL;
- 200:Bsp/periph_serial.c **** 
- 201:Bsp/periph_serial.c **** 	USART_DeInit(Serial_Port[Serial]);
- 202:Bsp/periph_serial.c **** 
- 203:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, DISABLE);
- 204:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
- 205:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
- 206:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, DISABLE);
- 207:Bsp/periph_serial.c **** 
- 208:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], DISABLE);
+ 198:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
+ 581              		.loc 1 198 2 view .LVU123
+ 582              		.loc 1 198 16 is_stmt 0 view .LVU124
+ 583 000e 254B     		ldr	r3, .L36
+ 584              	.LVL51:
+ 585              		.loc 1 198 16 view .LVU125
+ 586 0010 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 587              		.loc 1 198 2 view .LVU126
+ 588 0014 9847     		blx	r3
+ 589              	.LVL52:
+ 199:Bsp/periph_serial.c **** 
+ 200:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
+ 590              		.loc 1 200 2 is_stmt 1 view .LVU127
+ 591              		.loc 1 200 23 is_stmt 0 view .LVU128
+ 592 0016 244B     		ldr	r3, .L36+4
+ 593 0018 53F82430 		ldr	r3, [r3, r4, lsl #2]
+ 594              		.loc 1 200 2 view .LVU129
+ 595 001c 0121     		movs	r1, #1
+ 596 001e 234A     		ldr	r2, .L36+8
+ 597 0020 52F82400 		ldr	r0, [r2, r4, lsl #2]
+ 598 0024 9847     		blx	r3
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 15
+
+
+ 599              	.LVL53:
+ 201:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
+ 600              		.loc 1 201 2 is_stmt 1 view .LVU130
+ 601              		.loc 1 201 26 is_stmt 0 view .LVU131
+ 602 0026 9DF87820 		ldrb	r2, [sp, #120]	@ zero_extendqisi2
+ 603 002a 214B     		ldr	r3, .L36+12
+ 604 002c 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 605              		.loc 1 201 2 view .LVU132
+ 606 0030 3146     		mov	r1, r6
+ 607 0032 12A8     		add	r0, sp, #72
+ 608 0034 9847     		blx	r3
+ 609              	.LVL54:
+ 202:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
+ 610              		.loc 1 202 2 is_stmt 1 view .LVU133
+ 611 0036 1F4E     		ldr	r6, .L36+16
+ 612              	.LVL55:
+ 613              		.loc 1 202 2 is_stmt 0 view .LVU134
+ 614 0038 12A9     		add	r1, sp, #72
+ 615 003a 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 616 003e FFF7FEFF 		bl	USART_Init
+ 617              	.LVL56:
+ 203:Bsp/periph_serial.c **** 
+ 204:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Tx, ENABLE);
+ 618              		.loc 1 204 2 is_stmt 1 view .LVU135
+ 619 0042 0122     		movs	r2, #1
+ 620 0044 8021     		movs	r1, #128
+ 621 0046 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 622 004a FFF7FEFF 		bl	USART_DMACmd
+ 623              	.LVL57:
+ 205:Bsp/periph_serial.c **** 
+ 206:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_TX_InitStructure, Serial_DMA_TX_Channel[Serial], (uint32_t)&Serial_Port[Ser
+ 624              		.loc 1 206 2 view .LVU136
+ 625              		.loc 1 206 96 is_stmt 0 view .LVU137
+ 626 004e 56F82420 		ldr	r2, [r6, r4, lsl #2]
+ 627              		.loc 1 206 2 view .LVU138
+ 628 0052 0127     		movs	r7, #1
+ 629 0054 0197     		str	r7, [sp, #4]
+ 630 0056 BDF87430 		ldrh	r3, [sp, #116]
+ 631 005a 0093     		str	r3, [sp]
+ 632 005c 1C9B     		ldr	r3, [sp, #112]
+ 633 005e 0432     		adds	r2, r2, #4
+ 634 0060 1549     		ldr	r1, .L36+20
+ 635 0062 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 636 0066 03A8     		add	r0, sp, #12
+ 637 0068 FFF7FEFF 		bl	periph_DMA_Serial
+ 638              	.LVL58:
+ 207:Bsp/periph_serial.c **** 	periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructur
+ 639              		.loc 1 207 2 is_stmt 1 view .LVU139
+ 640 006c 0023     		movs	r3, #0
+ 641 006e 0093     		str	r3, [sp]
+ 642 0070 1023     		movs	r3, #16
+ 643 0072 03AA     		add	r2, sp, #12
+ 644 0074 1149     		ldr	r1, .L36+24
+ 645 0076 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 646 007a 1148     		ldr	r0, .L36+28
+ 647 007c 50F82400 		ldr	r0, [r0, r4, lsl #2]
+ 648 0080 FFF7FEFF 		bl	periph_DMA_WithIRQ_Init
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 16
+
+
+ 649              	.LVL59:
+ 208:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority +
+ 650              		.loc 1 208 2 view .LVU140
+ 651 0084 3D44     		add	r5, r5, r7
+ 652 0086 3B46     		mov	r3, r7
+ 653 0088 EAB2     		uxtb	r2, r5
+ 654 008a 4146     		mov	r1, r8
+ 655 008c 0D48     		ldr	r0, .L36+32
+ 656 008e 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
+ 657 0090 FFF7FEFF 		bl	periph_nvic_Structure_Setting
+ 658              	.LVL60:
  209:Bsp/periph_serial.c **** 
- 210:Bsp/periph_serial.c **** 	return true;
+ 210:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], ENABLE);
+ 659              		.loc 1 210 2 view .LVU141
+ 660 0094 3946     		mov	r1, r7
+ 661 0096 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 662 009a FFF7FEFF 		bl	USART_Cmd
+ 663              	.LVL61:
  211:Bsp/periph_serial.c **** }
- 702              		.loc 1 211 1 view .LVU142
- 703 0006 7047     		bx	lr
- 704              	.LVL61:
- 705              	.L42:
- 194:Bsp/periph_serial.c **** 	if (Serial >= Serial_Port_Sum)
- 706              		.loc 1 194 1 view .LVU143
- 707 0008 70B5     		push	{r4, r5, r6, lr}
- 708              	.LCFI9:
- 709              		.cfi_def_cfa_offset 16
- 710              		.cfi_offset 4, -16
- 711              		.cfi_offset 5, -12
- 712              		.cfi_offset 6, -8
- 713              		.cfi_offset 14, -4
- 714 000a 0446     		mov	r4, r0
- 198:Bsp/periph_serial.c **** 	DMAIrq_Callback[Serial] = NULL;
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 17
-
-
- 715              		.loc 1 198 2 is_stmt 1 view .LVU144
- 198:Bsp/periph_serial.c **** 	DMAIrq_Callback[Serial] = NULL;
- 716              		.loc 1 198 23 is_stmt 0 view .LVU145
- 717 000c 0025     		movs	r5, #0
- 718 000e 174B     		ldr	r3, .L43
- 719 0010 43F82050 		str	r5, [r3, r0, lsl #2]
- 199:Bsp/periph_serial.c **** 
- 720              		.loc 1 199 2 is_stmt 1 view .LVU146
- 199:Bsp/periph_serial.c **** 
- 721              		.loc 1 199 26 is_stmt 0 view .LVU147
- 722 0014 164B     		ldr	r3, .L43+4
- 723 0016 43F82050 		str	r5, [r3, r0, lsl #2]
- 201:Bsp/periph_serial.c **** 
- 724              		.loc 1 201 2 is_stmt 1 view .LVU148
- 725 001a 164E     		ldr	r6, .L43+8
- 726 001c 56F82000 		ldr	r0, [r6, r0, lsl #2]
- 727              	.LVL62:
- 201:Bsp/periph_serial.c **** 
- 728              		.loc 1 201 2 is_stmt 0 view .LVU149
- 729 0020 FFF7FEFF 		bl	USART_DeInit
- 730              	.LVL63:
- 203:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
- 731              		.loc 1 203 2 is_stmt 1 view .LVU150
- 732 0024 2A46     		mov	r2, r5
- 733 0026 40F22551 		movw	r1, #1317
- 734 002a 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 735 002e FFF7FEFF 		bl	USART_ITConfig
- 736              	.LVL64:
- 204:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
- 737              		.loc 1 204 2 view .LVU151
- 738 0032 2A46     		mov	r2, r5
- 739 0034 40F22661 		movw	r1, #1574
- 740 0038 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 741 003c FFF7FEFF 		bl	USART_ITConfig
- 742              	.LVL65:
- 205:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, DISABLE);
- 743              		.loc 1 205 2 view .LVU152
- 744 0040 2A46     		mov	r2, r5
- 745 0042 40F22771 		movw	r1, #1831
- 746 0046 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 747 004a FFF7FEFF 		bl	USART_ITConfig
- 748              	.LVL66:
- 206:Bsp/periph_serial.c **** 
- 749              		.loc 1 206 2 view .LVU153
- 750 004e 2A46     		mov	r2, r5
- 751 0050 40F22441 		movw	r1, #1060
- 752 0054 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 753 0058 FFF7FEFF 		bl	USART_ITConfig
- 754              	.LVL67:
- 208:Bsp/periph_serial.c **** 
- 755              		.loc 1 208 2 view .LVU154
- 756 005c 2946     		mov	r1, r5
- 757 005e 56F82400 		ldr	r0, [r6, r4, lsl #2]
- 758 0062 FFF7FEFF 		bl	USART_Cmd
- 759              	.LVL68:
- 210:Bsp/periph_serial.c **** }
- 760              		.loc 1 210 2 view .LVU155
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 18
-
-
- 210:Bsp/periph_serial.c **** }
- 761              		.loc 1 210 9 is_stmt 0 view .LVU156
- 762 0066 0120     		movs	r0, #1
- 763              		.loc 1 211 1 view .LVU157
- 764 0068 70BD     		pop	{r4, r5, r6, pc}
- 765              	.L44:
- 766 006a 00BF     		.align	2
- 767              	.L43:
- 768 006c 00000000 		.word	.LANCHOR0
- 769 0070 00000000 		.word	.LANCHOR1
- 770 0074 00000000 		.word	.LANCHOR6
- 771              		.cfi_endproc
- 772              	.LFE132:
- 774              		.section	.text.Serial_DMA_RXTX_Init,"ax",%progbits
- 775              		.align	1
- 776              		.global	Serial_DMA_RXTX_Init
- 777              		.syntax unified
- 778              		.thumb
- 779              		.thumb_func
- 780              		.fpu fpv4-sp-d16
- 782              	Serial_DMA_RXTX_Init:
- 783              	.LVL69:
- 784              	.LFB133:
+ 664              		.loc 1 211 1 is_stmt 0 view .LVU142
+ 665 009e 16B0     		add	sp, sp, #88
+ 666              	.LCFI10:
+ 667              		.cfi_def_cfa_offset 24
+ 668              		@ sp needed
+ 669 00a0 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 670              	.LVL62:
+ 671              	.L37:
+ 672              		.loc 1 211 1 view .LVU143
+ 673              		.align	2
+ 674              	.L36:
+ 675 00a4 00000000 		.word	.LANCHOR1
+ 676 00a8 00000000 		.word	.LANCHOR2
+ 677 00ac 00000000 		.word	.LANCHOR3
+ 678 00b0 00000000 		.word	.LANCHOR4
+ 679 00b4 00000000 		.word	.LANCHOR5
+ 680 00b8 00000000 		.word	.LANCHOR10
+ 681 00bc 00000000 		.word	.LANCHOR11
+ 682 00c0 00000000 		.word	.LANCHOR9
+ 683 00c4 00000000 		.word	.LANCHOR12
+ 684              		.cfi_endproc
+ 685              	.LFE130:
+ 687              		.section	.text.Serial_Deinit,"ax",%progbits
+ 688              		.align	1
+ 689              		.global	Serial_Deinit
+ 690              		.syntax unified
+ 691              		.thumb
+ 692              		.thumb_func
+ 693              		.fpu fpv4-sp-d16
+ 695              	Serial_Deinit:
+ 696              	.LVL63:
+ 697              	.LFB131:
  212:Bsp/periph_serial.c **** 
- 213:Bsp/periph_serial.c **** void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t S
+ 213:Bsp/periph_serial.c **** bool Serial_Deinit(Serial_List Serial)
  214:Bsp/periph_serial.c **** {
- 785              		.loc 1 214 1 is_stmt 1 view -0
- 786              		.cfi_startproc
- 787              		@ args = 16, pretend = 0, frame = 136
- 788              		@ frame_needed = 0, uses_anonymous_args = 0
- 789              		.loc 1 214 1 is_stmt 0 view .LVU159
- 790 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
- 791              	.LCFI10:
- 792              		.cfi_def_cfa_offset 32
- 793              		.cfi_offset 4, -32
- 794              		.cfi_offset 5, -28
- 795              		.cfi_offset 6, -24
- 796              		.cfi_offset 7, -20
- 797              		.cfi_offset 8, -16
- 798              		.cfi_offset 9, -12
- 799              		.cfi_offset 10, -8
- 800              		.cfi_offset 14, -4
- 801 0004 A4B0     		sub	sp, sp, #144
- 802              	.LCFI11:
- 803              		.cfi_def_cfa_offset 176
- 804 0006 0446     		mov	r4, r0
- 805 0008 0D46     		mov	r5, r1
- 806 000a 1746     		mov	r7, r2
- 807 000c 1E46     		mov	r6, r3
- 808 000e BDF8B8A0 		ldrh	r10, [sp, #184]
- 215:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
- 809              		.loc 1 215 2 is_stmt 1 view .LVU160
- 216:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_RX_InitStructure;
- 810              		.loc 1 216 2 view .LVU161
- 217:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_TX_InitStructure;
- 811              		.loc 1 217 2 view .LVU162
+ 698              		.loc 1 214 1 is_stmt 1 view -0
+ 699              		.cfi_startproc
+ 700              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 17
+
+
+ 701              		@ frame_needed = 0, uses_anonymous_args = 0
+ 215:Bsp/periph_serial.c **** 	if (Serial >= Serial_Port_Sum)
+ 702              		.loc 1 215 2 view .LVU145
+ 703              		.loc 1 215 5 is_stmt 0 view .LVU146
+ 704 0000 0328     		cmp	r0, #3
+ 705 0002 01D9     		bls	.L45
+ 216:Bsp/periph_serial.c **** 		return false;
+ 706              		.loc 1 216 10 view .LVU147
+ 707 0004 0020     		movs	r0, #0
+ 708              	.LVL64:
+ 217:Bsp/periph_serial.c **** 
+ 218:Bsp/periph_serial.c **** 	IRQ_Callback[Serial] = NULL;
+ 219:Bsp/periph_serial.c **** 
+ 220:Bsp/periph_serial.c **** 	USART_DeInit(Serial_Port[Serial]);
+ 221:Bsp/periph_serial.c **** 
+ 222:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, DISABLE);
+ 223:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
+ 224:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
+ 225:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, DISABLE);
+ 226:Bsp/periph_serial.c **** 
+ 227:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], DISABLE);
+ 228:Bsp/periph_serial.c **** 
+ 229:Bsp/periph_serial.c **** 	return true;
+ 230:Bsp/periph_serial.c **** }
+ 709              		.loc 1 230 1 view .LVU148
+ 710 0006 7047     		bx	lr
+ 711              	.LVL65:
+ 712              	.L45:
+ 214:Bsp/periph_serial.c **** 	if (Serial >= Serial_Port_Sum)
+ 713              		.loc 1 214 1 view .LVU149
+ 714 0008 70B5     		push	{r4, r5, r6, lr}
+ 715              	.LCFI11:
+ 716              		.cfi_def_cfa_offset 16
+ 717              		.cfi_offset 4, -16
+ 718              		.cfi_offset 5, -12
+ 719              		.cfi_offset 6, -8
+ 720              		.cfi_offset 14, -4
+ 721 000a 0446     		mov	r4, r0
  218:Bsp/periph_serial.c **** 
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 19
-
-
- 219:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
- 812              		.loc 1 219 2 view .LVU163
- 813              		.loc 1 219 16 is_stmt 0 view .LVU164
- 814 0012 434B     		ldr	r3, .L47
- 815              	.LVL70:
- 816              		.loc 1 219 16 view .LVU165
- 817 0014 53F82030 		ldr	r3, [r3, r0, lsl #2]
- 818              		.loc 1 219 2 view .LVU166
- 819 0018 9847     		blx	r3
- 820              	.LVL71:
+ 722              		.loc 1 218 2 is_stmt 1 view .LVU150
+ 218:Bsp/periph_serial.c **** 
+ 723              		.loc 1 218 23 is_stmt 0 view .LVU151
+ 724 000c 0026     		movs	r6, #0
+ 725 000e 154B     		ldr	r3, .L46
+ 726 0010 43F82060 		str	r6, [r3, r0, lsl #2]
  220:Bsp/periph_serial.c **** 
- 221:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
- 821              		.loc 1 221 2 is_stmt 1 view .LVU167
- 822              		.loc 1 221 23 is_stmt 0 view .LVU168
- 823 001a 424B     		ldr	r3, .L47+4
- 824 001c 53F82430 		ldr	r3, [r3, r4, lsl #2]
- 825              		.loc 1 221 2 view .LVU169
- 826 0020 0121     		movs	r1, #1
- 827 0022 414A     		ldr	r2, .L47+8
- 828 0024 52F82400 		ldr	r0, [r2, r4, lsl #2]
- 829 0028 9847     		blx	r3
- 830              	.LVL72:
- 222:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
- 831              		.loc 1 222 2 is_stmt 1 view .LVU170
- 832              		.loc 1 222 26 is_stmt 0 view .LVU171
- 833 002a 9DF8BC20 		ldrb	r2, [sp, #188]	@ zero_extendqisi2
- 834 002e 3F4B     		ldr	r3, .L47+12
- 835 0030 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 836              		.loc 1 222 2 view .LVU172
- 837 0034 2946     		mov	r1, r5
- 838 0036 20A8     		add	r0, sp, #128
- 839 0038 9847     		blx	r3
- 840              	.LVL73:
- 223:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
- 841              		.loc 1 223 2 is_stmt 1 view .LVU173
- 842 003a 3D4D     		ldr	r5, .L47+16
- 843              	.LVL74:
- 844              		.loc 1 223 2 is_stmt 0 view .LVU174
- 845 003c 20A9     		add	r1, sp, #128
- 846 003e 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 847 0042 FFF7FEFF 		bl	USART_Init
- 848              	.LVL75:
- 224:Bsp/periph_serial.c **** 
- 225:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, DISABLE);
- 849              		.loc 1 225 2 is_stmt 1 view .LVU175
- 850 0046 0022     		movs	r2, #0
- 851 0048 40F22551 		movw	r1, #1317
- 852 004c 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 853 0050 FFF7FEFF 		bl	USART_ITConfig
- 854              	.LVL76:
- 226:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
- 855              		.loc 1 226 2 view .LVU176
- 856 0054 0022     		movs	r2, #0
- 857 0056 40F22661 		movw	r1, #1574
- 858 005a 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 859 005e FFF7FEFF 		bl	USART_ITConfig
- 860              	.LVL77:
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 20
+ 727              		.loc 1 220 2 is_stmt 1 view .LVU152
+ 728 0014 144D     		ldr	r5, .L46+4
+ 729 0016 55F82000 		ldr	r0, [r5, r0, lsl #2]
+ 730              	.LVL66:
+ 220:Bsp/periph_serial.c **** 
+ 731              		.loc 1 220 2 is_stmt 0 view .LVU153
+ 732 001a FFF7FEFF 		bl	USART_DeInit
+ 733              	.LVL67:
+ 222:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
+ 734              		.loc 1 222 2 is_stmt 1 view .LVU154
+ 735 001e 3246     		mov	r2, r6
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 18
 
 
- 227:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
- 861              		.loc 1 227 2 view .LVU177
- 862 0062 0022     		movs	r2, #0
- 863 0064 40F22771 		movw	r1, #1831
- 864 0068 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 865 006c FFF7FEFF 		bl	USART_ITConfig
- 866              	.LVL78:
- 228:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, ENABLE);
- 867              		.loc 1 228 2 view .LVU178
- 868 0070 0122     		movs	r2, #1
- 869 0072 40F22441 		movw	r1, #1060
- 870 0076 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 871 007a FFF7FEFF 		bl	USART_ITConfig
- 872              	.LVL79:
- 229:Bsp/periph_serial.c **** 
- 230:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Rx | USART_DMAReq_Tx, ENABLE);
- 873              		.loc 1 230 2 view .LVU179
- 874 007e 0122     		movs	r2, #1
- 875 0080 C021     		movs	r1, #192
- 876 0082 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 877 0086 FFF7FEFF 		bl	USART_DMACmd
- 878              	.LVL80:
+ 736 0020 40F22551 		movw	r1, #1317
+ 737 0024 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 738 0028 FFF7FEFF 		bl	USART_ITConfig
+ 739              	.LVL68:
+ 223:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
+ 740              		.loc 1 223 2 view .LVU155
+ 741 002c 3246     		mov	r2, r6
+ 742 002e 40F22661 		movw	r1, #1574
+ 743 0032 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 744 0036 FFF7FEFF 		bl	USART_ITConfig
+ 745              	.LVL69:
+ 224:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, DISABLE);
+ 746              		.loc 1 224 2 view .LVU156
+ 747 003a 3246     		mov	r2, r6
+ 748 003c 40F22771 		movw	r1, #1831
+ 749 0040 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 750 0044 FFF7FEFF 		bl	USART_ITConfig
+ 751              	.LVL70:
+ 225:Bsp/periph_serial.c **** 
+ 752              		.loc 1 225 2 view .LVU157
+ 753 0048 3246     		mov	r2, r6
+ 754 004a 40F22441 		movw	r1, #1060
+ 755 004e 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 756 0052 FFF7FEFF 		bl	USART_ITConfig
+ 757              	.LVL71:
+ 227:Bsp/periph_serial.c **** 
+ 758              		.loc 1 227 2 view .LVU158
+ 759 0056 3146     		mov	r1, r6
+ 760 0058 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 761 005c FFF7FEFF 		bl	USART_Cmd
+ 762              	.LVL72:
+ 229:Bsp/periph_serial.c **** }
+ 763              		.loc 1 229 2 view .LVU159
+ 229:Bsp/periph_serial.c **** }
+ 764              		.loc 1 229 9 is_stmt 0 view .LVU160
+ 765 0060 0120     		movs	r0, #1
+ 766              		.loc 1 230 1 view .LVU161
+ 767 0062 70BD     		pop	{r4, r5, r6, pc}
+ 768              	.L47:
+ 769              		.align	2
+ 770              	.L46:
+ 771 0064 00000000 		.word	.LANCHOR0
+ 772 0068 00000000 		.word	.LANCHOR5
+ 773              		.cfi_endproc
+ 774              	.LFE131:
+ 776              		.section	.text.Serial_DMA_RXTX_Init,"ax",%progbits
+ 777              		.align	1
+ 778              		.global	Serial_DMA_RXTX_Init
+ 779              		.syntax unified
+ 780              		.thumb
+ 781              		.thumb_func
+ 782              		.fpu fpv4-sp-d16
+ 784              	Serial_DMA_RXTX_Init:
+ 785              	.LVL73:
+ 786              	.LFB132:
  231:Bsp/periph_serial.c **** 
- 232:Bsp/periph_serial.c **** 	//Rx DMA Setting
- 233:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_RX_InitStructure, Serial_DMA_RX_Channel[Serial], (uint32_t)&Serial_Port[Ser
- 879              		.loc 1 233 2 view .LVU180
- 880              		.loc 1 233 96 is_stmt 0 view .LVU181
- 881 008a 55F82420 		ldr	r2, [r5, r4, lsl #2]
- 882              		.loc 1 233 2 view .LVU182
- 883 008e 0223     		movs	r3, #2
- 884 0090 0193     		str	r3, [sp, #4]
- 885 0092 CDF800A0 		str	r10, [sp]
- 886 0096 2C9B     		ldr	r3, [sp, #176]
- 887 0098 0432     		adds	r2, r2, #4
- 888 009a 2649     		ldr	r1, .L47+20
- 889 009c 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 890 00a0 11A8     		add	r0, sp, #68
- 891 00a2 FFF7FEFF 		bl	periph_DMA_Serial
- 892              	.LVL81:
- 234:Bsp/periph_serial.c **** 	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_RX_Stream[Serial], &DMA_RX_InitStruc
- 893              		.loc 1 234 2 is_stmt 1 view .LVU183
- 894 00a6 244B     		ldr	r3, .L47+24
- 895 00a8 53F82490 		ldr	r9, [r3, r4, lsl #2]
- 896 00ac 0123     		movs	r3, #1
- 897 00ae 11AA     		add	r2, sp, #68
- 898 00b0 2249     		ldr	r1, .L47+28
- 899 00b2 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 900 00b6 4846     		mov	r0, r9
- 901 00b8 FFF7FEFF 		bl	periph_DMA_WithoutIRQ_Init
- 902              	.LVL82:
- 235:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENAB
- 903              		.loc 1 235 2 view .LVU184
- 904 00bc 0123     		movs	r3, #1
- 905 00be 3246     		mov	r2, r6
- 906 00c0 3946     		mov	r1, r7
- 907 00c2 1F48     		ldr	r0, .L47+32
- 908 00c4 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 21
+ 232:Bsp/periph_serial.c **** void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t S
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 19
 
 
- 909 00c6 FFF7FEFF 		bl	periph_nvic_Structure_Setting
- 910              	.LVL83:
- 236:Bsp/periph_serial.c **** 
- 237:Bsp/periph_serial.c **** 	//Tx DMA Setting
- 238:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_TX_InitStructure, Serial_DMA_TX_Channel[Serial], (uint32_t)&Serial_Port[Ser
- 911              		.loc 1 238 2 view .LVU185
- 912              		.loc 1 238 96 is_stmt 0 view .LVU186
- 913 00ca 55F82420 		ldr	r2, [r5, r4, lsl #2]
- 914              		.loc 1 238 2 view .LVU187
- 915 00ce 4FF00108 		mov	r8, #1
- 916 00d2 CDF80480 		str	r8, [sp, #4]
- 917 00d6 CDF800A0 		str	r10, [sp]
- 918 00da 2D9B     		ldr	r3, [sp, #180]
- 919 00dc 0432     		adds	r2, r2, #4
- 920 00de 1949     		ldr	r1, .L47+36
- 921 00e0 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 922 00e4 02A8     		add	r0, sp, #8
- 923 00e6 FFF7FEFF 		bl	periph_DMA_Serial
- 924              	.LVL84:
- 239:Bsp/periph_serial.c **** 	periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructur
- 925              		.loc 1 239 2 is_stmt 1 view .LVU188
- 926 00ea 0023     		movs	r3, #0
- 927 00ec 0093     		str	r3, [sp]
- 928 00ee 1023     		movs	r3, #16
- 929 00f0 02AA     		add	r2, sp, #8
- 930 00f2 1549     		ldr	r1, .L47+40
- 931 00f4 51F82410 		ldr	r1, [r1, r4, lsl #2]
- 932 00f8 4846     		mov	r0, r9
- 933 00fa FFF7FEFF 		bl	periph_DMA_WithIRQ_Init
- 934              	.LVL85:
- 240:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority +
- 935              		.loc 1 240 2 view .LVU189
- 936 00fe 4644     		add	r6, r6, r8
- 937 0100 4346     		mov	r3, r8
- 938 0102 F2B2     		uxtb	r2, r6
- 939 0104 3946     		mov	r1, r7
- 940 0106 1148     		ldr	r0, .L47+44
- 941 0108 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
- 942 010a FFF7FEFF 		bl	periph_nvic_Structure_Setting
- 943              	.LVL86:
- 241:Bsp/periph_serial.c **** 
- 242:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], ENABLE);
- 944              		.loc 1 242 2 view .LVU190
- 945 010e 4146     		mov	r1, r8
- 946 0110 55F82400 		ldr	r0, [r5, r4, lsl #2]
- 947 0114 FFF7FEFF 		bl	USART_Cmd
- 948              	.LVL87:
- 243:Bsp/periph_serial.c **** }
- 949              		.loc 1 243 1 is_stmt 0 view .LVU191
- 950 0118 24B0     		add	sp, sp, #144
- 951              	.LCFI12:
- 952              		.cfi_def_cfa_offset 32
- 953              		@ sp needed
- 954 011a BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
- 955              	.LVL88:
- 956              	.L48:
- 957              		.loc 1 243 1 view .LVU192
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 22
+ 233:Bsp/periph_serial.c **** {
+ 787              		.loc 1 233 1 is_stmt 1 view -0
+ 788              		.cfi_startproc
+ 789              		@ args = 16, pretend = 0, frame = 136
+ 790              		@ frame_needed = 0, uses_anonymous_args = 0
+ 791              		.loc 1 233 1 is_stmt 0 view .LVU163
+ 792 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 793              	.LCFI12:
+ 794              		.cfi_def_cfa_offset 32
+ 795              		.cfi_offset 4, -32
+ 796              		.cfi_offset 5, -28
+ 797              		.cfi_offset 6, -24
+ 798              		.cfi_offset 7, -20
+ 799              		.cfi_offset 8, -16
+ 800              		.cfi_offset 9, -12
+ 801              		.cfi_offset 10, -8
+ 802              		.cfi_offset 14, -4
+ 803 0004 A4B0     		sub	sp, sp, #144
+ 804              	.LCFI13:
+ 805              		.cfi_def_cfa_offset 176
+ 806 0006 0446     		mov	r4, r0
+ 807 0008 0D46     		mov	r5, r1
+ 808 000a 1746     		mov	r7, r2
+ 809 000c 1E46     		mov	r6, r3
+ 810 000e BDF8B8A0 		ldrh	r10, [sp, #184]
+ 234:Bsp/periph_serial.c **** 	USART_InitTypeDef USART_InitStructure;
+ 811              		.loc 1 234 2 is_stmt 1 view .LVU164
+ 235:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_RX_InitStructure;
+ 812              		.loc 1 235 2 view .LVU165
+ 236:Bsp/periph_serial.c **** 	DMA_InitTypeDef DMA_TX_InitStructure;
+ 813              		.loc 1 236 2 view .LVU166
+ 237:Bsp/periph_serial.c **** 
+ 238:Bsp/periph_serial.c **** 	Serial_IO_Init[Serial]();
+ 814              		.loc 1 238 2 view .LVU167
+ 815              		.loc 1 238 16 is_stmt 0 view .LVU168
+ 816 0012 434B     		ldr	r3, .L50
+ 817              	.LVL74:
+ 818              		.loc 1 238 16 view .LVU169
+ 819 0014 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 820              		.loc 1 238 2 view .LVU170
+ 821 0018 9847     		blx	r3
+ 822              	.LVL75:
+ 239:Bsp/periph_serial.c **** 
+ 240:Bsp/periph_serial.c **** 	RCC_APBPeriphClockCmd[Serial](RCC_APBPeriph_SerialCLK[Serial], ENABLE);
+ 823              		.loc 1 240 2 is_stmt 1 view .LVU171
+ 824              		.loc 1 240 23 is_stmt 0 view .LVU172
+ 825 001a 424B     		ldr	r3, .L50+4
+ 826 001c 53F82430 		ldr	r3, [r3, r4, lsl #2]
+ 827              		.loc 1 240 2 view .LVU173
+ 828 0020 0121     		movs	r1, #1
+ 829 0022 414A     		ldr	r2, .L50+8
+ 830 0024 52F82400 		ldr	r0, [r2, r4, lsl #2]
+ 831 0028 9847     		blx	r3
+ 832              	.LVL76:
+ 241:Bsp/periph_serial.c **** 	Serial_Structure_Setting[type](&USART_InitStructure, bound);
+ 833              		.loc 1 241 2 is_stmt 1 view .LVU174
+ 834              		.loc 1 241 26 is_stmt 0 view .LVU175
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 20
 
 
- 958 011e 00BF     		.align	2
- 959              	.L47:
- 960 0120 00000000 		.word	.LANCHOR2
- 961 0124 00000000 		.word	.LANCHOR3
- 962 0128 00000000 		.word	.LANCHOR4
- 963 012c 00000000 		.word	.LANCHOR5
- 964 0130 00000000 		.word	.LANCHOR6
- 965 0134 00000000 		.word	.LANCHOR8
- 966 0138 00000000 		.word	.LANCHOR10
- 967 013c 00000000 		.word	.LANCHOR9
- 968 0140 00000000 		.word	.LANCHOR7
- 969 0144 00000000 		.word	.LANCHOR11
- 970 0148 00000000 		.word	.LANCHOR12
- 971 014c 00000000 		.word	.LANCHOR13
- 972              		.cfi_endproc
- 973              	.LFE133:
- 975              		.section	.text.Serial_SendStr,"ax",%progbits
- 976              		.align	1
- 977              		.global	Serial_SendStr
- 978              		.syntax unified
- 979              		.thumb
- 980              		.thumb_func
- 981              		.fpu fpv4-sp-d16
- 983              	Serial_SendStr:
- 984              	.LVL89:
- 985              	.LFB134:
- 244:Bsp/periph_serial.c **** 
- 245:Bsp/periph_serial.c **** void Serial_SendStr(USART_TypeDef *Serial_port, const char *Str_Output)
- 246:Bsp/periph_serial.c **** {
- 986              		.loc 1 246 1 is_stmt 1 view -0
- 987              		.cfi_startproc
- 988              		@ args = 0, pretend = 0, frame = 0
- 989              		@ frame_needed = 0, uses_anonymous_args = 0
- 990              		.loc 1 246 1 is_stmt 0 view .LVU194
- 991 0000 38B5     		push	{r3, r4, r5, lr}
- 992              	.LCFI13:
- 993              		.cfi_def_cfa_offset 16
- 994              		.cfi_offset 3, -16
- 995              		.cfi_offset 4, -12
- 996              		.cfi_offset 5, -8
- 997              		.cfi_offset 14, -4
- 998 0002 0446     		mov	r4, r0
- 999 0004 0D46     		mov	r5, r1
- 247:Bsp/periph_serial.c **** 	while (*Str_Output != '\0')
- 1000              		.loc 1 247 2 is_stmt 1 view .LVU195
- 1001              		.loc 1 247 8 is_stmt 0 view .LVU196
- 1002 0006 0AE0     		b	.L50
- 1003              	.LVL90:
- 1004              	.L51:
- 248:Bsp/periph_serial.c **** 	{
- 249:Bsp/periph_serial.c **** 		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
- 250:Bsp/periph_serial.c **** 			;
- 1005              		.loc 1 250 4 is_stmt 1 discriminator 1 view .LVU197
- 249:Bsp/periph_serial.c **** 			;
- 1006              		.loc 1 249 9 discriminator 1 view .LVU198
- 249:Bsp/periph_serial.c **** 			;
- 1007              		.loc 1 249 10 is_stmt 0 discriminator 1 view .LVU199
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 23
+ 835 002a 9DF8BC20 		ldrb	r2, [sp, #188]	@ zero_extendqisi2
+ 836 002e 3F4B     		ldr	r3, .L50+12
+ 837 0030 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 838              		.loc 1 241 2 view .LVU176
+ 839 0034 2946     		mov	r1, r5
+ 840 0036 20A8     		add	r0, sp, #128
+ 841 0038 9847     		blx	r3
+ 842              	.LVL77:
+ 242:Bsp/periph_serial.c **** 	USART_Init(Serial_Port[Serial], &USART_InitStructure);
+ 843              		.loc 1 242 2 is_stmt 1 view .LVU177
+ 844 003a 3D4D     		ldr	r5, .L50+16
+ 845              	.LVL78:
+ 846              		.loc 1 242 2 is_stmt 0 view .LVU178
+ 847 003c 20A9     		add	r1, sp, #128
+ 848 003e 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 849 0042 FFF7FEFF 		bl	USART_Init
+ 850              	.LVL79:
+ 243:Bsp/periph_serial.c **** 
+ 244:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, DISABLE);
+ 851              		.loc 1 244 2 is_stmt 1 view .LVU179
+ 852 0046 0022     		movs	r2, #0
+ 853 0048 40F22551 		movw	r1, #1317
+ 854 004c 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 855 0050 FFF7FEFF 		bl	USART_ITConfig
+ 856              	.LVL80:
+ 245:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TC, DISABLE);
+ 857              		.loc 1 245 2 view .LVU180
+ 858 0054 0022     		movs	r2, #0
+ 859 0056 40F22661 		movw	r1, #1574
+ 860 005a 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 861 005e FFF7FEFF 		bl	USART_ITConfig
+ 862              	.LVL81:
+ 246:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
+ 863              		.loc 1 246 2 view .LVU181
+ 864 0062 0022     		movs	r2, #0
+ 865 0064 40F22771 		movw	r1, #1831
+ 866 0068 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 867 006c FFF7FEFF 		bl	USART_ITConfig
+ 868              	.LVL82:
+ 247:Bsp/periph_serial.c **** 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, ENABLE);
+ 869              		.loc 1 247 2 view .LVU182
+ 870 0070 0122     		movs	r2, #1
+ 871 0072 40F22441 		movw	r1, #1060
+ 872 0076 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 873 007a FFF7FEFF 		bl	USART_ITConfig
+ 874              	.LVL83:
+ 248:Bsp/periph_serial.c **** 
+ 249:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Rx | USART_DMAReq_Tx, ENABLE);
+ 875              		.loc 1 249 2 view .LVU183
+ 876 007e 0122     		movs	r2, #1
+ 877 0080 C021     		movs	r1, #192
+ 878 0082 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 879 0086 FFF7FEFF 		bl	USART_DMACmd
+ 880              	.LVL84:
+ 250:Bsp/periph_serial.c **** 
+ 251:Bsp/periph_serial.c **** 	//Rx DMA Setting
+ 252:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_RX_InitStructure, Serial_DMA_RX_Channel[Serial], (uint32_t)&Serial_Port[Ser
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 21
 
 
- 1008 0008 4021     		movs	r1, #64
- 1009 000a 2046     		mov	r0, r4
- 1010 000c FFF7FEFF 		bl	USART_GetFlagStatus
- 1011              	.LVL91:
- 249:Bsp/periph_serial.c **** 			;
- 1012              		.loc 1 249 9 discriminator 1 view .LVU200
- 1013 0010 0028     		cmp	r0, #0
- 1014 0012 F9D0     		beq	.L51
- 251:Bsp/periph_serial.c **** 		USART_SendData(Serial_port, *Str_Output);
- 1015              		.loc 1 251 3 is_stmt 1 view .LVU201
- 1016 0014 15F8011B 		ldrb	r1, [r5], #1	@ zero_extendqisi2
- 1017              	.LVL92:
- 1018              		.loc 1 251 3 is_stmt 0 view .LVU202
- 1019 0018 2046     		mov	r0, r4
- 1020 001a FFF7FEFF 		bl	USART_SendData
- 1021              	.LVL93:
- 252:Bsp/periph_serial.c **** 		Str_Output++;
- 1022              		.loc 1 252 3 is_stmt 1 view .LVU203
- 1023              	.L50:
- 247:Bsp/periph_serial.c **** 	{
- 1024              		.loc 1 247 8 view .LVU204
- 247:Bsp/periph_serial.c **** 	{
- 1025              		.loc 1 247 9 is_stmt 0 view .LVU205
- 1026 001e 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
- 247:Bsp/periph_serial.c **** 	{
- 1027              		.loc 1 247 8 view .LVU206
- 1028 0020 002B     		cmp	r3, #0
- 1029 0022 F1D1     		bne	.L51
- 253:Bsp/periph_serial.c **** 	}
- 254:Bsp/periph_serial.c **** }
- 1030              		.loc 1 254 1 view .LVU207
- 1031 0024 38BD     		pop	{r3, r4, r5, pc}
- 1032              		.loc 1 254 1 view .LVU208
- 1033              		.cfi_endproc
- 1034              	.LFE134:
- 1036              		.section	.text.Serial_SendBuff,"ax",%progbits
- 1037              		.align	1
- 1038              		.global	Serial_SendBuff
- 1039              		.syntax unified
- 1040              		.thumb
- 1041              		.thumb_func
- 1042              		.fpu fpv4-sp-d16
- 1044              	Serial_SendBuff:
- 1045              	.LVL94:
- 1046              	.LFB135:
+ 881              		.loc 1 252 2 view .LVU184
+ 882              		.loc 1 252 96 is_stmt 0 view .LVU185
+ 883 008a 55F82420 		ldr	r2, [r5, r4, lsl #2]
+ 884              		.loc 1 252 2 view .LVU186
+ 885 008e 0223     		movs	r3, #2
+ 886 0090 0193     		str	r3, [sp, #4]
+ 887 0092 CDF800A0 		str	r10, [sp]
+ 888 0096 2C9B     		ldr	r3, [sp, #176]
+ 889 0098 0432     		adds	r2, r2, #4
+ 890 009a 2649     		ldr	r1, .L50+20
+ 891 009c 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 892 00a0 11A8     		add	r0, sp, #68
+ 893 00a2 FFF7FEFF 		bl	periph_DMA_Serial
+ 894              	.LVL85:
+ 253:Bsp/periph_serial.c **** 	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_RX_Stream[Serial], &DMA_RX_InitStruc
+ 895              		.loc 1 253 2 is_stmt 1 view .LVU187
+ 896 00a6 244B     		ldr	r3, .L50+24
+ 897 00a8 53F82490 		ldr	r9, [r3, r4, lsl #2]
+ 898 00ac 0123     		movs	r3, #1
+ 899 00ae 11AA     		add	r2, sp, #68
+ 900 00b0 2249     		ldr	r1, .L50+28
+ 901 00b2 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 902 00b6 4846     		mov	r0, r9
+ 903 00b8 FFF7FEFF 		bl	periph_DMA_WithoutIRQ_Init
+ 904              	.LVL86:
+ 254:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENAB
+ 905              		.loc 1 254 2 view .LVU188
+ 906 00bc 0123     		movs	r3, #1
+ 907 00be 3246     		mov	r2, r6
+ 908 00c0 3946     		mov	r1, r7
+ 909 00c2 1F48     		ldr	r0, .L50+32
+ 910 00c4 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
+ 911 00c6 FFF7FEFF 		bl	periph_nvic_Structure_Setting
+ 912              	.LVL87:
  255:Bsp/periph_serial.c **** 
- 256:Bsp/periph_serial.c **** void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len)
- 257:Bsp/periph_serial.c **** {
- 1047              		.loc 1 257 1 is_stmt 1 view -0
- 1048              		.cfi_startproc
- 1049              		@ args = 0, pretend = 0, frame = 0
- 1050              		@ frame_needed = 0, uses_anonymous_args = 0
- 1051              		.loc 1 257 1 is_stmt 0 view .LVU210
- 1052 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
- 1053              	.LCFI14:
- 1054              		.cfi_def_cfa_offset 24
- 1055              		.cfi_offset 3, -24
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 24
+ 256:Bsp/periph_serial.c **** 	//Tx DMA Setting
+ 257:Bsp/periph_serial.c **** 	periph_DMA_Serial(&DMA_TX_InitStructure, Serial_DMA_TX_Channel[Serial], (uint32_t)&Serial_Port[Ser
+ 913              		.loc 1 257 2 view .LVU189
+ 914              		.loc 1 257 96 is_stmt 0 view .LVU190
+ 915 00ca 55F82420 		ldr	r2, [r5, r4, lsl #2]
+ 916              		.loc 1 257 2 view .LVU191
+ 917 00ce 4FF00108 		mov	r8, #1
+ 918 00d2 CDF80480 		str	r8, [sp, #4]
+ 919 00d6 CDF800A0 		str	r10, [sp]
+ 920 00da 2D9B     		ldr	r3, [sp, #180]
+ 921 00dc 0432     		adds	r2, r2, #4
+ 922 00de 1949     		ldr	r1, .L50+36
+ 923 00e0 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 924 00e4 02A8     		add	r0, sp, #8
+ 925 00e6 FFF7FEFF 		bl	periph_DMA_Serial
+ 926              	.LVL88:
+ 258:Bsp/periph_serial.c **** 	periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructur
+ 927              		.loc 1 258 2 is_stmt 1 view .LVU192
+ 928 00ea 0023     		movs	r3, #0
+ 929 00ec 0093     		str	r3, [sp]
+ 930 00ee 1023     		movs	r3, #16
+ 931 00f0 02AA     		add	r2, sp, #8
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 22
 
 
- 1056              		.cfi_offset 4, -20
- 1057              		.cfi_offset 5, -16
- 1058              		.cfi_offset 6, -12
- 1059              		.cfi_offset 7, -8
- 1060              		.cfi_offset 14, -4
- 1061 0002 0446     		mov	r4, r0
- 1062 0004 0F46     		mov	r7, r1
- 1063 0006 1646     		mov	r6, r2
- 258:Bsp/periph_serial.c **** 	for (uint8_t Buff_index = 0; Buff_index < Len; Buff_index++)
- 1064              		.loc 1 258 2 is_stmt 1 view .LVU211
- 1065              	.LBB2:
- 1066              		.loc 1 258 7 view .LVU212
- 1067              	.LVL95:
- 1068              		.loc 1 258 15 is_stmt 0 view .LVU213
- 1069 0008 0025     		movs	r5, #0
- 1070              		.loc 1 258 2 view .LVU214
- 1071 000a 0BE0     		b	.L54
- 1072              	.LVL96:
- 1073              	.L55:
- 259:Bsp/periph_serial.c **** 	{
- 260:Bsp/periph_serial.c **** 		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
- 261:Bsp/periph_serial.c **** 			;
- 1074              		.loc 1 261 4 is_stmt 1 discriminator 1 view .LVU215
- 260:Bsp/periph_serial.c **** 			;
- 1075              		.loc 1 260 9 discriminator 1 view .LVU216
- 260:Bsp/periph_serial.c **** 			;
- 1076              		.loc 1 260 10 is_stmt 0 discriminator 1 view .LVU217
- 1077 000c 4021     		movs	r1, #64
- 1078 000e 2046     		mov	r0, r4
- 1079 0010 FFF7FEFF 		bl	USART_GetFlagStatus
- 1080              	.LVL97:
- 260:Bsp/periph_serial.c **** 			;
- 1081              		.loc 1 260 9 discriminator 1 view .LVU218
- 1082 0014 0028     		cmp	r0, #0
- 1083 0016 F9D0     		beq	.L55
- 262:Bsp/periph_serial.c **** 		USART_SendData(Serial_port, Buff[Buff_index]);
- 1084              		.loc 1 262 3 is_stmt 1 discriminator 2 view .LVU219
- 1085 0018 795D     		ldrb	r1, [r7, r5]	@ zero_extendqisi2
- 1086 001a 2046     		mov	r0, r4
- 1087 001c FFF7FEFF 		bl	USART_SendData
- 1088              	.LVL98:
- 258:Bsp/periph_serial.c **** 	{
- 1089              		.loc 1 258 49 discriminator 2 view .LVU220
- 258:Bsp/periph_serial.c **** 	{
- 1090              		.loc 1 258 59 is_stmt 0 discriminator 2 view .LVU221
- 1091 0020 0135     		adds	r5, r5, #1
- 1092              	.LVL99:
- 258:Bsp/periph_serial.c **** 	{
- 1093              		.loc 1 258 59 discriminator 2 view .LVU222
- 1094 0022 EDB2     		uxtb	r5, r5
- 1095              	.LVL100:
- 1096              	.L54:
- 258:Bsp/periph_serial.c **** 	{
- 1097              		.loc 1 258 31 is_stmt 1 discriminator 1 view .LVU223
- 258:Bsp/periph_serial.c **** 	{
- 1098              		.loc 1 258 42 is_stmt 0 discriminator 1 view .LVU224
- 1099 0024 ABB2     		uxth	r3, r5
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 25
+ 932 00f2 1549     		ldr	r1, .L50+40
+ 933 00f4 51F82410 		ldr	r1, [r1, r4, lsl #2]
+ 934 00f8 4846     		mov	r0, r9
+ 935 00fa FFF7FEFF 		bl	periph_DMA_WithIRQ_Init
+ 936              	.LVL89:
+ 259:Bsp/periph_serial.c **** 	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority +
+ 937              		.loc 1 259 2 view .LVU193
+ 938 00fe 4644     		add	r6, r6, r8
+ 939 0100 4346     		mov	r3, r8
+ 940 0102 F2B2     		uxtb	r2, r6
+ 941 0104 3946     		mov	r1, r7
+ 942 0106 1148     		ldr	r0, .L50+44
+ 943 0108 005D     		ldrb	r0, [r0, r4]	@ zero_extendqisi2
+ 944 010a FFF7FEFF 		bl	periph_nvic_Structure_Setting
+ 945              	.LVL90:
+ 260:Bsp/periph_serial.c **** 
+ 261:Bsp/periph_serial.c **** 	USART_Cmd(Serial_Port[Serial], ENABLE);
+ 946              		.loc 1 261 2 view .LVU194
+ 947 010e 4146     		mov	r1, r8
+ 948 0110 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 949 0114 FFF7FEFF 		bl	USART_Cmd
+ 950              	.LVL91:
+ 262:Bsp/periph_serial.c **** }
+ 951              		.loc 1 262 1 is_stmt 0 view .LVU195
+ 952 0118 24B0     		add	sp, sp, #144
+ 953              	.LCFI14:
+ 954              		.cfi_def_cfa_offset 32
+ 955              		@ sp needed
+ 956 011a BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 957              	.LVL92:
+ 958              	.L51:
+ 959              		.loc 1 262 1 view .LVU196
+ 960 011e 00BF     		.align	2
+ 961              	.L50:
+ 962 0120 00000000 		.word	.LANCHOR1
+ 963 0124 00000000 		.word	.LANCHOR2
+ 964 0128 00000000 		.word	.LANCHOR3
+ 965 012c 00000000 		.word	.LANCHOR4
+ 966 0130 00000000 		.word	.LANCHOR5
+ 967 0134 00000000 		.word	.LANCHOR7
+ 968 0138 00000000 		.word	.LANCHOR9
+ 969 013c 00000000 		.word	.LANCHOR8
+ 970 0140 00000000 		.word	.LANCHOR6
+ 971 0144 00000000 		.word	.LANCHOR10
+ 972 0148 00000000 		.word	.LANCHOR11
+ 973 014c 00000000 		.word	.LANCHOR12
+ 974              		.cfi_endproc
+ 975              	.LFE132:
+ 977              		.section	.text.Serial_SendStr,"ax",%progbits
+ 978              		.align	1
+ 979              		.global	Serial_SendStr
+ 980              		.syntax unified
+ 981              		.thumb
+ 982              		.thumb_func
+ 983              		.fpu fpv4-sp-d16
+ 985              	Serial_SendStr:
+ 986              	.LVL93:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 23
 
 
- 258:Bsp/periph_serial.c **** 	{
- 1100              		.loc 1 258 2 discriminator 1 view .LVU225
- 1101 0026 B342     		cmp	r3, r6
- 1102 0028 F0D3     		bcc	.L55
- 1103              	.LBE2:
- 263:Bsp/periph_serial.c **** 	}
- 264:Bsp/periph_serial.c **** }
- 1104              		.loc 1 264 1 view .LVU226
- 1105 002a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
- 1106              		.loc 1 264 1 view .LVU227
- 1107              		.cfi_endproc
- 1108              	.LFE135:
- 1110              		.section	.text.Serial_DMA_TX_IRQSetting,"ax",%progbits
- 1111              		.align	1
- 1112              		.global	Serial_DMA_TX_IRQSetting
- 1113              		.syntax unified
- 1114              		.thumb
- 1115              		.thumb_func
- 1116              		.fpu fpv4-sp-d16
- 1118              	Serial_DMA_TX_IRQSetting:
- 1119              	.LVL101:
- 1120              	.LFB136:
- 265:Bsp/periph_serial.c **** 
- 266:Bsp/periph_serial.c **** void Serial_DMA_TX_IRQSetting(Serial_List serial_id)
- 267:Bsp/periph_serial.c **** {
- 1121              		.loc 1 267 1 is_stmt 1 view -0
- 1122              		.cfi_startproc
- 1123              		@ args = 0, pretend = 0, frame = 0
- 1124              		@ frame_needed = 0, uses_anonymous_args = 0
- 1125              		.loc 1 267 1 is_stmt 0 view .LVU229
- 1126 0000 38B5     		push	{r3, r4, r5, lr}
- 1127              	.LCFI15:
- 1128              		.cfi_def_cfa_offset 16
- 1129              		.cfi_offset 3, -16
- 1130              		.cfi_offset 4, -12
- 1131              		.cfi_offset 5, -8
- 1132              		.cfi_offset 14, -4
- 1133 0002 0446     		mov	r4, r0
- 268:Bsp/periph_serial.c **** 	if (DMA_GetFlagStatus(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]) == SET)
- 1134              		.loc 1 268 2 is_stmt 1 view .LVU230
- 1135              		.loc 1 268 6 is_stmt 0 view .LVU231
- 1136 0004 104B     		ldr	r3, .L61
- 1137 0006 53F82010 		ldr	r1, [r3, r0, lsl #2]
- 1138 000a 104B     		ldr	r3, .L61+4
- 1139 000c 53F82000 		ldr	r0, [r3, r0, lsl #2]
- 1140              	.LVL102:
- 1141              		.loc 1 268 6 view .LVU232
- 1142 0010 FFF7FEFF 		bl	DMA_GetFlagStatus
- 1143              	.LVL103:
- 1144              		.loc 1 268 5 view .LVU233
- 1145 0014 0128     		cmp	r0, #1
- 1146 0016 00D0     		beq	.L60
- 1147              	.L57:
- 269:Bsp/periph_serial.c **** 	{
- 270:Bsp/periph_serial.c **** 		DMA_ClearFlag(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]);
- 271:Bsp/periph_serial.c **** 		DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
- 272:Bsp/periph_serial.c **** 
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 26
+ 987              	.LFB133:
+ 263:Bsp/periph_serial.c **** 
+ 264:Bsp/periph_serial.c **** void Serial_SendStr(USART_TypeDef *Serial_port, const char *Str_Output)
+ 265:Bsp/periph_serial.c **** {
+ 988              		.loc 1 265 1 is_stmt 1 view -0
+ 989              		.cfi_startproc
+ 990              		@ args = 0, pretend = 0, frame = 0
+ 991              		@ frame_needed = 0, uses_anonymous_args = 0
+ 992              		.loc 1 265 1 is_stmt 0 view .LVU198
+ 993 0000 38B5     		push	{r3, r4, r5, lr}
+ 994              	.LCFI15:
+ 995              		.cfi_def_cfa_offset 16
+ 996              		.cfi_offset 3, -16
+ 997              		.cfi_offset 4, -12
+ 998              		.cfi_offset 5, -8
+ 999              		.cfi_offset 14, -4
+ 1000 0002 0446     		mov	r4, r0
+ 1001 0004 0D46     		mov	r5, r1
+ 266:Bsp/periph_serial.c **** 	while (*Str_Output != '\0')
+ 1002              		.loc 1 266 2 is_stmt 1 view .LVU199
+ 1003              		.loc 1 266 8 is_stmt 0 view .LVU200
+ 1004 0006 0AE0     		b	.L53
+ 1005              	.LVL94:
+ 1006              	.L54:
+ 267:Bsp/periph_serial.c **** 	{
+ 268:Bsp/periph_serial.c **** 		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
+ 269:Bsp/periph_serial.c **** 			;
+ 1007              		.loc 1 269 4 is_stmt 1 discriminator 1 view .LVU201
+ 268:Bsp/periph_serial.c **** 			;
+ 1008              		.loc 1 268 9 discriminator 1 view .LVU202
+ 268:Bsp/periph_serial.c **** 			;
+ 1009              		.loc 1 268 10 is_stmt 0 discriminator 1 view .LVU203
+ 1010 0008 4021     		movs	r1, #64
+ 1011 000a 2046     		mov	r0, r4
+ 1012 000c FFF7FEFF 		bl	USART_GetFlagStatus
+ 1013              	.LVL95:
+ 268:Bsp/periph_serial.c **** 			;
+ 1014              		.loc 1 268 9 discriminator 1 view .LVU204
+ 1015 0010 0028     		cmp	r0, #0
+ 1016 0012 F9D0     		beq	.L54
+ 270:Bsp/periph_serial.c **** 		USART_SendData(Serial_port, *Str_Output);
+ 1017              		.loc 1 270 3 is_stmt 1 view .LVU205
+ 1018 0014 15F8011B 		ldrb	r1, [r5], #1	@ zero_extendqisi2
+ 1019              	.LVL96:
+ 1020              		.loc 1 270 3 is_stmt 0 view .LVU206
+ 1021 0018 2046     		mov	r0, r4
+ 1022 001a FFF7FEFF 		bl	USART_SendData
+ 1023              	.LVL97:
+ 271:Bsp/periph_serial.c **** 		Str_Output++;
+ 1024              		.loc 1 271 3 is_stmt 1 view .LVU207
+ 1025              	.L53:
+ 266:Bsp/periph_serial.c **** 	{
+ 1026              		.loc 1 266 8 view .LVU208
+ 266:Bsp/periph_serial.c **** 	{
+ 1027              		.loc 1 266 9 is_stmt 0 view .LVU209
+ 1028 001e 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 266:Bsp/periph_serial.c **** 	{
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 24
 
 
- 273:Bsp/periph_serial.c **** 		USART_ITConfig(Serial_Port[serial_id], USART_IT_TC, ENABLE);
- 274:Bsp/periph_serial.c **** 	}
- 275:Bsp/periph_serial.c **** }
- 1148              		.loc 1 275 1 view .LVU234
- 1149 0018 38BD     		pop	{r3, r4, r5, pc}
- 1150              	.L60:
- 270:Bsp/periph_serial.c **** 		DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
- 1151              		.loc 1 270 3 is_stmt 1 view .LVU235
- 1152 001a 0C4B     		ldr	r3, .L61+4
- 1153 001c 53F82450 		ldr	r5, [r3, r4, lsl #2]
- 1154 0020 094B     		ldr	r3, .L61
- 1155 0022 53F82410 		ldr	r1, [r3, r4, lsl #2]
- 1156 0026 2846     		mov	r0, r5
- 1157 0028 FFF7FEFF 		bl	DMA_ClearFlag
- 1158              	.LVL104:
- 271:Bsp/periph_serial.c **** 
- 1159              		.loc 1 271 3 view .LVU236
- 1160 002c 0021     		movs	r1, #0
- 1161 002e 2846     		mov	r0, r5
- 1162 0030 FFF7FEFF 		bl	DMA_Cmd
- 1163              	.LVL105:
- 273:Bsp/periph_serial.c **** 	}
- 1164              		.loc 1 273 3 view .LVU237
- 1165 0034 0122     		movs	r2, #1
- 1166 0036 40F22661 		movw	r1, #1574
- 1167 003a 054B     		ldr	r3, .L61+8
- 1168 003c 53F82400 		ldr	r0, [r3, r4, lsl #2]
- 1169 0040 FFF7FEFF 		bl	USART_ITConfig
- 1170              	.LVL106:
- 1171              		.loc 1 275 1 is_stmt 0 view .LVU238
- 1172 0044 E8E7     		b	.L57
- 1173              	.L62:
- 1174 0046 00BF     		.align	2
- 1175              	.L61:
- 1176 0048 00000000 		.word	.LANCHOR14
- 1177 004c 00000000 		.word	.LANCHOR12
- 1178 0050 00000000 		.word	.LANCHOR6
- 1179              		.cfi_endproc
- 1180              	.LFE136:
- 1182              		.section	.text.Serial_DMA_SendBuff,"ax",%progbits
- 1183              		.align	1
- 1184              		.global	Serial_DMA_SendBuff
- 1185              		.syntax unified
- 1186              		.thumb
- 1187              		.thumb_func
- 1188              		.fpu fpv4-sp-d16
- 1190              	Serial_DMA_SendBuff:
- 1191              	.LVL107:
- 1192              	.LFB137:
- 276:Bsp/periph_serial.c **** 
- 277:Bsp/periph_serial.c **** void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
- 278:Bsp/periph_serial.c **** {
- 1193              		.loc 1 278 1 is_stmt 1 view -0
- 1194              		.cfi_startproc
- 1195              		@ args = 0, pretend = 0, frame = 0
- 1196              		@ frame_needed = 0, uses_anonymous_args = 0
- 1197              		.loc 1 278 1 is_stmt 0 view .LVU240
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 27
+ 1029              		.loc 1 266 8 view .LVU210
+ 1030 0020 002B     		cmp	r3, #0
+ 1031 0022 F1D1     		bne	.L54
+ 272:Bsp/periph_serial.c **** 	}
+ 273:Bsp/periph_serial.c **** }
+ 1032              		.loc 1 273 1 view .LVU211
+ 1033 0024 38BD     		pop	{r3, r4, r5, pc}
+ 1034              		.loc 1 273 1 view .LVU212
+ 1035              		.cfi_endproc
+ 1036              	.LFE133:
+ 1038              		.section	.text.Serial_SendBuff,"ax",%progbits
+ 1039              		.align	1
+ 1040              		.global	Serial_SendBuff
+ 1041              		.syntax unified
+ 1042              		.thumb
+ 1043              		.thumb_func
+ 1044              		.fpu fpv4-sp-d16
+ 1046              	Serial_SendBuff:
+ 1047              	.LVL98:
+ 1048              	.LFB134:
+ 274:Bsp/periph_serial.c **** 
+ 275:Bsp/periph_serial.c **** void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len)
+ 276:Bsp/periph_serial.c **** {
+ 1049              		.loc 1 276 1 is_stmt 1 view -0
+ 1050              		.cfi_startproc
+ 1051              		@ args = 0, pretend = 0, frame = 0
+ 1052              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1053              		.loc 1 276 1 is_stmt 0 view .LVU214
+ 1054 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1055              	.LCFI16:
+ 1056              		.cfi_def_cfa_offset 24
+ 1057              		.cfi_offset 3, -24
+ 1058              		.cfi_offset 4, -20
+ 1059              		.cfi_offset 5, -16
+ 1060              		.cfi_offset 6, -12
+ 1061              		.cfi_offset 7, -8
+ 1062              		.cfi_offset 14, -4
+ 1063 0002 0446     		mov	r4, r0
+ 1064 0004 0F46     		mov	r7, r1
+ 1065 0006 1646     		mov	r6, r2
+ 277:Bsp/periph_serial.c **** 	for (uint8_t Buff_index = 0; Buff_index < Len; Buff_index++)
+ 1066              		.loc 1 277 2 is_stmt 1 view .LVU215
+ 1067              	.LBB2:
+ 1068              		.loc 1 277 7 view .LVU216
+ 1069              	.LVL99:
+ 1070              		.loc 1 277 15 is_stmt 0 view .LVU217
+ 1071 0008 0025     		movs	r5, #0
+ 1072              		.loc 1 277 2 view .LVU218
+ 1073 000a 0BE0     		b	.L57
+ 1074              	.LVL100:
+ 1075              	.L58:
+ 278:Bsp/periph_serial.c **** 	{
+ 279:Bsp/periph_serial.c **** 		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
+ 280:Bsp/periph_serial.c **** 			;
+ 1076              		.loc 1 280 4 is_stmt 1 discriminator 1 view .LVU219
+ 279:Bsp/periph_serial.c **** 			;
+ 1077              		.loc 1 279 9 discriminator 1 view .LVU220
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 25
 
 
- 1198 0000 70B5     		push	{r4, r5, r6, lr}
- 1199              	.LCFI16:
- 1200              		.cfi_def_cfa_offset 16
- 1201              		.cfi_offset 4, -16
- 1202              		.cfi_offset 5, -12
- 1203              		.cfi_offset 6, -8
- 1204              		.cfi_offset 14, -4
- 1205 0002 0446     		mov	r4, r0
- 1206 0004 0E46     		mov	r6, r1
- 279:Bsp/periph_serial.c **** 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
- 1207              		.loc 1 279 2 is_stmt 1 view .LVU241
- 1208 0006 0B4B     		ldr	r3, .L65
- 1209 0008 53F82050 		ldr	r5, [r3, r0, lsl #2]
- 1210 000c 0021     		movs	r1, #0
- 1211              	.LVL108:
- 1212              		.loc 1 279 2 is_stmt 0 view .LVU242
- 1213 000e 2846     		mov	r0, r5
- 1214              	.LVL109:
- 1215              		.loc 1 279 2 view .LVU243
- 1216 0010 FFF7FEFF 		bl	DMA_Cmd
- 1217              	.LVL110:
- 280:Bsp/periph_serial.c **** 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], (uint16_t)len);
- 1218              		.loc 1 280 2 is_stmt 1 view .LVU244
- 1219 0014 3146     		mov	r1, r6
- 1220 0016 2846     		mov	r0, r5
- 1221 0018 FFF7FEFF 		bl	DMA_SetCurrDataCounter
- 1222              	.LVL111:
- 281:Bsp/periph_serial.c **** 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
- 1223              		.loc 1 281 2 view .LVU245
- 1224 001c 0121     		movs	r1, #1
- 1225 001e 2846     		mov	r0, r5
- 1226 0020 FFF7FEFF 		bl	DMA_Cmd
- 1227              	.LVL112:
- 282:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[serial_id], USART_DMAReq_Tx, ENABLE);
- 1228              		.loc 1 282 2 view .LVU246
- 1229 0024 0122     		movs	r2, #1
- 1230 0026 8021     		movs	r1, #128
- 1231 0028 034B     		ldr	r3, .L65+4
- 1232 002a 53F82400 		ldr	r0, [r3, r4, lsl #2]
- 1233 002e FFF7FEFF 		bl	USART_DMACmd
- 1234              	.LVL113:
+ 279:Bsp/periph_serial.c **** 			;
+ 1078              		.loc 1 279 10 is_stmt 0 discriminator 1 view .LVU221
+ 1079 000c 4021     		movs	r1, #64
+ 1080 000e 2046     		mov	r0, r4
+ 1081 0010 FFF7FEFF 		bl	USART_GetFlagStatus
+ 1082              	.LVL101:
+ 279:Bsp/periph_serial.c **** 			;
+ 1083              		.loc 1 279 9 discriminator 1 view .LVU222
+ 1084 0014 0028     		cmp	r0, #0
+ 1085 0016 F9D0     		beq	.L58
+ 281:Bsp/periph_serial.c **** 		USART_SendData(Serial_port, Buff[Buff_index]);
+ 1086              		.loc 1 281 3 is_stmt 1 discriminator 2 view .LVU223
+ 1087 0018 795D     		ldrb	r1, [r7, r5]	@ zero_extendqisi2
+ 1088 001a 2046     		mov	r0, r4
+ 1089 001c FFF7FEFF 		bl	USART_SendData
+ 1090              	.LVL102:
+ 277:Bsp/periph_serial.c **** 	{
+ 1091              		.loc 1 277 49 discriminator 2 view .LVU224
+ 277:Bsp/periph_serial.c **** 	{
+ 1092              		.loc 1 277 59 is_stmt 0 discriminator 2 view .LVU225
+ 1093 0020 0135     		adds	r5, r5, #1
+ 1094              	.LVL103:
+ 277:Bsp/periph_serial.c **** 	{
+ 1095              		.loc 1 277 59 discriminator 2 view .LVU226
+ 1096 0022 EDB2     		uxtb	r5, r5
+ 1097              	.LVL104:
+ 1098              	.L57:
+ 277:Bsp/periph_serial.c **** 	{
+ 1099              		.loc 1 277 31 is_stmt 1 discriminator 1 view .LVU227
+ 277:Bsp/periph_serial.c **** 	{
+ 1100              		.loc 1 277 42 is_stmt 0 discriminator 1 view .LVU228
+ 1101 0024 ABB2     		uxth	r3, r5
+ 277:Bsp/periph_serial.c **** 	{
+ 1102              		.loc 1 277 2 discriminator 1 view .LVU229
+ 1103 0026 B342     		cmp	r3, r6
+ 1104 0028 F0D3     		bcc	.L58
+ 1105              	.LBE2:
+ 282:Bsp/periph_serial.c **** 	}
  283:Bsp/periph_serial.c **** }
- 1235              		.loc 1 283 1 is_stmt 0 view .LVU247
- 1236 0032 70BD     		pop	{r4, r5, r6, pc}
- 1237              	.L66:
- 1238              		.align	2
- 1239              	.L65:
- 1240 0034 00000000 		.word	.LANCHOR12
- 1241 0038 00000000 		.word	.LANCHOR6
- 1242              		.cfi_endproc
- 1243              	.LFE137:
- 1245              		.global	Serial_Port
- 1246              		.global	DMAIrq_Callback
- 1247              		.global	IRQ_Callback
- 1248              		.section	.bss.DMAIrq_Callback,"aw",%nobits
- 1249              		.align	2
- 1250              		.set	.LANCHOR1,. + 0
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 28
+ 1106              		.loc 1 283 1 view .LVU230
+ 1107 002a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1108              		.loc 1 283 1 view .LVU231
+ 1109              		.cfi_endproc
+ 1110              	.LFE134:
+ 1112              		.section	.text.Serial_DMA_TX_IRQSetting,"ax",%progbits
+ 1113              		.align	1
+ 1114              		.global	Serial_DMA_TX_IRQSetting
+ 1115              		.syntax unified
+ 1116              		.thumb
+ 1117              		.thumb_func
+ 1118              		.fpu fpv4-sp-d16
+ 1120              	Serial_DMA_TX_IRQSetting:
+ 1121              	.LVL105:
+ 1122              	.LFB135:
+ 284:Bsp/periph_serial.c **** 
+ 285:Bsp/periph_serial.c **** void Serial_DMA_TX_IRQSetting(Serial_List serial_id)
+ 286:Bsp/periph_serial.c **** {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 26
 
 
- 1253              	DMAIrq_Callback:
- 1254 0000 00000000 		.space	16
- 1254      00000000 
- 1254      00000000 
- 1254      00000000 
- 1255              		.section	.bss.IRQ_Callback,"aw",%nobits
- 1256              		.align	2
- 1257              		.set	.LANCHOR0,. + 0
- 1260              	IRQ_Callback:
- 1261 0000 00000000 		.space	16
- 1261      00000000 
- 1261      00000000 
- 1261      00000000 
- 1262              		.section	.data.Serial_Port,"aw"
- 1263              		.align	2
- 1264              		.set	.LANCHOR6,. + 0
- 1267              	Serial_Port:
- 1268 0000 00100140 		.word	1073811456
- 1269 0004 00440040 		.word	1073759232
- 1270 0008 00480040 		.word	1073760256
- 1271 000c 00140140 		.word	1073812480
- 1272              		.section	.rodata.DMA_TX_FinishFlag,"a"
- 1273              		.align	2
- 1274              		.set	.LANCHOR14,. + 0
- 1277              	DMA_TX_FinishFlag:
- 1278 0000 00000028 		.word	671088640
- 1279 0004 00002020 		.word	538968064
- 1280 0008 00000018 		.word	402653184
- 1281 000c 00000028 		.word	671088640
- 1282              		.section	.rodata.RCC_APBPeriphClockCmd,"a"
- 1283              		.align	2
- 1284              		.set	.LANCHOR3,. + 0
- 1287              	RCC_APBPeriphClockCmd:
- 1288 0000 00000000 		.word	RCC_APB2PeriphClockCmd
- 1289 0004 00000000 		.word	RCC_APB1PeriphClockCmd
- 1290 0008 00000000 		.word	RCC_APB1PeriphClockCmd
- 1291 000c 00000000 		.word	RCC_APB2PeriphClockCmd
- 1292              		.section	.rodata.RCC_APBPeriph_SerialCLK,"a"
- 1293              		.align	2
- 1294              		.set	.LANCHOR4,. + 0
- 1297              	RCC_APBPeriph_SerialCLK:
- 1298 0000 10000000 		.word	16
- 1299 0004 00000200 		.word	131072
- 1300 0008 00000400 		.word	262144
- 1301 000c 20000000 		.word	32
- 1302              		.section	.rodata.Serial_DMA_CLK,"a"
- 1303              		.align	2
- 1304              		.set	.LANCHOR10,. + 0
- 1307              	Serial_DMA_CLK:
- 1308 0000 00004000 		.word	4194304
- 1309 0004 00002000 		.word	2097152
- 1310 0008 00002000 		.word	2097152
- 1311 000c 00004000 		.word	4194304
- 1312              		.section	.rodata.Serial_DMA_RX_Channel,"a"
- 1313              		.align	2
- 1314              		.set	.LANCHOR8,. + 0
- 1317              	Serial_DMA_RX_Channel:
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 29
+ 1123              		.loc 1 286 1 is_stmt 1 view -0
+ 1124              		.cfi_startproc
+ 1125              		@ args = 0, pretend = 0, frame = 0
+ 1126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1127              		.loc 1 286 1 is_stmt 0 view .LVU233
+ 1128 0000 38B5     		push	{r3, r4, r5, lr}
+ 1129              	.LCFI17:
+ 1130              		.cfi_def_cfa_offset 16
+ 1131              		.cfi_offset 3, -16
+ 1132              		.cfi_offset 4, -12
+ 1133              		.cfi_offset 5, -8
+ 1134              		.cfi_offset 14, -4
+ 1135 0002 0446     		mov	r4, r0
+ 287:Bsp/periph_serial.c **** 	if (DMA_GetFlagStatus(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]) == SET)
+ 1136              		.loc 1 287 2 is_stmt 1 view .LVU234
+ 1137              		.loc 1 287 6 is_stmt 0 view .LVU235
+ 1138 0004 104B     		ldr	r3, .L64
+ 1139 0006 53F82010 		ldr	r1, [r3, r0, lsl #2]
+ 1140 000a 104B     		ldr	r3, .L64+4
+ 1141 000c 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 1142              	.LVL106:
+ 1143              		.loc 1 287 6 view .LVU236
+ 1144 0010 FFF7FEFF 		bl	DMA_GetFlagStatus
+ 1145              	.LVL107:
+ 1146              		.loc 1 287 5 view .LVU237
+ 1147 0014 0128     		cmp	r0, #1
+ 1148 0016 00D0     		beq	.L63
+ 1149              	.L60:
+ 288:Bsp/periph_serial.c **** 	{
+ 289:Bsp/periph_serial.c **** 		DMA_ClearFlag(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]);
+ 290:Bsp/periph_serial.c **** 		DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
+ 291:Bsp/periph_serial.c **** 
+ 292:Bsp/periph_serial.c **** 		USART_ITConfig(Serial_Port[serial_id], USART_IT_TC, ENABLE);
+ 293:Bsp/periph_serial.c **** 	}
+ 294:Bsp/periph_serial.c **** }
+ 1150              		.loc 1 294 1 view .LVU238
+ 1151 0018 38BD     		pop	{r3, r4, r5, pc}
+ 1152              	.L63:
+ 289:Bsp/periph_serial.c **** 		DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
+ 1153              		.loc 1 289 3 is_stmt 1 view .LVU239
+ 1154 001a 0C4B     		ldr	r3, .L64+4
+ 1155 001c 53F82450 		ldr	r5, [r3, r4, lsl #2]
+ 1156 0020 094B     		ldr	r3, .L64
+ 1157 0022 53F82410 		ldr	r1, [r3, r4, lsl #2]
+ 1158 0026 2846     		mov	r0, r5
+ 1159 0028 FFF7FEFF 		bl	DMA_ClearFlag
+ 1160              	.LVL108:
+ 290:Bsp/periph_serial.c **** 
+ 1161              		.loc 1 290 3 view .LVU240
+ 1162 002c 0021     		movs	r1, #0
+ 1163 002e 2846     		mov	r0, r5
+ 1164 0030 FFF7FEFF 		bl	DMA_Cmd
+ 1165              	.LVL109:
+ 292:Bsp/periph_serial.c **** 	}
+ 1166              		.loc 1 292 3 view .LVU241
+ 1167 0034 0122     		movs	r2, #1
+ 1168 0036 40F22661 		movw	r1, #1574
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 27
 
 
- 1318 0000 00000008 		.word	134217728
- 1319 0004 00000008 		.word	134217728
- 1320 0008 00000008 		.word	134217728
- 1321 000c 0000000A 		.word	167772160
- 1322              		.section	.rodata.Serial_DMA_RX_Stream,"a"
- 1323              		.align	2
- 1324              		.set	.LANCHOR9,. + 0
- 1327              	Serial_DMA_RX_Stream:
- 1328 0000 88640240 		.word	1073898632
- 1329 0004 88600240 		.word	1073897608
- 1330 0008 28600240 		.word	1073897512
- 1331 000c 28640240 		.word	1073898536
- 1332              		.section	.rodata.Serial_DMA_TX_Channel,"a"
- 1333              		.align	2
- 1334              		.set	.LANCHOR11,. + 0
- 1337              	Serial_DMA_TX_Channel:
- 1338 0000 00000008 		.word	134217728
- 1339 0004 00000008 		.word	134217728
- 1340 0008 00000008 		.word	134217728
- 1341 000c 0000000A 		.word	167772160
- 1342              		.section	.rodata.Serial_DMA_TX_IRQ_Channel,"a"
- 1343              		.align	2
- 1344              		.set	.LANCHOR13,. + 0
- 1347              	Serial_DMA_TX_IRQ_Channel:
- 1348 0000 46110E46 		.ascii	"F\021\016F"
- 1349              		.section	.rodata.Serial_DMA_TX_Stream,"a"
- 1350              		.align	2
- 1351              		.set	.LANCHOR12,. + 0
- 1354              	Serial_DMA_TX_Stream:
- 1355 0000 B8640240 		.word	1073898680
- 1356 0004 A0600240 		.word	1073897632
- 1357 0008 58600240 		.word	1073897560
- 1358 000c B8640240 		.word	1073898680
- 1359              		.section	.rodata.Serial_IO_Init,"a"
- 1360              		.align	2
- 1361              		.set	.LANCHOR2,. + 0
- 1364              	Serial_IO_Init:
- 1365 0000 00000000 		.word	GPIO_USART1_IO_Init
- 1366 0004 00000000 		.word	GPIO_USART2_IO_Init
- 1367 0008 00000000 		.word	GPIO_USART3_IO_Init
- 1368 000c 00000000 		.word	GPIO_USART6_IO_Init
- 1369              		.section	.rodata.Serial_RX_IRQ_Channel,"a"
- 1370              		.align	2
- 1371              		.set	.LANCHOR7,. + 0
- 1374              	Serial_RX_IRQ_Channel:
- 1375 0000 25262747 		.ascii	"%&'G"
- 1376              		.section	.rodata.Serial_Structure_Setting,"a"
- 1377              		.align	2
- 1378              		.set	.LANCHOR5,. + 0
- 1381              	Serial_Structure_Setting:
- 1382 0000 00000000 		.word	USART_Structure_Normal_Setting
- 1383 0004 00000000 		.word	USART_Structure_SBus_Setting
- 1384              		.text
- 1385              	.Letext0:
- 1386              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
- 1387              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
- 1388              		.file 4 "USER/stm32f4xx.h"
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 30
+ 1169 003a 054B     		ldr	r3, .L64+8
+ 1170 003c 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 1171 0040 FFF7FEFF 		bl	USART_ITConfig
+ 1172              	.LVL110:
+ 1173              		.loc 1 294 1 is_stmt 0 view .LVU242
+ 1174 0044 E8E7     		b	.L60
+ 1175              	.L65:
+ 1176 0046 00BF     		.align	2
+ 1177              	.L64:
+ 1178 0048 00000000 		.word	.LANCHOR13
+ 1179 004c 00000000 		.word	.LANCHOR11
+ 1180 0050 00000000 		.word	.LANCHOR5
+ 1181              		.cfi_endproc
+ 1182              	.LFE135:
+ 1184              		.section	.text.Serial_DMA_SendBuff,"ax",%progbits
+ 1185              		.align	1
+ 1186              		.global	Serial_DMA_SendBuff
+ 1187              		.syntax unified
+ 1188              		.thumb
+ 1189              		.thumb_func
+ 1190              		.fpu fpv4-sp-d16
+ 1192              	Serial_DMA_SendBuff:
+ 1193              	.LVL111:
+ 1194              	.LFB136:
+ 295:Bsp/periph_serial.c **** 
+ 296:Bsp/periph_serial.c **** void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
+ 297:Bsp/periph_serial.c **** {
+ 1195              		.loc 1 297 1 is_stmt 1 view -0
+ 1196              		.cfi_startproc
+ 1197              		@ args = 0, pretend = 0, frame = 0
+ 1198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1199              		.loc 1 297 1 is_stmt 0 view .LVU244
+ 1200 0000 70B5     		push	{r4, r5, r6, lr}
+ 1201              	.LCFI18:
+ 1202              		.cfi_def_cfa_offset 16
+ 1203              		.cfi_offset 4, -16
+ 1204              		.cfi_offset 5, -12
+ 1205              		.cfi_offset 6, -8
+ 1206              		.cfi_offset 14, -4
+ 1207 0002 0446     		mov	r4, r0
+ 1208 0004 0E46     		mov	r6, r1
+ 298:Bsp/periph_serial.c **** 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
+ 1209              		.loc 1 298 2 is_stmt 1 view .LVU245
+ 1210 0006 0B4B     		ldr	r3, .L68
+ 1211 0008 53F82050 		ldr	r5, [r3, r0, lsl #2]
+ 1212 000c 0021     		movs	r1, #0
+ 1213              	.LVL112:
+ 1214              		.loc 1 298 2 is_stmt 0 view .LVU246
+ 1215 000e 2846     		mov	r0, r5
+ 1216              	.LVL113:
+ 1217              		.loc 1 298 2 view .LVU247
+ 1218 0010 FFF7FEFF 		bl	DMA_Cmd
+ 1219              	.LVL114:
+ 299:Bsp/periph_serial.c **** 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], (uint16_t)len);
+ 1220              		.loc 1 299 2 is_stmt 1 view .LVU248
+ 1221 0014 3146     		mov	r1, r6
+ 1222 0016 2846     		mov	r0, r5
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 28
 
 
- 1389              		.file 5 "FWLIB/inc/stm32f4xx_dma.h"
- 1390              		.file 6 "FWLIB/inc/stm32f4xx_usart.h"
- 1391              		.file 7 "Bsp/periph_serial.h"
- 1392              		.file 8 "Bsp/periph_dma.h"
- 1393              		.file 9 "Bsp/periph_nvic.h"
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 31
+ 1223 0018 FFF7FEFF 		bl	DMA_SetCurrDataCounter
+ 1224              	.LVL115:
+ 300:Bsp/periph_serial.c **** 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
+ 1225              		.loc 1 300 2 view .LVU249
+ 1226 001c 0121     		movs	r1, #1
+ 1227 001e 2846     		mov	r0, r5
+ 1228 0020 FFF7FEFF 		bl	DMA_Cmd
+ 1229              	.LVL116:
+ 301:Bsp/periph_serial.c **** 	USART_DMACmd(Serial_Port[serial_id], USART_DMAReq_Tx, ENABLE);
+ 1230              		.loc 1 301 2 view .LVU250
+ 1231 0024 0122     		movs	r2, #1
+ 1232 0026 8021     		movs	r1, #128
+ 1233 0028 034B     		ldr	r3, .L68+4
+ 1234 002a 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 1235 002e FFF7FEFF 		bl	USART_DMACmd
+ 1236              	.LVL117:
+ 302:Bsp/periph_serial.c **** }
+ 1237              		.loc 1 302 1 is_stmt 0 view .LVU251
+ 1238 0032 70BD     		pop	{r4, r5, r6, pc}
+ 1239              	.L69:
+ 1240              		.align	2
+ 1241              	.L68:
+ 1242 0034 00000000 		.word	.LANCHOR11
+ 1243 0038 00000000 		.word	.LANCHOR5
+ 1244              		.cfi_endproc
+ 1245              	.LFE136:
+ 1247              		.global	Serial_Port
+ 1248              		.global	IRQ_Callback
+ 1249              		.section	.bss.IRQ_Callback,"aw",%nobits
+ 1250              		.align	2
+ 1251              		.set	.LANCHOR0,. + 0
+ 1254              	IRQ_Callback:
+ 1255 0000 00000000 		.space	16
+ 1255      00000000 
+ 1255      00000000 
+ 1255      00000000 
+ 1256              		.section	.data.Serial_Port,"aw"
+ 1257              		.align	2
+ 1258              		.set	.LANCHOR5,. + 0
+ 1261              	Serial_Port:
+ 1262 0000 00100140 		.word	1073811456
+ 1263 0004 00440040 		.word	1073759232
+ 1264 0008 00480040 		.word	1073760256
+ 1265 000c 00140140 		.word	1073812480
+ 1266              		.section	.rodata.DMA_TX_FinishFlag,"a"
+ 1267              		.align	2
+ 1268              		.set	.LANCHOR13,. + 0
+ 1271              	DMA_TX_FinishFlag:
+ 1272 0000 00000028 		.word	671088640
+ 1273 0004 00002020 		.word	538968064
+ 1274 0008 00000018 		.word	402653184
+ 1275 000c 00000028 		.word	671088640
+ 1276              		.section	.rodata.RCC_APBPeriphClockCmd,"a"
+ 1277              		.align	2
+ 1278              		.set	.LANCHOR2,. + 0
+ 1281              	RCC_APBPeriphClockCmd:
+ 1282 0000 00000000 		.word	RCC_APB2PeriphClockCmd
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 29
+
+
+ 1283 0004 00000000 		.word	RCC_APB1PeriphClockCmd
+ 1284 0008 00000000 		.word	RCC_APB1PeriphClockCmd
+ 1285 000c 00000000 		.word	RCC_APB2PeriphClockCmd
+ 1286              		.section	.rodata.RCC_APBPeriph_SerialCLK,"a"
+ 1287              		.align	2
+ 1288              		.set	.LANCHOR3,. + 0
+ 1291              	RCC_APBPeriph_SerialCLK:
+ 1292 0000 10000000 		.word	16
+ 1293 0004 00000200 		.word	131072
+ 1294 0008 00000400 		.word	262144
+ 1295 000c 20000000 		.word	32
+ 1296              		.section	.rodata.Serial_DMA_CLK,"a"
+ 1297              		.align	2
+ 1298              		.set	.LANCHOR9,. + 0
+ 1301              	Serial_DMA_CLK:
+ 1302 0000 00004000 		.word	4194304
+ 1303 0004 00002000 		.word	2097152
+ 1304 0008 00002000 		.word	2097152
+ 1305 000c 00004000 		.word	4194304
+ 1306              		.section	.rodata.Serial_DMA_RX_Channel,"a"
+ 1307              		.align	2
+ 1308              		.set	.LANCHOR7,. + 0
+ 1311              	Serial_DMA_RX_Channel:
+ 1312 0000 00000008 		.word	134217728
+ 1313 0004 00000008 		.word	134217728
+ 1314 0008 00000008 		.word	134217728
+ 1315 000c 0000000A 		.word	167772160
+ 1316              		.section	.rodata.Serial_DMA_RX_Stream,"a"
+ 1317              		.align	2
+ 1318              		.set	.LANCHOR8,. + 0
+ 1321              	Serial_DMA_RX_Stream:
+ 1322 0000 88640240 		.word	1073898632
+ 1323 0004 88600240 		.word	1073897608
+ 1324 0008 28600240 		.word	1073897512
+ 1325 000c 28640240 		.word	1073898536
+ 1326              		.section	.rodata.Serial_DMA_TX_Channel,"a"
+ 1327              		.align	2
+ 1328              		.set	.LANCHOR10,. + 0
+ 1331              	Serial_DMA_TX_Channel:
+ 1332 0000 00000008 		.word	134217728
+ 1333 0004 00000008 		.word	134217728
+ 1334 0008 00000008 		.word	134217728
+ 1335 000c 0000000A 		.word	167772160
+ 1336              		.section	.rodata.Serial_DMA_TX_IRQ_Channel,"a"
+ 1337              		.align	2
+ 1338              		.set	.LANCHOR12,. + 0
+ 1341              	Serial_DMA_TX_IRQ_Channel:
+ 1342 0000 46110E46 		.ascii	"F\021\016F"
+ 1343              		.section	.rodata.Serial_DMA_TX_Stream,"a"
+ 1344              		.align	2
+ 1345              		.set	.LANCHOR11,. + 0
+ 1348              	Serial_DMA_TX_Stream:
+ 1349 0000 B8640240 		.word	1073898680
+ 1350 0004 A0600240 		.word	1073897632
+ 1351 0008 58600240 		.word	1073897560
+ 1352 000c B8640240 		.word	1073898680
+ 1353              		.section	.rodata.Serial_IO_Init,"a"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 30
+
+
+ 1354              		.align	2
+ 1355              		.set	.LANCHOR1,. + 0
+ 1358              	Serial_IO_Init:
+ 1359 0000 00000000 		.word	GPIO_USART1_IO_Init
+ 1360 0004 00000000 		.word	GPIO_USART2_IO_Init
+ 1361 0008 00000000 		.word	GPIO_USART3_IO_Init
+ 1362 000c 00000000 		.word	GPIO_USART6_IO_Init
+ 1363              		.section	.rodata.Serial_RX_IRQ_Channel,"a"
+ 1364              		.align	2
+ 1365              		.set	.LANCHOR6,. + 0
+ 1368              	Serial_RX_IRQ_Channel:
+ 1369 0000 25262747 		.ascii	"%&'G"
+ 1370              		.section	.rodata.Serial_Structure_Setting,"a"
+ 1371              		.align	2
+ 1372              		.set	.LANCHOR4,. + 0
+ 1375              	Serial_Structure_Setting:
+ 1376 0000 00000000 		.word	USART_Structure_Normal_Setting
+ 1377 0004 00000000 		.word	USART_Structure_SBus_Setting
+ 1378              		.text
+ 1379              	.Letext0:
+ 1380              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 1381              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 1382              		.file 4 "USER/stm32f4xx.h"
+ 1383              		.file 5 "FWLIB/inc/stm32f4xx_dma.h"
+ 1384              		.file 6 "FWLIB/inc/stm32f4xx_usart.h"
+ 1385              		.file 7 "Bsp/periph_dma.h"
+ 1386              		.file 8 "Bsp/periph_serial.h"
+ 1387              		.file 9 "Bsp/periph_nvic.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 31
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 periph_serial.c
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:18     .text.USART_Structure_Normal_Setting:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:25     .text.USART_Structure_Normal_Setting:0000000000000000 USART_Structure_Normal_Setting
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:60     .text.USART_Structure_SBus_Setting:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:66     .text.USART_Structure_SBus_Setting:0000000000000000 USART_Structure_SBus_Setting
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:103    .text.Serial_Get_IRQ_Callback:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:110    .text.Serial_Get_IRQ_Callback:0000000000000000 Serial_Get_IRQ_Callback
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:139    .text.Serial_Get_IRQ_Callback:0000000000000010 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:144    .text.Serial_Get_DMA_IRQ_Callback:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:151    .text.Serial_Get_DMA_IRQ_Callback:0000000000000000 Serial_Get_DMA_IRQ_Callback
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:180    .text.Serial_Get_DMA_IRQ_Callback:0000000000000010 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:185    .text.Serial_Set_DMAIRQ_Callback:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:192    .text.Serial_Set_DMAIRQ_Callback:0000000000000000 Serial_Set_DMAIRQ_Callback
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:224    .text.Serial_Set_DMAIRQ_Callback:0000000000000014 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:229    .text.Serial_Set_IRQ_Callback:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:236    .text.Serial_Set_IRQ_Callback:0000000000000000 Serial_Set_IRQ_Callback
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:268    .text.Serial_Set_IRQ_Callback:0000000000000014 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:273    .text.Serial_IRQ_RX_Init:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:280    .text.Serial_IRQ_RX_Init:0000000000000000 Serial_IRQ_RX_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:371    .text.Serial_IRQ_RX_Init:000000000000006c $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:381    .text.Serial_DMA_RX_Init:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:388    .text.Serial_DMA_RX_Init:0000000000000000 Serial_DMA_RX_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:528    .text.Serial_DMA_RX_Init:00000000000000d4 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:541    .text.Serial_DMA_TX_Init:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:548    .text.Serial_DMA_TX_Init:0000000000000000 Serial_DMA_TX_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:668    .text.Serial_DMA_TX_Init:00000000000000a4 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:681    .text.Serial_Deinit:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:688    .text.Serial_Deinit:0000000000000000 Serial_Deinit
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:768    .text.Serial_Deinit:000000000000006c $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:775    .text.Serial_DMA_RXTX_Init:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:782    .text.Serial_DMA_RXTX_Init:0000000000000000 Serial_DMA_RXTX_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:960    .text.Serial_DMA_RXTX_Init:0000000000000120 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:976    .text.Serial_SendStr:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:983    .text.Serial_SendStr:0000000000000000 Serial_SendStr
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1037   .text.Serial_SendBuff:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1044   .text.Serial_SendBuff:0000000000000000 Serial_SendBuff
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1111   .text.Serial_DMA_TX_IRQSetting:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1118   .text.Serial_DMA_TX_IRQSetting:0000000000000000 Serial_DMA_TX_IRQSetting
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1176   .text.Serial_DMA_TX_IRQSetting:0000000000000048 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1183   .text.Serial_DMA_SendBuff:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1190   .text.Serial_DMA_SendBuff:0000000000000000 Serial_DMA_SendBuff
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1240   .text.Serial_DMA_SendBuff:0000000000000034 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1267   .data.Serial_Port:0000000000000000 Serial_Port
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1253   .bss.DMAIrq_Callback:0000000000000000 DMAIrq_Callback
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1260   .bss.IRQ_Callback:0000000000000000 IRQ_Callback
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1249   .bss.DMAIrq_Callback:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1256   .bss.IRQ_Callback:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1263   .data.Serial_Port:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1273   .rodata.DMA_TX_FinishFlag:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1277   .rodata.DMA_TX_FinishFlag:0000000000000000 DMA_TX_FinishFlag
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1283   .rodata.RCC_APBPeriphClockCmd:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1287   .rodata.RCC_APBPeriphClockCmd:0000000000000000 RCC_APBPeriphClockCmd
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1293   .rodata.RCC_APBPeriph_SerialCLK:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1297   .rodata.RCC_APBPeriph_SerialCLK:0000000000000000 RCC_APBPeriph_SerialCLK
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1303   .rodata.Serial_DMA_CLK:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1307   .rodata.Serial_DMA_CLK:0000000000000000 Serial_DMA_CLK
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s 			page 32
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:18     .text.USART_Structure_Normal_Setting:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:25     .text.USART_Structure_Normal_Setting:0000000000000000 USART_Structure_Normal_Setting
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:60     .text.USART_Structure_SBus_Setting:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:66     .text.USART_Structure_SBus_Setting:0000000000000000 USART_Structure_SBus_Setting
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:103    .text.Serial_Get_IRQ_Callback:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:110    .text.Serial_Get_IRQ_Callback:0000000000000000 Serial_Get_IRQ_Callback
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:139    .text.Serial_Get_IRQ_Callback:0000000000000010 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:144    .text.Serial_Set_DMAIRQ_Callback:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:151    .text.Serial_Set_DMAIRQ_Callback:0000000000000000 Serial_Set_DMAIRQ_Callback
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:176    .text.Serial_Set_DMAIRQ_Callback:0000000000000010 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:180    .text.Serial_Set_DMAIRQ_Callback:0000000000000014 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:236    .text.Serial_Set_IRQ_Callback:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:243    .text.Serial_Set_IRQ_Callback:0000000000000000 Serial_Set_IRQ_Callback
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:275    .text.Serial_Set_IRQ_Callback:0000000000000014 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:280    .text.Serial_IRQ_RX_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:287    .text.Serial_IRQ_RX_Init:0000000000000000 Serial_IRQ_RX_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:378    .text.Serial_IRQ_RX_Init:000000000000006c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:388    .text.Serial_DMA_RX_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:395    .text.Serial_DMA_RX_Init:0000000000000000 Serial_DMA_RX_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:535    .text.Serial_DMA_RX_Init:00000000000000d4 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:548    .text.Serial_DMA_TX_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:555    .text.Serial_DMA_TX_Init:0000000000000000 Serial_DMA_TX_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:675    .text.Serial_DMA_TX_Init:00000000000000a4 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:688    .text.Serial_Deinit:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:695    .text.Serial_Deinit:0000000000000000 Serial_Deinit
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:771    .text.Serial_Deinit:0000000000000064 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:777    .text.Serial_DMA_RXTX_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:784    .text.Serial_DMA_RXTX_Init:0000000000000000 Serial_DMA_RXTX_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:962    .text.Serial_DMA_RXTX_Init:0000000000000120 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:978    .text.Serial_SendStr:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:985    .text.Serial_SendStr:0000000000000000 Serial_SendStr
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1039   .text.Serial_SendBuff:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1046   .text.Serial_SendBuff:0000000000000000 Serial_SendBuff
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1113   .text.Serial_DMA_TX_IRQSetting:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1120   .text.Serial_DMA_TX_IRQSetting:0000000000000000 Serial_DMA_TX_IRQSetting
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1178   .text.Serial_DMA_TX_IRQSetting:0000000000000048 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1185   .text.Serial_DMA_SendBuff:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1192   .text.Serial_DMA_SendBuff:0000000000000000 Serial_DMA_SendBuff
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1242   .text.Serial_DMA_SendBuff:0000000000000034 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1261   .data.Serial_Port:0000000000000000 Serial_Port
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1254   .bss.IRQ_Callback:0000000000000000 IRQ_Callback
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1250   .bss.IRQ_Callback:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1257   .data.Serial_Port:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1267   .rodata.DMA_TX_FinishFlag:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1271   .rodata.DMA_TX_FinishFlag:0000000000000000 DMA_TX_FinishFlag
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1277   .rodata.RCC_APBPeriphClockCmd:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1281   .rodata.RCC_APBPeriphClockCmd:0000000000000000 RCC_APBPeriphClockCmd
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1287   .rodata.RCC_APBPeriph_SerialCLK:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1291   .rodata.RCC_APBPeriph_SerialCLK:0000000000000000 RCC_APBPeriph_SerialCLK
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1297   .rodata.Serial_DMA_CLK:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1301   .rodata.Serial_DMA_CLK:0000000000000000 Serial_DMA_CLK
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1307   .rodata.Serial_DMA_RX_Channel:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1311   .rodata.Serial_DMA_RX_Channel:0000000000000000 Serial_DMA_RX_Channel
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1317   .rodata.Serial_DMA_RX_Stream:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1321   .rodata.Serial_DMA_RX_Stream:0000000000000000 Serial_DMA_RX_Stream
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s 			page 32
 
 
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1313   .rodata.Serial_DMA_RX_Channel:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1317   .rodata.Serial_DMA_RX_Channel:0000000000000000 Serial_DMA_RX_Channel
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1323   .rodata.Serial_DMA_RX_Stream:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1327   .rodata.Serial_DMA_RX_Stream:0000000000000000 Serial_DMA_RX_Stream
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1333   .rodata.Serial_DMA_TX_Channel:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1337   .rodata.Serial_DMA_TX_Channel:0000000000000000 Serial_DMA_TX_Channel
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1343   .rodata.Serial_DMA_TX_IRQ_Channel:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1347   .rodata.Serial_DMA_TX_IRQ_Channel:0000000000000000 Serial_DMA_TX_IRQ_Channel
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1350   .rodata.Serial_DMA_TX_Stream:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1354   .rodata.Serial_DMA_TX_Stream:0000000000000000 Serial_DMA_TX_Stream
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1360   .rodata.Serial_IO_Init:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1364   .rodata.Serial_IO_Init:0000000000000000 Serial_IO_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1370   .rodata.Serial_RX_IRQ_Channel:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1374   .rodata.Serial_RX_IRQ_Channel:0000000000000000 Serial_RX_IRQ_Channel
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1377   .rodata.Serial_Structure_Setting:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccD3Qlil.s:1381   .rodata.Serial_Structure_Setting:0000000000000000 Serial_Structure_Setting
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1327   .rodata.Serial_DMA_TX_Channel:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1331   .rodata.Serial_DMA_TX_Channel:0000000000000000 Serial_DMA_TX_Channel
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1337   .rodata.Serial_DMA_TX_IRQ_Channel:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1341   .rodata.Serial_DMA_TX_IRQ_Channel:0000000000000000 Serial_DMA_TX_IRQ_Channel
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1344   .rodata.Serial_DMA_TX_Stream:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1348   .rodata.Serial_DMA_TX_Stream:0000000000000000 Serial_DMA_TX_Stream
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1354   .rodata.Serial_IO_Init:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1358   .rodata.Serial_IO_Init:0000000000000000 Serial_IO_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1364   .rodata.Serial_RX_IRQ_Channel:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1368   .rodata.Serial_RX_IRQ_Channel:0000000000000000 Serial_RX_IRQ_Channel
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1371   .rodata.Serial_Structure_Setting:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccmzJsxs.s:1375   .rodata.Serial_Structure_Setting:0000000000000000 Serial_Structure_Setting
 
 UNDEFINED SYMBOLS
+periph_Set_DMA_IRQCallback
 USART_Init
 USART_Cmd
 USART_ITConfig

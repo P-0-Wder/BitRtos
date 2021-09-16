@@ -6,30 +6,24 @@
 
 void DMA1_Stream6_IRQHandler(void)
 {
-#ifdef RADIO_PORT
-#if (RADIO_PORT == Serial_2)
-    Serial_DMA_TX_IRQSetting(RADIO_PORT);
-
-#endif
-#endif
+    if (periph_Get_DMA_IRQCallback(DMA_1, DMA_Stream_6) != NULL)
+    {
+        periph_Get_DMA_IRQCallback(DMA_1, DMA_Stream_6)();
+    }
 }
 
 void DMA1_Stream3_IRQHandler(void)
 {
-#ifdef RADIO_PORT
-#if (RADIO_PORT == Serial_3)
-    Serial_DMA_TX_IRQSetting(RADIO_PORT);
-
-#endif
-#endif
+    if (periph_Get_DMA_IRQCallback(DMA_1, DMA_Stream_3) != NULL)
+    {
+        periph_Get_DMA_IRQCallback(DMA_1, DMA_Stream_3)();
+    }
 }
 
 void DMA2_Stream7_IRQHandler(void)
 {
-#ifdef RADIO_PORT
-#if ((RADIO_PORT == Serial_1) || (RADIO_PORT == Serial_6))
-    Serial_DMA_TX_IRQSetting(RADIO_PORT);
-
-#endif
-#endif
+    if (periph_Get_DMA_IRQCallback(DMA_2, DMA_Stream_7) != NULL)
+    {
+        periph_Get_DMA_IRQCallback(DMA_2, DMA_Stream_7)();
+    }
 }

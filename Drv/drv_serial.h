@@ -51,7 +51,7 @@ typedef struct
     DrvSerial_PortMode_List mode;
 
     Serial_IRQ_Callback Irq_Callback;
-    Serial_DMA_IRQ_Callback DmaIrq_Callback;
+    dma_irq_callback DmaIrq_Callback;
 
     DrvSerial_SendMode_List send_mode;
 } DrvSerial_Config_Typedef;

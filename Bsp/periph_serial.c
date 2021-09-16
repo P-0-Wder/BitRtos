@@ -7,7 +7,6 @@
 #include "stm32f4xx_dma.h"
 
 Serial_IRQ_Callback IRQ_Callback[Serial_Port_Sum] = {NULL};
-Serial_DMA_IRQ_Callback DMAIrq_Callback[Serial_Port_Sum] = {NULL};
 
 #ifdef STM32F40XX
 static void (*Serial_IO_Init[Serial_Port_Sum])(void) = {GPIO_USART1_IO_Init,
@@ -102,20 +101,41 @@ Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id)
 	return IRQ_Callback[serial_id];
 }
 
-Serial_DMA_IRQ_Callback Serial_Get_DMA_IRQ_Callback(Serial_List serial_id)
+bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, dma_irq_callback callback)
 {
-	if (serial_id >= Serial_Port_Sum)
-		return NULL;
+	uint8_t dma_id = 0;
+	uint8_t stream_id = 0;
 
-	return DMAIrq_Callback[serial_id];
-}
-
-bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, Serial_DMA_IRQ_Callback callback)
-{
 	if (serial_id >= Serial_Port_Sum)
 		return false;
 
-	DMAIrq_Callback[serial_id] = callback;
+	switch (serial_id)
+	{
+	case Serial_1:
+		dma_id = DMA_2;
+		stream_id = DMA_Stream_7;
+		break;
+
+	case Serial_2:
+		dma_id = DMA_1;
+		stream_id = DMA_Stream_6;
+		break;
+
+	case Serial_3:
+		dma_id = DMA_1;
+		stream_id = DMA_Stream_3;
+		break;
+
+	case Serial_6:
+		dma_id = DMA_2;
+		stream_id = DMA_Stream_7;
+		break;
+
+	default:
+		return;
+	}
+
+	periph_Set_DMA_IRQCallback(dma_id, stream_id, callback);
 
 	return true;
 }
@@ -196,7 +216,6 @@ bool Serial_Deinit(Serial_List Serial)
 		return false;
 
 	IRQ_Callback[Serial] = NULL;
-	DMAIrq_Callback[Serial] = NULL;
 
 	USART_DeInit(Serial_Port[Serial]);
 

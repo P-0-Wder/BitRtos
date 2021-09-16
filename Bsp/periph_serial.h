@@ -2,6 +2,7 @@
 #define __PERIPH_SERIAL_H
 
 #include "stm32f4xx.h"
+#include "periph_dma.h"
 #include <string.h>
 #include <stdbool.h>
 
@@ -16,7 +17,6 @@
 #define Serial_9600 9600
 
 typedef void (*Serial_IRQ_Callback)(uint8_t *data, uint8_t len);
-typedef void (*Serial_DMA_IRQ_Callback)(uint8_t *data, uint8_t len);
 
 typedef enum
 {
@@ -55,9 +55,7 @@ void Serial_DMA_TX_IRQSetting(Serial_List serial_id);
 void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len);
 
 Serial_IRQ_Callback Serial_Get_IRQ_RxCallback(Serial_List serial_id);
-Serial_DMA_IRQ_Callback Serial_Get_DMA_RxIRQ_Callback(Serial_List serial_id);
 
 bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback);
-bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, Serial_DMA_IRQ_Callback callback);
-
+bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, dma_irq_callback callback);
 #endif
