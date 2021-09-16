@@ -45,9 +45,7 @@ typedef enum
 
 typedef struct
 {
-    bool inuse;
     uint32_t baudrate;
-    DrvSerial_Port_List port;
     uint8_t PreemptionPriority;
     uint8_t SubPriority;
     DrvSerial_PortMode_List mode;
@@ -57,6 +55,12 @@ typedef struct
 
     DrvSerial_SendMode_List send_mode;
 } DrvSerial_Config_Typedef;
+
+typedef struct
+{
+    bool inuse;
+    DrvSerial_Config_Typedef cfg;
+} DrvSerial_SrcInfo_TypeDef;
 
 typedef struct
 {
