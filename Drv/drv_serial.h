@@ -32,7 +32,6 @@ typedef enum
 {
     DrvSerial_Send_Async = 0,
     DrvSerial_Send_Sync,
-    DrvSerial_send_None,
 } DrvSerial_SendMode_List;
 
 typedef enum

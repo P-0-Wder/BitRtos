@@ -223,24 +223,13 @@ void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t Preemption
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 }
 
-void Serial_SendStr(USART_TypeDef *Serial_port, const char *Str_Output)
-{
-	while (*Str_Output != '\0')
-	{
-		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
-			;
-		USART_SendData(Serial_port, *Str_Output);
-		Str_Output++;
-	}
-}
-
-void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len)
+void Serial_SendBuff(Serial_List serial_id, uint8_t *Buff, uint16_t Len)
 {
 	for (uint8_t Buff_index = 0; Buff_index < Len; Buff_index++)
 	{
-		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
+		while (USART_GetFlagStatus(Serial_Port[serial_id], USART_FLAG_TC) == RESET)
 			;
-		USART_SendData(Serial_port, Buff[Buff_index]);
+		USART_SendData(Serial_Port[serial_id], Buff[Buff_index]);
 	}
 }
 
@@ -255,10 +244,38 @@ void Serial_DMA_TX_IRQSetting(Serial_List serial_id)
 	}
 }
 
-void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
+void Serial_DMA_SendBuff(Serial_List serial_id, uint8_t *buff, uint16_t len)
 {
+	DMA_Stream_TypeDef *dma_stream = NULL;
+
+	if (serial_id >= Serial_Port_Sum)
+		return;
+
+	switch (serial_id)
+	{
+	case Serial_1:
+		dma_stream = DMA2_Stream7;
+		break;
+
+	case Serial_2:
+		dma_stream = DMA1_Stream6;
+		break;
+
+	case Serial_3:
+		dma_stream = DMA1_Stream3;
+		break;
+
+	case Serial_6:
+		dma_stream = DMA2_Stream7;
+		break;
+
+	default:
+		return;
+	}
+
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], (uint16_t)len);
+	DMA_MemoryTargetConfig(dma_stream, (uint32_t)buff, DMA_Memory_0);
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
 	USART_DMACmd(Serial_Port[serial_id], USART_DMAReq_Tx, ENABLE);
 }
@@ -269,7 +286,7 @@ void Serial_DMA_WaitFinish(Serial_List serial_id)
 	uint32_t flag = 0;
 
 	if (serial_id >= Serial_Port_Sum)
-		return false;
+		return;
 
 	switch (serial_id)
 	{

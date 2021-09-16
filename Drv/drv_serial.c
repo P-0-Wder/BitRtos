@@ -18,7 +18,7 @@ static DrvSerial_SrcInfo_TypeDef DrvSerial_SrcInfo[DrvSerial_Sum] = {
 /* external function */
 static bool
 DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t len);
-static bool DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len);
+static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len, DrvSerial_SendMode_List mode);
 
 /* external virable */
 DrvSerial_GenProcFunc_TypeDef DrvSerial = {
@@ -106,6 +106,12 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
     return true;
 }
 
-static bool DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len)
+static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len, DrvSerial_SendMode_List mode)
 {
+    Serial_SendBuff(portx, data, len);
+
+    if (DrvSerial_Send_Async == mode)
+    {
+        Serial_DMA_WaitFinish(portx);
+    }
 }
