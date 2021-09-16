@@ -98,19 +98,13 @@ void USART6_IRQHandler(void)
 {
 	uint8_t rec;
 
-	if (USART_GetITStatus(USART6, USART_IT_TXE) == RESET)
+	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)
 	{
 		if (Serial_Get_IRQ_RxCallback(Serial_6) != NULL)
 		{
 			Serial_Get_IRQ_RxCallback(Serial_6)((uint8_t)USART_ReceiveData(USART6), 1);
 		}
 
-		USART_ITConfig(USART6, USART_IT_TC, DISABLE);
-	}
-
-	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)
-	{
-		rec = USART_ReceiveData(USART6);
 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
 	}
 
