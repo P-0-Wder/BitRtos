@@ -255,7 +255,8 @@ void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t Preemption
 
 	//Tx DMA Setting
 	periph_DMA_Serial(&DMA_TX_InitStructure, Serial_DMA_TX_Channel[Serial], (uint32_t)&Serial_Port[Serial]->DR, (uint32_t)TX_Buff, Buff_Size, Serial_DMA_TX);
-	periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, DMA_IT_TC, DISABLE);
+	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, ENABLE);
+	//periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, DMA_IT_TC, DISABLE);
 	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority + 1, ENABLE);
 
 	USART_Cmd(Serial_Port[Serial], ENABLE);
