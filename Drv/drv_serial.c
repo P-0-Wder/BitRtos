@@ -108,7 +108,21 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
 
 static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len, DrvSerial_SendMode_List mode)
 {
-    Serial_SendBuff(portx, data, len);
+
+    switch (DrvSerial_SrcInfo[portx].cfg.mode)
+    {
+    case DrvSerial_MODE_Normal:
+    case DrvSerial_MODE_DMA_Rx:
+        Serial_SendBuff(portx, data, len);
+        break;
+
+    case DrvSerial_MODE_DMA_TxRx:
+        Serial_DMA_SendBuff(portx, data, len);
+        break;
+
+    default:
+        return;
+    }
 
     if (DrvSerial_Send_Async == mode)
     {
