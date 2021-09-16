@@ -66,7 +66,6 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
 
                 Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
                 Serial_Set_DMAIRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->DmaIrq_Callback);
-
                 break;
 
             default:
@@ -77,6 +76,9 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
         {
             VCP_Init();
         }
+
+        DrvSerial_SrcInfo[portx].inuse = true;
+        DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
         break;
 
     case DrvSerial_Close:
@@ -87,6 +89,9 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
         ((DrvSerial_Config_Typedef *)data)->baudrate = 0;
         ((DrvSerial_Config_Typedef *)data)->DmaIrq_Callback = NULL;
         ((DrvSerial_Config_Typedef *)data)->Irq_Callback = NULL;
+
+        DrvSerial_SrcInfo[portx].inuse = false;
+        DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
         break;
 
     case DrvSerial_Set_TxIRQCallback:
