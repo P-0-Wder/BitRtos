@@ -94,7 +94,7 @@ static void USART_Structure_SBus_Setting(USART_InitTypeDef *USART_InitStructure,
 static void (*Serial_Structure_Setting[Serial_Func_Sum])(USART_InitTypeDef *USART_InitStructure, uint32_t bound) = {USART_Structure_Normal_Setting,
 																													USART_Structure_SBus_Setting};
 
-Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id)
+Serial_IRQ_Callback Serial_Get_IRQ_RxCallback(Serial_List serial_id)
 {
 	if (serial_id >= Serial_Port_Sum)
 		return NULL;

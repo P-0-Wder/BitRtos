@@ -16,7 +16,10 @@ void USART1_IRQHandler(void)
 
 	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
-		rec = USART_ReceiveData(USART1);
+		if (Serial_Get_IRQ_RxCallback(Serial_1) != NULL)
+		{
+			Serial_Get_IRQ_RxCallback(Serial_1)((uint8_t)USART_ReceiveData(USART1), 1);
+		}
 
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 	}
@@ -41,7 +44,11 @@ void USART2_IRQHandler(void)
 
 	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
 	{
-		rec = USART_ReceiveData(USART2);
+		if (Serial_Get_IRQ_RxCallback(Serial_2) != NULL)
+		{
+			Serial_Get_IRQ_RxCallback(Serial_2)((uint8_t)USART_ReceiveData(USART2), 1);
+		}
+
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
 	}
 
@@ -65,7 +72,11 @@ void USART3_IRQHandler(void)
 
 	if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
 	{
-		rec = USART_ReceiveData(USART3);
+		if (Serial_Get_IRQ_RxCallback(Serial_3) != NULL)
+		{
+			Serial_Get_IRQ_RxCallback(Serial_3)((uint8_t)USART_ReceiveData(USART3), 1);
+		}
+
 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
 	}
 
@@ -89,6 +100,11 @@ void USART6_IRQHandler(void)
 
 	if (USART_GetITStatus(USART6, USART_IT_TXE) == RESET)
 	{
+		if (Serial_Get_IRQ_RxCallback(Serial_6) != NULL)
+		{
+			Serial_Get_IRQ_RxCallback(Serial_6)((uint8_t)USART_ReceiveData(USART6), 1);
+		}
+
 		USART_ITConfig(USART6, USART_IT_TC, DISABLE);
 	}
 
