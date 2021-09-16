@@ -84,7 +84,6 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
     case DrvSerial_Close:
         Serial_Deinit(portx);
         Serial_Set_IRQ_Callback(portx, NULL);
-        Serial_Set_DMAIRQ_Callback(portx, NULL);
         ((DrvSerial_Config_Typedef *)data)->mode = DrvSerial_MODE_None;
         ((DrvSerial_Config_Typedef *)data)->PreemptionPriority = 0;
         ((DrvSerial_Config_Typedef *)data)->SubPriority = 0;
@@ -96,10 +95,8 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
         DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
         break;
 
-    case DrvSerial_Set_TxIRQCallback:
-        break;
-
     case DrvSerial_Set_RxIRQCallback:
+        Serial_Set_IRQ_Callback(portx, (Serial_IRQ_Callback)data);
         break;
 
     default:

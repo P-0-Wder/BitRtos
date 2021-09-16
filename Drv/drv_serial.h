@@ -40,7 +40,6 @@ typedef enum
     DrvSerial_Open = 0,
     DrvSerial_Close,
     DrvSerial_Set_RxIRQCallback,
-    DrvSerial_Set_TxIRQCallback,
 } DrvSerial_CMD_List;
 
 typedef struct

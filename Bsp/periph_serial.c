@@ -101,45 +101,6 @@ Serial_IRQ_Callback Serial_Get_IRQ_Callback(Serial_List serial_id)
 	return IRQ_Callback[serial_id];
 }
 
-bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, dma_irq_callback callback)
-{
-	uint8_t dma_id = 0;
-	uint8_t stream_id = 0;
-
-	if (serial_id >= Serial_Port_Sum)
-		return false;
-
-	switch (serial_id)
-	{
-	case Serial_1:
-		dma_id = DMA_2;
-		stream_id = DMA_Stream_7;
-		break;
-
-	case Serial_2:
-		dma_id = DMA_1;
-		stream_id = DMA_Stream_6;
-		break;
-
-	case Serial_3:
-		dma_id = DMA_1;
-		stream_id = DMA_Stream_3;
-		break;
-
-	case Serial_6:
-		dma_id = DMA_2;
-		stream_id = DMA_Stream_7;
-		break;
-
-	default:
-		return;
-	}
-
-	periph_Set_DMA_IRQCallback(dma_id, stream_id, callback);
-
-	return true;
-}
-
 bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback)
 {
 	if (serial_id >= Serial_Port_Sum)
@@ -300,4 +261,42 @@ void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], (uint16_t)len);
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
 	USART_DMACmd(Serial_Port[serial_id], USART_DMAReq_Tx, ENABLE);
+}
+
+void Serial_DMA_WaitFinish(Serial_List serial_id)
+{
+	DMA_Stream_TypeDef *dma_stream = NULL;
+	uint32_t flag = 0;
+
+	if (serial_id >= Serial_Port_Sum)
+		return false;
+
+	switch (serial_id)
+	{
+	case Serial_1:
+		dma_stream = DMA2_Stream7;
+		flag = DMA_FLAG_TCIF7;
+		break;
+
+	case Serial_2:
+		dma_stream = DMA1_Stream6;
+		flag = DMA_FLAG_TCIF6;
+		break;
+
+	case Serial_3:
+		dma_stream = DMA1_Stream3;
+		flag = DMA_FLAG_TCIF3;
+		break;
+
+	case Serial_6:
+		dma_stream = DMA2_Stream7;
+		flag = DMA_FLAG_TCIF7;
+		break;
+
+	default:
+		return;
+	}
+
+	while (DMA_GetFlagStatus(dma_stream, flag) == RESET)
+		;
 }
