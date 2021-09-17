@@ -4,6 +4,11 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_dma.h"
 
+typedef void (*dma_irq_callback)(void);
+
+#define DMA_SUM 2
+#define DMA_STREAM_SUM 8
+
 #define TIM2_DMA_CLK RCC_AHB1Periph_DMA1
 #define TIM3_DMA_CLK RCC_AHB1Periph_DMA1
 
@@ -69,6 +74,24 @@
 
 typedef enum
 {
+    DMA_1 = 0,
+    DMA_2,
+} Periph_DMA_List;
+
+typedef enum
+{
+    DMA_Stream_0 = 0,
+    DMA_Stream_1,
+    DMA_Stream_2,
+    DMA_Stream_3,
+    DMA_Stream_4,
+    DMA_Stream_5,
+    DMA_Stream_6,
+    DMA_Stream_7,
+} Periph_DMA_Stream_List;
+
+typedef enum
+{
     Serial_DMA_TX = 1,
     Serial_DMA_RX,
 } Serial_DMA_Mode;
@@ -79,5 +102,8 @@ void periph_DMA_TIM(DMA_InitTypeDef *DMA_InitStructure, uint32_t DMA_Channel, ui
 void periph_DMA_WithoutIRQ_Init(uint32_t DMA_CLK, DMA_Stream_TypeDef *DMA_Stream, DMA_InitTypeDef *DMA_InitStructure, FunctionalState State);
 void periph_DMA_WithIRQ_Init(uint32_t DMA_CLK, DMA_Stream_TypeDef *DMA_Stream, DMA_InitTypeDef *DMA_InitStructure, uint32_t DMA_IT, FunctionalState State);
 void periph_DMA_Set_State(DMA_Stream_TypeDef *DMA_Stream, FunctionalState State);
+
+void periph_Set_DMA_IRQCallback(uint8_t DMAx, uint8_t Stream, dma_irq_callback callback);
+dma_irq_callback periph_Get_DMA_IRQCallback(uint8_t DMAx, uint8_t Stream);
 
 #endif

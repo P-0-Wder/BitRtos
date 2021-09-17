@@ -2,6 +2,7 @@
 #define __PERIPH_SERIAL_H
 
 #include "stm32f4xx.h"
+#include "periph_dma.h"
 #include <string.h>
 #include <stdbool.h>
 
@@ -16,7 +17,6 @@
 #define Serial_9600 9600
 
 typedef void (*Serial_IRQ_Callback)(uint8_t *data, uint8_t len);
-typedef void (*Serial_DMA_IRQ_Callback)(uint8_t *data, uint8_t len);
 
 typedef enum
 {
@@ -48,16 +48,13 @@ void Serial_DMA_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPr
 void Serial_DMA_TX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t SubPriority, uint32_t TX_Buff, uint16_t Buff_Size, Serial_Func_Type type);
 void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPriority, uint8_t SubPriority, uint32_t RX_Buff, uint32_t TX_Buff, uint16_t Buff_Size, Serial_Func_Type type);
 
-void Serial_SendStr(USART_TypeDef *Serial_port, const char *Str_Output);
-void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len);
+void Serial_SendBuff(Serial_List serial_id, uint8_t *Buff, uint16_t Len);
 
 void Serial_DMA_TX_IRQSetting(Serial_List serial_id);
-void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len);
+void Serial_DMA_SendBuff(Serial_List serial_id, uint8_t *buff, uint16_t len);
 
 Serial_IRQ_Callback Serial_Get_IRQ_RxCallback(Serial_List serial_id);
-Serial_DMA_IRQ_Callback Serial_Get_DMA_RxIRQ_Callback(Serial_List serial_id);
-
+void Serial_DMA_WaitFinish(Serial_List serial_id);
 bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback);
-bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, Serial_DMA_IRQ_Callback callback);
-
+bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, dma_irq_callback callback);
 #endif

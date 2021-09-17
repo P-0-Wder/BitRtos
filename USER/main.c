@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "runtime.h"
 #include "periph_gpio.h"
+#include "drv_serial.h"
 #include "task_manager.h"
 #include "Task_Widget.h"
 
@@ -50,6 +51,49 @@ void Task_test_4(Task_Handler self)
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
 }
 
+/* serial test */
+typedef enum
+{
+	TaskSerial_Init = 0,
+	TaskSerial_Init_Failed,
+	TaskSerial_RunTest,
+} TaskSerial_State_List;
+
+static TaskSerial_State_List TaskSerial_State = TaskSerial_Init;
+
+void Task_Serial_Test(Task_Handler self)
+{
+	DrvSerial_Config_Typedef Serial1_Cfg;
+
+	switch ((uint8_t)TaskSerial_State)
+	{
+	case TaskSerial_Init:
+		Serial1_Cfg.baudrate = Serial_115200;
+		Serial1_Cfg.PreemptionPriority = 3;
+		Serial1_Cfg.SubPriority = 0;
+		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
+		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
+
+		if (!DrvSerial.ctl(DrvSerial_1, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg)))
+		{
+			TaskSerial_State = TaskSerial_Init_Failed;
+		}
+		else
+			TaskSerial_State = TaskSerial_RunTest;
+		break;
+
+	case TaskSerial_Init_Failed:
+		break;
+
+	case TaskSerial_RunTest:
+		DrvSerial.write(DrvSerial_1, "test", strlen("test"));
+		break;
+
+	default:
+		break;
+	}
+}
+
 int main(void)
 {
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_0, GPIOB);
@@ -75,6 +119,6 @@ int main(void)
 	test4_tsk_hdl = Task_Create("test 4", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, Task_test_4, 200);
 
 	TaskSystem_Start();
-	
+
 	return 0;
 }

@@ -32,7 +32,6 @@ typedef enum
 {
     DrvSerial_Send_Async = 0,
     DrvSerial_Send_Sync,
-    DrvSerial_send_None,
 } DrvSerial_SendMode_List;
 
 typedef enum
@@ -40,7 +39,6 @@ typedef enum
     DrvSerial_Open = 0,
     DrvSerial_Close,
     DrvSerial_Set_RxIRQCallback,
-    DrvSerial_Set_TxIRQCallback,
 } DrvSerial_CMD_List;
 
 typedef struct
@@ -51,7 +49,6 @@ typedef struct
     DrvSerial_PortMode_List mode;
 
     Serial_IRQ_Callback Irq_Callback;
-    Serial_DMA_IRQ_Callback DmaIrq_Callback;
 
     DrvSerial_SendMode_List send_mode;
 } DrvSerial_Config_Typedef;
@@ -65,8 +62,8 @@ typedef struct
 typedef struct
 {
     bool (*ctl)(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t len);
-    bool (*read)(uint8_t *data, uint16_t len);
-    bool (*write)(uint8_t *data, uint16_t len);
+    bool (*read)(DrvSerial_Port_List portx, uint8_t *data, uint16_t len);
+    bool (*write)(DrvSerial_Port_List portx, uint8_t *data, uint16_t len);
 } DrvSerial_GenProcFunc_TypeDef;
 
 extern DrvSerial_GenProcFunc_TypeDef DrvSerial;

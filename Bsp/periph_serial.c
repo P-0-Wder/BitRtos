@@ -7,7 +7,6 @@
 #include "stm32f4xx_dma.h"
 
 Serial_IRQ_Callback IRQ_Callback[Serial_Port_Sum] = {NULL};
-Serial_DMA_IRQ_Callback DMAIrq_Callback[Serial_Port_Sum] = {NULL};
 
 #ifdef STM32F40XX
 static void (*Serial_IO_Init[Serial_Port_Sum])(void) = {GPIO_USART1_IO_Init,
@@ -102,24 +101,6 @@ Serial_IRQ_Callback Serial_Get_IRQ_RxCallback(Serial_List serial_id)
 	return IRQ_Callback[serial_id];
 }
 
-Serial_DMA_IRQ_Callback Serial_Get_DMA_IRQ_Callback(Serial_List serial_id)
-{
-	if (serial_id >= Serial_Port_Sum)
-		return NULL;
-
-	return DMAIrq_Callback[serial_id];
-}
-
-bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, Serial_DMA_IRQ_Callback callback)
-{
-	if (serial_id >= Serial_Port_Sum)
-		return false;
-
-	DMAIrq_Callback[serial_id] = callback;
-
-	return true;
-}
-
 bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback)
 {
 	if (serial_id >= Serial_Port_Sum)
@@ -196,7 +177,6 @@ bool Serial_Deinit(Serial_List Serial)
 		return false;
 
 	IRQ_Callback[Serial] = NULL;
-	DMAIrq_Callback[Serial] = NULL;
 
 	USART_DeInit(Serial_Port[Serial]);
 
@@ -236,30 +216,20 @@ void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t Preemption
 
 	//Tx DMA Setting
 	periph_DMA_Serial(&DMA_TX_InitStructure, Serial_DMA_TX_Channel[Serial], (uint32_t)&Serial_Port[Serial]->DR, (uint32_t)TX_Buff, Buff_Size, Serial_DMA_TX);
-	periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, DMA_IT_TC, DISABLE);
+	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, ENABLE);
+	//periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, DMA_IT_TC, DISABLE);
 	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority + 1, ENABLE);
 
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 }
 
-void Serial_SendStr(USART_TypeDef *Serial_port, const char *Str_Output)
-{
-	while (*Str_Output != '\0')
-	{
-		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
-			;
-		USART_SendData(Serial_port, *Str_Output);
-		Str_Output++;
-	}
-}
-
-void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len)
+void Serial_SendBuff(Serial_List serial_id, uint8_t *Buff, uint16_t Len)
 {
 	for (uint8_t Buff_index = 0; Buff_index < Len; Buff_index++)
 	{
-		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
+		while (USART_GetFlagStatus(Serial_Port[serial_id], USART_FLAG_TC) == RESET)
 			;
-		USART_SendData(Serial_port, Buff[Buff_index]);
+		USART_SendData(Serial_Port[serial_id], Buff[Buff_index]);
 	}
 }
 
@@ -274,10 +244,76 @@ void Serial_DMA_TX_IRQSetting(Serial_List serial_id)
 	}
 }
 
-void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
+void Serial_DMA_SendBuff(Serial_List serial_id, uint8_t *buff, uint16_t len)
 {
+	DMA_Stream_TypeDef *dma_stream = NULL;
+
+	if (serial_id >= Serial_Port_Sum)
+		return;
+
+	switch (serial_id)
+	{
+	case Serial_1:
+		dma_stream = DMA2_Stream7;
+		break;
+
+	case Serial_2:
+		dma_stream = DMA1_Stream6;
+		break;
+
+	case Serial_3:
+		dma_stream = DMA1_Stream3;
+		break;
+
+	case Serial_6:
+		dma_stream = DMA2_Stream7;
+		break;
+
+	default:
+		return;
+	}
+
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], (uint16_t)len);
+	DMA_MemoryTargetConfig(dma_stream, (uint32_t)buff, DMA_Memory_0);
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
 	USART_DMACmd(Serial_Port[serial_id], USART_DMAReq_Tx, ENABLE);
+}
+
+void Serial_DMA_WaitFinish(Serial_List serial_id)
+{
+	DMA_Stream_TypeDef *dma_stream = NULL;
+	uint32_t flag = 0;
+
+	if (serial_id >= Serial_Port_Sum)
+		return;
+
+	switch (serial_id)
+	{
+	case Serial_1:
+		dma_stream = DMA2_Stream7;
+		flag = DMA_FLAG_TCIF7;
+		break;
+
+	case Serial_2:
+		dma_stream = DMA1_Stream6;
+		flag = DMA_FLAG_TCIF6;
+		break;
+
+	case Serial_3:
+		dma_stream = DMA1_Stream3;
+		flag = DMA_FLAG_TCIF3;
+		break;
+
+	case Serial_6:
+		dma_stream = DMA2_Stream7;
+		flag = DMA_FLAG_TCIF7;
+		break;
+
+	default:
+		return;
+	}
+
+	while (DMA_GetFlagStatus(dma_stream, flag) == RESET)
+		;
 }
