@@ -86,7 +86,7 @@ void Task_Serial_Test(Task_Handler self)
 		break;
 
 	case TaskSerial_RunTest:
-		DrvSerial.write(DrvSerial_1, "test\r\n", strlen("test\r\n"));
+		DrvSerial.write(DrvSerial_1, "8_B!T0  Test\r\n", strlen("8_B!T0  Test\r\n"));
 		break;
 
 	default:

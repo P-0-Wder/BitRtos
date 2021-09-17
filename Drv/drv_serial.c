@@ -50,7 +50,7 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
             case DrvSerial_MODE_DMA_Rx:
                 Serial_DMA_RX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate, ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
                                    ((DrvSerial_Config_Typedef *)data)->SubPriority,
-                                   (uint32_t)&Serial_RX_Buff[portx],
+                                   (uint32_t)Serial_RX_Buff[portx],
                                    SERIAL_MAX_RECLEN, Serial_Normal);
 
                 Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
