@@ -59,10 +59,9 @@ typedef enum
 	TaskSerial_RunTest,
 } TaskSerial_State_List;
 
-static TaskSerial_State_List TaskSerial_State = TaskSerial_Init;
-
 void Task_Serial_Test(Task_Handler self)
 {
+	static TaskSerial_State_List TaskSerial_State = TaskSerial_Init;
 	DrvSerial_Config_Typedef Serial1_Cfg;
 
 	switch ((uint8_t)TaskSerial_State)
