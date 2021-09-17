@@ -287,12 +287,7 @@ clean:
 #######################################
 -include $(wildcard $(BUILD_DIR)/*.d)
 
-# *** EOF ***
-
-#OPENOCD := openocd -f interface/stlink.cfg \
-#        -f target/stm32f4x.cfg \
-
-OPENOCD := openocd -f interface/stlink-v2.cfg \
+OPENOCD := openocd -f interface/cmsis-dap.cfg \
         -f target/stm32f4x.cfg \
 
 # download your program
