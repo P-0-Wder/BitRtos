@@ -51,10 +51,9 @@ void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t Preemption
 void Serial_SendBuff(Serial_List serial_id, uint8_t *Buff, uint16_t Len);
 
 void Serial_DMA_TX_IRQSetting(Serial_List serial_id);
-void Serial_DMA_SendBuff(Serial_List serial_id, uint8_t *buff, uint16_t len);
+void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len);
 
 Serial_IRQ_Callback Serial_Get_IRQ_RxCallback(Serial_List serial_id);
 void Serial_DMA_WaitFinish(Serial_List serial_id);
 bool Serial_Set_IRQ_Callback(Serial_List serial_id, Serial_IRQ_Callback callback);
-bool Serial_Set_DMAIRQ_Callback(Serial_List serial_id, dma_irq_callback callback);
 #endif

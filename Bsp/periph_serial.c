@@ -207,8 +207,6 @@ void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t Preemption
 	USART_ITConfig(Serial_Port[Serial], USART_IT_TXE, DISABLE);
 	USART_ITConfig(Serial_Port[Serial], USART_IT_IDLE, ENABLE);
 
-	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Rx | USART_DMAReq_Tx, ENABLE);
-
 	//Rx DMA Setting
 	periph_DMA_Serial(&DMA_RX_InitStructure, Serial_DMA_RX_Channel[Serial], (uint32_t)&Serial_Port[Serial]->DR, (uint32_t)RX_Buff, Buff_Size, Serial_DMA_RX);
 	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_RX_Stream[Serial], &DMA_RX_InitStructure, ENABLE);
@@ -216,9 +214,12 @@ void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t Preemption
 
 	//Tx DMA Setting
 	periph_DMA_Serial(&DMA_TX_InitStructure, Serial_DMA_TX_Channel[Serial], (uint32_t)&Serial_Port[Serial]->DR, (uint32_t)TX_Buff, Buff_Size, Serial_DMA_TX);
-	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, ENABLE);
+	periph_DMA_WithoutIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, DISABLE);
 	//periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, DMA_IT_TC, DISABLE);
-	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority + 1, ENABLE);
+	//periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority + 1, ENABLE);
+
+	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Rx, ENABLE);
+	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Tx, ENABLE);
 
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 }
@@ -244,7 +245,7 @@ void Serial_DMA_TX_IRQSetting(Serial_List serial_id)
 	}
 }
 
-void Serial_DMA_SendBuff(Serial_List serial_id, uint8_t *buff, uint16_t len)
+void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
 {
 	DMA_Stream_TypeDef *dma_stream = NULL;
 
@@ -275,9 +276,7 @@ void Serial_DMA_SendBuff(Serial_List serial_id, uint8_t *buff, uint16_t len)
 
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], (uint16_t)len);
-	DMA_MemoryTargetConfig(dma_stream, (uint32_t)buff, DMA_Memory_0);
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
-	USART_DMACmd(Serial_Port[serial_id], USART_DMAReq_Tx, ENABLE);
 }
 
 void Serial_DMA_WaitFinish(Serial_List serial_id)

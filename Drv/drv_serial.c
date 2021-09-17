@@ -57,11 +57,14 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
                 break;
 
             case DrvSerial_MODE_DMA_TxRx:
+                memset(Serial_RX_Buff[portx], NULL, sizeof(Serial_RX_Buff[portx]));
+                memset(Serial_TX_Buff[portx], NULL, sizeof(Serial_TX_Buff[portx]));
+
                 Serial_DMA_RXTX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate,
                                      ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
                                      ((DrvSerial_Config_Typedef *)data)->SubPriority,
-                                     (uint32_t)&Serial_RX_Buff[portx],
-                                     (uint32_t)&Serial_TX_Buff[portx],
+                                     (uint32_t)Serial_RX_Buff[portx],
+                                     (uint32_t)Serial_TX_Buff[portx],
                                      SERIAL_MAX_RECLEN, Serial_Normal);
 
                 Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
@@ -109,19 +112,23 @@ static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t l
     if (!DrvSerial_SrcInfo[portx].inuse)
         return;
 
+    memcpy(Serial_TX_Buff[portx], data, len);
+
     if ((DrvSerial_SrcInfo[portx].cfg.mode == DrvSerial_MODE_Normal) || (DrvSerial_SrcInfo[portx].cfg.mode == DrvSerial_MODE_DMA_Rx))
     {
         Serial_SendBuff(portx, data, len);
     }
     else if (DrvSerial_SrcInfo[portx].cfg.mode == DrvSerial_MODE_DMA_TxRx)
     {
-        Serial_DMA_SendBuff(portx, data, len);
+        Serial_DMA_SendBuff(portx, len);
     }
     else
         return;
 
-    if (DrvSerial_Send_Async == DrvSerial_SrcInfo[portx].cfg.mode)
+    if (DrvSerial_Send_Async == DrvSerial_SrcInfo[portx].cfg.send_mode)
     {
         Serial_DMA_WaitFinish(portx);
     }
+
+    memset(Serial_TX_Buff[portx], NULL, SERIAL_MAX_RECLEN);
 }
