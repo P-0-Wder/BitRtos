@@ -14,7 +14,9 @@ Objects/periph_serial_irq.o: Bsp/periph_serial_irq.c \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
- Bsp/periph_serial.h Bsp/periph_gpio.h Bsp/periph_dma.h
+ Bsp/periph_serial.h Bsp/periph_gpio.h Bsp/periph_dma.h \
+ Dsp/letter_shell/shell.h Dsp/letter_shell/shell_cfg.h \
+ Dsp/letter_shell/shell_port.h SYS/common/sys.h Dsp/letter_shell/shell.h
 
 Bsp/periph_serial_irq.h:
 
@@ -89,3 +91,13 @@ Bsp/periph_serial.h:
 Bsp/periph_gpio.h:
 
 Bsp/periph_dma.h:
+
+Dsp/letter_shell/shell.h:
+
+Dsp/letter_shell/shell_cfg.h:
+
+Dsp/letter_shell/shell_port.h:
+
+SYS/common/sys.h:
+
+Dsp/letter_shell/shell.h:

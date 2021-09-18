@@ -5,9 +5,11 @@
 #include "string.h"
 #include "stm32f4xx_usart.h"
 #include "stm32f4xx_dma.h"
+#include "shell.h"
+#include "shell_port.h"
 
 #define PCK_MAX 256
-
+uint8_t shell_recv;
 void USART1_IRQHandler(void)
 {
 	uint8_t rec;
@@ -34,6 +36,7 @@ void USART1_IRQHandler(void)
 		rec = USART1->SR;
 
 		rec = DMA_GetCurrDataCounter(Serial1_DMA_RX_Stream);
+		shellHandler(&shell, shell_recv);
 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
 		DMA_SetCurrDataCounter(Serial1_DMA_RX_Stream, PCK_MAX);
 		DMA_Cmd(Serial1_DMA_RX_Stream, ENABLE);

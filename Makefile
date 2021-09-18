@@ -52,6 +52,11 @@ Dsp/screen/service/SrvOled.c \
 Dsp/widget/wgt_core/widget_mng.c \
 Dsp/widget/wgt_core/UI_Controller.c \
 Dsp/wgt_core/GenDsp.c \
+Dsp/letter_shell/shell.c \
+Dsp/letter_shell/shell_port.c \
+Dsp/letter_shell/shell_cmd_list.c \
+Dsp/letter_shell/shell_companion.c \
+Dsp/letter_shell/shell_ext.c \
 FWLIB/src/misc.c \
 FWLIB/src/stm32f4xx_adc.c \
 FWLIB/src/stm32f4xx_can.c \
@@ -197,6 +202,7 @@ C_INCLUDES =  \
 -IDsp/screen/service \
 -IDsp/screen/device \
 -IDsp/screen/font \
+-IDsp/letter_shell \
 -IDsp/widget/wgt_core \
 -ISYS/task_manager \
 -ISYS/data_structure \
@@ -289,6 +295,7 @@ clean:
 # *** EOF ***
 
 #OPENOCD := openocd -f interface/stlink.cfg \
+-c 'transport select jtag' \
 #        -f target/stm32f4x.cfg \
 
 OPENOCD := openocd -f interface/stlink-v2.cfg \

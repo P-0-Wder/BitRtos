@@ -53,5 +53,9 @@ void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len);
 
 void Serial_DMA_TX_IRQSetting(Serial_List serial_id);
 void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len);
+void uart_init(u32 bound);
+
+void MYDMA_Enable(DMA_Stream_TypeDef *DMA_Streamx,u16 ndtr);
+void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx,u32 chx,u32 par,u32 mar,u16 ndtr);
 
 #endif
