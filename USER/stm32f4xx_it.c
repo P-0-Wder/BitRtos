@@ -144,7 +144,7 @@ void PendSV_Handler(void)
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
   extern volatile TaskStack_ControlBlock CurTsk_TCB;
 #endif
-  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
+  //GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
   //cast 1.2us
 
   //first time triggered by TaskSystem_Start function
@@ -164,7 +164,7 @@ void PendSV_Handler(void)
     Task_SwitchContext();
 #endif
   }
-  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, HI);
+  //GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, HI);
 }
 
 /**
@@ -174,10 +174,10 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
+  //GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
   //cast 4.8us
   Runtime_Tick();
-  GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, HI);
+  //GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, HI);
 }
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */

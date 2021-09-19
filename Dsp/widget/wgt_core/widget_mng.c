@@ -97,7 +97,6 @@ static Widget_Config_TypeDef Widget_Config = {
 
 Widget_GenProcFunc_TypeDef Widget_Mng = {
     .config_all = &Widget_Config,
-    .set_freshFrq = Widget_SetFreshFrq,
     .Create = Widget_Create,
     .Delete = Widget_Deleted,
     .Control = Widget_CtlInterface,
@@ -232,20 +231,11 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     return true;
 }
 
-static bool Widget_SetFreshFrq(uint8_t frq)
-{
-    if (frq > Fresh_FRQ_100Hz)
-        return false;
-
-    MonitorDataObj.fresh_duration = frq;
-    return true;
-}
-
 static bool Widget_CheckFlashTrigger(void)
 {
     uint32_t RT = Get_CurrentRunningMs();
 
-    if ((RT - MonitorDataObj.LstFreshRT) >= MonitorDataObj.fresh_duration)
+    if ((RT - MonitorDataObj.LstFreshRT) >= Fresh_FRQ_50Hz)
     {
         MonitorDataObj.LstFreshRT = RT;
         return true;

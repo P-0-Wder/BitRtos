@@ -53,6 +53,7 @@ static const uint8_t Tsk_Handle[256] = {0, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0
 Task *Task_Ptr[Group_Sum][Task_Priority_Sum];
 volatile Task *CurRunTsk_Ptr = NULL;
 volatile Task *NxtRunTsk_Ptr = NULL;
+static bool traverse_start = false;
 
 static volatile TskMap_State TskHdl_RdyMap = {.Grp = 0, .TskInGrp[0] = 0, .TskInGrp[1] = 0, .TskInGrp[2] = 0, .TskInGrp[3] = 0, .TskInGrp[4] = 0, .TskInGrp[5] = 0, .TskInGrp[6] = 0, .TskInGrp[7] = 0};
 static volatile TskMap_State TskHdl_PndMap = {.Grp = 0, .TskInGrp[0] = 0, .TskInGrp[1] = 0, .TskInGrp[2] = 0, .TskInGrp[3] = 0, .TskInGrp[4] = 0, .TskInGrp[5] = 0, .TskInGrp[6] = 0, .TskInGrp[7] = 0};
@@ -312,7 +313,7 @@ __attribute__((nake)) static void Task_SetBASEPRI(uint32_t ulBASEPRI)
           : "memory");
 }
 
-static void Task_ExitCritical(void)
+__attribute__((naked)) static void Task_ExitCritical(void)
 {
     /* Barrier instructions are not used as this function is only used to
 	lower the BASEPRI value. */
@@ -320,7 +321,7 @@ static void Task_ExitCritical(void)
           : "memory");
 }
 
-static void Task_Recover(void)
+__attribute__((naked)) static void Task_Recover(void)
 {
     __ASM("LDR	  R3, CurrentTCBConst_Tmp2");
     __ASM("LDR    R1, [R3]");
@@ -335,7 +336,7 @@ static void Task_Recover(void)
     __ASM("CurrentTCBConst_Tmp2: .word CurTsk_TCB");
 }
 
-void Task_SaveCurProc(void)
+__attribute__((naked)) void Task_SaveCurProc(void)
 {
     __ASM("MRS    R0, PSP");
     __ASM("LDR	  R3, CurrentTCBConst_Tmp3");
@@ -358,7 +359,7 @@ void Task_SaveCurProc(void)
     __ASM("CurrentTCBConst_Tmp3: .word CurTsk_TCB");
 }
 
-void Task_Load(void)
+__attribute__((naked)) void Task_Load(void)
 {
     __ASM("LDR	  R3, =CurTsk_TCB");
     __ASM("LDR    R1, [R3]");
@@ -385,7 +386,7 @@ void Load_FirstTask(void)
     Task_Load();
 }
 
-void Task_SwitchContext(void)
+__attribute__((naked)) void Task_SwitchContext(void)
 {
     __ASM("MRS      R0, PSP");
     __ASM("ISB");
@@ -513,8 +514,6 @@ static void Task_ClearReady(Task *tsk)
     uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
     uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
 
-    tsk->Exec_status.State = Task_Pending;
-
     TskHdl_RdyMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
     if (TskHdl_RdyMap.TskInGrp[grp_id].Flg == 0)
     {
@@ -560,7 +559,7 @@ void Task_SetNextTask_Ptr(const Task *nxt)
 }
 
 //first need to know is linux support AT&T formate ASM code
-static __attribute__((naked)) void Task_SetPendSVPro(void)
+__attribute__((naked)) static void Task_SetPendSVPro(void)
 {
     //set pendsv interrupt
     __ASM(".equ NVIC_SYSPRI14, 0xE000ED22");
@@ -871,10 +870,16 @@ static void Task_Exec(Task *tsk_ptr)
     SYSTEM_RunTime time_diff;
     RuntimeObj_Reset(&time_diff);
 
+    tsk_ptr = NxtRunTsk_Ptr;
+
     while (true)
     {
         if (tsk_ptr->Exec_status.State == Task_Ready)
         {
+            //when task function execute finish reset ready flag of current task in group
+            //code down below
+            Task_ClearReady(tsk_ptr);
+
             //Task_Set_CountRunnigTime_State(tsk_ptr, ENABLE);
 
             //set current running task
@@ -895,38 +900,29 @@ static void Task_Exec(Task *tsk_ptr)
             //get current task execut time
             //Task_StopCountTargetFunc_Cast(tsk_ptr);
 
-            if (tsk_ptr->Exec_status.State == Task_Running)
+            //record task running times
+            tsk_ptr->Exec_status.Exec_Times++;
+
+            //get max task execut time
+            if (tsk_ptr->TskFuncUing_US > tsk_ptr->Exec_status.detect_exec_time_max)
             {
-                //when task function execute finish reset ready flag of current task in group
-                //code down below
-                Task_ClearReady(tsk_ptr);
-
-                tsk_ptr->Exec_status.State = Task_Stop;
-
-                //record task running times
-                tsk_ptr->Exec_status.Exec_Times++;
-
-                //get max task execut time
-                if (tsk_ptr->TskFuncUing_US > tsk_ptr->Exec_status.detect_exec_time_max)
-                {
-                    tsk_ptr->Exec_status.detect_exec_time_max = tsk_ptr->TskFuncUing_US;
-                }
-
-                //get task total execute time unit in us
-                tsk_ptr->Exec_status.totlal_running_time += tsk_ptr->TskFuncUing_US;
-                time_diff = Get_TimeDifference_Between(tsk_ptr->Exec_status.Start_Time, tsk_ptr->Exec_status.Exec_Time);
-
-                tsk_ptr->Exec_status.cpu_opy = tsk_ptr->Exec_status.totlal_running_time / (float)time_diff;
-
-                //get average task running time
-                tsk_ptr->Exec_status.detect_exec_time_arv += tsk_ptr->TskFuncUing_US;
-                if (tsk_ptr->Exec_status.Exec_Times > 1)
-                {
-                    tsk_ptr->Exec_status.detect_exec_time_arv /= 2;
-                }
-
-                tsk_ptr->Exec_status.Exec_Time = Get_TargetRunTime(tsk_ptr->exec_interval_us);
+                tsk_ptr->Exec_status.detect_exec_time_max = tsk_ptr->TskFuncUing_US;
             }
+
+            //get task total execute time unit in us
+            tsk_ptr->Exec_status.totlal_running_time += tsk_ptr->TskFuncUing_US;
+            time_diff = Get_TimeDifference_Between(tsk_ptr->Exec_status.Start_Time, tsk_ptr->Exec_status.Exec_Time);
+
+            tsk_ptr->Exec_status.cpu_opy = tsk_ptr->Exec_status.totlal_running_time / (float)time_diff;
+
+            //get average task running time
+            tsk_ptr->Exec_status.detect_exec_time_arv += tsk_ptr->TskFuncUing_US;
+            if (tsk_ptr->Exec_status.Exec_Times > 1)
+            {
+                tsk_ptr->Exec_status.detect_exec_time_arv /= 2;
+            }
+
+            tsk_ptr->Exec_status.Exec_Time = Get_TargetRunTime(tsk_ptr->exec_interval_us);
 
             //get task execute frequence
             if (tsk_ptr->Exec_status.Exec_Times)
@@ -936,9 +932,12 @@ static void Task_Exec(Task *tsk_ptr)
 
             //stop counting caller using us time
             //Task_Set_CountRunnigTime_State(tsk_ptr, DISABLE);
+
+            tsk_ptr->Exec_status.State = Task_Stop;
+
+            //erase currnet runnint task pointer
+            CurRunTsk_Ptr = NULL;
         }
-        //erase currnet runnint task pointer
-        CurRunTsk_Ptr = NULL;
 
         //enable systick handler
         //Task_SetBASEPRI(0);
@@ -957,9 +956,17 @@ float Task_Get_IdleOcupy(void)
 
 void Task_Caller(void)
 {
+    static uint8_t i = 0;
+
     //if any task in any group is under ready state
     if (NxtRunTsk_Ptr != NULL)
     {
+        i++;
+        if (i == TskCrt_RegList.num)
+        {
+            traverse_start = true;
+        }
+
         //execute task function in function matrix
         Task_Exec(NxtRunTsk_Ptr);
     }
@@ -977,29 +984,29 @@ TaskSys_State TaskSys_Get_State(void)
 
 static void Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void *arg)
 {
-    Task *tmp = NULL;
-
     if (data != NULL)
     {
-        tmp = (Task *)data;
-
         //get current highest priority task handler AKA NxtRunTsk_Ptr
-        if (TskSys_state == TaskSys_Start)
+
+        if ((TskSys_state == TaskSys_Start) &&
+            (((Task *)data)->Exec_status.State == Task_Stop) &&
+            (!RuntimeObj_CompareWithCurrent(((Task *)data)->Exec_status.Exec_Time)))
         {
-            if ((tmp->Exec_status.State == Task_Stop) && (!RuntimeObj_CompareWithCurrent(tmp->Exec_status.Exec_Time)))
-            {
-                Task_SetReady(tmp);
-            }
+            Task_SetReady((Task *)data);
         }
     }
 }
 
 void Task_Scheduler(void)
 {
+    static uint8_t grp = 0;
+    static uint8_t tsk = 0;
+
     if (TskSys_state != TaskSys_Start)
         return;
 
-    List_traverse(&TskCrt_RegList.list, Task_CrtList_TraversePoll_callback, NULL, sub_callback);
+    if (traverse_start)
+        List_traverse(&TskCrt_RegList.list, Task_CrtList_TraversePoll_callback, NULL, sub_callback);
 
     NxtRunTsk_Ptr = Task_Get_HighestRank_RdyTask();
 
@@ -1034,22 +1041,20 @@ void Task_Scheduler(void)
                 //if has NxtRunTsk_Ptr is not NULL also have task in pending state
                 //then get the highest priority task in pend list
                 //compare with NxtRunTsk_Ptr
-                if (Task_PriorityCompare(NxtRunTsk_Ptr, PndHstTsk_Ptr) == PndHstTsk_Ptr)
+                if (((NxtRunTsk_Ptr != PndHstTsk_Ptr) &&
+                     (Task_PriorityCompare(NxtRunTsk_Ptr, PndHstTsk_Ptr) == PndHstTsk_Ptr)) ||
+                    (NxtRunTsk_Ptr == PndHstTsk_Ptr))
                 {
+                    Task_ClearPending(PndHstTsk_Ptr);
                     PndHstTsk_Ptr->Exec_status.State = Task_Stop;
                     NxtRunTsk_Ptr = PndHstTsk_Ptr;
-
-                    Task_ClearPending(NxtRunTsk_Ptr);
                 }
             }
             else
             {
                 //if NxtRunTsk_Ptr is NULL
                 //then set NxtRunTsk_Ptr PndHstTsk_Ptr
-                PndHstTsk_Ptr->Exec_status.State = Task_Stop;
                 NxtRunTsk_Ptr = PndHstTsk_Ptr;
-
-                Task_ClearPending(NxtRunTsk_Ptr);
             }
 
             NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
@@ -1067,8 +1072,8 @@ void Task_Scheduler(void)
             {
                 //if NxtRunTsk_Ptr group priority is higher then CurRunTsk_Ptr also PndHstTsk_Ptr
                 //set current run task as pending state first
-                Task_SetPending(CurRunTsk_Ptr);
                 Task_ClearReady(CurRunTsk_Ptr);
+                Task_SetPending(CurRunTsk_Ptr);
 
                 //get the highset priority task in pending list
                 //if PndHstTsk_Ptr is not NULL
@@ -1077,11 +1082,12 @@ void Task_Scheduler(void)
                 {
                     if (Task_PriorityCompare(PndHstTsk_Ptr, NxtRunTsk_Ptr) == PndHstTsk_Ptr)
                     {
+                        Task_ClearPending(PndHstTsk_Ptr);
+                        PndHstTsk_Ptr->Exec_status.State = Task_Stop;
                         NxtRunTsk_Ptr = PndHstTsk_Ptr;
                     }
                 }
 
-                Task_SetReady(NxtRunTsk_Ptr);
                 NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
                 NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
 
@@ -1092,20 +1098,22 @@ void Task_Scheduler(void)
         else
         {
             //compare with the highest priority pending task
-            if ((PndHstTsk_Ptr != NULL) && (Task_PriorityCompare(CurRunTsk_Ptr, NxtRunTsk_Ptr) == PndHstTsk_Ptr))
+            if ((PndHstTsk_Ptr != NULL) && (Task_PriorityCompare(CurRunTsk_Ptr, PndHstTsk_Ptr) == PndHstTsk_Ptr))
             {
                 //if PndHstTsk_Ptr group priority is higher then CurRunTsk_Ptr
                 //set current run task as pending state first
                 Task_SetPending(CurRunTsk_Ptr);
                 Task_SetReady(PndHstTsk_Ptr);
+                NxtRunTsk_Ptr = Task_Stop;
 
                 NxtRunTsk_Ptr = PndHstTsk_Ptr;
-                NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
-                NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
-
-                Task_TriggerPendSV();
-                return;
             }
+
+            NxtTsk_TCB.Top_Stk_Ptr = &NxtRunTsk_Ptr->TCB.Top_Stk_Ptr;
+            NxtTsk_TCB.Stack = NxtRunTsk_Ptr->TCB.Stack;
+
+            Task_TriggerPendSV();
+            return;
         }
     }
 #else

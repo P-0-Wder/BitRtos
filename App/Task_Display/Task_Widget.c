@@ -18,8 +18,6 @@ Task_Handler TaskWidget_Hdl = 0;
 
 static void TaskWidget_Init(void)
 {
-    Widget_Mng.set_freshFrq(Fresh_FRQ_50Hz);
-
     Widget_Mng.config_all->mirror(Oled_MirrorX);
 
     test1 = Widget_Mng.Create(20, 2, 25, 20, "test1", true);

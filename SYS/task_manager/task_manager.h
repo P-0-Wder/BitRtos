@@ -202,6 +202,7 @@ typedef struct
     TASK_STATE State;
 } Task_Exec_Status;
 
+#pragma pack(4)
 typedef struct
 {
     Priority_Str priority;
@@ -229,6 +230,7 @@ typedef struct
     item_obj *item_ptr;
     item_obj delay_item;
 } Task;
+#pragma pack()
 
 typedef struct
 {

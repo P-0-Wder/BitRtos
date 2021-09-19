@@ -43,7 +43,6 @@ typedef enum
     Fresh_FRQ_20Hz = 20,
     Fresh_FRQ_25Hz = 25,
     Fresh_FRQ_50Hz = 50,
-    Fresh_FRQ_100Hz = 100,
 } Widget_FreshFrq_List;
 
 typedef enum
@@ -141,7 +140,6 @@ typedef struct
     Widget_Handle (*Create)(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
-    bool (*set_freshFrq)(uint8_t frq);
     bool (*trigger_fresh)(void);
     bool (*fresh_all)(void);
 } Widget_GenProcFunc_TypeDef;
