@@ -52,22 +52,15 @@ static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uin
                                    ((DrvSerial_Config_Typedef *)data)->SubPriority,
                                    (uint32_t)Serial_RX_Buff[portx],
                                    SERIAL_MAX_RECLEN, Serial_Normal);
-
-                Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
                 break;
 
             case DrvSerial_MODE_DMA_TxRx:
-                memset(Serial_RX_Buff[portx], NULL, sizeof(Serial_RX_Buff[portx]));
-                memset(Serial_TX_Buff[portx], NULL, sizeof(Serial_TX_Buff[portx]));
-
                 Serial_DMA_RXTX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate,
                                      ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
                                      ((DrvSerial_Config_Typedef *)data)->SubPriority,
                                      (uint32_t)Serial_RX_Buff[portx],
                                      (uint32_t)Serial_TX_Buff[portx],
                                      SERIAL_MAX_RECLEN, Serial_Normal);
-
-                Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
                 break;
 
             default:

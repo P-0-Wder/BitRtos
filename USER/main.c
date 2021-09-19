@@ -71,6 +71,7 @@ void Task_Serial_Test(Task_Handler self)
 		Serial1_Cfg.PreemptionPriority = 3;
 		Serial1_Cfg.SubPriority = 0;
 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
+		Serial1_Cfg.Irq_Callback = NULL;
 		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
 
 		if (!DrvSerial.ctl(DrvSerial_1, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg)))
@@ -112,11 +113,11 @@ int main(void)
 
 	SystemInit();
 
-	TaskWidget_Hdl = Task_Create("Widget", TASK_EXEC_500HZ, Group_0, Task_Priority_1, TaskWidget_Core, 200);
+	TaskWidget_Hdl = Task_Create("Widget", TASK_EXEC_100HZ, Group_0, Task_Priority_1, TaskWidget_Core, 200);
 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_1KHZ, Group_0, Task_Priority_0, Task_test_1, 200);
 	test2_tsk_hdl = Task_Create("test 2", TASK_EXEC_1KHZ, Group_0, Task_Priority_2, Task_test_2, 200);
 	test3_tsk_hdl = Task_Create("test 3", TASK_EXEC_1KHZ, Group_0, Task_Priority_3, Task_test_3, 200);
-	//test4_tsk_hdl = Task_Create("test 4", TASK_EXEC_4KHZ, Group_0, Task_Priority_4, Task_Serial_Test, 500);
+	test4_tsk_hdl = Task_Create("test 4", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, Task_Serial_Test, 500);
 
 	TaskSystem_Start();
 

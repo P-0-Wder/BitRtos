@@ -245,7 +245,7 @@ void Serial_DMA_TX_IRQSetting(Serial_List serial_id)
 
 void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
 {
-	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
+	DMA_ClearFlag(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]);
 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], len);
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
 }
@@ -257,4 +257,5 @@ void Serial_DMA_WaitFinish(Serial_List serial_id)
 
 	while (DMA_GetFlagStatus(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]) != SET)
 		;
+	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
 }
