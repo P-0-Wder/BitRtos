@@ -129,6 +129,4 @@ static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t l
     {
         Serial_DMA_WaitFinish(portx);
     }
-
-    memset(Serial_TX_Buff[portx], NULL, SERIAL_MAX_RECLEN);
 }

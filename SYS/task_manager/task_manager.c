@@ -513,6 +513,8 @@ static void Task_ClearReady(Task *tsk)
     uint8_t grp_id = GET_TASKGROUP_PRIORITY(tsk->priority.Priority);
     uint8_t tsk_id = GET_TASKINGROUP_PRIORITY(tsk->priority.Priority);
 
+    tsk->Exec_status.State = Task_Pending;
+
     TskHdl_RdyMap.TskInGrp[grp_id].Flg &= ~(1 << tsk_id);
     if (TskHdl_RdyMap.TskInGrp[grp_id].Flg == 0)
     {
@@ -735,10 +737,6 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
     Task_Ptr[group][priority]->Exec_status.error_code = NOERROR;
 
     Task_SetReady(Task_Ptr[group][priority]);
-
-#if DEBUG
-    Debug_Output("create %s done\r\n\r\n", name);
-#endif
 
     Task_Ptr[group][priority]->item_ptr = (item_obj *)malloc(sizeof(item_obj));
     if (Task_Ptr[group][priority]->item_ptr == NULL)
@@ -1038,7 +1036,7 @@ void Task_Scheduler(void)
                 //compare with NxtRunTsk_Ptr
                 if (Task_PriorityCompare(NxtRunTsk_Ptr, PndHstTsk_Ptr) == PndHstTsk_Ptr)
                 {
-                    PndHstTsk_Ptr->Exec_status.State = Task_Running;
+                    PndHstTsk_Ptr->Exec_status.State = Task_Stop;
                     NxtRunTsk_Ptr = PndHstTsk_Ptr;
 
                     Task_ClearPending(NxtRunTsk_Ptr);
@@ -1048,7 +1046,7 @@ void Task_Scheduler(void)
             {
                 //if NxtRunTsk_Ptr is NULL
                 //then set NxtRunTsk_Ptr PndHstTsk_Ptr
-                PndHstTsk_Ptr->Exec_status.State = Task_Running;
+                PndHstTsk_Ptr->Exec_status.State = Task_Stop;
                 NxtRunTsk_Ptr = PndHstTsk_Ptr;
 
                 Task_ClearPending(NxtRunTsk_Ptr);

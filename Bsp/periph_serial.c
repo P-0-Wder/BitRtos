@@ -245,33 +245,6 @@ void Serial_DMA_TX_IRQSetting(Serial_List serial_id)
 
 void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
 {
-	DMA_Stream_TypeDef *dma_stream = NULL;
-
-	if (serial_id >= Serial_Port_Sum)
-		return;
-
-	switch (serial_id)
-	{
-	case Serial_1:
-		dma_stream = DMA2_Stream7;
-		break;
-
-	case Serial_2:
-		dma_stream = DMA1_Stream6;
-		break;
-
-	case Serial_3:
-		dma_stream = DMA1_Stream3;
-		break;
-
-	case Serial_6:
-		dma_stream = DMA2_Stream7;
-		break;
-
-	default:
-		return;
-	}
-
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], DISABLE);
 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], len);
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
@@ -279,38 +252,9 @@ void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
 
 void Serial_DMA_WaitFinish(Serial_List serial_id)
 {
-	DMA_Stream_TypeDef *dma_stream = NULL;
-	uint32_t flag = 0;
-
 	if (serial_id >= Serial_Port_Sum)
 		return;
 
-	switch (serial_id)
-	{
-	case Serial_1:
-		dma_stream = DMA2_Stream7;
-		flag = DMA_FLAG_TCIF7;
-		break;
-
-	case Serial_2:
-		dma_stream = DMA1_Stream6;
-		flag = DMA_FLAG_TCIF6;
-		break;
-
-	case Serial_3:
-		dma_stream = DMA1_Stream3;
-		flag = DMA_FLAG_TCIF3;
-		break;
-
-	case Serial_6:
-		dma_stream = DMA2_Stream7;
-		flag = DMA_FLAG_TCIF7;
-		break;
-
-	default:
-		return;
-	}
-
-	while (DMA_GetFlagStatus(dma_stream, flag) != SET)
+	while (DMA_GetFlagStatus(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]) != SET)
 		;
 }
