@@ -10,6 +10,7 @@
 #define MAX_COMBOBOX_ITEM 20
 
 typedef bool (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
+typedef bool (*UI_DrawLine)(uint8_t x, uint8_t y, uint8_t len);
 typedef bool (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_width);
 typedef bool (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius);
 
@@ -74,14 +75,14 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
 
-    UI_DrawPoint DrawPoint;
+    UI_DrawLine DrawLine;
 } UI_VerticalBarObj_TypeDef;
 
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
 
-    UI_DrawPoint DrawPoint;
+    UI_DrawLine DrawLine;
 } UI_HorizonBarObj_TypeDef;
 
 typedef struct

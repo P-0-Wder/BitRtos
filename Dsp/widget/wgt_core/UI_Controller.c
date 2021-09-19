@@ -72,26 +72,26 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPoint UI_Dr
     return true;
 }
 
-static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_DrawLine UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
 
-    Obj->DrawPoint = NULL;
-    Obj->DrawPoint = UI_Draw_Func;
+    Obj->DrawLine = NULL;
+    Obj->DrawLine = UI_Draw_Func;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     return true;
 }
 
-static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_DrawLine UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
 
-    Obj->DrawPoint = NULL;
-    Obj->DrawPoint = UI_Draw_Func;
+    Obj->DrawLine = NULL;
+    Obj->DrawLine = UI_Draw_Func;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
@@ -214,7 +214,7 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if ((Obj->DrawPoint == NULL) || (!Obj->Gen_Data.selected))
+    if ((Obj->DrawLine == NULL) || (!Obj->Gen_Data.selected))
         return false;
 
     return true;
@@ -222,7 +222,7 @@ static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if ((Obj->DrawPoint == NULL) || (!Obj->Gen_Data.selected))
+    if ((Obj->DrawLine == NULL) || (!Obj->Gen_Data.selected))
         return false;
 
     return true;
