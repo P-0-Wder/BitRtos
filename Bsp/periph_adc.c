@@ -46,6 +46,16 @@ void Periph_ADC_Init(ADC_Channel_List ADCx_Channelx)
     ADC_Cmd(ADC1, ENABLE);
 }
 
-void Periph_ADC_GetValue()
+void Periph_ADC_Close(ADC_Channel_List ADCx_Channelx)
 {
+}
+
+uint16_t Periph_ADC_GetValue(ADC_Channel_List ADCx_Channelx, uint8_t sequence)
+{
+    ADC_RegularChannelConfig(ADC1, ADCx_Channelx, sequence, ADC_SampleTime_480Cycles);
+    ADC_SoftwareStartConv(ADC1);
+
+    while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC))
+        ;
+    return ADC_GetConversionValue(ADC1);
 }
