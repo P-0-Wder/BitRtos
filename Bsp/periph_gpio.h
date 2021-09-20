@@ -142,7 +142,7 @@
 #define SPI3_MISO_PinSource GPIO_PinSource11
 #define SPI3_CLK_PinSource GPIO_PinSource10
 
-#define ADC1_Channel9_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel0_IO_CLK RCC_AHB1Periph_GPIOA
 #define ADC1_Channel1_IO_CLK RCC_AHB1Periph_GPIOA
 #define ADC1_Channel2_IO_CLK RCC_AHB1Periph_GPIOA
 #define ADC1_Channel3_IO_CLK RCC_AHB1Periph_GPIOA

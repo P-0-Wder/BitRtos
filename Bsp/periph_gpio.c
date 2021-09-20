@@ -339,60 +339,214 @@ void GPIO_SPI3_IO_Init(void)
 	GPIO_Init(SPI3_MOSI_IO_PORT, &GPIO_InitStructure);
 }
 
+void GPIO_ADC_Channel0_IO_Init(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel0_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel0_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel0_Port, &GPIO_InitStructure);
+}
+
 void GPIO_ADC1_Channel1_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel1_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel1_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel1_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel2_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel2_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel2_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel2_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel3_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel3_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel3_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel3_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel4_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel4_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel4_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel4_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel5_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel5_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel5_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel5_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel6_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel6_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel6_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel6_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel7_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel7_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel7_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel7_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel8_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel8_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel8_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel8_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel9_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel9_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel9_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel9_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel10_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel10_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel10_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel10_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel11_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel11_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel11_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel11_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel12_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel12_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel12_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel12_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel13_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel13_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel13_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel13_Port, &GPIO_InitStructure);
 }
 
 void GPIO_ADC1_Channel14_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(ADC1_Channel14_IO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_Pin = ADC1_Channel14_IO_Pin;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+	GPIO_Init(ADC1_Channel14_Port, &GPIO_InitStructure);
 }
 
 void GPIO_IIC1_IO_Init(void)
