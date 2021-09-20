@@ -339,6 +339,62 @@ void GPIO_SPI3_IO_Init(void)
 	GPIO_Init(SPI3_MOSI_IO_PORT, &GPIO_InitStructure);
 }
 
+void GPIO_ADC1_Channel1_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel2_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel3_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel4_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel5_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel6_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel7_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel8_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel9_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel10_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel11_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel12_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel13_IO_Init(void)
+{
+}
+
+void GPIO_ADC1_Channel14_IO_Init(void)
+{
+}
+
 void GPIO_IIC1_IO_Init(void)
 {
 }

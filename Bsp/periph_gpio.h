@@ -142,6 +142,69 @@
 #define SPI3_MISO_PinSource GPIO_PinSource11
 #define SPI3_CLK_PinSource GPIO_PinSource10
 
+#define ADC1_Channel9_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel1_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel2_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel3_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel4_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel5_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel6_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel7_IO_CLK RCC_AHB1Periph_GPIOA
+#define ADC1_Channel8_IO_CLK RCC_AHB1Periph_GPIOB
+#define ADC1_Channel9_IO_CLK RCC_AHB1Periph_GPIOB
+#define ADC1_Channel10_IO_CLK RCC_AHB1Periph_GPIOC
+#define ADC1_Channel11_IO_CLK RCC_AHB1Periph_GPIOC
+#define ADC1_Channel12_IO_CLK RCC_AHB1Periph_GPIOC
+#define ADC1_Channel13_IO_CLK RCC_AHB1Periph_GPIOC
+#define ADC1_Channel14_IO_CLK RCC_AHB1Periph_GPIOC
+
+#define ADC1_Channel0_Port GPIOA
+#define ADC1_Channel1_Port GPIOA
+#define ADC1_Channel2_Port GPIOA
+#define ADC1_Channel3_Port GPIOA
+#define ADC1_Channel4_Port GPIOA
+#define ADC1_Channel5_Port GPIOA
+#define ADC1_Channel6_Port GPIOA
+#define ADC1_Channel7_Port GPIOA
+#define ADC1_Channel8_Port GPIOB
+#define ADC1_Channel9_Port GPIOB
+#define ADC1_Channel10_Port GPIOC
+#define ADC1_Channel11_Port GPIOC
+#define ADC1_Channel12_Port GPIOC
+#define ADC1_Channel13_Port GPIOC
+#define ADC1_Channel14_Port GPIOC
+
+#define ADC1_Channel0_IO_Pin GPIO_Pin_0
+#define ADC1_Channel1_IO_Pin GPIO_Pin_1
+#define ADC1_Channel2_IO_Pin GPIO_Pin_2
+#define ADC1_Channel3_IO_Pin GPIO_Pin_3
+#define ADC1_Channel4_IO_Pin GPIO_Pin_4
+#define ADC1_Channel5_IO_Pin GPIO_Pin_5
+#define ADC1_Channel6_IO_Pin GPIO_Pin_6
+#define ADC1_Channel7_IO_Pin GPIO_Pin_7
+#define ADC1_Channel8_IO_Pin GPIO_Pin_0
+#define ADC1_Channel9_IO_Pin GPIO_Pin_1
+#define ADC1_Channel10_IO_Pin GPIO_Pin_0
+#define ADC1_Channel11_IO_Pin GPIO_Pin_1
+#define ADC1_Channel12_IO_Pin GPIO_Pin_2
+#define ADC1_Channel13_IO_Pin GPIO_Pin_13
+#define ADC1_Channel14_IO_Pin GPIO_Pin_4
+
+#define ADC1_Channel1_PinSource
+#define ADC1_Channel2_PinSource
+#define ADC1_Channel3_PinSource
+#define ADC1_Channel4_PinSource
+#define ADC1_Channel5_PinSource
+#define ADC1_Channel6_PinSource
+#define ADC1_Channel7_PinSource
+#define ADC1_Channel8_PinSource
+#define ADC1_Channel9_PinSource
+#define ADC1_Channel10_PinSource
+#define ADC1_Channel11_PinSource
+#define ADC1_Channel12_PinSource
+#define ADC1_Channel13_PinSource
+#define ADC1_Channel14_PinSource
+
 //IIC IO definition
 
 typedef enum
@@ -173,6 +236,12 @@ void GPIO_TIM4_PWMCH4_IO_Init(void);
 void GPIO_SPI1_IO_Init(void);
 void GPIO_SPI2_IO_Init(void);
 void GPIO_SPI3_IO_Init(void);
+
+void GPIO_ADC1_Channel1_IO_Init(void);
+void GPIO_ADC1_Channel2_IO_Init(void);
+void GPIO_ADC1_Channel3_IO_Init(void);
+void GPIO_ADC1_Channel4_IO_Init(void);
+void GPIO_ADC1_Channel5_IO_Init(void);
 
 void GPIO_IO_Output_Init(uint32_t RCC_AHBCLK, uint16_t pin, GPIO_TypeDef *GPIO_Port);
 void GPIO_IO_Input_Init(uint32_t RCC_AHBCLK, uint16_t pin, GPIO_TypeDef *GPIO_Port);
