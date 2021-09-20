@@ -190,22 +190,6 @@
 #define ADC1_Channel13_IO_Pin GPIO_Pin_13
 #define ADC1_Channel14_IO_Pin GPIO_Pin_4
 
-#define ADC1_Channel0_Pinsource GPIO_PinSource0
-#define ADC1_Channel1_PinSource GPIO_PinSource1
-#define ADC1_Channel2_PinSource GPIO_PinSource2
-#define ADC1_Channel3_PinSource GPIO_PinSource3
-#define ADC1_Channel4_PinSource GPIO_PinSource4
-#define ADC1_Channel5_PinSource GPIO_PinSource5
-#define ADC1_Channel6_PinSource GPIO_PinSource6
-#define ADC1_Channel7_PinSource GPIO_PinSource7
-#define ADC1_Channel8_PinSource GPIO_PinSource0
-#define ADC1_Channel9_PinSource GPIO_PinSource1
-#define ADC1_Channel10_PinSource GPIO_PinSource0
-#define ADC1_Channel11_PinSource GPIO_PinSource1
-#define ADC1_Channel12_PinSource GPIO_PinSource2
-#define ADC1_Channel13_PinSource GPIO_PinSource13
-#define ADC1_Channel14_PinSource GPIO_PinSource4
-
 //IIC IO definition
 
 typedef enum
