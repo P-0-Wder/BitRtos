@@ -22,8 +22,9 @@ typedef enum
     ADC1_Channel14,
 } ADC_Channel_List;
 
-void Periph_ADC_Init(ADC_Channel_List ADCx_Channelx);
+void Periph_ADC_Init(uint8_t channel_sum);
 void Periph_ADC_Close(ADC_Channel_List ADCx_Channelx);
+void Periph_ADC_IO_Init(ADC_Channel_List ADCx_Channelx);
 uint16_t Periph_ADC_GetValue(ADC_Channel_List ADCx_Channelx, uint8_t sequence);
 
 #endif

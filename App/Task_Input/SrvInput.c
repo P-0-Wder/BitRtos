@@ -1,5 +1,5 @@
 #include "SrvInput.h"
-#include "periph_adc.h"
+#include "drv_adc.h"
 
 /* internal variable */
 static SrvInput_Data_TypeDef InputData;
@@ -20,13 +20,12 @@ static void SrvInput_Init(void)
 {
     memset(&InputData, 0, sizeof(InputData));
 
-    /* analog pin init */
-    Periph_ADC_Init(GIMBAL_LEFT_X);
-    Periph_ADC_Init(GIMBAL_LEFT_Y);
-    Periph_ADC_Init(GIMBAL_RIGHT_X);
-    Periph_ADC_Init(GIMBAL_RIGHT_Y);
-    Periph_ADC_Init(POT_LEFT);
-    Periph_ADC_Init(POT_RIGHT);
+    /* analog input init */
+    /* left gimbal init */
+
+    /* right gimbal init */
+
+    /* pot on both side init */
 
     /* toggle init */
 
