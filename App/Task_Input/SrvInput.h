@@ -5,9 +5,22 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define GIMBAL_LEFT_X ADC1_Channel0
+#define GIMBAL_LEFT_Y ADC1_Channel1
+#define GIMBAL_RIGHT_X ADC1_Channel2
+#define GIMBAL_RIGHT_Y ADC1_Channel3
+#define POT_LEFT ADC1_Channel4
+#define POT_RIGHT ADC1_Channel5
+
 #define GIMBAL_AXIS_NUM 2
 #define GIMBAL_RANGE 500
 #define POT_RANGE GIMBAL_RANGE
+
+typedef enum
+{
+    Gimbal_Axis_X = 0,
+    Gimbal_Axis_Y,
+} Gimbal_Axis_TypeDef;
 
 typedef enum
 {

@@ -125,6 +125,7 @@ USER/stm32f4xx_it.c\
 USER/system_stm32f4xx.c \
 USER/main.c \
 App/Task_Display/Task_Widget.c \
+App/Task_Input/SrvInput.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -216,6 +217,7 @@ C_INCLUDES =  \
 -IUSB/core \
 -IUSER \
 -IApp/Task_Display \
+-IApp/Task_Input \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
