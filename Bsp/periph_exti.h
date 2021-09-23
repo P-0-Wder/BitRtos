@@ -7,6 +7,6 @@
 typedef void (*exti_callback)(void);
 
 void periph_exti_init();
-exti_callback periph_exti_GetCallback();
+exti_callback periph_exti_GetCallback(uint32_t EXTI_LineX);
 
 #endif

@@ -28,7 +28,7 @@ void periph_exti_init()
     periph_nvic_Structure_Setting();
 }
 
-exti_callback periph_exti_GetCallback(uint8_t EXTI_LineX)
+exti_callback periph_exti_GetCallback(uint32_t EXTI_LineX)
 {
     return CallBack_List[EXTI_LineX];
 }
