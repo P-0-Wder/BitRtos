@@ -4,6 +4,9 @@
 
 void EXTI0_IRQnHandler(void)
 {
+    if (SET == EXTI_GetITStatus(EXTI_Line0))
+    {
+    }
 }
 
 void EXTI1_IRQnHandler(void)
@@ -17,6 +20,7 @@ void EXTI2_IRQnHandler(void)
 void EXTI3_IRQnHandler(void)
 {
 }
+
 void EXTI4_IRQnHandler(void)
 {
 }
