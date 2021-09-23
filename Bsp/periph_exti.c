@@ -6,10 +6,10 @@
 #include <string.h>
 
 #if defined STM32F40_41xxx
-#define EXTI_LINE_SUM 24
+#define GEN_EXTI_LINE_SUM 16
 #endif
 
-static exti_callback CallBack_List[EXTI_LINE_SUM] = {NULL};
+static exti_callback CallBack_List[GEN_EXTI_LINE_SUM] = {NULL};
 
 void periph_exti_init()
 {
