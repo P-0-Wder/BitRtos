@@ -20,3 +20,7 @@ void periph_exti_init()
 
     periph_nvic_Structure_Setting();
 }
+
+exti_callback periph_exti_GetCallback()
+{
+}
