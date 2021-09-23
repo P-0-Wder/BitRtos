@@ -38,6 +38,6 @@ typedef struct
     DrvGPIO_IO_Level_TypeDef (*get)(DrvGPIO_Obj_TypeDef *Obj);
 } DrvGPIO_GenProcFunc_TypeDef;
 
-extern DrvGPIO_GenProcFunc_TypeDef GenGPIO_Drv;
+extern DrvGPIO_GenProcFunc_TypeDef DrvGPIO;
 
 #endif

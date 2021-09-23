@@ -58,8 +58,8 @@ static void SrvOled_DCPin_Init(void)
     DC_IO_Obj.Pin = OLED1306_DC_PIN;
     DC_IO_Obj.IO_Type = GPIO_Output;
 
-    GenGPIO_Drv.open(&DC_IO_Obj, DC_IO_Obj.IO_Type, NULL);
-    GenGPIO_Drv.set(&DC_IO_Obj, HI);
+    DrvGPIO.open(&DC_IO_Obj, DC_IO_Obj.IO_Type, NULL);
+    DrvGPIO.set(&DC_IO_Obj, HI);
 }
 
 static void SrvOled_RSPin_Init(void)
@@ -69,8 +69,8 @@ static void SrvOled_RSPin_Init(void)
     RS_IO_Obj.Pin = OLED1306_RS_PIN;
     RS_IO_Obj.IO_Type = GPIO_Output;
 
-    GenGPIO_Drv.open(&RS_IO_Obj, RS_IO_Obj.IO_Type, NULL);
-    GenGPIO_Drv.set(&RS_IO_Obj, HI);
+    DrvGPIO.open(&RS_IO_Obj, RS_IO_Obj.IO_Type, NULL);
+    DrvGPIO.set(&RS_IO_Obj, HI);
 }
 
 static void SrvOled_DCPin_Ctl(Oled_DC_State_List state)
@@ -84,7 +84,7 @@ static void SrvOled_DCPin_Ctl(Oled_DC_State_List state)
     else if (state == Oled_DC_Disable)
         level = GPIO_LOW;
 
-    GenGPIO_Drv.set(&DC_IO_Obj, level);
+    DrvGPIO.set(&DC_IO_Obj, level);
 }
 
 static void SrvOled_RSPin_Ctl(Oled_RS_State_List state)
@@ -98,7 +98,7 @@ static void SrvOled_RSPin_Ctl(Oled_RS_State_List state)
     else if (state == Oled_RS_Disable)
         level = GPIO_LOW;
 
-    GenGPIO_Drv.set(&RS_IO_Obj, level);
+    DrvGPIO.set(&RS_IO_Obj, level);
 }
 
 /******************************* IO & Bus Init Function Section ***********************************/

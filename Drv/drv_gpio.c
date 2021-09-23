@@ -9,7 +9,7 @@ static bool DrvGPIO_Close(DrvGPIO_Obj_TypeDef *Obj);
 static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level);
 static DrvGPIO_IO_Level_TypeDef DrvGPIO_Get(DrvGPIO_Obj_TypeDef *Obj);
 
-DrvGPIO_GenProcFunc_TypeDef GenGPIO_Drv = {
+DrvGPIO_GenProcFunc_TypeDef DrvGPIO = {
     .open = DrvGPIO_Open,
     .close = DrvGPIO_Close,
     .set = DrvGPIO_Control,
@@ -31,6 +31,8 @@ static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uin
         break;
 
     case GPIO_EXTI_Input:
+        /* use for sync signal input */
+
         break;
 
     default:
@@ -40,6 +42,7 @@ static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uin
 
 static bool DrvGPIO_Close(DrvGPIO_Obj_TypeDef *Obj)
 {
+    /* ToDo */
 }
 
 static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level)
