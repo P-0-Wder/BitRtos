@@ -20,18 +20,26 @@ static void SrvInput_Init(void)
 {
     memset(&InputData, 0, sizeof(InputData));
 
-    /* analog input init */
-    /* left gimbal init */
+    /* left gimbal io init */
+    DrvADC.ctl(ADC_Config_IO, ADC1_Channel0);
+    DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
 
-    /* right gimbal init */
+    /* right gimbal io init */
+    DrvADC.ctl(ADC_Config_IO, ADC1_Channel2);
+    DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
 
-    /* pot on both side init */
+    /* pot on both side io init */
+    DrvADC.ctl(ADC_Config_IO, ADC1_Channel4);
+    DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
 
-    /* toggle init */
+    /* toggle io init */
 
-    /* button init */
+    /* button io init */
 
-    /* encoder init */
+    /* encoder io init */
+
+    /* adc init */
+    DrvADC.ctl(ADC_Open, 0);
 }
 
 static void SrvInput_Sample(void)
