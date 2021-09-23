@@ -54,11 +54,11 @@ static void SrvInput_Init(void)
     DrvGPIO.open(&ShoulderBtn_Rgt, GPIO_Input, NULL);
 
     /* 5 direction button io init */
-    DrvGPIO.open();
-    DrvGPIO.open();
-    DrvGPIO.open();
-    DrvGPIO.open();
-    DrvGPIO.open();
+    DrvGPIO.open(&DirBtn_Up, GPIO_Input, NULL);
+    DrvGPIO.open(&DirBtn_Dwn, GPIO_Input, NULL);
+    DrvGPIO.open(&DirBtn_Lft, GPIO_Input, NULL);
+    DrvGPIO.open(&DirBtn_Rgt, GPIO_Input, NULL);
+    DrvGPIO.open(&DirBtn_Mid, GPIO_Input, NULL);
 
     /* power button io init */
     DrvGPIO.open(&Power_Btn, GPIO_Input, NULL);
