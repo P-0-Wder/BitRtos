@@ -11,6 +11,7 @@ typedef enum
 {
     GPIO_Output = 0,
     GPIO_Input,
+    GPIO_EXTI_Input,
 } DrvGPIO_CTL_TypeDef;
 
 typedef struct

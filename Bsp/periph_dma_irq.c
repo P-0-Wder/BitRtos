@@ -2,7 +2,6 @@
 #include "periph_serial.h"
 #include "stm32f4xx_dma.h"
 #include "stm32f4xx_usart.h"
-#include "periph_gpio.h"
 
 void DMA1_Stream6_IRQHandler(void)
 {
