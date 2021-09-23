@@ -4,7 +4,7 @@
 /* internal function define */
 
 /* external function define */
-static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type);
+static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uint32_t data);
 static bool DrvGPIO_Close(DrvGPIO_Obj_TypeDef *Obj);
 static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level);
 static DrvGPIO_IO_Level_TypeDef DrvGPIO_Get(DrvGPIO_Obj_TypeDef *Obj);
@@ -16,7 +16,7 @@ DrvGPIO_GenProcFunc_TypeDef GenGPIO_Drv = {
     .get = DrvGPIO_Get,
 };
 
-static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type)
+static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uint32_t data)
 {
     Obj->IO_Type = type;
 

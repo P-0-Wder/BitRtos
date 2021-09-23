@@ -58,7 +58,7 @@ static void SrvOled_DCPin_Init(void)
     DC_IO_Obj.Pin = OLED1306_DC_PIN;
     DC_IO_Obj.IO_Type = GPIO_Output;
 
-    GenGPIO_Drv.open(&DC_IO_Obj, DC_IO_Obj.IO_Type);
+    GenGPIO_Drv.open(&DC_IO_Obj, DC_IO_Obj.IO_Type, NULL);
     GenGPIO_Drv.set(&DC_IO_Obj, HI);
 }
 
@@ -69,7 +69,7 @@ static void SrvOled_RSPin_Init(void)
     RS_IO_Obj.Pin = OLED1306_RS_PIN;
     RS_IO_Obj.IO_Type = GPIO_Output;
 
-    GenGPIO_Drv.open(&RS_IO_Obj, RS_IO_Obj.IO_Type);
+    GenGPIO_Drv.open(&RS_IO_Obj, RS_IO_Obj.IO_Type, NULL);
     GenGPIO_Drv.set(&RS_IO_Obj, HI);
 }
 

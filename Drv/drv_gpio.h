@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include "periph_gpio.h"
 
+typedef void (*GPIO_EXTI_Callback)(void);
+
 typedef enum
 {
     GPIO_Output = 0,
@@ -29,7 +31,7 @@ typedef enum
 /* still need exti init & interrupt func regist */
 typedef struct
 {
-    bool (*open)(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type);
+    bool (*open)(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uint32_t data);
     bool (*close)(DrvGPIO_Obj_TypeDef *Obj);
     bool (*set)(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level);
     DrvGPIO_IO_Level_TypeDef (*get)(DrvGPIO_Obj_TypeDef *Obj);
