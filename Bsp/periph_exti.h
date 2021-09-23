@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+typedef void (*exti_callback)(void);
+
 void periph_exti_init();
 
 #endif
