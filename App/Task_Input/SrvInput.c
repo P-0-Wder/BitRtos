@@ -1,6 +1,7 @@
 #include "SrvInput.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
+#include "Input_IO_Def.h"
 
 /* internal variable */
 static SrvInput_Data_TypeDef InputData;
@@ -37,12 +38,33 @@ static void SrvInput_Init(void)
     DrvADC.ctl(ADC_Config_IO, ADC1_Channel6);
 
     /* toggle io init */
+    DrvGPIO.open();
+    DrvGPIO.open();
+
+    /* shoulder button io init */
+    DrvGPIO.open();
+    DrvGPIO.open();
 
     /* 5 direction button io init */
+    DrvGPIO.open();
+    DrvGPIO.open();
+    DrvGPIO.open();
+    DrvGPIO.open();
+    DrvGPIO.open();
+
+    /* power button io init */
+    DrvGPIO.open();
+
+    /* encoder button io init */
+    DrvGPIO.open();
+
+    /* sync io input init */
+    DrvGPIO.open();
+
+    /* sync io output init */
+    DrvGPIO.open();
 
     /* encoder io init */
-
-    /* sync io init sync running signal to other module */
 
     /* adc init */
     DrvADC.ctl(ADC_Open, 0);
