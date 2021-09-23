@@ -30,6 +30,9 @@ static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uin
         GPIO_IO_Input_Init(Obj->CLK, Obj->Pin, Obj->Port);
         break;
 
+    case GPIO_EXTI_Input:
+        break;
+
     default:
         break;
     }
