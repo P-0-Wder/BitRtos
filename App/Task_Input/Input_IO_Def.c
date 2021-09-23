@@ -9,3 +9,6 @@ DrvGPIO_Obj_TypeDef DirBtn_Rgt;
 DrvGPIO_Obj_TypeDef DirBtn_Mid;
 DrvGPIO_Obj_TypeDef ShoulderBtn_Lft;
 DrvGPIO_Obj_TypeDef ShoulderBtn_Rgt;
+DrvGPIO_Obj_TypeDef Power_Buttion;
+DrvGPIO_Obj_TypeDef Sync_Out;
+DrvGPIO_Obj_TypeDef Sync_In;
