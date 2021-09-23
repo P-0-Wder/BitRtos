@@ -94,6 +94,12 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line14);
     }
+    else if (SET == EXTI_GetITStatus(EXTI_Line15))
+    {
+        EXTI_ClearFlag(EXTI_Line15);
+
+        EXTI_ClearITPendingBit(EXTI_Line15);
+    }
 }
 
 void EXTI1_IRQHandler(void)
