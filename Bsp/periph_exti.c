@@ -3,6 +3,13 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_exti.h"
 #include "stm32f4xx_syscfg.h"
+#include <string.h>
+
+#if defined STM32F40_41xxx
+#define EXTI_LINE_SUM 24
+#endif
+
+static exti_callback CallBack_List[EXTI_LINE_SUM] = {NULL};
 
 void periph_exti_init()
 {
@@ -21,6 +28,7 @@ void periph_exti_init()
     periph_nvic_Structure_Setting();
 }
 
-exti_callback periph_exti_GetCallback()
+exti_callback periph_exti_GetCallback(uint8_t EXTI_LineX)
 {
+    return CallBack_List[EXTI_LineX];
 }
