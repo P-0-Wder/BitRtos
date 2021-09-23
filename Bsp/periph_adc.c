@@ -22,12 +22,15 @@ static void (*ADC_IO_Init[])(void) = {
     GPIO_ADC1_Channel14_IO_Init,
 };
 
-void Periph_ADC_Init(ADC_Channel_List ADCx_Channelx, uint8_t channel_sum)
+void Periph_ADC_IO_Init(ADC_Channel_List ADCx_Channelx)
+{
+    ADC_IO_Init[ADCx_Channelx]();
+}
+
+void Periph_ADC_Init(uint8_t channel_sum)
 {
     ADC_InitTypeDef ADC_InitStructure;
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
-
-    ADC_IO_Init[ADCx_Channelx]();
 
     ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
     ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;

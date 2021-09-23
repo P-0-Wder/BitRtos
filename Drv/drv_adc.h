@@ -7,14 +7,16 @@
 
 typedef enum
 {
-    DrvADC_Open = 0,
-    DrvADC_Close,
+    ADC_Config_IO = 0,
+    ADC_Open,
 } DrvADC_CMD_List;
 
 typedef struct
 {
-    void (*Ctl)(DrvADC_CMD_List cmd, uint32_t data, uint16_t len);
+    void (*ctl)(DrvADC_CMD_List CMD, uint8_t data);
     uint16_t (*read)(uint32_t data, uint16_t len);
 } DrvADC_TypeDef;
+
+extern DrvADC_TypeDef DrvADC;
 
 #endif

@@ -1,0 +1,410 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"drv_adc.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DrvADC_Get,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DrvADC_Get:
+  26              	.LVL0:
+  27              	.LFB125:
+  28              		.file 1 "Drv/drv_adc.c"
+   1:Drv/drv_adc.c **** #include "drv_adc.h"
+   2:Drv/drv_adc.c **** #include "periph_adc.h"
+   3:Drv/drv_adc.c **** #include "periph_gpio.h"
+   4:Drv/drv_adc.c **** 
+   5:Drv/drv_adc.c **** typedef struct
+   6:Drv/drv_adc.c **** {
+   7:Drv/drv_adc.c ****     bool InUse;
+   8:Drv/drv_adc.c ****     uint8_t id;
+   9:Drv/drv_adc.c **** } ADC_Channel_State;
+  10:Drv/drv_adc.c **** 
+  11:Drv/drv_adc.c **** /* internal variable */
+  12:Drv/drv_adc.c **** static ADC_Channel_State Channel_State[ADC1_Channel_Sum] = {false};
+  13:Drv/drv_adc.c **** static uint8_t InUse_ADC_Channel_cnt = 0;
+  14:Drv/drv_adc.c **** 
+  15:Drv/drv_adc.c **** /* external variable */
+  16:Drv/drv_adc.c **** static bool DrvADC_SigalCh_Init(ADC_Channel_List channel);
+  17:Drv/drv_adc.c **** static uint16_t DrvADC_Get(ADC_Channel_List channel);
+  18:Drv/drv_adc.c **** static bool DrvADC_Ctl(DrvADC_CMD_List cmd, uint8_t data);
+  19:Drv/drv_adc.c **** 
+  20:Drv/drv_adc.c **** /* driver object */
+  21:Drv/drv_adc.c **** DrvADC_TypeDef DrvADC = {
+  22:Drv/drv_adc.c ****     .ctl = DrvADC_Ctl,
+  23:Drv/drv_adc.c ****     .read = DrvADC_Get,
+  24:Drv/drv_adc.c **** };
+  25:Drv/drv_adc.c **** 
+  26:Drv/drv_adc.c **** static bool DrvADC_SigalCh_Init(ADC_Channel_List channel)
+  27:Drv/drv_adc.c **** {
+  28:Drv/drv_adc.c ****     if (channel >= ADC1_Channel_Sum)
+  29:Drv/drv_adc.c ****         return false;
+  30:Drv/drv_adc.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 2
+
+
+  31:Drv/drv_adc.c ****     if (!Channel_State[channel].InUse)
+  32:Drv/drv_adc.c ****     {
+  33:Drv/drv_adc.c ****         Channel_State[channel].InUse = true;
+  34:Drv/drv_adc.c ****         Channel_State[channel].id = InUse_ADC_Channel_cnt;
+  35:Drv/drv_adc.c **** 
+  36:Drv/drv_adc.c ****         InUse_ADC_Channel_cnt++;
+  37:Drv/drv_adc.c **** 
+  38:Drv/drv_adc.c ****         Periph_ADC_IO_Init(channel);
+  39:Drv/drv_adc.c **** 
+  40:Drv/drv_adc.c ****         return true;
+  41:Drv/drv_adc.c ****     }
+  42:Drv/drv_adc.c **** 
+  43:Drv/drv_adc.c ****     return false;
+  44:Drv/drv_adc.c **** }
+  45:Drv/drv_adc.c **** 
+  46:Drv/drv_adc.c **** static bool DrvADC_Open(void)
+  47:Drv/drv_adc.c **** {
+  48:Drv/drv_adc.c ****     Periph_ADC_Init(InUse_ADC_Channel_cnt);
+  49:Drv/drv_adc.c **** 
+  50:Drv/drv_adc.c ****     return true;
+  51:Drv/drv_adc.c **** }
+  52:Drv/drv_adc.c **** 
+  53:Drv/drv_adc.c **** static uint16_t DrvADC_Get(ADC_Channel_List channel)
+  54:Drv/drv_adc.c **** {
+  29              		.loc 1 54 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 54 1 is_stmt 0 view .LVU1
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  55:Drv/drv_adc.c ****     if (Channel_State[channel].InUse)
+  39              		.loc 1 55 5 is_stmt 1 view .LVU2
+  40              		.loc 1 55 31 is_stmt 0 view .LVU3
+  41 0002 064B     		ldr	r3, .L6
+  42 0004 13F81030 		ldrb	r3, [r3, r0, lsl #1]	@ zero_extendqisi2
+  43              		.loc 1 55 8 view .LVU4
+  44 0008 0BB9     		cbnz	r3, .L5
+  56:Drv/drv_adc.c ****     {
+  57:Drv/drv_adc.c ****         return Periph_ADC_GetValue(channel, Channel_State[channel].id);
+  58:Drv/drv_adc.c ****     }
+  59:Drv/drv_adc.c **** 
+  60:Drv/drv_adc.c ****     return 0;
+  45              		.loc 1 60 12 view .LVU5
+  46 000a 0020     		movs	r0, #0
+  47              	.LVL1:
+  48              	.L2:
+  61:Drv/drv_adc.c **** }
+  49              		.loc 1 61 1 view .LVU6
+  50 000c 08BD     		pop	{r3, pc}
+  51              	.LVL2:
+  52              	.L5:
+  57:Drv/drv_adc.c ****     }
+  53              		.loc 1 57 9 is_stmt 1 view .LVU7
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 3
+
+
+  57:Drv/drv_adc.c ****     }
+  54              		.loc 1 57 16 is_stmt 0 view .LVU8
+  55 000e 034B     		ldr	r3, .L6
+  56 0010 03EB4003 		add	r3, r3, r0, lsl #1
+  57 0014 5978     		ldrb	r1, [r3, #1]	@ zero_extendqisi2
+  58 0016 FFF7FEFF 		bl	Periph_ADC_GetValue
+  59              	.LVL3:
+  57:Drv/drv_adc.c ****     }
+  60              		.loc 1 57 16 view .LVU9
+  61 001a F7E7     		b	.L2
+  62              	.L7:
+  63              		.align	2
+  64              	.L6:
+  65 001c 00000000 		.word	.LANCHOR0
+  66              		.cfi_endproc
+  67              	.LFE125:
+  69              		.section	.text.DrvADC_SigalCh_Init,"ax",%progbits
+  70              		.align	1
+  71              		.syntax unified
+  72              		.thumb
+  73              		.thumb_func
+  74              		.fpu fpv4-sp-d16
+  76              	DrvADC_SigalCh_Init:
+  77              	.LVL4:
+  78              	.LFB123:
+  27:Drv/drv_adc.c ****     if (channel >= ADC1_Channel_Sum)
+  79              		.loc 1 27 1 is_stmt 1 view -0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  28:Drv/drv_adc.c ****         return false;
+  83              		.loc 1 28 5 view .LVU11
+  28:Drv/drv_adc.c ****         return false;
+  84              		.loc 1 28 8 is_stmt 0 view .LVU12
+  85 0000 0E28     		cmp	r0, #14
+  86 0002 15D8     		bhi	.L10
+  31:Drv/drv_adc.c ****     {
+  87              		.loc 1 31 5 is_stmt 1 view .LVU13
+  31:Drv/drv_adc.c ****     {
+  88              		.loc 1 31 32 is_stmt 0 view .LVU14
+  89 0004 0B4B     		ldr	r3, .L17
+  90 0006 13F81030 		ldrb	r3, [r3, r0, lsl #1]	@ zero_extendqisi2
+  31:Drv/drv_adc.c ****     {
+  91              		.loc 1 31 8 view .LVU15
+  92 000a 0BB1     		cbz	r3, .L16
+  43:Drv/drv_adc.c **** }
+  93              		.loc 1 43 12 view .LVU16
+  94 000c 0020     		movs	r0, #0
+  95              	.LVL5:
+  44:Drv/drv_adc.c **** 
+  96              		.loc 1 44 1 view .LVU17
+  97 000e 7047     		bx	lr
+  98              	.LVL6:
+  99              	.L16:
+  27:Drv/drv_adc.c ****     if (channel >= ADC1_Channel_Sum)
+ 100              		.loc 1 27 1 view .LVU18
+ 101 0010 10B5     		push	{r4, lr}
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 4
+
+
+ 102              	.LCFI1:
+ 103              		.cfi_def_cfa_offset 8
+ 104              		.cfi_offset 4, -8
+ 105              		.cfi_offset 14, -4
+  33:Drv/drv_adc.c ****         Channel_State[channel].id = InUse_ADC_Channel_cnt;
+ 106              		.loc 1 33 9 is_stmt 1 view .LVU19
+  33:Drv/drv_adc.c ****         Channel_State[channel].id = InUse_ADC_Channel_cnt;
+ 107              		.loc 1 33 38 is_stmt 0 view .LVU20
+ 108 0012 084A     		ldr	r2, .L17
+ 109 0014 0124     		movs	r4, #1
+ 110 0016 02F81040 		strb	r4, [r2, r0, lsl #1]
+  34:Drv/drv_adc.c **** 
+ 111              		.loc 1 34 9 is_stmt 1 view .LVU21
+  34:Drv/drv_adc.c **** 
+ 112              		.loc 1 34 35 is_stmt 0 view .LVU22
+ 113 001a 0749     		ldr	r1, .L17+4
+ 114 001c 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 115 001e 02EB4002 		add	r2, r2, r0, lsl #1
+ 116 0022 5370     		strb	r3, [r2, #1]
+  36:Drv/drv_adc.c **** 
+ 117              		.loc 1 36 9 is_stmt 1 view .LVU23
+  36:Drv/drv_adc.c **** 
+ 118              		.loc 1 36 30 is_stmt 0 view .LVU24
+ 119 0024 2344     		add	r3, r3, r4
+ 120 0026 0B70     		strb	r3, [r1]
+  38:Drv/drv_adc.c **** 
+ 121              		.loc 1 38 9 is_stmt 1 view .LVU25
+ 122 0028 FFF7FEFF 		bl	Periph_ADC_IO_Init
+ 123              	.LVL7:
+  40:Drv/drv_adc.c ****     }
+ 124              		.loc 1 40 9 view .LVU26
+  40:Drv/drv_adc.c ****     }
+ 125              		.loc 1 40 16 is_stmt 0 view .LVU27
+ 126 002c 2046     		mov	r0, r4
+  44:Drv/drv_adc.c **** 
+ 127              		.loc 1 44 1 view .LVU28
+ 128 002e 10BD     		pop	{r4, pc}
+ 129              	.LVL8:
+ 130              	.L10:
+ 131              	.LCFI2:
+ 132              		.cfi_def_cfa_offset 0
+ 133              		.cfi_restore 4
+ 134              		.cfi_restore 14
+  29:Drv/drv_adc.c **** 
+ 135              		.loc 1 29 16 view .LVU29
+ 136 0030 0020     		movs	r0, #0
+ 137              	.LVL9:
+  29:Drv/drv_adc.c **** 
+ 138              		.loc 1 29 16 view .LVU30
+ 139 0032 7047     		bx	lr
+ 140              	.L18:
+ 141              		.align	2
+ 142              	.L17:
+ 143 0034 00000000 		.word	.LANCHOR0
+ 144 0038 00000000 		.word	.LANCHOR1
+ 145              		.cfi_endproc
+ 146              	.LFE123:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 5
+
+
+ 148              		.section	.text.DrvADC_Open,"ax",%progbits
+ 149              		.align	1
+ 150              		.syntax unified
+ 151              		.thumb
+ 152              		.thumb_func
+ 153              		.fpu fpv4-sp-d16
+ 155              	DrvADC_Open:
+ 156              	.LFB124:
+  47:Drv/drv_adc.c ****     Periph_ADC_Init(InUse_ADC_Channel_cnt);
+ 157              		.loc 1 47 1 is_stmt 1 view -0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161 0000 08B5     		push	{r3, lr}
+ 162              	.LCFI3:
+ 163              		.cfi_def_cfa_offset 8
+ 164              		.cfi_offset 3, -8
+ 165              		.cfi_offset 14, -4
+  48:Drv/drv_adc.c **** 
+ 166              		.loc 1 48 5 view .LVU32
+ 167 0002 034B     		ldr	r3, .L21
+ 168 0004 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 169 0006 FFF7FEFF 		bl	Periph_ADC_Init
+ 170              	.LVL10:
+  50:Drv/drv_adc.c **** }
+ 171              		.loc 1 50 5 view .LVU33
+  51:Drv/drv_adc.c **** 
+ 172              		.loc 1 51 1 is_stmt 0 view .LVU34
+ 173 000a 0120     		movs	r0, #1
+ 174 000c 08BD     		pop	{r3, pc}
+ 175              	.L22:
+ 176 000e 00BF     		.align	2
+ 177              	.L21:
+ 178 0010 00000000 		.word	.LANCHOR1
+ 179              		.cfi_endproc
+ 180              	.LFE124:
+ 182              		.section	.text.DrvADC_Ctl,"ax",%progbits
+ 183              		.align	1
+ 184              		.syntax unified
+ 185              		.thumb
+ 186              		.thumb_func
+ 187              		.fpu fpv4-sp-d16
+ 189              	DrvADC_Ctl:
+ 190              	.LVL11:
+ 191              	.LFB126:
+  62:Drv/drv_adc.c **** 
+  63:Drv/drv_adc.c **** static bool DrvADC_Ctl(DrvADC_CMD_List cmd, uint8_t data)
+  64:Drv/drv_adc.c **** {
+ 192              		.loc 1 64 1 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196              		.loc 1 64 1 is_stmt 0 view .LVU36
+ 197 0000 08B5     		push	{r3, lr}
+ 198              	.LCFI4:
+ 199              		.cfi_def_cfa_offset 8
+ 200              		.cfi_offset 3, -8
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 6
+
+
+ 201              		.cfi_offset 14, -4
+  65:Drv/drv_adc.c ****     switch ((uint8_t)cmd)
+ 202              		.loc 1 65 5 is_stmt 1 view .LVU37
+ 203 0002 18B1     		cbz	r0, .L24
+ 204 0004 0128     		cmp	r0, #1
+ 205 0006 05D0     		beq	.L25
+ 206 0008 0020     		movs	r0, #0
+ 207              	.LVL12:
+ 208              	.L26:
+  66:Drv/drv_adc.c ****     {
+  67:Drv/drv_adc.c ****     case ADC_Config_IO:
+  68:Drv/drv_adc.c ****         return DrvADC_SigalCh_Init(data);
+  69:Drv/drv_adc.c **** 
+  70:Drv/drv_adc.c ****     case ADC_Open:
+  71:Drv/drv_adc.c ****         return DrvADC_Open();
+  72:Drv/drv_adc.c **** 
+  73:Drv/drv_adc.c ****     default:
+  74:Drv/drv_adc.c ****         return false;
+  75:Drv/drv_adc.c ****     }
+  76:Drv/drv_adc.c **** 
+  77:Drv/drv_adc.c ****     return false;
+  78:Drv/drv_adc.c **** }
+ 209              		.loc 1 78 1 is_stmt 0 view .LVU38
+ 210 000a 08BD     		pop	{r3, pc}
+ 211              	.LVL13:
+ 212              	.L24:
+  68:Drv/drv_adc.c **** 
+ 213              		.loc 1 68 9 is_stmt 1 view .LVU39
+  68:Drv/drv_adc.c **** 
+ 214              		.loc 1 68 16 is_stmt 0 view .LVU40
+ 215 000c 0846     		mov	r0, r1
+ 216              	.LVL14:
+  68:Drv/drv_adc.c **** 
+ 217              		.loc 1 68 16 view .LVU41
+ 218 000e FFF7FEFF 		bl	DrvADC_SigalCh_Init
+ 219              	.LVL15:
+  68:Drv/drv_adc.c **** 
+ 220              		.loc 1 68 16 view .LVU42
+ 221 0012 FAE7     		b	.L26
+ 222              	.LVL16:
+ 223              	.L25:
+  71:Drv/drv_adc.c **** 
+ 224              		.loc 1 71 9 is_stmt 1 view .LVU43
+  71:Drv/drv_adc.c **** 
+ 225              		.loc 1 71 16 is_stmt 0 view .LVU44
+ 226 0014 FFF7FEFF 		bl	DrvADC_Open
+ 227              	.LVL17:
+  71:Drv/drv_adc.c **** 
+ 228              		.loc 1 71 16 view .LVU45
+ 229 0018 F7E7     		b	.L26
+ 230              		.cfi_endproc
+ 231              	.LFE126:
+ 233              		.global	DrvADC
+ 234              		.section	.bss.Channel_State,"aw",%nobits
+ 235              		.align	2
+ 236              		.set	.LANCHOR0,. + 0
+ 239              	Channel_State:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 7
+
+
+ 240 0000 00000000 		.space	30
+ 240      00000000 
+ 240      00000000 
+ 240      00000000 
+ 240      00000000 
+ 241              		.section	.bss.InUse_ADC_Channel_cnt,"aw",%nobits
+ 242              		.set	.LANCHOR1,. + 0
+ 245              	InUse_ADC_Channel_cnt:
+ 246 0000 00       		.space	1
+ 247              		.section	.data.DrvADC,"aw"
+ 248              		.align	2
+ 251              	DrvADC:
+ 252 0000 00000000 		.word	DrvADC_Ctl
+ 253 0004 00000000 		.word	DrvADC_Get
+ 254              		.text
+ 255              	.Letext0:
+ 256              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 257              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 258              		.file 4 "Bsp/periph_adc.h"
+ 259              		.file 5 "Drv/drv_adc.h"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 drv_adc.c
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:18     .text.DrvADC_Get:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:25     .text.DrvADC_Get:00000000 DrvADC_Get
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:65     .text.DrvADC_Get:0000001c $d
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:70     .text.DrvADC_SigalCh_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:76     .text.DrvADC_SigalCh_Init:00000000 DrvADC_SigalCh_Init
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:143    .text.DrvADC_SigalCh_Init:00000034 $d
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:149    .text.DrvADC_Open:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:155    .text.DrvADC_Open:00000000 DrvADC_Open
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:178    .text.DrvADC_Open:00000010 $d
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:183    .text.DrvADC_Ctl:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:189    .text.DrvADC_Ctl:00000000 DrvADC_Ctl
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:251    .data.DrvADC:00000000 DrvADC
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:235    .bss.Channel_State:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:239    .bss.Channel_State:00000000 Channel_State
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:245    .bss.InUse_ADC_Channel_cnt:00000000 InUse_ADC_Channel_cnt
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:246    .bss.InUse_ADC_Channel_cnt:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccQMaQIq.s:248    .data.DrvADC:00000000 $d
+
+UNDEFINED SYMBOLS
+Periph_ADC_GetValue
+Periph_ADC_IO_Init
+Periph_ADC_Init
