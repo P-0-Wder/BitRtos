@@ -46,8 +46,8 @@ static void SrvInput_Init(void)
     DrvADC.ctl(ADC_Config_IO, ADC1_Channel6);
 
     /* toggle io init */
-    DrvGPIO.open();
-    DrvGPIO.open();
+    DrvGPIO.open(&Toggle_Left, GPIO_Input, NULL);
+    DrvGPIO.open(&Toggle_Right, GPIO_Input, NULL);
 
     /* shoulder button io init */
     DrvGPIO.open(&ShoulderBtn_Lft, GPIO_Input, NULL);

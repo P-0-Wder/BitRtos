@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s 			page 1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -17,293 +17,575 @@ ARM GAS  C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s 			page 1
   14              		.text
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
-  17              		.section	.text.SrvInput_GetData,"ax",%progbits
+  17              		.section	.text.SrcInput_SyncInput_Callback,"ax",%progbits
   18              		.align	1
   19              		.arch armv7e-m
   20              		.syntax unified
   21              		.thumb
   22              		.thumb_func
   23              		.fpu fpv4-sp-d16
-  25              	SrvInput_GetData:
-  26              	.LVL0:
-  27              	.LFB125:
-  28              		.file 1 "App/Task_Input/SrvInput.c"
+  25              	SrcInput_SyncInput_Callback:
+  26              	.LFB124:
+  27              		.file 1 "App/Task_Input/SrvInput.c"
    1:App/Task_Input/SrvInput.c **** #include "SrvInput.h"
    2:App/Task_Input/SrvInput.c **** #include "drv_adc.h"
    3:App/Task_Input/SrvInput.c **** #include "drv_gpio.h"
-   4:App/Task_Input/SrvInput.c **** 
-   5:App/Task_Input/SrvInput.c **** /* internal variable */
-   6:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef InputData;
-   7:App/Task_Input/SrvInput.c **** 
-   8:App/Task_Input/SrvInput.c **** /* internal funciton */
-   9:App/Task_Input/SrvInput.c **** static void SrvInput_Init(void);
-  10:App/Task_Input/SrvInput.c **** static void SrvInput_Sample(void);
-  11:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef SrvInput_GetData(void);
-  12:App/Task_Input/SrvInput.c **** 
-  13:App/Task_Input/SrvInput.c **** /* external variable */
-  14:App/Task_Input/SrvInput.c **** SrvInput_TypeDef InputObj = {
-  15:App/Task_Input/SrvInput.c ****     .init = SrvInput_Init,
-  16:App/Task_Input/SrvInput.c ****     .sample = SrvInput_Sample,
-  17:App/Task_Input/SrvInput.c ****     .get_data = SrvInput_GetData,
-  18:App/Task_Input/SrvInput.c **** };
-  19:App/Task_Input/SrvInput.c **** 
-  20:App/Task_Input/SrvInput.c **** static void SrvInput_Init(void)
-  21:App/Task_Input/SrvInput.c **** {
-  22:App/Task_Input/SrvInput.c ****     memset(&InputData, 0, sizeof(InputData));
-  23:App/Task_Input/SrvInput.c **** 
-  24:App/Task_Input/SrvInput.c ****     /* left gimbal io init */
-  25:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel0);
-  26:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
-  27:App/Task_Input/SrvInput.c **** 
-  28:App/Task_Input/SrvInput.c ****     /* right gimbal io init */
-  29:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel2);
-  30:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s 			page 2
+   4:App/Task_Input/SrvInput.c **** #include "Input_IO_Def.h"
+   5:App/Task_Input/SrvInput.c **** 
+   6:App/Task_Input/SrvInput.c **** /* internal variable */
+   7:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef InputData;
+   8:App/Task_Input/SrvInput.c **** 
+   9:App/Task_Input/SrvInput.c **** /* internal funciton */
+  10:App/Task_Input/SrvInput.c **** static void SrvInput_Init(void);
+  11:App/Task_Input/SrvInput.c **** static void SrvInput_Sample(void);
+  12:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef SrvInput_GetData(void);
+  13:App/Task_Input/SrvInput.c **** 
+  14:App/Task_Input/SrvInput.c **** /* internal function */
+  15:App/Task_Input/SrvInput.c **** static void SrvInput_PowerButton_Check(void);
+  16:App/Task_Input/SrvInput.c **** static void SrvInput_DirectionButton_Check(void);
+  17:App/Task_Input/SrvInput.c **** static void SrvInput_Encoder_Check(void);
+  18:App/Task_Input/SrvInput.c **** static void SrvInput_LeftGimbal_Check(void);
+  19:App/Task_Input/SrvInput.c **** static void SrvInput_RightGimbal_Check(void);
+  20:App/Task_Input/SrvInput.c **** static void SrcInput_SyncInput_Callback(void);
+  21:App/Task_Input/SrvInput.c **** 
+  22:App/Task_Input/SrvInput.c **** /* external variable */
+  23:App/Task_Input/SrvInput.c **** SrvInput_TypeDef InputObj = {
+  24:App/Task_Input/SrvInput.c ****     .init = SrvInput_Init,
+  25:App/Task_Input/SrvInput.c ****     .sample = SrvInput_Sample,
+  26:App/Task_Input/SrvInput.c ****     .get_data = SrvInput_GetData,
+  27:App/Task_Input/SrvInput.c **** };
+  28:App/Task_Input/SrvInput.c **** 
+  29:App/Task_Input/SrvInput.c **** static void SrvInput_Init(void)
+  30:App/Task_Input/SrvInput.c **** {
+  31:App/Task_Input/SrvInput.c ****     memset(&InputData, 0, sizeof(InputData));
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 2
 
 
-  31:App/Task_Input/SrvInput.c **** 
-  32:App/Task_Input/SrvInput.c ****     /* pot on both side io init */
-  33:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel4);
-  34:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
-  35:App/Task_Input/SrvInput.c **** 
-  36:App/Task_Input/SrvInput.c ****     /* voltage detect */
-  37:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel6);
-  38:App/Task_Input/SrvInput.c **** 
-  39:App/Task_Input/SrvInput.c ****     /* toggle io init */
+  32:App/Task_Input/SrvInput.c **** 
+  33:App/Task_Input/SrvInput.c ****     /* left gimbal io init */
+  34:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel0);
+  35:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
+  36:App/Task_Input/SrvInput.c **** 
+  37:App/Task_Input/SrvInput.c ****     /* right gimbal io init */
+  38:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel2);
+  39:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
   40:App/Task_Input/SrvInput.c **** 
-  41:App/Task_Input/SrvInput.c ****     /* 5 direction button io init */
-  42:App/Task_Input/SrvInput.c **** 
-  43:App/Task_Input/SrvInput.c ****     /* encoder io init */
+  41:App/Task_Input/SrvInput.c ****     /* pot on both side io init */
+  42:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel4);
+  43:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
   44:App/Task_Input/SrvInput.c **** 
-  45:App/Task_Input/SrvInput.c ****     /* sync io init sync running signal to other module */
+  45:App/Task_Input/SrvInput.c ****     /* voltage detect */
+  46:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel6);
+  47:App/Task_Input/SrvInput.c **** 
+  48:App/Task_Input/SrvInput.c ****     /* toggle io init */
+  49:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Toggle_Left, GPIO_Input, NULL);
+  50:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Toggle_Right, GPIO_Input, NULL);
+  51:App/Task_Input/SrvInput.c **** 
+  52:App/Task_Input/SrvInput.c ****     /* shoulder button io init */
+  53:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&ShoulderBtn_Lft, GPIO_Input, NULL);
+  54:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&ShoulderBtn_Rgt, GPIO_Input, NULL);
+  55:App/Task_Input/SrvInput.c **** 
+  56:App/Task_Input/SrvInput.c ****     /* 5 direction button io init */
+  57:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Up, GPIO_Input, NULL);
+  58:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Dwn, GPIO_Input, NULL);
+  59:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Lft, GPIO_Input, NULL);
+  60:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Rgt, GPIO_Input, NULL);
+  61:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Mid, GPIO_Input, NULL);
+  62:App/Task_Input/SrvInput.c **** 
+  63:App/Task_Input/SrvInput.c ****     /* power button io init */
+  64:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Power_Btn, GPIO_Input, NULL);
+  65:App/Task_Input/SrvInput.c **** 
+  66:App/Task_Input/SrvInput.c ****     /* encoder button io init */
+  67:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Encoder_Btn, GPIO_Input, NULL);
+  68:App/Task_Input/SrvInput.c **** 
+  69:App/Task_Input/SrvInput.c ****     /* sync io output init */
+  70:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Sync_Out, GPIO_Output, NULL);
+  71:App/Task_Input/SrvInput.c **** 
+  72:App/Task_Input/SrvInput.c ****     /* sync io input init */
+  73:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Sync_In, GPIO_Input, (uint32_t)SrcInput_SyncInput_Callback);
+  74:App/Task_Input/SrvInput.c **** 
+  75:App/Task_Input/SrvInput.c ****     /* encoder io init */
+  76:App/Task_Input/SrvInput.c **** 
+  77:App/Task_Input/SrvInput.c ****     /* adc init */
+  78:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Open, 0);
+  79:App/Task_Input/SrvInput.c **** }
+  80:App/Task_Input/SrvInput.c **** 
+  81:App/Task_Input/SrvInput.c **** static void SrcInput_SyncInput_Callback(void)
+  82:App/Task_Input/SrvInput.c **** {
+  28              		.loc 1 82 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  83:App/Task_Input/SrvInput.c **** }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 3
+
+
+  33              		.loc 1 83 1 view .LVU1
+  34 0000 7047     		bx	lr
+  35              		.cfi_endproc
+  36              	.LFE124:
+  38              		.section	.text.SrvInput_GetData,"ax",%progbits
+  39              		.align	1
+  40              		.syntax unified
+  41              		.thumb
+  42              		.thumb_func
+  43              		.fpu fpv4-sp-d16
+  45              	SrvInput_GetData:
+  46              	.LVL0:
+  47              	.LFB131:
+  84:App/Task_Input/SrvInput.c **** 
+  85:App/Task_Input/SrvInput.c **** static void SrvInput_PowerButton_Check(void)
+  86:App/Task_Input/SrvInput.c **** {
+  87:App/Task_Input/SrvInput.c **** }
+  88:App/Task_Input/SrvInput.c **** 
+  89:App/Task_Input/SrvInput.c **** static void SrvInput_DirectionButton_Check(void)
+  90:App/Task_Input/SrvInput.c **** {
+  91:App/Task_Input/SrvInput.c **** }
+  92:App/Task_Input/SrvInput.c **** 
+  93:App/Task_Input/SrvInput.c **** static void SrvInput_Encoder_Check(void)
+  94:App/Task_Input/SrvInput.c **** {
+  95:App/Task_Input/SrvInput.c **** }
+  96:App/Task_Input/SrvInput.c **** 
+  97:App/Task_Input/SrvInput.c **** static void SrvInput_LeftGimbal_Check(void)
+  98:App/Task_Input/SrvInput.c **** {
+  99:App/Task_Input/SrvInput.c **** }
+ 100:App/Task_Input/SrvInput.c **** 
+ 101:App/Task_Input/SrvInput.c **** static void SrvInput_RightGimbal_Check(void)
+ 102:App/Task_Input/SrvInput.c **** {
+ 103:App/Task_Input/SrvInput.c **** }
+ 104:App/Task_Input/SrvInput.c **** 
+ 105:App/Task_Input/SrvInput.c **** static void SrvInput_Update(void)
+ 106:App/Task_Input/SrvInput.c **** {
+ 107:App/Task_Input/SrvInput.c ****     SrvInput_PowerButton_Check();
+ 108:App/Task_Input/SrvInput.c ****     SrvInput_DirectionButton_Check();
+ 109:App/Task_Input/SrvInput.c ****     SrvInput_Encoder_Check();
+ 110:App/Task_Input/SrvInput.c ****     SrvInput_LeftGimbal_Check();
+ 111:App/Task_Input/SrvInput.c ****     SrvInput_RightGimbal_Check();
+ 112:App/Task_Input/SrvInput.c **** }
+ 113:App/Task_Input/SrvInput.c **** 
+ 114:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef SrvInput_GetData(void)
+ 115:App/Task_Input/SrvInput.c **** {
+  48              		.loc 1 115 1 view -0
+  49              		.cfi_startproc
+  50              		@ args = 0, pretend = 0, frame = 0
+  51              		@ frame_needed = 0, uses_anonymous_args = 0
+  52              		@ link register save eliminated.
+  53              		.loc 1 115 1 is_stmt 0 view .LVU3
+  54 0000 10B4     		push	{r4}
+  55              	.LCFI0:
+  56              		.cfi_def_cfa_offset 4
+  57              		.cfi_offset 4, -4
+  58 0002 8446     		mov	ip, r0
+ 116:App/Task_Input/SrvInput.c ****     return InputData;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 4
+
+
+  59              		.loc 1 116 5 is_stmt 1 view .LVU4
+  60              		.loc 1 116 12 is_stmt 0 view .LVU5
+  61 0004 094C     		ldr	r4, .L4
+  62 0006 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+  63              	.LVL1:
+  64              		.loc 1 116 12 view .LVU6
+  65 0008 CCF80000 		str	r0, [ip]	@ unaligned
+  66 000c CCF80410 		str	r1, [ip, #4]	@ unaligned
+  67 0010 CCF80820 		str	r2, [ip, #8]	@ unaligned
+  68 0014 CCF80C30 		str	r3, [ip, #12]	@ unaligned
+  69 0018 2068     		ldr	r0, [r4]
+  70 001a CCF81000 		str	r0, [ip, #16]	@ unaligned
+  71 001e A388     		ldrh	r3, [r4, #4]	@ unaligned
+  72 0020 ACF81430 		strh	r3, [ip, #20]	@ unaligned
+ 117:App/Task_Input/SrvInput.c **** }
+  73              		.loc 1 117 1 view .LVU7
+  74 0024 6046     		mov	r0, ip
+  75 0026 5DF8044B 		ldr	r4, [sp], #4
+  76              	.LCFI1:
+  77              		.cfi_restore 4
+  78              		.cfi_def_cfa_offset 0
+  79 002a 7047     		bx	lr
+  80              	.L5:
+  81              		.align	2
+  82              	.L4:
+  83 002c 00000000 		.word	.LANCHOR0
+  84              		.cfi_endproc
+  85              	.LFE131:
+  87              		.section	.text.SrvInput_Init,"ax",%progbits
+  88              		.align	1
+  89              		.syntax unified
+  90              		.thumb
+  91              		.thumb_func
+  92              		.fpu fpv4-sp-d16
+  94              	SrvInput_Init:
+  95              	.LFB123:
+  30:App/Task_Input/SrvInput.c ****     memset(&InputData, 0, sizeof(InputData));
+  96              		.loc 1 30 1 is_stmt 1 view -0
+  97              		.cfi_startproc
+  98              		@ args = 0, pretend = 0, frame = 0
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100 0000 70B5     		push	{r4, r5, r6, lr}
+ 101              	.LCFI2:
+ 102              		.cfi_def_cfa_offset 16
+ 103              		.cfi_offset 4, -16
+ 104              		.cfi_offset 5, -12
+ 105              		.cfi_offset 6, -8
+ 106              		.cfi_offset 14, -4
+  31:App/Task_Input/SrvInput.c **** 
+ 107              		.loc 1 31 5 view .LVU9
+ 108 0002 364B     		ldr	r3, .L8
+ 109 0004 0024     		movs	r4, #0
+ 110 0006 1C60     		str	r4, [r3]
+ 111 0008 5C60     		str	r4, [r3, #4]
+ 112 000a 9C60     		str	r4, [r3, #8]
+ 113 000c DC60     		str	r4, [r3, #12]
+ 114 000e 1C61     		str	r4, [r3, #16]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 5
+
+
+ 115 0010 9C82     		strh	r4, [r3, #20]	@ movhi
+  34:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
+ 116              		.loc 1 34 5 view .LVU10
+  34:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
+ 117              		.loc 1 34 11 is_stmt 0 view .LVU11
+ 118 0012 334E     		ldr	r6, .L8+4
+ 119 0014 3368     		ldr	r3, [r6]
+  34:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
+ 120              		.loc 1 34 5 view .LVU12
+ 121 0016 2146     		mov	r1, r4
+ 122 0018 2046     		mov	r0, r4
+ 123 001a 9847     		blx	r3
+ 124              	.LVL2:
+  35:App/Task_Input/SrvInput.c **** 
+ 125              		.loc 1 35 5 is_stmt 1 view .LVU13
+  35:App/Task_Input/SrvInput.c **** 
+ 126              		.loc 1 35 11 is_stmt 0 view .LVU14
+ 127 001c 3368     		ldr	r3, [r6]
+  35:App/Task_Input/SrvInput.c **** 
+ 128              		.loc 1 35 5 view .LVU15
+ 129 001e 0121     		movs	r1, #1
+ 130 0020 2046     		mov	r0, r4
+ 131 0022 9847     		blx	r3
+ 132              	.LVL3:
+  38:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
+ 133              		.loc 1 38 5 is_stmt 1 view .LVU16
+  38:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
+ 134              		.loc 1 38 11 is_stmt 0 view .LVU17
+ 135 0024 3368     		ldr	r3, [r6]
+  38:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
+ 136              		.loc 1 38 5 view .LVU18
+ 137 0026 0221     		movs	r1, #2
+ 138 0028 2046     		mov	r0, r4
+ 139 002a 9847     		blx	r3
+ 140              	.LVL4:
+  39:App/Task_Input/SrvInput.c **** 
+ 141              		.loc 1 39 5 is_stmt 1 view .LVU19
+  39:App/Task_Input/SrvInput.c **** 
+ 142              		.loc 1 39 11 is_stmt 0 view .LVU20
+ 143 002c 3368     		ldr	r3, [r6]
+  39:App/Task_Input/SrvInput.c **** 
+ 144              		.loc 1 39 5 view .LVU21
+ 145 002e 0321     		movs	r1, #3
+ 146 0030 2046     		mov	r0, r4
+ 147 0032 9847     		blx	r3
+ 148              	.LVL5:
+  42:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
+ 149              		.loc 1 42 5 is_stmt 1 view .LVU22
+  42:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
+ 150              		.loc 1 42 11 is_stmt 0 view .LVU23
+ 151 0034 3368     		ldr	r3, [r6]
+  42:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
+ 152              		.loc 1 42 5 view .LVU24
+ 153 0036 0421     		movs	r1, #4
+ 154 0038 2046     		mov	r0, r4
+ 155 003a 9847     		blx	r3
+ 156              	.LVL6:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 6
+
+
+  43:App/Task_Input/SrvInput.c **** 
+ 157              		.loc 1 43 5 is_stmt 1 view .LVU25
+  43:App/Task_Input/SrvInput.c **** 
+ 158              		.loc 1 43 11 is_stmt 0 view .LVU26
+ 159 003c 3368     		ldr	r3, [r6]
+  43:App/Task_Input/SrvInput.c **** 
+ 160              		.loc 1 43 5 view .LVU27
+ 161 003e 0521     		movs	r1, #5
+ 162 0040 2046     		mov	r0, r4
+ 163 0042 9847     		blx	r3
+ 164              	.LVL7:
   46:App/Task_Input/SrvInput.c **** 
-  47:App/Task_Input/SrvInput.c ****     /* adc init */
-  48:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Open, 0);
-  49:App/Task_Input/SrvInput.c **** }
+ 165              		.loc 1 46 5 is_stmt 1 view .LVU28
+  46:App/Task_Input/SrvInput.c **** 
+ 166              		.loc 1 46 11 is_stmt 0 view .LVU29
+ 167 0044 3368     		ldr	r3, [r6]
+  46:App/Task_Input/SrvInput.c **** 
+ 168              		.loc 1 46 5 view .LVU30
+ 169 0046 0621     		movs	r1, #6
+ 170 0048 2046     		mov	r0, r4
+ 171 004a 9847     		blx	r3
+ 172              	.LVL8:
+  49:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Toggle_Right, GPIO_Input, NULL);
+ 173              		.loc 1 49 5 is_stmt 1 view .LVU31
+  49:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Toggle_Right, GPIO_Input, NULL);
+ 174              		.loc 1 49 12 is_stmt 0 view .LVU32
+ 175 004c 254D     		ldr	r5, .L8+8
+ 176 004e 2B68     		ldr	r3, [r5]
+  49:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&Toggle_Right, GPIO_Input, NULL);
+ 177              		.loc 1 49 5 view .LVU33
+ 178 0050 2246     		mov	r2, r4
+ 179 0052 0121     		movs	r1, #1
+ 180 0054 2448     		ldr	r0, .L8+12
+ 181 0056 9847     		blx	r3
+ 182              	.LVL9:
   50:App/Task_Input/SrvInput.c **** 
-  51:App/Task_Input/SrvInput.c **** static void SrvInput_Update(void)
-  52:App/Task_Input/SrvInput.c **** {
-  53:App/Task_Input/SrvInput.c **** }
+ 183              		.loc 1 50 5 is_stmt 1 view .LVU34
+  50:App/Task_Input/SrvInput.c **** 
+ 184              		.loc 1 50 12 is_stmt 0 view .LVU35
+ 185 0058 2B68     		ldr	r3, [r5]
+  50:App/Task_Input/SrvInput.c **** 
+ 186              		.loc 1 50 5 view .LVU36
+ 187 005a 2246     		mov	r2, r4
+ 188 005c 0121     		movs	r1, #1
+ 189 005e 2348     		ldr	r0, .L8+16
+ 190 0060 9847     		blx	r3
+ 191              	.LVL10:
+  53:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&ShoulderBtn_Rgt, GPIO_Input, NULL);
+ 192              		.loc 1 53 5 is_stmt 1 view .LVU37
+  53:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&ShoulderBtn_Rgt, GPIO_Input, NULL);
+ 193              		.loc 1 53 12 is_stmt 0 view .LVU38
+ 194 0062 2B68     		ldr	r3, [r5]
+  53:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&ShoulderBtn_Rgt, GPIO_Input, NULL);
+ 195              		.loc 1 53 5 view .LVU39
+ 196 0064 2246     		mov	r2, r4
+ 197 0066 0121     		movs	r1, #1
+ 198 0068 2148     		ldr	r0, .L8+20
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 7
+
+
+ 199 006a 9847     		blx	r3
+ 200              	.LVL11:
   54:App/Task_Input/SrvInput.c **** 
-  55:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef SrvInput_GetData(void)
-  56:App/Task_Input/SrvInput.c **** {
-  29              		.loc 1 56 1 view -0
-  30              		.cfi_startproc
-  31              		@ args = 0, pretend = 0, frame = 0
-  32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33              		@ link register save eliminated.
-  34              		.loc 1 56 1 is_stmt 0 view .LVU1
-  35 0000 10B4     		push	{r4}
-  36              	.LCFI0:
-  37              		.cfi_def_cfa_offset 4
-  38              		.cfi_offset 4, -4
-  39 0002 8446     		mov	ip, r0
-  57:App/Task_Input/SrvInput.c ****     return InputData;
-  40              		.loc 1 57 5 is_stmt 1 view .LVU2
-  41              		.loc 1 57 12 is_stmt 0 view .LVU3
-  42 0004 094C     		ldr	r4, .L3
-  43 0006 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
-  44              	.LVL1:
-  45              		.loc 1 57 12 view .LVU4
-  46 0008 CCF80000 		str	r0, [ip]	@ unaligned
-  47 000c CCF80410 		str	r1, [ip, #4]	@ unaligned
-  48 0010 CCF80820 		str	r2, [ip, #8]	@ unaligned
-  49 0014 CCF80C30 		str	r3, [ip, #12]	@ unaligned
-  50 0018 2068     		ldr	r0, [r4]
-  51 001a CCF81000 		str	r0, [ip, #16]	@ unaligned
-  52 001e A388     		ldrh	r3, [r4, #4]	@ unaligned
-  53 0020 ACF81430 		strh	r3, [ip, #20]	@ unaligned
-  58:App/Task_Input/SrvInput.c **** }
-  54              		.loc 1 58 1 view .LVU5
-  55 0024 6046     		mov	r0, ip
-  56 0026 5DF8044B 		ldr	r4, [sp], #4
-  57              	.LCFI1:
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s 			page 3
+ 201              		.loc 1 54 5 is_stmt 1 view .LVU40
+  54:App/Task_Input/SrvInput.c **** 
+ 202              		.loc 1 54 12 is_stmt 0 view .LVU41
+ 203 006c 2B68     		ldr	r3, [r5]
+  54:App/Task_Input/SrvInput.c **** 
+ 204              		.loc 1 54 5 view .LVU42
+ 205 006e 2246     		mov	r2, r4
+ 206 0070 0121     		movs	r1, #1
+ 207 0072 2048     		ldr	r0, .L8+24
+ 208 0074 9847     		blx	r3
+ 209              	.LVL12:
+  57:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Dwn, GPIO_Input, NULL);
+ 210              		.loc 1 57 5 is_stmt 1 view .LVU43
+  57:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Dwn, GPIO_Input, NULL);
+ 211              		.loc 1 57 12 is_stmt 0 view .LVU44
+ 212 0076 2B68     		ldr	r3, [r5]
+  57:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Dwn, GPIO_Input, NULL);
+ 213              		.loc 1 57 5 view .LVU45
+ 214 0078 2246     		mov	r2, r4
+ 215 007a 0121     		movs	r1, #1
+ 216 007c 1E48     		ldr	r0, .L8+28
+ 217 007e 9847     		blx	r3
+ 218              	.LVL13:
+  58:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Lft, GPIO_Input, NULL);
+ 219              		.loc 1 58 5 is_stmt 1 view .LVU46
+  58:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Lft, GPIO_Input, NULL);
+ 220              		.loc 1 58 12 is_stmt 0 view .LVU47
+ 221 0080 2B68     		ldr	r3, [r5]
+  58:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Lft, GPIO_Input, NULL);
+ 222              		.loc 1 58 5 view .LVU48
+ 223 0082 2246     		mov	r2, r4
+ 224 0084 0121     		movs	r1, #1
+ 225 0086 1D48     		ldr	r0, .L8+32
+ 226 0088 9847     		blx	r3
+ 227              	.LVL14:
+  59:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Rgt, GPIO_Input, NULL);
+ 228              		.loc 1 59 5 is_stmt 1 view .LVU49
+  59:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Rgt, GPIO_Input, NULL);
+ 229              		.loc 1 59 12 is_stmt 0 view .LVU50
+ 230 008a 2B68     		ldr	r3, [r5]
+  59:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Rgt, GPIO_Input, NULL);
+ 231              		.loc 1 59 5 view .LVU51
+ 232 008c 2246     		mov	r2, r4
+ 233 008e 0121     		movs	r1, #1
+ 234 0090 1B48     		ldr	r0, .L8+36
+ 235 0092 9847     		blx	r3
+ 236              	.LVL15:
+  60:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Mid, GPIO_Input, NULL);
+ 237              		.loc 1 60 5 is_stmt 1 view .LVU52
+  60:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Mid, GPIO_Input, NULL);
+ 238              		.loc 1 60 12 is_stmt 0 view .LVU53
+ 239 0094 2B68     		ldr	r3, [r5]
+  60:App/Task_Input/SrvInput.c ****     DrvGPIO.open(&DirBtn_Mid, GPIO_Input, NULL);
+ 240              		.loc 1 60 5 view .LVU54
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 8
 
 
-  58              		.cfi_restore 4
-  59              		.cfi_def_cfa_offset 0
-  60 002a 7047     		bx	lr
-  61              	.L4:
-  62              		.align	2
-  63              	.L3:
-  64 002c 00000000 		.word	.LANCHOR0
-  65              		.cfi_endproc
-  66              	.LFE125:
-  68              		.section	.text.SrvInput_Init,"ax",%progbits
-  69              		.align	1
-  70              		.syntax unified
-  71              		.thumb
-  72              		.thumb_func
-  73              		.fpu fpv4-sp-d16
-  75              	SrvInput_Init:
-  76              	.LFB123:
-  21:App/Task_Input/SrvInput.c ****     memset(&InputData, 0, sizeof(InputData));
-  77              		.loc 1 21 1 is_stmt 1 view -0
-  78              		.cfi_startproc
-  79              		@ args = 0, pretend = 0, frame = 0
-  80              		@ frame_needed = 0, uses_anonymous_args = 0
-  81 0000 38B5     		push	{r3, r4, r5, lr}
-  82              	.LCFI2:
-  83              		.cfi_def_cfa_offset 16
-  84              		.cfi_offset 3, -16
-  85              		.cfi_offset 4, -12
-  86              		.cfi_offset 5, -8
-  87              		.cfi_offset 14, -4
-  22:App/Task_Input/SrvInput.c **** 
-  88              		.loc 1 22 5 view .LVU7
-  89 0002 154B     		ldr	r3, .L7
-  90 0004 0024     		movs	r4, #0
-  91 0006 1C60     		str	r4, [r3]
-  92 0008 5C60     		str	r4, [r3, #4]
-  93 000a 9C60     		str	r4, [r3, #8]
-  94 000c DC60     		str	r4, [r3, #12]
-  95 000e 1C61     		str	r4, [r3, #16]
-  96 0010 9C82     		strh	r4, [r3, #20]	@ movhi
-  25:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
-  97              		.loc 1 25 5 view .LVU8
-  25:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
-  98              		.loc 1 25 11 is_stmt 0 view .LVU9
-  99 0012 124D     		ldr	r5, .L7+4
- 100 0014 2B68     		ldr	r3, [r5]
-  25:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
- 101              		.loc 1 25 5 view .LVU10
- 102 0016 2146     		mov	r1, r4
- 103 0018 2046     		mov	r0, r4
- 104 001a 9847     		blx	r3
- 105              	.LVL2:
-  26:App/Task_Input/SrvInput.c **** 
- 106              		.loc 1 26 5 is_stmt 1 view .LVU11
-  26:App/Task_Input/SrvInput.c **** 
- 107              		.loc 1 26 11 is_stmt 0 view .LVU12
- 108 001c 2B68     		ldr	r3, [r5]
-  26:App/Task_Input/SrvInput.c **** 
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s 			page 4
+ 241 0096 2246     		mov	r2, r4
+ 242 0098 0121     		movs	r1, #1
+ 243 009a 1A48     		ldr	r0, .L8+40
+ 244 009c 9847     		blx	r3
+ 245              	.LVL16:
+  61:App/Task_Input/SrvInput.c **** 
+ 246              		.loc 1 61 5 is_stmt 1 view .LVU55
+  61:App/Task_Input/SrvInput.c **** 
+ 247              		.loc 1 61 12 is_stmt 0 view .LVU56
+ 248 009e 2B68     		ldr	r3, [r5]
+  61:App/Task_Input/SrvInput.c **** 
+ 249              		.loc 1 61 5 view .LVU57
+ 250 00a0 2246     		mov	r2, r4
+ 251 00a2 0121     		movs	r1, #1
+ 252 00a4 1848     		ldr	r0, .L8+44
+ 253 00a6 9847     		blx	r3
+ 254              	.LVL17:
+  64:App/Task_Input/SrvInput.c **** 
+ 255              		.loc 1 64 5 is_stmt 1 view .LVU58
+  64:App/Task_Input/SrvInput.c **** 
+ 256              		.loc 1 64 12 is_stmt 0 view .LVU59
+ 257 00a8 2B68     		ldr	r3, [r5]
+  64:App/Task_Input/SrvInput.c **** 
+ 258              		.loc 1 64 5 view .LVU60
+ 259 00aa 2246     		mov	r2, r4
+ 260 00ac 0121     		movs	r1, #1
+ 261 00ae 1748     		ldr	r0, .L8+48
+ 262 00b0 9847     		blx	r3
+ 263              	.LVL18:
+  67:App/Task_Input/SrvInput.c **** 
+ 264              		.loc 1 67 5 is_stmt 1 view .LVU61
+  67:App/Task_Input/SrvInput.c **** 
+ 265              		.loc 1 67 12 is_stmt 0 view .LVU62
+ 266 00b2 2B68     		ldr	r3, [r5]
+  67:App/Task_Input/SrvInput.c **** 
+ 267              		.loc 1 67 5 view .LVU63
+ 268 00b4 2246     		mov	r2, r4
+ 269 00b6 0121     		movs	r1, #1
+ 270 00b8 1548     		ldr	r0, .L8+52
+ 271 00ba 9847     		blx	r3
+ 272              	.LVL19:
+  70:App/Task_Input/SrvInput.c **** 
+ 273              		.loc 1 70 5 is_stmt 1 view .LVU64
+  70:App/Task_Input/SrvInput.c **** 
+ 274              		.loc 1 70 12 is_stmt 0 view .LVU65
+ 275 00bc 2B68     		ldr	r3, [r5]
+  70:App/Task_Input/SrvInput.c **** 
+ 276              		.loc 1 70 5 view .LVU66
+ 277 00be 2246     		mov	r2, r4
+ 278 00c0 2146     		mov	r1, r4
+ 279 00c2 1448     		ldr	r0, .L8+56
+ 280 00c4 9847     		blx	r3
+ 281              	.LVL20:
+  73:App/Task_Input/SrvInput.c **** 
+ 282              		.loc 1 73 5 is_stmt 1 view .LVU67
+  73:App/Task_Input/SrvInput.c **** 
+ 283              		.loc 1 73 12 is_stmt 0 view .LVU68
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 9
 
 
- 109              		.loc 1 26 5 view .LVU13
- 110 001e 0121     		movs	r1, #1
- 111 0020 2046     		mov	r0, r4
- 112 0022 9847     		blx	r3
- 113              	.LVL3:
-  29:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
- 114              		.loc 1 29 5 is_stmt 1 view .LVU14
-  29:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
- 115              		.loc 1 29 11 is_stmt 0 view .LVU15
- 116 0024 2B68     		ldr	r3, [r5]
-  29:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel3);
- 117              		.loc 1 29 5 view .LVU16
- 118 0026 0221     		movs	r1, #2
- 119 0028 2046     		mov	r0, r4
- 120 002a 9847     		blx	r3
- 121              	.LVL4:
-  30:App/Task_Input/SrvInput.c **** 
- 122              		.loc 1 30 5 is_stmt 1 view .LVU17
-  30:App/Task_Input/SrvInput.c **** 
- 123              		.loc 1 30 11 is_stmt 0 view .LVU18
- 124 002c 2B68     		ldr	r3, [r5]
-  30:App/Task_Input/SrvInput.c **** 
- 125              		.loc 1 30 5 view .LVU19
- 126 002e 0321     		movs	r1, #3
- 127 0030 2046     		mov	r0, r4
- 128 0032 9847     		blx	r3
- 129              	.LVL5:
-  33:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
- 130              		.loc 1 33 5 is_stmt 1 view .LVU20
-  33:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
- 131              		.loc 1 33 11 is_stmt 0 view .LVU21
- 132 0034 2B68     		ldr	r3, [r5]
-  33:App/Task_Input/SrvInput.c ****     DrvADC.ctl(ADC_Config_IO, ADC1_Channel5);
- 133              		.loc 1 33 5 view .LVU22
- 134 0036 0421     		movs	r1, #4
- 135 0038 2046     		mov	r0, r4
- 136 003a 9847     		blx	r3
- 137              	.LVL6:
-  34:App/Task_Input/SrvInput.c **** 
- 138              		.loc 1 34 5 is_stmt 1 view .LVU23
-  34:App/Task_Input/SrvInput.c **** 
- 139              		.loc 1 34 11 is_stmt 0 view .LVU24
- 140 003c 2B68     		ldr	r3, [r5]
-  34:App/Task_Input/SrvInput.c **** 
- 141              		.loc 1 34 5 view .LVU25
- 142 003e 0521     		movs	r1, #5
- 143 0040 2046     		mov	r0, r4
- 144 0042 9847     		blx	r3
- 145              	.LVL7:
-  37:App/Task_Input/SrvInput.c **** 
- 146              		.loc 1 37 5 is_stmt 1 view .LVU26
-  37:App/Task_Input/SrvInput.c **** 
- 147              		.loc 1 37 11 is_stmt 0 view .LVU27
- 148 0044 2B68     		ldr	r3, [r5]
-  37:App/Task_Input/SrvInput.c **** 
- 149              		.loc 1 37 5 view .LVU28
- 150 0046 0621     		movs	r1, #6
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s 			page 5
+ 284 00c6 2B68     		ldr	r3, [r5]
+  73:App/Task_Input/SrvInput.c **** 
+ 285              		.loc 1 73 5 view .LVU69
+ 286 00c8 134A     		ldr	r2, .L8+60
+ 287 00ca 0121     		movs	r1, #1
+ 288 00cc 1348     		ldr	r0, .L8+64
+ 289 00ce 9847     		blx	r3
+ 290              	.LVL21:
+  78:App/Task_Input/SrvInput.c **** }
+ 291              		.loc 1 78 5 is_stmt 1 view .LVU70
+  78:App/Task_Input/SrvInput.c **** }
+ 292              		.loc 1 78 11 is_stmt 0 view .LVU71
+ 293 00d0 3368     		ldr	r3, [r6]
+  78:App/Task_Input/SrvInput.c **** }
+ 294              		.loc 1 78 5 view .LVU72
+ 295 00d2 2146     		mov	r1, r4
+ 296 00d4 0120     		movs	r0, #1
+ 297 00d6 9847     		blx	r3
+ 298              	.LVL22:
+  79:App/Task_Input/SrvInput.c **** 
+ 299              		.loc 1 79 1 view .LVU73
+ 300 00d8 70BD     		pop	{r4, r5, r6, pc}
+ 301              	.L9:
+ 302 00da 00BF     		.align	2
+ 303              	.L8:
+ 304 00dc 00000000 		.word	.LANCHOR0
+ 305 00e0 00000000 		.word	DrvADC
+ 306 00e4 00000000 		.word	DrvGPIO
+ 307 00e8 00000000 		.word	Toggle_Left
+ 308 00ec 00000000 		.word	Toggle_Right
+ 309 00f0 00000000 		.word	ShoulderBtn_Lft
+ 310 00f4 00000000 		.word	ShoulderBtn_Rgt
+ 311 00f8 00000000 		.word	DirBtn_Up
+ 312 00fc 00000000 		.word	DirBtn_Dwn
+ 313 0100 00000000 		.word	DirBtn_Lft
+ 314 0104 00000000 		.word	DirBtn_Rgt
+ 315 0108 00000000 		.word	DirBtn_Mid
+ 316 010c 00000000 		.word	Power_Btn
+ 317 0110 00000000 		.word	Encoder_Btn
+ 318 0114 00000000 		.word	Sync_Out
+ 319 0118 00000000 		.word	SrcInput_SyncInput_Callback
+ 320 011c 00000000 		.word	Sync_In
+ 321              		.cfi_endproc
+ 322              	.LFE123:
+ 324              		.global	InputObj
+ 325              		.section	.bss.InputData,"aw",%nobits
+ 326              		.align	2
+ 327              		.set	.LANCHOR0,. + 0
+ 330              	InputData:
+ 331 0000 00000000 		.space	22
+ 331      00000000 
+ 331      00000000 
+ 331      00000000 
+ 331      00000000 
+ 332              		.section	.data.InputObj,"aw"
+ 333              		.align	2
+ 336              	InputObj:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 10
 
 
- 151 0048 2046     		mov	r0, r4
- 152 004a 9847     		blx	r3
- 153              	.LVL8:
-  48:App/Task_Input/SrvInput.c **** }
- 154              		.loc 1 48 5 is_stmt 1 view .LVU29
-  48:App/Task_Input/SrvInput.c **** }
- 155              		.loc 1 48 11 is_stmt 0 view .LVU30
- 156 004c 2B68     		ldr	r3, [r5]
-  48:App/Task_Input/SrvInput.c **** }
- 157              		.loc 1 48 5 view .LVU31
- 158 004e 2146     		mov	r1, r4
- 159 0050 0120     		movs	r0, #1
- 160 0052 9847     		blx	r3
- 161              	.LVL9:
-  49:App/Task_Input/SrvInput.c **** 
- 162              		.loc 1 49 1 view .LVU32
- 163 0054 38BD     		pop	{r3, r4, r5, pc}
- 164              	.L8:
- 165 0056 00BF     		.align	2
- 166              	.L7:
- 167 0058 00000000 		.word	.LANCHOR0
- 168 005c 00000000 		.word	DrvADC
- 169              		.cfi_endproc
- 170              	.LFE123:
- 172              		.global	InputObj
- 173              		.section	.bss.InputData,"aw",%nobits
- 174              		.align	2
- 175              		.set	.LANCHOR0,. + 0
- 178              	InputData:
- 179 0000 00000000 		.space	22
- 179      00000000 
- 179      00000000 
- 179      00000000 
- 179      00000000 
- 180              		.section	.data.InputObj,"aw"
- 181              		.align	2
- 184              	InputObj:
- 185 0000 00000000 		.word	SrvInput_Init
- 186 0004 00000000 		.word	SrvInput_Sample
- 187 0008 00000000 		.word	SrvInput_GetData
- 188              		.text
- 189              	.Letext0:
- 190              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
- 191              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
- 192              		.file 4 "App/Task_Input/SrvInput.h"
- 193              		.file 5 "Bsp/periph_adc.h"
- 194              		.file 6 "Drv/drv_adc.h"
-ARM GAS  C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s 			page 6
+ 337 0000 00000000 		.word	SrvInput_Init
+ 338 0004 00000000 		.word	SrvInput_Sample
+ 339 0008 00000000 		.word	SrvInput_GetData
+ 340              		.text
+ 341              	.Letext0:
+ 342              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 343              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 344              		.file 4 "App/Task_Input/SrvInput.h"
+ 345              		.file 5 "Bsp/periph_adc.h"
+ 346              		.file 6 "Drv/drv_adc.h"
+ 347              		.file 7 "USER/stm32f4xx.h"
+ 348              		.file 8 "Drv/drv_gpio.h"
+ 349              		.file 9 "App/Task_Input/Input_IO_Def.h"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 SrvInput.c
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:18     .text.SrvInput_GetData:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:25     .text.SrvInput_GetData:00000000 SrvInput_GetData
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:64     .text.SrvInput_GetData:0000002c $d
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:69     .text.SrvInput_Init:00000000 $t
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:75     .text.SrvInput_Init:00000000 SrvInput_Init
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:167    .text.SrvInput_Init:00000058 $d
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:184    .data.InputObj:00000000 InputObj
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:174    .bss.InputData:00000000 $d
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:178    .bss.InputData:00000000 InputData
-C:\Users\huav\AppData\Local\Temp\ccxkAQ2c.s:181    .data.InputObj:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:18     .text.SrcInput_SyncInput_Callback:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:25     .text.SrcInput_SyncInput_Callback:00000000 SrcInput_SyncInput_Callback
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:39     .text.SrvInput_GetData:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:45     .text.SrvInput_GetData:00000000 SrvInput_GetData
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:83     .text.SrvInput_GetData:0000002c $d
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:88     .text.SrvInput_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:94     .text.SrvInput_Init:00000000 SrvInput_Init
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:304    .text.SrvInput_Init:000000dc $d
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:336    .data.InputObj:00000000 InputObj
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:326    .bss.InputData:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:330    .bss.InputData:00000000 InputData
+C:\Users\huav\AppData\Local\Temp\ccwwG6Oi.s:333    .data.InputObj:00000000 $d
 
 UNDEFINED SYMBOLS
 DrvADC
+DrvGPIO
+Toggle_Left
+Toggle_Right
+ShoulderBtn_Lft
+ShoulderBtn_Rgt
+DirBtn_Up
+DirBtn_Dwn
+DirBtn_Lft
+DirBtn_Rgt
+DirBtn_Mid
+Power_Btn
+Encoder_Btn
+Sync_Out
+Sync_In
 SrvInput_Sample
