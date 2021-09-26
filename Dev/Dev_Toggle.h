@@ -3,11 +3,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "periph_gpio.h"
 
-typedef struct
-{
-
-} Toggle_Obj_TypeDef;
+#define DEFAULT_TOGGLE_LEVEL 3
 
 typedef enum
 {
@@ -21,5 +19,11 @@ typedef enum
     Toggle_2Level = 2,
     Toggle_3Level = 3,
 } DevToggle_Type_List;
+
+typedef struct
+{
+    DevToggle_Type_List level_cnt;
+    DevToggle_Pos_List pos;
+} Toggle_Obj_TypeDef;
 
 #endif
