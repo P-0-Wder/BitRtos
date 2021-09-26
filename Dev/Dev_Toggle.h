@@ -35,4 +35,6 @@ typedef struct
     DevToggle_Pos_List (*Get)(Toggle_Obj_TypeDef *Obj);
 } DevToggle_TypeDef;
 
+extern DevToggle_TypeDef DevToggle;
+
 #endif
