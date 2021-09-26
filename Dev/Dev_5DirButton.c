@@ -1,5 +1,5 @@
 #include "Dev_5DirButton.h"
-#include "Dev_Button.h"
+#include "drv_gpio.h"
 #include <string.h>
 
 /* internal variable */
@@ -40,6 +40,16 @@ static bool Dev5DirButton_Invert(DirButton_Obj_TypeDef *obj, uint8_t val)
     return true;
 }
 
-static DirButton_Val_List Dev5DirButton_Get()
+static DirButton_Val_List Dev5DirButton_Get(DirButton_Obj_TypeDef *obj)
 {
+    uint8_t io_val_reg = 0;
+
+    if (obj == NULL)
+        return Dir_Err;
+
+    for (uint8_t i = 0; i < Dir_IO_Sum; i++)
+    {
+        io_val_reg |= DrvGPIO.get(&obj->IO[i]) << i;
+    }
+    /* except mid button, other button detect been hit at same time then return error */
 }

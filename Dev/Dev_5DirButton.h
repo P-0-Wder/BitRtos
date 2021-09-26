@@ -28,10 +28,10 @@ typedef enum
 typedef enum
 {
     Dir_IO_Up = 0,
-    Dir_IO_Mid,
     Dir_IO_Dwn,
     Dir_IO_Lft,
     Dir_IO_Rgt,
+    Dir_IO_Mid,
     Dir_IO_Sum,
 } DirButton_IO_Serials_List;
 
