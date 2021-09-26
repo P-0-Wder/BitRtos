@@ -4,23 +4,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "periph_gpio.h"
+#include "Input_IO_Def.h"
 
 typedef void (*GPIO_EXTI_Callback)(void);
-
-typedef enum
-{
-    GPIO_Output = 0,
-    GPIO_Input,
-    GPIO_EXTI_Input,
-} DrvGPIO_CTL_TypeDef;
-
-typedef struct
-{
-    uint32_t CLK;
-    uint16_t Pin;
-    GPIO_TypeDef *Port;
-    DrvGPIO_CTL_TypeDef IO_Type;
-} DrvGPIO_Obj_TypeDef;
 
 typedef enum
 {

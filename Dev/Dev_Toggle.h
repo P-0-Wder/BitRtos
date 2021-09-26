@@ -3,27 +3,34 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "periph_gpio.h"
+#include "Input_IO_Def.h"
 
-#define DEFAULT_TOGGLE_LEVEL 3
+#define DEFAULT_TOGGLE_LEVEL Toggle_3Level
 
 typedef enum
 {
     Toggle_Up = 0,
-    Toggle_Mid,
     Toggle_Dwn,
+    Toggle_Mid,
+    Toggle_Err,
 } DevToggle_Pos_List;
 
 typedef enum
 {
-    Toggle_2Level = 2,
-    Toggle_3Level = 3,
+    Toggle_2Level = 1,
+    Toggle_3Level = 2,
 } DevToggle_Type_List;
 
 typedef struct
 {
-    DevToggle_Type_List level_cnt;
-    DevToggle_Pos_List pos;
+    DevToggle_Type_List level;
+    DrvGPIO_Obj_TypeDef *IO_Ptr[DEFAULT_TOGGLE_LEVEL];
 } Toggle_Obj_TypeDef;
+
+typedef struct
+{
+    bool (*Open)(Toggle_Obj_TypeDef *Obj, DevToggle_Type_List type, DrvGPIO_Obj_TypeDef *io);
+    DevToggle_Pos_List (*Get)(Toggle_Obj_TypeDef *Obj);
+} DevToggle_TypeDef;
 
 #endif

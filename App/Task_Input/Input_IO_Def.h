@@ -1,7 +1,20 @@
 #ifndef __INPUT_IO_DEF_H
 #define __INPUT_IO_DEF_H
 
-#include "drv_gpio.h"
+typedef enum
+{
+    GPIO_Output = 0,
+    GPIO_Input,
+    GPIO_EXTI_Input,
+} DrvGPIO_CTL_TypeDef;
+
+typedef struct
+{
+    uint32_t CLK;
+    uint16_t Pin;
+    void *Port;
+    DrvGPIO_CTL_TypeDef IO_Type;
+} DrvGPIO_Obj_TypeDef;
 
 //extern DrvGPIO_Obj_TypeDef Toggle_Left;
 //extern DrvGPIO_Obj_TypeDef Toggle_Right;
