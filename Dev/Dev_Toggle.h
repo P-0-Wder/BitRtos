@@ -24,12 +24,14 @@ typedef enum
 typedef struct
 {
     DevToggle_Type_List level;
+    bool invert;
     DrvGPIO_Obj_TypeDef *IO_Ptr[DEFAULT_TOGGLE_LEVEL];
 } Toggle_Obj_TypeDef;
 
 typedef struct
 {
     bool (*Open)(Toggle_Obj_TypeDef *Obj, DevToggle_Type_List type, DrvGPIO_Obj_TypeDef *io);
+    bool (*Invert)(Toggle_Obj_TypeDef *Obj);
     DevToggle_Pos_List (*Get)(Toggle_Obj_TypeDef *Obj);
 } DevToggle_TypeDef;
 
