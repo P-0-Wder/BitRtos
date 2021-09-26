@@ -31,7 +31,7 @@ static void SrvInput_Init(void)
     memset(&InputData, 0, sizeof(InputData));
 
     /* left gimbal io init */
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel0);
+    DrvADC.ctl(ADC_Config_IO, ADC1_Channel11);
     DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
 
     /* right gimbal io init */
