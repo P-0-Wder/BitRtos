@@ -12,6 +12,7 @@ typedef enum
     Axis_X_Invert = SetBit(0),
     Axis_Y_Invert = SetBit(1),
     Mid_Invert = SetBit(2),
+    None_Invert = 0,
 } DirButton_Invert_List;
 
 typedef enum
