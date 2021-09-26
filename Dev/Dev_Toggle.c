@@ -18,7 +18,19 @@ DevToggle_TypeDef DevToggle = {
     .Open = Toggle_Open,
     .Get = Toggle_Get,
     .Invert = Toggle_Invert,
+    .get_2level_toggle_num = Toggle_Get_2Level_Sum,
+    .get_3level_toggle_num = Toggle_Get_3Level_Sum,
 };
+
+static uint8_t Toggle_Get_2Level_Sum(void)
+{
+    return toggle_2level_sum;
+}
+
+static uint8_t Toggle_Get_3Level_Sum(void)
+{
+    return toggle_3level_sum;
+}
 
 static bool Toggle_Open(Toggle_Obj_TypeDef *obj, DevToggle_Type_List type, DrvGPIO_Obj_TypeDef *io)
 {
@@ -38,6 +50,13 @@ static bool Toggle_Open(Toggle_Obj_TypeDef *obj, DevToggle_Type_List type, DrvGP
         /* ToDo IO init */
         DrvGPIO.open(&obj->IO_Ptr[i], GPIO_Input, NULL);
     }
+
+    if (type == Toggle_2Level)
+    {
+        toggle_2level_sum++;
+    }
+    else if (type == Toggle_3Level)
+        toggle_3level_sum++;
 
     return true;
 }

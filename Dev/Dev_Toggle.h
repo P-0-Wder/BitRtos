@@ -33,6 +33,8 @@ typedef struct
     bool (*Open)(Toggle_Obj_TypeDef *Obj, DevToggle_Type_List type, DrvGPIO_Obj_TypeDef *io);
     bool (*Invert)(Toggle_Obj_TypeDef *Obj);
     DevToggle_Pos_List (*Get)(Toggle_Obj_TypeDef *Obj);
+    uint8_t (*get_2level_toggle_num)(void);
+    uint8_t (*get_3level_toggle_num)(void);
 } DevToggle_TypeDef;
 
 extern DevToggle_TypeDef DevToggle;

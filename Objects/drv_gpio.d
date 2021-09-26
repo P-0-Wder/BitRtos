@@ -13,7 +13,8 @@ Objects/drv_gpio.o: Drv/drv_gpio.c Drv/drv_gpio.h Bsp/periph_gpio.h \
  FWLIB/inc/stm32f4xx_wwdg.h FWLIB/inc/misc.h FWLIB/inc/stm32f4xx_cryp.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
- FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h
+ FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
+ App/Task_Input/Input_IO_Def.h
 Drv/drv_gpio.h:
 Bsp/periph_gpio.h:
 USER/stm32f4xx.h:
@@ -49,3 +50,4 @@ FWLIB/inc/stm32f4xx_can.h:
 FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
+App/Task_Input/Input_IO_Def.h:
