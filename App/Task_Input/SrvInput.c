@@ -46,31 +46,33 @@ static void SrvInput_Init(void)
     DrvADC.ctl(ADC_Config_IO, ADC1_Channel10);
 
     /* toggle io init */
-    DrvGPIO.open(&Toggle_Left, GPIO_Input, NULL);
-    DrvGPIO.open(&Toggle_Right, GPIO_Input, NULL);
+    //DrvGPIO.open(&Toggle_Left, GPIO_Input, NULL);
+    //DrvGPIO.open(&Toggle_Right, GPIO_Input, NULL);
 
     /* shoulder button io init */
-    DrvGPIO.open(&ShoulderBtn_Lft, GPIO_Input, NULL);
-    DrvGPIO.open(&ShoulderBtn_Rgt, GPIO_Input, NULL);
+    //DrvGPIO.open(&ShoulderBtn_Lft, GPIO_Input, NULL);
+    //DrvGPIO.open(&ShoulderBtn_Rgt, GPIO_Input, NULL);
 
     /* 5 direction button io init */
-    DrvGPIO.open(&DirBtn_Up, GPIO_Input, NULL);
-    DrvGPIO.open(&DirBtn_Dwn, GPIO_Input, NULL);
-    DrvGPIO.open(&DirBtn_Lft, GPIO_Input, NULL);
-    DrvGPIO.open(&DirBtn_Rgt, GPIO_Input, NULL);
-    DrvGPIO.open(&DirBtn_Mid, GPIO_Input, NULL);
+    //DrvGPIO.open(&DirBtn_Up, GPIO_Input, NULL);
+    //DrvGPIO.open(&DirBtn_Dwn, GPIO_Input, NULL);
+    //DrvGPIO.open(&DirBtn_Lft, GPIO_Input, NULL);
+    //DrvGPIO.open(&DirBtn_Rgt, GPIO_Input, NULL);
+    //DrvGPIO.open(&DirBtn_Mid, GPIO_Input, NULL);
 
     /* power button io init */
     DrvGPIO.open(&Power_Btn, GPIO_Input, NULL);
 
     /* encoder button io init */
     DrvGPIO.open(&Encoder_Btn, GPIO_Input, NULL);
+    DrvGPIO.open(&Encoder_A_Pin, GPIO_Input, NULL);
+    DrvGPIO.open(&Encoder_B_Pin, GPIO_Input, NULL);
 
     /* sync io output init */
-    DrvGPIO.open(&Sync_Out, GPIO_Output, NULL);
+    //DrvGPIO.open(&Sync_Out, GPIO_Output, NULL);
 
     /* sync io input init */
-    DrvGPIO.open(&Sync_In, GPIO_Input, (uint32_t)SrcInput_SyncInput_Callback);
+    //DrvGPIO.open(&Sync_In, GPIO_Input, (uint32_t)SrcInput_SyncInput_Callback);
 
     /* encoder io init */
 
