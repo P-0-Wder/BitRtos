@@ -92,22 +92,22 @@ DrvGPIO_Obj_TypeDef Encoder_Btn = {
 };*/
 
 DrvGPIO_Obj_TypeDef Encoder_A_Pin = {
-    .CLK = RCC_AHB1Periph_GPIOA,
-    .IO_Type =,
-    .Pin = GPIO_Pin_0,
-    .Port = GPIOA,
-};
-
-DrvGPIO_Obj_TypeDef Encoder_B_Pin = {
     .CLK = RCC_AHB1Periph_GPIOC,
     .IO_Type =,
     .Pin = GPIO_Pin_5,
     .Port = GPIOC,
 };
 
-DrvGPIO_Obj_TypeDef Power_Btn = {
+DrvGPIO_Obj_TypeDef Encoder_B_Pin = {
     .CLK = RCC_AHB1Periph_GPIOC,
     .IO_Type =,
     .Pin = GPIO_Pin_4,
     .Port = GPIOC,
+};
+
+DrvGPIO_Obj_TypeDef Power_Btn = {
+    .CLK = RCC_AHB1Periph_GPIOA,
+    .IO_Type =,
+    .Pin = GPIO_Pin_0,
+    .Port = GPIOA,
 };
