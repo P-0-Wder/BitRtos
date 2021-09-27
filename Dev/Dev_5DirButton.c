@@ -46,7 +46,7 @@ static uint8_t Dev5DirButton_Get_Sum(void)
 
 static bool Dev5DirButton_Invert(DirButton_Obj_TypeDef *obj, uint8_t val)
 {
-    if ((obj == NULL) || (!obj->init_state))
+    if ((obj == NULL) || (!obj->init_state) || (val > 0x1F))
         return false;
 
     obj->invert_reg = val;

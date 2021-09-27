@@ -34,8 +34,10 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int1
 
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val)
 {
-    if ((obj == NULL) || (!obj->init_state))
+    if ((obj == NULL) || (!obj->init_state) || (invert_val > 0x03))
         return false;
+
+    obj->invert_reg = invert_val;
 
     return true;
 }
