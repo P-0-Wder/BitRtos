@@ -6,9 +6,18 @@
 static uint8_t DirButton_Sum = 0;
 
 /* internal function */
+static bool Dev5DirButton_Open(DirButton_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t io_num);
+static bool Dev5DirButton_Invert(DirButton_Obj_TypeDef *obj, uint8_t val);
+static DirButton_Val_List Dev5DirButton_Get(DirButton_Obj_TypeDef *obj);
+
 static uint8_t Dev5DirButton_Get_Sum(void);
 
 /* external variable */
+Dev5DirButton_TypeDef Dev5DirBtn = {
+    .open = Dev5DirButton_Open,
+    .invert = Dev5DirButton_Invert,
+    .get = Dev5DirButton_Get,
+};
 
 static bool Dev5DirButton_Open(DirButton_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t io_num)
 {

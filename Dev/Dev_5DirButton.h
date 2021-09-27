@@ -49,4 +49,6 @@ typedef struct
     DirButton_Val_List (*get)(DirButton_Obj_TypeDef *obj);
 } Dev5DirButton_TypeDef;
 
+extern Dev5DirButton_TypeDef Dev5DirBtn;
+
 #endif
