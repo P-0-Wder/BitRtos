@@ -17,12 +17,12 @@ typedef enum
 
 typedef enum
 {
-    Dir_Up = 0,
-    Dir_Mid,
-    Dir_Dwn,
-    Dir_Lft,
-    Dir_Rgt,
-    Dir_Err,
+    Dir_Up = SetBit(0),
+    Dir_Dwn = SetBit(1),
+    Dir_Lft = SetBit(2),
+    Dir_Rgt = SetBit(3),
+    Dir_Mid = SetBit(4),
+    Dir_Err = 5,
 } DirButton_Val_List;
 
 typedef enum

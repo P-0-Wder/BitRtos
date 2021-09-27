@@ -20,6 +20,7 @@ static bool Dev5DirButton_Open(DirButton_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *
     for (uint8_t i = 0; i < io_num; i++)
     {
         /* ToDo IO Init */
+        DrvGPIO.open(&obj[i], GPIO_Input, NULL);
     }
 
     return true;
@@ -42,14 +43,60 @@ static bool Dev5DirButton_Invert(DirButton_Obj_TypeDef *obj, uint8_t val)
 
 static DirButton_Val_List Dev5DirButton_Get(DirButton_Obj_TypeDef *obj)
 {
-    uint8_t io_val_reg = 0;
+    uint8_t io_val = 0;
+    uint8_t io_val_tmp = 0;
+    uint8_t hit_cnt = 0;
 
     if (obj == NULL)
         return Dir_Err;
 
     for (uint8_t i = 0; i < Dir_IO_Sum; i++)
     {
-        io_val_reg |= DrvGPIO.get(&obj->IO[i]) << i;
+        if (DrvGPIO.get(&obj->IO[i]))
+        {
+            io_val |= SetBit(i);
+            hit_cnt++;
+        }
+
+        /* except mid button, other button detect been hit at same time then return error */
+        if ((hit_cnt > 1) && (i < Dir_IO_Mid))
+        {
+            return Dir_Err;
+        }
     }
-    /* except mid button, other button detect been hit at same time then return error */
+
+    if (obj->invert_reg & Axis_X_Invert)
+    {
+        io_val_tmp = io_val;
+
+        io_val_tmp &= 0x0C;
+        io_val_tmp = ~io_val_tmp;
+
+        io_val &= ~0x0C;
+        io_val |= io_val_tmp;
+    }
+
+    if (obj->invert_reg & Axis_Y_Invert)
+    {
+        io_val_tmp = io_val;
+
+        io_val_tmp &= 0x03;
+        io_val_tmp = ~io_val_tmp;
+
+        io_val &= ~0x03;
+        io_val |= io_val_tmp;
+    }
+
+    if (obj->invert_reg & Mid_Invert)
+    {
+        io_val_tmp = io_val;
+
+        io_val_tmp &= 0x10;
+        io_val_tmp = ~io_val_tmp;
+
+        io_val &= ~0x10;
+        io_val |= io_val_tmp;
+    }
+
+    return io_val;
 }
