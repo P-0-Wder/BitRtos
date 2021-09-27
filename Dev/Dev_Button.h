@@ -7,6 +7,7 @@
 
 typedef struct
 {
+    bool init_state;
     bool invert;
     DrvGPIO_Obj_TypeDef *io;
 } Button_Obj_TypeDef;

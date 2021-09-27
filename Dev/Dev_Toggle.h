@@ -23,6 +23,7 @@ typedef enum
 
 typedef struct
 {
+    bool init_state;
     DevToggle_Type_List level;
     bool invert;
     DrvGPIO_Obj_TypeDef *IO_Ptr[DEFAULT_TOGGLE_LEVEL];

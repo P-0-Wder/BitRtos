@@ -5,8 +5,6 @@
 #include <stdbool.h>
 #include "Input_IO_Def.h"
 
-#define SetBit(x) 1 << x
-
 typedef enum
 {
     Axis_X_Invert = SetBit(0),
@@ -37,6 +35,7 @@ typedef enum
 
 typedef struct
 {
+    bool init_state;
     uint8_t invert_reg;
 
     DrvGPIO_Obj_TypeDef IO[Dir_IO_Sum];

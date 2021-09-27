@@ -1,6 +1,10 @@
 #ifndef __INPUT_IO_DEF_H
 #define __INPUT_IO_DEF_H
 
+#include <stdint.h>
+
+#define SetBit(x) 1 << x
+
 typedef enum
 {
     GPIO_Output = 0,

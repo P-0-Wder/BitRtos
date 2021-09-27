@@ -27,7 +27,10 @@ static uint8_t DevButton_Get_Sum(void)
 static bool DevButton_Init(Button_Obj_TypeDef *Obj, DrvGPIO_Obj_TypeDef *io)
 {
     if ((io == NULL) || (Obj == NULL))
+    {
+        Obj->init_state = false;
         return false;
+    }
 
     Obj->io = io;
     Obj->invert = false;
@@ -36,12 +39,13 @@ static bool DevButton_Init(Button_Obj_TypeDef *Obj, DrvGPIO_Obj_TypeDef *io)
 
     button_num++;
 
+    Obj->init_state = true;
     return true;
 }
 
 static bool DevButton_Invert(Button_Obj_TypeDef *Obj)
 {
-    if (Obj == NULL)
+    if ((Obj == NULL) || (!Obj->init_state))
         return false;
 
     Obj->invert = !Obj->invert;
@@ -53,7 +57,7 @@ static Button_State_List DevButton_Get(Button_Obj_TypeDef *Obj)
 {
     bool btn_state = false;
 
-    if (Obj == NULL)
+    if ((Obj == NULL) || (!Obj->init_state))
         return Btn_Err;
 
     if (DrvGPIO.get(Obj))

@@ -35,7 +35,10 @@ static uint8_t Toggle_Get_3Level_Sum(void)
 static bool Toggle_Open(Toggle_Obj_TypeDef *obj, DevToggle_Type_List type, DrvGPIO_Obj_TypeDef *io)
 {
     if ((obj == NULL) || ((type < Toggle_2Level) || (Toggle_2Level > Toggle_3Level)))
+    {
+        obj->init_state = false;
         return false;
+    }
 
     obj->level = type;
     obj->invert = false;
@@ -58,12 +61,13 @@ static bool Toggle_Open(Toggle_Obj_TypeDef *obj, DevToggle_Type_List type, DrvGP
     else if (type == Toggle_3Level)
         toggle_3level_sum++;
 
+    obj->init_state = true;
     return true;
 }
 
 static bool Toggle_Invert(Toggle_Obj_TypeDef *obj)
 {
-    if (obj == NULL)
+    if ((obj == NULL) || (!obj->init_state))
         return false;
 
     obj->invert = !obj->invert;
@@ -76,7 +80,7 @@ static DevToggle_Pos_List Toggle_Get(Toggle_Obj_TypeDef *obj)
     DevToggle_Pos_List val = Toggle_Err;
     uint8_t io_read = 0;
 
-    if (obj == NULL)
+    if ((obj == NULL) || (!obj->init_state))
         return Toggle_Err;
 
     for (uint8_t i = 0; i < obj->level; i++)

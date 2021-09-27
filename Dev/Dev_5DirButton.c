@@ -21,8 +21,11 @@ Dev5DirButton_TypeDef Dev5DirBtn = {
 
 static bool Dev5DirButton_Open(DirButton_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t io_num)
 {
-    if ((obj == NULL) || (io_num != Dir_IO_Sum))
+    if ((obj == NULL) || (io == NULL) || (io_num != Dir_IO_Sum))
+    {
+        obj->init_state = false;
         return false;
+    }
 
     obj->invert_reg = None_Invert;
 
@@ -32,6 +35,7 @@ static bool Dev5DirButton_Open(DirButton_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *
         DrvGPIO.open(&obj[i], GPIO_Input, NULL);
     }
 
+    obj->init_state = true;
     return true;
 }
 
@@ -42,7 +46,7 @@ static uint8_t Dev5DirButton_Get_Sum(void)
 
 static bool Dev5DirButton_Invert(DirButton_Obj_TypeDef *obj, uint8_t val)
 {
-    if (obj == NULL)
+    if ((obj == NULL) || (!obj->init_state))
         return false;
 
     obj->invert_reg = val;
@@ -56,7 +60,7 @@ static DirButton_Val_List Dev5DirButton_Get(DirButton_Obj_TypeDef *obj)
     uint8_t io_val_tmp = 0;
     uint8_t hit_cnt = 0;
 
-    if (obj == NULL)
+    if ((obj == NULL) || (!obj->init_state))
         return Dir_Err;
 
     for (uint8_t i = 0; i < Dir_IO_Sum; i++)
