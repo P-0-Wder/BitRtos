@@ -24,15 +24,16 @@ typedef struct
 
 typedef enum
 {
-    Signal_PPM = 1 << 0,
-    Signal_Sbus = 2 << 0,
-    Signal_Crsf = 3 << 0,
+    Sig_PPM = 1 << 0,
+    Sig_Sbus = 1 << 1,
+    Sig_Crsf = 1 << 2,
+    Sig_Sync = 1 << 3,
 } DevSignal_Type_List;
 
 typedef enum
 {
-    Signal_In = 0,
-    Signal_Out,
-} DevSignal_IO_Type_List;
+    Sig_In = 0,
+    Sig_Out,
+} DevSignal_Trans_Type_List;
 
 #endif
