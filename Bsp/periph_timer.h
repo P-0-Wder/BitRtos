@@ -64,7 +64,7 @@ typedef enum
 	PWM_SUM,
 } PWM_OutPut_Channel;
 
-void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint32_t Period, uint32_t Prescaler, uint8_t PreemptionPriority, uint8_t SubPriority);
+void periph_Timer_Encoder_Mode_Init(Timer_list timerx);
 void periph_Timer_CounterMode_Init(Timer_list timerx, uint32_t Period, uint32_t Prescaler, uint8_t PreemptionPriority, uint8_t SubPriority);
 void periph_Timer_PWMOutPut_Mode_Init(Timer_list timerx, PWM_Hz hz, Timer_PWM_Channel_State CH1_State, Timer_PWM_Channel_State CH2_State, Timer_PWM_Channel_State CH3_State, Timer_PWM_Channel_State CH4_State);
 void periph_Timer_DShotOutPut_Mode_Init(Timer_list timerx, Timer_PWM_Channel_State CH1_State, Timer_PWM_Channel_State CH2_State, Timer_PWM_Channel_State CH3_State, Timer_PWM_Channel_State CH4_State,
