@@ -557,21 +557,21 @@ void GPIO_IIC2_IO_Init(void)
 {
 }
 
-void GPIO_IO_Encoder_Init(GPIO_EncoderInit_TypeDef *Encoder_IO)
+void GPIO_IO_Encoder_Init(GPIO_TypeDef *Portx, uint32_t GPIO_CLK, uint16_t pin, uint8_t pin_src, uint8_t GPIO_AF_TIMx)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	RCC_AHB1PeriphClockCmd(Encoder_IO->CLK, ENABLE);
+	RCC_AHB1PeriphClockCmd(GPIO_CLK, ENABLE);
 
-	GPIO_PinAFConfig(Encoder_IO->Portx, Encoder_IO->pin_src, Encoder_IO->AF_TIMx);
+	GPIO_PinAFConfig(Portx, pin_src, GPIO_AF_TIMx);
 
-	GPIO_InitStructure.GPIO_Pin = Encoder_IO->pin;
+	GPIO_InitStructure.GPIO_Pin = pin;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
 
-	GPIO_Init(Encoder_IO->Portx, &GPIO_InitStructure);
+	GPIO_Init(Portx, &GPIO_InitStructure);
 }
 
 void GPIO_IO_Output_Init(uint32_t RCC_AHBCLK, uint16_t pin, GPIO_TypeDef *GPIO_Port)

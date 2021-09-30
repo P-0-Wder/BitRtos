@@ -238,16 +238,7 @@ void GPIO_ADC1_Channel12_IO_Init(void);
 void GPIO_ADC1_Channel13_IO_Init(void);
 void GPIO_ADC1_Channel14_IO_Init(void);
 
-typedef struct
-{
-	GPIO_TypeDef *Portx;
-	uint32_t CLK;
-	uint16_t pin;
-	uint8_t pin_src;
-	uint8_t AF_TIMx;
-} GPIO_EncoderInit_TypeDef;
-
-void GPIO_IO_Encoder_Init(GPIO_EncoderInit_TypeDef *Encoder_IO);
+void GPIO_IO_Encoder_Init(GPIO_TypeDef *Portx, uint32_t GPIO_CLK, uint16_t pin, uint8_t pin_src, uint8_t GPIO_AF_TIMx);
 void GPIO_IO_Output_Init(uint32_t RCC_AHBCLK, uint16_t pin, GPIO_TypeDef *GPIO_Port);
 void GPIO_IO_Input_Init(uint32_t RCC_AHBCLK, uint16_t pin, GPIO_TypeDef *GPIO_Port);
 void GPIO_Set_IO_LEVEL(GPIO_TypeDef *GPIO_Port, uint16_t pin, IO_LEVEL level);

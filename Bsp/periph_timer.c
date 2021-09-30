@@ -119,10 +119,32 @@ void periph_Timer_CounterMode_Init(Timer_list timerx, uint32_t Period, uint32_t 
 	NVIC_Init(&NVIC_InitStructure);
 }
 
+/* need modify */
 void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint32_t Period, uint32_t Prescaler, uint8_t PreemptionPriority, uint8_t SubPriority)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_ICInitTypeDef TIM_ICInitStructure;
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+
+	TIM_TimeBaseStructure.TIM_Period = 0xffff;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+
+	TIM_ICInitStructure.TIM_ICFilter = 6;
+	TIM_ICInitStructure.TIM_Channel = TIM_Channel_1;
+	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI; //映射到TI1上
+	TIM_ICInit(TIM1, &TIM_ICInitStructure);
+
+	TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
+	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI; //映射到TI2上
+	TIM_ICInit(TIM1, &TIM_ICInitStructure);
+
+	TIM_EncoderInterfaceConfig(TIM1, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising); //可调TIM_EncoderMode_TI12
+	TIM_ICStructInit(&TIM_ICInitStructure);
+
+	TIM1->CNT = 0;
+	TIM_Cmd(TIM1, ENABLE);
 }
 
 void periph_Timer_PWMOutPut_Mode_Init(Timer_list timerx, PWM_Hz hz, Timer_PWM_Channel_State CH1_State, Timer_PWM_Channel_State CH2_State, Timer_PWM_Channel_State CH3_State, Timer_PWM_Channel_State CH4_State)

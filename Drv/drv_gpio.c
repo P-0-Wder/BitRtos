@@ -30,6 +30,10 @@ static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uin
         GPIO_IO_Input_Init(Obj->CLK, Obj->Pin, Obj->Port);
         break;
 
+    case GPIO_Encoder:
+        GPIO_IO_Encoder_Init(Obj->Port, Obj->CLK, Obj->Pin, Obj->Pin_Src, Obj->AF_TIMx);
+        break;
+
     case GPIO_EXTI_Input:
         /* use for sync signal input */
 
