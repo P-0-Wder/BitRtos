@@ -1,5 +1,6 @@
 #include "Dev_Encoder.h"
 #include "drv_gpio.h"
+#include "drv_timer.h"
 #include <string.h>
 
 /* internal variable */
@@ -13,6 +14,8 @@ static uint8_t encoder_sum = 0;
 
 static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int16_t range_min, DrvGPIO_Obj_TypeDef *io, uint8_t io_num)
 {
+    DrvTimer_Obj_TypeDef TimerObj;
+
     if ((obj == NULL) || (io == NULL) || (io_num != Encoder_IO_Sum) || (range_max == range_min))
     {
         obj->init_state = false;
@@ -27,8 +30,20 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int1
     DrvGPIO.open(&io[Encoder_IO_A], GPIO_Encoder, NULL);
     DrvGPIO.open(&io[Encoder_IO_B], GPIO_Encoder, NULL);
 
-    obj->init_state = true;
-    return true;
+    DrvTimer.obj_clear(&TimerObj);
+    /* set timerobj */
+    TimerObj.timerx = Timer_3;
+
+    if (DrvTimer.ctl(DrvTimer_Encoder_Mode, (uint32_t)&TimerObj, sizeof(TimerObj)))
+    {
+        obj->init_state = true;
+    }
+    else
+    {
+        obj->init_state = false;
+    }
+
+    return obj->init_state;
 }
 
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val)

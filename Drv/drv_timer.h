@@ -31,8 +31,11 @@ typedef struct
 
 typedef struct
 {
+    bool (*obj_clear)(DrvTimer_Obj_TypeDef *obj);
     bool (*ctl)(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len);
     int32_t (*get)(DrvTimer_Obj_TypeDef *obj);
 } DrvTimer_TypeDef;
+
+extern DrvTimer_TypeDef DrvTimer;
 
 #endif
