@@ -52,6 +52,7 @@ typedef enum
 	Timer_2 = 0,
 	Timer_3,
 	Timer_4,
+	Timer_None,
 } Timer_list;
 
 typedef enum

@@ -64,10 +64,6 @@ static void SrvInput_Init(void)
     DrvGPIO.open(&Power_Btn, GPIO_Input, NULL);
 
     /* encoder button io init */
-    DrvGPIO.open(&Encoder_Btn, GPIO_Input, NULL);
-    DrvGPIO.open(&Encoder_A_Pin, GPIO_Input, NULL);
-    DrvGPIO.open(&Encoder_B_Pin, GPIO_Input, NULL);
-
     /* sync io output init */
     //DrvGPIO.open(&Sync_Out, GPIO_Output, NULL);
 

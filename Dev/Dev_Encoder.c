@@ -23,7 +23,9 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int1
     obj->min = range_min;
     obj->invert_reg = Encoder_None_Invert;
 
-    DrvGPIO.open(&io[Encoder_IO_Btn], GPIO_Encoder, );
+    DrvGPIO.open(&io[Encoder_IO_Btn], GPIO_Input, NULL);
+    DrvGPIO.open(&io[Encoder_IO_A], GPIO_Encoder, NULL);
+    DrvGPIO.open(&io[Encoder_IO_B], GPIO_Encoder, NULL);
 
     obj->init_state = true;
     return true;
