@@ -20,6 +20,7 @@ typedef struct
 
 typedef struct
 {
+    bool error;
     int16_t Gim_X;
     int16_t Gim_Y;
 } DevGimbal_Val_TypeDef;
@@ -27,7 +28,7 @@ typedef struct
 typedef struct
 {
     bool (*open)(DevGimbal_Obj_TypeDef *gimbal);
-    bool (*invert)(DevGimbal_Obj_TypeDef *gimbal);
+    bool (*invert)(DevGimbal_Obj_TypeDef *gimbal, uint8_t invert_reg);
     bool (*set_offset)(DevGimbal_Obj_TypeDef *gimbal, int16_t offset_x, int16_t offset_y);
     DevGimbal_Val_TypeDef (*get)(DevGimbal_Obj_TypeDef *gimbal);
 } DevGimbal_TypeDef;
