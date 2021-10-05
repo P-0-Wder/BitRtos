@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "drv_gpio.h"
+#include "drv_timer.h"
 #include "Input_IO_Def.h"
 
 typedef enum
@@ -35,8 +37,11 @@ typedef struct
 
 typedef struct
 {
+    DrvTimer_Obj_TypeDef TimerObj;
+
     bool init_state;
     uint8_t invert_reg;
+    bool btn_en;
 
     int16_t max;
     int16_t min;
