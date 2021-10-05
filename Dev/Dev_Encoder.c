@@ -9,8 +9,14 @@ static uint8_t encoder_sum = 0;
 /* internal function */
 
 /* external funtion */
+static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int16_t range_min, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable);
+static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
+static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
 
 /* external variable */
+DevEncoder_TypeDef DevEncoder = {
+
+};
 
 static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int16_t range_min, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable)
 {
@@ -77,10 +83,10 @@ static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj)
     /* check encoder button */
     if (obj->btn_en)
     {
-        DrvGPIO.get(&obj->IO[Encoder_IO_Btn]);
+        data_tmp.btn = DrvGPIO.get(&obj->IO[Encoder_IO_Btn]);
     }
 
-    DrvTimer.get(obj->TimerObj.timerx);
+    data_tmp.val = DrvTimer.get(obj->TimerObj.timerx);
 
     return data_tmp;
 }

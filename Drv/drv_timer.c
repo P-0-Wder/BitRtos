@@ -5,9 +5,9 @@
 /* internal variable */
 
 /* external function */
-bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj);
-bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len);
-int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj);
+static bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj);
+static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len);
+static int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj);
 
 /* external variable */
 DrvTimer_TypeDef DrvTimer = {
@@ -16,7 +16,7 @@ DrvTimer_TypeDef DrvTimer = {
     .get = DrvTImer_GetEncoder,
 };
 
-bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj)
+static bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj)
 {
     if (obj == NULL)
         return false;
@@ -32,7 +32,7 @@ bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj)
     return true;
 }
 
-bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
+static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
 {
 
     switch (cmd)
@@ -57,7 +57,7 @@ bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
     }
 }
 
-int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj)
+static int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj)
 {
     if ((obj == NULL) || (obj->mode != DrvTimer_Encoder_Mode))
         return 0;
