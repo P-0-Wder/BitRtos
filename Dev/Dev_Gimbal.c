@@ -20,6 +20,8 @@ static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *gimbal)
     if (gimbal == NULL)
         return false;
 
+    DrvADC.ctl();
+
     return true;
 }
 
