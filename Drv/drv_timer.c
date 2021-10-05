@@ -11,6 +11,7 @@ bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj)
     obj->Prescaler = 0;
     obj->SubPriority = 0;
     obj->timerx = Timer_None;
+    obj->cnt = 0;
 
     return true;
 }
@@ -41,4 +42,8 @@ int32_t DrvTImer_Get(DrvTimer_Obj_TypeDef *obj)
 {
     if (obj == NULL)
         return 0;
+
+    obj->cnt += periph_Timer_GetEncoder_Input(obj->timerx);
+
+    return obj->cnt;
 }

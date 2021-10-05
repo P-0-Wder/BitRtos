@@ -25,6 +25,8 @@ typedef struct
     bool irq;
     uint8_t PreemptionPriority;
     uint8_t SubPriority;
+
+    uint32_t cnt;
 } DrvTimer_Obj_TypeDef;
 
 typedef struct

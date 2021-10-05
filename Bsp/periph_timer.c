@@ -97,27 +97,6 @@ static void periph_Timer_IO_Init(Timer_list timerx, Timer_PWM_Channel_State CH1_
 	}
 }
 
-bool periph_Timer_EncoderIO_Init(Timer_list timerx)
-{
-	switch (timerx)
-	{
-	case Timer_2:
-
-		break;
-
-	case Timer_3:
-
-		break;
-
-	case Timer_4:
-
-		break;
-
-	default:
-		return false;
-	}
-}
-
 void periph_Timer_CounterMode_Init(Timer_list timerx, uint32_t Period, uint32_t Prescaler, uint8_t PreemptionPriority, uint8_t SubPriority)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -146,8 +125,6 @@ void periph_Timer_Encoder_Mode_Init(Timer_list timerx)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_ICInitTypeDef TIM_ICInitStructure;
-
-	periph_Timer_EncoderIO_Init(timerx);
 
 	RCC_APB2PeriphClockCmd(Timer_CLK[timerx], ENABLE);
 
