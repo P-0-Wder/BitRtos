@@ -14,7 +14,7 @@ typedef enum
 typedef struct
 {
     void (*ctl)(DrvADC_CMD_List CMD, uint8_t data);
-    uint16_t (*read)(uint32_t data, uint16_t len);
+    uint16_t (*read)(uint32_t data);
 } DrvADC_TypeDef;
 
 extern DrvADC_TypeDef DrvADC;

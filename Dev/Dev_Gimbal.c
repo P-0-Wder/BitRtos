@@ -78,7 +78,18 @@ static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj)
     else
     {
         /* TODO */
-        DrvADC.read();
+        Val_tmp.Gim_X = DrvADC.read((uint32_t)obj->Ch_X) + obj->Offset_X;
+        Val_tmp.Gim_Y = DrvADC.read((uint32_t)obj->Ch_Y) + obj->Offset_Y;
+
+        if (obj->invert_reg & Gimbal_AxisX_Invert)
+        {
+            Val_tmp.Gim_X *= -1;
+        }
+
+        if (obj->invert_reg & Gimbal_AxisY_Invert)
+        {
+            Val_tmp.Gim_Y *= -1;
+        }
     }
 
     return Val_tmp;
