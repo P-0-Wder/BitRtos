@@ -39,4 +39,5 @@ typedef struct
     DevGimbal_Val_TypeDef (*get)(DevGimbal_Obj_TypeDef *obj);
 } DevGimbal_TypeDef;
 
+extern DevGimbal_TypeDef DevGimbal;
 #endif

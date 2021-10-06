@@ -13,7 +13,13 @@ static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, i
 static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj);
 
 /* external variable */
-DevGimbal_TypeDef DevGimbal = {};
+DevGimbal_TypeDef DevGimbal = {
+    .obj_clear = DevGimbal_Obj_Clear,
+    .open = DevGimbal_Open,
+    .set_offset = DevGimbal_Set_Offset,
+    .invert = DevGimbal_Invert,
+    .get = DevGimbal_Get,
+};
 
 static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj)
 {
