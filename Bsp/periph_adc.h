@@ -21,6 +21,7 @@ typedef enum
     ADC1_Channel13,
     ADC1_Channel14,
     ADC1_Channel_Sum,
+    ADC1_Channel_None = 255,
 } ADC_Channel_List;
 
 void Periph_ADC_Init(uint8_t channel_num);

@@ -3,9 +3,11 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "periph_adc.h"
 
 typedef enum
 {
+    Gimbal_NoneAxis_Invert = 0,
     Gimbal_AxisX_Invert = 1 << 0,
     Gimbal_AxisY_Invert = 1 << 1,
 } DevGimbal_Invert_List;
@@ -16,6 +18,9 @@ typedef struct
 
     int16_t Offset_X;
     int16_t Offset_Y;
+
+    ADC_Channel_List Ch_X;
+    ADC_Channel_List Ch_Y;
 } DevGimbal_Obj_TypeDef;
 
 typedef struct
@@ -27,10 +32,11 @@ typedef struct
 
 typedef struct
 {
-    bool (*open)(DevGimbal_Obj_TypeDef *gimbal);
-    bool (*invert)(DevGimbal_Obj_TypeDef *gimbal, uint8_t invert_reg);
-    bool (*set_offset)(DevGimbal_Obj_TypeDef *gimbal, int16_t offset_x, int16_t offset_y);
-    DevGimbal_Val_TypeDef (*get)(DevGimbal_Obj_TypeDef *gimbal);
+    bool (*obj_clear)(DevGimbal_Obj_TypeDef *obj);
+    bool (*open)(DevGimbal_Obj_TypeDef *obj);
+    bool (*invert)(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg);
+    bool (*set_offset)(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, int16_t offset_y);
+    DevGimbal_Val_TypeDef (*get)(DevGimbal_Obj_TypeDef *obj);
 } DevGimbal_TypeDef;
 
 #endif

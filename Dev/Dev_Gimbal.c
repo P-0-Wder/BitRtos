@@ -7,41 +7,59 @@
 static uint8_t gimbal_cnt = 0;
 
 /* external function */
-static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *gimbal);
-static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *gimbal, uint8_t invert_reg);
-static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *gimbal, int16_t offset_x, int16_t offset_y);
-static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *gimbal);
+static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj);
+static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj);
+static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg);
+static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, int16_t offset_y);
+static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj);
 
 /* external variable */
 DevGimbal_TypeDef DevGimbal = {};
 
-static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *gimbal)
+static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj)
 {
-    if (gimbal == NULL)
+    if (obj == NULL)
         return false;
 
-    DrvADC.ctl();
+    obj->Ch_X = ADC1_Channel_None;
+    obj->Ch_Y = ADC1_Channel_None;
+
+    obj->invert_reg = Gimbal_NoneAxis_Invert;
+
+    obj->Offset_X = 0;
+    obj->Offset_Y = 0;
 
     return true;
 }
 
-static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *gimbal, uint8_t invert_reg)
+static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj)
 {
-    if (gimbal == NULL)
+    if ((obj == NULL) || (obj->Ch_X == ADC1_Channel_None) || (obj->Ch_Y == ADC1_Channel_None) || (obj->Ch_X == obj->Ch_Y))
+        return false;
+
+    DrvADC.ctl(ADC_Open, obj->Ch_X);
+    DrvADC.ctl(ADC_Open, obj->Ch_Y);
+
+    return true;
+}
+
+static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg)
+{
+    if (obj == NULL)
         return false;
 
     return true;
 }
 
-static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *gimbal, int16_t offset_x, int16_t offset_y)
+static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, int16_t offset_y)
 {
-    if (gimbal == NULL)
+    if (obj == NULL)
         return false;
 
     return true;
 }
 
-static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *gimbal)
+static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj)
 {
     DevGimbal_Val_TypeDef Val_tmp;
 
@@ -49,7 +67,7 @@ static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *gimbal)
     Val_tmp.Gim_X = 0;
     Val_tmp.Gim_Y = 0;
 
-    if (gimbal == NULL)
+    if (obj == NULL)
     {
         Val_tmp.error = true;
     }
