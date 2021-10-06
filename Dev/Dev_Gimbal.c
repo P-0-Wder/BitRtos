@@ -57,6 +57,9 @@ static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, i
     if (obj == NULL)
         return false;
 
+    obj->Offset_X = offset_x;
+    obj->Offset_Y = offset_y;
+
     return true;
 }
 
