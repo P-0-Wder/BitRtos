@@ -4,7 +4,6 @@
 #include "drv_gpio.h"
 
 /* internal variable */
-static uint8_t gimbal_cnt = 0;
 
 /* external function */
 static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj);
@@ -47,6 +46,8 @@ static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg)
 {
     if (obj == NULL)
         return false;
+
+    obj->invert_reg = invert_reg;
 
     return true;
 }
