@@ -56,6 +56,7 @@ static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *gimbal)
     else
     {
         /* TODO */
+        DrvADC.read();
     }
 
     return Val_tmp;

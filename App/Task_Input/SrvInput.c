@@ -31,19 +31,19 @@ static void SrvInput_Init(void)
     memset(&InputData, 0, sizeof(InputData));
 
     /* left gimbal io init */
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel11);
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel1);
+    DrvADC.ctl(ADC_Open, ADC1_Channel11);
+    DrvADC.ctl(ADC_Open, ADC1_Channel1);
 
     /* right gimbal io init */
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel4);
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel6);
+    DrvADC.ctl(ADC_Open, ADC1_Channel4);
+    DrvADC.ctl(ADC_Open, ADC1_Channel6);
 
     /* pot on both side io init */
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel8);
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel9);
+    DrvADC.ctl(ADC_Open, ADC1_Channel8);
+    DrvADC.ctl(ADC_Open, ADC1_Channel9);
 
     /* voltage detect */
-    DrvADC.ctl(ADC_Config_IO, ADC1_Channel10);
+    DrvADC.ctl(ADC_Open, ADC1_Channel10);
 
     /* toggle io init */
     //DrvGPIO.open(&Toggle_Left, GPIO_Input, NULL);

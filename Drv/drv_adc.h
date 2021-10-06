@@ -7,8 +7,8 @@
 
 typedef enum
 {
-    ADC_Config_IO = 0,
-    ADC_Open,
+    ADC_Open = 0,
+    ADC_Close,
 } DrvADC_CMD_List;
 
 typedef struct
