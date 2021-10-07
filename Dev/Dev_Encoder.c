@@ -12,13 +12,20 @@ static uint8_t encoder_sum = 0;
 static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b);
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
 static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
+static uint8_t DevEncoder_GetNum(void);
 
 /* external variable */
 DevEncoder_TypeDef DevEncoder = {
     .get = DevEncoder_Get,
     .invert = DevEncoder_Invert,
     .open = DevEncoder_Open,
+    .num = DevEncoder_GetNum,
 };
+
+static uint8_t DevEncoder_GetNum(void)
+{
+    return encoder_sum;
+}
 
 static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b)
 {
@@ -48,6 +55,7 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io
     if (DrvTimer.ctl(DrvTimer_Encoder_Mode, (uint32_t)&obj->TimerObj, sizeof(obj->TimerObj)))
     {
         obj->init_state = true;
+        encoder_sum++;
     }
     else
     {

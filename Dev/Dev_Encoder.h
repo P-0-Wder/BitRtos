@@ -49,6 +49,7 @@ typedef struct
 {
     bool (*open)(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b);
     bool (*invert)(DevEncoder_Obj_TypeDef *obj, uint8_t reg_val);
+    uint8_t (*num)(void);
     Encoder_Data_TypeDef (*get)(DevEncoder_Obj_TypeDef *obj);
 } DevEncoder_TypeDef;
 
