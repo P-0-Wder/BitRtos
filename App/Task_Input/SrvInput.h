@@ -15,6 +15,7 @@
 typedef enum
 {
     SrvInput_NoError = 0,
+    SrvInput_Initial,
     SrvInput_Encoder_Error,
     SrvInput_Gimbal_Error,
     SrvInput_Button_Error,
@@ -36,7 +37,7 @@ typedef struct
     DevToggle_Pos_List zr_tog;
 
     DirButton_Val_List dir_btn;
-
+    SrvInput_Error_List error;
 } SrvInput_Data_TypeDef;
 
 typedef struct

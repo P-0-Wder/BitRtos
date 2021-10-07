@@ -3,7 +3,6 @@
 
 /* internal variable */
 static SrvInput_Data_TypeDef InputData;
-static SrvInput_Error_List init_state = SrvInput_NoError;
 
 /* input hardware abstract object */
 static DevEncoder_Obj_TypeDef Encoder_Obj;
@@ -32,23 +31,28 @@ static SrvInput_Error_List SrvInput_Init(void)
     /* encoder pin */
     DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
 
+    InputData.error = SrvInput_Initial;
+
     EncPin[Encoder_IO_A] = Encoder_A_Pin;
     EncPin[Encoder_IO_B] = Encoder_B_Pin;
     EncPin[Encoder_IO_Btn] = Encoder_Btn;
 
     if (!DevEncoder.open(&Encoder_Obj, EncPin, true))
     {
-        init_state = SrvInput_Encoder_Error;
+        InputData.error = SrvInput_Encoder_Error;
         return SrvInput_Encoder_Error;
     }
 
+    InputData.error = SrvInput_NoError;
     return SrvInput_NoError;
 }
 
 static SrvInput_Error_List SrvInput_Update(void)
 {
-    if (init_state != SrvInput_NoError)
-        return init_state;
+    if (InputData.error != SrvInput_NoError)
+        return InputData.error;
+
+    InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
 }
 
 static SrvInput_Data_TypeDef SrvInput_GetData(void)
