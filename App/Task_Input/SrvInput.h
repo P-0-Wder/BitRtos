@@ -4,33 +4,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include "Dev_Toggle.h"
+#include "Dev_5DirButton.h"
+#include "Dev_Gimbal.h"
+#include "Dev_Button.h"
 
 #define GIMBAL_AXIS_NUM 2
 #define GIMBAL_RANGE 500
 #define POT_RANGE GIMBAL_RANGE
-
-typedef enum
-{
-    Gimbal_Axis_X = 0,
-    Gimbal_Axis_Y,
-} Gimbal_Axis_TypeDef;
-
-typedef enum
-{
-    tog_up = 1,
-    tog_mid,
-    tog_dwn,
-} Toggle_Pos_List;
-
-typedef enum
-{
-    dir_node = 0,
-    dir_up,
-    dir_lft,
-    dir_mid,
-    dir_rgt,
-    dir_dwn,
-} DirButton_Val_List;
 
 typedef struct
 {
@@ -43,8 +24,8 @@ typedef struct
     bool zl_btn;
     bool zr_btn;
 
-    Toggle_Pos_List zl_tog;
-    Toggle_Pos_List zr_tog;
+    DevToggle_Pos_List zl_tog;
+    DevToggle_Pos_List zr_tog;
 
     DirButton_Val_List dir_btn;
 

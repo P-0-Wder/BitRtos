@@ -12,6 +12,8 @@ static uint8_t toggle_3level_sum = 0;
 static bool Toggle_Open(Toggle_Obj_TypeDef *obj, DevToggle_Type_List type, DrvGPIO_Obj_TypeDef *io);
 static bool Toggle_Invert(Toggle_Obj_TypeDef *obj);
 static DevToggle_Pos_List Toggle_Get(Toggle_Obj_TypeDef *obj);
+static uint8_t Toggle_Get_2Level_Sum(void);
+static uint8_t Toggle_Get_3Level_Sum(void);
 
 /* external function */
 DevToggle_TypeDef DevToggle = {

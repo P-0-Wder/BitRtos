@@ -1,0 +1,350 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"drv_timer.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DrvTimer_Obj_Init,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DrvTimer_Obj_Init:
+  26              	.LVL0:
+  27              	.LFB123:
+  28              		.file 1 "Drv/drv_timer.c"
+   1:Drv/drv_timer.c **** #include "drv_timer.h"
+   2:Drv/drv_timer.c **** 
+   3:Drv/drv_timer.c **** /* internal function */
+   4:Drv/drv_timer.c **** 
+   5:Drv/drv_timer.c **** /* internal variable */
+   6:Drv/drv_timer.c **** 
+   7:Drv/drv_timer.c **** /* external function */
+   8:Drv/drv_timer.c **** static bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj);
+   9:Drv/drv_timer.c **** static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len);
+  10:Drv/drv_timer.c **** static int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj);
+  11:Drv/drv_timer.c **** 
+  12:Drv/drv_timer.c **** /* external variable */
+  13:Drv/drv_timer.c **** DrvTimer_TypeDef DrvTimer = {
+  14:Drv/drv_timer.c ****     .obj_clear = DrvTimer_Obj_Init,
+  15:Drv/drv_timer.c ****     .ctl = DrvTimer_Ctl,
+  16:Drv/drv_timer.c ****     .get = DrvTImer_GetEncoder,
+  17:Drv/drv_timer.c **** };
+  18:Drv/drv_timer.c **** 
+  19:Drv/drv_timer.c **** static bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj)
+  20:Drv/drv_timer.c **** {
+  29              		.loc 1 20 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  21:Drv/drv_timer.c ****     if (obj == NULL)
+  34              		.loc 1 21 5 view .LVU1
+  35              		.loc 1 21 8 is_stmt 0 view .LVU2
+  36 0000 50B1     		cbz	r0, .L3
+  22:Drv/drv_timer.c ****         return false;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s 			page 2
+
+
+  23:Drv/drv_timer.c **** 
+  24:Drv/drv_timer.c ****     obj->irq = false;
+  37              		.loc 1 24 5 is_stmt 1 view .LVU3
+  38              		.loc 1 24 14 is_stmt 0 view .LVU4
+  39 0002 0022     		movs	r2, #0
+  40 0004 0273     		strb	r2, [r0, #12]
+  25:Drv/drv_timer.c ****     obj->period = 0;
+  41              		.loc 1 25 5 is_stmt 1 view .LVU5
+  42              		.loc 1 25 17 is_stmt 0 view .LVU6
+  43 0006 4260     		str	r2, [r0, #4]
+  26:Drv/drv_timer.c ****     obj->PreemptionPriority = 0;
+  44              		.loc 1 26 5 is_stmt 1 view .LVU7
+  45              		.loc 1 26 29 is_stmt 0 view .LVU8
+  46 0008 4273     		strb	r2, [r0, #13]
+  27:Drv/drv_timer.c ****     obj->Prescaler = 0;
+  47              		.loc 1 27 5 is_stmt 1 view .LVU9
+  48              		.loc 1 27 20 is_stmt 0 view .LVU10
+  49 000a 8260     		str	r2, [r0, #8]
+  28:Drv/drv_timer.c ****     obj->SubPriority = 0;
+  50              		.loc 1 28 5 is_stmt 1 view .LVU11
+  51              		.loc 1 28 22 is_stmt 0 view .LVU12
+  52 000c 8273     		strb	r2, [r0, #14]
+  29:Drv/drv_timer.c ****     obj->timerx = Timer_None;
+  53              		.loc 1 29 5 is_stmt 1 view .LVU13
+  54              		.loc 1 29 17 is_stmt 0 view .LVU14
+  55 000e 0321     		movs	r1, #3
+  56 0010 4170     		strb	r1, [r0, #1]
+  30:Drv/drv_timer.c ****     obj->cnt = 0;
+  57              		.loc 1 30 5 is_stmt 1 view .LVU15
+  58              		.loc 1 30 14 is_stmt 0 view .LVU16
+  59 0012 0261     		str	r2, [r0, #16]
+  31:Drv/drv_timer.c **** 
+  32:Drv/drv_timer.c ****     return true;
+  60              		.loc 1 32 5 is_stmt 1 view .LVU17
+  61              		.loc 1 32 12 is_stmt 0 view .LVU18
+  62 0014 0120     		movs	r0, #1
+  63              	.LVL1:
+  64              		.loc 1 32 12 view .LVU19
+  65 0016 7047     		bx	lr
+  66              	.LVL2:
+  67              	.L3:
+  22:Drv/drv_timer.c **** 
+  68              		.loc 1 22 16 view .LVU20
+  69 0018 0020     		movs	r0, #0
+  70              	.LVL3:
+  33:Drv/drv_timer.c **** }
+  71              		.loc 1 33 1 view .LVU21
+  72 001a 7047     		bx	lr
+  73              		.cfi_endproc
+  74              	.LFE123:
+  76              		.section	.text.DrvTImer_GetEncoder,"ax",%progbits
+  77              		.align	1
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  81              		.fpu fpv4-sp-d16
+  83              	DrvTImer_GetEncoder:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s 			page 3
+
+
+  84              	.LVL4:
+  85              	.LFB125:
+  34:Drv/drv_timer.c **** 
+  35:Drv/drv_timer.c **** static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
+  36:Drv/drv_timer.c **** {
+  37:Drv/drv_timer.c **** 
+  38:Drv/drv_timer.c ****     switch (cmd)
+  39:Drv/drv_timer.c ****     {
+  40:Drv/drv_timer.c ****     case DrvTimer_Encoder_Mode:
+  41:Drv/drv_timer.c ****         if ((len != sizeof(DrvTimer_Obj_TypeDef)) || (p_data == 0))
+  42:Drv/drv_timer.c ****             return false;
+  43:Drv/drv_timer.c **** 
+  44:Drv/drv_timer.c ****         ((DrvTimer_Obj_TypeDef *)p_data)->mode = DrvTimer_Encoder_Mode;
+  45:Drv/drv_timer.c **** 
+  46:Drv/drv_timer.c ****         periph_Timer_Encoder_Mode_Init(((DrvTimer_Obj_TypeDef *)p_data)->timerx);
+  47:Drv/drv_timer.c ****         return true;
+  48:Drv/drv_timer.c **** 
+  49:Drv/drv_timer.c ****     case DrvTimer_Counter_Mode:
+  50:Drv/drv_timer.c ****         /* TODO */
+  51:Drv/drv_timer.c ****         /* need set Counter IRQ Callback */
+  52:Drv/drv_timer.c ****         /* not inuse yet */
+  53:Drv/drv_timer.c ****         return false;
+  54:Drv/drv_timer.c **** 
+  55:Drv/drv_timer.c ****     default:
+  56:Drv/drv_timer.c ****         return false;
+  57:Drv/drv_timer.c ****     }
+  58:Drv/drv_timer.c **** }
+  59:Drv/drv_timer.c **** 
+  60:Drv/drv_timer.c **** static int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj)
+  61:Drv/drv_timer.c **** {
+  86              		.loc 1 61 1 is_stmt 1 view -0
+  87              		.cfi_startproc
+  88              		@ args = 0, pretend = 0, frame = 0
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  62:Drv/drv_timer.c ****     if ((obj == NULL) || (obj->mode != DrvTimer_Encoder_Mode))
+  90              		.loc 1 62 5 view .LVU23
+  91              		.loc 1 62 8 is_stmt 0 view .LVU24
+  92 0000 68B1     		cbz	r0, .L6
+  61:Drv/drv_timer.c ****     if ((obj == NULL) || (obj->mode != DrvTimer_Encoder_Mode))
+  93              		.loc 1 61 1 discriminator 1 view .LVU25
+  94 0002 10B5     		push	{r4, lr}
+  95              	.LCFI0:
+  96              		.cfi_def_cfa_offset 8
+  97              		.cfi_offset 4, -8
+  98              		.cfi_offset 14, -4
+  99 0004 0446     		mov	r4, r0
+ 100              		.loc 1 62 30 discriminator 1 view .LVU26
+ 101 0006 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 102              		.loc 1 62 23 discriminator 1 view .LVU27
+ 103 0008 032B     		cmp	r3, #3
+ 104 000a 01D0     		beq	.L12
+  63:Drv/drv_timer.c ****         return 0;
+ 105              		.loc 1 63 16 view .LVU28
+ 106 000c 0020     		movs	r0, #0
+ 107              	.LVL5:
+ 108              	.L4:
+  64:Drv/drv_timer.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s 			page 4
+
+
+  65:Drv/drv_timer.c ****     obj->cnt += periph_Timer_GetEncoder_Input(obj->timerx);
+  66:Drv/drv_timer.c **** 
+  67:Drv/drv_timer.c ****     return obj->cnt;
+  68:Drv/drv_timer.c **** }
+ 109              		.loc 1 68 1 view .LVU29
+ 110 000e 10BD     		pop	{r4, pc}
+ 111              	.LVL6:
+ 112              	.L12:
+  65:Drv/drv_timer.c **** 
+ 113              		.loc 1 65 5 is_stmt 1 view .LVU30
+  65:Drv/drv_timer.c **** 
+ 114              		.loc 1 65 17 is_stmt 0 view .LVU31
+ 115 0010 4078     		ldrb	r0, [r0, #1]	@ zero_extendqisi2
+ 116              	.LVL7:
+  65:Drv/drv_timer.c **** 
+ 117              		.loc 1 65 17 view .LVU32
+ 118 0012 FFF7FEFF 		bl	periph_Timer_GetEncoder_Input
+ 119              	.LVL8:
+  65:Drv/drv_timer.c **** 
+ 120              		.loc 1 65 14 view .LVU33
+ 121 0016 2369     		ldr	r3, [r4, #16]
+ 122 0018 1844     		add	r0, r0, r3
+ 123 001a 2061     		str	r0, [r4, #16]
+  67:Drv/drv_timer.c **** }
+ 124              		.loc 1 67 5 is_stmt 1 view .LVU34
+  67:Drv/drv_timer.c **** }
+ 125              		.loc 1 67 15 is_stmt 0 view .LVU35
+ 126 001c F7E7     		b	.L4
+ 127              	.LVL9:
+ 128              	.L6:
+ 129              	.LCFI1:
+ 130              		.cfi_def_cfa_offset 0
+ 131              		.cfi_restore 4
+ 132              		.cfi_restore 14
+  63:Drv/drv_timer.c **** 
+ 133              		.loc 1 63 16 view .LVU36
+ 134 001e 0020     		movs	r0, #0
+ 135              	.LVL10:
+ 136              		.loc 1 68 1 view .LVU37
+ 137 0020 7047     		bx	lr
+ 138              		.cfi_endproc
+ 139              	.LFE125:
+ 141              		.section	.text.DrvTimer_Ctl,"ax",%progbits
+ 142              		.align	1
+ 143              		.syntax unified
+ 144              		.thumb
+ 145              		.thumb_func
+ 146              		.fpu fpv4-sp-d16
+ 148              	DrvTimer_Ctl:
+ 149              	.LVL11:
+ 150              	.LFB124:
+  36:Drv/drv_timer.c **** 
+ 151              		.loc 1 36 1 is_stmt 1 view -0
+ 152              		.cfi_startproc
+ 153              		@ args = 0, pretend = 0, frame = 0
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+  38:Drv/drv_timer.c ****     {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s 			page 5
+
+
+ 155              		.loc 1 38 5 view .LVU39
+ 156 0000 0328     		cmp	r0, #3
+ 157 0002 01D0     		beq	.L22
+  53:Drv/drv_timer.c **** 
+ 158              		.loc 1 53 16 is_stmt 0 view .LVU40
+ 159 0004 0020     		movs	r0, #0
+ 160              	.LVL12:
+  53:Drv/drv_timer.c **** 
+ 161              		.loc 1 53 16 view .LVU41
+ 162 0006 7047     		bx	lr
+ 163              	.LVL13:
+ 164              	.L22:
+  41:Drv/drv_timer.c ****             return false;
+ 165              		.loc 1 41 9 is_stmt 1 view .LVU42
+  41:Drv/drv_timer.c ****             return false;
+ 166              		.loc 1 41 12 is_stmt 0 view .LVU43
+ 167 0008 142A     		cmp	r2, #20
+ 168 000a 0AD1     		bne	.L16
+  41:Drv/drv_timer.c ****             return false;
+ 169              		.loc 1 41 51 discriminator 1 view .LVU44
+ 170 000c 09B9     		cbnz	r1, .L23
+  42:Drv/drv_timer.c **** 
+ 171              		.loc 1 42 20 view .LVU45
+ 172 000e 0020     		movs	r0, #0
+ 173              	.LVL14:
+  58:Drv/drv_timer.c **** 
+ 174              		.loc 1 58 1 view .LVU46
+ 175 0010 7047     		bx	lr
+ 176              	.LVL15:
+ 177              	.L23:
+  36:Drv/drv_timer.c **** 
+ 178              		.loc 1 36 1 view .LVU47
+ 179 0012 08B5     		push	{r3, lr}
+ 180              	.LCFI2:
+ 181              		.cfi_def_cfa_offset 8
+ 182              		.cfi_offset 3, -8
+ 183              		.cfi_offset 14, -4
+  44:Drv/drv_timer.c **** 
+ 184              		.loc 1 44 9 is_stmt 1 view .LVU48
+  44:Drv/drv_timer.c **** 
+ 185              		.loc 1 44 48 is_stmt 0 view .LVU49
+ 186 0014 0323     		movs	r3, #3
+ 187 0016 0B70     		strb	r3, [r1]
+  46:Drv/drv_timer.c ****         return true;
+ 188              		.loc 1 46 9 is_stmt 1 view .LVU50
+ 189 0018 4878     		ldrb	r0, [r1, #1]	@ zero_extendqisi2
+ 190              	.LVL16:
+  46:Drv/drv_timer.c ****         return true;
+ 191              		.loc 1 46 9 is_stmt 0 view .LVU51
+ 192 001a FFF7FEFF 		bl	periph_Timer_Encoder_Mode_Init
+ 193              	.LVL17:
+  47:Drv/drv_timer.c **** 
+ 194              		.loc 1 47 9 is_stmt 1 view .LVU52
+  47:Drv/drv_timer.c **** 
+ 195              		.loc 1 47 16 is_stmt 0 view .LVU53
+ 196 001e 0120     		movs	r0, #1
+  58:Drv/drv_timer.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s 			page 6
+
+
+ 197              		.loc 1 58 1 view .LVU54
+ 198 0020 08BD     		pop	{r3, pc}
+ 199              	.LVL18:
+ 200              	.L16:
+ 201              	.LCFI3:
+ 202              		.cfi_def_cfa_offset 0
+ 203              		.cfi_restore 3
+ 204              		.cfi_restore 14
+  42:Drv/drv_timer.c **** 
+ 205              		.loc 1 42 20 view .LVU55
+ 206 0022 0020     		movs	r0, #0
+ 207              	.LVL19:
+  42:Drv/drv_timer.c **** 
+ 208              		.loc 1 42 20 view .LVU56
+ 209 0024 7047     		bx	lr
+ 210              		.cfi_endproc
+ 211              	.LFE124:
+ 213              		.global	DrvTimer
+ 214              		.section	.data.DrvTimer,"aw"
+ 215              		.align	2
+ 218              	DrvTimer:
+ 219 0000 00000000 		.word	DrvTimer_Obj_Init
+ 220 0004 00000000 		.word	DrvTimer_Ctl
+ 221 0008 00000000 		.word	DrvTImer_GetEncoder
+ 222              		.text
+ 223              	.Letext0:
+ 224              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 225              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 226              		.file 4 "Bsp/periph_timer.h"
+ 227              		.file 5 "Drv/drv_timer.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 drv_timer.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:18     .text.DrvTimer_Obj_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:25     .text.DrvTimer_Obj_Init:0000000000000000 DrvTimer_Obj_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:77     .text.DrvTImer_GetEncoder:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:83     .text.DrvTImer_GetEncoder:0000000000000000 DrvTImer_GetEncoder
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:142    .text.DrvTimer_Ctl:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:148    .text.DrvTimer_Ctl:0000000000000000 DrvTimer_Ctl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:218    .data.DrvTimer:0000000000000000 DrvTimer
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cc9eYhN0.s:215    .data.DrvTimer:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+periph_Timer_GetEncoder_Input
+periph_Timer_Encoder_Mode_Init

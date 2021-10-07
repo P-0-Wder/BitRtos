@@ -109,6 +109,7 @@ Drv/drv_adc.c \
 Drv/drv_spi.c \
 Drv/drv_gpio.c \
 Drv/drv_serial.c \
+Drv/drv_timer.c \
 USB/config/vcp.c \
 USB/config/tm_stm32f4_usb_vcp.c \
 USB/core/usb_bsp.c \
@@ -127,6 +128,11 @@ USER/system_stm32f4xx.c \
 USER/main.c \
 App/Task_Display/Task_Widget.c \
 App/Task_Input/SrvInput.c \
+Dev/Dev_5DirButton.c \
+Dev/Dev_Button.c \
+Dev/Dev_Toggle.c \
+Dev/Dev_Encoder.c \
+Dev/Dev_Gimbal.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -195,6 +201,7 @@ C_INCLUDES =  \
 -IF4_CORE \
 -IFWLIB/inc \
 -IBsp \
+-IDev \
 -IDrv \
 -IDsp \
 -IDsp/screen/OledIO_Definition \
