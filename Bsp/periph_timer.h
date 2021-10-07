@@ -2,6 +2,7 @@
 #define __PERIPH_TIMER_H
 
 #include "stm32f4xx.h"
+#include "stm32f4xx_tim.h"
 
 #define Timer_Port_Sum 3
 
@@ -65,7 +66,7 @@ typedef enum
 	PWM_SUM,
 } PWM_OutPut_Channel;
 
-void periph_Timer_Encoder_Mode_Init(Timer_list timerx);
+void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint16_t channel_a, uint16_t channel_b);
 int8_t periph_Timer_GetEncoder_Input(Timer_list timerx);
 
 void periph_Timer_CounterMode_Init(Timer_list timerx, uint32_t Period, uint32_t Prescaler, uint8_t PreemptionPriority, uint8_t SubPriority);

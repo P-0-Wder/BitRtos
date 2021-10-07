@@ -20,11 +20,15 @@ typedef struct
 {
     DrvTimer_CMD_List mode;
     Timer_list timerx;
+
     uint32_t period;
     uint32_t Prescaler;
     bool irq;
     uint8_t PreemptionPriority;
     uint8_t SubPriority;
+
+    uint16_t enc_ch_a;
+    uint16_t enc_ch_b;
 
     uint32_t cnt;
 } DrvTimer_Obj_TypeDef;

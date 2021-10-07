@@ -9,7 +9,7 @@ static uint8_t encoder_sum = 0;
 /* internal function */
 
 /* external funtion */
-static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx);
+static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b);
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
 static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
 
@@ -20,7 +20,7 @@ DevEncoder_TypeDef DevEncoder = {
     .open = DevEncoder_Open,
 };
 
-static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx)
+static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b)
 {
     if ((obj == NULL) || (io == NULL))
     {
@@ -41,11 +41,9 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io
 
     DrvTimer.obj_clear(&obj->TimerObj);
 
-    /* set timerobj */
-    if ((timerx > Timer_4) || (timerx < Timer_2))
-        return false;
-
     obj->TimerObj.timerx = timerx;
+    obj->TimerObj.enc_ch_a = ch_a;
+    obj->TimerObj.enc_ch_b = ch_b;
 
     if (DrvTimer.ctl(DrvTimer_Encoder_Mode, (uint32_t)&obj->TimerObj, sizeof(obj->TimerObj)))
     {

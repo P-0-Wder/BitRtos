@@ -121,7 +121,7 @@ void periph_Timer_CounterMode_Init(Timer_list timerx, uint32_t Period, uint32_t 
 }
 
 /* need modify */
-void periph_Timer_Encoder_Mode_Init(Timer_list timerx)
+void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint16_t channel_a, uint16_t channel_b)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_ICInitTypeDef TIM_ICInitStructure;
@@ -134,10 +134,10 @@ void periph_Timer_Encoder_Mode_Init(Timer_list timerx)
 
 	TIM_ICInitStructure.TIM_ICFilter = 10;
 	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
-	TIM_ICInitStructure.TIM_Channel = TIM_Channel_1;
+	TIM_ICInitStructure.TIM_Channel = channel_a; //TIM_Channel_1
 	TIM_ICInit(Timer_Port[timerx], &TIM_ICInitStructure);
 
-	TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
+	TIM_ICInitStructure.TIM_Channel = channel_b; //TIM_Channel_2
 	TIM_ICInit(Timer_Port[timerx], &TIM_ICInitStructure);
 
 	TIM_EncoderInterfaceConfig(Timer_Port[timerx], TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
