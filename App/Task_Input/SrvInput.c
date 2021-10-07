@@ -37,10 +37,8 @@ static SrvInput_Error_List SrvInput_Init(void)
     EncPin[Encoder_IO_B] = Encoder_B_Pin;
     EncPin[Encoder_IO_Btn] = Encoder_Btn;
 
-    Encoder_Obj.TimerObj.timerx = Timer_3;
-
     /* init encoder */
-    if (!DevEncoder.open(&Encoder_Obj, EncPin, true))
+    if (!DevEncoder.open(&Encoder_Obj, EncPin, true, Timer_3))
     {
         InputData.error = SrvInput_Encoder_Error;
         return SrvInput_Encoder_Error;
