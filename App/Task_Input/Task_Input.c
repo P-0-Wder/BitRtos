@@ -1,4 +1,4 @@
-#include "SrvInput.h"
+#include "Task_Input.h"
 #include "Input_IO_Def.h"
 
 /* internal variable */
@@ -26,7 +26,7 @@ SrvInput_TypeDef InputObj = {
     .get_data = SrvInput_GetData,
 };
 
-static SrvInput_Error_List SrvInput_Init(void)
+static SrvInput_Error_List TaskInput_Init(void)
 {
     /* encoder pin */
     DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
@@ -58,7 +58,7 @@ static SrvInput_Error_List SrvInput_Init(void)
     return SrvInput_NoError;
 }
 
-static SrvInput_Error_List SrvInput_Update(void)
+static SrvInput_Error_List TaskInput_Update(void)
 {
     if (InputData.error != SrvInput_NoError)
         return InputData.error;
@@ -66,7 +66,7 @@ static SrvInput_Error_List SrvInput_Update(void)
     InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
 }
 
-static SrvInput_Data_TypeDef SrvInput_GetData(void)
+static SrvInput_Data_TypeDef TaskInput_GetData(void)
 {
     return InputData;
 }

@@ -107,8 +107,8 @@ DrvGPIO_Obj_TypeDef Encoder_B_Pin = {
 };
 
 DrvGPIO_Obj_TypeDef Power_Btn = {
-    .CLK = RCC_AHB1Periph_GPIOA,
+    .CLK = RCC_AHB1Periph_GPIOB,
     .IO_Type = GPIO_Mode_IN,
-    .Pin = GPIO_Pin_0,
-    .Port = GPIOA,
+    .Pin = GPIO_Pin_12,
+    .Port = GPIOB,
 };

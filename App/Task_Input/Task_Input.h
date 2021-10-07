@@ -1,5 +1,5 @@
-#ifndef __SRV_INPUT_H
-#define __SRV_INPUT_H
+#ifndef __TASK_INPUT_H
+#define __TASK_INPUT_H
 
 #include <stdint.h>
 #include <stdbool.h>
