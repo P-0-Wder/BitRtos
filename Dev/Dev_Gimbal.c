@@ -4,6 +4,7 @@
 #include "drv_gpio.h"
 
 /* internal variable */
+static uint8_t Gimbal_Num = 0;
 
 /* external function */
 static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj);
@@ -11,6 +12,7 @@ static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj);
 static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg);
 static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, int16_t offset_y);
 static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj);
+static uint8_t DrvGimbal_GetNum(void);
 
 /* external variable */
 DevGimbal_TypeDef DevGimbal = {
@@ -19,6 +21,7 @@ DevGimbal_TypeDef DevGimbal = {
     .set_offset = DevGimbal_Set_Offset,
     .invert = DevGimbal_Invert,
     .get = DevGimbal_Get,
+    .get_gimbal_num = DrvGimbal_GetNum,
 };
 
 static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj)
@@ -37,6 +40,11 @@ static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj)
     return true;
 }
 
+static uint8_t DrvGimbal_GetNum(void)
+{
+    return Gimbal_Num;
+}
+
 static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj)
 {
     if ((obj == NULL) || (obj->Ch_X == ADC1_Channel_None) || (obj->Ch_Y == ADC1_Channel_None) || (obj->Ch_X == obj->Ch_Y))
@@ -44,6 +52,8 @@ static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj)
 
     DrvADC.ctl(ADC_Open, obj->Ch_X);
     DrvADC.ctl(ADC_Open, obj->Ch_Y);
+
+    Gimbal_Num++;
 
     return true;
 }
