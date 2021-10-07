@@ -1,4 +1,4 @@
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -42,8 +42,8 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 1
   13:App/Task_Input/SrvInput.c **** //static DirButton_Obj_TypeDef Btn_5Dir_Obj;
   14:App/Task_Input/SrvInput.c **** 
   15:App/Task_Input/SrvInput.c **** /* internal funciton */
-  16:App/Task_Input/SrvInput.c **** static void SrvInput_Init(void);
-  17:App/Task_Input/SrvInput.c **** static void SrvInput_Sample(void);
+  16:App/Task_Input/SrvInput.c **** static SrvInput_Error_List SrvInput_Init(void);
+  17:App/Task_Input/SrvInput.c **** static SrvInput_Error_List SrvInput_Update(void);
   18:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef SrvInput_GetData(void);
   19:App/Task_Input/SrvInput.c **** 
   20:App/Task_Input/SrvInput.c **** /* internal function */
@@ -51,14 +51,14 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 1
   22:App/Task_Input/SrvInput.c **** /* external variable */
   23:App/Task_Input/SrvInput.c **** SrvInput_TypeDef InputObj = {
   24:App/Task_Input/SrvInput.c ****     .init = SrvInput_Init,
-  25:App/Task_Input/SrvInput.c ****     .sample = SrvInput_Sample,
+  25:App/Task_Input/SrvInput.c ****     .sample = SrvInput_Update,
   26:App/Task_Input/SrvInput.c ****     .get_data = SrvInput_GetData,
   27:App/Task_Input/SrvInput.c **** };
   28:App/Task_Input/SrvInput.c **** 
-  29:App/Task_Input/SrvInput.c **** static void SrvInput_Init(void)
+  29:App/Task_Input/SrvInput.c **** static SrvInput_Error_List SrvInput_Init(void)
   30:App/Task_Input/SrvInput.c **** {
   28              		.loc 1 30 1 view -0
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s 			page 2
 
 
   29              		.cfi_startproc
@@ -78,173 +78,210 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 1
   34:App/Task_Input/SrvInput.c ****     EncPin[Encoder_IO_A] = Encoder_A_Pin;
   40              		.loc 1 34 5 view .LVU2
   41              		.loc 1 34 26 is_stmt 0 view .LVU3
-  42 0004 0C4B     		ldr	r3, .L3
+  42 0004 0E4B     		ldr	r3, .L5
   43 0006 EC46     		mov	ip, sp
   44 0008 0FCB     		ldm	r3, {r0, r1, r2, r3}
   45 000a 8CE80F00 		stm	ip, {r0, r1, r2, r3}
   35:App/Task_Input/SrvInput.c ****     EncPin[Encoder_IO_B] = Encoder_B_Pin;
   46              		.loc 1 35 5 is_stmt 1 view .LVU4
   47              		.loc 1 35 26 is_stmt 0 view .LVU5
-  48 000e 0B4B     		ldr	r3, .L3+4
+  48 000e 0D4B     		ldr	r3, .L5+4
   49 0010 0DF1100E 		add	lr, sp, #16
   50 0014 0FCB     		ldm	r3, {r0, r1, r2, r3}
   51 0016 8EE80F00 		stm	lr, {r0, r1, r2, r3}
   36:App/Task_Input/SrvInput.c ****     EncPin[Encoder_IO_Btn] = Encoder_Btn;
   52              		.loc 1 36 5 is_stmt 1 view .LVU6
   53              		.loc 1 36 28 is_stmt 0 view .LVU7
-  54 001a 094B     		ldr	r3, .L3+8
+  54 001a 0B4B     		ldr	r3, .L5+8
   55 001c 0FCB     		ldm	r3, {r0, r1, r2, r3}
   56 001e 0DF1300E 		add	lr, sp, #48
   57 0022 0EE90F00 		stmdb	lr, {r0, r1, r2, r3}
   37:App/Task_Input/SrvInput.c **** 
-  38:App/Task_Input/SrvInput.c ****     DevEncoder.open(&Encoder_Obj, EncPin, true);
+  38:App/Task_Input/SrvInput.c ****     if (!DevEncoder.open(&Encoder_Obj, EncPin, true))
   58              		.loc 1 38 5 is_stmt 1 view .LVU8
-  59              		.loc 1 38 15 is_stmt 0 view .LVU9
-  60 0026 074B     		ldr	r3, .L3+12
+  59              		.loc 1 38 20 is_stmt 0 view .LVU9
+  60 0026 094B     		ldr	r3, .L5+12
   61 0028 1B68     		ldr	r3, [r3]
-  62              		.loc 1 38 5 view .LVU10
+  62              		.loc 1 38 10 view .LVU10
   63 002a 0122     		movs	r2, #1
   64 002c 6146     		mov	r1, ip
-  65 002e 0648     		ldr	r0, .L3+16
+  65 002e 0848     		ldr	r0, .L5+16
   66 0030 9847     		blx	r3
   67              	.LVL0:
-  39:App/Task_Input/SrvInput.c **** }
-  68              		.loc 1 39 1 view .LVU11
-  69 0032 0DB0     		add	sp, sp, #52
-  70              	.LCFI2:
-  71              		.cfi_def_cfa_offset 4
-  72              		@ sp needed
-  73 0034 5DF804FB 		ldr	pc, [sp], #4
-  74              	.L4:
-  75              		.align	2
-  76              	.L3:
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 3
-
-
-  77 0038 00000000 		.word	Encoder_A_Pin
-  78 003c 00000000 		.word	Encoder_B_Pin
-  79 0040 00000000 		.word	Encoder_Btn
-  80 0044 00000000 		.word	DevEncoder
-  81 0048 00000000 		.word	.LANCHOR0
-  82              		.cfi_endproc
-  83              	.LFE123:
-  85              		.section	.text.SrvInput_GetData,"ax",%progbits
-  86              		.align	1
-  87              		.syntax unified
-  88              		.thumb
-  89              		.thumb_func
-  90              		.fpu fpv4-sp-d16
-  92              	SrvInput_GetData:
-  93              	.LVL1:
-  94              	.LFB125:
+  68              		.loc 1 38 8 view .LVU11
+  69 0032 18B1     		cbz	r0, .L3
+  39:App/Task_Input/SrvInput.c ****         return SrvInput_Encoder_Error;
   40:App/Task_Input/SrvInput.c **** 
-  41:App/Task_Input/SrvInput.c **** static void SrvInput_Update(void)
-  42:App/Task_Input/SrvInput.c **** {
-  43:App/Task_Input/SrvInput.c **** }
-  44:App/Task_Input/SrvInput.c **** 
-  45:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef SrvInput_GetData(void)
-  46:App/Task_Input/SrvInput.c **** {
-  95              		.loc 1 46 1 is_stmt 1 view -0
-  96              		.cfi_startproc
-  97              		@ args = 0, pretend = 0, frame = 0
-  98              		@ frame_needed = 0, uses_anonymous_args = 0
-  99              		@ link register save eliminated.
- 100              		.loc 1 46 1 is_stmt 0 view .LVU13
- 101 0000 10B4     		push	{r4}
- 102              	.LCFI3:
- 103              		.cfi_def_cfa_offset 4
- 104              		.cfi_offset 4, -4
- 105 0002 8446     		mov	ip, r0
-  47:App/Task_Input/SrvInput.c ****     return InputData;
- 106              		.loc 1 47 5 is_stmt 1 view .LVU14
- 107              		.loc 1 47 12 is_stmt 0 view .LVU15
- 108 0004 094C     		ldr	r4, .L7
- 109 0006 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
- 110              	.LVL2:
- 111              		.loc 1 47 12 view .LVU16
- 112 0008 CCF80000 		str	r0, [ip]	@ unaligned
- 113 000c CCF80410 		str	r1, [ip, #4]	@ unaligned
- 114 0010 CCF80820 		str	r2, [ip, #8]	@ unaligned
- 115 0014 CCF80C30 		str	r3, [ip, #12]	@ unaligned
- 116 0018 03CC     		ldmia	r4!, {r0, r1}
- 117 001a CCF81000 		str	r0, [ip, #16]	@ unaligned
- 118 001e CCF81410 		str	r1, [ip, #20]	@ unaligned
-  48:App/Task_Input/SrvInput.c **** }
- 119              		.loc 1 48 1 view .LVU17
- 120 0022 6046     		mov	r0, ip
- 121 0024 5DF8044B 		ldr	r4, [sp], #4
- 122              	.LCFI4:
- 123              		.cfi_restore 4
- 124              		.cfi_def_cfa_offset 0
- 125 0028 7047     		bx	lr
- 126              	.L8:
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 4
+  41:App/Task_Input/SrvInput.c ****     return SrvInput_NoError;
+  70              		.loc 1 41 12 view .LVU12
+  71 0034 0020     		movs	r0, #0
+  72              	.L2:
+  42:App/Task_Input/SrvInput.c **** }
+  73              		.loc 1 42 1 view .LVU13
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s 			page 3
 
 
- 127 002a 00BF     		.align	2
- 128              	.L7:
- 129 002c 00000000 		.word	.LANCHOR1
- 130              		.cfi_endproc
- 131              	.LFE125:
- 133              		.global	InputObj
- 134              		.section	.bss.Encoder_Obj,"aw",%nobits
- 135              		.align	2
- 136              		.set	.LANCHOR0,. + 0
- 139              	Encoder_Obj:
- 140 0000 00000000 		.space	72
- 140      00000000 
- 140      00000000 
- 140      00000000 
- 140      00000000 
- 141              		.section	.data.InputObj,"aw"
- 142              		.align	2
- 145              	InputObj:
- 146 0000 00000000 		.word	SrvInput_Init
- 147 0004 00000000 		.word	SrvInput_Sample
- 148 0008 00000000 		.word	SrvInput_GetData
- 149              		.section	.rodata.InputData,"a"
- 150              		.align	2
- 151              		.set	.LANCHOR1,. + 0
- 154              	InputData:
- 155 0000 00000000 		.space	24
- 155      00000000 
- 155      00000000 
- 155      00000000 
- 155      00000000 
- 156              		.text
- 157              	.Letext0:
- 158              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
- 159              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
- 160              		.file 4 "Bsp/periph_gpio.h"
- 161              		.file 5 "Dev/Dev_Toggle.h"
- 162              		.file 6 "Dev/Dev_5DirButton.h"
- 163              		.file 7 "Dev/Dev_Gimbal.h"
- 164              		.file 8 "Bsp/periph_timer.h"
- 165              		.file 9 "Drv/drv_timer.h"
- 166              		.file 10 "Dev/Dev_Encoder.h"
- 167              		.file 11 "App/Task_Input/SrvInput.h"
- 168              		.file 12 "App/Task_Input/Input_IO_Def.h"
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s 			page 5
+  74 0036 0DB0     		add	sp, sp, #52
+  75              	.LCFI2:
+  76              		.cfi_remember_state
+  77              		.cfi_def_cfa_offset 4
+  78              		@ sp needed
+  79 0038 5DF804FB 		ldr	pc, [sp], #4
+  80              	.L3:
+  81              	.LCFI3:
+  82              		.cfi_restore_state
+  39:App/Task_Input/SrvInput.c ****         return SrvInput_Encoder_Error;
+  83              		.loc 1 39 16 view .LVU14
+  84 003c 0120     		movs	r0, #1
+  85 003e FAE7     		b	.L2
+  86              	.L6:
+  87              		.align	2
+  88              	.L5:
+  89 0040 00000000 		.word	Encoder_A_Pin
+  90 0044 00000000 		.word	Encoder_B_Pin
+  91 0048 00000000 		.word	Encoder_Btn
+  92 004c 00000000 		.word	DevEncoder
+  93 0050 00000000 		.word	.LANCHOR0
+  94              		.cfi_endproc
+  95              	.LFE123:
+  97              		.section	.text.SrvInput_Update,"ax",%progbits
+  98              		.align	1
+  99              		.syntax unified
+ 100              		.thumb
+ 101              		.thumb_func
+ 102              		.fpu fpv4-sp-d16
+ 104              	SrvInput_Update:
+ 105              	.LFB124:
+  43:App/Task_Input/SrvInput.c **** 
+  44:App/Task_Input/SrvInput.c **** static SrvInput_Error_List SrvInput_Update(void)
+  45:App/Task_Input/SrvInput.c **** {
+ 106              		.loc 1 45 1 is_stmt 1 view -0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 0
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110              		@ link register save eliminated.
+  46:App/Task_Input/SrvInput.c **** }
+ 111              		.loc 1 46 1 view .LVU16
+ 112 0000 7047     		bx	lr
+ 113              		.cfi_endproc
+ 114              	.LFE124:
+ 116              		.section	.text.SrvInput_GetData,"ax",%progbits
+ 117              		.align	1
+ 118              		.syntax unified
+ 119              		.thumb
+ 120              		.thumb_func
+ 121              		.fpu fpv4-sp-d16
+ 123              	SrvInput_GetData:
+ 124              	.LVL1:
+ 125              	.LFB125:
+  47:App/Task_Input/SrvInput.c **** 
+  48:App/Task_Input/SrvInput.c **** static SrvInput_Data_TypeDef SrvInput_GetData(void)
+  49:App/Task_Input/SrvInput.c **** {
+ 126              		.loc 1 49 1 view -0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s 			page 4
+
+
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130              		@ link register save eliminated.
+ 131              		.loc 1 49 1 is_stmt 0 view .LVU18
+ 132 0000 10B4     		push	{r4}
+ 133              	.LCFI4:
+ 134              		.cfi_def_cfa_offset 4
+ 135              		.cfi_offset 4, -4
+ 136 0002 8446     		mov	ip, r0
+  50:App/Task_Input/SrvInput.c ****     return InputData;
+ 137              		.loc 1 50 5 is_stmt 1 view .LVU19
+ 138              		.loc 1 50 12 is_stmt 0 view .LVU20
+ 139 0004 094C     		ldr	r4, .L10
+ 140 0006 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 141              	.LVL2:
+ 142              		.loc 1 50 12 view .LVU21
+ 143 0008 CCF80000 		str	r0, [ip]	@ unaligned
+ 144 000c CCF80410 		str	r1, [ip, #4]	@ unaligned
+ 145 0010 CCF80820 		str	r2, [ip, #8]	@ unaligned
+ 146 0014 CCF80C30 		str	r3, [ip, #12]	@ unaligned
+ 147 0018 03CC     		ldmia	r4!, {r0, r1}
+ 148 001a CCF81000 		str	r0, [ip, #16]	@ unaligned
+ 149 001e CCF81410 		str	r1, [ip, #20]	@ unaligned
+  51:App/Task_Input/SrvInput.c **** }
+ 150              		.loc 1 51 1 view .LVU22
+ 151 0022 6046     		mov	r0, ip
+ 152 0024 5DF8044B 		ldr	r4, [sp], #4
+ 153              	.LCFI5:
+ 154              		.cfi_restore 4
+ 155              		.cfi_def_cfa_offset 0
+ 156 0028 7047     		bx	lr
+ 157              	.L11:
+ 158 002a 00BF     		.align	2
+ 159              	.L10:
+ 160 002c 00000000 		.word	.LANCHOR1
+ 161              		.cfi_endproc
+ 162              	.LFE125:
+ 164              		.global	InputObj
+ 165              		.section	.bss.Encoder_Obj,"aw",%nobits
+ 166              		.align	2
+ 167              		.set	.LANCHOR0,. + 0
+ 170              	Encoder_Obj:
+ 171 0000 00000000 		.space	72
+ 171      00000000 
+ 171      00000000 
+ 171      00000000 
+ 171      00000000 
+ 172              		.section	.data.InputObj,"aw"
+ 173              		.align	2
+ 176              	InputObj:
+ 177 0000 00000000 		.word	SrvInput_Init
+ 178 0004 00000000 		.word	SrvInput_Update
+ 179 0008 00000000 		.word	SrvInput_GetData
+ 180              		.section	.rodata.InputData,"a"
+ 181              		.align	2
+ 182              		.set	.LANCHOR1,. + 0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s 			page 5
+
+
+ 185              	InputData:
+ 186 0000 00000000 		.space	24
+ 186      00000000 
+ 186      00000000 
+ 186      00000000 
+ 186      00000000 
+ 187              		.text
+ 188              	.Letext0:
+ 189              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 190              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 191              		.file 4 "Bsp/periph_gpio.h"
+ 192              		.file 5 "Dev/Dev_Toggle.h"
+ 193              		.file 6 "Dev/Dev_5DirButton.h"
+ 194              		.file 7 "Dev/Dev_Gimbal.h"
+ 195              		.file 8 "Bsp/periph_timer.h"
+ 196              		.file 9 "Drv/drv_timer.h"
+ 197              		.file 10 "Dev/Dev_Encoder.h"
+ 198              		.file 11 "App/Task_Input/SrvInput.h"
+ 199              		.file 12 "App/Task_Input/Input_IO_Def.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 SrvInput.c
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:18     .text.SrvInput_Init:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:25     .text.SrvInput_Init:0000000000000000 SrvInput_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:77     .text.SrvInput_Init:0000000000000038 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:86     .text.SrvInput_GetData:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:92     .text.SrvInput_GetData:0000000000000000 SrvInput_GetData
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:129    .text.SrvInput_GetData:000000000000002c $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:145    .data.InputObj:0000000000000000 InputObj
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:135    .bss.Encoder_Obj:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:139    .bss.Encoder_Obj:0000000000000000 Encoder_Obj
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:142    .data.InputObj:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:150    .rodata.InputData:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccRimLYz.s:154    .rodata.InputData:0000000000000000 InputData
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:18     .text.SrvInput_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:25     .text.SrvInput_Init:0000000000000000 SrvInput_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:89     .text.SrvInput_Init:0000000000000040 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:98     .text.SrvInput_Update:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:104    .text.SrvInput_Update:0000000000000000 SrvInput_Update
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:117    .text.SrvInput_GetData:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:123    .text.SrvInput_GetData:0000000000000000 SrvInput_GetData
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:160    .text.SrvInput_GetData:000000000000002c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:176    .data.InputObj:0000000000000000 InputObj
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:166    .bss.Encoder_Obj:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:170    .bss.Encoder_Obj:0000000000000000 Encoder_Obj
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:173    .data.InputObj:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:181    .rodata.InputData:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEO29YU.s:185    .rodata.InputData:0000000000000000 InputData
 
 UNDEFINED SYMBOLS
 Encoder_A_Pin
 Encoder_B_Pin
 Encoder_Btn
 DevEncoder
-SrvInput_Sample

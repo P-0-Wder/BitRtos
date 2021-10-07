@@ -12,6 +12,16 @@
 
 #define GIMBAL_RANGE 500
 
+typedef enum
+{
+    SrvInput_NoError = 0,
+    SrvInput_Encoder_Error,
+    SrvInput_Gimbal_Error,
+    SrvInput_Button_Error,
+    SrvInput_Toggle_Error,
+    SrvInput_5DirButton_Error,
+} SrvInput_Error_List;
+
 typedef struct
 {
     DevGimbal_Val_TypeDef Gimbal_L;
@@ -31,8 +41,8 @@ typedef struct
 
 typedef struct
 {
-    void (*init)(void);
-    void (*sample)(void);
+    SrvInput_Error_List (*init)(void);
+    SrvInput_Error_List (*sample)(void);
     SrvInput_Data_TypeDef (*get_data)(void);
 } SrvInput_TypeDef;
 

@@ -13,8 +13,8 @@ static DevEncoder_Obj_TypeDef Encoder_Obj;
 //static DirButton_Obj_TypeDef Btn_5Dir_Obj;
 
 /* internal funciton */
-static void SrvInput_Init(void);
-static void SrvInput_Sample(void);
+static SrvInput_Error_List SrvInput_Init(void);
+static SrvInput_Error_List SrvInput_Update(void);
 static SrvInput_Data_TypeDef SrvInput_GetData(void);
 
 /* internal function */
@@ -22,11 +22,11 @@ static SrvInput_Data_TypeDef SrvInput_GetData(void);
 /* external variable */
 SrvInput_TypeDef InputObj = {
     .init = SrvInput_Init,
-    .sample = SrvInput_Sample,
+    .sample = SrvInput_Update,
     .get_data = SrvInput_GetData,
 };
 
-static void SrvInput_Init(void)
+static SrvInput_Error_List SrvInput_Init(void)
 {
     /* encoder pin */
     DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
@@ -35,10 +35,13 @@ static void SrvInput_Init(void)
     EncPin[Encoder_IO_B] = Encoder_B_Pin;
     EncPin[Encoder_IO_Btn] = Encoder_Btn;
 
-    DevEncoder.open(&Encoder_Obj, EncPin, true);
+    if (!DevEncoder.open(&Encoder_Obj, EncPin, true))
+        return SrvInput_Encoder_Error;
+
+    return SrvInput_NoError;
 }
 
-static void SrvInput_Update(void)
+static SrvInput_Error_List SrvInput_Update(void)
 {
 }
 
