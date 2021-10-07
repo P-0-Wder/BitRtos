@@ -40,8 +40,6 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io
     DrvGPIO.open(&io[Encoder_IO_B], GPIO_Encoder, NULL);
 
     DrvTimer.obj_clear(&obj->TimerObj);
-    /* set timerobj */
-    obj->TimerObj.timerx = Timer_3;
 
     if (DrvTimer.ctl(DrvTimer_Encoder_Mode, (uint32_t)&obj->TimerObj, sizeof(obj->TimerObj)))
     {
