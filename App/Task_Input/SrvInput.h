@@ -8,31 +8,25 @@
 #include "Dev_5DirButton.h"
 #include "Dev_Gimbal.h"
 #include "Dev_Button.h"
+#include "Dev_Encoder.h"
 
-#define GIMBAL_AXIS_NUM 2
 #define GIMBAL_RANGE 500
-#define POT_RANGE GIMBAL_RANGE
 
 typedef struct
 {
-    uint16_t gimbal_l[GIMBAL_AXIS_NUM];
-    uint16_t gimbal_r[GIMBAL_AXIS_NUM];
-
-    uint16_t pot_l;
-    uint16_t pot_r;
+    DevGimbal_Val_TypeDef Gimbal_L;
+    DevGimbal_Val_TypeDef Gimbal_R;
 
     bool zl_btn;
     bool zr_btn;
+
+    Encoder_Data_TypeDef Enc_Val;
 
     DevToggle_Pos_List zl_tog;
     DevToggle_Pos_List zr_tog;
 
     DirButton_Val_List dir_btn;
 
-    uint16_t encdoer_val;
-    bool encoder_btn;
-
-    bool pwr_btn;
 } SrvInput_Data_TypeDef;
 
 typedef struct

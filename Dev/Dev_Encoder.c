@@ -9,25 +9,25 @@ static uint8_t encoder_sum = 0;
 /* internal function */
 
 /* external funtion */
-static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int16_t range_min, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable);
+static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable);
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
 static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
 
 /* external variable */
 DevEncoder_TypeDef DevEncoder = {
-
+    .get = DevEncoder_Get,
+    .invert = DevEncoder_Invert,
+    .open = DevEncoder_Open,
 };
 
-static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, int16_t range_max, int16_t range_min, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable)
+static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable)
 {
-    if ((obj == NULL) || (io == NULL) || (range_max == range_min))
+    if ((obj == NULL) || (io == NULL))
     {
         obj->init_state = false;
         return false;
     }
 
-    obj->max = range_max;
-    obj->min = range_min;
     obj->btn_en = btn_enable;
     obj->invert_reg = Encoder_None_Invert;
 
@@ -68,11 +68,9 @@ static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val)
 static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj)
 {
     Encoder_Data_TypeDef data_tmp;
-    bool val_tmp[Encoder_IO_Sum];
 
-    memset(val_tmp, NULL, sizeof(val_tmp));
-    memset(&data_tmp, NULL, sizeof(data_tmp));
     data_tmp.state = Encoder_Normal;
+    data_tmp.val = 0;
 
     if ((obj == NULL) || (!obj->init_state))
     {
@@ -87,6 +85,16 @@ static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj)
     }
 
     data_tmp.val = DrvTimer.get(&obj->TimerObj);
+
+    if (obj->init_state & Encoder_Dir_Invert)
+    {
+        data_tmp.val *= -1;
+    }
+
+    if (obj->invert_reg & Encoder_Btn_Invert)
+    {
+        data_tmp.btn = ~data_tmp.btn;
+    }
 
     return data_tmp;
 }

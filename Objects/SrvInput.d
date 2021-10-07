@@ -16,7 +16,7 @@ Objects/SrvInput.o: App/Task_Input/SrvInput.c App/Task_Input/SrvInput.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h Drv/drv_timer.h \
- Bsp/periph_timer.h App/Task_Input/Input_IO_Def.h
+ Bsp/periph_timer.h
 App/Task_Input/SrvInput.h:
 Dev/Dev_Toggle.h:
 App/Task_Input/Input_IO_Def.h:
@@ -62,4 +62,3 @@ FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 Drv/drv_timer.h:
 Bsp/periph_timer.h:
-App/Task_Input/Input_IO_Def.h:

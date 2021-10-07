@@ -1,14 +1,18 @@
 #include "SrvInput.h"
-#include "Dev_5DirButton.h"
-#include "Dev_Button.h"
-#include "Dev_Encoder.h"
-#include "Dev_Toggle.h"
-#include "Dev_Gimbal.h"
-#include "drv_gpio.h"
-#include "Input_IO_Def.h"
 
 /* internal variable */
 static SrvInput_Data_TypeDef InputData;
+
+/* IO object list */
+/* encoder pin */
+
+/* input hardware abstract object */
+static DevEncoder_Obj_TypeDef Encoder_Obj;
+//static DevGimbal_Obj_TypeDef Gimbal_L_Obj;
+//static DevGimbal_Obj_TypeDef Gimbal_R_Obj;
+//static DevButton_TypeDef Btn_LShoulder_Obj;
+//static DevButton_TypeDef Btn_RShoulder_Obj;
+//static DirButton_Obj_TypeDef Btn_5Dir_Obj;
 
 /* internal funciton */
 static void SrvInput_Init(void);
@@ -26,7 +30,7 @@ SrvInput_TypeDef InputObj = {
 
 static void SrvInput_Init(void)
 {
-    memset(&InputData, 0, sizeof(InputData));
+    //DevEncoder.open(&Encoder_Obj, , );
 }
 
 static void SrvInput_Update(void)
