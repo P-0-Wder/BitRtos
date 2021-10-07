@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include "drv_gpio.h"
 #include "drv_timer.h"
-#include "Input_IO_Def.h"
 
 typedef enum
 {
@@ -48,7 +47,7 @@ typedef struct
 
 typedef struct
 {
-    bool (*open)(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t io_num);
+    bool (*open)(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable);
     bool (*invert)(DevEncoder_Obj_TypeDef *obj, uint8_t reg_val);
     Encoder_Data_TypeDef (*get)(DevEncoder_Obj_TypeDef *obj);
 } DevEncoder_TypeDef;

@@ -1,5 +1,5 @@
-Objects/Dev_Gimbal.o: Dev/Dev_Gimbal.c Dev/Dev_Gimbal.h Bsp/periph_adc.h \
- Drv/drv_adc.h Drv/drv_gpio.h Bsp/periph_gpio.h USER/stm32f4xx.h \
+Objects/Input_IO_Def.o: App/Task_Input/Input_IO_Def.c \
+ App/Task_Input/Input_IO_Def.h Bsp/periph_gpio.h USER/stm32f4xx.h \
  F4_CORE/core_cm4.h F4_CORE/core_cmInstr.h F4_CORE/core_cmFunc.h \
  F4_CORE/core_cmSimd.h USER/system_stm32f4xx.h USER/stm32f4xx_conf.h \
  FWLIB/inc/stm32f4xx_adc.h FWLIB/inc/stm32f4xx_crc.h \
@@ -15,10 +15,7 @@ Objects/Dev_Gimbal.o: Dev/Dev_Gimbal.c Dev/Dev_Gimbal.h Bsp/periph_adc.h \
  FWLIB/inc/stm32f4xx_rng.h FWLIB/inc/stm32f4xx_can.h \
  FWLIB/inc/stm32f4xx_dac.h FWLIB/inc/stm32f4xx_dcmi.h \
  FWLIB/inc/stm32f4xx_fsmc.h
-Dev/Dev_Gimbal.h:
-Bsp/periph_adc.h:
-Drv/drv_adc.h:
-Drv/drv_gpio.h:
+App/Task_Input/Input_IO_Def.h:
 Bsp/periph_gpio.h:
 USER/stm32f4xx.h:
 F4_CORE/core_cm4.h:

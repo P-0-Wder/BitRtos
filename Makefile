@@ -128,6 +128,7 @@ USER/system_stm32f4xx.c \
 USER/main.c \
 App/Task_Display/Task_Widget.c \
 App/Task_Input/SrvInput.c \
+App/Task_Input/Input_IO_Def.c \
 Dev/Dev_5DirButton.c \
 Dev/Dev_Button.c \
 Dev/Dev_Toggle.c \
@@ -224,6 +225,7 @@ C_INCLUDES =  \
 -IUSB/config \
 -IUSB/core \
 -IUSER \
+-IApp/Task_Input \
 -IApp/Task_Display \
 -IApp/Task_Input \
 

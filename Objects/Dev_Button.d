@@ -1,8 +1,7 @@
-Objects/Dev_Button.o: Dev/Dev_Button.c Dev/Dev_Button.h \
- App/Task_Input/Input_IO_Def.h Drv/drv_gpio.h Bsp/periph_gpio.h \
- USER/stm32f4xx.h F4_CORE/core_cm4.h F4_CORE/core_cmInstr.h \
- F4_CORE/core_cmFunc.h F4_CORE/core_cmSimd.h USER/system_stm32f4xx.h \
- USER/stm32f4xx_conf.h FWLIB/inc/stm32f4xx_adc.h \
+Objects/Dev_Button.o: Dev/Dev_Button.c Dev/Dev_Button.h Drv/drv_gpio.h \
+ Bsp/periph_gpio.h USER/stm32f4xx.h F4_CORE/core_cm4.h \
+ F4_CORE/core_cmInstr.h F4_CORE/core_cmFunc.h F4_CORE/core_cmSimd.h \
+ USER/system_stm32f4xx.h USER/stm32f4xx_conf.h FWLIB/inc/stm32f4xx_adc.h \
  FWLIB/inc/stm32f4xx_crc.h FWLIB/inc/stm32f4xx_dbgmcu.h \
  FWLIB/inc/stm32f4xx_dma.h FWLIB/inc/stm32f4xx_exti.h \
  FWLIB/inc/stm32f4xx_flash.h FWLIB/inc/stm32f4xx_gpio.h \
@@ -16,7 +15,6 @@ Objects/Dev_Button.o: Dev/Dev_Button.c Dev/Dev_Button.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h
 Dev/Dev_Button.h:
-App/Task_Input/Input_IO_Def.h:
 Drv/drv_gpio.h:
 Bsp/periph_gpio.h:
 USER/stm32f4xx.h:

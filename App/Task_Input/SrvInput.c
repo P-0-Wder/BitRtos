@@ -1,11 +1,8 @@
 #include "SrvInput.h"
+#include "Input_IO_Def.h"
 
 /* internal variable */
 static SrvInput_Data_TypeDef InputData;
-
-/* IO object list */
-/* encoder pin */
-DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
 
 /* input hardware abstract object */
 static DevEncoder_Obj_TypeDef Encoder_Obj;
@@ -31,7 +28,14 @@ SrvInput_TypeDef InputObj = {
 
 static void SrvInput_Init(void)
 {
-    //DevEncoder.open(&Encoder_Obj, , );
+    /* encoder pin */
+    DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
+
+    EncPin[Encoder_IO_A] = Encoder_A_Pin;
+    EncPin[Encoder_IO_B] = Encoder_B_Pin;
+    EncPin[Encoder_IO_Btn] = Encoder_Btn;
+
+    DevEncoder.open(&Encoder_Obj, EncPin, true);
 }
 
 static void SrvInput_Update(void)

@@ -2,26 +2,7 @@
 #define __INPUT_IO_DEF_H
 
 #include <stdint.h>
-
-#define SetBit(x) 1 << x
-
-typedef enum
-{
-    GPIO_Output = 0,
-    GPIO_Input,
-    GPIO_Encoder,
-    GPIO_EXTI_Input,
-} DrvGPIO_CTL_TypeDef;
-
-typedef struct
-{
-    uint32_t CLK;
-    uint16_t Pin;
-    uint8_t Pin_Src;
-    void *Port;
-    DrvGPIO_CTL_TypeDef IO_Type;
-    uint8_t AF_TIMx;
-} DrvGPIO_Obj_TypeDef;
+#include "periph_gpio.h"
 
 //extern DrvGPIO_Obj_TypeDef Toggle_Left;
 //extern DrvGPIO_Obj_TypeDef Toggle_Right;
@@ -37,7 +18,7 @@ typedef struct
 extern DrvGPIO_Obj_TypeDef Encoder_Btn;
 extern DrvGPIO_Obj_TypeDef Encoder_A_Pin;
 extern DrvGPIO_Obj_TypeDef Encoder_B_Pin;
-extern DrvGPIO_Obj_TypeDef Power_Btn;
+//extern DrvGPIO_Obj_TypeDef Power_Btn;
 //extern DrvGPIO_Obj_TypeDef Sync_Out;
 //extern DrvGPIO_Obj_TypeDef Sync_In;
 
