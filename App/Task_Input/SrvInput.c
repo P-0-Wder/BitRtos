@@ -3,6 +3,7 @@
 
 /* internal variable */
 static SrvInput_Data_TypeDef InputData;
+static SrvInput_Error_List init_state = SrvInput_NoError;
 
 /* input hardware abstract object */
 static DevEncoder_Obj_TypeDef Encoder_Obj;
@@ -36,13 +37,18 @@ static SrvInput_Error_List SrvInput_Init(void)
     EncPin[Encoder_IO_Btn] = Encoder_Btn;
 
     if (!DevEncoder.open(&Encoder_Obj, EncPin, true))
+    {
+        init_state = SrvInput_Encoder_Error;
         return SrvInput_Encoder_Error;
+    }
 
     return SrvInput_NoError;
 }
 
 static SrvInput_Error_List SrvInput_Update(void)
 {
+    if (init_state != SrvInput_NoError)
+        return init_state;
 }
 
 static SrvInput_Data_TypeDef SrvInput_GetData(void)
