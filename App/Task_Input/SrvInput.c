@@ -5,6 +5,7 @@ static SrvInput_Data_TypeDef InputData;
 
 /* IO object list */
 /* encoder pin */
+DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
 
 /* input hardware abstract object */
 static DevEncoder_Obj_TypeDef Encoder_Obj;
