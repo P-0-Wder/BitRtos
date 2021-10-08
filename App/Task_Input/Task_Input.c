@@ -59,6 +59,8 @@ static int16_t TaskInput_Analog_Filter(int16_t in)
 {
     int16_t flt_val = 0;
 
+    /* filter the input analog value */
+
     return flt_val;
 }
 
@@ -77,7 +79,19 @@ static Input_Error_List TaskInput_Update(void)
     if (InputData.error != Input_NoError)
         return InputData.error;
 
+    /* get encdoer */
     InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
+
+    /* analog input */
+    /* get left gimbal */
+
+    /* get right gimbal */
+
+    /* get left side pot value */
+
+    /* get right side pot value */
+
+    /* get battery percent */
 }
 
 Input_Data_TypeDef TaskInput_GetData(void)
