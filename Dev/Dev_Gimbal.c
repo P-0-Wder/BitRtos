@@ -10,7 +10,6 @@ static uint8_t Gimbal_Num = 0;
 static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj);
 static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj);
 static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg);
-static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, int16_t offset_y);
 static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj);
 static uint8_t DrvGimbal_GetNum(void);
 
@@ -18,7 +17,6 @@ static uint8_t DrvGimbal_GetNum(void);
 DevGimbal_TypeDef DevGimbal = {
     .obj_clear = DevGimbal_Obj_Clear,
     .open = DevGimbal_Open,
-    .set_offset = DevGimbal_Set_Offset,
     .invert = DevGimbal_Invert,
     .get = DevGimbal_Get,
     .get_gimbal_num = DrvGimbal_GetNum,
@@ -33,9 +31,6 @@ static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj)
     obj->Ch_Y = ADC1_Channel_None;
 
     obj->invert_reg = Gimbal_NoneAxis_Invert;
-
-    obj->Offset_X = 0;
-    obj->Offset_Y = 0;
 
     return true;
 }
@@ -68,17 +63,6 @@ static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg)
     return true;
 }
 
-static bool DevGimbal_Set_Offset(DevGimbal_Obj_TypeDef *obj, int16_t offset_x, int16_t offset_y)
-{
-    if (obj == NULL)
-        return false;
-
-    obj->Offset_X = offset_x;
-    obj->Offset_Y = offset_y;
-
-    return true;
-}
-
 static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj)
 {
     DevGimbal_Val_TypeDef Val_tmp;
@@ -93,9 +77,8 @@ static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj)
     }
     else
     {
-        /* TODO */
-        Val_tmp.Gim_X = DrvADC.read((uint32_t)obj->Ch_X) + obj->Offset_X;
-        Val_tmp.Gim_Y = DrvADC.read((uint32_t)obj->Ch_Y) + obj->Offset_Y;
+        Val_tmp.Gim_X = DrvADC.read((uint32_t)obj->Ch_X);
+        Val_tmp.Gim_Y = DrvADC.read((uint32_t)obj->Ch_Y);
 
         if (obj->invert_reg & Gimbal_AxisX_Invert)
         {
