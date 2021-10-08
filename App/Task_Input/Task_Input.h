@@ -33,6 +33,13 @@ typedef enum
 
 typedef struct
 {
+    int16_t range_max;
+    int16_t range_min;
+    int16_t offset;
+} Input_MapObj_TypeDef;
+
+typedef struct
+{
     DevGimbal_Val_TypeDef Gimbal_L;
     DevGimbal_Val_TypeDef Gimbal_R;
 

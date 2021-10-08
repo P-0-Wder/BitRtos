@@ -55,10 +55,19 @@ static Input_Error_List TaskInput_Init(void)
     return Input_NoError;
 }
 
-static int16_t TaskInput_AnalogIn_Map(int16_t in, int16_t range_min, int16_t range_max)
+static int16_t TaskInput_Analog_Filter(int16_t in)
+{
+    int16_t flt_val = 0;
+
+    return flt_val;
+}
+
+static int16_t TaskInput_AnalogValue_Map(int16_t in)
 {
     int16_t map_val = 0;
     double gain = 0.0;
+
+    /* include analog input liner and none liner condition map */
 
     return map_val;
 }
