@@ -9,19 +9,27 @@
 #include "Dev_Gimbal.h"
 #include "Dev_Button.h"
 #include "Dev_Encoder.h"
+#include "task_manager.h"
 
 #define GIMBAL_RANGE 500
 
 typedef enum
 {
-    SrvInput_NoError = 0,
-    SrvInput_Initial,
-    SrvInput_Encoder_Error,
-    SrvInput_Gimbal_Error,
-    SrvInput_Button_Error,
-    SrvInput_Toggle_Error,
-    SrvInput_5DirButton_Error,
-} SrvInput_Error_List;
+    TaskInput_Initialize = 0,
+    TaskInput_Init_Error,
+    TaskInput_Updating,
+} TaskInput_Stage_List;
+
+typedef enum
+{
+    Input_NoError = 0,
+    Input_Initial,
+    Input_Encoder_Error,
+    Input_Gimbal_Error,
+    Input_Button_Error,
+    Input_Toggle_Error,
+    Input_5DirButton_Error,
+} Input_Error_List;
 
 typedef struct
 {
@@ -37,16 +45,9 @@ typedef struct
     DevToggle_Pos_List zr_tog;
 
     DirButton_Val_List dir_btn;
-    SrvInput_Error_List error;
-} SrvInput_Data_TypeDef;
+    Input_Error_List error;
+} Input_Data_TypeDef;
 
-typedef struct
-{
-    SrvInput_Error_List (*init)(void);
-    SrvInput_Error_List (*sample)(void);
-    SrvInput_Data_TypeDef (*get_data)(void);
-} SrvInput_TypeDef;
-
-extern SrvInput_TypeDef InputObj;
+void TaskInput_Core(Task_Handler self);
 
 #endif
