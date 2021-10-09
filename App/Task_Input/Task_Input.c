@@ -6,6 +6,12 @@
 static Input_Data_TypeDef InputData;
 static TaskInput_Stage_List Task_Stage = TaskInput_Initialize;
 
+static Gimbal_Proc_TypeDef Gimbal_L_ProcObj;
+static Gimbal_Proc_TypeDef Gimbal_R_ProcObj;
+
+static AnalogProc_Obj_TypeDef L_Pot_ProcObj;
+static AnalogProc_Obj_TypeDef R_Pot_ProcObj;
+
 /* input hardware abstract object */
 static DevEncoder_Obj_TypeDef Encoder_Obj;
 //static DevGimbal_Obj_TypeDef Gimbal_L_Obj;
@@ -92,6 +98,10 @@ static Input_Error_List TaskInput_Update(void)
     /* get right side pot value */
 
     /* get battery percent */
+}
+
+static void TaskInput_Gimbal_Cali(void)
+{
 }
 
 Input_Data_TypeDef TaskInput_GetData(void)
