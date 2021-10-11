@@ -14,17 +14,23 @@ static void MMU_Trim(void)
 {
 }
 
-/* virtual memory manager unit malloc */
-void *VMMU_Malloc(uint32_t size)
+/* memory manager unit malloc */
+void *MMU_Malloc(uint32_t size)
 {
+    __asm("cpsid i");
+
+    __asm("cpsie i");
 }
 
-/* virtual memory manager unit free */
-void VMMU_Free(void *ptr)
+/* memory manager unit free */
+void MMU_Free(void *ptr)
 {
+    __asm("cpsid i");
+
+    __asm("cpsie i");
 }
 
-Mem_Monitor_TypeDef VMMU_Info(void)
+Mem_Monitor_TypeDef MMU_Info(void)
 {
     return Mem_Monitor;
 }
