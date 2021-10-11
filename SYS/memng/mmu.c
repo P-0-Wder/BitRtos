@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* internal variable */
 static Mem_Monitor_TypeDef Mem_Monitor = {
     .remain_size = PHY_MEM_SIZE,
     .total_size = PHY_MEM_SIZE,
@@ -11,19 +10,21 @@ static Mem_Monitor_TypeDef Mem_Monitor = {
 
 static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((__align(32)));
 
-static MMU_Trim(void)
+static void MMU_Trim(void)
 {
 }
 
-void *MMU_Malloc(uint32_t size)
+/* virtual memory manager unit malloc */
+void *VMMU_Malloc(uint32_t size)
 {
 }
 
-void MMU_Free(void *ptr)
+/* virtual memory manager unit free */
+void VMMU_Free(void *ptr)
 {
 }
 
-Mem_Monitor_TypeDef MMU_Info(void)
+Mem_Monitor_TypeDef VMMU_Info(void)
 {
     return Mem_Monitor;
 }

@@ -16,4 +16,10 @@ typedef struct
     uint32_t total_size;
 } Mem_Monitor_TypeDef;
 
+typedef struct
+{
+    uint32_t page;
+    uint32_t offset;
+} VirtualMem_TypeDef;
+
 #endif
