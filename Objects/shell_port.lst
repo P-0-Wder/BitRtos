@@ -1,32 +1,32 @@
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s 			page 1
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccp92BJg.s 			page 1
 
 
-   1              		.cpu cortex-m4
-   2              		.eabi_attribute 27, 1
-   3              		.eabi_attribute 28, 1
-   4              		.eabi_attribute 20, 1
-   5              		.eabi_attribute 21, 1
-   6              		.eabi_attribute 23, 3
-   7              		.eabi_attribute 24, 1
-   8              		.eabi_attribute 25, 1
-   9              		.eabi_attribute 26, 1
-  10              		.eabi_attribute 30, 1
-  11              		.eabi_attribute 34, 1
-  12              		.eabi_attribute 18, 4
-  13              		.file	"shell_port.c"
-  14              		.text
-  15              	.Ltext0:
-  16              		.cfi_sections	.debug_frame
-  17              		.section	.text.user_shell_write,"ax",%progbits
-  18              		.align	1
-  19              		.global	user_shell_write
-  20              		.arch armv7e-m
-  21              		.syntax unified
-  22              		.thumb
-  23              		.thumb_func
-  24              		.fpu fpv4-sp-d16
-  26              	user_shell_write:
-  27              	.LVL0:
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"shell_port.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.user_shell_write,"ax",%progbits
+  22              		.align	2
+  23              		.global	user_shell_write
+  24              		.thumb
+  25              		.thumb_func
+  27              	user_shell_write:
   28              	.LFB123:
   29              		.file 1 "Dsp/letter_shell/shell_port.c"
    1:Dsp/letter_shell/shell_port.c **** #include "shell.h"
@@ -39,154 +39,203 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s 			page 1
    8:Dsp/letter_shell/shell_port.c **** 
    9:Dsp/letter_shell/shell_port.c **** Shell shell;
   10:Dsp/letter_shell/shell_port.c **** char shell_buff[512];
-  11:Dsp/letter_shell/shell_port.c **** uint16_t dma_shell_buf[1] = {0};
+  11:Dsp/letter_shell/shell_port.c **** int dma_shell_buf[40] = {0};
   12:Dsp/letter_shell/shell_port.c **** 
-  13:Dsp/letter_shell/shell_port.c **** void user_shell_write(const char ch)
+  13:Dsp/letter_shell/shell_port.c **** void user_shell_write(const int ch)
   14:Dsp/letter_shell/shell_port.c **** {	
-  30              		.loc 1 14 1 view -0
+  30              		.loc 1 14 0
   31              		.cfi_startproc
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		.loc 1 14 1 is_stmt 0 view .LVU1
+  34              	.LVL0:
   35 0000 08B5     		push	{r3, lr}
   36              	.LCFI0:
   37              		.cfi_def_cfa_offset 8
   38              		.cfi_offset 3, -8
   39              		.cfi_offset 14, -4
   15:Dsp/letter_shell/shell_port.c **** 		dma_shell_buf[0] = ch;
-  40              		.loc 1 15 3 is_stmt 1 view .LVU2
-  41              		.loc 1 15 20 is_stmt 0 view .LVU3
-  42 0002 064B     		ldr	r3, .L3
-  43 0004 1880     		strh	r0, [r3]	@ movhi
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s 			page 2
-
-
+  40              		.loc 1 15 0
+  41 0002 094B     		ldr	r3, .L4
+  42 0004 1860     		str	r0, [r3]
   16:Dsp/letter_shell/shell_port.c **** 		Serial_DMA_SendBuff(Serial_1,1);
-  44              		.loc 1 16 3 is_stmt 1 view .LVU4
-  45 0006 0121     		movs	r1, #1
-  46 0008 0020     		movs	r0, #0
-  47              	.LVL1:
-  48              		.loc 1 16 3 is_stmt 0 view .LVU5
-  49 000a FFF7FEFF 		bl	Serial_DMA_SendBuff
-  50              	.LVL2:
-  17:Dsp/letter_shell/shell_port.c **** 		DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);//清除DMA2_Steam7传输完成标志
-  51              		.loc 1 17 3 is_stmt 1 view .LVU6
-  52 000e 4FF02051 		mov	r1, #671088640
-  53 0012 0348     		ldr	r0, .L3+4
-  54 0014 FFF7FEFF 		bl	DMA_ClearFlag
-  55              	.LVL3:
-  18:Dsp/letter_shell/shell_port.c **** }
-  56              		.loc 1 18 1 is_stmt 0 view .LVU7
-  57 0018 08BD     		pop	{r3, pc}
-  58              	.L4:
-  59 001a 00BF     		.align	2
-  60              	.L3:
-  61 001c 00000000 		.word	.LANCHOR0
-  62 0020 B8640240 		.word	1073898680
-  63              		.cfi_endproc
-  64              	.LFE123:
-  66              		.section	.text.Shell_Init,"ax",%progbits
-  67              		.align	1
-  68              		.global	Shell_Init
-  69              		.syntax unified
-  70              		.thumb
-  71              		.thumb_func
-  72              		.fpu fpv4-sp-d16
-  74              	Shell_Init:
-  75              	.LFB124:
-  19:Dsp/letter_shell/shell_port.c **** 
-  20:Dsp/letter_shell/shell_port.c **** void Shell_Init(void)
-  21:Dsp/letter_shell/shell_port.c **** {
-  76              		.loc 1 21 1 is_stmt 1 view -0
-  77              		.cfi_startproc
-  78              		@ args = 0, pretend = 0, frame = 0
-  79              		@ frame_needed = 0, uses_anonymous_args = 0
-  80 0000 08B5     		push	{r3, lr}
-  81              	.LCFI1:
-  82              		.cfi_def_cfa_offset 8
-  83              		.cfi_offset 3, -8
-  84              		.cfi_offset 14, -4
-  22:Dsp/letter_shell/shell_port.c **** 	shell.write = user_shell_write;
-  85              		.loc 1 22 2 view .LVU9
-  86              		.loc 1 22 14 is_stmt 0 view .LVU10
-  87 0002 0448     		ldr	r0, .L7
-  88 0004 044B     		ldr	r3, .L7+4
-  89 0006 8366     		str	r3, [r0, #104]
-  23:Dsp/letter_shell/shell_port.c **** 	
-  24:Dsp/letter_shell/shell_port.c **** 	shellInit(&shell,shell_buff,512);
-  90              		.loc 1 24 2 is_stmt 1 view .LVU11
-  91 0008 4FF40072 		mov	r2, #512
-  92 000c 0349     		ldr	r1, .L7+8
-  93 000e FFF7FEFF 		bl	shellInit
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s 			page 3
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccp92BJg.s 			page 2
 
 
-  94              	.LVL4:
-  25:Dsp/letter_shell/shell_port.c **** }
-  95              		.loc 1 25 1 is_stmt 0 view .LVU12
-  96 0012 08BD     		pop	{r3, pc}
-  97              	.L8:
-  98              		.align	2
-  99              	.L7:
- 100 0014 00000000 		.word	.LANCHOR1
- 101 0018 00000000 		.word	user_shell_write
- 102 001c 00000000 		.word	.LANCHOR2
- 103              		.cfi_endproc
- 104              	.LFE124:
- 106              		.global	dma_shell_buf
- 107              		.global	shell_buff
- 108              		.global	shell
- 109              		.section	.bss.dma_shell_buf,"aw",%nobits
- 110              		.align	2
- 111              		.set	.LANCHOR0,. + 0
- 114              	dma_shell_buf:
- 115 0000 0000     		.space	2
- 116              		.section	.bss.shell,"aw",%nobits
- 117              		.align	2
- 118              		.set	.LANCHOR1,. + 0
- 121              	shell:
- 122 0000 00000000 		.space	108
- 122      00000000 
- 122      00000000 
- 122      00000000 
- 122      00000000 
- 123              		.section	.bss.shell_buff,"aw",%nobits
- 124              		.align	2
- 125              		.set	.LANCHOR2,. + 0
- 128              	shell_buff:
- 129 0000 00000000 		.space	512
- 129      00000000 
- 129      00000000 
- 129      00000000 
- 129      00000000 
- 130              		.text
- 131              	.Letext0:
- 132              		.file 2 "Dsp/letter_shell/shell.h"
- 133              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
- 134              		.file 4 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
- 135              		.file 5 "USER/stm32f4xx.h"
- 136              		.file 6 "Bsp/periph_serial.h"
- 137              		.file 7 "Dsp/letter_shell/shell_port.h"
- 138              		.file 8 "FWLIB/inc/stm32f4xx_dma.h"
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s 			page 4
+  43              		.loc 1 16 0
+  44 0006 0121     		movs	r1, #1
+  45 0008 0020     		movs	r0, #0
+  46              	.LVL1:
+  47 000a FFF7FEFF 		bl	Serial_DMA_SendBuff
+  48              	.LVL2:
+  17:Dsp/letter_shell/shell_port.c **** 		while(DMA_GetFlagStatus(DMA2_Stream7,DMA_FLAG_TCIF7) != RESET)
+  49              		.loc 1 17 0
+  50 000e 4FF02051 		mov	r1, #671088640
+  51 0012 0648     		ldr	r0, .L4+4
+  52 0014 FFF7FEFF 		bl	DMA_GetFlagStatus
+  53              	.LVL3:
+  54 0018 20B1     		cbz	r0, .L1
+  18:Dsp/letter_shell/shell_port.c **** 		{
+  19:Dsp/letter_shell/shell_port.c **** 			DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);//清除DMA2_Steam7传输完成标志
+  55              		.loc 1 19 0
+  56 001a 4FF02051 		mov	r1, #671088640
+  57 001e 0348     		ldr	r0, .L4+4
+  58 0020 FFF7FEFF 		bl	DMA_ClearFlag
+  59              	.LVL4:
+  60              	.L1:
+  61 0024 08BD     		pop	{r3, pc}
+  62              	.L5:
+  63 0026 00BF     		.align	2
+  64              	.L4:
+  65 0028 00000000 		.word	.LANCHOR0
+  66 002c B8640240 		.word	1073898680
+  67              		.cfi_endproc
+  68              	.LFE123:
+  70              		.section	.text.user_shell_write_byte,"ax",%progbits
+  71              		.align	2
+  72              		.global	user_shell_write_byte
+  73              		.thumb
+  74              		.thumb_func
+  76              	user_shell_write_byte:
+  77              	.LFB124:
+  20:Dsp/letter_shell/shell_port.c **** 			break;
+  21:Dsp/letter_shell/shell_port.c **** 		}
+  22:Dsp/letter_shell/shell_port.c **** 
+  23:Dsp/letter_shell/shell_port.c **** }
+  24:Dsp/letter_shell/shell_port.c **** 
+  25:Dsp/letter_shell/shell_port.c **** void user_shell_write_byte(const int ch,int len)
+  26:Dsp/letter_shell/shell_port.c **** {
+  78              		.loc 1 26 0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82              	.LVL5:
+  83 0000 70B5     		push	{r4, r5, r6, lr}
+  84              	.LCFI1:
+  85              		.cfi_def_cfa_offset 16
+  86              		.cfi_offset 4, -16
+  87              		.cfi_offset 5, -12
+  88              		.cfi_offset 6, -8
+  89              		.cfi_offset 14, -4
+  90 0002 0646     		mov	r6, r0
+  91 0004 0D46     		mov	r5, r1
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccp92BJg.s 			page 3
+
+
+  92              	.LVL6:
+  27:Dsp/letter_shell/shell_port.c **** 	int i = 0;
+  93              		.loc 1 27 0
+  94 0006 0024     		movs	r4, #0
+  28:Dsp/letter_shell/shell_port.c **** 	for(;i<len;i++)
+  95              		.loc 1 28 0
+  96 0008 03E0     		b	.L7
+  97              	.LVL7:
+  98              	.L8:
+  29:Dsp/letter_shell/shell_port.c **** 	{
+  30:Dsp/letter_shell/shell_port.c **** 		user_shell_write(ch);
+  99              		.loc 1 30 0 discriminator 2
+ 100 000a 3046     		mov	r0, r6
+ 101 000c FFF7FEFF 		bl	user_shell_write
+ 102              	.LVL8:
+  28:Dsp/letter_shell/shell_port.c **** 	for(;i<len;i++)
+ 103              		.loc 1 28 0 discriminator 2
+ 104 0010 0134     		adds	r4, r4, #1
+ 105              	.LVL9:
+ 106              	.L7:
+  28:Dsp/letter_shell/shell_port.c **** 	for(;i<len;i++)
+ 107              		.loc 1 28 0 is_stmt 0 discriminator 1
+ 108 0012 AC42     		cmp	r4, r5
+ 109 0014 F9DB     		blt	.L8
+  31:Dsp/letter_shell/shell_port.c **** 	}
+  32:Dsp/letter_shell/shell_port.c **** }
+ 110              		.loc 1 32 0 is_stmt 1
+ 111 0016 70BD     		pop	{r4, r5, r6, pc}
+ 112              		.cfi_endproc
+ 113              	.LFE124:
+ 115              		.section	.text.Shell_Init,"ax",%progbits
+ 116              		.align	2
+ 117              		.global	Shell_Init
+ 118              		.thumb
+ 119              		.thumb_func
+ 121              	Shell_Init:
+ 122              	.LFB125:
+  33:Dsp/letter_shell/shell_port.c **** 
+  34:Dsp/letter_shell/shell_port.c **** void Shell_Init(void)
+  35:Dsp/letter_shell/shell_port.c **** {
+ 123              		.loc 1 35 0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 0
+ 126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 127 0000 08B5     		push	{r3, lr}
+ 128              	.LCFI2:
+ 129              		.cfi_def_cfa_offset 8
+ 130              		.cfi_offset 3, -8
+ 131              		.cfi_offset 14, -4
+  36:Dsp/letter_shell/shell_port.c **** 	shell.write = user_shell_write;
+ 132              		.loc 1 36 0
+ 133 0002 0448     		ldr	r0, .L12
+ 134 0004 044B     		ldr	r3, .L12+4
+ 135 0006 8366     		str	r3, [r0, #104]
+  37:Dsp/letter_shell/shell_port.c **** 	
+  38:Dsp/letter_shell/shell_port.c **** 	shellInit(&shell,shell_buff,512);
+ 136              		.loc 1 38 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccp92BJg.s 			page 4
+
+
+ 137 0008 4FF40072 		mov	r2, #512
+ 138 000c 0349     		ldr	r1, .L12+8
+ 139 000e FFF7FEFF 		bl	shellInit
+ 140              	.LVL10:
+ 141 0012 08BD     		pop	{r3, pc}
+ 142              	.L13:
+ 143              		.align	2
+ 144              	.L12:
+ 145 0014 00000000 		.word	shell
+ 146 0018 00000000 		.word	user_shell_write
+ 147 001c 00000000 		.word	shell_buff
+ 148              		.cfi_endproc
+ 149              	.LFE125:
+ 151              		.global	dma_shell_buf
+ 152              		.comm	shell_buff,512,4
+ 153              		.comm	shell,108,4
+ 154              		.section	.bss.dma_shell_buf,"aw",%nobits
+ 155              		.align	2
+ 156              		.set	.LANCHOR0,. + 0
+ 159              	dma_shell_buf:
+ 160 0000 00000000 		.space	160
+ 160      00000000 
+ 160      00000000 
+ 160      00000000 
+ 160      00000000 
+ 161              		.text
+ 162              	.Letext0:
+ 163              		.file 2 "Dsp/letter_shell/shell.h"
+ 164              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 165              		.file 4 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 166              		.file 5 "USER/stm32f4xx.h"
+ 167              		.file 6 "Bsp/periph_serial.h"
+ 168              		.file 7 "F4_CORE/core_cm4.h"
+ 169              		.file 8 "FWLIB/inc/stm32f4xx_dma.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccp92BJg.s 			page 5
 
 
 DEFINED SYMBOLS
-                            *ABS*:0000000000000000 shell_port.c
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:18     .text.user_shell_write:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:26     .text.user_shell_write:0000000000000000 user_shell_write
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:61     .text.user_shell_write:000000000000001c $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:67     .text.Shell_Init:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:74     .text.Shell_Init:0000000000000000 Shell_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:100    .text.Shell_Init:0000000000000014 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:114    .bss.dma_shell_buf:0000000000000000 dma_shell_buf
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:128    .bss.shell_buff:0000000000000000 shell_buff
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:121    .bss.shell:0000000000000000 shell
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:110    .bss.dma_shell_buf:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:117    .bss.shell:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpw5FQw.s:124    .bss.shell_buff:0000000000000000 $d
+                            *ABS*:00000000 shell_port.c
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:22     .text.user_shell_write:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:27     .text.user_shell_write:00000000 user_shell_write
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:65     .text.user_shell_write:00000028 $d
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:71     .text.user_shell_write_byte:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:76     .text.user_shell_write_byte:00000000 user_shell_write_byte
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:116    .text.Shell_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:121    .text.Shell_Init:00000000 Shell_Init
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:145    .text.Shell_Init:00000014 $d
+                            *COM*:0000006c shell
+                            *COM*:00000200 shell_buff
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:159    .bss.dma_shell_buf:00000000 dma_shell_buf
+C:\Users\why\AppData\Local\Temp\ccp92BJg.s:155    .bss.dma_shell_buf:00000000 $d
+                     .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS
 Serial_DMA_SendBuff
+DMA_GetFlagStatus
 DMA_ClearFlag
 shellInit
