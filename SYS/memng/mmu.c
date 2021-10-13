@@ -30,6 +30,15 @@ static uint8_t MMU_ErrorProc(Mem_Opr_State_List *state)
     switch (*(uint8_t *)state)
     {
 
+    case Mem_Init_Error:
+        break;
+
+    case Men_Molloc_Failed:
+        break;
+
+    case Mem_Free_Failed:
+        break;
+
     default:
         break;
     }
