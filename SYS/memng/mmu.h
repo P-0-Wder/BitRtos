@@ -20,7 +20,7 @@ typedef struct
     MemSize_t total_size;
 } Mem_Monitor_TypeDef;
 
-/* memory block structure */
+/* memory block structure  */
 typedef struct
 {
     void *bgn;
