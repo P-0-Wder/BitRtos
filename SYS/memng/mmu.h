@@ -7,8 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define BLOCK_LENGTH
-#define BLOCK_ALIGMENT_SIZE
+#define BLOCK_ALIGMENT_LEN
 
 #define PHY_MEM_SIZE 64 * 1024
 
@@ -20,6 +19,16 @@ typedef struct
     MemSize_t remain_size;
     MemSize_t total_size;
 } Mem_Monitor_TypeDef;
+
+/* memory block structure */
+typedef struct
+{
+    void *bgn;
+    void *end;
+    void *nxt;
+
+    uint32_t len;
+} MemBlock_TypeDef;
 
 typedef enum
 {
