@@ -27,6 +27,13 @@ static uint8_t MMU_ErrorProc(Mem_Opr_State_List *state)
 {
     uint8_t state = 0;
 
+    switch (*(uint8_t *)state)
+    {
+
+    default:
+        break;
+    }
+
     return state;
 }
 
