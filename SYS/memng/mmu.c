@@ -49,6 +49,8 @@ static uint8_t MMU_ErrorProc(Mem_Opr_State_List *state)
 /* memory manager unit malloc */
 void *MMU_Malloc(uint32_t size)
 {
+    void *mem_addr;
+
     while (true)
     {
         switch ((uint8_t)Mem_OprState)
@@ -66,14 +68,16 @@ void *MMU_Malloc(uint32_t size)
             __asm("cpsid i");
 
             __asm("cpsie i");
-            return;
+            return mem_addr;
 
         default:
             /* TO DO Error Process */
             MMU_ErrorProc(&Mem_OprState);
-            break;
+            return 0;
         }
     }
+
+    return 0;
 }
 
 /* memory manager unit free */
