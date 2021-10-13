@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 #define BLOCK_LENGTH
-#define BLOCK_SIZE
+#define BLOCK_ALIGMENT_SIZE
 
 #define PHY_MEM_SIZE 64 * 1024
 
