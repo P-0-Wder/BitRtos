@@ -67,6 +67,16 @@ void *MMU_Malloc(uint32_t size)
         case Men_Molloc:
             __asm("cpsid i");
 
+            if (size > Mem_Monitor.remain_size)
+            {
+                mem_addr = 0;
+            }
+            else
+            {
+                Mem_Monitor.remain_size -= size;
+                Mem_Monitor.used_size += size;
+            }
+
             __asm("cpsie i");
             return mem_addr;
 
