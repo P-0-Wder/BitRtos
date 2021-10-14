@@ -2,12 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 
-static Mem_Opr_State_List Mem_OprState = Mem_Init;
-
 static Mem_Monitor_TypeDef Mem_Monitor = {
     .remain_size = PHY_MEM_SIZE,
     .total_size = PHY_MEM_SIZE,
     .used_size = 0,
+    .init = false,
 };
 
 static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((__align(32)));
@@ -23,68 +22,34 @@ static bool MMU_InitBlock(void)
     return true;
 }
 
-static uint8_t MMU_ErrorProc(Mem_Opr_State_List *state)
-{
-    uint8_t state = 0;
-
-    switch (*(uint8_t *)state)
-    {
-
-    case Mem_Init_Error:
-        break;
-
-    case Men_Molloc_Failed:
-        break;
-
-    case Mem_Free_Failed:
-        break;
-
-    default:
-        break;
-    }
-
-    return state;
-}
-
 /* memory manager unit malloc */
 void *MMU_Malloc(uint32_t size)
 {
     void *mem_addr;
 
-    while (true)
+    if (!Mem_Monitor.init)
     {
-        switch ((uint8_t)Mem_OprState)
+        MMU_InitBlock();
+
+        Mem_Monitor.init = true;
+    }
+
+    if (Mem_Monitor.init)
+    {
+        __asm("cpsid i");
+
+        if (size > Mem_Monitor.remain_size)
         {
-        case Mem_Init:
-            if (MMU_InitBlock())
-            {
-                Mem_OprState = Men_Molloc;
-            }
-            else
-                Mem_OprState = Mem_Init_Error;
-            break;
-
-        case Men_Molloc:
-            __asm("cpsid i");
-
-            if (size > Mem_Monitor.remain_size)
-            {
-                mem_addr = 0;
-            }
-            else
-            {
-                Mem_Monitor.remain_size -= size;
-                Mem_Monitor.used_size += size;
-            }
-
-            __asm("cpsie i");
-            return mem_addr;
-
-        default:
-            /* TO DO Error Process */
-            MMU_ErrorProc(&Mem_OprState);
             return 0;
         }
+        else
+        {
+            Mem_Monitor.remain_size -= size;
+            Mem_Monitor.used_size += size;
+        }
+
+        __asm("cpsie i");
+        return mem_addr;
     }
 
     return 0;

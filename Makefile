@@ -45,6 +45,7 @@ SYS/runtime/runtime.c \
 SYS/task_manager/task_manager.c \
 SYS/common/reboot.c \
 SYS/common/sys.c \
+SYS/memng/mmu.c \
 SYS/crc/crc16.c \
 Dsp/screen/font/oledfont.c \
 Dsp/screen/device/oled1306.c \
@@ -221,6 +222,7 @@ C_INCLUDES =  \
 -ISYS/event \
 -ISYS/task \
 -ISYS/crc \
+-ISYS/memng \
 -ISYS/faultcheck \
 -IUSB/config \
 -IUSB/core \
