@@ -5,6 +5,7 @@
 static Mem_Monitor_TypeDef Mem_Monitor = {
     .remain_size = PHY_MEM_SIZE,
     .total_size = PHY_MEM_SIZE,
+    .table_size = MEM_ALLOC_TABLE_SIZE,
     .used_size = 0,
     .init = false,
 };

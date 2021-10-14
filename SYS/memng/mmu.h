@@ -20,6 +20,7 @@ typedef struct
     MemSize_t used_size;
     MemSize_t remain_size;
     MemSize_t total_size;
+    MemSize_t table_size;
 
     bool init;
 } Mem_Monitor_TypeDef;
