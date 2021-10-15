@@ -20,10 +20,17 @@ static void MMU_Trim(void)
 /* memory block initial */
 static void MMU_Init(void)
 {
+    uint32_t index = 0;
+
     /* init memory state table */
-    for (uint32_t index = 0; index < MEM_ALLOC_TABLE_SIZE; index++)
+    for (index = 0; index < MEM_ALLOC_TABLE_SIZE; index++)
     {
         MMU_StateTable[index] = 0;
+    }
+
+    for (index = 0; index < PHY_MEM_SIZE; index++)
+    {
+        MMU_Buff[index] = 0;
     }
 }
 
