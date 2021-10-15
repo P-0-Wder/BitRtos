@@ -10,7 +10,7 @@ static Mem_Monitor_TypeDef Mem_Monitor = {
     .init = false,
 };
 
-static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((__align(32)));
+static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE)));
 
 static void MMU_Trim(void)
 {
