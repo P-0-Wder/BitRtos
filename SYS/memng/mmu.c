@@ -11,13 +11,18 @@ static Mem_Monitor_TypeDef Mem_Monitor = {
 };
 
 static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE)));
+static uint8_t MMU_StateTable[MEM_ALLOC_TABLE_SIZE];
 
 static void MMU_Trim(void)
 {
+    for (uint32_t index = 0; index < MEM_ALLOC_TABLE_SIZE; index++)
+    {
+        MMU_StateTable[index] = 0;
+    }
 }
 
 /* memory block initial */
-static bool MMU_InitBlock(void)
+static bool MMU_Init(void)
 {
 
     return true;
@@ -30,7 +35,7 @@ void *MMU_Malloc(uint32_t size)
 
     if (!Mem_Monitor.init)
     {
-        MMU_InitBlock();
+        MMU_Init();
 
         Mem_Monitor.init = true;
     }
