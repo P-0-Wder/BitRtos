@@ -46,7 +46,7 @@ void *MMU_Malloc(uint32_t size)
 
         if ((size > Mem_Monitor.remain_size) || (size == 0))
         {
-            return 0;
+            mem_addr = 0;
         }
         else
         {
@@ -61,10 +61,11 @@ void *MMU_Malloc(uint32_t size)
         }
 
         __asm("cpsie i");
-        return mem_addr;
+
+        //mem_addr = ;
     }
 
-    return 0;
+    return mem_addr;
 }
 
 /* memory manager unit free */
