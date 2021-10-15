@@ -30,6 +30,7 @@ static void MMU_Init(void)
 /* memory manager unit malloc */
 void *MMU_Malloc(uint32_t size)
 {
+    uint32_t req_block_num = 0;
     void *mem_addr;
 
     if (!Mem_Monitor.init)
@@ -49,8 +50,14 @@ void *MMU_Malloc(uint32_t size)
         }
         else
         {
-            Mem_Monitor.remain_size -= size;
-            Mem_Monitor.used_size += size;
+            req_block_num = size / BLOCK_ALIGMENT_SIZE;
+            if (size % BLOCK_ALIGMENT_SIZE)
+            {
+                req_block_num++;
+            }
+
+            Mem_Monitor.remain_size -= req_block_num * BLOCK_ALIGMENT_SIZE;
+            Mem_Monitor.used_size += req_block_num * BLOCK_ALIGMENT_SIZE;
         }
 
         __asm("cpsie i");
