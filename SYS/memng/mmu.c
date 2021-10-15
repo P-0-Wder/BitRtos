@@ -39,7 +39,7 @@ void *MMU_Malloc(uint32_t size)
     {
         __asm("cpsid i");
 
-        if (size > Mem_Monitor.remain_size)
+        if ((size > Mem_Monitor.remain_size) || (size == 0))
         {
             return 0;
         }
