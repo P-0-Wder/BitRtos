@@ -15,17 +15,16 @@ static uint8_t MMU_StateTable[MEM_ALLOC_TABLE_SIZE];
 
 static void MMU_Trim(void)
 {
+}
+
+/* memory block initial */
+static void MMU_Init(void)
+{
+    /* init memory state table */
     for (uint32_t index = 0; index < MEM_ALLOC_TABLE_SIZE; index++)
     {
         MMU_StateTable[index] = 0;
     }
-}
-
-/* memory block initial */
-static bool MMU_Init(void)
-{
-
-    return true;
 }
 
 /* memory manager unit malloc */
