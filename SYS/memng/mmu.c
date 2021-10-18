@@ -37,6 +37,7 @@ static void MMU_Init(void)
     }
 
     MMU_Start = &MMU_Buff[BLOCK_BORDER_SIZE];
+    MMU_End = &MMU_Buff[PHY_MEM_SIZE - BLOCK_BORDER_SIZE];
 }
 
 /* memory manager unit malloc */
