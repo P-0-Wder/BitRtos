@@ -13,6 +13,9 @@ static Mem_Monitor_TypeDef Mem_Monitor = {
 static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE)));
 static uint8_t MMU_StateTable[MEM_ALLOC_TABLE_SIZE];
 
+static MemAddr MMU_Start = NULL;
+static MemAddr MMU_End = NULL;
+
 static void MMU_Trim(void)
 {
 }
@@ -32,6 +35,8 @@ static void MMU_Init(void)
 
         MMU_Buff[index] = 0;
     }
+
+    MMU_Start = &MMU_Buff[BLOCK_BORDER_SIZE];
 }
 
 /* memory manager unit malloc */
@@ -53,7 +58,7 @@ void *MMU_Malloc(uint32_t size)
 
         if ((size > Mem_Monitor.remain_size) || (size == 0))
         {
-            mem_addr = 0;
+            mem_addr = NULL;
         }
         else
         {

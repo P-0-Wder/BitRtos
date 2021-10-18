@@ -8,12 +8,13 @@
 #include <stdio.h>
 
 #define BLOCK_ALIGMENT_SIZE 8
-
+#define BLOCK_BORDER_SIZE 4
 #define PHY_MEM_SIZE 62 * 1024
 
 #define MEM_ALLOC_TABLE_SIZE PHY_MEM_SIZE / BLOCK_ALIGMENT_SIZE
 
-typedef uint32_t MemSize_t;
+typedef uint32_t *MemSize_t;
+typedef uint32_t *MemAddr;
 
 typedef struct
 {
