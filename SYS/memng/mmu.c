@@ -5,20 +5,14 @@
 static Mem_Monitor_TypeDef Mem_Monitor = {
     .remain_size = PHY_MEM_SIZE,
     .total_size = PHY_MEM_SIZE,
-    .table_size = MEM_ALLOC_TABLE_SIZE,
     .used_size = 0,
     .init = false,
 };
 
 static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE)));
-static uint8_t MMU_StateTable[MEM_ALLOC_TABLE_SIZE];
 
-static MemAddr MMU_Start = NULL;
-static MemAddr MMU_End = NULL;
-
-static void MMU_Trim(void)
-{
-}
+static MemBlock_TypeDef MMU_Start;
+static MemBlock_TypeDef MMU_End;
 
 /* memory block initial */
 static void MMU_Init(void)
@@ -28,16 +22,14 @@ static void MMU_Init(void)
     /* init memory state table */
     for (index = 0; index < PHY_MEM_SIZE; index++)
     {
-        if (index < MEM_ALLOC_TABLE_SIZE)
-        {
-            MMU_StateTable[index] = 0;
-        }
-
         MMU_Buff[index] = 0;
     }
 
-    MMU_Start = &MMU_Buff[BLOCK_BORDER_SIZE];
-    MMU_End = &MMU_Buff[PHY_MEM_SIZE - BLOCK_BORDER_SIZE];
+    MMU_Start.nxt = &MMU_End;
+    MMU_Start.len = PHY_MEM_SIZE - BLOCK_BORDER_SIZE * 2;
+
+    MMU_End.nxt = NULL;
+    MMU_End.len = 0;
 }
 
 /* memory manager unit malloc */

@@ -1,4 +1,4 @@
-ARM GAS  /tmp/cc64DtJg.s 			page 1
+ARM GAS  /tmp/ccmRkLv2.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -25,7 +25,7 @@ ARM GAS  /tmp/cc64DtJg.s 			page 1
   22              		.thumb_func
   23              		.fpu fpv4-sp-d16
   25              	MMU_Init:
-  26              	.LFB4:
+  26              	.LFB3:
   27              		.file 1 "SYS/memng/mmu.c"
    1:SYS/memng/mmu.c **** #include "mmu.h"
    2:SYS/memng/mmu.c **** #include <string.h>
@@ -34,393 +34,380 @@ ARM GAS  /tmp/cc64DtJg.s 			page 1
    5:SYS/memng/mmu.c **** static Mem_Monitor_TypeDef Mem_Monitor = {
    6:SYS/memng/mmu.c ****     .remain_size = PHY_MEM_SIZE,
    7:SYS/memng/mmu.c ****     .total_size = PHY_MEM_SIZE,
-   8:SYS/memng/mmu.c ****     .table_size = MEM_ALLOC_TABLE_SIZE,
-   9:SYS/memng/mmu.c ****     .used_size = 0,
-  10:SYS/memng/mmu.c ****     .init = false,
-  11:SYS/memng/mmu.c **** };
-  12:SYS/memng/mmu.c **** 
-  13:SYS/memng/mmu.c **** static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE)));
-  14:SYS/memng/mmu.c **** static uint8_t MMU_StateTable[MEM_ALLOC_TABLE_SIZE];
-  15:SYS/memng/mmu.c **** 
-  16:SYS/memng/mmu.c **** static MemAddr MMU_Start = NULL;
-  17:SYS/memng/mmu.c **** static MemAddr MMU_End = NULL;
-  18:SYS/memng/mmu.c **** 
-  19:SYS/memng/mmu.c **** static void MMU_Trim(void)
-  20:SYS/memng/mmu.c **** {
-  21:SYS/memng/mmu.c **** }
-  22:SYS/memng/mmu.c **** 
-  23:SYS/memng/mmu.c **** /* memory block initial */
-  24:SYS/memng/mmu.c **** static void MMU_Init(void)
-  25:SYS/memng/mmu.c **** {
-  28              		.loc 1 25 1 view -0
+   8:SYS/memng/mmu.c ****     .used_size = 0,
+   9:SYS/memng/mmu.c ****     .init = false,
+  10:SYS/memng/mmu.c **** };
+  11:SYS/memng/mmu.c **** 
+  12:SYS/memng/mmu.c **** static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE)));
+  13:SYS/memng/mmu.c **** 
+  14:SYS/memng/mmu.c **** static MemBlock_TypeDef MMU_Start;
+  15:SYS/memng/mmu.c **** static MemBlock_TypeDef MMU_End;
+  16:SYS/memng/mmu.c **** 
+  17:SYS/memng/mmu.c **** /* memory block initial */
+  18:SYS/memng/mmu.c **** static void MMU_Init(void)
+  19:SYS/memng/mmu.c **** {
+  28              		.loc 1 19 1 view -0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 0
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32              		@ link register save eliminated.
-  26:SYS/memng/mmu.c ****     uint32_t index = 0;
-ARM GAS  /tmp/cc64DtJg.s 			page 2
-
-
-  33              		.loc 1 26 5 view .LVU1
+  20:SYS/memng/mmu.c ****     uint32_t index = 0;
+  33              		.loc 1 20 5 view .LVU1
   34              	.LVL0:
-  27:SYS/memng/mmu.c **** 
-  28:SYS/memng/mmu.c ****     /* init memory state table */
-  29:SYS/memng/mmu.c ****     for (index = 0; index < PHY_MEM_SIZE; index++)
-  35              		.loc 1 29 5 view .LVU2
-  36              		.loc 1 29 16 is_stmt 0 view .LVU3
+  21:SYS/memng/mmu.c **** 
+  22:SYS/memng/mmu.c ****     /* init memory state table */
+  23:SYS/memng/mmu.c ****     for (index = 0; index < PHY_MEM_SIZE; index++)
+  35              		.loc 1 23 5 view .LVU2
+ARM GAS  /tmp/ccmRkLv2.s 			page 2
+
+
+  36              		.loc 1 23 16 is_stmt 0 view .LVU3
   37 0000 0023     		movs	r3, #0
   38              	.LVL1:
   39              	.L2:
-  40              		.loc 1 29 5 discriminator 1 view .LVU4
-  41 0002 B3F5784F 		cmp	r3, #63488
-  42 0006 04D2     		bcs	.L4
-  30:SYS/memng/mmu.c ****     {
-  31:SYS/memng/mmu.c ****         if (index < MEM_ALLOC_TABLE_SIZE)
-  43              		.loc 1 31 9 is_stmt 1 discriminator 2 view .LVU5
-  32:SYS/memng/mmu.c ****         {
-  33:SYS/memng/mmu.c ****             MMU_StateTable[index] = 0;
-  34:SYS/memng/mmu.c ****         }
-  35:SYS/memng/mmu.c **** 
-  36:SYS/memng/mmu.c ****         MMU_Buff[index] = 0;
-  44              		.loc 1 36 9 discriminator 2 view .LVU6
-  45              		.loc 1 36 25 is_stmt 0 discriminator 2 view .LVU7
-  46 0008 024A     		ldr	r2, .L5
-  47 000a 0021     		movs	r1, #0
-  48 000c D154     		strb	r1, [r2, r3]
-  29:SYS/memng/mmu.c ****     {
-  49              		.loc 1 29 48 discriminator 2 view .LVU8
-  50 000e 0133     		adds	r3, r3, #1
-  51              	.LVL2:
-  29:SYS/memng/mmu.c ****     {
-  52              		.loc 1 29 48 discriminator 2 view .LVU9
-  53 0010 F7E7     		b	.L2
-  54              	.L4:
-  37:SYS/memng/mmu.c ****     }
-  38:SYS/memng/mmu.c **** 
-  39:SYS/memng/mmu.c ****     MMU_Start = &MMU_Buff[BLOCK_BORDER_SIZE];
-  40:SYS/memng/mmu.c ****     MMU_End = &MMU_Buff[PHY_MEM_SIZE - BLOCK_BORDER_SIZE];
-  41:SYS/memng/mmu.c **** }
-  55              		.loc 1 41 1 view .LVU10
-  56 0012 7047     		bx	lr
-  57              	.L6:
-  58              		.align	2
-  59              	.L5:
-  60 0014 00000000 		.word	MMU_Buff
-  61              		.cfi_endproc
-  62              	.LFE4:
-  64              		.section	.text.MMU_Malloc,"ax",%progbits
-  65              		.align	1
-  66              		.global	MMU_Malloc
-  67              		.syntax unified
-  68              		.thumb
-  69              		.thumb_func
-  70              		.fpu fpv4-sp-d16
-  72              	MMU_Malloc:
-  73              	.LVL3:
-  74              	.LFB5:
-ARM GAS  /tmp/cc64DtJg.s 			page 3
+  40              		.loc 1 23 5 discriminator 1 view .LVU4
+  41 0002 B3F5803F 		cmp	r3, #65536
+  42 0006 01D2     		bcs	.L4
+  24:SYS/memng/mmu.c ****     {
+  25:SYS/memng/mmu.c ****         MMU_Buff[index] = 0;
+  43              		.loc 1 25 9 is_stmt 1 discriminator 3 view .LVU5
+  23:SYS/memng/mmu.c ****     {
+  44              		.loc 1 23 48 is_stmt 0 discriminator 3 view .LVU6
+  45 0008 0133     		adds	r3, r3, #1
+  46              	.LVL2:
+  23:SYS/memng/mmu.c ****     {
+  47              		.loc 1 23 48 discriminator 3 view .LVU7
+  48 000a FAE7     		b	.L2
+  49              	.L4:
+  26:SYS/memng/mmu.c ****     }
+  27:SYS/memng/mmu.c **** 
+  28:SYS/memng/mmu.c ****     MMU_Start.nxt = &MMU_End;
+  50              		.loc 1 28 5 is_stmt 1 view .LVU8
+  29:SYS/memng/mmu.c ****     MMU_Start.len = PHY_MEM_SIZE - BLOCK_BORDER_SIZE * 2;
+  51              		.loc 1 29 5 view .LVU9
+  30:SYS/memng/mmu.c **** 
+  31:SYS/memng/mmu.c ****     MMU_End.nxt = NULL;
+  52              		.loc 1 31 5 view .LVU10
+  53              		.loc 1 31 17 is_stmt 0 view .LVU11
+  54 000c 024B     		ldr	r3, .L5
+  55              	.LVL3:
+  56              		.loc 1 31 17 view .LVU12
+  57 000e 0022     		movs	r2, #0
+  58 0010 1A60     		str	r2, [r3]
+  32:SYS/memng/mmu.c ****     MMU_End.len = 0;
+  59              		.loc 1 32 5 is_stmt 1 view .LVU13
+  60              		.loc 1 32 17 is_stmt 0 view .LVU14
+  61 0012 5A60     		str	r2, [r3, #4]
+  33:SYS/memng/mmu.c **** }
+  62              		.loc 1 33 1 view .LVU15
+  63 0014 7047     		bx	lr
+  64              	.L6:
+  65 0016 00BF     		.align	2
+  66              	.L5:
+  67 0018 00000000 		.word	.LANCHOR0
+  68              		.cfi_endproc
+  69              	.LFE3:
+  71              		.section	.text.MMU_Malloc,"ax",%progbits
+  72              		.align	1
+  73              		.global	MMU_Malloc
+  74              		.syntax unified
+  75              		.thumb
+  76              		.thumb_func
+  77              		.fpu fpv4-sp-d16
+  79              	MMU_Malloc:
+  80              	.LVL4:
+  81              	.LFB4:
+  34:SYS/memng/mmu.c **** 
+ARM GAS  /tmp/ccmRkLv2.s 			page 3
 
 
-  42:SYS/memng/mmu.c **** 
-  43:SYS/memng/mmu.c **** /* memory manager unit malloc */
-  44:SYS/memng/mmu.c **** void *MMU_Malloc(uint32_t size)
-  45:SYS/memng/mmu.c **** {
-  75              		.loc 1 45 1 is_stmt 1 view -0
-  76              		.cfi_startproc
-  77              		@ args = 0, pretend = 0, frame = 0
-  78              		@ frame_needed = 0, uses_anonymous_args = 0
-  79              		.loc 1 45 1 is_stmt 0 view .LVU12
-  80 0000 10B5     		push	{r4, lr}
-  81              	.LCFI0:
-  82              		.cfi_def_cfa_offset 8
-  83              		.cfi_offset 4, -8
-  84              		.cfi_offset 14, -4
-  85 0002 0446     		mov	r4, r0
-  46:SYS/memng/mmu.c ****     uint32_t req_block_num = 0;
-  86              		.loc 1 46 5 is_stmt 1 view .LVU13
-  87              	.LVL4:
-  47:SYS/memng/mmu.c ****     void *mem_addr;
-  88              		.loc 1 47 5 view .LVU14
-  48:SYS/memng/mmu.c **** 
-  49:SYS/memng/mmu.c ****     if (!Mem_Monitor.init)
-  89              		.loc 1 49 5 view .LVU15
-  90              		.loc 1 49 21 is_stmt 0 view .LVU16
-  91 0004 104B     		ldr	r3, .L14
-  92 0006 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
-  93              		.loc 1 49 8 view .LVU17
-  94 0008 BBB1     		cbz	r3, .L13
-  95              	.LVL5:
-  96              	.L8:
-  50:SYS/memng/mmu.c ****     {
-  51:SYS/memng/mmu.c ****         MMU_Init();
-  52:SYS/memng/mmu.c **** 
-  53:SYS/memng/mmu.c ****         Mem_Monitor.init = true;
-  54:SYS/memng/mmu.c ****     }
-  55:SYS/memng/mmu.c **** 
-  56:SYS/memng/mmu.c ****     if (Mem_Monitor.init)
-  97              		.loc 1 56 5 is_stmt 1 view .LVU18
-  98              		.loc 1 56 20 is_stmt 0 view .LVU19
-  99 000a 0F4B     		ldr	r3, .L14
- 100 000c 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
- 101              		.loc 1 56 8 view .LVU20
- 102 000e 93B1     		cbz	r3, .L9
-  57:SYS/memng/mmu.c ****     {
-  58:SYS/memng/mmu.c ****         __asm("cpsid i");
- 103              		.loc 1 58 9 is_stmt 1 view .LVU21
- 104              		.syntax unified
- 105              	@ 58 "SYS/memng/mmu.c" 1
- 106 0010 72B6     		cpsid i
- 107              	@ 0 "" 2
-  59:SYS/memng/mmu.c **** 
-  60:SYS/memng/mmu.c ****         if ((size > Mem_Monitor.remain_size) || (size == 0))
- 108              		.loc 1 60 9 view .LVU22
- 109              		.loc 1 60 32 is_stmt 0 view .LVU23
- 110              		.thumb
+  35:SYS/memng/mmu.c **** /* memory manager unit malloc */
+  36:SYS/memng/mmu.c **** void *MMU_Malloc(uint32_t size)
+  37:SYS/memng/mmu.c **** {
+  82              		.loc 1 37 1 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              		.loc 1 37 1 is_stmt 0 view .LVU17
+  87 0000 10B5     		push	{r4, lr}
+  88              	.LCFI0:
+  89              		.cfi_def_cfa_offset 8
+  90              		.cfi_offset 4, -8
+  91              		.cfi_offset 14, -4
+  92 0002 0446     		mov	r4, r0
+  38:SYS/memng/mmu.c ****     uint32_t req_block_num = 0;
+  93              		.loc 1 38 5 is_stmt 1 view .LVU18
+  94              	.LVL5:
+  39:SYS/memng/mmu.c ****     void *mem_addr;
+  95              		.loc 1 39 5 view .LVU19
+  40:SYS/memng/mmu.c **** 
+  41:SYS/memng/mmu.c ****     if (!Mem_Monitor.init)
+  96              		.loc 1 41 5 view .LVU20
+  97              		.loc 1 41 21 is_stmt 0 view .LVU21
+  98 0004 104B     		ldr	r3, .L14
+  99 0006 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 100              		.loc 1 41 8 view .LVU22
+ 101 0008 BBB1     		cbz	r3, .L13
+ 102              	.LVL6:
+ 103              	.L8:
+  42:SYS/memng/mmu.c ****     {
+  43:SYS/memng/mmu.c ****         MMU_Init();
+  44:SYS/memng/mmu.c **** 
+  45:SYS/memng/mmu.c ****         Mem_Monitor.init = true;
+  46:SYS/memng/mmu.c ****     }
+  47:SYS/memng/mmu.c **** 
+  48:SYS/memng/mmu.c ****     if (Mem_Monitor.init)
+ 104              		.loc 1 48 5 is_stmt 1 view .LVU23
+ 105              		.loc 1 48 20 is_stmt 0 view .LVU24
+ 106 000a 0F4B     		ldr	r3, .L14
+ 107 000c 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 108              		.loc 1 48 8 view .LVU25
+ 109 000e 93B1     		cbz	r3, .L9
+  49:SYS/memng/mmu.c ****     {
+  50:SYS/memng/mmu.c ****         __asm("cpsid i");
+ 110              		.loc 1 50 9 is_stmt 1 view .LVU26
  111              		.syntax unified
- 112 0012 0D4B     		ldr	r3, .L14
-ARM GAS  /tmp/cc64DtJg.s 			page 4
-
-
- 113 0014 5B68     		ldr	r3, [r3, #4]
- 114              		.loc 1 60 12 view .LVU24
- 115 0016 A342     		cmp	r3, r4
- 116 0018 0CD3     		bcc	.L10
- 117              		.loc 1 60 46 discriminator 1 view .LVU25
- 118 001a 5CB1     		cbz	r4, .L10
-  61:SYS/memng/mmu.c ****         {
-  62:SYS/memng/mmu.c ****             mem_addr = NULL;
-  63:SYS/memng/mmu.c ****         }
-  64:SYS/memng/mmu.c ****         else
-  65:SYS/memng/mmu.c ****         {
-  66:SYS/memng/mmu.c ****             req_block_num = size / BLOCK_ALIGMENT_SIZE;
- 119              		.loc 1 66 13 is_stmt 1 view .LVU26
- 120              		.loc 1 66 27 is_stmt 0 view .LVU27
- 121 001c E208     		lsrs	r2, r4, #3
- 122              	.LVL6:
-  67:SYS/memng/mmu.c ****             if (size % BLOCK_ALIGMENT_SIZE)
- 123              		.loc 1 67 13 is_stmt 1 view .LVU28
- 124              		.loc 1 67 16 is_stmt 0 view .LVU29
- 125 001e 14F0070F 		tst	r4, #7
- 126 0022 00D0     		beq	.L11
-  68:SYS/memng/mmu.c ****             {
-  69:SYS/memng/mmu.c ****                 req_block_num++;
- 127              		.loc 1 69 17 is_stmt 1 view .LVU30
- 128              		.loc 1 69 30 is_stmt 0 view .LVU31
- 129 0024 0132     		adds	r2, r2, #1
- 130              	.LVL7:
- 131              	.L11:
-  70:SYS/memng/mmu.c ****             }
-  71:SYS/memng/mmu.c **** 
-  72:SYS/memng/mmu.c ****             Mem_Monitor.remain_size -= req_block_num * BLOCK_ALIGMENT_SIZE;
- 132              		.loc 1 72 13 is_stmt 1 view .LVU32
- 133              		.loc 1 72 37 is_stmt 0 view .LVU33
- 134 0026 5201     		lsls	r2, r2, #5
- 135              	.LVL8:
- 136              		.loc 1 72 37 view .LVU34
- 137 0028 0749     		ldr	r1, .L14
- 138 002a 9B1A     		subs	r3, r3, r2
- 139 002c 4B60     		str	r3, [r1, #4]
-  73:SYS/memng/mmu.c ****             Mem_Monitor.used_size += req_block_num * BLOCK_ALIGMENT_SIZE;
- 140              		.loc 1 73 13 is_stmt 1 view .LVU35
- 141              		.loc 1 73 35 is_stmt 0 view .LVU36
- 142 002e 0B68     		ldr	r3, [r1]
- 143 0030 1A44     		add	r2, r2, r3
- 144 0032 0A60     		str	r2, [r1]
- 145              	.L10:
- 146              	.LVL9:
-  74:SYS/memng/mmu.c ****         }
-  75:SYS/memng/mmu.c **** 
-  76:SYS/memng/mmu.c ****         __asm("cpsie i");
- 147              		.loc 1 76 9 is_stmt 1 view .LVU37
- 148              		.syntax unified
- 149              	@ 76 "SYS/memng/mmu.c" 1
- 150 0034 62B6     		cpsie i
- 151              	@ 0 "" 2
- 152              	.LVL10:
- 153              		.thumb
-ARM GAS  /tmp/cc64DtJg.s 			page 5
-
-
- 154              		.syntax unified
- 155              	.L9:
-  77:SYS/memng/mmu.c **** 
-  78:SYS/memng/mmu.c ****         //mem_addr = ;
-  79:SYS/memng/mmu.c ****     }
-  80:SYS/memng/mmu.c **** 
-  81:SYS/memng/mmu.c ****     return mem_addr;
- 156              		.loc 1 81 5 view .LVU38
-  82:SYS/memng/mmu.c **** }
- 157              		.loc 1 82 1 is_stmt 0 view .LVU39
- 158 0036 0020     		movs	r0, #0
- 159 0038 10BD     		pop	{r4, pc}
- 160              	.LVL11:
- 161              	.L13:
+ 112              	@ 50 "SYS/memng/mmu.c" 1
+ 113 0010 72B6     		cpsid i
+ 114              	@ 0 "" 2
   51:SYS/memng/mmu.c **** 
- 162              		.loc 1 51 9 is_stmt 1 view .LVU40
- 163 003a FFF7FEFF 		bl	MMU_Init
- 164              	.LVL12:
-  53:SYS/memng/mmu.c ****     }
- 165              		.loc 1 53 9 view .LVU41
-  53:SYS/memng/mmu.c ****     }
- 166              		.loc 1 53 26 is_stmt 0 view .LVU42
- 167 003e 024B     		ldr	r3, .L14
- 168 0040 0122     		movs	r2, #1
- 169 0042 1A74     		strb	r2, [r3, #16]
- 170 0044 E1E7     		b	.L8
- 171              	.L15:
- 172 0046 00BF     		.align	2
- 173              	.L14:
- 174 0048 00000000 		.word	.LANCHOR0
- 175              		.cfi_endproc
- 176              	.LFE5:
- 178              		.section	.text.MMU_Free,"ax",%progbits
- 179              		.align	1
- 180              		.global	MMU_Free
- 181              		.syntax unified
- 182              		.thumb
- 183              		.thumb_func
- 184              		.fpu fpv4-sp-d16
- 186              	MMU_Free:
- 187              	.LVL13:
- 188              	.LFB6:
+  52:SYS/memng/mmu.c ****         if ((size > Mem_Monitor.remain_size) || (size == 0))
+ 115              		.loc 1 52 9 view .LVU27
+ 116              		.loc 1 52 32 is_stmt 0 view .LVU28
+ 117              		.thumb
+ 118              		.syntax unified
+ 119 0012 0D4B     		ldr	r3, .L14
+ 120 0014 5B68     		ldr	r3, [r3, #4]
+ARM GAS  /tmp/ccmRkLv2.s 			page 4
+
+
+ 121              		.loc 1 52 12 view .LVU29
+ 122 0016 A342     		cmp	r3, r4
+ 123 0018 0CD3     		bcc	.L10
+ 124              		.loc 1 52 46 discriminator 1 view .LVU30
+ 125 001a 5CB1     		cbz	r4, .L10
+  53:SYS/memng/mmu.c ****         {
+  54:SYS/memng/mmu.c ****             mem_addr = NULL;
+  55:SYS/memng/mmu.c ****         }
+  56:SYS/memng/mmu.c ****         else
+  57:SYS/memng/mmu.c ****         {
+  58:SYS/memng/mmu.c ****             req_block_num = size / BLOCK_ALIGMENT_SIZE;
+ 126              		.loc 1 58 13 is_stmt 1 view .LVU31
+ 127              		.loc 1 58 27 is_stmt 0 view .LVU32
+ 128 001c E208     		lsrs	r2, r4, #3
+ 129              	.LVL7:
+  59:SYS/memng/mmu.c ****             if (size % BLOCK_ALIGMENT_SIZE)
+ 130              		.loc 1 59 13 is_stmt 1 view .LVU33
+ 131              		.loc 1 59 16 is_stmt 0 view .LVU34
+ 132 001e 14F0070F 		tst	r4, #7
+ 133 0022 00D0     		beq	.L11
+  60:SYS/memng/mmu.c ****             {
+  61:SYS/memng/mmu.c ****                 req_block_num++;
+ 134              		.loc 1 61 17 is_stmt 1 view .LVU35
+ 135              		.loc 1 61 30 is_stmt 0 view .LVU36
+ 136 0024 0132     		adds	r2, r2, #1
+ 137              	.LVL8:
+ 138              	.L11:
+  62:SYS/memng/mmu.c ****             }
+  63:SYS/memng/mmu.c **** 
+  64:SYS/memng/mmu.c ****             Mem_Monitor.remain_size -= req_block_num * BLOCK_ALIGMENT_SIZE;
+ 139              		.loc 1 64 13 is_stmt 1 view .LVU37
+ 140              		.loc 1 64 37 is_stmt 0 view .LVU38
+ 141 0026 5201     		lsls	r2, r2, #5
+ 142              	.LVL9:
+ 143              		.loc 1 64 37 view .LVU39
+ 144 0028 0749     		ldr	r1, .L14
+ 145 002a 9B1A     		subs	r3, r3, r2
+ 146 002c 4B60     		str	r3, [r1, #4]
+  65:SYS/memng/mmu.c ****             Mem_Monitor.used_size += req_block_num * BLOCK_ALIGMENT_SIZE;
+ 147              		.loc 1 65 13 is_stmt 1 view .LVU40
+ 148              		.loc 1 65 35 is_stmt 0 view .LVU41
+ 149 002e 0B68     		ldr	r3, [r1]
+ 150 0030 1A44     		add	r2, r2, r3
+ 151 0032 0A60     		str	r2, [r1]
+ 152              	.L10:
+ 153              	.LVL10:
+  66:SYS/memng/mmu.c ****         }
+  67:SYS/memng/mmu.c **** 
+  68:SYS/memng/mmu.c ****         __asm("cpsie i");
+ 154              		.loc 1 68 9 is_stmt 1 view .LVU42
+ 155              		.syntax unified
+ 156              	@ 68 "SYS/memng/mmu.c" 1
+ 157 0034 62B6     		cpsie i
+ 158              	@ 0 "" 2
+ 159              	.LVL11:
+ 160              		.thumb
+ 161              		.syntax unified
+ARM GAS  /tmp/ccmRkLv2.s 			page 5
+
+
+ 162              	.L9:
+  69:SYS/memng/mmu.c **** 
+  70:SYS/memng/mmu.c ****         //mem_addr = ;
+  71:SYS/memng/mmu.c ****     }
+  72:SYS/memng/mmu.c **** 
+  73:SYS/memng/mmu.c ****     return mem_addr;
+ 163              		.loc 1 73 5 view .LVU43
+  74:SYS/memng/mmu.c **** }
+ 164              		.loc 1 74 1 is_stmt 0 view .LVU44
+ 165 0036 0020     		movs	r0, #0
+ 166 0038 10BD     		pop	{r4, pc}
+ 167              	.LVL12:
+ 168              	.L13:
+  43:SYS/memng/mmu.c **** 
+ 169              		.loc 1 43 9 is_stmt 1 view .LVU45
+ 170 003a FFF7FEFF 		bl	MMU_Init
+ 171              	.LVL13:
+  45:SYS/memng/mmu.c ****     }
+ 172              		.loc 1 45 9 view .LVU46
+  45:SYS/memng/mmu.c ****     }
+ 173              		.loc 1 45 26 is_stmt 0 view .LVU47
+ 174 003e 024B     		ldr	r3, .L14
+ 175 0040 0122     		movs	r2, #1
+ 176 0042 1A73     		strb	r2, [r3, #12]
+ 177 0044 E1E7     		b	.L8
+ 178              	.L15:
+ 179 0046 00BF     		.align	2
+ 180              	.L14:
+ 181 0048 00000000 		.word	.LANCHOR1
+ 182              		.cfi_endproc
+ 183              	.LFE4:
+ 185              		.section	.text.MMU_Free,"ax",%progbits
+ 186              		.align	1
+ 187              		.global	MMU_Free
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 191              		.fpu fpv4-sp-d16
+ 193              	MMU_Free:
+ 194              	.LVL14:
+ 195              	.LFB5:
+  75:SYS/memng/mmu.c **** 
+  76:SYS/memng/mmu.c **** /* memory manager unit free */
+  77:SYS/memng/mmu.c **** void MMU_Free(void *ptr)
+  78:SYS/memng/mmu.c **** {
+ 196              		.loc 1 78 1 is_stmt 1 view -0
+ 197              		.cfi_startproc
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200              		@ link register save eliminated.
+  79:SYS/memng/mmu.c ****     __asm("cpsid i");
+ 201              		.loc 1 79 5 view .LVU49
+ 202              		.syntax unified
+ 203              	@ 79 "SYS/memng/mmu.c" 1
+ 204 0000 72B6     		cpsid i
+ 205              	@ 0 "" 2
+  80:SYS/memng/mmu.c **** 
+ARM GAS  /tmp/ccmRkLv2.s 			page 6
+
+
+  81:SYS/memng/mmu.c ****     __asm("cpsie i");
+ 206              		.loc 1 81 5 view .LVU50
+ 207              	@ 81 "SYS/memng/mmu.c" 1
+ 208 0002 62B6     		cpsie i
+ 209              	@ 0 "" 2
+  82:SYS/memng/mmu.c **** }
+ 210              		.loc 1 82 1 is_stmt 0 view .LVU51
+ 211              		.thumb
+ 212              		.syntax unified
+ 213 0004 7047     		bx	lr
+ 214              		.cfi_endproc
+ 215              	.LFE5:
+ 217              		.section	.text.MMU_Info,"ax",%progbits
+ 218              		.align	1
+ 219              		.global	MMU_Info
+ 220              		.syntax unified
+ 221              		.thumb
+ 222              		.thumb_func
+ 223              		.fpu fpv4-sp-d16
+ 225              	MMU_Info:
+ 226              	.LVL15:
+ 227              	.LFB6:
   83:SYS/memng/mmu.c **** 
-  84:SYS/memng/mmu.c **** /* memory manager unit free */
-  85:SYS/memng/mmu.c **** void MMU_Free(void *ptr)
-  86:SYS/memng/mmu.c **** {
- 189              		.loc 1 86 1 is_stmt 1 view -0
- 190              		.cfi_startproc
- 191              		@ args = 0, pretend = 0, frame = 0
- 192              		@ frame_needed = 0, uses_anonymous_args = 0
- 193              		@ link register save eliminated.
-  87:SYS/memng/mmu.c ****     __asm("cpsid i");
- 194              		.loc 1 87 5 view .LVU44
- 195              		.syntax unified
- 196              	@ 87 "SYS/memng/mmu.c" 1
- 197 0000 72B6     		cpsid i
- 198              	@ 0 "" 2
-ARM GAS  /tmp/cc64DtJg.s 			page 6
-
-
-  88:SYS/memng/mmu.c **** 
-  89:SYS/memng/mmu.c ****     __asm("cpsie i");
- 199              		.loc 1 89 5 view .LVU45
- 200              	@ 89 "SYS/memng/mmu.c" 1
- 201 0002 62B6     		cpsie i
- 202              	@ 0 "" 2
-  90:SYS/memng/mmu.c **** }
- 203              		.loc 1 90 1 is_stmt 0 view .LVU46
- 204              		.thumb
- 205              		.syntax unified
- 206 0004 7047     		bx	lr
- 207              		.cfi_endproc
- 208              	.LFE6:
- 210              		.section	.text.MMU_Info,"ax",%progbits
- 211              		.align	1
- 212              		.global	MMU_Info
- 213              		.syntax unified
- 214              		.thumb
- 215              		.thumb_func
- 216              		.fpu fpv4-sp-d16
- 218              	MMU_Info:
- 219              	.LVL14:
- 220              	.LFB7:
-  91:SYS/memng/mmu.c **** 
-  92:SYS/memng/mmu.c **** Mem_Monitor_TypeDef MMU_Info(void)
-  93:SYS/memng/mmu.c **** {
- 221              		.loc 1 93 1 is_stmt 1 view -0
- 222              		.cfi_startproc
- 223              		@ args = 0, pretend = 0, frame = 0
- 224              		@ frame_needed = 0, uses_anonymous_args = 0
- 225              		@ link register save eliminated.
- 226              		.loc 1 93 1 is_stmt 0 view .LVU48
- 227 0000 70B4     		push	{r4, r5, r6}
- 228              	.LCFI1:
- 229              		.cfi_def_cfa_offset 12
- 230              		.cfi_offset 4, -12
- 231              		.cfi_offset 5, -8
- 232              		.cfi_offset 6, -4
- 233 0002 0646     		mov	r6, r0
-  94:SYS/memng/mmu.c ****     return Mem_Monitor;
- 234              		.loc 1 94 5 is_stmt 1 view .LVU49
- 235              		.loc 1 94 12 is_stmt 0 view .LVU50
- 236 0004 0446     		mov	r4, r0
- 237 0006 044D     		ldr	r5, .L19
- 238 0008 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 239              	.LVL15:
- 240              		.loc 1 94 12 view .LVU51
- 241 000a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 242              	.LVL16:
- 243              		.loc 1 94 12 view .LVU52
- 244 000c 2B68     		ldr	r3, [r5]
- 245 000e 2360     		str	r3, [r4]
-  95:SYS/memng/mmu.c **** }
- 246              		.loc 1 95 1 view .LVU53
- 247 0010 3046     		mov	r0, r6
- 248 0012 70BC     		pop	{r4, r5, r6}
+  84:SYS/memng/mmu.c **** Mem_Monitor_TypeDef MMU_Info(void)
+  85:SYS/memng/mmu.c **** {
+ 228              		.loc 1 85 1 is_stmt 1 view -0
+ 229              		.cfi_startproc
+ 230              		@ args = 0, pretend = 0, frame = 0
+ 231              		@ frame_needed = 0, uses_anonymous_args = 0
+ 232              		@ link register save eliminated.
+ 233              		.loc 1 85 1 is_stmt 0 view .LVU53
+ 234 0000 10B4     		push	{r4}
+ 235              	.LCFI1:
+ 236              		.cfi_def_cfa_offset 4
+ 237              		.cfi_offset 4, -4
+ 238 0002 0446     		mov	r4, r0
+  86:SYS/memng/mmu.c ****     return Mem_Monitor;
+ 239              		.loc 1 86 5 is_stmt 1 view .LVU54
+ 240              		.loc 1 86 12 is_stmt 0 view .LVU55
+ 241 0004 034B     		ldr	r3, .L19
+ 242 0006 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 243              	.LVL16:
+ 244              		.loc 1 86 12 view .LVU56
+ 245 0008 84E80F00 		stm	r4, {r0, r1, r2, r3}
+  87:SYS/memng/mmu.c **** }
+ 246              		.loc 1 87 1 view .LVU57
+ 247 000c 2046     		mov	r0, r4
+ 248 000e 5DF8044B 		ldr	r4, [sp], #4
  249              	.LCFI2:
-ARM GAS  /tmp/cc64DtJg.s 			page 7
+ 250              		.cfi_restore 4
+ 251              		.cfi_def_cfa_offset 0
+ 252              	.LVL17:
+ 253              		.loc 1 87 1 view .LVU58
+ 254 0012 7047     		bx	lr
+ 255              	.L20:
+ 256              		.align	2
+ 257              	.L19:
+ARM GAS  /tmp/ccmRkLv2.s 			page 7
 
 
- 250              		.cfi_restore 6
- 251              		.cfi_restore 5
- 252              		.cfi_restore 4
- 253              		.cfi_def_cfa_offset 0
- 254              	.LVL17:
- 255              		.loc 1 95 1 view .LVU54
- 256 0014 7047     		bx	lr
- 257              	.L20:
- 258 0016 00BF     		.align	2
- 259              	.L19:
- 260 0018 00000000 		.word	.LANCHOR0
- 261              		.cfi_endproc
- 262              	.LFE7:
- 264              		.section	.bss.MMU_Buff,"aw",%nobits
- 265              		.align	3
- 268              	MMU_Buff:
- 269 0000 00000000 		.space	63488
- 269      00000000 
- 269      00000000 
- 269      00000000 
- 269      00000000 
- 270              		.section	.data.Mem_Monitor,"aw"
- 271              		.align	2
- 272              		.set	.LANCHOR0,. + 0
- 275              	Mem_Monitor:
- 276 0000 00000000 		.word	0
- 277 0004 00F80000 		.word	63488
- 278 0008 00F80000 		.word	63488
- 279 000c 001F0000 		.word	7936
- 280 0010 00       		.byte	0
- 281 0011 000000   		.space	3
- 282              		.text
- 283              	.Letext0:
- 284              		.file 2 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 285              		.file 3 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 286              		.file 4 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 287              		.file 5 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 288              		.file 6 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 289              		.file 7 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 290              		.file 8 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 291              		.file 9 "SYS/memng/mmu.h"
-ARM GAS  /tmp/cc64DtJg.s 			page 8
+ 258 0014 00000000 		.word	.LANCHOR1
+ 259              		.cfi_endproc
+ 260              	.LFE6:
+ 262              		.section	.bss.MMU_End,"aw",%nobits
+ 263              		.align	2
+ 264              		.set	.LANCHOR0,. + 0
+ 267              	MMU_End:
+ 268 0000 00000000 		.space	8
+ 268      00000000 
+ 269              		.section	.data.Mem_Monitor,"aw"
+ 270              		.align	2
+ 271              		.set	.LANCHOR1,. + 0
+ 274              	Mem_Monitor:
+ 275 0000 00000000 		.word	0
+ 276 0004 00000100 		.word	65536
+ 277 0008 00000100 		.word	65536
+ 278 000c 00       		.byte	0
+ 279 000d 000000   		.space	3
+ 280              		.text
+ 281              	.Letext0:
+ 282              		.file 2 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 283              		.file 3 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 284              		.file 4 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 285              		.file 5 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 286              		.file 6 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 287              		.file 7 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 288              		.file 8 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 289              		.file 9 "SYS/memng/mmu.h"
+ARM GAS  /tmp/ccmRkLv2.s 			page 8
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 mmu.c
-     /tmp/cc64DtJg.s:18     .text.MMU_Init:0000000000000000 $t
-     /tmp/cc64DtJg.s:25     .text.MMU_Init:0000000000000000 MMU_Init
-     /tmp/cc64DtJg.s:60     .text.MMU_Init:0000000000000014 $d
-     /tmp/cc64DtJg.s:268    .bss.MMU_Buff:0000000000000000 MMU_Buff
-     /tmp/cc64DtJg.s:65     .text.MMU_Malloc:0000000000000000 $t
-     /tmp/cc64DtJg.s:72     .text.MMU_Malloc:0000000000000000 MMU_Malloc
-     /tmp/cc64DtJg.s:174    .text.MMU_Malloc:0000000000000048 $d
-     /tmp/cc64DtJg.s:179    .text.MMU_Free:0000000000000000 $t
-     /tmp/cc64DtJg.s:186    .text.MMU_Free:0000000000000000 MMU_Free
-     /tmp/cc64DtJg.s:211    .text.MMU_Info:0000000000000000 $t
-     /tmp/cc64DtJg.s:218    .text.MMU_Info:0000000000000000 MMU_Info
-     /tmp/cc64DtJg.s:260    .text.MMU_Info:0000000000000018 $d
-     /tmp/cc64DtJg.s:265    .bss.MMU_Buff:0000000000000000 $d
-     /tmp/cc64DtJg.s:271    .data.Mem_Monitor:0000000000000000 $d
-     /tmp/cc64DtJg.s:275    .data.Mem_Monitor:0000000000000000 Mem_Monitor
+     /tmp/ccmRkLv2.s:18     .text.MMU_Init:0000000000000000 $t
+     /tmp/ccmRkLv2.s:25     .text.MMU_Init:0000000000000000 MMU_Init
+     /tmp/ccmRkLv2.s:67     .text.MMU_Init:0000000000000018 $d
+     /tmp/ccmRkLv2.s:72     .text.MMU_Malloc:0000000000000000 $t
+     /tmp/ccmRkLv2.s:79     .text.MMU_Malloc:0000000000000000 MMU_Malloc
+     /tmp/ccmRkLv2.s:181    .text.MMU_Malloc:0000000000000048 $d
+     /tmp/ccmRkLv2.s:186    .text.MMU_Free:0000000000000000 $t
+     /tmp/ccmRkLv2.s:193    .text.MMU_Free:0000000000000000 MMU_Free
+     /tmp/ccmRkLv2.s:218    .text.MMU_Info:0000000000000000 $t
+     /tmp/ccmRkLv2.s:225    .text.MMU_Info:0000000000000000 MMU_Info
+     /tmp/ccmRkLv2.s:258    .text.MMU_Info:0000000000000014 $d
+     /tmp/ccmRkLv2.s:263    .bss.MMU_End:0000000000000000 $d
+     /tmp/ccmRkLv2.s:267    .bss.MMU_End:0000000000000000 MMU_End
+     /tmp/ccmRkLv2.s:270    .data.Mem_Monitor:0000000000000000 $d
+     /tmp/ccmRkLv2.s:274    .data.Mem_Monitor:0000000000000000 Mem_Monitor
 
 NO UNDEFINED SYMBOLS
