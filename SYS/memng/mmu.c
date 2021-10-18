@@ -25,11 +25,18 @@ static void MMU_Init(void)
         MMU_Buff[index] = 0;
     }
 
-    MMU_Start.nxt = &MMU_End;
+    MMU_Start.nxt = NULL;
     MMU_Start.len = PHY_MEM_SIZE - BLOCK_BORDER_SIZE * 2;
 
     MMU_End.nxt = NULL;
     MMU_End.len = 0;
+}
+
+static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
+{
+    if (MMU_Start.nxt == NULL)
+    {
+    }
 }
 
 /* memory manager unit malloc */
