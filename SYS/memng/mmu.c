@@ -60,8 +60,8 @@ static void MMU_Init(void)
     MMU_End->len = 0;
 
     FirstFreeBlock = (void *)aliged_addr;
-    FirstFreeBlock->len = uxAddress - (size_t)pxFirstFreeBlock;
-    FirstFreeBlock->nxt = pxEnd;
+    FirstFreeBlock->len = addr - (size_t)FirstFreeBlock;
+    FirstFreeBlock->nxt = MMU_End;
 }
 
 static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
