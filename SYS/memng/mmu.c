@@ -2,6 +2,7 @@
 * code modify from freertos
 * i can`t create my own memory manager module
 * sorry guys maybe one day but not now
+* sad story
 */
 #include "mmu.h"
 #include <string.h>
@@ -22,6 +23,7 @@ static MemBlock_TypeDef *MMU_End = NULL;
 /* memory block initial */
 static void MMU_Init(void)
 {
+    MemBlock_TypeDef *FirstFreeBlock;
     uint32_t index = 0;
     MemAddr addr = 0;
     uint8_t *aliged_addr = 0;
@@ -56,6 +58,17 @@ static void MMU_Init(void)
     MMU_End = (void *)addr;
     MMU_End->nxt = NULL;
     MMU_End->len = 0;
+
+    pxFirstFreeBlock = (void *)pucAlignedHeap;
+    pxFirstFreeBlock->xBlockSize = uxAddress - (size_t)pxFirstFreeBlock;
+    pxFirstFreeBlock->pxNextFreeBlock = pxEnd;
+
+    /* Only one block exists - and it covers the entire usable heap space. */
+    xMinimumEverFreeBytesRemaining = pxFirstFreeBlock->xBlockSize;
+    xFreeBytesRemaining = pxFirstFreeBlock->xBlockSize;
+
+    /* Work out the position of the top bit in a size_t variable. */
+    xBlockAllocatedBit = ((size_t)1) << ((sizeof(size_t) * heapBITS_PER_BYTE) - 1);
 }
 
 static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
