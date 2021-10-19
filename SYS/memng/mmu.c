@@ -1,8 +1,10 @@
 /*
-* code modify from freertos
+* code "modify"(copy) from freertos
 * i can`t create my own memory manager module
 * sorry guys maybe one day but not now
-* sad story
+* sad story...
+*
+* Coder : 8_B!T0
 */
 #include "mmu.h"
 #include <string.h>
@@ -75,8 +77,8 @@ static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
 void *MMU_Malloc(uint32_t size)
 {
     MemBlock_TypeDef *Block = NULL;
-    MemBlock_TypeDef *pxPreviousBlock = NULL;
-    MemBlock_TypeDef *pxNewBlockLink = NULL;
+    MemBlock_TypeDef *MMU_PrvBlock = NULL;
+    MemBlock_TypeDef *MMU_NewBlockLink = NULL;
 
     uint32_t req_block_num = 0;
     uint32_t req_byte_size = 0;
@@ -110,6 +112,14 @@ void *MMU_Malloc(uint32_t size)
 
             if ((req_byte_size > 0) && (req_byte_size <= Mem_Monitor.remain_size))
             {
+                MMU_PrvBlock = &MMU_Start;
+                Block = MMU_Start.nxt;
+                while ((Block->len < req_byte_size) && (Block->nxt != NULL))
+                {
+                    MMU_PrvBlock = Block;
+                    Block = Block->nxt;
+                }
+
                 /* match the size of block */
 
                 Mem_Monitor.remain_size -= req_byte_size;
