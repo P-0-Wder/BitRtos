@@ -74,6 +74,10 @@ static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
 /* memory manager unit malloc */
 void *MMU_Malloc(uint32_t size)
 {
+    MemBlock_TypeDef *Block = NULL;
+    MemBlock_TypeDef *pxPreviousBlock = NULL;
+    MemBlock_TypeDef *pxNewBlockLink = NULL;
+
     uint32_t req_block_num = 0;
     uint32_t req_byte_size = 0;
     void *mem_addr;
