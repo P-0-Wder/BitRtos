@@ -75,7 +75,7 @@ static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
 void *MMU_Malloc(uint32_t size)
 {
     uint32_t req_block_num = 0;
-    uint32_t req_block_size = 0;
+    uint32_t req_byte_size = 0;
     void *mem_addr;
 
     if (!Mem_Monitor.init)
@@ -102,14 +102,19 @@ void *MMU_Malloc(uint32_t size)
                 req_block_num++;
             }
 
-            req_block_size = req_block_num * BLOCK_ALIGMENT_SIZE;
+            req_byte_size = req_block_num * BLOCK_ALIGMENT_SIZE;
 
-            /* match the size of block */
+            if ((req_byte_size > 0) && (req_byte_size <= Mem_Monitor.remain_size))
+            {
+                /* match the size of block */
 
-            Mem_Monitor.remain_size -= req_block_size;
-            Mem_Monitor.used_size += req_block_size;
+                Mem_Monitor.remain_size -= req_byte_size;
+                Mem_Monitor.used_size += req_byte_size;
 
-            //mem_addr = ;
+                //mem_addr = ;
+            }
+            else
+                mem_addr = NULL;
         }
 
         __asm("cpsie i");
