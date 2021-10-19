@@ -11,8 +11,8 @@
 #define BLOCK_BORDER_SIZE 4
 #define PHY_MEM_SIZE 64 * 1024
 
-typedef uint32_t *MemSize_t;
-typedef uint32_t *MemAddr;
+typedef uint32_t MemSize_t;
+typedef uint32_t MemAddr;
 
 typedef struct
 {

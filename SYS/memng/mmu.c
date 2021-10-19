@@ -3,14 +3,13 @@
 #include <stdio.h>
 
 static Mem_Monitor_TypeDef Mem_Monitor = {
-    .remain_size = PHY_MEM_SIZE,
+    .remain_size = 0,
     .total_size = PHY_MEM_SIZE,
     .used_size = 0,
     .init = false,
 };
 
 static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE))) __attribute__((at(0x10000000)));
-;
 
 static MemBlock_TypeDef MMU_Start;
 static MemBlock_TypeDef MMU_End;
@@ -19,11 +18,21 @@ static MemBlock_TypeDef MMU_End;
 static void MMU_Init(void)
 {
     uint32_t index = 0;
+    MemAddr addr = 0;
 
     /* init memory state table */
     for (index = 0; index < PHY_MEM_SIZE; index++)
     {
         MMU_Buff[index] = 0;
+    }
+
+    if ((addr & (BLOCK_ALIGMENT_SIZE - 1)) != 0)
+    {
+        addr += BLOCK_ALIGMENT_SIZE - addr & (BLOCK_ALIGMENT_SIZE - 1);
+        addr &= ~((size_t)(BLOCK_ALIGMENT_SIZE - 1));
+
+        Mem_Monitor.total_size -= addr - (MemAddr)MMU_Buff;
+        Mem_Monitor.remain_size = Mem_Monitor.total_size;
     }
 
     MMU_Start.nxt = NULL;
