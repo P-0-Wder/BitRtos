@@ -43,7 +43,6 @@ static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
 /* memory manager unit malloc */
 void *MMU_Malloc(uint32_t size)
 {
-    uint32_t Pri_Mask = 0;
     uint32_t req_block_num = 0;
     uint32_t req_block_size = 0;
     void *mem_addr;
@@ -57,14 +56,13 @@ void *MMU_Malloc(uint32_t size)
 
     if (Mem_Monitor.init)
     {
-        Pri_Mask = __get_PRIMASK();
         __asm("cpsid i");
 
         if ((size > Mem_Monitor.remain_size) || (size == 0))
         {
             /* illegal parameter input */
-            __set_PRIMASK(Pri_Mask);
-            mem_addr = NULL;
+            __asm("cpsie i");
+            return NULL;
         }
         else
         {
