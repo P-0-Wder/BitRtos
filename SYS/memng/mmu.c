@@ -120,12 +120,15 @@ void *MMU_Malloc(uint32_t size)
                     Block = Block->nxt;
                 }
 
-                /* match the size of block */
+                if (Block != MMU_End)
+                {
+                    /* match the size of block */
 
-                Mem_Monitor.remain_size -= req_byte_size;
-                Mem_Monitor.used_size += req_byte_size;
+                    Mem_Monitor.remain_size -= req_byte_size;
+                    Mem_Monitor.used_size += req_byte_size;
 
-                //mem_addr = ;
+                    //mem_addr = ;
+                }
             }
             else
                 mem_addr = NULL;
