@@ -1,3 +1,8 @@
+/*
+* code modify from freertos
+* i can`t create my own memory manager module
+* sorry guys maybe one day but not now
+*/
 #include "mmu.h"
 #include <string.h>
 #include <stdio.h>
@@ -19,6 +24,7 @@ static void MMU_Init(void)
 {
     uint32_t index = 0;
     MemAddr addr = 0;
+    uint8_t *aliged_addr = 0;
 
     /* init memory state table */
     for (index = 0; index < PHY_MEM_SIZE; index++)
@@ -26,7 +32,10 @@ static void MMU_Init(void)
         MMU_Buff[index] = 0;
     }
 
-    if ((addr & (BLOCK_ALIGMENT_SIZE - 1)) != 0)
+    /* aligment mmu address */
+    addr = (MemAddr)MMU_Buff;
+
+    if (addr & (BLOCK_ALIGMENT_SIZE - 1))
     {
         addr += BLOCK_ALIGMENT_SIZE - addr & (BLOCK_ALIGMENT_SIZE - 1);
         addr &= ~((size_t)(BLOCK_ALIGMENT_SIZE - 1));
@@ -35,8 +44,10 @@ static void MMU_Init(void)
         Mem_Monitor.remain_size = Mem_Monitor.total_size;
     }
 
-    MMU_Start.nxt = NULL;
-    MMU_Start.len = PHY_MEM_SIZE - BLOCK_BORDER_SIZE * 2;
+    aliged_addr = (uint8_t *)addr;
+
+    MMU_Start.nxt = (void *)aliged_addr;
+    MMU_Start.len = 0;
 
     MMU_End.nxt = NULL;
     MMU_End.len = 0;
