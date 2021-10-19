@@ -17,7 +17,7 @@ static Mem_Monitor_TypeDef Mem_Monitor = {
 static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE))) __attribute__((at(0x10000000)));
 
 static MemBlock_TypeDef MMU_Start;
-static MemBlock_TypeDef MMU_End;
+static MemBlock_TypeDef *MMU_End = NULL;
 
 /* memory block initial */
 static void MMU_Init(void)
@@ -49,11 +49,11 @@ static void MMU_Init(void)
     MMU_Start.nxt = (void *)aliged_addr;
     MMU_Start.len = 0;
 
-    addr = ((MemAddr)pucAlignedHeap) + Mem_Monitor.total_size;
+    addr = ((MemAddr)aliged_addr) + Mem_Monitor.total_size;
     addr -= sizeof(MemBlock_TypeDef);
     addr &= ~((MemAddr)(BLOCK_ALIGMENT_SIZE - 1));
 
-    pxEnd = (void *)addr;
+    MMU_End = (void *)addr;
     MMU_End->nxt = NULL;
     MMU_End->len = 0;
 }
