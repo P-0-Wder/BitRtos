@@ -92,8 +92,7 @@ void *MMU_Malloc(uint32_t size)
         if ((size > Mem_Monitor.remain_size) || (size == 0))
         {
             /* illegal parameter input */
-            __asm("cpsie i");
-            return NULL;
+            mem_addr = NULL;
         }
         else
         {
@@ -109,11 +108,11 @@ void *MMU_Malloc(uint32_t size)
 
             Mem_Monitor.remain_size -= req_block_size;
             Mem_Monitor.used_size += req_block_size;
+
+            //mem_addr = ;
         }
 
         __asm("cpsie i");
-
-        //mem_addr = ;
     }
 
     return mem_addr;
