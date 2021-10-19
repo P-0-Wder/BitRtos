@@ -49,8 +49,13 @@ static void MMU_Init(void)
     MMU_Start.nxt = (void *)aliged_addr;
     MMU_Start.len = 0;
 
-    MMU_End.nxt = NULL;
-    MMU_End.len = 0;
+    addr = ((MemAddr)pucAlignedHeap) + Mem_Monitor.total_size;
+    addr -= sizeof(MemBlock_TypeDef);
+    addr &= ~((MemAddr)(BLOCK_ALIGMENT_SIZE - 1));
+
+    pxEnd = (void *)addr;
+    MMU_End->nxt = NULL;
+    MMU_End->len = 0;
 }
 
 static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
