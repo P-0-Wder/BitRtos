@@ -9,7 +9,8 @@ static Mem_Monitor_TypeDef Mem_Monitor = {
     .init = false,
 };
 
-static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE)));
+static uint8_t MMU_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE))) __attribute__((at(0x10000000)));
+;
 
 static MemBlock_TypeDef MMU_Start;
 static MemBlock_TypeDef MMU_End;
