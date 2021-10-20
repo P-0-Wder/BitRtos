@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#define MemBlock_MinSize sizeof(MemBlock_TypeDef) * 2
+
 static Mem_Monitor_TypeDef Mem_Monitor = {
     .remain_size = 0,
     .total_size = PHY_MEM_SIZE,
@@ -128,6 +130,21 @@ void *MMU_Malloc(uint32_t size)
 
                     mem_addr = (void *)(((uint8_t *)MMU_PrvBlock->nxt) + sizeof(MemBlock_TypeDef));
                     MMU_PrvBlock->nxt = Block->nxt;
+
+                    if ((Block->len - req_byte_size) > MemBlock_MinSize)
+                    {
+                        MMU_NewBlockLink = (void *)(((uint8_t *)Block) + req_byte_size);
+
+                        MMU_NewBlockLink->len = Block->len - req_byte_size;
+                        Block->len = req_byte_size;
+
+                        MMU_UpdateFreeBlock(MMU_NewBlockLink);
+                    }
+
+                    Mem_Monitor.remain_size -= Block->len;
+
+                    Block->len |= xBlockAllocatedBit;
+                    Block->nxt = NULL;
                 }
             }
             else
