@@ -45,7 +45,6 @@ void MMU_InsertFreeBlock(MemBlock_TypeDef *blk)
 
 void *MMU_Molloc(uint16_t size)
 {
-    MemBlock_TypeDef *NxtFreeBlock = NULL;
     MemBlock_TypeDef *PrvFreeBlock = NULL;
     MemBlock_TypeDef *Block_Tmp = NULL;
     void *mem_addr = NULL;
@@ -72,6 +71,7 @@ void *MMU_Molloc(uint16_t size)
 
         if ((Block_Tmp != MemEnd) && (Block_Tmp != NULL))
         {
+            mem_addr = (void *)Block_Tmp->nxtFree;
         }
     }
 
