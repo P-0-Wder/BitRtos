@@ -78,6 +78,8 @@ void *MMU_Molloc(uint16_t size)
             NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
             NxtFreeBlock->size = Block_Tmp->size - size;
 
+            MMU_InsertFreeBlock(NxtFreeBlock);
+
             Block_Tmp->size = size;
         }
     }
