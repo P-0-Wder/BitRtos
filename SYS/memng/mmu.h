@@ -13,7 +13,7 @@
 
 #define MINIMUM_BLOCK_SIZE BLOCK_ALIGMENT_SIZE * 2
 
-typedef uint16_t MemSize_t;
+typedef uint32_t MemSize_t;
 typedef uint32_t MemBlock_Addr;
 
 /* memory request type */
