@@ -1,4 +1,5 @@
 #include "mmu.h"
+#include "task_manager.h"
 
 uint8_t Mem_Buff[PHY_MEM_SIZE] __attribute__((align(BLOCK_ALIGMENT_SIZE), at(0x10000000)));
 
@@ -20,10 +21,12 @@ void MMU_Init(void)
 
     MemStart.nxtFree = (void *)Mem_Buff;
     MemStart.size = 0;
+    MemStart.req_obj_addr = 0;
 
     MemEnd = (void *)(&Mem_Buff[PHY_MEM_SIZE] - sizeof(MemBlock_TypeDef));
     MemEnd->nxtFree = NULL;
     MemEnd->size = 0;
+    MemEnd->req_obj_addr = 0;
 
     Mem_Monitor.total_size = (MemBlock_Addr)MemEnd - (MemBlock_Addr)MemStart.nxtFree;
     Mem_Monitor.remain_size = Mem_Monitor.total_size;

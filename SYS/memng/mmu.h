@@ -16,6 +16,13 @@
 typedef uint16_t MemSize_t;
 typedef uint32_t MemBlock_Addr;
 
+/* memory request type */
+typedef enum
+{
+    MemReq_OS = BLOCK_ALIGMENT_SIZE - 1,
+    MemReq_Task = 0,
+} Mem_ReqType_List;
+
 typedef struct
 {
     MemSize_t phy_size;
@@ -29,7 +36,13 @@ typedef struct
 /* memory block structure  */
 typedef struct
 {
+    /* pointer to next free memory block */
     void *nxtFree;
+
+    /* the address of whitch task object request the memory space */
+    uint32_t req_obj_addr;
+
+    /* request size */
     uint16_t size;
 } MemBlock_TypeDef;
 
