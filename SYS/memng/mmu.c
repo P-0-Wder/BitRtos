@@ -58,6 +58,12 @@ void *MMU_Molloc(uint16_t size)
         {
             size += (size % BLOCK_ALIGMENT_SIZE);
         }
+
+        PrvFreeBlock = &MemStart;
+        Block_Tmp = MemStart.nxtFree;
+        while ((size < Block_Tmp->size) && (Block_Tmp->nxtFree != NULL))
+        {
+        }
     }
 
     __asm("cpsie i");
