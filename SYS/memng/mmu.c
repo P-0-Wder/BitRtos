@@ -4,6 +4,7 @@
 uint8_t Mem_Buff[PHY_MEM_SIZE] __attribute__((align(BLOCK_ALIGMENT_SIZE), at(0x10000000)));
 
 Mem_Monitor_TypeDef Mem_Monitor;
+
 MemBlock_TypeDef MemStart;
 MemBlock_TypeDef *MemEnd;
 
@@ -21,12 +22,10 @@ void MMU_Init(void)
 
     MemStart.nxtFree = (void *)Mem_Buff;
     MemStart.size = 0;
-    MemStart.req_obj_addr = 0;
 
     MemEnd = (void *)(&Mem_Buff[PHY_MEM_SIZE] - sizeof(MemBlock_TypeDef));
     MemEnd->nxtFree = NULL;
     MemEnd->size = 0;
-    MemEnd->req_obj_addr = 0;
 
     Mem_Monitor.total_size = (MemBlock_Addr)MemEnd - (MemBlock_Addr)MemStart.nxtFree;
     Mem_Monitor.remain_size = Mem_Monitor.total_size;
@@ -43,7 +42,7 @@ void *MMU_Molloc(uint16_t size)
     MemBlock_TypeDef *NxtFreeBlock = NULL;
     MemBlock_TypeDef *PrvFreeBlock = NULL;
     MemBlock_TypeDef *Block_Tmp = NULL;
-    void *mem_addr;
+    void *mem_addr = NULL;
 
     if (!Mem_Monitor.init)
     {
@@ -54,6 +53,11 @@ void *MMU_Molloc(uint16_t size)
 
     if (size <= Mem_Monitor.remain_size)
     {
+        /* aligment request byte number */
+        if (size % BLOCK_ALIGMENT_SIZE)
+        {
+            size += (size % BLOCK_ALIGMENT_SIZE);
+        }
     }
 
     __asm("cpsie i");

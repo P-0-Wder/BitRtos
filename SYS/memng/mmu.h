@@ -39,9 +39,6 @@ typedef struct
     /* pointer to next free memory block */
     void *nxtFree;
 
-    /* the address of whitch task object request the memory space */
-    uint32_t req_obj_addr;
-
     /* request size */
     uint16_t size;
 } MemBlock_TypeDef;
