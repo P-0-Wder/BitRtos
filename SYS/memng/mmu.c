@@ -37,6 +37,9 @@ void MMU_InsertFreeBlock(MemBlock_TypeDef *blk)
 
 void *MMU_Molloc(uint16_t size)
 {
+    MemBlock_TypeDef *NxtFreeBlock = NULL;
+    MemBlock_TypeDef *PrvFreeBlock = NULL;
+    MemBlock_TypeDef *Block_Tmp = NULL;
     void *mem_addr;
 
     if (!Mem_Monitor.init)
