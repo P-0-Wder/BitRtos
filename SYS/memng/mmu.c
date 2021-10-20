@@ -61,8 +61,10 @@ void *MMU_Molloc(uint16_t size)
 
         PrvFreeBlock = &MemStart;
         Block_Tmp = MemStart.nxtFree;
-        while ((size < Block_Tmp->size) && (Block_Tmp->nxtFree != NULL))
+        while ((Block_Tmp->size < size) && (Block_Tmp->nxtFree != NULL))
         {
+            PrvFreeBlock = Block_Tmp;
+            Block_Tmp = Block_Tmp->nxtFree;
         }
     }
 
