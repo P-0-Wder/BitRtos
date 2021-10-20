@@ -66,6 +66,10 @@ void *MMU_Molloc(uint16_t size)
             PrvFreeBlock = Block_Tmp;
             Block_Tmp = Block_Tmp->nxtFree;
         }
+
+        if (Block_Tmp != NULL)
+        {
+        }
     }
 
     __asm("cpsie i");
