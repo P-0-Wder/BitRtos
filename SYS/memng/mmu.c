@@ -25,6 +25,9 @@ void MMU_Init(void)
     MemEnd->nxtFree = NULL;
     MemEnd->size = 0;
 
+    Mem_Monitor.total_size = (MemBlock_Addr)MemEnd - (MemBlock_Addr)MemStart.nxtFree;
+    Mem_Monitor.remain_size = Mem_Monitor.total_size;
+
     Mem_Monitor.init = true;
 }
 
