@@ -30,6 +30,7 @@ void MMU_Init(void)
 
     FstFreeBlock_tmp = MemStart.nxtFree;
     FstFreeBlock_tmp->nxtFree = MemEnd;
+
     Mem_Monitor.total_size -= sizeof(MemBlock_TypeDef);
     FstFreeBlock_tmp->size = Mem_Monitor.total_size;
 
@@ -59,10 +60,7 @@ void *MMU_Molloc(uint16_t size)
     if (size <= Mem_Monitor.remain_size)
     {
         /* aligment request byte number */
-        if (size % BLOCK_ALIGMENT_SIZE)
-        {
-            size += (size % BLOCK_ALIGMENT_SIZE);
-        }
+        size += (size % BLOCK_ALIGMENT_SIZE);
 
         PrvFreeBlock = &MemStart;
         Block_Tmp = MemStart.nxtFree;
@@ -72,7 +70,7 @@ void *MMU_Molloc(uint16_t size)
             Block_Tmp = Block_Tmp->nxtFree;
         }
 
-        if (Block_Tmp != NULL)
+        if ((Block_Tmp != MemEnd) && (Block_Tmp != NULL))
         {
         }
     }
