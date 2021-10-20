@@ -29,8 +29,8 @@ typedef struct
 /* memory block structure  */
 typedef struct
 {
-    void *nxt;
-    uint16_t len;
+    void *nxtFree;
+    uint16_t size;
 } MemBlock_TypeDef;
 
 #endif

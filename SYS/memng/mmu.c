@@ -8,6 +8,8 @@ MemBlock_TypeDef *MemEnd;
 
 void MMU_Init(void)
 {
+    MemBlock_Addr mem_addr;
+
     Mem_Monitor.phy_size = PHY_MEM_SIZE;
     Mem_Monitor.used_size = 0;
 
@@ -15,6 +17,13 @@ void MMU_Init(void)
     {
         Mem_Buff[i] = 0;
     }
+
+    MemStart.nxtFree = (void *)Mem_Buff;
+    MemStart.size = 0;
+
+    MemEnd = (void *)(&Mem_Buff[PHY_MEM_SIZE] - sizeof(MemBlock_TypeDef));
+    MemEnd->nxtFree = NULL;
+    MemEnd->size = 0;
 
     Mem_Monitor.init = true;
 }
