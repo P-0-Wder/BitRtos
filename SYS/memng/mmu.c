@@ -84,6 +84,8 @@ void *MMU_Malloc(uint32_t size)
     uint32_t req_byte_size = 0;
     void *mem_addr;
 
+    __asm("cpsid i");
+
     if (!Mem_Monitor.init)
     {
         MMU_Init();
@@ -93,8 +95,6 @@ void *MMU_Malloc(uint32_t size)
 
     if (Mem_Monitor.init)
     {
-        __asm("cpsid i");
-
         if ((size > Mem_Monitor.remain_size) || (size == 0))
         {
             /* illegal parameter input */
@@ -122,20 +122,18 @@ void *MMU_Malloc(uint32_t size)
 
                 if (Block != MMU_End)
                 {
-                    /* match the size of block */
-
                     Mem_Monitor.remain_size -= req_byte_size;
                     Mem_Monitor.used_size += req_byte_size;
 
-                    //mem_addr = ;
+                    mem_addr = (void *)(((uint8_t *)MMU_PrvBlock->nxt) + sizeof(MemBlock_TypeDef));
+                    MMU_PrvBlock->nxt = Block->nxt;
                 }
             }
             else
                 mem_addr = NULL;
         }
-
-        __asm("cpsie i");
     }
+    __asm("cpsie i");
 
     return mem_addr;
 }
