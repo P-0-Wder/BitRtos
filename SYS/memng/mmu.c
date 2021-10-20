@@ -45,7 +45,6 @@ static void MMU_Init(void)
         addr &= ~((size_t)(BLOCK_ALIGMENT_SIZE - 1));
 
         Mem_Monitor.total_size -= addr - (MemAddr)MMU_Buff;
-        Mem_Monitor.remain_size = Mem_Monitor.total_size;
     }
 
     aliged_addr = (uint8_t *)addr;
@@ -64,6 +63,8 @@ static void MMU_Init(void)
     FirstFreeBlock = (void *)aliged_addr;
     FirstFreeBlock->len = addr - (size_t)FirstFreeBlock;
     FirstFreeBlock->nxt = MMU_End;
+
+    Mem_Monitor.remain_size = FirstFreeBlock->len;
 }
 
 static void MMU_UpdateFreeBlock(MemBlock_TypeDef *block)
