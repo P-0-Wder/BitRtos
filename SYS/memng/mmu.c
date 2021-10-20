@@ -77,10 +77,16 @@ void *MMU_Molloc(uint16_t size)
 
             NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
             NxtFreeBlock->size = Block_Tmp->size - size;
+
+            Block_Tmp->size = size;
         }
     }
 
     __asm("cpsie i");
 
     return mem_addr;
+}
+
+void MMU_Free(void *ptr)
+{
 }
