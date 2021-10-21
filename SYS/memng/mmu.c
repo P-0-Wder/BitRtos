@@ -1,6 +1,8 @@
 #include "mmu.h"
 
-uint8_t Mem_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE))) __attribute__((at(0x10000000)));
+#pragma pack(BLOCK_ALIGMENT_SIZE)
+uint8_t Mem_Buff[PHY_MEM_SIZE] __attribute__((section(".ccmram")));
+#pragma pack()
 
 Mem_Monitor_TypeDef Mem_Monitor;
 

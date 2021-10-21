@@ -7,8 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define BLOCK_ALIGMENT_SIZE 8
-#define BLOCK_BORDER_SIZE 4
+#define BLOCK_ALIGMENT_SIZE 4
 #define PHY_MEM_SIZE 64 * 1024
 
 #define MINIMUM_BLOCK_SIZE BLOCK_ALIGMENT_SIZE * 2

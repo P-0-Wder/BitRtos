@@ -165,7 +165,6 @@ SECTIONS
     _eccmram = .;       /* create a global symbol at ccmram end */
   } >CCMRAM AT> FLASH
 
-  
   /* Uninitialized data section */
   . = ALIGN(4);
   .bss :
@@ -193,8 +192,6 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
-  
-
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {
@@ -205,5 +202,6 @@ SECTIONS
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }
+
 
 
