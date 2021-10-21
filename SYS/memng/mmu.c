@@ -7,7 +7,10 @@ Mem_Monitor_TypeDef Mem_Monitor;
 MemBlock_TypeDef MemStart;
 MemBlock_TypeDef *MemEnd;
 
-void MMU_Init(void)
+static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert);
+static void MMU_Init(void);
+
+static void MMU_Init(void)
 {
     MemBlock_TypeDef *FstFreeBlock_tmp = NULL;
 
@@ -37,50 +40,6 @@ void MMU_Init(void)
     Mem_Monitor.remain_size = Mem_Monitor.total_size;
 
     Mem_Monitor.init = true;
-}
-
-void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
-{
-    MemBlock_TypeDef *pxIterator;
-    uint8_t *puc;
-
-    for (pxIterator = &MemStart; pxIterator->nxtFree < (void *)pxBlockToInsert; pxIterator = pxIterator->nxtFree)
-    {
-        /* Nothing to do here, just iterate to the right position. */
-    }
-
-    puc = (uint8_t *)pxIterator;
-    if ((puc + pxIterator->size) == (uint8_t *)pxBlockToInsert)
-    {
-        pxIterator->size += pxBlockToInsert->size;
-        pxBlockToInsert = pxIterator;
-    }
-
-    /* Do the block being inserted, and the block it is being inserted before
-	make a contiguous block of memory? */
-    puc = (uint8_t *)pxBlockToInsert;
-    if ((puc + pxBlockToInsert->size) == (uint8_t *)pxIterator->nxtFree)
-    {
-        if (pxIterator->nxtFree != MemEnd)
-        {
-            /* Form one big block from the two blocks. */
-            pxBlockToInsert->size += ((MemBlock_TypeDef *)pxIterator->nxtFree)->size;
-            pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
-        }
-        else
-        {
-            pxBlockToInsert->nxtFree = MemEnd;
-        }
-    }
-    else
-    {
-        pxBlockToInsert->nxtFree = pxIterator->nxtFree;
-    }
-
-    if (pxIterator != pxBlockToInsert)
-    {
-        pxIterator->nxtFree = pxBlockToInsert;
-    }
 }
 
 void *MMU_Molloc(uint16_t size)
@@ -157,5 +116,49 @@ void MMU_Free(void *ptr)
             }
             __asm("cpsie i");
         }
+    }
+}
+
+static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
+{
+    MemBlock_TypeDef *pxIterator;
+    uint8_t *puc;
+
+    for (pxIterator = &MemStart; pxIterator->nxtFree < (void *)pxBlockToInsert; pxIterator = pxIterator->nxtFree)
+    {
+        /* Nothing to do here, just iterate to the right position. */
+    }
+
+    puc = (uint8_t *)pxIterator;
+    if ((puc + pxIterator->size) == (uint8_t *)pxBlockToInsert)
+    {
+        pxIterator->size += pxBlockToInsert->size;
+        pxBlockToInsert = pxIterator;
+    }
+
+    /* Do the block being inserted, and the block it is being inserted before
+	make a contiguous block of memory? */
+    puc = (uint8_t *)pxBlockToInsert;
+    if ((puc + pxBlockToInsert->size) == (uint8_t *)pxIterator->nxtFree)
+    {
+        if (pxIterator->nxtFree != MemEnd)
+        {
+            /* Form one big block from the two blocks. */
+            pxBlockToInsert->size += ((MemBlock_TypeDef *)pxIterator->nxtFree)->size;
+            pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
+        }
+        else
+        {
+            pxBlockToInsert->nxtFree = MemEnd;
+        }
+    }
+    else
+    {
+        pxBlockToInsert->nxtFree = pxIterator->nxtFree;
+    }
+
+    if (pxIterator != pxBlockToInsert)
+    {
+        pxIterator->nxtFree = pxBlockToInsert;
     }
 }
