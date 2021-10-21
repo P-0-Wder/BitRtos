@@ -1,6 +1,6 @@
 #include "mmu.h"
 
-uint8_t Mem_Buff[PHY_MEM_SIZE] __attribute__((align(BLOCK_ALIGMENT_SIZE), at(0x10000000)));
+uint8_t Mem_Buff[PHY_MEM_SIZE] __attribute__((aligned(BLOCK_ALIGMENT_SIZE))) __attribute__((at(0x10000000)));
 
 Mem_Monitor_TypeDef Mem_Monitor;
 
