@@ -39,8 +39,48 @@ void MMU_Init(void)
     Mem_Monitor.init = true;
 }
 
-void MMU_InsertFreeBlock(MemBlock_TypeDef *blk)
+void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
 {
+    MemBlock_TypeDef *pxIterator;
+    uint8_t *puc;
+
+    for (pxIterator = &MemStart; pxIterator->nxtFree < (void *)pxBlockToInsert; pxIterator = pxIterator->nxtFree)
+    {
+        /* Nothing to do here, just iterate to the right position. */
+    }
+
+    puc = (uint8_t *)pxIterator;
+    if ((puc + pxIterator->size) == (uint8_t *)pxBlockToInsert)
+    {
+        pxIterator->size += pxBlockToInsert->size;
+        pxBlockToInsert = pxIterator;
+    }
+
+    /* Do the block being inserted, and the block it is being inserted before
+	make a contiguous block of memory? */
+    puc = (uint8_t *)pxBlockToInsert;
+    if ((puc + pxBlockToInsert->size) == (uint8_t *)pxIterator->nxtFree)
+    {
+        if (pxIterator->nxtFree != MemEnd)
+        {
+            /* Form one big block from the two blocks. */
+            pxBlockToInsert->size += ((MemBlock_TypeDef *)pxIterator->nxtFree)->size;
+            pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
+        }
+        else
+        {
+            pxBlockToInsert->nxtFree = MemEnd;
+        }
+    }
+    else
+    {
+        pxBlockToInsert->nxtFree = pxIterator->nxtFree;
+    }
+
+    if (pxIterator != pxBlockToInsert)
+    {
+        pxIterator->nxtFree = pxBlockToInsert;
+    }
 }
 
 void *MMU_Molloc(uint16_t size)
@@ -91,4 +131,31 @@ void *MMU_Molloc(uint16_t size)
 
 void MMU_Free(void *ptr)
 {
+    uint8_t *puc = (uint8_t *)ptr;
+    MemBlock_TypeDef *pxLink;
+
+    if (ptr != NULL)
+    {
+        /* The memory being freed will have an BlockLink_t structure immediately
+		before it. */
+        puc -= sizeof(MemBlock_TypeDef);
+
+        /* This casting is to keep the compiler from issuing warnings. */
+        pxLink = (void *)puc;
+
+        if (pxLink->nxtFree == NULL)
+        {
+            //pxLink->size &= ~xBlockAllocatedBit;
+
+            __asm("cpsid i");
+            {
+                /* Add this block to the list of free blocks. */
+                Mem_Monitor.remain_size += pxLink->size;
+
+                //traceFREE(pv, pxLink->size);
+                MMU_InsertFreeBlock(((MemBlock_TypeDef *)pxLink));
+            }
+            __asm("cpsie i");
+        }
+    }
 }
