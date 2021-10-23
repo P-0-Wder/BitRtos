@@ -1,4 +1,4 @@
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
   37 0000 144A     		ldr	r2, .L4
   38 0002 4FF48033 		mov	r3, #65536
   39 0006 1360     		str	r3, [r2]
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 2
 
 
   20:SYS/memng/mmu.c ****     Mem_Monitor.used_size = 0;
@@ -118,7 +118,7 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
   79              		.loc 1 30 12 is_stmt 0 view .LVU21
   80 0026 0E49     		ldr	r1, .L4+12
   81 0028 0E48     		ldr	r0, .L4+16
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 3
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 3
 
 
   82 002a 0160     		str	r1, [r0]
@@ -178,7 +178,7 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
  121 005c 00000000 		.word	.LANCHOR1
  122 0060 F8FF0000 		.word	Mem_Buff+65528
  123 0064 00000000 		.word	.LANCHOR2
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 4
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 4
 
 
  124              		.cfi_endproc
@@ -220,232 +220,238 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
   71:SYS/memng/mmu.c ****             Block_Tmp = Block_Tmp->nxtFree;
   72:SYS/memng/mmu.c ****         }
   73:SYS/memng/mmu.c **** 
-  74:SYS/memng/mmu.c ****         if ((Block_Tmp != MemEnd) && (Block_Tmp != NULL))
+  74:SYS/memng/mmu.c ****         if (Block_Tmp != MemEnd)
   75:SYS/memng/mmu.c ****         {
-  76:SYS/memng/mmu.c ****             mem_addr = (void *)(((uint8_t *)Block_Tmp->nxtFree) + sizeof(MemBlock_TypeDef));
-  77:SYS/memng/mmu.c ****             PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
-  78:SYS/memng/mmu.c **** 
-  79:SYS/memng/mmu.c ****             NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
-  80:SYS/memng/mmu.c ****             NxtFreeBlock->size = Block_Tmp->size - size;
-  81:SYS/memng/mmu.c **** 
-  82:SYS/memng/mmu.c ****             MMU_InsertFreeBlock(NxtFreeBlock);
+  76:SYS/memng/mmu.c ****             mem_addr = (void *)(((uint8_t *)Block_Tmp) + sizeof(MemBlock_TypeDef));
+  77:SYS/memng/mmu.c **** 
+  78:SYS/memng/mmu.c ****             if ((Block_Tmp->size - size) >= MINIMUM_BLOCK_SIZE)
+  79:SYS/memng/mmu.c ****             {
+  80:SYS/memng/mmu.c ****             }
+  81:SYS/memng/mmu.c ****             else
+  82:SYS/memng/mmu.c ****                 NxtFreeBlock = Block_Tmp->nxtFree;
   83:SYS/memng/mmu.c **** 
-  84:SYS/memng/mmu.c ****             Block_Tmp->size = size;
-  85:SYS/memng/mmu.c ****         }
-  86:SYS/memng/mmu.c ****     }
+  84:SYS/memng/mmu.c ****             PrvFreeBlock->nxtFree = NxtFreeBlock;
+  85:SYS/memng/mmu.c ****             NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
+  86:SYS/memng/mmu.c ****             NxtFreeBlock->size = Block_Tmp->size - size;
   87:SYS/memng/mmu.c **** 
-  88:SYS/memng/mmu.c ****     __asm("cpsie i");
+  88:SYS/memng/mmu.c ****             MMU_InsertFreeBlock(NxtFreeBlock);
   89:SYS/memng/mmu.c **** 
-  90:SYS/memng/mmu.c ****     return mem_addr;
-  91:SYS/memng/mmu.c **** }
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 5
+  90:SYS/memng/mmu.c ****             Block_Tmp->size = size;
+  91:SYS/memng/mmu.c ****         }
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 5
 
 
-  92:SYS/memng/mmu.c **** 
-  93:SYS/memng/mmu.c **** void MMU_Free(void *ptr)
-  94:SYS/memng/mmu.c **** {
-  95:SYS/memng/mmu.c ****     uint8_t *puc = (uint8_t *)ptr;
-  96:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxLink;
-  97:SYS/memng/mmu.c **** 
-  98:SYS/memng/mmu.c ****     if (ptr != NULL)
-  99:SYS/memng/mmu.c ****     {
- 100:SYS/memng/mmu.c ****         /* The memory being freed will have an BlockLink_t structure immediately
- 101:SYS/memng/mmu.c **** 		before it. */
- 102:SYS/memng/mmu.c ****         puc -= sizeof(MemBlock_TypeDef);
+  92:SYS/memng/mmu.c ****     }
+  93:SYS/memng/mmu.c **** 
+  94:SYS/memng/mmu.c ****     __asm("cpsie i");
+  95:SYS/memng/mmu.c **** 
+  96:SYS/memng/mmu.c ****     return mem_addr;
+  97:SYS/memng/mmu.c **** }
+  98:SYS/memng/mmu.c **** 
+  99:SYS/memng/mmu.c **** void MMU_Free(void *ptr)
+ 100:SYS/memng/mmu.c **** {
+ 101:SYS/memng/mmu.c ****     uint8_t *puc = (uint8_t *)ptr;
+ 102:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxLink;
  103:SYS/memng/mmu.c **** 
- 104:SYS/memng/mmu.c ****         /* This casting is to keep the compiler from issuing warnings. */
- 105:SYS/memng/mmu.c ****         pxLink = (void *)puc;
- 106:SYS/memng/mmu.c **** 
- 107:SYS/memng/mmu.c ****         if (pxLink->nxtFree == NULL)
- 108:SYS/memng/mmu.c ****         {
- 109:SYS/memng/mmu.c ****             //pxLink->size &= ~xBlockAllocatedBit;
- 110:SYS/memng/mmu.c **** 
- 111:SYS/memng/mmu.c ****             __asm("cpsid i");
- 112:SYS/memng/mmu.c ****             {
- 113:SYS/memng/mmu.c ****                 /* Add this block to the list of free blocks. */
- 114:SYS/memng/mmu.c ****                 Mem_Monitor.remain_size += pxLink->size;
- 115:SYS/memng/mmu.c **** 
- 116:SYS/memng/mmu.c ****                 //traceFREE(pv, pxLink->size);
- 117:SYS/memng/mmu.c ****                 MMU_InsertFreeBlock(((MemBlock_TypeDef *)pxLink));
- 118:SYS/memng/mmu.c ****             }
- 119:SYS/memng/mmu.c ****             __asm("cpsie i");
- 120:SYS/memng/mmu.c ****         }
- 121:SYS/memng/mmu.c ****     }
- 122:SYS/memng/mmu.c **** }
- 123:SYS/memng/mmu.c **** 
- 124:SYS/memng/mmu.c **** static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
- 125:SYS/memng/mmu.c **** {
- 137              		.loc 1 125 1 is_stmt 1 view -0
+ 104:SYS/memng/mmu.c ****     if (ptr != NULL)
+ 105:SYS/memng/mmu.c ****     {
+ 106:SYS/memng/mmu.c ****         /* The memory being freed will have an BlockLink_t structure immediately
+ 107:SYS/memng/mmu.c **** 		before it. */
+ 108:SYS/memng/mmu.c ****         puc -= sizeof(MemBlock_TypeDef);
+ 109:SYS/memng/mmu.c **** 
+ 110:SYS/memng/mmu.c ****         /* This casting is to keep the compiler from issuing warnings. */
+ 111:SYS/memng/mmu.c ****         pxLink = (void *)puc;
+ 112:SYS/memng/mmu.c **** 
+ 113:SYS/memng/mmu.c ****         if (pxLink->nxtFree == NULL)
+ 114:SYS/memng/mmu.c ****         {
+ 115:SYS/memng/mmu.c ****             //pxLink->size &= ~xBlockAllocatedBit;
+ 116:SYS/memng/mmu.c **** 
+ 117:SYS/memng/mmu.c ****             __asm("cpsid i");
+ 118:SYS/memng/mmu.c ****             {
+ 119:SYS/memng/mmu.c ****                 /* Add this block to the list of free blocks. */
+ 120:SYS/memng/mmu.c ****                 Mem_Monitor.remain_size += pxLink->size;
+ 121:SYS/memng/mmu.c **** 
+ 122:SYS/memng/mmu.c ****                 //traceFREE(pv, pxLink->size);
+ 123:SYS/memng/mmu.c ****                 MMU_InsertFreeBlock(((MemBlock_TypeDef *)pxLink));
+ 124:SYS/memng/mmu.c ****             }
+ 125:SYS/memng/mmu.c ****             __asm("cpsie i");
+ 126:SYS/memng/mmu.c ****         }
+ 127:SYS/memng/mmu.c ****     }
+ 128:SYS/memng/mmu.c **** }
+ 129:SYS/memng/mmu.c **** 
+ 130:SYS/memng/mmu.c **** static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
+ 131:SYS/memng/mmu.c **** {
+ 137              		.loc 1 131 1 is_stmt 1 view -0
  138              		.cfi_startproc
  139              		@ args = 0, pretend = 0, frame = 0
  140              		@ frame_needed = 0, uses_anonymous_args = 0
  141              		@ link register save eliminated.
- 126:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxIterator;
- 142              		.loc 1 126 5 view .LVU41
- 127:SYS/memng/mmu.c ****     uint8_t *puc;
- 143              		.loc 1 127 5 view .LVU42
- 128:SYS/memng/mmu.c **** 
- 129:SYS/memng/mmu.c ****     for (pxIterator = &MemStart; pxIterator->nxtFree < (void *)pxBlockToInsert; pxIterator = pxIter
- 144              		.loc 1 129 5 view .LVU43
- 145              		.loc 1 129 21 is_stmt 0 view .LVU44
+ 132:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxIterator;
+ 142              		.loc 1 132 5 view .LVU41
+ 133:SYS/memng/mmu.c ****     uint8_t *puc;
+ 143              		.loc 1 133 5 view .LVU42
+ 134:SYS/memng/mmu.c **** 
+ 135:SYS/memng/mmu.c ****     for (pxIterator = &MemStart; pxIterator->nxtFree < (void *)pxBlockToInsert; pxIterator = pxIter
+ 144              		.loc 1 135 5 view .LVU43
+ 145              		.loc 1 135 21 is_stmt 0 view .LVU44
  146 0000 164B     		ldr	r3, .L21
  147              	.LVL7:
  148              	.L7:
- 149              		.loc 1 129 34 is_stmt 1 discriminator 1 view .LVU45
+ 149              		.loc 1 135 34 is_stmt 1 discriminator 1 view .LVU45
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 6
+
+
  150 0002 1A46     		mov	r2, r3
- 151              		.loc 1 129 44 is_stmt 0 discriminator 1 view .LVU46
+ 151              		.loc 1 135 44 is_stmt 0 discriminator 1 view .LVU46
  152 0004 1B68     		ldr	r3, [r3]
  153              	.LVL8:
- 154              		.loc 1 129 5 discriminator 1 view .LVU47
+ 154              		.loc 1 135 5 discriminator 1 view .LVU47
  155 0006 8342     		cmp	r3, r0
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 6
-
-
  156 0008 FBD3     		bcc	.L7
- 130:SYS/memng/mmu.c ****     {
- 131:SYS/memng/mmu.c ****         /* Nothing to do here, just iterate to the right position. */
- 132:SYS/memng/mmu.c ****     }
- 133:SYS/memng/mmu.c **** 
- 134:SYS/memng/mmu.c ****     puc = (uint8_t *)pxIterator;
- 157              		.loc 1 134 5 is_stmt 1 view .LVU48
+ 136:SYS/memng/mmu.c ****     {
+ 137:SYS/memng/mmu.c ****         /* Nothing to do here, just iterate to the right position. */
+ 138:SYS/memng/mmu.c ****     }
+ 139:SYS/memng/mmu.c **** 
+ 140:SYS/memng/mmu.c ****     puc = (uint8_t *)pxIterator;
+ 157              		.loc 1 140 5 is_stmt 1 view .LVU48
  158              	.LVL9:
- 135:SYS/memng/mmu.c ****     if ((puc + pxIterator->size) == (uint8_t *)pxBlockToInsert)
- 159              		.loc 1 135 5 view .LVU49
- 160              		.loc 1 135 26 is_stmt 0 view .LVU50
+ 141:SYS/memng/mmu.c ****     if ((puc + pxIterator->size) == (uint8_t *)pxBlockToInsert)
+ 159              		.loc 1 141 5 view .LVU49
+ 160              		.loc 1 141 26 is_stmt 0 view .LVU50
  161 000a 9188     		ldrh	r1, [r2, #4]
- 162              		.loc 1 135 14 view .LVU51
+ 162              		.loc 1 141 14 view .LVU51
  163 000c 02EB010C 		add	ip, r2, r1
- 164              		.loc 1 135 8 view .LVU52
+ 164              		.loc 1 141 8 view .LVU52
  165 0010 8445     		cmp	ip, r0
  166 0012 09D0     		beq	.L19
  167              	.L8:
- 136:SYS/memng/mmu.c ****     {
- 137:SYS/memng/mmu.c ****         pxIterator->size += pxBlockToInsert->size;
- 138:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
- 139:SYS/memng/mmu.c ****     }
- 140:SYS/memng/mmu.c **** 
- 141:SYS/memng/mmu.c ****     /* Do the block being inserted, and the block it is being inserted before
- 142:SYS/memng/mmu.c **** 	make a contiguous block of memory? */
- 143:SYS/memng/mmu.c ****     puc = (uint8_t *)pxBlockToInsert;
- 168              		.loc 1 143 5 is_stmt 1 view .LVU53
+ 142:SYS/memng/mmu.c ****     {
+ 143:SYS/memng/mmu.c ****         pxIterator->size += pxBlockToInsert->size;
+ 144:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
+ 145:SYS/memng/mmu.c ****     }
+ 146:SYS/memng/mmu.c **** 
+ 147:SYS/memng/mmu.c ****     /* Do the block being inserted, and the block it is being inserted before
+ 148:SYS/memng/mmu.c **** 	make a contiguous block of memory? */
+ 149:SYS/memng/mmu.c ****     puc = (uint8_t *)pxBlockToInsert;
+ 168              		.loc 1 149 5 is_stmt 1 view .LVU53
  169              	.LVL10:
- 144:SYS/memng/mmu.c ****     if ((puc + pxBlockToInsert->size) == (uint8_t *)pxIterator->nxtFree)
- 170              		.loc 1 144 5 view .LVU54
- 171              		.loc 1 144 31 is_stmt 0 view .LVU55
+ 150:SYS/memng/mmu.c ****     if ((puc + pxBlockToInsert->size) == (uint8_t *)pxIterator->nxtFree)
+ 170              		.loc 1 150 5 view .LVU54
+ 171              		.loc 1 150 31 is_stmt 0 view .LVU55
  172 0014 8188     		ldrh	r1, [r0, #4]
- 173              		.loc 1 144 14 view .LVU56
+ 173              		.loc 1 150 14 view .LVU56
  174 0016 00EB010C 		add	ip, r0, r1
- 175              		.loc 1 144 8 view .LVU57
+ 175              		.loc 1 150 8 view .LVU57
  176 001a 6345     		cmp	r3, ip
  177 001c 09D0     		beq	.L20
- 145:SYS/memng/mmu.c ****     {
- 146:SYS/memng/mmu.c ****         if (pxIterator->nxtFree != MemEnd)
- 147:SYS/memng/mmu.c ****         {
- 148:SYS/memng/mmu.c ****             /* Form one big block from the two blocks. */
- 149:SYS/memng/mmu.c ****             pxBlockToInsert->size += ((MemBlock_TypeDef *)pxIterator->nxtFree)->size;
- 150:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
- 151:SYS/memng/mmu.c ****         }
- 152:SYS/memng/mmu.c ****         else
+ 151:SYS/memng/mmu.c ****     {
+ 152:SYS/memng/mmu.c ****         if (pxIterator->nxtFree != MemEnd)
  153:SYS/memng/mmu.c ****         {
- 154:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = MemEnd;
- 155:SYS/memng/mmu.c ****         }
- 156:SYS/memng/mmu.c ****     }
- 157:SYS/memng/mmu.c ****     else
- 158:SYS/memng/mmu.c ****     {
- 159:SYS/memng/mmu.c ****         pxBlockToInsert->nxtFree = pxIterator->nxtFree;
- 178              		.loc 1 159 9 is_stmt 1 view .LVU58
- 179              		.loc 1 159 34 is_stmt 0 view .LVU59
+ 154:SYS/memng/mmu.c ****             /* Form one big block from the two blocks. */
+ 155:SYS/memng/mmu.c ****             pxBlockToInsert->size += ((MemBlock_TypeDef *)pxIterator->nxtFree)->size;
+ 156:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
+ 157:SYS/memng/mmu.c ****         }
+ 158:SYS/memng/mmu.c ****         else
+ 159:SYS/memng/mmu.c ****         {
+ 160:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = MemEnd;
+ 161:SYS/memng/mmu.c ****         }
+ 162:SYS/memng/mmu.c ****     }
+ 163:SYS/memng/mmu.c ****     else
+ 164:SYS/memng/mmu.c ****     {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 7
+
+
+ 165:SYS/memng/mmu.c ****         pxBlockToInsert->nxtFree = pxIterator->nxtFree;
+ 178              		.loc 1 165 9 is_stmt 1 view .LVU58
+ 179              		.loc 1 165 34 is_stmt 0 view .LVU59
  180 001e 0360     		str	r3, [r0]
- 160:SYS/memng/mmu.c ****     }
- 161:SYS/memng/mmu.c **** 
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 7
-
-
- 162:SYS/memng/mmu.c ****     if (pxIterator != pxBlockToInsert)
- 181              		.loc 1 162 5 is_stmt 1 view .LVU60
- 182              		.loc 1 162 8 is_stmt 0 view .LVU61
+ 166:SYS/memng/mmu.c ****     }
+ 167:SYS/memng/mmu.c **** 
+ 168:SYS/memng/mmu.c ****     if (pxIterator != pxBlockToInsert)
+ 181              		.loc 1 168 5 is_stmt 1 view .LVU60
+ 182              		.loc 1 168 8 is_stmt 0 view .LVU61
  183 0020 9042     		cmp	r0, r2
  184 0022 19D0     		beq	.L16
- 163:SYS/memng/mmu.c ****     {
- 164:SYS/memng/mmu.c ****         pxIterator->nxtFree = pxBlockToInsert;
- 185              		.loc 1 164 9 is_stmt 1 view .LVU62
- 186              		.loc 1 164 29 is_stmt 0 view .LVU63
+ 169:SYS/memng/mmu.c ****     {
+ 170:SYS/memng/mmu.c ****         pxIterator->nxtFree = pxBlockToInsert;
+ 185              		.loc 1 170 9 is_stmt 1 view .LVU62
+ 186              		.loc 1 170 29 is_stmt 0 view .LVU63
  187 0024 1060     		str	r0, [r2]
  188 0026 7047     		bx	lr
  189              	.LVL11:
  190              	.L19:
- 137:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
- 191              		.loc 1 137 9 is_stmt 1 view .LVU64
- 137:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
- 192              		.loc 1 137 44 is_stmt 0 view .LVU65
+ 143:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
+ 191              		.loc 1 143 9 is_stmt 1 view .LVU64
+ 143:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
+ 192              		.loc 1 143 44 is_stmt 0 view .LVU65
  193 0028 8088     		ldrh	r0, [r0, #4]
  194              	.LVL12:
- 137:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
- 195              		.loc 1 137 26 view .LVU66
+ 143:SYS/memng/mmu.c ****         pxBlockToInsert = pxIterator;
+ 195              		.loc 1 143 26 view .LVU66
  196 002a 0144     		add	r1, r1, r0
  197 002c 9180     		strh	r1, [r2, #4]	@ movhi
- 138:SYS/memng/mmu.c ****     }
- 198              		.loc 1 138 9 is_stmt 1 view .LVU67
+ 144:SYS/memng/mmu.c ****     }
+ 198              		.loc 1 144 9 is_stmt 1 view .LVU67
  199              	.LVL13:
- 138:SYS/memng/mmu.c ****     }
- 200              		.loc 1 138 25 is_stmt 0 view .LVU68
+ 144:SYS/memng/mmu.c ****     }
+ 200              		.loc 1 144 25 is_stmt 0 view .LVU68
  201 002e 1046     		mov	r0, r2
  202 0030 F0E7     		b	.L8
  203              	.LVL14:
  204              	.L20:
- 125:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxIterator;
- 205              		.loc 1 125 1 view .LVU69
+ 131:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxIterator;
+ 205              		.loc 1 131 1 view .LVU69
  206 0032 10B4     		push	{r4}
  207              	.LCFI0:
  208              		.cfi_def_cfa_offset 4
  209              		.cfi_offset 4, -4
- 146:SYS/memng/mmu.c ****         {
- 210              		.loc 1 146 9 is_stmt 1 view .LVU70
- 146:SYS/memng/mmu.c ****         {
- 211              		.loc 1 146 33 is_stmt 0 view .LVU71
+ 152:SYS/memng/mmu.c ****         {
+ 210              		.loc 1 152 9 is_stmt 1 view .LVU70
+ 152:SYS/memng/mmu.c ****         {
+ 211              		.loc 1 152 33 is_stmt 0 view .LVU71
  212 0034 0A4C     		ldr	r4, .L21+4
  213 0036 2468     		ldr	r4, [r4]
- 146:SYS/memng/mmu.c ****         {
- 214              		.loc 1 146 12 view .LVU72
+ 152:SYS/memng/mmu.c ****         {
+ 214              		.loc 1 152 12 view .LVU72
  215 0038 A342     		cmp	r3, r4
  216 003a 0BD0     		beq	.L10
- 149:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
- 217              		.loc 1 149 13 is_stmt 1 view .LVU73
- 149:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
- 218              		.loc 1 149 79 is_stmt 0 view .LVU74
+ 155:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
+ 217              		.loc 1 155 13 is_stmt 1 view .LVU73
+ 155:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 8
+
+
+ 218              		.loc 1 155 79 is_stmt 0 view .LVU74
  219 003c 9B88     		ldrh	r3, [r3, #4]
- 149:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
- 220              		.loc 1 149 35 view .LVU75
+ 155:SYS/memng/mmu.c ****             pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
+ 220              		.loc 1 155 35 view .LVU75
  221 003e 1944     		add	r1, r1, r3
  222 0040 8180     		strh	r1, [r0, #4]	@ movhi
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 8
-
-
- 150:SYS/memng/mmu.c ****         }
- 223              		.loc 1 150 13 is_stmt 1 view .LVU76
- 150:SYS/memng/mmu.c ****         }
- 224              		.loc 1 150 71 is_stmt 0 view .LVU77
+ 156:SYS/memng/mmu.c ****         }
+ 223              		.loc 1 156 13 is_stmt 1 view .LVU76
+ 156:SYS/memng/mmu.c ****         }
+ 224              		.loc 1 156 71 is_stmt 0 view .LVU77
  225 0042 1368     		ldr	r3, [r2]
- 150:SYS/memng/mmu.c ****         }
- 226              		.loc 1 150 81 view .LVU78
+ 156:SYS/memng/mmu.c ****         }
+ 226              		.loc 1 156 81 view .LVU78
  227 0044 1B68     		ldr	r3, [r3]
- 150:SYS/memng/mmu.c ****         }
- 228              		.loc 1 150 38 view .LVU79
+ 156:SYS/memng/mmu.c ****         }
+ 228              		.loc 1 156 38 view .LVU79
  229 0046 0360     		str	r3, [r0]
  230              	.L11:
- 162:SYS/memng/mmu.c ****     {
- 231              		.loc 1 162 5 is_stmt 1 view .LVU80
- 162:SYS/memng/mmu.c ****     {
- 232              		.loc 1 162 8 is_stmt 0 view .LVU81
+ 168:SYS/memng/mmu.c ****     {
+ 231              		.loc 1 168 5 is_stmt 1 view .LVU80
+ 168:SYS/memng/mmu.c ****     {
+ 232              		.loc 1 168 8 is_stmt 0 view .LVU81
  233 0048 9042     		cmp	r0, r2
  234 004a 00D0     		beq	.L6
- 235              		.loc 1 164 9 is_stmt 1 view .LVU82
- 236              		.loc 1 164 29 is_stmt 0 view .LVU83
+ 235              		.loc 1 170 9 is_stmt 1 view .LVU82
+ 236              		.loc 1 170 29 is_stmt 0 view .LVU83
  237 004c 1060     		str	r0, [r2]
  238              	.L6:
- 165:SYS/memng/mmu.c ****     }
- 166:SYS/memng/mmu.c **** }
- 239              		.loc 1 166 1 view .LVU84
+ 171:SYS/memng/mmu.c ****     }
+ 172:SYS/memng/mmu.c **** }
+ 239              		.loc 1 172 1 view .LVU84
  240 004e 5DF8044B 		ldr	r4, [sp], #4
  241              	.LCFI1:
  242              		.cfi_remember_state
@@ -455,32 +461,32 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
  246              	.L10:
  247              	.LCFI2:
  248              		.cfi_restore_state
- 154:SYS/memng/mmu.c ****         }
- 249              		.loc 1 154 13 is_stmt 1 view .LVU85
- 154:SYS/memng/mmu.c ****         }
- 250              		.loc 1 154 38 is_stmt 0 view .LVU86
+ 160:SYS/memng/mmu.c ****         }
+ 249              		.loc 1 160 13 is_stmt 1 view .LVU85
+ 160:SYS/memng/mmu.c ****         }
+ 250              		.loc 1 160 38 is_stmt 0 view .LVU86
  251 0054 0460     		str	r4, [r0]
  252 0056 F7E7     		b	.L11
  253              	.L16:
  254              	.LCFI3:
  255              		.cfi_def_cfa_offset 0
  256              		.cfi_restore 4
- 154:SYS/memng/mmu.c ****         }
- 257              		.loc 1 154 38 view .LVU87
+ 160:SYS/memng/mmu.c ****         }
+ 257              		.loc 1 160 38 view .LVU87
  258 0058 7047     		bx	lr
  259              	.L22:
  260 005a 00BF     		.align	2
  261              	.L21:
  262 005c 00000000 		.word	.LANCHOR1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 9
+
+
  263 0060 00000000 		.word	.LANCHOR2
  264              		.cfi_endproc
  265              	.LFE6:
  267              		.section	.text.MMU_Molloc,"ax",%progbits
  268              		.align	1
  269              		.global	MMU_Molloc
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 9
-
-
  270              		.syntax unified
  271              		.thumb
  272              		.thumb_func
@@ -516,11 +522,11 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
  296              		.loc 1 54 5 view .LVU94
   54:SYS/memng/mmu.c ****     {
  297              		.loc 1 54 21 is_stmt 0 view .LVU95
- 298 0004 194B     		ldr	r3, .L34
+ 298 0004 1A4B     		ldr	r3, .L35
  299 0006 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
   54:SYS/memng/mmu.c ****     {
  300              		.loc 1 54 8 view .LVU96
- 301 0008 5BB1     		cbz	r3, .L33
+ 301 0008 5BB1     		cbz	r3, .L34
  302              	.LVL17:
  303              	.L24:
   59:SYS/memng/mmu.c **** 
@@ -532,18 +538,18 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
   61:SYS/memng/mmu.c ****     {
  309              		.loc 1 61 5 view .LVU98
   61:SYS/memng/mmu.c ****     {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 10
+
+
  310              		.loc 1 61 28 is_stmt 0 view .LVU99
  311              		.thumb
  312              		.syntax unified
- 313 000c 174B     		ldr	r3, .L34
+ 313 000c 184B     		ldr	r3, .L35
  314 000e 9B68     		ldr	r3, [r3, #8]
   61:SYS/memng/mmu.c ****     {
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 10
-
-
  315              		.loc 1 61 8 view .LVU100
  316 0010 9D42     		cmp	r5, r3
- 317 0012 24D8     		bhi	.L28
+ 317 0012 28D8     		bhi	.L29
   64:SYS/memng/mmu.c **** 
  318              		.loc 1 64 9 is_stmt 1 view .LVU101
   64:SYS/memng/mmu.c **** 
@@ -560,8 +566,8 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
  326              		.loc 1 67 9 view .LVU105
   67:SYS/memng/mmu.c ****         while ((Block_Tmp->size < size) && (Block_Tmp->nxtFree != NULL))
  327              		.loc 1 67 19 is_stmt 0 view .LVU106
- 328 001c 144A     		ldr	r2, .L34+4
- 329 001e 1468     		ldr	r4, [r2]
+ 328 001c 1549     		ldr	r1, .L35+4
+ 329 001e 0C68     		ldr	r4, [r1]
  330              	.LVL19:
   68:SYS/memng/mmu.c ****         {
  331              		.loc 1 68 9 is_stmt 1 view .LVU107
@@ -569,7 +575,7 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
  332              		.loc 1 68 15 is_stmt 0 view .LVU108
  333 0020 04E0     		b	.L27
  334              	.LVL20:
- 335              	.L33:
+ 335              	.L34:
   56:SYS/memng/mmu.c ****     }
  336              		.loc 1 56 9 is_stmt 1 view .LVU109
  337 0022 FFF7FEFF 		bl	MMU_Init
@@ -578,10 +584,10 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
  339              		.loc 1 56 9 is_stmt 0 view .LVU110
  340 0026 F0E7     		b	.L24
  341              	.LVL22:
- 342              	.L29:
+ 342              	.L30:
   70:SYS/memng/mmu.c ****             Block_Tmp = Block_Tmp->nxtFree;
  343              		.loc 1 70 26 view .LVU111
- 344 0028 2246     		mov	r2, r4
+ 344 0028 2146     		mov	r1, r4
  345              	.LVL23:
   71:SYS/memng/mmu.c ****         }
  346              		.loc 1 71 23 view .LVU112
@@ -592,294 +598,307 @@ ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 1
  350              		.loc 1 68 15 is_stmt 1 view .LVU113
   68:SYS/memng/mmu.c ****         {
  351              		.loc 1 68 26 is_stmt 0 view .LVU114
- 352 002c A388     		ldrh	r3, [r4, #4]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 11
+
+
+ 352 002c A288     		ldrh	r2, [r4, #4]
   68:SYS/memng/mmu.c ****         {
  353              		.loc 1 68 15 view .LVU115
- 354 002e AB42     		cmp	r3, r5
+ 354 002e AA42     		cmp	r2, r5
  355 0030 02D2     		bcs	.L26
   68:SYS/memng/mmu.c ****         {
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 11
-
-
  356              		.loc 1 68 54 discriminator 1 view .LVU116
  357 0032 2368     		ldr	r3, [r4]
   68:SYS/memng/mmu.c ****         {
  358              		.loc 1 68 41 discriminator 1 view .LVU117
  359 0034 002B     		cmp	r3, #0
- 360 0036 F7D1     		bne	.L29
+ 360 0036 F7D1     		bne	.L30
  361              	.L26:
   74:SYS/memng/mmu.c ****         {
  362              		.loc 1 74 9 is_stmt 1 view .LVU118
   74:SYS/memng/mmu.c ****         {
- 363              		.loc 1 74 24 is_stmt 0 view .LVU119
- 364 0038 0E4B     		ldr	r3, .L34+8
+ 363              		.loc 1 74 23 is_stmt 0 view .LVU119
+ 364 0038 0F4B     		ldr	r3, .L35+8
  365 003a 1B68     		ldr	r3, [r3]
   74:SYS/memng/mmu.c ****         {
  366              		.loc 1 74 12 view .LVU120
  367 003c A342     		cmp	r3, r4
- 368 003e 10D0     		beq	.L30
-  74:SYS/memng/mmu.c ****         {
- 369              		.loc 1 74 35 discriminator 1 view .LVU121
- 370 0040 8CB1     		cbz	r4, .L31
-  76:SYS/memng/mmu.c ****             PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
- 371              		.loc 1 76 13 is_stmt 1 view .LVU122
-  76:SYS/memng/mmu.c ****             PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
- 372              		.loc 1 76 54 is_stmt 0 view .LVU123
- 373 0042 2368     		ldr	r3, [r4]
-  76:SYS/memng/mmu.c ****             PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
- 374              		.loc 1 76 22 view .LVU124
- 375 0044 03F10806 		add	r6, r3, #8
- 376              	.LVL25:
-  77:SYS/memng/mmu.c **** 
- 377              		.loc 1 77 13 is_stmt 1 view .LVU125
-  77:SYS/memng/mmu.c **** 
- 378              		.loc 1 77 35 is_stmt 0 view .LVU126
- 379 0048 1360     		str	r3, [r2]
-  79:SYS/memng/mmu.c ****             NxtFreeBlock->size = Block_Tmp->size - size;
- 380              		.loc 1 79 13 is_stmt 1 view .LVU127
-  79:SYS/memng/mmu.c ****             NxtFreeBlock->size = Block_Tmp->size - size;
- 381              		.loc 1 79 26 is_stmt 0 view .LVU128
- 382 004a 6019     		adds	r0, r4, r5
- 383              	.LVL26:
-  80:SYS/memng/mmu.c **** 
- 384              		.loc 1 80 13 is_stmt 1 view .LVU129
-  80:SYS/memng/mmu.c **** 
- 385              		.loc 1 80 43 is_stmt 0 view .LVU130
- 386 004c A388     		ldrh	r3, [r4, #4]
-  80:SYS/memng/mmu.c **** 
- 387              		.loc 1 80 50 view .LVU131
- 388 004e 5B1B     		subs	r3, r3, r5
-  80:SYS/memng/mmu.c **** 
- 389              		.loc 1 80 32 view .LVU132
- 390 0050 8380     		strh	r3, [r0, #4]	@ movhi
+ 368 003e 14D0     		beq	.L31
+  76:SYS/memng/mmu.c **** 
+ 369              		.loc 1 76 13 is_stmt 1 view .LVU121
+  76:SYS/memng/mmu.c **** 
+ 370              		.loc 1 76 22 is_stmt 0 view .LVU122
+ 371 0040 04F10806 		add	r6, r4, #8
+ 372              	.LVL25:
+  78:SYS/memng/mmu.c ****             {
+ 373              		.loc 1 78 13 is_stmt 1 view .LVU123
+  78:SYS/memng/mmu.c ****             {
+ 374              		.loc 1 78 34 is_stmt 0 view .LVU124
+ 375 0044 521B     		subs	r2, r2, r5
+  78:SYS/memng/mmu.c ****             {
+ 376              		.loc 1 78 16 view .LVU125
+ 377 0046 072A     		cmp	r2, #7
+ 378 0048 0BDC     		bgt	.L32
   82:SYS/memng/mmu.c **** 
- 391              		.loc 1 82 13 is_stmt 1 view .LVU133
- 392 0052 FFF7FEFF 		bl	MMU_InsertFreeBlock
- 393              	.LVL27:
-  84:SYS/memng/mmu.c ****         }
- 394              		.loc 1 84 13 view .LVU134
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 12
+ 379              		.loc 1 82 17 is_stmt 1 view .LVU126
+  82:SYS/memng/mmu.c **** 
+ 380              		.loc 1 82 30 is_stmt 0 view .LVU127
+ 381 004a 2368     		ldr	r3, [r4]
+ 382              	.LVL26:
+ 383              	.L28:
+  84:SYS/memng/mmu.c ****             NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
+ 384              		.loc 1 84 13 is_stmt 1 view .LVU128
+  84:SYS/memng/mmu.c ****             NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
+ 385              		.loc 1 84 35 is_stmt 0 view .LVU129
+ 386 004c 0B60     		str	r3, [r1]
+  85:SYS/memng/mmu.c ****             NxtFreeBlock->size = Block_Tmp->size - size;
+ 387              		.loc 1 85 13 is_stmt 1 view .LVU130
+  85:SYS/memng/mmu.c ****             NxtFreeBlock->size = Block_Tmp->size - size;
+ 388              		.loc 1 85 26 is_stmt 0 view .LVU131
+ 389 004e 6019     		adds	r0, r4, r5
+ 390              	.LVL27:
+  86:SYS/memng/mmu.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 12
 
 
-  84:SYS/memng/mmu.c ****         }
- 395              		.loc 1 84 29 is_stmt 0 view .LVU135
- 396 0056 A580     		strh	r5, [r4, #4]	@ movhi
- 397              	.LVL28:
- 398              	.L25:
+ 391              		.loc 1 86 13 is_stmt 1 view .LVU132
+  86:SYS/memng/mmu.c **** 
+ 392              		.loc 1 86 43 is_stmt 0 view .LVU133
+ 393 0050 A388     		ldrh	r3, [r4, #4]
+  86:SYS/memng/mmu.c **** 
+ 394              		.loc 1 86 50 view .LVU134
+ 395 0052 5B1B     		subs	r3, r3, r5
+  86:SYS/memng/mmu.c **** 
+ 396              		.loc 1 86 32 view .LVU135
+ 397 0054 8380     		strh	r3, [r0, #4]	@ movhi
   88:SYS/memng/mmu.c **** 
- 399              		.loc 1 88 5 is_stmt 1 view .LVU136
- 400              		.syntax unified
- 401              	@ 88 "SYS/memng/mmu.c" 1
- 402 0058 62B6     		cpsie i
- 403              	@ 0 "" 2
-  90:SYS/memng/mmu.c **** }
- 404              		.loc 1 90 5 view .LVU137
-  91:SYS/memng/mmu.c **** 
- 405              		.loc 1 91 1 is_stmt 0 view .LVU138
- 406              		.thumb
+ 398              		.loc 1 88 13 is_stmt 1 view .LVU136
+ 399 0056 FFF7FEFF 		bl	MMU_InsertFreeBlock
+ 400              	.LVL28:
+  90:SYS/memng/mmu.c ****         }
+ 401              		.loc 1 90 13 view .LVU137
+  90:SYS/memng/mmu.c ****         }
+ 402              		.loc 1 90 29 is_stmt 0 view .LVU138
+ 403 005a A580     		strh	r5, [r4, #4]	@ movhi
+ 404              	.LVL29:
+ 405              	.L25:
+  94:SYS/memng/mmu.c **** 
+ 406              		.loc 1 94 5 is_stmt 1 view .LVU139
  407              		.syntax unified
- 408 005a 3046     		mov	r0, r6
- 409 005c 70BD     		pop	{r4, r5, r6, pc}
- 410              	.LVL29:
- 411              	.L28:
+ 408              	@ 94 "SYS/memng/mmu.c" 1
+ 409 005c 62B6     		cpsie i
+ 410              	@ 0 "" 2
+  96:SYS/memng/mmu.c **** }
+ 411              		.loc 1 96 5 view .LVU140
+  97:SYS/memng/mmu.c **** 
+ 412              		.loc 1 97 1 is_stmt 0 view .LVU141
+ 413              		.thumb
+ 414              		.syntax unified
+ 415 005e 3046     		mov	r0, r6
+ 416 0060 70BD     		pop	{r4, r5, r6, pc}
+ 417              	.LVL30:
+ 418              	.L32:
+  50:SYS/memng/mmu.c ****     MemBlock_TypeDef *Block_Tmp = NULL;
+ 419              		.loc 1 50 23 view .LVU142
+ 420 0062 0023     		movs	r3, #0
+ 421 0064 F2E7     		b	.L28
+ 422              	.LVL31:
+ 423              	.L29:
   52:SYS/memng/mmu.c **** 
- 412              		.loc 1 52 11 view .LVU139
- 413 005e 0026     		movs	r6, #0
- 414 0060 FAE7     		b	.L25
- 415              	.LVL30:
- 416              	.L30:
+ 424              		.loc 1 52 11 view .LVU143
+ 425 0066 0026     		movs	r6, #0
+ 426 0068 F8E7     		b	.L25
+ 427              	.LVL32:
+ 428              	.L31:
   52:SYS/memng/mmu.c **** 
- 417              		.loc 1 52 11 view .LVU140
- 418 0062 0026     		movs	r6, #0
- 419 0064 F8E7     		b	.L25
- 420              	.L31:
- 421 0066 2646     		mov	r6, r4
- 422 0068 F6E7     		b	.L25
- 423              	.L35:
- 424 006a 00BF     		.align	2
- 425              	.L34:
- 426 006c 00000000 		.word	.LANCHOR0
- 427 0070 00000000 		.word	.LANCHOR1
- 428 0074 00000000 		.word	.LANCHOR2
- 429              		.cfi_endproc
- 430              	.LFE4:
- 432              		.section	.text.MMU_Free,"ax",%progbits
- 433              		.align	1
- 434              		.global	MMU_Free
- 435              		.syntax unified
- 436              		.thumb
- 437              		.thumb_func
- 438              		.fpu fpv4-sp-d16
- 440              	MMU_Free:
- 441              	.LVL31:
- 442              	.LFB5:
-  94:SYS/memng/mmu.c ****     uint8_t *puc = (uint8_t *)ptr;
- 443              		.loc 1 94 1 is_stmt 1 view -0
- 444              		.cfi_startproc
- 445              		@ args = 0, pretend = 0, frame = 0
- 446              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 13
+ 429              		.loc 1 52 11 view .LVU144
+ 430 006a 0026     		movs	r6, #0
+ 431 006c F6E7     		b	.L25
+ 432              	.L36:
+ 433 006e 00BF     		.align	2
+ 434              	.L35:
+ 435 0070 00000000 		.word	.LANCHOR0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 13
 
 
-  95:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxLink;
- 447              		.loc 1 95 5 view .LVU142
-  96:SYS/memng/mmu.c **** 
- 448              		.loc 1 96 5 view .LVU143
-  98:SYS/memng/mmu.c ****     {
- 449              		.loc 1 98 5 view .LVU144
-  98:SYS/memng/mmu.c ****     {
- 450              		.loc 1 98 8 is_stmt 0 view .LVU145
- 451 0000 88B1     		cbz	r0, .L39
-  94:SYS/memng/mmu.c ****     uint8_t *puc = (uint8_t *)ptr;
- 452              		.loc 1 94 1 view .LVU146
- 453 0002 08B5     		push	{r3, lr}
- 454              	.LCFI5:
- 455              		.cfi_def_cfa_offset 8
- 456              		.cfi_offset 3, -8
- 457              		.cfi_offset 14, -4
- 458 0004 0346     		mov	r3, r0
+ 436 0074 00000000 		.word	.LANCHOR1
+ 437 0078 00000000 		.word	.LANCHOR2
+ 438              		.cfi_endproc
+ 439              	.LFE4:
+ 441              		.section	.text.MMU_Free,"ax",%progbits
+ 442              		.align	1
+ 443              		.global	MMU_Free
+ 444              		.syntax unified
+ 445              		.thumb
+ 446              		.thumb_func
+ 447              		.fpu fpv4-sp-d16
+ 449              	MMU_Free:
+ 450              	.LVL33:
+ 451              	.LFB5:
+ 100:SYS/memng/mmu.c ****     uint8_t *puc = (uint8_t *)ptr;
+ 452              		.loc 1 100 1 is_stmt 1 view -0
+ 453              		.cfi_startproc
+ 454              		@ args = 0, pretend = 0, frame = 0
+ 455              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101:SYS/memng/mmu.c ****     MemBlock_TypeDef *pxLink;
+ 456              		.loc 1 101 5 view .LVU146
  102:SYS/memng/mmu.c **** 
- 459              		.loc 1 102 9 is_stmt 1 view .LVU147
- 102:SYS/memng/mmu.c **** 
- 460              		.loc 1 102 13 is_stmt 0 view .LVU148
- 461 0006 0838     		subs	r0, r0, #8
- 462              	.LVL32:
- 105:SYS/memng/mmu.c **** 
- 463              		.loc 1 105 9 is_stmt 1 view .LVU149
- 107:SYS/memng/mmu.c ****         {
- 464              		.loc 1 107 9 view .LVU150
- 107:SYS/memng/mmu.c ****         {
- 465              		.loc 1 107 19 is_stmt 0 view .LVU151
- 466 0008 53F8082C 		ldr	r2, [r3, #-8]
- 107:SYS/memng/mmu.c ****         {
- 467              		.loc 1 107 12 view .LVU152
- 468 000c 02B1     		cbz	r2, .L42
- 469              	.LVL33:
- 470              	.L36:
- 122:SYS/memng/mmu.c **** 
- 471              		.loc 1 122 1 view .LVU153
- 472 000e 08BD     		pop	{r3, pc}
- 473              	.LVL34:
- 474              	.L42:
- 111:SYS/memng/mmu.c ****             {
- 475              		.loc 1 111 13 is_stmt 1 view .LVU154
- 476              		.syntax unified
- 477              	@ 111 "SYS/memng/mmu.c" 1
- 478 0010 72B6     		cpsid i
- 479              	@ 0 "" 2
- 114:SYS/memng/mmu.c **** 
- 480              		.loc 1 114 17 view .LVU155
- 114:SYS/memng/mmu.c **** 
- 481              		.loc 1 114 50 is_stmt 0 view .LVU156
- 482              		.thumb
- 483              		.syntax unified
- 484 0012 33F8041C 		ldrh	r1, [r3, #-4]
- 114:SYS/memng/mmu.c **** 
- 485              		.loc 1 114 41 view .LVU157
- 486 0016 044A     		ldr	r2, .L43
- 487 0018 9368     		ldr	r3, [r2, #8]
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 14
+ 457              		.loc 1 102 5 view .LVU147
+ 104:SYS/memng/mmu.c ****     {
+ 458              		.loc 1 104 5 view .LVU148
+ 104:SYS/memng/mmu.c ****     {
+ 459              		.loc 1 104 8 is_stmt 0 view .LVU149
+ 460 0000 88B1     		cbz	r0, .L40
+ 100:SYS/memng/mmu.c ****     uint8_t *puc = (uint8_t *)ptr;
+ 461              		.loc 1 100 1 view .LVU150
+ 462 0002 08B5     		push	{r3, lr}
+ 463              	.LCFI5:
+ 464              		.cfi_def_cfa_offset 8
+ 465              		.cfi_offset 3, -8
+ 466              		.cfi_offset 14, -4
+ 467 0004 0346     		mov	r3, r0
+ 108:SYS/memng/mmu.c **** 
+ 468              		.loc 1 108 9 is_stmt 1 view .LVU151
+ 108:SYS/memng/mmu.c **** 
+ 469              		.loc 1 108 13 is_stmt 0 view .LVU152
+ 470 0006 0838     		subs	r0, r0, #8
+ 471              	.LVL34:
+ 111:SYS/memng/mmu.c **** 
+ 472              		.loc 1 111 9 is_stmt 1 view .LVU153
+ 113:SYS/memng/mmu.c ****         {
+ 473              		.loc 1 113 9 view .LVU154
+ 113:SYS/memng/mmu.c ****         {
+ 474              		.loc 1 113 19 is_stmt 0 view .LVU155
+ 475 0008 53F8082C 		ldr	r2, [r3, #-8]
+ 113:SYS/memng/mmu.c ****         {
+ 476              		.loc 1 113 12 view .LVU156
+ 477 000c 02B1     		cbz	r2, .L43
+ 478              	.LVL35:
+ 479              	.L37:
+ 128:SYS/memng/mmu.c **** 
+ 480              		.loc 1 128 1 view .LVU157
+ 481 000e 08BD     		pop	{r3, pc}
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 14
 
 
- 488              	.LVL35:
- 114:SYS/memng/mmu.c **** 
- 489              		.loc 1 114 41 view .LVU158
- 490 001a 0B44     		add	r3, r3, r1
- 491 001c 9360     		str	r3, [r2, #8]
- 117:SYS/memng/mmu.c ****             }
- 492              		.loc 1 117 17 is_stmt 1 view .LVU159
- 493 001e FFF7FEFF 		bl	MMU_InsertFreeBlock
- 494              	.LVL36:
- 119:SYS/memng/mmu.c ****         }
- 495              		.loc 1 119 13 view .LVU160
- 496              		.syntax unified
- 497              	@ 119 "SYS/memng/mmu.c" 1
- 498 0022 62B6     		cpsie i
- 499              	@ 0 "" 2
- 122:SYS/memng/mmu.c **** 
- 500              		.loc 1 122 1 is_stmt 0 view .LVU161
- 501              		.thumb
- 502              		.syntax unified
- 503 0024 F3E7     		b	.L36
- 504              	.LVL37:
- 505              	.L39:
- 506              	.LCFI6:
- 507              		.cfi_def_cfa_offset 0
- 508              		.cfi_restore 3
- 509              		.cfi_restore 14
- 122:SYS/memng/mmu.c **** 
- 510              		.loc 1 122 1 view .LVU162
- 511 0026 7047     		bx	lr
- 512              	.L44:
- 513              		.align	2
- 514              	.L43:
- 515 0028 00000000 		.word	.LANCHOR0
- 516              		.cfi_endproc
- 517              	.LFE5:
- 519              		.global	MemEnd
- 520              		.global	MemStart
- 521              		.global	Mem_Monitor
- 522              		.global	Mem_Buff
- 523              		.section	.bss.MemEnd,"aw",%nobits
- 524              		.align	2
- 525              		.set	.LANCHOR2,. + 0
- 528              	MemEnd:
- 529 0000 00000000 		.space	4
- 530              		.section	.bss.MemStart,"aw",%nobits
- 531              		.align	2
- 532              		.set	.LANCHOR1,. + 0
- 535              	MemStart:
- 536 0000 00000000 		.space	8
- 536      00000000 
- 537              		.section	.bss.Mem_Monitor,"aw",%nobits
- 538              		.align	2
- 539              		.set	.LANCHOR0,. + 0
- 542              	Mem_Monitor:
- 543 0000 00000000 		.space	20
- 543      00000000 
- 543      00000000 
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 15
+ 482              	.LVL36:
+ 483              	.L43:
+ 117:SYS/memng/mmu.c ****             {
+ 484              		.loc 1 117 13 is_stmt 1 view .LVU158
+ 485              		.syntax unified
+ 486              	@ 117 "SYS/memng/mmu.c" 1
+ 487 0010 72B6     		cpsid i
+ 488              	@ 0 "" 2
+ 120:SYS/memng/mmu.c **** 
+ 489              		.loc 1 120 17 view .LVU159
+ 120:SYS/memng/mmu.c **** 
+ 490              		.loc 1 120 50 is_stmt 0 view .LVU160
+ 491              		.thumb
+ 492              		.syntax unified
+ 493 0012 33F8041C 		ldrh	r1, [r3, #-4]
+ 120:SYS/memng/mmu.c **** 
+ 494              		.loc 1 120 41 view .LVU161
+ 495 0016 044A     		ldr	r2, .L44
+ 496 0018 9368     		ldr	r3, [r2, #8]
+ 497              	.LVL37:
+ 120:SYS/memng/mmu.c **** 
+ 498              		.loc 1 120 41 view .LVU162
+ 499 001a 0B44     		add	r3, r3, r1
+ 500 001c 9360     		str	r3, [r2, #8]
+ 123:SYS/memng/mmu.c ****             }
+ 501              		.loc 1 123 17 is_stmt 1 view .LVU163
+ 502 001e FFF7FEFF 		bl	MMU_InsertFreeBlock
+ 503              	.LVL38:
+ 125:SYS/memng/mmu.c ****         }
+ 504              		.loc 1 125 13 view .LVU164
+ 505              		.syntax unified
+ 506              	@ 125 "SYS/memng/mmu.c" 1
+ 507 0022 62B6     		cpsie i
+ 508              	@ 0 "" 2
+ 128:SYS/memng/mmu.c **** 
+ 509              		.loc 1 128 1 is_stmt 0 view .LVU165
+ 510              		.thumb
+ 511              		.syntax unified
+ 512 0024 F3E7     		b	.L37
+ 513              	.LVL39:
+ 514              	.L40:
+ 515              	.LCFI6:
+ 516              		.cfi_def_cfa_offset 0
+ 517              		.cfi_restore 3
+ 518              		.cfi_restore 14
+ 128:SYS/memng/mmu.c **** 
+ 519              		.loc 1 128 1 view .LVU166
+ 520 0026 7047     		bx	lr
+ 521              	.L45:
+ 522              		.align	2
+ 523              	.L44:
+ 524 0028 00000000 		.word	.LANCHOR0
+ 525              		.cfi_endproc
+ 526              	.LFE5:
+ 528              		.global	MemEnd
+ 529              		.global	MemStart
+ 530              		.global	Mem_Monitor
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 15
 
 
- 543      00000000 
- 543      00000000 
- 544              		.section	.ccmram,"aw"
- 545              		.align	2
- 548              	Mem_Buff:
- 549 0000 00000000 		.space	65536
- 549      00000000 
- 549      00000000 
- 549      00000000 
- 549      00000000 
- 550              		.text
- 551              	.Letext0:
- 552              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
- 553              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
- 554              		.file 4 "SYS/memng/mmu.h"
-ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s 			page 16
+ 531              		.global	Mem_Buff
+ 532              		.section	.bss.MemEnd,"aw",%nobits
+ 533              		.align	2
+ 534              		.set	.LANCHOR2,. + 0
+ 537              	MemEnd:
+ 538 0000 00000000 		.space	4
+ 539              		.section	.bss.MemStart,"aw",%nobits
+ 540              		.align	2
+ 541              		.set	.LANCHOR1,. + 0
+ 544              	MemStart:
+ 545 0000 00000000 		.space	8
+ 545      00000000 
+ 546              		.section	.bss.Mem_Monitor,"aw",%nobits
+ 547              		.align	2
+ 548              		.set	.LANCHOR0,. + 0
+ 551              	Mem_Monitor:
+ 552 0000 00000000 		.space	20
+ 552      00000000 
+ 552      00000000 
+ 552      00000000 
+ 552      00000000 
+ 553              		.section	.ccmram,"aw"
+ 554              		.align	2
+ 557              	Mem_Buff:
+ 558 0000 00000000 		.space	65536
+ 558      00000000 
+ 558      00000000 
+ 558      00000000 
+ 558      00000000 
+ 559              		.text
+ 560              	.Letext0:
+ 561              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 562              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 563              		.file 4 "SYS/memng/mmu.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s 			page 16
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 mmu.c
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:18     .text.MMU_Init:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:25     .text.MMU_Init:0000000000000000 MMU_Init
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:119    .text.MMU_Init:0000000000000054 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:548    .ccmram:0000000000000000 Mem_Buff
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:128    .text.MMU_InsertFreeBlock:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:134    .text.MMU_InsertFreeBlock:0000000000000000 MMU_InsertFreeBlock
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:262    .text.MMU_InsertFreeBlock:000000000000005c $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:268    .text.MMU_Molloc:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:275    .text.MMU_Molloc:0000000000000000 MMU_Molloc
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:426    .text.MMU_Molloc:000000000000006c $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:433    .text.MMU_Free:0000000000000000 $t
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:440    .text.MMU_Free:0000000000000000 MMU_Free
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:515    .text.MMU_Free:0000000000000028 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:528    .bss.MemEnd:0000000000000000 MemEnd
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:535    .bss.MemStart:0000000000000000 MemStart
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:542    .bss.Mem_Monitor:0000000000000000 Mem_Monitor
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:524    .bss.MemEnd:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:531    .bss.MemStart:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:538    .bss.Mem_Monitor:0000000000000000 $d
-/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccEADbqc.s:545    .ccmram:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:18     .text.MMU_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:25     .text.MMU_Init:0000000000000000 MMU_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:119    .text.MMU_Init:0000000000000054 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:557    .ccmram:0000000000000000 Mem_Buff
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:128    .text.MMU_InsertFreeBlock:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:134    .text.MMU_InsertFreeBlock:0000000000000000 MMU_InsertFreeBlock
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:262    .text.MMU_InsertFreeBlock:000000000000005c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:268    .text.MMU_Molloc:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:275    .text.MMU_Molloc:0000000000000000 MMU_Molloc
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:435    .text.MMU_Molloc:0000000000000070 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:442    .text.MMU_Free:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:449    .text.MMU_Free:0000000000000000 MMU_Free
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:524    .text.MMU_Free:0000000000000028 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:537    .bss.MemEnd:0000000000000000 MemEnd
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:544    .bss.MemStart:0000000000000000 MemStart
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:551    .bss.Mem_Monitor:0000000000000000 Mem_Monitor
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:533    .bss.MemEnd:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:540    .bss.MemStart:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:547    .bss.Mem_Monitor:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccVS4PLt.s:554    .ccmram:0000000000000000 $d
 
 NO UNDEFINED SYMBOLS

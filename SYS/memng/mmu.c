@@ -71,11 +71,17 @@ void *MMU_Molloc(uint16_t size)
             Block_Tmp = Block_Tmp->nxtFree;
         }
 
-        if ((Block_Tmp != MemEnd) && (Block_Tmp != NULL))
+        if (Block_Tmp != MemEnd)
         {
-            mem_addr = (void *)(((uint8_t *)Block_Tmp->nxtFree) + sizeof(MemBlock_TypeDef));
-            PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
+            mem_addr = (void *)(((uint8_t *)Block_Tmp) + sizeof(MemBlock_TypeDef));
 
+            if ((Block_Tmp->size - size) >= MINIMUM_BLOCK_SIZE)
+            {
+            }
+            else
+                NxtFreeBlock = Block_Tmp->nxtFree;
+
+            PrvFreeBlock->nxtFree = NxtFreeBlock;
             NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
             NxtFreeBlock->size = Block_Tmp->size - size;
 
