@@ -77,13 +77,14 @@ void *MMU_Molloc(uint16_t size)
 
             if ((Block_Tmp->size - size) >= MINIMUM_BLOCK_SIZE)
             {
+                NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
+                NxtFreeBlock->nxtFree = Block_Tmp->nxtFree;
+                NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
             }
             else
                 NxtFreeBlock = Block_Tmp->nxtFree;
 
             PrvFreeBlock->nxtFree = NxtFreeBlock;
-            NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
-            NxtFreeBlock->size = Block_Tmp->size - size;
 
             MMU_InsertFreeBlock(NxtFreeBlock);
 
