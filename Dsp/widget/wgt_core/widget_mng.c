@@ -3,6 +3,7 @@
 #include "runtime.h"
 #include "linked_list.h"
 #include "GenDsp.h"
+#include "mmu.h"
 
 #define Set_FreshStateBIT(x) 1 << x
 #define Clr_FreshStateBIT(x) ~(1 << x)
@@ -115,14 +116,16 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
         MonitorDataObj.remain_size = MonitorDataObj.max_display_cache;
 
-        widget_blackboard = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().height);
+        //widget_blackboard = (uint8_t **)malloc(sizeof(uint8_t *) * SrvOled.get_range().height);
+        widget_blackboard = (uint8_t **)MMU_Malloc(sizeof(uint8_t *) * SrvOled.get_range().height);
 
         if (widget_blackboard == NULL)
             return WIDGET_CREATE_ERROR;
 
         for (uint8_t column_index = 0; column_index < SrvOled.get_range().height; column_index++)
         {
-            widget_blackboard[column_index] = (uint8_t *)malloc(SrvOled.get_range().width);
+            //widget_blackboard[column_index] = (uint8_t *)malloc(SrvOled.get_range().width);
+            widget_blackboard[column_index] = (uint8_t *)MMU_Malloc(SrvOled.get_range().width);
 
             if (widget_blackboard[column_index] == NULL)
                 return WIDGET_CREATE_ERROR;
@@ -131,7 +134,8 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
         }
     }
 
-    widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
+    //widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
+    widget_tmp = (WidgetObj_TypeDef *)MMU_Malloc(sizeof(WidgetObj_TypeDef));
 
     if (widget_tmp == NULL)
         return WIDGET_CREATE_ERROR;

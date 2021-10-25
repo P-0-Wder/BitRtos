@@ -42,4 +42,7 @@ typedef struct
     uint16_t size;
 } MemBlock_TypeDef;
 
+void *MMU_Malloc(uint16_t size);
+void MMU_Free(void *ptr);
+
 #endif
