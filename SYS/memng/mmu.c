@@ -75,7 +75,7 @@ void *MMU_Malloc(uint16_t size)
         {
             mem_addr = (void *)(((uint8_t *)Block_Tmp) + sizeof(MemBlock_TypeDef));
 
-            PrvFreeBlock->nxtFree = NxtFreeBlock;
+            PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
 
             if ((Block_Tmp->size - size) >= MINIMUM_BLOCK_SIZE)
             {
@@ -83,8 +83,6 @@ void *MMU_Malloc(uint16_t size)
                 NxtFreeBlock->nxtFree = Block_Tmp->nxtFree;
                 NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
             }
-            else
-                NxtFreeBlock = Block_Tmp->nxtFree;
 
             Mem_Monitor.remain_size -= size;
             Mem_Monitor.used_size += size;
