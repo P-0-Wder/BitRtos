@@ -5,6 +5,7 @@
 #include "drv_serial.h"
 #include "task_manager.h"
 #include "Task_Widget.h"
+#include "mmu.h"
 
 Task_Handler test1_tsk_hdl;
 Task_Handler test2_tsk_hdl;
@@ -63,6 +64,11 @@ void Task_Serial_Test(Task_Handler self)
 {
 	static TaskSerial_State_List TaskSerial_State = TaskSerial_Init;
 	DrvSerial_Config_Typedef Serial1_Cfg;
+
+	volatile uint8_t *test = NULL;
+
+	test = (uint8_t *)MMU_Malloc(100);
+	MMU_Free(test);
 
 	switch ((uint8_t)TaskSerial_State)
 	{

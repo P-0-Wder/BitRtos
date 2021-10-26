@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccmXBp3J.s 			page 1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -17,17 +17,17 @@ ARM GAS  /tmp/ccmXBp3J.s 			page 1
   14              		.text
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
-  17              		.section	.text.Task_Serial_Test,"ax",%progbits
+  17              		.section	.text.Task_test_1,"ax",%progbits
   18              		.align	1
-  19              		.global	Task_Serial_Test
+  19              		.global	Task_test_1
   20              		.arch armv7e-m
   21              		.syntax unified
   22              		.thumb
   23              		.thumb_func
   24              		.fpu fpv4-sp-d16
-  26              	Task_Serial_Test:
+  26              	Task_test_1:
   27              	.LVL0:
-  28              	.LFB131:
+  28              	.LFB127:
   29              		.file 1 "USER/main.c"
    1:USER/main.c   **** #include "stddef.h"
    2:USER/main.c   **** #include "stdio.h"
@@ -36,881 +36,893 @@ ARM GAS  /tmp/ccmXBp3J.s 			page 1
    5:USER/main.c   **** #include "drv_serial.h"
    6:USER/main.c   **** #include "task_manager.h"
    7:USER/main.c   **** #include "Task_Widget.h"
-   8:USER/main.c   **** 
-   9:USER/main.c   **** Task_Handler test1_tsk_hdl;
-  10:USER/main.c   **** Task_Handler test2_tsk_hdl;
-  11:USER/main.c   **** Task_Handler test3_tsk_hdl;
-  12:USER/main.c   **** Task_Handler test4_tsk_hdl;
-  13:USER/main.c   **** 
-  14:USER/main.c   **** void Gpio_Flip(void)
-  15:USER/main.c   **** {
-  16:USER/main.c   **** 	static bool io_level = false;
-  17:USER/main.c   **** 
-  18:USER/main.c   **** 	if (io_level)
-  19:USER/main.c   **** 	{
-  20:USER/main.c   **** 		GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
-  21:USER/main.c   **** 	}
-  22:USER/main.c   **** 	else
-  23:USER/main.c   **** 	{
-  24:USER/main.c   **** 		GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
-  25:USER/main.c   **** 	}
-  26:USER/main.c   **** 
-  27:USER/main.c   **** 	io_level = !io_level;
-  28:USER/main.c   **** }
-  29:USER/main.c   **** 
-ARM GAS  /tmp/ccmXBp3J.s 			page 2
+   8:USER/main.c   **** #include "mmu.h"
+   9:USER/main.c   **** 
+  10:USER/main.c   **** Task_Handler test1_tsk_hdl;
+  11:USER/main.c   **** Task_Handler test2_tsk_hdl;
+  12:USER/main.c   **** Task_Handler test3_tsk_hdl;
+  13:USER/main.c   **** Task_Handler test4_tsk_hdl;
+  14:USER/main.c   **** 
+  15:USER/main.c   **** void Gpio_Flip(void)
+  16:USER/main.c   **** {
+  17:USER/main.c   **** 	static bool io_level = false;
+  18:USER/main.c   **** 
+  19:USER/main.c   **** 	if (io_level)
+  20:USER/main.c   **** 	{
+  21:USER/main.c   **** 		GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
+  22:USER/main.c   **** 	}
+  23:USER/main.c   **** 	else
+  24:USER/main.c   **** 	{
+  25:USER/main.c   **** 		GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+  26:USER/main.c   **** 	}
+  27:USER/main.c   **** 
+  28:USER/main.c   **** 	io_level = !io_level;
+  29:USER/main.c   **** }
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 2
 
 
-  30:USER/main.c   **** void Task_test_1(Task_Handler self)
-  31:USER/main.c   **** {
-  32:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
-  33:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
-  34:USER/main.c   **** }
-  35:USER/main.c   **** 
-  36:USER/main.c   **** void Task_test_2(Task_Handler self)
-  37:USER/main.c   **** {
-  38:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
-  39:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, HI);
-  40:USER/main.c   **** }
-  41:USER/main.c   **** 
-  42:USER/main.c   **** void Task_test_3(Task_Handler self)
-  43:USER/main.c   **** {
-  44:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
-  45:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, HI);
-  46:USER/main.c   **** }
-  47:USER/main.c   **** 
-  48:USER/main.c   **** void Task_test_4(Task_Handler self)
-  49:USER/main.c   **** {
-  50:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
-  51:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
-  52:USER/main.c   **** }
-  53:USER/main.c   **** 
-  54:USER/main.c   **** /* serial test */
-  55:USER/main.c   **** typedef enum
-  56:USER/main.c   **** {
-  57:USER/main.c   **** 	TaskSerial_Init = 0,
-  58:USER/main.c   **** 	TaskSerial_Init_Failed,
-  59:USER/main.c   **** 	TaskSerial_RunTest,
-  60:USER/main.c   **** } TaskSerial_State_List;
-  61:USER/main.c   **** 
-  62:USER/main.c   **** void Task_Serial_Test(Task_Handler self)
-  63:USER/main.c   **** {
-  30              		.loc 1 63 1 view -0
+  30:USER/main.c   **** 
+  31:USER/main.c   **** void Task_test_1(Task_Handler self)
+  32:USER/main.c   **** {
+  30              		.loc 1 32 1 view -0
   31              		.cfi_startproc
-  32              		@ args = 0, pretend = 0, frame = 16
+  32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		.loc 1 63 1 is_stmt 0 view .LVU1
+  34              		.loc 1 32 1 is_stmt 0 view .LVU1
   35 0000 10B5     		push	{r4, lr}
   36              	.LCFI0:
   37              		.cfi_def_cfa_offset 8
   38              		.cfi_offset 4, -8
   39              		.cfi_offset 14, -4
-  40 0002 84B0     		sub	sp, sp, #16
-  41              	.LCFI1:
-  42              		.cfi_def_cfa_offset 24
-  64:USER/main.c   **** 	static TaskSerial_State_List TaskSerial_State = TaskSerial_Init;
-  43              		.loc 1 64 2 is_stmt 1 view .LVU2
-  65:USER/main.c   **** 	DrvSerial_Config_Typedef Serial1_Cfg;
-  44              		.loc 1 65 2 view .LVU3
-  66:USER/main.c   **** 
-  67:USER/main.c   **** 	switch ((uint8_t)TaskSerial_State)
-  45              		.loc 1 67 2 view .LVU4
-  46              		.loc 1 67 10 is_stmt 0 view .LVU5
-  47 0004 184B     		ldr	r3, .L7
-  48 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-ARM GAS  /tmp/ccmXBp3J.s 			page 3
+  33:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+  40              		.loc 1 33 2 is_stmt 1 view .LVU2
+  41 0002 064C     		ldr	r4, .L3
+  42 0004 0122     		movs	r2, #1
+  43 0006 0821     		movs	r1, #8
+  44 0008 2046     		mov	r0, r4
+  45              	.LVL1:
+  46              		.loc 1 33 2 is_stmt 0 view .LVU3
+  47 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+  48              	.LVL2:
+  34:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
+  49              		.loc 1 34 2 is_stmt 1 view .LVU4
+  50 000e 0022     		movs	r2, #0
+  51 0010 0821     		movs	r1, #8
+  52 0012 2046     		mov	r0, r4
+  53 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+  54              	.LVL3:
+  35:USER/main.c   **** }
+  55              		.loc 1 35 1 is_stmt 0 view .LVU5
+  56 0018 10BD     		pop	{r4, pc}
+  57              	.L4:
+  58 001a 00BF     		.align	2
+  59              	.L3:
+  60 001c 00040240 		.word	1073873920
+  61              		.cfi_endproc
+  62              	.LFE127:
+  64              		.section	.text.Task_test_2,"ax",%progbits
+  65              		.align	1
+  66              		.global	Task_test_2
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  70              		.fpu fpv4-sp-d16
+  72              	Task_test_2:
+  73              	.LVL4:
+  74              	.LFB128:
+  36:USER/main.c   **** 
+  37:USER/main.c   **** void Task_test_2(Task_Handler self)
+  38:USER/main.c   **** {
+  75              		.loc 1 38 1 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		.loc 1 38 1 is_stmt 0 view .LVU7
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 3
 
 
-  49              		.loc 1 67 2 view .LVU6
-  50 0008 1BB1     		cbz	r3, .L2
-  51 000a 022B     		cmp	r3, #2
-  52 000c 1FD0     		beq	.L3
-  53              	.LVL1:
-  54              	.L1:
-  68:USER/main.c   **** 	{
-  69:USER/main.c   **** 	case TaskSerial_Init:
-  70:USER/main.c   **** 		Serial1_Cfg.baudrate = Serial_115200;
-  71:USER/main.c   **** 		Serial1_Cfg.PreemptionPriority = 3;
-  72:USER/main.c   **** 		Serial1_Cfg.SubPriority = 0;
-  73:USER/main.c   **** 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
-  74:USER/main.c   **** 		Serial1_Cfg.Irq_Callback = NULL;
-  75:USER/main.c   **** 		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
-  76:USER/main.c   **** 
-  77:USER/main.c   **** 		if (!DrvSerial.ctl(DrvSerial_1, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg)))
-  78:USER/main.c   **** 		{
-  79:USER/main.c   **** 			TaskSerial_State = TaskSerial_Init_Failed;
-  80:USER/main.c   **** 		}
-  81:USER/main.c   **** 		else
-  82:USER/main.c   **** 			TaskSerial_State = TaskSerial_RunTest;
-  83:USER/main.c   **** 		break;
-  84:USER/main.c   **** 
-  85:USER/main.c   **** 	case TaskSerial_Init_Failed:
-  86:USER/main.c   **** 		break;
-  87:USER/main.c   **** 
-  88:USER/main.c   **** 	case TaskSerial_RunTest:
-  89:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "8_B!T0  Test\r\n", strlen("8_B!T0  Test\r\n"));
-  90:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
-  91:USER/main.c   **** 		break;
-  92:USER/main.c   **** 
-  93:USER/main.c   **** 	default:
-  94:USER/main.c   **** 		break;
-  95:USER/main.c   **** 	}
-  96:USER/main.c   **** }
-  55              		.loc 1 96 1 view .LVU7
-  56 000e 04B0     		add	sp, sp, #16
-  57              	.LCFI2:
-  58              		.cfi_remember_state
-  59              		.cfi_def_cfa_offset 8
-  60              		@ sp needed
-  61 0010 10BD     		pop	{r4, pc}
-  62              	.LVL2:
-  63              	.L2:
-  64              	.LCFI3:
-  65              		.cfi_restore_state
-  70:USER/main.c   **** 		Serial1_Cfg.PreemptionPriority = 3;
-  66              		.loc 1 70 3 is_stmt 1 view .LVU8
-  70:USER/main.c   **** 		Serial1_Cfg.PreemptionPriority = 3;
-  67              		.loc 1 70 24 is_stmt 0 view .LVU9
-  68 0012 4FF4E133 		mov	r3, #115200
-  69 0016 0093     		str	r3, [sp]
-  71:USER/main.c   **** 		Serial1_Cfg.SubPriority = 0;
-  70              		.loc 1 71 3 is_stmt 1 view .LVU10
-  71:USER/main.c   **** 		Serial1_Cfg.SubPriority = 0;
-  71              		.loc 1 71 34 is_stmt 0 view .LVU11
-  72 0018 0323     		movs	r3, #3
-ARM GAS  /tmp/ccmXBp3J.s 			page 4
+  80 0000 10B5     		push	{r4, lr}
+  81              	.LCFI1:
+  82              		.cfi_def_cfa_offset 8
+  83              		.cfi_offset 4, -8
+  84              		.cfi_offset 14, -4
+  39:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
+  85              		.loc 1 39 2 is_stmt 1 view .LVU8
+  86 0002 064C     		ldr	r4, .L7
+  87 0004 0122     		movs	r2, #1
+  88 0006 0421     		movs	r1, #4
+  89 0008 2046     		mov	r0, r4
+  90              	.LVL5:
+  91              		.loc 1 39 2 is_stmt 0 view .LVU9
+  92 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+  93              	.LVL6:
+  40:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, HI);
+  94              		.loc 1 40 2 is_stmt 1 view .LVU10
+  95 000e 0022     		movs	r2, #0
+  96 0010 0421     		movs	r1, #4
+  97 0012 2046     		mov	r0, r4
+  98 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+  99              	.LVL7:
+  41:USER/main.c   **** }
+ 100              		.loc 1 41 1 is_stmt 0 view .LVU11
+ 101 0018 10BD     		pop	{r4, pc}
+ 102              	.L8:
+ 103 001a 00BF     		.align	2
+ 104              	.L7:
+ 105 001c 00040240 		.word	1073873920
+ 106              		.cfi_endproc
+ 107              	.LFE128:
+ 109              		.section	.text.Task_test_3,"ax",%progbits
+ 110              		.align	1
+ 111              		.global	Task_test_3
+ 112              		.syntax unified
+ 113              		.thumb
+ 114              		.thumb_func
+ 115              		.fpu fpv4-sp-d16
+ 117              	Task_test_3:
+ 118              	.LVL8:
+ 119              	.LFB129:
+  42:USER/main.c   **** 
+  43:USER/main.c   **** void Task_test_3(Task_Handler self)
+  44:USER/main.c   **** {
+ 120              		.loc 1 44 1 is_stmt 1 view -0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		.loc 1 44 1 is_stmt 0 view .LVU13
+ 125 0000 10B5     		push	{r4, lr}
+ 126              	.LCFI2:
+ 127              		.cfi_def_cfa_offset 8
+ 128              		.cfi_offset 4, -8
+ 129              		.cfi_offset 14, -4
+  45:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
+ 130              		.loc 1 45 2 is_stmt 1 view .LVU14
+ 131 0002 064C     		ldr	r4, .L11
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 4
 
 
-  73 001a 8DF80430 		strb	r3, [sp, #4]
-  72:USER/main.c   **** 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
-  74              		.loc 1 72 3 is_stmt 1 view .LVU12
-  72:USER/main.c   **** 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
-  75              		.loc 1 72 27 is_stmt 0 view .LVU13
-  76 001e 0020     		movs	r0, #0
-  77              	.LVL3:
-  72:USER/main.c   **** 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
-  78              		.loc 1 72 27 view .LVU14
-  79 0020 8DF80500 		strb	r0, [sp, #5]
-  73:USER/main.c   **** 		Serial1_Cfg.Irq_Callback = NULL;
-  80              		.loc 1 73 3 is_stmt 1 view .LVU15
-  73:USER/main.c   **** 		Serial1_Cfg.Irq_Callback = NULL;
-  81              		.loc 1 73 20 is_stmt 0 view .LVU16
-  82 0024 0223     		movs	r3, #2
-  83 0026 8DF80630 		strb	r3, [sp, #6]
-  74:USER/main.c   **** 		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
-  84              		.loc 1 74 3 is_stmt 1 view .LVU17
-  74:USER/main.c   **** 		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
-  85              		.loc 1 74 28 is_stmt 0 view .LVU18
-  86 002a 0290     		str	r0, [sp, #8]
-  75:USER/main.c   **** 
-  87              		.loc 1 75 3 is_stmt 1 view .LVU19
-  75:USER/main.c   **** 
-  88              		.loc 1 75 25 is_stmt 0 view .LVU20
-  89 002c 8DF80C00 		strb	r0, [sp, #12]
-  77:USER/main.c   **** 		{
-  90              		.loc 1 77 3 is_stmt 1 view .LVU21
-  77:USER/main.c   **** 		{
-  91              		.loc 1 77 17 is_stmt 0 view .LVU22
-  92 0030 0E4B     		ldr	r3, .L7+4
-  93 0032 1C68     		ldr	r4, [r3]
-  77:USER/main.c   **** 		{
-  94              		.loc 1 77 8 view .LVU23
-  95 0034 1023     		movs	r3, #16
-  96 0036 6A46     		mov	r2, sp
-  97 0038 0146     		mov	r1, r0
-  98 003a A047     		blx	r4
-  99              	.LVL4:
-  77:USER/main.c   **** 		{
- 100              		.loc 1 77 6 view .LVU24
- 101 003c 18B9     		cbnz	r0, .L5
-  79:USER/main.c   **** 		}
- 102              		.loc 1 79 4 is_stmt 1 view .LVU25
-  79:USER/main.c   **** 		}
- 103              		.loc 1 79 21 is_stmt 0 view .LVU26
- 104 003e 0A4B     		ldr	r3, .L7
- 105 0040 0122     		movs	r2, #1
- 106 0042 1A70     		strb	r2, [r3]
- 107 0044 E3E7     		b	.L1
- 108              	.L5:
-  82:USER/main.c   **** 		break;
- 109              		.loc 1 82 4 is_stmt 1 view .LVU27
-  82:USER/main.c   **** 		break;
- 110              		.loc 1 82 21 is_stmt 0 view .LVU28
- 111 0046 084B     		ldr	r3, .L7
- 112 0048 0222     		movs	r2, #2
-ARM GAS  /tmp/ccmXBp3J.s 			page 5
+ 132 0004 0122     		movs	r2, #1
+ 133 0006 0221     		movs	r1, #2
+ 134 0008 2046     		mov	r0, r4
+ 135              	.LVL9:
+ 136              		.loc 1 45 2 is_stmt 0 view .LVU15
+ 137 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 138              	.LVL10:
+  46:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, HI);
+ 139              		.loc 1 46 2 is_stmt 1 view .LVU16
+ 140 000e 0022     		movs	r2, #0
+ 141 0010 0221     		movs	r1, #2
+ 142 0012 2046     		mov	r0, r4
+ 143 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 144              	.LVL11:
+  47:USER/main.c   **** }
+ 145              		.loc 1 47 1 is_stmt 0 view .LVU17
+ 146 0018 10BD     		pop	{r4, pc}
+ 147              	.L12:
+ 148 001a 00BF     		.align	2
+ 149              	.L11:
+ 150 001c 00040240 		.word	1073873920
+ 151              		.cfi_endproc
+ 152              	.LFE129:
+ 154              		.section	.rodata.Task_Serial_Test.str1.4,"aMS",%progbits,1
+ 155              		.align	2
+ 156              	.LC0:
+ 157 0000 385F4221 		.ascii	"8_B!T0  Test\015\012\000"
+ 157      54302020 
+ 157      54657374 
+ 157      0D0A00
+ 158 000f 00       		.align	2
+ 159              	.LC1:
+ 160 0010 574F4F20 		.ascii	"WOO 8_B!T0  Test again\015\012\000"
+ 160      385F4221 
+ 160      54302020 
+ 160      54657374 
+ 160      20616761 
+ 161              		.section	.text.Task_Serial_Test,"ax",%progbits
+ 162              		.align	1
+ 163              		.global	Task_Serial_Test
+ 164              		.syntax unified
+ 165              		.thumb
+ 166              		.thumb_func
+ 167              		.fpu fpv4-sp-d16
+ 169              	Task_Serial_Test:
+ 170              	.LVL12:
+ 171              	.LFB131:
+  48:USER/main.c   **** 
+  49:USER/main.c   **** void Task_test_4(Task_Handler self)
+  50:USER/main.c   **** {
+  51:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
+  52:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
+  53:USER/main.c   **** }
+  54:USER/main.c   **** 
+  55:USER/main.c   **** /* serial test */
+  56:USER/main.c   **** typedef enum
+  57:USER/main.c   **** {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 5
 
 
- 113 004a 1A70     		strb	r2, [r3]
- 114 004c DFE7     		b	.L1
- 115              	.LVL5:
- 116              	.L3:
-  89:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
- 117              		.loc 1 89 3 is_stmt 1 view .LVU29
-  89:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
- 118              		.loc 1 89 12 is_stmt 0 view .LVU30
- 119 004e 074C     		ldr	r4, .L7+4
- 120 0050 A368     		ldr	r3, [r4, #8]
-  89:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
- 121              		.loc 1 89 3 view .LVU31
- 122 0052 0E22     		movs	r2, #14
- 123 0054 0649     		ldr	r1, .L7+8
- 124 0056 0020     		movs	r0, #0
- 125              	.LVL6:
-  89:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
- 126              		.loc 1 89 3 view .LVU32
- 127 0058 9847     		blx	r3
- 128              	.LVL7:
-  90:USER/main.c   **** 		break;
- 129              		.loc 1 90 3 is_stmt 1 view .LVU33
-  90:USER/main.c   **** 		break;
- 130              		.loc 1 90 12 is_stmt 0 view .LVU34
- 131 005a A368     		ldr	r3, [r4, #8]
-  90:USER/main.c   **** 		break;
- 132              		.loc 1 90 3 view .LVU35
- 133 005c 1822     		movs	r2, #24
- 134 005e 0549     		ldr	r1, .L7+12
- 135 0060 0020     		movs	r0, #0
- 136 0062 9847     		blx	r3
- 137              	.LVL8:
-  91:USER/main.c   **** 
- 138              		.loc 1 91 3 is_stmt 1 view .LVU36
- 139              		.loc 1 96 1 is_stmt 0 view .LVU37
- 140 0064 D3E7     		b	.L1
- 141              	.L8:
- 142 0066 00BF     		.align	2
- 143              	.L7:
- 144 0068 00000000 		.word	.LANCHOR0
- 145 006c 00000000 		.word	DrvSerial
- 146 0070 00000000 		.word	.LC0
- 147 0074 10000000 		.word	.LC1
- 148              		.cfi_endproc
- 149              	.LFE131:
- 151              		.section	.text.Task_test_1,"ax",%progbits
- 152              		.align	1
- 153              		.global	Task_test_1
- 154              		.syntax unified
- 155              		.thumb
- 156              		.thumb_func
- 157              		.fpu fpv4-sp-d16
- 159              	Task_test_1:
- 160              	.LVL9:
- 161              	.LFB127:
-  31:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
- 162              		.loc 1 31 1 is_stmt 1 view -0
-ARM GAS  /tmp/ccmXBp3J.s 			page 6
+  58:USER/main.c   **** 	TaskSerial_Init = 0,
+  59:USER/main.c   **** 	TaskSerial_Init_Failed,
+  60:USER/main.c   **** 	TaskSerial_RunTest,
+  61:USER/main.c   **** } TaskSerial_State_List;
+  62:USER/main.c   **** 
+  63:USER/main.c   **** void Task_Serial_Test(Task_Handler self)
+  64:USER/main.c   **** {
+ 172              		.loc 1 64 1 is_stmt 1 view -0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 16
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176              		.loc 1 64 1 is_stmt 0 view .LVU19
+ 177 0000 10B5     		push	{r4, lr}
+ 178              	.LCFI3:
+ 179              		.cfi_def_cfa_offset 8
+ 180              		.cfi_offset 4, -8
+ 181              		.cfi_offset 14, -4
+ 182 0002 84B0     		sub	sp, sp, #16
+ 183              	.LCFI4:
+ 184              		.cfi_def_cfa_offset 24
+  65:USER/main.c   **** 	static TaskSerial_State_List TaskSerial_State = TaskSerial_Init;
+ 185              		.loc 1 65 2 is_stmt 1 view .LVU20
+  66:USER/main.c   **** 	DrvSerial_Config_Typedef Serial1_Cfg;
+ 186              		.loc 1 66 2 view .LVU21
+  67:USER/main.c   **** 
+  68:USER/main.c   **** 	volatile uint8_t *test = NULL;
+ 187              		.loc 1 68 2 view .LVU22
+ 188              	.LVL13:
+  69:USER/main.c   **** 
+  70:USER/main.c   **** 	test = (uint8_t *)MMU_Malloc(100);
+ 189              		.loc 1 70 2 view .LVU23
+ 190              		.loc 1 70 20 is_stmt 0 view .LVU24
+ 191 0004 6420     		movs	r0, #100
+ 192              	.LVL14:
+ 193              		.loc 1 70 20 view .LVU25
+ 194 0006 FFF7FEFF 		bl	MMU_Malloc
+ 195              	.LVL15:
+  71:USER/main.c   **** 	MMU_Free(test);
+ 196              		.loc 1 71 2 is_stmt 1 view .LVU26
+ 197 000a FFF7FEFF 		bl	MMU_Free
+ 198              	.LVL16:
+  72:USER/main.c   **** 
+  73:USER/main.c   **** 	switch ((uint8_t)TaskSerial_State)
+ 199              		.loc 1 73 2 view .LVU27
+ 200              		.loc 1 73 10 is_stmt 0 view .LVU28
+ 201 000e 184B     		ldr	r3, .L19
+ 202 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 203              		.loc 1 73 2 view .LVU29
+ 204 0012 1BB1     		cbz	r3, .L14
+ 205 0014 022B     		cmp	r3, #2
+ 206 0016 1FD0     		beq	.L15
+ 207              	.L13:
+  74:USER/main.c   **** 	{
+  75:USER/main.c   **** 	case TaskSerial_Init:
+  76:USER/main.c   **** 		Serial1_Cfg.baudrate = Serial_115200;
+  77:USER/main.c   **** 		Serial1_Cfg.PreemptionPriority = 3;
+  78:USER/main.c   **** 		Serial1_Cfg.SubPriority = 0;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 6
 
 
- 163              		.cfi_startproc
- 164              		@ args = 0, pretend = 0, frame = 0
- 165              		@ frame_needed = 0, uses_anonymous_args = 0
-  31:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
- 166              		.loc 1 31 1 is_stmt 0 view .LVU39
- 167 0000 10B5     		push	{r4, lr}
- 168              	.LCFI4:
- 169              		.cfi_def_cfa_offset 8
- 170              		.cfi_offset 4, -8
- 171              		.cfi_offset 14, -4
-  32:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
- 172              		.loc 1 32 2 is_stmt 1 view .LVU40
- 173 0002 064C     		ldr	r4, .L11
- 174 0004 0122     		movs	r2, #1
- 175 0006 0821     		movs	r1, #8
- 176 0008 2046     		mov	r0, r4
- 177              	.LVL10:
-  32:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, HI);
- 178              		.loc 1 32 2 is_stmt 0 view .LVU41
- 179 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 180              	.LVL11:
-  33:USER/main.c   **** }
- 181              		.loc 1 33 2 is_stmt 1 view .LVU42
- 182 000e 0022     		movs	r2, #0
- 183 0010 0821     		movs	r1, #8
- 184 0012 2046     		mov	r0, r4
- 185 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 186              	.LVL12:
-  34:USER/main.c   **** 
- 187              		.loc 1 34 1 is_stmt 0 view .LVU43
- 188 0018 10BD     		pop	{r4, pc}
- 189              	.L12:
- 190 001a 00BF     		.align	2
- 191              	.L11:
- 192 001c 00040240 		.word	1073873920
- 193              		.cfi_endproc
- 194              	.LFE127:
- 196              		.section	.text.Task_test_2,"ax",%progbits
- 197              		.align	1
- 198              		.global	Task_test_2
- 199              		.syntax unified
- 200              		.thumb
- 201              		.thumb_func
- 202              		.fpu fpv4-sp-d16
- 204              	Task_test_2:
- 205              	.LVL13:
- 206              	.LFB128:
-  37:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
- 207              		.loc 1 37 1 is_stmt 1 view -0
- 208              		.cfi_startproc
- 209              		@ args = 0, pretend = 0, frame = 0
- 210              		@ frame_needed = 0, uses_anonymous_args = 0
-  37:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
- 211              		.loc 1 37 1 is_stmt 0 view .LVU45
- 212 0000 10B5     		push	{r4, lr}
- 213              	.LCFI5:
- 214              		.cfi_def_cfa_offset 8
-ARM GAS  /tmp/ccmXBp3J.s 			page 7
+  79:USER/main.c   **** 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
+  80:USER/main.c   **** 		Serial1_Cfg.Irq_Callback = NULL;
+  81:USER/main.c   **** 		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
+  82:USER/main.c   **** 
+  83:USER/main.c   **** 		if (!DrvSerial.ctl(DrvSerial_1, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg)))
+  84:USER/main.c   **** 		{
+  85:USER/main.c   **** 			TaskSerial_State = TaskSerial_Init_Failed;
+  86:USER/main.c   **** 		}
+  87:USER/main.c   **** 		else
+  88:USER/main.c   **** 			TaskSerial_State = TaskSerial_RunTest;
+  89:USER/main.c   **** 		break;
+  90:USER/main.c   **** 
+  91:USER/main.c   **** 	case TaskSerial_Init_Failed:
+  92:USER/main.c   **** 		break;
+  93:USER/main.c   **** 
+  94:USER/main.c   **** 	case TaskSerial_RunTest:
+  95:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "8_B!T0  Test\r\n", strlen("8_B!T0  Test\r\n"));
+  96:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
+  97:USER/main.c   **** 		break;
+  98:USER/main.c   **** 
+  99:USER/main.c   **** 	default:
+ 100:USER/main.c   **** 		break;
+ 101:USER/main.c   **** 	}
+ 102:USER/main.c   **** }
+ 208              		.loc 1 102 1 view .LVU30
+ 209 0018 04B0     		add	sp, sp, #16
+ 210              	.LCFI5:
+ 211              		.cfi_remember_state
+ 212              		.cfi_def_cfa_offset 8
+ 213              		@ sp needed
+ 214 001a 10BD     		pop	{r4, pc}
+ 215              	.L14:
+ 216              	.LCFI6:
+ 217              		.cfi_restore_state
+  76:USER/main.c   **** 		Serial1_Cfg.PreemptionPriority = 3;
+ 218              		.loc 1 76 3 is_stmt 1 view .LVU31
+  76:USER/main.c   **** 		Serial1_Cfg.PreemptionPriority = 3;
+ 219              		.loc 1 76 24 is_stmt 0 view .LVU32
+ 220 001c 4FF4E133 		mov	r3, #115200
+ 221 0020 0093     		str	r3, [sp]
+  77:USER/main.c   **** 		Serial1_Cfg.SubPriority = 0;
+ 222              		.loc 1 77 3 is_stmt 1 view .LVU33
+  77:USER/main.c   **** 		Serial1_Cfg.SubPriority = 0;
+ 223              		.loc 1 77 34 is_stmt 0 view .LVU34
+ 224 0022 0323     		movs	r3, #3
+ 225 0024 8DF80430 		strb	r3, [sp, #4]
+  78:USER/main.c   **** 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
+ 226              		.loc 1 78 3 is_stmt 1 view .LVU35
+  78:USER/main.c   **** 		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
+ 227              		.loc 1 78 27 is_stmt 0 view .LVU36
+ 228 0028 0020     		movs	r0, #0
+ 229 002a 8DF80500 		strb	r0, [sp, #5]
+  79:USER/main.c   **** 		Serial1_Cfg.Irq_Callback = NULL;
+ 230              		.loc 1 79 3 is_stmt 1 view .LVU37
+  79:USER/main.c   **** 		Serial1_Cfg.Irq_Callback = NULL;
+ 231              		.loc 1 79 20 is_stmt 0 view .LVU38
+ 232 002e 0223     		movs	r3, #2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 7
 
 
- 215              		.cfi_offset 4, -8
- 216              		.cfi_offset 14, -4
-  38:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, HI);
- 217              		.loc 1 38 2 is_stmt 1 view .LVU46
- 218 0002 064C     		ldr	r4, .L15
- 219 0004 0122     		movs	r2, #1
- 220 0006 0421     		movs	r1, #4
- 221 0008 2046     		mov	r0, r4
- 222              	.LVL14:
-  38:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, HI);
- 223              		.loc 1 38 2 is_stmt 0 view .LVU47
- 224 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 225              	.LVL15:
-  39:USER/main.c   **** }
- 226              		.loc 1 39 2 is_stmt 1 view .LVU48
- 227 000e 0022     		movs	r2, #0
- 228 0010 0421     		movs	r1, #4
- 229 0012 2046     		mov	r0, r4
- 230 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 231              	.LVL16:
-  40:USER/main.c   **** 
- 232              		.loc 1 40 1 is_stmt 0 view .LVU49
- 233 0018 10BD     		pop	{r4, pc}
- 234              	.L16:
- 235 001a 00BF     		.align	2
- 236              	.L15:
- 237 001c 00040240 		.word	1073873920
- 238              		.cfi_endproc
- 239              	.LFE128:
- 241              		.section	.text.Task_test_3,"ax",%progbits
- 242              		.align	1
- 243              		.global	Task_test_3
- 244              		.syntax unified
- 245              		.thumb
- 246              		.thumb_func
- 247              		.fpu fpv4-sp-d16
- 249              	Task_test_3:
- 250              	.LVL17:
- 251              	.LFB129:
-  43:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
- 252              		.loc 1 43 1 is_stmt 1 view -0
- 253              		.cfi_startproc
- 254              		@ args = 0, pretend = 0, frame = 0
- 255              		@ frame_needed = 0, uses_anonymous_args = 0
-  43:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
- 256              		.loc 1 43 1 is_stmt 0 view .LVU51
- 257 0000 10B5     		push	{r4, lr}
- 258              	.LCFI6:
- 259              		.cfi_def_cfa_offset 8
- 260              		.cfi_offset 4, -8
- 261              		.cfi_offset 14, -4
-  44:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, HI);
- 262              		.loc 1 44 2 is_stmt 1 view .LVU52
- 263 0002 064C     		ldr	r4, .L19
- 264 0004 0122     		movs	r2, #1
- 265 0006 0221     		movs	r1, #2
- 266 0008 2046     		mov	r0, r4
-ARM GAS  /tmp/ccmXBp3J.s 			page 8
+ 233 0030 8DF80630 		strb	r3, [sp, #6]
+  80:USER/main.c   **** 		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
+ 234              		.loc 1 80 3 is_stmt 1 view .LVU39
+  80:USER/main.c   **** 		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
+ 235              		.loc 1 80 28 is_stmt 0 view .LVU40
+ 236 0034 0290     		str	r0, [sp, #8]
+  81:USER/main.c   **** 
+ 237              		.loc 1 81 3 is_stmt 1 view .LVU41
+  81:USER/main.c   **** 
+ 238              		.loc 1 81 25 is_stmt 0 view .LVU42
+ 239 0036 8DF80C00 		strb	r0, [sp, #12]
+  83:USER/main.c   **** 		{
+ 240              		.loc 1 83 3 is_stmt 1 view .LVU43
+  83:USER/main.c   **** 		{
+ 241              		.loc 1 83 17 is_stmt 0 view .LVU44
+ 242 003a 0E4B     		ldr	r3, .L19+4
+ 243 003c 1C68     		ldr	r4, [r3]
+  83:USER/main.c   **** 		{
+ 244              		.loc 1 83 8 view .LVU45
+ 245 003e 1023     		movs	r3, #16
+ 246 0040 6A46     		mov	r2, sp
+ 247 0042 0146     		mov	r1, r0
+ 248 0044 A047     		blx	r4
+ 249              	.LVL17:
+  83:USER/main.c   **** 		{
+ 250              		.loc 1 83 6 view .LVU46
+ 251 0046 18B9     		cbnz	r0, .L17
+  85:USER/main.c   **** 		}
+ 252              		.loc 1 85 4 is_stmt 1 view .LVU47
+  85:USER/main.c   **** 		}
+ 253              		.loc 1 85 21 is_stmt 0 view .LVU48
+ 254 0048 094B     		ldr	r3, .L19
+ 255 004a 0122     		movs	r2, #1
+ 256 004c 1A70     		strb	r2, [r3]
+ 257 004e E3E7     		b	.L13
+ 258              	.L17:
+  88:USER/main.c   **** 		break;
+ 259              		.loc 1 88 4 is_stmt 1 view .LVU49
+  88:USER/main.c   **** 		break;
+ 260              		.loc 1 88 21 is_stmt 0 view .LVU50
+ 261 0050 074B     		ldr	r3, .L19
+ 262 0052 0222     		movs	r2, #2
+ 263 0054 1A70     		strb	r2, [r3]
+ 264 0056 DFE7     		b	.L13
+ 265              	.L15:
+  95:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
+ 266              		.loc 1 95 3 is_stmt 1 view .LVU51
+  95:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
+ 267              		.loc 1 95 12 is_stmt 0 view .LVU52
+ 268 0058 064C     		ldr	r4, .L19+4
+ 269 005a A368     		ldr	r3, [r4, #8]
+  95:USER/main.c   **** 		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
+ 270              		.loc 1 95 3 view .LVU53
+ 271 005c 0E22     		movs	r2, #14
+ 272 005e 0649     		ldr	r1, .L19+8
+ 273 0060 0020     		movs	r0, #0
+ 274 0062 9847     		blx	r3
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 8
 
 
- 267              	.LVL18:
-  44:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, HI);
- 268              		.loc 1 44 2 is_stmt 0 view .LVU53
- 269 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 270              	.LVL19:
-  45:USER/main.c   **** }
- 271              		.loc 1 45 2 is_stmt 1 view .LVU54
- 272 000e 0022     		movs	r2, #0
- 273 0010 0221     		movs	r1, #2
- 274 0012 2046     		mov	r0, r4
- 275 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 276              	.LVL20:
-  46:USER/main.c   **** 
- 277              		.loc 1 46 1 is_stmt 0 view .LVU55
- 278 0018 10BD     		pop	{r4, pc}
- 279              	.L20:
- 280 001a 00BF     		.align	2
- 281              	.L19:
- 282 001c 00040240 		.word	1073873920
- 283              		.cfi_endproc
- 284              	.LFE129:
- 286              		.section	.text.Gpio_Flip,"ax",%progbits
- 287              		.align	1
- 288              		.global	Gpio_Flip
- 289              		.syntax unified
- 290              		.thumb
- 291              		.thumb_func
- 292              		.fpu fpv4-sp-d16
- 294              	Gpio_Flip:
- 295              	.LFB126:
-  15:USER/main.c   **** 	static bool io_level = false;
- 296              		.loc 1 15 1 is_stmt 1 view -0
- 297              		.cfi_startproc
- 298              		@ args = 0, pretend = 0, frame = 0
- 299              		@ frame_needed = 0, uses_anonymous_args = 0
- 300 0000 08B5     		push	{r3, lr}
- 301              	.LCFI7:
- 302              		.cfi_def_cfa_offset 8
- 303              		.cfi_offset 3, -8
- 304              		.cfi_offset 14, -4
-  16:USER/main.c   **** 
- 305              		.loc 1 16 2 view .LVU57
-  18:USER/main.c   **** 	{
- 306              		.loc 1 18 2 view .LVU58
-  18:USER/main.c   **** 	{
- 307              		.loc 1 18 6 is_stmt 0 view .LVU59
- 308 0002 0A4B     		ldr	r3, .L25
- 309 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  18:USER/main.c   **** 	{
- 310              		.loc 1 18 5 view .LVU60
- 311 0006 53B1     		cbz	r3, .L22
-  20:USER/main.c   **** 	}
- 312              		.loc 1 20 3 is_stmt 1 view .LVU61
- 313 0008 0022     		movs	r2, #0
- 314 000a 0821     		movs	r1, #8
- 315 000c 0848     		ldr	r0, .L25+4
- 316 000e FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
-ARM GAS  /tmp/ccmXBp3J.s 			page 9
-
-
- 317              	.LVL21:
- 318              	.L23:
-  27:USER/main.c   **** }
- 319              		.loc 1 27 2 view .LVU62
- 320 0012 064A     		ldr	r2, .L25
- 321 0014 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 322 0016 83F00103 		eor	r3, r3, #1
-  27:USER/main.c   **** }
- 323              		.loc 1 27 11 is_stmt 0 view .LVU63
- 324 001a 1370     		strb	r3, [r2]
-  28:USER/main.c   **** 
- 325              		.loc 1 28 1 view .LVU64
- 326 001c 08BD     		pop	{r3, pc}
- 327              	.L22:
-  24:USER/main.c   **** 	}
- 328              		.loc 1 24 3 is_stmt 1 view .LVU65
- 329 001e 0122     		movs	r2, #1
- 330 0020 0821     		movs	r1, #8
- 331 0022 0348     		ldr	r0, .L25+4
- 332 0024 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 333              	.LVL22:
- 334 0028 F3E7     		b	.L23
- 335              	.L26:
- 336 002a 00BF     		.align	2
- 337              	.L25:
- 338 002c 00000000 		.word	.LANCHOR1
- 339 0030 00040240 		.word	1073873920
- 340              		.cfi_endproc
- 341              	.LFE126:
- 343              		.section	.text.Task_test_4,"ax",%progbits
- 344              		.align	1
- 345              		.global	Task_test_4
- 346              		.syntax unified
- 347              		.thumb
- 348              		.thumb_func
- 349              		.fpu fpv4-sp-d16
- 351              	Task_test_4:
- 352              	.LVL23:
- 353              	.LFB130:
-  49:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
- 354              		.loc 1 49 1 view -0
- 355              		.cfi_startproc
- 356              		@ args = 0, pretend = 0, frame = 0
- 357              		@ frame_needed = 0, uses_anonymous_args = 0
-  49:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
- 358              		.loc 1 49 1 is_stmt 0 view .LVU67
- 359 0000 10B5     		push	{r4, lr}
- 360              	.LCFI8:
- 361              		.cfi_def_cfa_offset 8
- 362              		.cfi_offset 4, -8
- 363              		.cfi_offset 14, -4
-  50:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
- 364              		.loc 1 50 2 is_stmt 1 view .LVU68
- 365 0002 064C     		ldr	r4, .L29
- 366 0004 0122     		movs	r2, #1
- 367 0006 1146     		mov	r1, r2
- 368 0008 2046     		mov	r0, r4
-ARM GAS  /tmp/ccmXBp3J.s 			page 10
-
-
- 369              	.LVL24:
-  50:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
- 370              		.loc 1 50 2 is_stmt 0 view .LVU69
- 371 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 372              	.LVL25:
-  51:USER/main.c   **** }
- 373              		.loc 1 51 2 is_stmt 1 view .LVU70
- 374 000e 0022     		movs	r2, #0
- 375 0010 0121     		movs	r1, #1
- 376 0012 2046     		mov	r0, r4
- 377 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 378              	.LVL26:
-  52:USER/main.c   **** 
- 379              		.loc 1 52 1 is_stmt 0 view .LVU71
- 380 0018 10BD     		pop	{r4, pc}
- 381              	.L30:
- 382 001a 00BF     		.align	2
- 383              	.L29:
- 384 001c 00040240 		.word	1073873920
- 385              		.cfi_endproc
- 386              	.LFE130:
- 388              		.section	.text.main,"ax",%progbits
- 389              		.align	1
- 390              		.global	main
- 391              		.syntax unified
- 392              		.thumb
- 393              		.thumb_func
- 394              		.fpu fpv4-sp-d16
- 396              	main:
- 397              	.LFB132:
+ 275              	.LVL18:
+  96:USER/main.c   **** 		break;
+ 276              		.loc 1 96 3 is_stmt 1 view .LVU54
+  96:USER/main.c   **** 		break;
+ 277              		.loc 1 96 12 is_stmt 0 view .LVU55
+ 278 0064 A368     		ldr	r3, [r4, #8]
+  96:USER/main.c   **** 		break;
+ 279              		.loc 1 96 3 view .LVU56
+ 280 0066 1822     		movs	r2, #24
+ 281 0068 0449     		ldr	r1, .L19+12
+ 282 006a 0020     		movs	r0, #0
+ 283 006c 9847     		blx	r3
+ 284              	.LVL19:
   97:USER/main.c   **** 
-  98:USER/main.c   **** int main(void)
-  99:USER/main.c   **** {
- 398              		.loc 1 99 1 is_stmt 1 view -0
- 399              		.cfi_startproc
- 400              		@ args = 0, pretend = 0, frame = 0
- 401              		@ frame_needed = 0, uses_anonymous_args = 0
- 402 0000 10B5     		push	{r4, lr}
- 403              	.LCFI9:
- 404              		.cfi_def_cfa_offset 8
- 405              		.cfi_offset 4, -8
- 406              		.cfi_offset 14, -4
- 407 0002 82B0     		sub	sp, sp, #8
- 408              	.LCFI10:
- 409              		.cfi_def_cfa_offset 16
- 100:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_0, GPIOB);
- 410              		.loc 1 100 2 view .LVU73
- 411 0004 404C     		ldr	r4, .L33
- 412 0006 2246     		mov	r2, r4
- 413 0008 0121     		movs	r1, #1
- 414 000a 0220     		movs	r0, #2
- 415 000c FFF7FEFF 		bl	GPIO_IO_Output_Init
- 416              	.LVL27:
- 101:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_1, GPIOB);
- 417              		.loc 1 101 2 view .LVU74
- 418 0010 2246     		mov	r2, r4
- 419 0012 0221     		movs	r1, #2
-ARM GAS  /tmp/ccmXBp3J.s 			page 11
+ 285              		.loc 1 97 3 is_stmt 1 view .LVU57
+ 286              		.loc 1 102 1 is_stmt 0 view .LVU58
+ 287 006e D3E7     		b	.L13
+ 288              	.L20:
+ 289              		.align	2
+ 290              	.L19:
+ 291 0070 00000000 		.word	.LANCHOR0
+ 292 0074 00000000 		.word	DrvSerial
+ 293 0078 00000000 		.word	.LC0
+ 294 007c 10000000 		.word	.LC1
+ 295              		.cfi_endproc
+ 296              	.LFE131:
+ 298              		.section	.text.Gpio_Flip,"ax",%progbits
+ 299              		.align	1
+ 300              		.global	Gpio_Flip
+ 301              		.syntax unified
+ 302              		.thumb
+ 303              		.thumb_func
+ 304              		.fpu fpv4-sp-d16
+ 306              	Gpio_Flip:
+ 307              	.LFB126:
+  16:USER/main.c   **** 	static bool io_level = false;
+ 308              		.loc 1 16 1 is_stmt 1 view -0
+ 309              		.cfi_startproc
+ 310              		@ args = 0, pretend = 0, frame = 0
+ 311              		@ frame_needed = 0, uses_anonymous_args = 0
+ 312 0000 08B5     		push	{r3, lr}
+ 313              	.LCFI7:
+ 314              		.cfi_def_cfa_offset 8
+ 315              		.cfi_offset 3, -8
+ 316              		.cfi_offset 14, -4
+  17:USER/main.c   **** 
+ 317              		.loc 1 17 2 view .LVU60
+  19:USER/main.c   **** 	{
+ 318              		.loc 1 19 2 view .LVU61
+  19:USER/main.c   **** 	{
+ 319              		.loc 1 19 6 is_stmt 0 view .LVU62
+ 320 0002 0A4B     		ldr	r3, .L25
+ 321 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  19:USER/main.c   **** 	{
+ 322              		.loc 1 19 5 view .LVU63
+ 323 0006 53B1     		cbz	r3, .L22
+  21:USER/main.c   **** 	}
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 9
 
 
- 420 0014 0846     		mov	r0, r1
- 421 0016 FFF7FEFF 		bl	GPIO_IO_Output_Init
- 422              	.LVL28:
- 102:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_2, GPIOB);
- 423              		.loc 1 102 2 view .LVU75
- 424 001a 2246     		mov	r2, r4
- 425 001c 0421     		movs	r1, #4
- 426 001e 0220     		movs	r0, #2
- 427 0020 FFF7FEFF 		bl	GPIO_IO_Output_Init
- 428              	.LVL29:
- 103:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_3, GPIOB);
- 429              		.loc 1 103 2 view .LVU76
- 430 0024 2246     		mov	r2, r4
- 431 0026 0821     		movs	r1, #8
- 432 0028 0220     		movs	r0, #2
- 433 002a FFF7FEFF 		bl	GPIO_IO_Output_Init
- 434              	.LVL30:
- 104:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_4, GPIOB);
- 435              		.loc 1 104 2 view .LVU77
- 436 002e 2246     		mov	r2, r4
- 437 0030 1021     		movs	r1, #16
- 438 0032 0220     		movs	r0, #2
- 439 0034 FFF7FEFF 		bl	GPIO_IO_Output_Init
- 440              	.LVL31:
- 105:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_5, GPIOB);
- 441              		.loc 1 105 2 view .LVU78
- 442 0038 2246     		mov	r2, r4
- 443 003a 2021     		movs	r1, #32
- 444 003c 0220     		movs	r0, #2
- 445 003e FFF7FEFF 		bl	GPIO_IO_Output_Init
- 446              	.LVL32:
- 106:USER/main.c   **** 
- 107:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
- 447              		.loc 1 107 2 view .LVU79
- 448 0042 0122     		movs	r2, #1
- 449 0044 1146     		mov	r1, r2
- 450 0046 2046     		mov	r0, r4
- 451 0048 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 452              	.LVL33:
- 108:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
- 453              		.loc 1 108 2 view .LVU80
- 454 004c 0122     		movs	r2, #1
- 455 004e 0221     		movs	r1, #2
- 456 0050 2046     		mov	r0, r4
- 457 0052 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 458              	.LVL34:
- 109:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
- 459              		.loc 1 109 2 view .LVU81
- 460 0056 0122     		movs	r2, #1
- 461 0058 0421     		movs	r1, #4
- 462 005a 2046     		mov	r0, r4
- 463 005c FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 464              	.LVL35:
- 110:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
- 465              		.loc 1 110 2 view .LVU82
- 466 0060 0122     		movs	r2, #1
- 467 0062 0821     		movs	r1, #8
-ARM GAS  /tmp/ccmXBp3J.s 			page 12
+ 324              		.loc 1 21 3 is_stmt 1 view .LVU64
+ 325 0008 0022     		movs	r2, #0
+ 326 000a 0821     		movs	r1, #8
+ 327 000c 0848     		ldr	r0, .L25+4
+ 328 000e FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 329              	.LVL20:
+ 330              	.L23:
+  28:USER/main.c   **** }
+ 331              		.loc 1 28 2 view .LVU65
+ 332 0012 064A     		ldr	r2, .L25
+ 333 0014 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 334 0016 83F00103 		eor	r3, r3, #1
+  28:USER/main.c   **** }
+ 335              		.loc 1 28 11 is_stmt 0 view .LVU66
+ 336 001a 1370     		strb	r3, [r2]
+  29:USER/main.c   **** 
+ 337              		.loc 1 29 1 view .LVU67
+ 338 001c 08BD     		pop	{r3, pc}
+ 339              	.L22:
+  25:USER/main.c   **** 	}
+ 340              		.loc 1 25 3 is_stmt 1 view .LVU68
+ 341 001e 0122     		movs	r2, #1
+ 342 0020 0821     		movs	r1, #8
+ 343 0022 0348     		ldr	r0, .L25+4
+ 344 0024 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 345              	.LVL21:
+ 346 0028 F3E7     		b	.L23
+ 347              	.L26:
+ 348 002a 00BF     		.align	2
+ 349              	.L25:
+ 350 002c 00000000 		.word	.LANCHOR1
+ 351 0030 00040240 		.word	1073873920
+ 352              		.cfi_endproc
+ 353              	.LFE126:
+ 355              		.section	.text.Task_test_4,"ax",%progbits
+ 356              		.align	1
+ 357              		.global	Task_test_4
+ 358              		.syntax unified
+ 359              		.thumb
+ 360              		.thumb_func
+ 361              		.fpu fpv4-sp-d16
+ 363              	Task_test_4:
+ 364              	.LVL22:
+ 365              	.LFB130:
+  50:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
+ 366              		.loc 1 50 1 view -0
+ 367              		.cfi_startproc
+ 368              		@ args = 0, pretend = 0, frame = 0
+ 369              		@ frame_needed = 0, uses_anonymous_args = 0
+  50:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
+ 370              		.loc 1 50 1 is_stmt 0 view .LVU70
+ 371 0000 10B5     		push	{r4, lr}
+ 372              	.LCFI8:
+ 373              		.cfi_def_cfa_offset 8
+ 374              		.cfi_offset 4, -8
+ 375              		.cfi_offset 14, -4
+  51:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 10
 
 
- 468 0064 2046     		mov	r0, r4
- 469 0066 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 470              	.LVL36:
- 111:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
- 471              		.loc 1 111 2 view .LVU83
- 472 006a 0122     		movs	r2, #1
- 473 006c 1021     		movs	r1, #16
- 474 006e 2046     		mov	r0, r4
- 475 0070 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 476              	.LVL37:
- 112:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
- 477              		.loc 1 112 2 view .LVU84
- 478 0074 0122     		movs	r2, #1
- 479 0076 2021     		movs	r1, #32
- 480 0078 2046     		mov	r0, r4
- 481 007a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
- 482              	.LVL38:
- 113:USER/main.c   **** 
- 114:USER/main.c   **** 	SystemInit();
- 483              		.loc 1 114 2 view .LVU85
- 484 007e FFF7FEFF 		bl	SystemInit
- 485              	.LVL39:
- 115:USER/main.c   **** 
- 116:USER/main.c   **** 	TaskWidget_Hdl = Task_Create("Widget", TASK_EXEC_100HZ, Group_0, Task_Priority_1, TaskWidget_Core,
- 486              		.loc 1 116 2 view .LVU86
- 487              		.loc 1 116 19 is_stmt 0 view .LVU87
- 488 0082 C824     		movs	r4, #200
- 489 0084 0194     		str	r4, [sp, #4]
- 490 0086 214B     		ldr	r3, .L33+4
- 491 0088 0093     		str	r3, [sp]
- 492 008a 0123     		movs	r3, #1
- 493 008c 0022     		movs	r2, #0
- 494 008e 6421     		movs	r1, #100
- 495 0090 1F48     		ldr	r0, .L33+8
- 496 0092 FFF7FEFF 		bl	Task_Create
- 497              	.LVL40:
- 498              		.loc 1 116 17 view .LVU88
- 499 0096 1F4B     		ldr	r3, .L33+12
- 500 0098 1860     		str	r0, [r3]
- 117:USER/main.c   **** 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_1KHZ, Group_0, Task_Priority_0, Task_test_1, 200);
- 501              		.loc 1 117 2 is_stmt 1 view .LVU89
- 502              		.loc 1 117 18 is_stmt 0 view .LVU90
- 503 009a 0194     		str	r4, [sp, #4]
- 504 009c 1E4B     		ldr	r3, .L33+16
- 505 009e 0093     		str	r3, [sp]
- 506 00a0 0023     		movs	r3, #0
- 507 00a2 1A46     		mov	r2, r3
- 508 00a4 4FF47A71 		mov	r1, #1000
- 509 00a8 1C48     		ldr	r0, .L33+20
- 510 00aa FFF7FEFF 		bl	Task_Create
- 511              	.LVL41:
- 512              		.loc 1 117 16 view .LVU91
- 513 00ae 1C4B     		ldr	r3, .L33+24
- 514 00b0 1860     		str	r0, [r3]
- 118:USER/main.c   **** 	test2_tsk_hdl = Task_Create("test 2", TASK_EXEC_4KHZ, Group_0, Task_Priority_2, Task_test_2, 200);
- 515              		.loc 1 118 2 is_stmt 1 view .LVU92
- 516              		.loc 1 118 18 is_stmt 0 view .LVU93
-ARM GAS  /tmp/ccmXBp3J.s 			page 13
+ 376              		.loc 1 51 2 is_stmt 1 view .LVU71
+ 377 0002 064C     		ldr	r4, .L29
+ 378 0004 0122     		movs	r2, #1
+ 379 0006 1146     		mov	r1, r2
+ 380 0008 2046     		mov	r0, r4
+ 381              	.LVL23:
+  51:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
+ 382              		.loc 1 51 2 is_stmt 0 view .LVU72
+ 383 000a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 384              	.LVL24:
+  52:USER/main.c   **** }
+ 385              		.loc 1 52 2 is_stmt 1 view .LVU73
+ 386 000e 0022     		movs	r2, #0
+ 387 0010 0121     		movs	r1, #1
+ 388 0012 2046     		mov	r0, r4
+ 389 0014 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 390              	.LVL25:
+  53:USER/main.c   **** 
+ 391              		.loc 1 53 1 is_stmt 0 view .LVU74
+ 392 0018 10BD     		pop	{r4, pc}
+ 393              	.L30:
+ 394 001a 00BF     		.align	2
+ 395              	.L29:
+ 396 001c 00040240 		.word	1073873920
+ 397              		.cfi_endproc
+ 398              	.LFE130:
+ 400              		.section	.rodata.main.str1.4,"aMS",%progbits,1
+ 401              		.align	2
+ 402              	.LC2:
+ 403 0000 57696467 		.ascii	"Widget\000"
+ 403      657400
+ 404 0007 00       		.align	2
+ 405              	.LC3:
+ 406 0008 74657374 		.ascii	"test 1\000"
+ 406      203100
+ 407 000f 00       		.align	2
+ 408              	.LC4:
+ 409 0010 74657374 		.ascii	"test 2\000"
+ 409      203200
+ 410 0017 00       		.align	2
+ 411              	.LC5:
+ 412 0018 74657374 		.ascii	"test 3\000"
+ 412      203300
+ 413 001f 00       		.align	2
+ 414              	.LC6:
+ 415 0020 74657374 		.ascii	"test 4\000"
+ 415      203400
+ 416              		.section	.text.main,"ax",%progbits
+ 417              		.align	1
+ 418              		.global	main
+ 419              		.syntax unified
+ 420              		.thumb
+ 421              		.thumb_func
+ 422              		.fpu fpv4-sp-d16
+ 424              	main:
+ 425              	.LFB132:
+ 103:USER/main.c   **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 11
 
 
- 517 00b2 0194     		str	r4, [sp, #4]
- 518 00b4 1B4B     		ldr	r3, .L33+28
- 519 00b6 0093     		str	r3, [sp]
- 520 00b8 0223     		movs	r3, #2
- 521 00ba 0022     		movs	r2, #0
- 522 00bc 4FF47A61 		mov	r1, #4000
- 523 00c0 1948     		ldr	r0, .L33+32
- 524 00c2 FFF7FEFF 		bl	Task_Create
- 525              	.LVL42:
- 526              		.loc 1 118 16 view .LVU94
- 527 00c6 194B     		ldr	r3, .L33+36
- 528 00c8 1860     		str	r0, [r3]
- 119:USER/main.c   **** 	test3_tsk_hdl = Task_Create("test 3", TASK_EXEC_2KHZ, Group_0, Task_Priority_3, Task_test_3, 200);
- 529              		.loc 1 119 2 is_stmt 1 view .LVU95
- 530              		.loc 1 119 18 is_stmt 0 view .LVU96
- 531 00ca 0194     		str	r4, [sp, #4]
- 532 00cc 184B     		ldr	r3, .L33+40
- 533 00ce 0093     		str	r3, [sp]
- 534 00d0 0323     		movs	r3, #3
- 535 00d2 0022     		movs	r2, #0
- 536 00d4 4FF4FA61 		mov	r1, #2000
- 537 00d8 1648     		ldr	r0, .L33+44
- 538 00da FFF7FEFF 		bl	Task_Create
- 539              	.LVL43:
- 540              		.loc 1 119 16 view .LVU97
- 541 00de 164B     		ldr	r3, .L33+48
- 542 00e0 1860     		str	r0, [r3]
- 120:USER/main.c   **** 	test4_tsk_hdl = Task_Create("test 4", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, Task_Serial_Test, 
- 543              		.loc 1 120 2 is_stmt 1 view .LVU98
- 544              		.loc 1 120 18 is_stmt 0 view .LVU99
- 545 00e2 6423     		movs	r3, #100
- 546 00e4 0193     		str	r3, [sp, #4]
- 547 00e6 154B     		ldr	r3, .L33+52
- 548 00e8 0093     		str	r3, [sp]
- 549 00ea 0423     		movs	r3, #4
- 550 00ec 0022     		movs	r2, #0
- 551 00ee 4FF47A71 		mov	r1, #1000
- 552 00f2 1348     		ldr	r0, .L33+56
- 553 00f4 FFF7FEFF 		bl	Task_Create
- 554              	.LVL44:
- 555              		.loc 1 120 16 view .LVU100
- 556 00f8 124B     		ldr	r3, .L33+60
- 557 00fa 1860     		str	r0, [r3]
+ 104:USER/main.c   **** int main(void)
+ 105:USER/main.c   **** {
+ 426              		.loc 1 105 1 is_stmt 1 view -0
+ 427              		.cfi_startproc
+ 428              		@ args = 0, pretend = 0, frame = 0
+ 429              		@ frame_needed = 0, uses_anonymous_args = 0
+ 430 0000 10B5     		push	{r4, lr}
+ 431              	.LCFI9:
+ 432              		.cfi_def_cfa_offset 8
+ 433              		.cfi_offset 4, -8
+ 434              		.cfi_offset 14, -4
+ 435 0002 82B0     		sub	sp, sp, #8
+ 436              	.LCFI10:
+ 437              		.cfi_def_cfa_offset 16
+ 106:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_0, GPIOB);
+ 438              		.loc 1 106 2 view .LVU76
+ 439 0004 404C     		ldr	r4, .L33
+ 440 0006 2246     		mov	r2, r4
+ 441 0008 0121     		movs	r1, #1
+ 442 000a 0220     		movs	r0, #2
+ 443 000c FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 444              	.LVL26:
+ 107:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_1, GPIOB);
+ 445              		.loc 1 107 2 view .LVU77
+ 446 0010 2246     		mov	r2, r4
+ 447 0012 0221     		movs	r1, #2
+ 448 0014 0846     		mov	r0, r1
+ 449 0016 FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 450              	.LVL27:
+ 108:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_2, GPIOB);
+ 451              		.loc 1 108 2 view .LVU78
+ 452 001a 2246     		mov	r2, r4
+ 453 001c 0421     		movs	r1, #4
+ 454 001e 0220     		movs	r0, #2
+ 455 0020 FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 456              	.LVL28:
+ 109:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_3, GPIOB);
+ 457              		.loc 1 109 2 view .LVU79
+ 458 0024 2246     		mov	r2, r4
+ 459 0026 0821     		movs	r1, #8
+ 460 0028 0220     		movs	r0, #2
+ 461 002a FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 462              	.LVL29:
+ 110:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_4, GPIOB);
+ 463              		.loc 1 110 2 view .LVU80
+ 464 002e 2246     		mov	r2, r4
+ 465 0030 1021     		movs	r1, #16
+ 466 0032 0220     		movs	r0, #2
+ 467 0034 FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 468              	.LVL30:
+ 111:USER/main.c   **** 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_5, GPIOB);
+ 469              		.loc 1 111 2 view .LVU81
+ 470 0038 2246     		mov	r2, r4
+ 471 003a 2021     		movs	r1, #32
+ 472 003c 0220     		movs	r0, #2
+ 473 003e FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 474              	.LVL31:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 12
+
+
+ 112:USER/main.c   **** 
+ 113:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, LO);
+ 475              		.loc 1 113 2 view .LVU82
+ 476 0042 0122     		movs	r2, #1
+ 477 0044 1146     		mov	r1, r2
+ 478 0046 2046     		mov	r0, r4
+ 479 0048 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 480              	.LVL32:
+ 114:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_1, LO);
+ 481              		.loc 1 114 2 view .LVU83
+ 482 004c 0122     		movs	r2, #1
+ 483 004e 0221     		movs	r1, #2
+ 484 0050 2046     		mov	r0, r4
+ 485 0052 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 486              	.LVL33:
+ 115:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_2, LO);
+ 487              		.loc 1 115 2 view .LVU84
+ 488 0056 0122     		movs	r2, #1
+ 489 0058 0421     		movs	r1, #4
+ 490 005a 2046     		mov	r0, r4
+ 491 005c FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 492              	.LVL34:
+ 116:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
+ 493              		.loc 1 116 2 view .LVU85
+ 494 0060 0122     		movs	r2, #1
+ 495 0062 0821     		movs	r1, #8
+ 496 0064 2046     		mov	r0, r4
+ 497 0066 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 498              	.LVL35:
+ 117:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
+ 499              		.loc 1 117 2 view .LVU86
+ 500 006a 0122     		movs	r2, #1
+ 501 006c 1021     		movs	r1, #16
+ 502 006e 2046     		mov	r0, r4
+ 503 0070 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 504              	.LVL36:
+ 118:USER/main.c   **** 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
+ 505              		.loc 1 118 2 view .LVU87
+ 506 0074 0122     		movs	r2, #1
+ 507 0076 2021     		movs	r1, #32
+ 508 0078 2046     		mov	r0, r4
+ 509 007a FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 510              	.LVL37:
+ 119:USER/main.c   **** 
+ 120:USER/main.c   **** 	SystemInit();
+ 511              		.loc 1 120 2 view .LVU88
+ 512 007e FFF7FEFF 		bl	SystemInit
+ 513              	.LVL38:
  121:USER/main.c   **** 
- 122:USER/main.c   **** 	TaskSystem_Start();
- 558              		.loc 1 122 2 is_stmt 1 view .LVU101
- 559 00fc FFF7FEFF 		bl	TaskSystem_Start
- 560              	.LVL45:
- 123:USER/main.c   **** 
- 124:USER/main.c   **** 	return 0;
- 561              		.loc 1 124 2 view .LVU102
- 125:USER/main.c   **** }
- 562              		.loc 1 125 1 is_stmt 0 view .LVU103
- 563 0100 0020     		movs	r0, #0
- 564 0102 02B0     		add	sp, sp, #8
- 565              	.LCFI11:
- 566              		.cfi_def_cfa_offset 8
-ARM GAS  /tmp/ccmXBp3J.s 			page 14
+ 122:USER/main.c   **** 	TaskWidget_Hdl = Task_Create("Widget", TASK_EXEC_100HZ, Group_0, Task_Priority_1, TaskWidget_Core,
+ 514              		.loc 1 122 2 view .LVU89
+ 515              		.loc 1 122 19 is_stmt 0 view .LVU90
+ 516 0082 C824     		movs	r4, #200
+ 517 0084 0194     		str	r4, [sp, #4]
+ 518 0086 214B     		ldr	r3, .L33+4
+ 519 0088 0093     		str	r3, [sp]
+ 520 008a 0123     		movs	r3, #1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 13
 
 
- 567              		@ sp needed
- 568 0104 10BD     		pop	{r4, pc}
- 569              	.L34:
- 570 0106 00BF     		.align	2
- 571              	.L33:
- 572 0108 00040240 		.word	1073873920
- 573 010c 00000000 		.word	TaskWidget_Core
- 574 0110 00000000 		.word	.LC2
- 575 0114 00000000 		.word	TaskWidget_Hdl
- 576 0118 00000000 		.word	Task_test_1
- 577 011c 08000000 		.word	.LC3
- 578 0120 00000000 		.word	test1_tsk_hdl
- 579 0124 00000000 		.word	Task_test_2
- 580 0128 10000000 		.word	.LC4
- 581 012c 00000000 		.word	test2_tsk_hdl
- 582 0130 00000000 		.word	Task_test_3
- 583 0134 18000000 		.word	.LC5
- 584 0138 00000000 		.word	test3_tsk_hdl
- 585 013c 00000000 		.word	Task_Serial_Test
- 586 0140 20000000 		.word	.LC6
- 587 0144 00000000 		.word	test4_tsk_hdl
- 588              		.cfi_endproc
- 589              	.LFE132:
- 591              		.comm	test4_tsk_hdl,4,4
- 592              		.comm	test3_tsk_hdl,4,4
- 593              		.comm	test2_tsk_hdl,4,4
- 594              		.comm	test1_tsk_hdl,4,4
- 595              		.section	.bss.TaskSerial_State.11496,"aw",%nobits
- 596              		.set	.LANCHOR0,. + 0
- 599              	TaskSerial_State.11496:
- 600 0000 00       		.space	1
- 601              		.section	.bss.io_level.11475,"aw",%nobits
- 602              		.set	.LANCHOR1,. + 0
- 605              	io_level.11475:
- 606 0000 00       		.space	1
- 607              		.section	.rodata.Task_Serial_Test.str1.4,"aMS",%progbits,1
- 608              		.align	2
- 609              	.LC0:
- 610 0000 385F4221 		.ascii	"8_B!T0  Test\015\012\000"
- 610      54302020 
- 610      54657374 
- 610      0D0A00
- 611 000f 00       		.space	1
- 612              	.LC1:
- 613 0010 574F4F20 		.ascii	"WOO 8_B!T0  Test again\015\012\000"
- 613      385F4221 
- 613      54302020 
- 613      54657374 
- 613      20616761 
- 614              		.section	.rodata.main.str1.4,"aMS",%progbits,1
- 615              		.align	2
- 616              	.LC2:
- 617 0000 57696467 		.ascii	"Widget\000"
- 617      657400
- 618 0007 00       		.space	1
- 619              	.LC3:
- 620 0008 74657374 		.ascii	"test 1\000"
-ARM GAS  /tmp/ccmXBp3J.s 			page 15
+ 521 008c 0022     		movs	r2, #0
+ 522 008e 6421     		movs	r1, #100
+ 523 0090 1F48     		ldr	r0, .L33+8
+ 524 0092 FFF7FEFF 		bl	Task_Create
+ 525              	.LVL39:
+ 526              		.loc 1 122 17 view .LVU91
+ 527 0096 1F4B     		ldr	r3, .L33+12
+ 528 0098 1860     		str	r0, [r3]
+ 123:USER/main.c   **** 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_1KHZ, Group_0, Task_Priority_0, Task_test_1, 200);
+ 529              		.loc 1 123 2 is_stmt 1 view .LVU92
+ 530              		.loc 1 123 18 is_stmt 0 view .LVU93
+ 531 009a 0194     		str	r4, [sp, #4]
+ 532 009c 1E4B     		ldr	r3, .L33+16
+ 533 009e 0093     		str	r3, [sp]
+ 534 00a0 0023     		movs	r3, #0
+ 535 00a2 1A46     		mov	r2, r3
+ 536 00a4 4FF47A71 		mov	r1, #1000
+ 537 00a8 1C48     		ldr	r0, .L33+20
+ 538 00aa FFF7FEFF 		bl	Task_Create
+ 539              	.LVL40:
+ 540              		.loc 1 123 16 view .LVU94
+ 541 00ae 1C4B     		ldr	r3, .L33+24
+ 542 00b0 1860     		str	r0, [r3]
+ 124:USER/main.c   **** 	test2_tsk_hdl = Task_Create("test 2", TASK_EXEC_4KHZ, Group_0, Task_Priority_2, Task_test_2, 200);
+ 543              		.loc 1 124 2 is_stmt 1 view .LVU95
+ 544              		.loc 1 124 18 is_stmt 0 view .LVU96
+ 545 00b2 0194     		str	r4, [sp, #4]
+ 546 00b4 1B4B     		ldr	r3, .L33+28
+ 547 00b6 0093     		str	r3, [sp]
+ 548 00b8 0223     		movs	r3, #2
+ 549 00ba 0022     		movs	r2, #0
+ 550 00bc 4FF47A61 		mov	r1, #4000
+ 551 00c0 1948     		ldr	r0, .L33+32
+ 552 00c2 FFF7FEFF 		bl	Task_Create
+ 553              	.LVL41:
+ 554              		.loc 1 124 16 view .LVU97
+ 555 00c6 194B     		ldr	r3, .L33+36
+ 556 00c8 1860     		str	r0, [r3]
+ 125:USER/main.c   **** 	test3_tsk_hdl = Task_Create("test 3", TASK_EXEC_2KHZ, Group_0, Task_Priority_3, Task_test_3, 200);
+ 557              		.loc 1 125 2 is_stmt 1 view .LVU98
+ 558              		.loc 1 125 18 is_stmt 0 view .LVU99
+ 559 00ca 0194     		str	r4, [sp, #4]
+ 560 00cc 184B     		ldr	r3, .L33+40
+ 561 00ce 0093     		str	r3, [sp]
+ 562 00d0 0323     		movs	r3, #3
+ 563 00d2 0022     		movs	r2, #0
+ 564 00d4 4FF4FA61 		mov	r1, #2000
+ 565 00d8 1648     		ldr	r0, .L33+44
+ 566 00da FFF7FEFF 		bl	Task_Create
+ 567              	.LVL42:
+ 568              		.loc 1 125 16 view .LVU100
+ 569 00de 164B     		ldr	r3, .L33+48
+ 570 00e0 1860     		str	r0, [r3]
+ 126:USER/main.c   **** 	test4_tsk_hdl = Task_Create("test 4", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, Task_Serial_Test, 
+ 571              		.loc 1 126 2 is_stmt 1 view .LVU101
+ 572              		.loc 1 126 18 is_stmt 0 view .LVU102
+ 573 00e2 6423     		movs	r3, #100
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 14
 
 
- 620      203100
- 621 000f 00       		.space	1
- 622              	.LC4:
- 623 0010 74657374 		.ascii	"test 2\000"
- 623      203200
- 624 0017 00       		.space	1
- 625              	.LC5:
- 626 0018 74657374 		.ascii	"test 3\000"
- 626      203300
- 627 001f 00       		.space	1
- 628              	.LC6:
- 629 0020 74657374 		.ascii	"test 4\000"
- 629      203400
- 630              		.text
- 631              	.Letext0:
- 632              		.file 2 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 633              		.file 3 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 634              		.file 4 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 635              		.file 5 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 636              		.file 6 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 637              		.file 7 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
- 638              		.file 8 "F4_CORE/core_cm4.h"
- 639              		.file 9 "USER/system_stm32f4xx.h"
- 640              		.file 10 "USER/stm32f4xx.h"
- 641              		.file 11 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8
- 642              		.file 12 "Bsp/periph_serial.h"
- 643              		.file 13 "Bsp/periph_gpio.h"
- 644              		.file 14 "Drv/drv_serial.h"
- 645              		.file 15 "SYS/task_manager/task_manager.h"
- 646              		.file 16 "App/Task_Display/Task_Widget.h"
-ARM GAS  /tmp/ccmXBp3J.s 			page 16
+ 574 00e4 0193     		str	r3, [sp, #4]
+ 575 00e6 154B     		ldr	r3, .L33+52
+ 576 00e8 0093     		str	r3, [sp]
+ 577 00ea 0423     		movs	r3, #4
+ 578 00ec 0022     		movs	r2, #0
+ 579 00ee 4FF47A71 		mov	r1, #1000
+ 580 00f2 1348     		ldr	r0, .L33+56
+ 581 00f4 FFF7FEFF 		bl	Task_Create
+ 582              	.LVL43:
+ 583              		.loc 1 126 16 view .LVU103
+ 584 00f8 124B     		ldr	r3, .L33+60
+ 585 00fa 1860     		str	r0, [r3]
+ 127:USER/main.c   **** 
+ 128:USER/main.c   **** 	TaskSystem_Start();
+ 586              		.loc 1 128 2 is_stmt 1 view .LVU104
+ 587 00fc FFF7FEFF 		bl	TaskSystem_Start
+ 588              	.LVL44:
+ 129:USER/main.c   **** 
+ 130:USER/main.c   **** 	return 0;
+ 589              		.loc 1 130 2 view .LVU105
+ 131:USER/main.c   **** }
+ 590              		.loc 1 131 1 is_stmt 0 view .LVU106
+ 591 0100 0020     		movs	r0, #0
+ 592 0102 02B0     		add	sp, sp, #8
+ 593              	.LCFI11:
+ 594              		.cfi_def_cfa_offset 8
+ 595              		@ sp needed
+ 596 0104 10BD     		pop	{r4, pc}
+ 597              	.L34:
+ 598 0106 00BF     		.align	2
+ 599              	.L33:
+ 600 0108 00040240 		.word	1073873920
+ 601 010c 00000000 		.word	TaskWidget_Core
+ 602 0110 00000000 		.word	.LC2
+ 603 0114 00000000 		.word	TaskWidget_Hdl
+ 604 0118 00000000 		.word	Task_test_1
+ 605 011c 08000000 		.word	.LC3
+ 606 0120 00000000 		.word	.LANCHOR2
+ 607 0124 00000000 		.word	Task_test_2
+ 608 0128 10000000 		.word	.LC4
+ 609 012c 00000000 		.word	.LANCHOR3
+ 610 0130 00000000 		.word	Task_test_3
+ 611 0134 18000000 		.word	.LC5
+ 612 0138 00000000 		.word	.LANCHOR4
+ 613 013c 00000000 		.word	Task_Serial_Test
+ 614 0140 20000000 		.word	.LC6
+ 615 0144 00000000 		.word	.LANCHOR5
+ 616              		.cfi_endproc
+ 617              	.LFE132:
+ 619              		.global	test4_tsk_hdl
+ 620              		.global	test3_tsk_hdl
+ 621              		.global	test2_tsk_hdl
+ 622              		.global	test1_tsk_hdl
+ 623              		.section	.bss.TaskSerial_State.0,"aw",%nobits
+ 624              		.set	.LANCHOR0,. + 0
+ 627              	TaskSerial_State.0:
+ 628 0000 00       		.space	1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 15
+
+
+ 629              		.section	.bss.io_level.1,"aw",%nobits
+ 630              		.set	.LANCHOR1,. + 0
+ 633              	io_level.1:
+ 634 0000 00       		.space	1
+ 635              		.section	.bss.test1_tsk_hdl,"aw",%nobits
+ 636              		.align	2
+ 637              		.set	.LANCHOR2,. + 0
+ 640              	test1_tsk_hdl:
+ 641 0000 00000000 		.space	4
+ 642              		.section	.bss.test2_tsk_hdl,"aw",%nobits
+ 643              		.align	2
+ 644              		.set	.LANCHOR3,. + 0
+ 647              	test2_tsk_hdl:
+ 648 0000 00000000 		.space	4
+ 649              		.section	.bss.test3_tsk_hdl,"aw",%nobits
+ 650              		.align	2
+ 651              		.set	.LANCHOR4,. + 0
+ 654              	test3_tsk_hdl:
+ 655 0000 00000000 		.space	4
+ 656              		.section	.bss.test4_tsk_hdl,"aw",%nobits
+ 657              		.align	2
+ 658              		.set	.LANCHOR5,. + 0
+ 661              	test4_tsk_hdl:
+ 662 0000 00000000 		.space	4
+ 663              		.text
+ 664              	.Letext0:
+ 665              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 666              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 667              		.file 4 "USER/stm32f4xx.h"
+ 668              		.file 5 "Bsp/periph_serial.h"
+ 669              		.file 6 "Bsp/periph_gpio.h"
+ 670              		.file 7 "Drv/drv_serial.h"
+ 671              		.file 8 "SYS/task_manager/task_manager.h"
+ 672              		.file 9 "App/Task_Display/Task_Widget.h"
+ 673              		.file 10 "USER/system_stm32f4xx.h"
+ 674              		.file 11 "SYS/memng/mmu.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s 			page 16
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccmXBp3J.s:18     .text.Task_Serial_Test:0000000000000000 $t
-     /tmp/ccmXBp3J.s:26     .text.Task_Serial_Test:0000000000000000 Task_Serial_Test
-     /tmp/ccmXBp3J.s:144    .text.Task_Serial_Test:0000000000000068 $d
-     /tmp/ccmXBp3J.s:152    .text.Task_test_1:0000000000000000 $t
-     /tmp/ccmXBp3J.s:159    .text.Task_test_1:0000000000000000 Task_test_1
-     /tmp/ccmXBp3J.s:192    .text.Task_test_1:000000000000001c $d
-     /tmp/ccmXBp3J.s:197    .text.Task_test_2:0000000000000000 $t
-     /tmp/ccmXBp3J.s:204    .text.Task_test_2:0000000000000000 Task_test_2
-     /tmp/ccmXBp3J.s:237    .text.Task_test_2:000000000000001c $d
-     /tmp/ccmXBp3J.s:242    .text.Task_test_3:0000000000000000 $t
-     /tmp/ccmXBp3J.s:249    .text.Task_test_3:0000000000000000 Task_test_3
-     /tmp/ccmXBp3J.s:282    .text.Task_test_3:000000000000001c $d
-     /tmp/ccmXBp3J.s:287    .text.Gpio_Flip:0000000000000000 $t
-     /tmp/ccmXBp3J.s:294    .text.Gpio_Flip:0000000000000000 Gpio_Flip
-     /tmp/ccmXBp3J.s:338    .text.Gpio_Flip:000000000000002c $d
-     /tmp/ccmXBp3J.s:344    .text.Task_test_4:0000000000000000 $t
-     /tmp/ccmXBp3J.s:351    .text.Task_test_4:0000000000000000 Task_test_4
-     /tmp/ccmXBp3J.s:384    .text.Task_test_4:000000000000001c $d
-     /tmp/ccmXBp3J.s:389    .text.main:0000000000000000 $t
-     /tmp/ccmXBp3J.s:396    .text.main:0000000000000000 main
-     /tmp/ccmXBp3J.s:572    .text.main:0000000000000108 $d
-                            *COM*:0000000000000004 test1_tsk_hdl
-                            *COM*:0000000000000004 test2_tsk_hdl
-                            *COM*:0000000000000004 test3_tsk_hdl
-                            *COM*:0000000000000004 test4_tsk_hdl
-     /tmp/ccmXBp3J.s:599    .bss.TaskSerial_State.11496:0000000000000000 TaskSerial_State.11496
-     /tmp/ccmXBp3J.s:600    .bss.TaskSerial_State.11496:0000000000000000 $d
-     /tmp/ccmXBp3J.s:605    .bss.io_level.11475:0000000000000000 io_level.11475
-     /tmp/ccmXBp3J.s:606    .bss.io_level.11475:0000000000000000 $d
-     /tmp/ccmXBp3J.s:608    .rodata.Task_Serial_Test.str1.4:0000000000000000 $d
-     /tmp/ccmXBp3J.s:615    .rodata.main.str1.4:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:18     .text.Task_test_1:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:26     .text.Task_test_1:0000000000000000 Task_test_1
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:60     .text.Task_test_1:000000000000001c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:65     .text.Task_test_2:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:72     .text.Task_test_2:0000000000000000 Task_test_2
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:105    .text.Task_test_2:000000000000001c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:110    .text.Task_test_3:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:117    .text.Task_test_3:0000000000000000 Task_test_3
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:150    .text.Task_test_3:000000000000001c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:155    .rodata.Task_Serial_Test.str1.4:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:162    .text.Task_Serial_Test:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:169    .text.Task_Serial_Test:0000000000000000 Task_Serial_Test
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:291    .text.Task_Serial_Test:0000000000000070 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:299    .text.Gpio_Flip:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:306    .text.Gpio_Flip:0000000000000000 Gpio_Flip
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:350    .text.Gpio_Flip:000000000000002c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:356    .text.Task_test_4:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:363    .text.Task_test_4:0000000000000000 Task_test_4
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:396    .text.Task_test_4:000000000000001c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:401    .rodata.main.str1.4:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:417    .text.main:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:424    .text.main:0000000000000000 main
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:600    .text.main:0000000000000108 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:661    .bss.test4_tsk_hdl:0000000000000000 test4_tsk_hdl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:654    .bss.test3_tsk_hdl:0000000000000000 test3_tsk_hdl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:647    .bss.test2_tsk_hdl:0000000000000000 test2_tsk_hdl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:640    .bss.test1_tsk_hdl:0000000000000000 test1_tsk_hdl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:627    .bss.TaskSerial_State.0:0000000000000000 TaskSerial_State.0
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:628    .bss.TaskSerial_State.0:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:633    .bss.io_level.1:0000000000000000 io_level.1
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:634    .bss.io_level.1:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:636    .bss.test1_tsk_hdl:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:643    .bss.test2_tsk_hdl:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:650    .bss.test3_tsk_hdl:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccJPXjQp.s:657    .bss.test4_tsk_hdl:0000000000000000 $d
 
 UNDEFINED SYMBOLS
-DrvSerial
 GPIO_Set_IO_LEVEL
+MMU_Malloc
+MMU_Free
+DrvSerial
 GPIO_IO_Output_Init
 SystemInit
 Task_Create

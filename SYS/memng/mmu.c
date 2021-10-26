@@ -149,6 +149,8 @@ void MMU_Free(void *ptr)
             __asm("cpsie i");
         }
     }
+
+    ptr = NULL;
 }
 
 static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
