@@ -18,6 +18,14 @@ static void MMU_Init(void);
 
 Mem_Monitor_TypeDef MMU_Get_Monitor(void)
 {
+    MemBlock_TypeDef *pxIterator;
+
+    /* comput freeblock number */
+    for (pxIterator = &MemStart; pxIterator->nxtFree != MemEnd; pxIterator = pxIterator->nxtFree)
+    {
+        Mem_Monitor.FreeBlock_Num++;
+    }
+
     return Mem_Monitor;
 }
 
@@ -27,6 +35,7 @@ static void MMU_Init(void)
 
     Mem_Monitor.phy_size = PHY_MEM_SIZE;
     Mem_Monitor.used_size = 0;
+    Mem_Monitor.FreeBlock_Num = 1;
 
     for (uint32_t i = 0; i < PHY_MEM_SIZE; i++)
     {
