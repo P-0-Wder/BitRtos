@@ -1,3 +1,7 @@
+/*
+* copy from freeRTOS
+* coder : 8_B!T0
+*/
 #include "mmu.h"
 
 #pragma pack(BLOCK_ALIGMENT_SIZE)
@@ -11,6 +15,11 @@ MemBlock_TypeDef *MemEnd;
 
 static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert);
 static void MMU_Init(void);
+
+Mem_Monitor_TypeDef MMU_Get_Monitor(void)
+{
+    return Mem_Monitor;
+}
 
 static void MMU_Init(void)
 {
@@ -96,6 +105,8 @@ void *MMU_Malloc(uint16_t size)
     }
 
     __asm("cpsie i");
+
+    Mem_Monitor.FreeBlock = &MemStart;
 
     return mem_addr;
 }

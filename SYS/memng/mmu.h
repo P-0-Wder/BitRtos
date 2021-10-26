@@ -22,16 +22,6 @@ typedef enum
     MemReq_Task = 0,
 } Mem_ReqType_List;
 
-typedef struct
-{
-    MemSize_t phy_size;
-    MemSize_t used_size;
-    MemSize_t remain_size;
-    MemSize_t total_size;
-
-    bool init;
-} Mem_Monitor_TypeDef;
-
 /* memory block structure  */
 typedef struct _MemBlock_TypeDef
 {
@@ -41,6 +31,18 @@ typedef struct _MemBlock_TypeDef
     /* request size */
     uint16_t size;
 } MemBlock_TypeDef;
+
+typedef struct
+{
+    MemSize_t phy_size;
+    MemSize_t used_size;
+    MemSize_t remain_size;
+    MemSize_t total_size;
+
+    MemBlock_TypeDef *FreeBlock;
+
+    bool init;
+} Mem_Monitor_TypeDef;
 
 void *MMU_Malloc(uint16_t size);
 void MMU_Free(void *ptr);
