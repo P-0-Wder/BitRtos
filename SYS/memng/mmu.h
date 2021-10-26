@@ -40,6 +40,7 @@ typedef struct
     MemSize_t total_size;
 
     MemBlock_TypeDef *FreeBlock;
+    uint16_t FreeBlock_Num;
 
     bool init;
 } Mem_Monitor_TypeDef;
