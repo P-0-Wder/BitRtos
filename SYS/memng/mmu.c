@@ -51,15 +51,17 @@ void *MMU_Malloc(uint16_t size)
     MemBlock_TypeDef *Block_Tmp = NULL;
     void *mem_addr = NULL;
 
+    __asm("cpsid i");
+
     if (!Mem_Monitor.init)
     {
         MMU_Init();
     }
 
-    __asm("cpsid i");
-
-    if (size <= Mem_Monitor.remain_size)
+    if (size + sizeof(MemBlock_TypeDef) <= Mem_Monitor.remain_size)
     {
+        size += sizeof(MemBlock_TypeDef);
+
         /* aligment request byte number */
         size += (size % BLOCK_ALIGMENT_SIZE);
 
@@ -77,11 +79,11 @@ void *MMU_Malloc(uint16_t size)
 
             PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
 
-            if ((Block_Tmp->size - size) >= MINIMUM_BLOCK_SIZE)
+            if ((Block_Tmp->size - size) > MINIMUM_BLOCK_SIZE)
             {
                 NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
-                NxtFreeBlock->nxtFree = Block_Tmp->nxtFree;
                 NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
+                Block_Tmp->size = size;
             }
 
             Mem_Monitor.remain_size -= size;
@@ -89,7 +91,7 @@ void *MMU_Malloc(uint16_t size)
 
             MMU_InsertFreeBlock(NxtFreeBlock);
 
-            Block_Tmp->size = size;
+            Block_Tmp->nxtFree = NULL;
         }
     }
 
@@ -134,12 +136,15 @@ static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
     MemBlock_TypeDef *pxIterator;
     uint8_t *puc;
 
-    for (pxIterator = &MemStart; pxIterator->nxtFree < (void *)pxBlockToInsert; pxIterator = pxIterator->nxtFree)
+    /* Iterate through the list until a block is found that has a higher address
+     * than the block being inserted. */
+    for (pxIterator = &MemStart; pxIterator->nxtFree < pxBlockToInsert; pxIterator = pxIterator->nxtFree)
     {
         /* Nothing to do here, just iterate to the right position. */
     }
 
     puc = (uint8_t *)pxIterator;
+
     if ((puc + pxIterator->size) == (uint8_t *)pxBlockToInsert)
     {
         pxIterator->size += pxBlockToInsert->size;
@@ -149,13 +154,14 @@ static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
     /* Do the block being inserted, and the block it is being inserted before
 	make a contiguous block of memory? */
     puc = (uint8_t *)pxBlockToInsert;
+
     if ((puc + pxBlockToInsert->size) == (uint8_t *)pxIterator->nxtFree)
     {
         if (pxIterator->nxtFree != MemEnd)
         {
             /* Form one big block from the two blocks. */
-            pxBlockToInsert->size += ((MemBlock_TypeDef *)pxIterator->nxtFree)->size;
-            pxBlockToInsert->nxtFree = ((MemBlock_TypeDef *)pxIterator->nxtFree)->nxtFree;
+            pxBlockToInsert->size += pxIterator->nxtFree->size;
+            pxBlockToInsert->nxtFree = pxIterator->nxtFree->nxtFree;
         }
         else
         {

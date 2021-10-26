@@ -33,10 +33,10 @@ typedef struct
 } Mem_Monitor_TypeDef;
 
 /* memory block structure  */
-typedef struct
+typedef struct _MemBlock_TypeDef
 {
     /* pointer to next free memory block */
-    void *nxtFree;
+    struct _MemBlock_TypeDef *nxtFree;
 
     /* request size */
     uint16_t size;
