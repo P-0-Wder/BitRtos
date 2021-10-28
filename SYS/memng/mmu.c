@@ -9,9 +9,9 @@ uint8_t Mem_Buff[PHY_MEM_SIZE] __attribute__((section(".ccmram")));
 #pragma pack()
 
 Mem_Monitor_TypeDef Mem_Monitor;
-
 MemBlock_TypeDef MemStart;
 MemBlock_TypeDef *MemEnd;
+uint8_t trace;
 
 static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert);
 static void MMU_Init(void);
@@ -69,6 +69,8 @@ void *MMU_Malloc(uint16_t size)
     MemBlock_TypeDef *Block_Tmp = NULL;
     void *mem_addr = NULL;
 
+    trace = 1;
+
     __asm("cpsid i");
 
     if (!Mem_Monitor.init)
@@ -91,6 +93,12 @@ void *MMU_Malloc(uint16_t size)
             Block_Tmp = Block_Tmp->nxtFree;
         }
 
+        if (((uint32_t)Block_Tmp & 0xF0000000) != (uint32_t)Mem_Buff)
+        {
+            while (1)
+                ;
+        }
+
         if (Block_Tmp != MemEnd)
         {
             Mem_Monitor.req_t++;
@@ -99,25 +107,26 @@ void *MMU_Malloc(uint16_t size)
 
             if (((uint32_t)mem_addr & 0xF0000000) != (uint32_t)Mem_Buff)
             {
-                while (1)
-                    ;
+                mem_addr = NULL;
             }
-
-            PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
-
-            if ((Block_Tmp->size - size) > MINIMUM_BLOCK_SIZE)
+            else
             {
-                NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
-                NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
-                Block_Tmp->size = size;
+                PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
+
+                if ((Block_Tmp->size - size) > MINIMUM_BLOCK_SIZE)
+                {
+                    NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
+                    NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
+                    Block_Tmp->size = size;
+                }
+
+                Mem_Monitor.remain_size -= size;
+                Mem_Monitor.used_size += size;
+
+                MMU_InsertFreeBlock(NxtFreeBlock);
+
+                Block_Tmp->nxtFree = NULL;
             }
-
-            Mem_Monitor.remain_size -= size;
-            Mem_Monitor.used_size += size;
-
-            MMU_InsertFreeBlock(NxtFreeBlock);
-
-            Block_Tmp->nxtFree = NULL;
         }
     }
 
@@ -133,12 +142,14 @@ void MMU_Free(void *ptr)
     uint8_t *puc = (uint8_t *)ptr;
     MemBlock_TypeDef *pxLink;
 
+    trace = 2;
+
     if (((uint32_t)ptr & 0xF0000000) != (uint32_t)Mem_Buff)
     {
         while (1)
             ;
     }
-
+    __asm("cpsid i");
     if (ptr != NULL)
     {
         Mem_Monitor.fre_t++;
@@ -154,24 +165,21 @@ void MMU_Free(void *ptr)
         {
             //pxLink->size &= ~xBlockAllocatedBit;
 
-            __asm("cpsid i");
+            /* Add this block to the list of free blocks. */
+            Mem_Monitor.used_size -= pxLink->size;
+            Mem_Monitor.remain_size += pxLink->size;
+
+            if (Mem_Monitor.remain_size > Mem_Monitor.total_size)
             {
-                /* Add this block to the list of free blocks. */
-                Mem_Monitor.used_size -= pxLink->size;
-                Mem_Monitor.remain_size += pxLink->size;
-
-                if (Mem_Monitor.remain_size > Mem_Monitor.total_size)
-                {
-                    while (1)
-                        ;
-                }
-
-                //traceFREE(pv, pxLink->size);
-                MMU_InsertFreeBlock(((MemBlock_TypeDef *)pxLink));
+                while (1)
+                    ;
             }
-            __asm("cpsie i");
+
+            //traceFREE(pv, pxLink->size);
+            MMU_InsertFreeBlock(((MemBlock_TypeDef *)pxLink));
         }
     }
+    __asm("cpsie i");
 
     ptr = NULL;
 }
@@ -180,9 +188,6 @@ static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
 {
     MemBlock_TypeDef *pxIterator;
     uint8_t *puc;
-    static uint32_t free_t = 0;
-
-    free_t++;
 
     /* Iterate through the list until a block is found that has a higher address
      * than the block being inserted. */
