@@ -76,10 +76,10 @@ void *MMU_Malloc(uint16_t size)
         MMU_Init();
     }
 
-    if (size + sizeof(MemBlock_TypeDef) <= Mem_Monitor.remain_size)
-    {
-        size += sizeof(MemBlock_TypeDef);
+    size += sizeof(MemBlock_TypeDef);
 
+    if (size <= Mem_Monitor.remain_size)
+    {
         /* aligment request byte number */
         size += (size % BLOCK_ALIGMENT_SIZE);
 
@@ -93,7 +93,15 @@ void *MMU_Malloc(uint16_t size)
 
         if (Block_Tmp != MemEnd)
         {
+            Mem_Monitor.req_t++;
+
             mem_addr = (void *)(((uint8_t *)Block_Tmp) + sizeof(MemBlock_TypeDef));
+
+            if (((uint32_t)mem_addr & 0xF0000000) != (uint32_t)Mem_Buff)
+            {
+                while (1)
+                    ;
+            }
 
             PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
 
@@ -125,8 +133,16 @@ void MMU_Free(void *ptr)
     uint8_t *puc = (uint8_t *)ptr;
     MemBlock_TypeDef *pxLink;
 
+    if (((uint32_t)ptr & 0xF0000000) != (uint32_t)Mem_Buff)
+    {
+        while (1)
+            ;
+    }
+
     if (ptr != NULL)
     {
+        Mem_Monitor.fre_t++;
+
         /* The memory being freed will have an BlockLink_t structure immediately
 		before it. */
         puc -= sizeof(MemBlock_TypeDef);
@@ -141,7 +157,14 @@ void MMU_Free(void *ptr)
             __asm("cpsid i");
             {
                 /* Add this block to the list of free blocks. */
+                Mem_Monitor.used_size -= pxLink->size;
                 Mem_Monitor.remain_size += pxLink->size;
+
+                if (Mem_Monitor.remain_size > Mem_Monitor.total_size)
+                {
+                    while (1)
+                        ;
+                }
 
                 //traceFREE(pv, pxLink->size);
                 MMU_InsertFreeBlock(((MemBlock_TypeDef *)pxLink));
@@ -157,6 +180,9 @@ static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
 {
     MemBlock_TypeDef *pxIterator;
     uint8_t *puc;
+    static uint32_t free_t = 0;
+
+    free_t++;
 
     /* Iterate through the list until a block is found that has a higher address
      * than the block being inserted. */
@@ -166,6 +192,12 @@ static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
     }
 
     puc = (uint8_t *)pxIterator;
+
+    if ((puc != (uint8_t *)&MemStart) && ((uint32_t)puc & 0xF0000000) != (uint32_t)Mem_Buff)
+    {
+        while (1)
+            ;
+    }
 
     if ((puc + pxIterator->size) == (uint8_t *)pxBlockToInsert)
     {

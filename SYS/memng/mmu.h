@@ -42,6 +42,9 @@ typedef struct
     MemBlock_TypeDef *FreeBlock;
     uint16_t FreeBlock_Num;
 
+    uint32_t req_t;
+    uint32_t fre_t;
+
     bool init;
 } Mem_Monitor_TypeDef;
 

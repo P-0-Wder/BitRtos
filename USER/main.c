@@ -67,8 +67,10 @@ void Task_Serial_Test(Task_Handler self)
 
 	volatile uint8_t *test = NULL;
 
-	test = (uint8_t *)MMU_Malloc(100);
-	MMU_Free(test);
+	test = (uint8_t *)MMU_Malloc(500);
+
+	if (test != NULL)
+		MMU_Free(test);
 
 	switch ((uint8_t)TaskSerial_State)
 	{
