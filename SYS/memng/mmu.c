@@ -116,8 +116,10 @@ void *MMU_Malloc(uint16_t size)
             Mem_Monitor.remain_size -= size;
             Mem_Monitor.used_size += size;
 
+            /* bug  here? */
             MMU_InsertFreeBlock(NxtFreeBlock);
 
+            /* maybe create bug here */
             Block_Tmp->nxtFree = NULL;
         }
     }
