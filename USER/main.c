@@ -69,6 +69,10 @@ void Task_Serial_Test(Task_Handler self)
 
 	test = (uint8_t *)MMU_Malloc(500);
 
+	if ((test != NULL) && ((uint32_t)test & 0xF0000000 != 0x10000000))
+		while (1)
+			;
+
 	if (test != NULL)
 		MMU_Free(test);
 

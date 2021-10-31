@@ -103,36 +103,27 @@ void *MMU_Malloc(uint16_t size)
             }
         }
 
-        if (Block_Tmp != MemEnd)
+        if ((((uint32_t)Block_Tmp & 0xF0000000) == (uint32_t)Mem_Buff) && (Block_Tmp != MemEnd))
         {
             Mem_Monitor.req_t++;
 
             mem_addr = (void *)(((uint8_t *)Block_Tmp) + sizeof(MemBlock_TypeDef));
 
-            if (((uint32_t)mem_addr & 0xF0000000) != (uint32_t)Mem_Buff)
+            PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
+
+            if ((Block_Tmp->size - size) > MINIMUM_BLOCK_SIZE)
             {
-                while (1)
-                    ;
-                mem_addr = NULL;
+                NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
+                NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
+                Block_Tmp->size = size;
             }
-            else
-            {
-                PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
 
-                if ((Block_Tmp->size - size) > MINIMUM_BLOCK_SIZE)
-                {
-                    NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
-                    NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
-                    Block_Tmp->size = size;
-                }
+            Mem_Monitor.remain_size -= size;
+            Mem_Monitor.used_size += size;
 
-                Mem_Monitor.remain_size -= size;
-                Mem_Monitor.used_size += size;
+            MMU_InsertFreeBlock(NxtFreeBlock);
 
-                MMU_InsertFreeBlock(NxtFreeBlock);
-
-                Block_Tmp->nxtFree = NULL;
-            }
+            Block_Tmp->nxtFree = NULL;
         }
     }
 
