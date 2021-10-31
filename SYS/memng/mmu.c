@@ -80,7 +80,7 @@ void *MMU_Malloc(uint16_t size)
 
     size += sizeof(MemBlock_TypeDef);
 
-    if (size <= Mem_Monitor.remain_size)
+    if (size < Mem_Monitor.remain_size)
     {
         /* aligment request byte number */
         size += (size % BLOCK_ALIGMENT_SIZE);
@@ -95,11 +95,6 @@ void *MMU_Malloc(uint16_t size)
             if (((uint32_t)Block_Tmp->nxtFree & 0xF0000000) == (uint32_t)Mem_Buff)
             {
                 Block_Tmp = Block_Tmp->nxtFree;
-            }
-            else
-            {
-                while (1)
-                    ;
             }
         }
 
