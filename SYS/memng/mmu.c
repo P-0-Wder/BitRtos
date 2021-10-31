@@ -87,16 +87,20 @@ void *MMU_Malloc(uint16_t size)
 
         PrvFreeBlock = &MemStart;
         Block_Tmp = MemStart.nxtFree;
+
         while ((Block_Tmp->size < size) && (Block_Tmp->nxtFree != NULL))
         {
             PrvFreeBlock = Block_Tmp;
-            Block_Tmp = Block_Tmp->nxtFree;
-        }
 
-        if (((uint32_t)Block_Tmp & 0xF0000000) != (uint32_t)Mem_Buff)
-        {
-            while (1)
-                ;
+            if (((uint32_t)Block_Tmp->nxtFree & 0xF0000000) == (uint32_t)Mem_Buff)
+            {
+                Block_Tmp = Block_Tmp->nxtFree;
+            }
+            else
+            {
+                while (1)
+                    ;
+            }
         }
 
         if (Block_Tmp != MemEnd)
@@ -107,6 +111,8 @@ void *MMU_Malloc(uint16_t size)
 
             if (((uint32_t)mem_addr & 0xF0000000) != (uint32_t)Mem_Buff)
             {
+                while (1)
+                    ;
                 mem_addr = NULL;
             }
             else
@@ -195,6 +201,9 @@ static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
     {
         /* Nothing to do here, just iterate to the right position. */
     }
+
+    if (pxIterator == NULL)
+        return;
 
     puc = (uint8_t *)pxIterator;
 
