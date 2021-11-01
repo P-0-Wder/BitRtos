@@ -116,12 +116,12 @@ void *MMU_Malloc(uint16_t size)
                 NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
                 NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
                 Block_Tmp->size = size;
+
+                MMU_InsertFreeBlock(NxtFreeBlock);
             }
 
             Mem_Monitor.remain_size -= size;
             Mem_Monitor.used_size += size;
-
-            MMU_InsertFreeBlock(NxtFreeBlock);
 
             Block_Tmp->nxtFree = NULL;
         }
