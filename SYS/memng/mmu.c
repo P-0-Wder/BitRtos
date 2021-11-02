@@ -68,6 +68,8 @@ void *MMU_Malloc(uint16_t size)
     MemBlock_TypeDef *Block_Tmp = NULL;
     void *mem_addr = NULL;
 
+    volatile uint16_t test;
+
     __asm("cpsid i");
 
     if (!Mem_Monitor.init)
@@ -76,12 +78,17 @@ void *MMU_Malloc(uint16_t size)
         Mem_Monitor.FreeBlock = &MemStart;
     }
 
-    if (size < Mem_Monitor.remain_size)
-    {
-        size += sizeof(MemBlock_TypeDef);
+    size += sizeof(MemBlock_TypeDef);
 
-        /* aligment request byte number */
-        size += (size % BLOCK_ALIGMENT_SIZE);
+    /* aligment request byte number */
+    if ((size & BLOCK_ALIGMENT_MASK) != 0x00)
+    {
+        /* Byte alignment required. */
+        size += (BLOCK_ALIGMENT_SIZE - (size & BLOCK_ALIGMENT_MASK));
+    }
+
+    if (size <= Mem_Monitor.remain_size)
+    {
 
         PrvFreeBlock = &MemStart;
         Block_Tmp = MemStart.nxtFree;
@@ -89,18 +96,14 @@ void *MMU_Malloc(uint16_t size)
         while ((Block_Tmp->size < size) && (Block_Tmp->nxtFree != NULL))
         {
             PrvFreeBlock = Block_Tmp;
-
-            if (((uint32_t)Block_Tmp->nxtFree & 0xF0000000) == (uint32_t)Mem_Buff)
-            {
-                Block_Tmp = Block_Tmp->nxtFree;
-            }
+            Block_Tmp = Block_Tmp->nxtFree;
         }
 
         if ((((uint32_t)Block_Tmp & 0xF0000000) == (uint32_t)Mem_Buff) && (Block_Tmp != MemEnd))
         {
             Mem_Monitor.req_t++;
 
-            mem_addr = (void *)(((uint8_t *)Block_Tmp) + sizeof(MemBlock_TypeDef));
+            mem_addr = (void *)(((uint8_t *)PrvFreeBlock->nxtFree) + sizeof(MemBlock_TypeDef));
 
             PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
 
@@ -115,6 +118,8 @@ void *MMU_Malloc(uint16_t size)
 
             Mem_Monitor.remain_size -= size;
             Mem_Monitor.used_size += size;
+
+            test = size;
 
             Block_Tmp->nxtFree = NULL;
         }
@@ -146,7 +151,7 @@ void MMU_Free(void *ptr)
             __asm("cpsid i");
 
             /* Add this block to the list of free blocks. */
-            Mem_Monitor.used_size -= pxLink->size;
+            Mem_Monitor.used_size -= pxLink->size + sizeof(MemBlock_TypeDef);
             Mem_Monitor.remain_size += pxLink->size;
 
             //traceFREE(pv, pxLink->size);

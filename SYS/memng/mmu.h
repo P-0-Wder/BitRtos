@@ -8,19 +8,13 @@
 #include <stdio.h>
 
 #define BLOCK_ALIGMENT_SIZE 4
+#define BLOCK_ALIGMENT_MASK BLOCK_ALIGMENT_SIZE - 1
 #define PHY_MEM_SIZE 64 * 1024
 
 #define MINIMUM_BLOCK_SIZE BLOCK_ALIGMENT_SIZE * 2
 
 typedef uint32_t MemSize_t;
 typedef uint32_t MemBlock_Addr;
-
-/* memory request type */
-typedef enum
-{
-    MemReq_OS = BLOCK_ALIGMENT_SIZE - 1,
-    MemReq_Task = 0,
-} Mem_ReqType_List;
 
 /* memory block structure  */
 typedef struct _MemBlock_TypeDef
