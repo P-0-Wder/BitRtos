@@ -68,8 +68,6 @@ void *MMU_Malloc(uint16_t size)
     MemBlock_TypeDef *Block_Tmp = NULL;
     void *mem_addr = NULL;
 
-    volatile uint16_t test;
-
     __asm("cpsid i");
 
     if (!Mem_Monitor.init)
@@ -119,8 +117,6 @@ void *MMU_Malloc(uint16_t size)
             Mem_Monitor.remain_size -= size;
             Mem_Monitor.used_size += size;
 
-            test = size;
-
             Block_Tmp->nxtFree = NULL;
         }
     }
@@ -151,7 +147,7 @@ void MMU_Free(void *ptr)
             __asm("cpsid i");
 
             /* Add this block to the list of free blocks. */
-            Mem_Monitor.used_size -= pxLink->size + sizeof(MemBlock_TypeDef);
+            Mem_Monitor.used_size -= pxLink->size;
             Mem_Monitor.remain_size += pxLink->size;
 
             //traceFREE(pv, pxLink->size);
