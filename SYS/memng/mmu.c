@@ -1,5 +1,6 @@
 /*
 * copy from freeRTOS
+* heap_4
 * coder : 8_B!T0
 */
 #include "mmu.h"
@@ -76,48 +77,51 @@ void *MMU_Malloc(uint16_t size)
         Mem_Monitor.FreeBlock = &MemStart;
     }
 
-    size += sizeof(MemBlock_TypeDef);
-
-    /* aligment request byte number */
-    if ((size & BLOCK_ALIGMENT_MASK) != 0x00)
+    if (size > 0)
     {
-        /* Byte alignment required. */
-        size += (BLOCK_ALIGMENT_SIZE - (size & BLOCK_ALIGMENT_MASK));
-    }
+        size += sizeof(MemBlock_TypeDef);
 
-    if (size <= Mem_Monitor.remain_size)
-    {
-
-        PrvFreeBlock = &MemStart;
-        Block_Tmp = MemStart.nxtFree;
-
-        while ((Block_Tmp->size < size) && (Block_Tmp->nxtFree != NULL))
+        /* aligment request byte number */
+        if ((size & BLOCK_ALIGMENT_MASK) != 0x00)
         {
-            PrvFreeBlock = Block_Tmp;
-            Block_Tmp = Block_Tmp->nxtFree;
+            /* Byte alignment required. */
+            size += (BLOCK_ALIGMENT_SIZE - (size & BLOCK_ALIGMENT_MASK));
         }
 
-        if ((((uint32_t)Block_Tmp & 0xF0000000) == (uint32_t)Mem_Buff) && (Block_Tmp != MemEnd))
+        if (size <= Mem_Monitor.remain_size)
         {
-            Mem_Monitor.req_t++;
 
-            mem_addr = (void *)(((uint8_t *)PrvFreeBlock->nxtFree) + sizeof(MemBlock_TypeDef));
+            PrvFreeBlock = &MemStart;
+            Block_Tmp = MemStart.nxtFree;
 
-            PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
-
-            if ((Block_Tmp->size - size) > MINIMUM_BLOCK_SIZE)
+            while ((Block_Tmp->size < size) && (Block_Tmp->nxtFree != NULL))
             {
-                NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
-                NxtFreeBlock->size = Block_Tmp->size - size - sizeof(MemBlock_TypeDef);
-                Block_Tmp->size = size;
-
-                MMU_InsertFreeBlock(NxtFreeBlock);
+                PrvFreeBlock = Block_Tmp;
+                Block_Tmp = Block_Tmp->nxtFree;
             }
 
-            Mem_Monitor.remain_size -= size;
-            Mem_Monitor.used_size += size;
+            if ((((uint32_t)Block_Tmp & 0xF0000000) == (uint32_t)Mem_Buff) && (Block_Tmp != MemEnd))
+            {
+                Mem_Monitor.req_t++;
 
-            Block_Tmp->nxtFree = NULL;
+                mem_addr = (void *)(((uint8_t *)PrvFreeBlock->nxtFree) + sizeof(MemBlock_TypeDef));
+
+                PrvFreeBlock->nxtFree = Block_Tmp->nxtFree;
+
+                if ((Block_Tmp->size - size) > MINIMUM_BLOCK_SIZE)
+                {
+                    NxtFreeBlock = (void *)(((uint8_t *)Block_Tmp) + size);
+                    NxtFreeBlock->size = Block_Tmp->size - size;
+                    Block_Tmp->size = size;
+
+                    MMU_InsertFreeBlock(NxtFreeBlock);
+                }
+
+                Mem_Monitor.remain_size -= size;
+                Mem_Monitor.used_size += size;
+
+                Block_Tmp->nxtFree = NULL;
+            }
         }
     }
 
@@ -162,7 +166,7 @@ void MMU_Free(void *ptr)
 
 static void MMU_InsertFreeBlock(MemBlock_TypeDef *pxBlockToInsert)
 {
-    MemBlock_TypeDef *pxIterator;
+    volatile MemBlock_TypeDef *pxIterator;
     uint8_t *puc;
 
     /* Iterate through the list until a block is found that has a higher address
