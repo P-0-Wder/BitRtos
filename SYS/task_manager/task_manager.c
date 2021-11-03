@@ -172,6 +172,8 @@ static bool TaskSys_Init(void)
 
     ReSet_Task_Data(CurRunTsk_Ptr);
     TskSys_state = TaskSys_Prepare;
+
+    NVIC_SetPriority(PendSV_IRQn, 15);
 }
 
 static void Task_Exit(void)
