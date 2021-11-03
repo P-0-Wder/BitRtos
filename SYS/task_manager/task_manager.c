@@ -8,6 +8,7 @@
 #include "task_manager_cfg.h"
 #include "binary_tree.h"
 #include "linked_list.h"
+#include "mmu.h"
 
 //coder: 8_B!T0
 //bref:
@@ -675,7 +676,7 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
     }
 
     //request a memory space for Task_Ptr contain
-    Task_Ptr[group][priority] = (Task *)malloc(sizeof(Task));
+    Task_Ptr[group][priority] = (Task *)MMU_Malloc(sizeof(Task));
 
     //record Task_Ptr poiner`s address
     handle = *&Task_Ptr[group][priority];
@@ -696,7 +697,7 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
 
     //request memory space for task stack
     Task_Ptr[group][priority]->Stack_Depth = StackDepth;
-    Task_Ptr[group][priority]->TCB.Stack = (uint32_t *)malloc(StackDepth * sizeof(uint32_t));
+    Task_Ptr[group][priority]->TCB.Stack = (uint32_t *)MMU_Malloc(StackDepth * sizeof(uint32_t));
 
     if (Task_Ptr[group][priority]->TCB.Stack != NULL)
     {
@@ -739,7 +740,7 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
 
     Task_SetReady(Task_Ptr[group][priority]);
 
-    Task_Ptr[group][priority]->item_ptr = (item_obj *)malloc(sizeof(item_obj));
+    Task_Ptr[group][priority]->item_ptr = (item_obj *)MMU_Malloc(sizeof(item_obj));
     if (Task_Ptr[group][priority]->item_ptr == NULL)
     {
         return TASK_BAD_MEMSPC_REQ;
@@ -791,7 +792,7 @@ static void Task_StopCountTargetFunc_Cast(Task *tsk_ptr)
 void Task_Remove(Task_Handler Tsk_Hdl)
 {
     //convert Tsk_Hdl from uint32_t var to Task Address which we need to delete
-    //free that memory space
+    //MMU_Free that memory space
     //erase all data in specificly memory space
     //set Task pointer to Null which we wanted to be delete
 
@@ -801,11 +802,11 @@ void Task_Remove(Task_Handler Tsk_Hdl)
     ReSet_Task_Data((Task *)Tsk_Hdl);
 
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
-    free((uint32_t *)((Task *)Tsk_Hdl)->TCB.Stack);
-    free((uint32_t *)((Task *)Tsk_Hdl)->TCB.Top_Stk_Ptr);
+    MMU_Free((uint32_t *)((Task *)Tsk_Hdl)->TCB.Stack);
+    MMU_Free((uint32_t *)((Task *)Tsk_Hdl)->TCB.Top_Stk_Ptr);
 #endif
 
-    free((Task *)Tsk_Hdl);
+    MMU_Free((Task *)Tsk_Hdl);
     Task_Ptr[remove_group][remove_task] = NULL;
 }
 

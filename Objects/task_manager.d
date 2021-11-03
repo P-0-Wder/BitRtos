@@ -16,7 +16,7 @@ Objects/task_manager.o: SYS/task_manager/task_manager.c \
  FWLIB/inc/stm32f4xx_cryp.h FWLIB/inc/stm32f4xx_hash.h \
  FWLIB/inc/stm32f4xx_rng.h FWLIB/inc/stm32f4xx_can.h \
  FWLIB/inc/stm32f4xx_dac.h FWLIB/inc/stm32f4xx_dcmi.h \
- FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_timer.h
+ FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_timer.h SYS/memng/mmu.h
 SYS/task_manager/task_manager.h:
 SYS/runtime/runtime.h:
 SYS/task_manager/task_manager_cfg.h:
@@ -57,3 +57,4 @@ FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 Bsp/periph_timer.h:
+SYS/memng/mmu.h:
