@@ -44,5 +44,6 @@ typedef struct
 
 void *MMU_Malloc(uint16_t size);
 void MMU_Free(void *ptr);
+Mem_Monitor_TypeDef MMU_Get_Monitor(void);
 
 #endif
