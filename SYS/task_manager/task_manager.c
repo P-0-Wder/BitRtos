@@ -69,7 +69,6 @@ static SYSTEM_RunTime TaskSys_StartTime;
 
 static void Task_SetReady(Task *tsk);
 static void Task_ClearReady(Task *tsk);
-static void Task_StopCountTargetFunc_Cast(Task *tsk_ptr);
 
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
 volatile Task *PndHstTsk_Ptr = NULL;
@@ -81,7 +80,6 @@ static uint32_t Task_OS_StkMem[MSP_MEM_SPACE_SIZE];
 uint32_t *Task_OS_ExpStkBase;
 
 static void Task_SetStkPtr_Val(Task *tsk);
-static void Task_Set_CountRunnigTime_State(Task *tsk_ptr, uint8_t enable_state);
 static void Task_ClearPending(Task *tsk);
 static void Task_ClearBlock(Task *tsk);
 static void Task_SetBASEPRI(uint32_t ulBASEPRI);
@@ -206,7 +204,6 @@ void Task_Resume_FromBlock(Task *tsk)
 {
     Task_ClearBlock(tsk);
     Task_SetReady(tsk);
-    //Task_Set_CountRunnigTime_State(tsk, ENABLE);
 
     tsk->Exec_status.State = Task_Running;
     NxtTsk_TCB.Top_Stk_Ptr = &tsk->TCB.Top_Stk_Ptr;
@@ -234,9 +231,6 @@ void Task_SetBlock(Task *tsk)
 
     //set task state
     tsk->Exec_status.State = Task_Block;
-
-    //Task_StopCountTargetFunc_Cast(tsk);
-    //Task_Set_CountRunnigTime_State(tsk, DISABLE);
 
     CurRunTsk_Ptr = NULL;
 
@@ -708,13 +702,9 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
         return TASK_BAD_MEMSPC_REQ;
     }
 #endif
-    //reset task running statistics reg
-    Task_Ptr[group][priority]->statistics_reg.Reg.Caller_Statistics_REG = stop_statistics;
-    Task_Ptr[group][priority]->statistics_reg.Reg.TskFun_Statistics_REG = stop_statistics;
 
     //reset single loop running us
     Task_Ptr[group][priority]->TskFuncUing_US = 0;
-    Task_Ptr[group][priority]->CallerUsing_US = 0;
 
     //reset task cpu occupy data
     Task_Ptr[group][priority]->Exec_status.cpu_opy = 0;
@@ -761,31 +751,6 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
     TskCrt_RegList.num++;
 
     return handle;
-}
-
-static void Task_Set_CountRunnigTime_State(Task *tsk_ptr, uint8_t enable_state)
-{
-    if (enable_state)
-    {
-        tsk_ptr->statistics_reg.Reg.Caller_Statistics_REG = start_statistics;
-    }
-    else
-    {
-        tsk_ptr->statistics_reg.Reg.Caller_Statistics_REG = stop_statistics;
-        tsk_ptr->statistics_reg.Reg.TskFun_Statistics_REG = stop_statistics;
-    }
-
-    periph_Timer_Counter_SetEnable(Timer_4, enable_state);
-}
-
-static void Task_StartCountTargetFunc_Cast(Task *tsk_ptr)
-{
-    tsk_ptr->statistics_reg.Reg.TskFun_Statistics_REG = start_statistics;
-}
-
-static void Task_StopCountTargetFunc_Cast(Task *tsk_ptr)
-{
-    tsk_ptr->statistics_reg.Reg.TskFun_Statistics_REG = stop_statistics;
 }
 
 //Remove func untest
@@ -845,24 +810,6 @@ void Task_SetRunState(Task_Handler Tsk_Handle, TASK_STATE state)
     ((Task *)Tsk_Handle)->Exec_status.State = state;
 }
 
-void Task_CountRunningTime(void)
-{
-    if (CurRunTsk_Ptr != NULL)
-    {
-        RunTime_Tick();
-
-        if (CurRunTsk_Ptr->statistics_reg.Reg.TskFun_Statistics_REG == start_statistics)
-        {
-            CurRunTsk_Ptr->TskFuncUing_US++;
-        }
-
-        if (CurRunTsk_Ptr->statistics_reg.Reg.TskFun_Statistics_REG == start_statistics)
-        {
-            CurRunTsk_Ptr->CallerUsing_US++;
-        }
-    }
-}
-
 static Task *Get_TaskInstance(uint8_t group, uint8_t priority)
 {
     return Task_Ptr[group][priority];
@@ -883,8 +830,6 @@ static void Task_Exec(Task *tsk_ptr)
             //code down below
             Task_ClearReady(tsk_ptr);
 
-            //Task_Set_CountRunnigTime_State(tsk_ptr, ENABLE);
-
             //set current running task
             CurRunTsk_Ptr = tsk_ptr;
 
@@ -895,13 +840,9 @@ static void Task_Exec(Task *tsk_ptr)
             }
 
             tsk_ptr->Exec_status.State = Task_Running;
-            //Task_StartCountTargetFunc_Cast(tsk_ptr);
 
             //execute task funtion
             tsk_ptr->Exec_Func(*&tsk_ptr);
-
-            //get current task execut time
-            //Task_StopCountTargetFunc_Cast(tsk_ptr);
 
             //record task running times
             tsk_ptr->Exec_status.Exec_Times++;
@@ -933,17 +874,11 @@ static void Task_Exec(Task *tsk_ptr)
                 tsk_ptr->Exec_status.detect_exec_frq = (uint32_t)(tsk_ptr->Exec_status.Exec_Times / (float)tsk_ptr->Exec_status.Exec_Time);
             }
 
-            //stop counting caller using us time
-            //Task_Set_CountRunnigTime_State(tsk_ptr, DISABLE);
-
             tsk_ptr->Exec_status.State = Task_Stop;
 
             //erase currnet runnint task pointer
             CurRunTsk_Ptr = NULL;
         }
-
-        //enable systick handler
-        //Task_SetBASEPRI(0);
     }
 }
 
@@ -1134,4 +1069,12 @@ Task_Base_Info Task_GetInfo_ByIndex(uint8_t index)
 Task *Task_GetCurrentRunTask(void)
 {
     return CurRunTsk_Ptr;
+}
+
+void Task_Statistic_Cast(uint32_t time_base)
+{
+    if ((CurRunTsk_Ptr != NULL) && (CurRunTsk_Ptr->Exec_status.State == Task_Running))
+    {
+        CurRunTsk_Ptr->TskFuncUing_US += time_base;
+    }
 }

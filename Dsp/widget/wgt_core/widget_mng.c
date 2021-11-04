@@ -124,7 +124,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
         for (uint8_t column_index = 0; column_index < SrvOled.get_range().height; column_index++)
         {
-            //widget_blackboard[column_index] = (uint8_t *)malloc(SrvOled.get_range().width);
+            //widget_blackboard[column_index] = (uint8_t *)(SrvOled.get_range().width);
             widget_blackboard[column_index] = (uint8_t *)MMU_Malloc(SrvOled.get_range().width);
 
             if (widget_blackboard[column_index] == NULL)
@@ -154,14 +154,14 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     if (MonitorDataObj.remain_size < (height * width))
         return WIDGET_CREATE_ERROR;
 
-    widget_tmp->pixel_map = (uint8_t **)malloc(sizeof(uint8_t *) * height);
+    widget_tmp->pixel_map = (uint8_t **)MMU_Malloc(sizeof(uint8_t *) * height);
 
     if (widget_tmp->pixel_map == NULL)
         return WIDGET_CREATE_ERROR;
 
     for (uint8_t h = 0; h < height; h++)
     {
-        widget_tmp->pixel_map[h] = (uint8_t *)malloc(width);
+        widget_tmp->pixel_map[h] = (uint8_t *)MMU_Malloc(width);
 
         if (widget_tmp->pixel_map[h] == NULL)
             return WIDGET_CREATE_ERROR;
@@ -177,7 +177,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->Dsp = &WidgetDraw_Interface;
     widget_tmp->Ctl = &WidgetCtl_Interface;
 
-    widget_tmp->item = (item_obj *)malloc(sizeof(item_obj));
+    widget_tmp->item = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
     if (widget_tmp->item == NULL)
         return WIDGET_CREATE_ERROR;
@@ -214,13 +214,13 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     height = ((WidgetObj_TypeDef *)(*hdl))->height;
     width = ((WidgetObj_TypeDef *)(*hdl))->width;
 
-    free(((WidgetObj_TypeDef *)(*hdl))->item);
+    MMU_Free(((WidgetObj_TypeDef *)(*hdl))->item);
 
-    free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
+    MMU_Free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
 
     for (uint8_t h = 0; h < height; h++)
     {
-        free(((WidgetObj_TypeDef *)(*hdl))->pixel_map[h]);
+        MMU_Free(((WidgetObj_TypeDef *)(*hdl))->pixel_map[h]);
     }
 
     MonitorDataObj.remain_size += width * height;
@@ -229,7 +229,7 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     if (MonitorDataObj.remain_size > MonitorDataObj.max_display_cache)
         return false;
 
-    free(*hdl);
+    MMU_Free(*hdl);
 
     *hdl = 0;
     return true;

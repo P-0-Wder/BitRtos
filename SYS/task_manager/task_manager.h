@@ -69,17 +69,6 @@ typedef struct
     Task_STK_Ptr Stack;
 } TaskStack_ControlBlock;
 
-typedef union
-{
-    struct
-    {
-        uint8_t Caller_Statistics_REG : 4;
-        uint8_t TskFun_Statistics_REG : 4;
-    } Reg;
-
-    uint8_t Val;
-} TaskOpr_statistics;
-
 typedef enum
 {
     stop_statistics,
@@ -219,11 +208,8 @@ typedef struct
     TaskStack_ControlBlock TCB;
 #endif
 
-    TaskOpr_statistics statistics_reg;
-
     //private variable
     uint32_t TskFuncUing_US; //Cast US time while system Calling the Target task function
-    uint32_t CallerUsing_US; //Cast US time while Task_Caller Function is in using
 
     delay_reg delay_info;
 
@@ -268,10 +254,10 @@ uint8_t Task_Get_TaskNum(void);
 Task_Base_Info Task_GetInfo_ByIndex(uint8_t index);
 uint32_t Task_Get_IdleUS(void);
 float Task_Get_IdleOcupy(void);
-void Task_CountRunningTime(void);
 void TaskSys_Set_State(TaskSys_State state);
 void Task_TriggerPendSV(void);
 TaskSys_State TaskSys_Get_State(void);
+void Task_Statistic_Cast(uint32_t time_base);
 
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
 void Load_FirstTask(void);
