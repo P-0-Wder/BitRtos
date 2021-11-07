@@ -826,6 +826,8 @@ static void Task_Exec(Task *tsk_ptr)
     {
         if (tsk_ptr->Exec_status.State == Task_Ready)
         {
+            tsk_ptr->TskFuncUing_US = 0;
+
             //when task function execute finish reset ready flag of current task in group
             //code down below
             Task_ClearReady(tsk_ptr);
@@ -858,6 +860,7 @@ static void Task_Exec(Task *tsk_ptr)
             time_diff = Get_TimeDifference_Between(tsk_ptr->Exec_status.Start_Time, tsk_ptr->Exec_status.Exec_Time);
 
             tsk_ptr->Exec_status.cpu_opy = tsk_ptr->Exec_status.totlal_running_time / (float)time_diff;
+            tsk_ptr->Exec_status.cpu_opy *= 100;
 
             //get average task running time
             tsk_ptr->Exec_status.detect_exec_time_arv += tsk_ptr->TskFuncUing_US;
@@ -1076,7 +1079,5 @@ void Task_Statistic_Cast(uint32_t time_base)
     if ((CurRunTsk_Ptr != NULL) && (CurRunTsk_Ptr->Exec_status.State == Task_Running))
     {
         CurRunTsk_Ptr->TskFuncUing_US += time_base;
-
-        CurRunTsk_Ptr->Exec_status.cpu_opy = ((float)(CurRunTsk_Ptr->TskFuncUing_US / REAL_MS) / Get_CurrentRunningMs());
     }
 }
