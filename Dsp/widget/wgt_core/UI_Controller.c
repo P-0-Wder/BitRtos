@@ -27,6 +27,11 @@ static bool UI_LabelDsp_Control(UI_GeneralData_TypeDef *GenData, bool state)
     return true;
 }
 
+static void UI_Set_FatherWidget(UI_GeneralData_TypeDef *GenData, uint32_t widget_addr)
+{
+    GenData->widget_addr = widget_addr;
+}
+
 static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
 {
     GenData->label = label;
@@ -37,6 +42,7 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
     GenData->y = y;
 
     GenData->selected = false;
+    GenData->widget_addr = 0;
 }
 
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
