@@ -40,6 +40,8 @@ typedef struct
     bool label_dsp;
 
     bool selected;
+
+    uint32_t widget_addr;
 } UI_GeneralData_TypeDef;
 
 typedef struct
