@@ -1076,5 +1076,7 @@ void Task_Statistic_Cast(uint32_t time_base)
     if ((CurRunTsk_Ptr != NULL) && (CurRunTsk_Ptr->Exec_status.State == Task_Running))
     {
         CurRunTsk_Ptr->TskFuncUing_US += time_base;
+
+        CurRunTsk_Ptr->Exec_status.cpu_opy = ((float)(CurRunTsk_Ptr->TskFuncUing_US / REAL_MS) / Get_CurrentRunningMs());
     }
 }
