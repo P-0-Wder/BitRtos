@@ -5,7 +5,7 @@
 
 /* external function */
 
-/******************************* init function *********************************/
+/******************************* general function *********************************/
 
 static bool UI_LabelRoll_Control(UI_GeneralData_TypeDef *GenData, bool state)
 {
@@ -49,6 +49,8 @@ static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
 
     return true;
 }
+
+/******************************* ui init function *********************************/
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, uint32_t widget, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
 {

@@ -2,6 +2,7 @@
 #include "SrvOled.h"
 #include "runtime.h"
 #include "linked_list.h"
+#include "UI_Controller.h"
 #include "GenDsp.h"
 #include "mmu.h"
 
@@ -19,7 +20,8 @@ Widget_MonitorData_TypeDef MonitorDataObj = {
     .widget_used_size = 0,
     .remain_size = 0,
     .max_display_cache = 0,
-    .widget_dsp_list = NULL};
+    .widget_dsp_list = NULL,
+};
 
 static Widget_Handle CurActive_Widget = 0;
 static uint8_t WidgetFresh_Reg = Set_FreshStateBIT(Fresh_State_DrvInit);
@@ -742,4 +744,20 @@ static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
                                     width,
                                     height,
                                     line_size);
+}
+
+static void widgetUI_ComboBox()
+{
+}
+
+static void widgetUI_CheckBox()
+{
+}
+
+static void widgetUI_DigInput()
+{
+}
+
+static void widgetUI_StrInput()
+{
 }

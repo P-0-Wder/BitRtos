@@ -96,6 +96,27 @@ typedef struct
 
 typedef struct
 {
+    /* ui init section */
+    void (*checkbox_init)();
+    void (*combolbox_init)();
+    void (*dig_input_init)();
+    void (*str_input_init)();
+    void (*procbar_init)();
+    void (*verbar_init)();
+    void (*horbar_init)();
+
+    /* ui control section */
+    void (*checkbox_ctl)();
+    void (*combobox_ctl)();
+    void (*dig_input_ctl)();
+    void (*str_input_ctl)();
+    void (*procbar_ctl)();
+    void (*verbar_ctl)();
+    void (*horbar_ctl)();
+} Widget_UIControl_TypeDef;
+
+typedef struct
+{
     bool (*Show)(void);
     bool (*Hide)(void);
     bool (*Move)(uint8_t x, uint8_t y);
