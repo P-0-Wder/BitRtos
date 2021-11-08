@@ -98,13 +98,13 @@ typedef struct
 typedef struct
 {
     /* ui control section */
-    void (*checkbox)();
-    void (*combobox)();
-    void (*dig_input)();
-    void (*str_input)();
-    void (*procbar)();
-    void (*verbar)();
-    void (*horbar)();
+    UI_CheckBox_ProcFunc_TypeDef *(*checkbox)();
+    UI_ComboBox_ProcFunc_TypeDef *(*combobox)();
+    UI_DigInput_ProcFunc_TypeDef *(*dig_input)();
+    UI_StrInput_ProcFunc_TypeDef *(*str_input)();
+    UI_ProcBar_ProcFunc_TypeDef *(*procbar)();
+    UI_VerBar_ProcFunc_TypeDef *(*verbar)();
+    UI_HorBar_ProcFunc_TypeDef *(*horbar)();
 } WidgetUI_Utils_TypeDef;
 
 typedef struct

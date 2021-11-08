@@ -187,4 +187,16 @@ typedef struct
     void (*ctl)();
 } UI_HorBar_ProcFunc_TypeDef;
 
+typedef struct
+{
+    void (*init)();
+    void (*ctl)();
+} UI_StrInput_ProcFunc_TypeDef;
+
+typedef struct
+{
+    void (*init)();
+    void (*ctl)();
+} UI_DigInput_ProcFunc_TypeDef;
+
 #endif
