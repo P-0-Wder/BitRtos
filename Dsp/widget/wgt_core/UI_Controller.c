@@ -27,12 +27,7 @@ static bool UI_LabelDsp_Control(UI_GeneralData_TypeDef *GenData, bool state)
     return true;
 }
 
-static void UI_Set_FatherWidget(UI_GeneralData_TypeDef *GenData, uint32_t widget_addr)
-{
-    GenData->widget_addr = widget_addr;
-}
-
-static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
+static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, uint32_t widget, char *label, uint8_t x, uint8_t y)
 {
     GenData->label = label;
     GenData->label_dsp = false;
@@ -42,7 +37,7 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
     GenData->y = y;
 
     GenData->selected = false;
-    GenData->widget_addr = 0;
+    GenData->widget_addr = widget;
 }
 
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
@@ -55,7 +50,7 @@ static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
     return true;
 }
 
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, uint32_t widget, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
@@ -63,7 +58,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPoint UI_Dr
     Obj->DrawPoint = NULL;
     Obj->DrawPoint = UI_Draw_Func;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    UI_GenData_Init(&Obj->Gen_Data, widget, label, x, y);
 
     Obj->width = width;
     Obj->height = height;
@@ -78,7 +73,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_DrawPoint UI_Dr
     return true;
 }
 
-static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_DrawLine UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, uint32_t widget, UI_DrawLine UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
@@ -86,12 +81,12 @@ static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, UI_DrawLine UI_Dr
     Obj->DrawLine = NULL;
     Obj->DrawLine = UI_Draw_Func;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    UI_GenData_Init(&Obj->Gen_Data, widget, label, x, y);
 
     return true;
 }
 
-static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_DrawLine UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, uint32_t widget, UI_DrawLine UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
@@ -99,12 +94,12 @@ static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, UI_DrawLine UI_Dra
     Obj->DrawLine = NULL;
     Obj->DrawLine = UI_Draw_Func;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    UI_GenData_Init(&Obj->Gen_Data, widget, label, x, y);
 
     return true;
 }
 
-static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint32_t range)
+static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, uint32_t widget, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint32_t range)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL))
         return false;
@@ -112,7 +107,7 @@ static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, UI_DrawPoint
     Obj->DrawPoint = NULL;
     Obj->DrawPoint = UI_Draw_Func;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    UI_GenData_Init(&Obj->Gen_Data, widget, label, x, y);
 
     Obj->radius = radius;
     Obj->percent = 0.0;
@@ -152,7 +147,7 @@ static UI_ComboBox_Group_TypeDef *UI_ComboGroup_Create(char *label)
     return ComboGroup_Tmp;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, uint32_t widget, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL) || (frame_size <= 4))
         return false;
@@ -160,7 +155,7 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_DrawRectangle UI_Dr
     Obj->DrawRectangle = NULL;
     Obj->DrawRectangle = UI_Draw_Func;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    UI_GenData_Init(&Obj->Gen_Data, widget, label, x, y);
     Obj->Gen_Data.label_dsp = true;
 
     Obj->checked = false;
@@ -169,7 +164,7 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, UI_DrawRectangle UI_Dr
     return true;
 }
 
-static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, UI_DrawCircle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
+static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, uint32_t widget, UI_ComboBox_Group_TypeDef *group, UI_DrawCircle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL) || (group == NULL) || (group->item_num >= MAX_COMBOBOX_ITEM))
         return false;
@@ -178,7 +173,7 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
     Obj->DrawCircle = UI_Draw_Func;
     Obj->radius = radius;
 
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+    UI_GenData_Init(&Obj->Gen_Data, widget, label, x, y);
     Obj->Gen_Data.label_dsp = true;
 
     Obj->item_id = group->item_num;
