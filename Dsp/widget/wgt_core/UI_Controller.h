@@ -185,12 +185,6 @@ typedef struct
 {
     void (*init)();
     void (*ctl)();
-} UI_HorBar_ProcBar_TypeDef;
-
-/* ui process function block */
-typedef struct
-{
-
-} UI_Utils_TypeDef;
+} UI_HorBar_ProcFunc_TypeDef;
 
 #endif

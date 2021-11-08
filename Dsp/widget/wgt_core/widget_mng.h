@@ -9,6 +9,7 @@
 #include "GenDsp.h"
 #include "linked_list.h"
 #include "Oled_DspProp_Def.h"
+#include "UI_Controller.h"
 
 #define WIDGET_OPR_ERROR 0
 #define WIDGET_CREATE_ERROR WIDGET_OPR_ERROR
@@ -96,24 +97,15 @@ typedef struct
 
 typedef struct
 {
-    /* ui init section */
-    void (*checkbox_init)();
-    void (*combolbox_init)();
-    void (*dig_input_init)();
-    void (*str_input_init)();
-    void (*procbar_init)();
-    void (*verbar_init)();
-    void (*horbar_init)();
-
     /* ui control section */
-    void (*checkbox_ctl)();
-    void (*combobox_ctl)();
-    void (*dig_input_ctl)();
-    void (*str_input_ctl)();
-    void (*procbar_ctl)();
-    void (*verbar_ctl)();
-    void (*horbar_ctl)();
-} Widget_UIControl_TypeDef;
+    void (*checkbox)();
+    void (*combobox)();
+    void (*dig_input)();
+    void (*str_input)();
+    void (*procbar)();
+    void (*verbar)();
+    void (*horbar)();
+} WidgetUI_Utils_TypeDef;
 
 typedef struct
 {

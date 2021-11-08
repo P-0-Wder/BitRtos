@@ -74,22 +74,14 @@ static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius
 static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
 static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv);
 
-static Widget_UIControl_TypeDef WidgetUI_Interface = {
-    .checkbox_init = NULL,
-    .combolbox_init = NULL,
-    .dig_input_init = NULL,
-    .str_input_init = NULL,
-    .procbar_init = NULL,
-    .verbar_init = NULL,
-    .horbar_init = NULL,
-
-    .checkbox_ctl = NULL,
-    .combobox_ctl = NULL,
-    .dig_input_ctl = NULL,
-    .str_input_ctl = NULL,
-    .procbar_ctl = NULL,
-    .verbar_ctl = NULL,
-    .horbar_ctl = NULL,
+static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
+    .checkbox = NULL,
+    .combobox = NULL,
+    .dig_input = NULL,
+    .str_input = NULL,
+    .procbar = NULL,
+    .verbar = NULL,
+    .horbar = NULL,
 };
 
 static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
