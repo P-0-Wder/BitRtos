@@ -156,6 +156,37 @@ typedef struct
     bool inputing;
 } UI_StrInputObj_TypeDef;
 
+typedef struct
+{
+    void (*group_init)();
+    void (*init)();
+    void (*ctl)();
+} UI_ComboBox_ProcFunc_TypeDef;
+
+typedef struct
+{
+    void (*init)();
+    void (*ctl)();
+} UI_CheckBox_ProcFunc_TypeDef;
+
+typedef struct
+{
+    void (*init)();
+    void (*ctl)();
+} UI_ProcBar_ProcFunc_TypeDef;
+
+typedef struct
+{
+    void (*init)();
+    void (*ctl)();
+} UI_VerBar_ProcFunc_TypeDef;
+
+typedef struct
+{
+    void (*init)();
+    void (*ctl)();
+} UI_HorBar_ProcBar_TypeDef;
+
 /* ui process function block */
 typedef struct
 {
