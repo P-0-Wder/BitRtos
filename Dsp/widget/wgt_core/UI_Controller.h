@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include "linked_list.h"
 
 #define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
@@ -151,11 +152,21 @@ typedef struct
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
+    uint8_t item_num;
+
+    /* need a linked list */
+    list_obj item_list;
+} UI_DropObj_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
     uint8_t max_input_len;
     char *input_str;
     bool inputing;
 } UI_StrInputObj_TypeDef;
 
+/* developing down below */
 typedef struct
 {
     void (*group_init)();
@@ -198,5 +209,11 @@ typedef struct
     void (*init)();
     void (*ctl)();
 } UI_DigInput_ProcFunc_TypeDef;
+
+typedef struct
+{
+    void (*init)();
+    void (*ctl)();
+} UI_Drop_ProcFunc_TypeDef;
 
 #endif

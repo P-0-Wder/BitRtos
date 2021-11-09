@@ -205,6 +205,12 @@ static bool UI_StrInput_Init()
     return true;
 }
 
+static bool UI_Drop_Init()
+{
+
+    return true;
+}
+
 /******************************* control function *********************************/
 
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
@@ -304,6 +310,12 @@ static bool UI_DigInput_Ctl()
 }
 
 static bool UI_StrInput_Ctl()
+{
+
+    return true;
+}
+
+static bool UI_Drop_Ctl()
 {
 
     return true;
