@@ -170,6 +170,8 @@ typedef struct
 typedef struct
 {
     bool (*Is_Init)(UI_GeneralData_TypeDef GenData);
+    bool (*Selecte)(UI_GeneralData_TypeDef *GenData, bool select);
+    bool (*Is_Selecetd)(UI_GeneralData_TypeDef GenData);
 } UI_Controller_TypeDef;
 
 extern UI_Controller_TypeDef UI_Controller;
