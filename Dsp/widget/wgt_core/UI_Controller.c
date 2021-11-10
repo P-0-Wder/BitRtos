@@ -3,10 +3,14 @@
 
 /* internal function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
+static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
+static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
 
 /* external function */
 UI_Controller_TypeDef UI_Controller = {
     .Is_Init = UI_Get_InitSate,
+    .Is_Selecetd = UI_Get_Selected,
+    .Selecte = UI_Selecte,
 };
 
 /******************************* general function *********************************/
@@ -54,6 +58,11 @@ static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
     GenData->selected = select;
 
     return true;
+}
+
+static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData)
+{
+    return GenData.selected;
 }
 
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData)
