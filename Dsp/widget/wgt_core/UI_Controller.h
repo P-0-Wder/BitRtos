@@ -43,6 +43,7 @@ typedef struct
     bool selected;
 
     uint32_t widget_addr;
+    bool init;
 } UI_GeneralData_TypeDef;
 
 typedef struct
@@ -166,54 +167,11 @@ typedef struct
     bool inputing;
 } UI_StrInputObj_TypeDef;
 
-/* developing down below */
 typedef struct
 {
-    void (*group_init)();
-    void (*init)();
-    void (*ctl)();
-} UI_ComboBox_ProcFunc_TypeDef;
+    bool (*Is_Init)(UI_GeneralData_TypeDef GenData);
+} UI_Controller_TypeDef;
 
-typedef struct
-{
-    void (*init)();
-    void (*ctl)();
-} UI_CheckBox_ProcFunc_TypeDef;
-
-typedef struct
-{
-    void (*init)();
-    void (*ctl)();
-} UI_ProcBar_ProcFunc_TypeDef;
-
-typedef struct
-{
-    void (*init)();
-    void (*ctl)();
-} UI_VerBar_ProcFunc_TypeDef;
-
-typedef struct
-{
-    void (*init)();
-    void (*ctl)();
-} UI_HorBar_ProcFunc_TypeDef;
-
-typedef struct
-{
-    void (*init)();
-    void (*ctl)();
-} UI_StrInput_ProcFunc_TypeDef;
-
-typedef struct
-{
-    void (*init)();
-    void (*ctl)();
-} UI_DigInput_ProcFunc_TypeDef;
-
-typedef struct
-{
-    void (*init)();
-    void (*ctl)();
-} UI_Drop_ProcFunc_TypeDef;
+extern UI_Controller_TypeDef UI_Controller;
 
 #endif

@@ -75,13 +75,13 @@ static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
 static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv);
 
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
-    .checkbox = NULL,
-    .combobox = NULL,
-    .dig_input = NULL,
-    .str_input = NULL,
-    .procbar = NULL,
-    .verbar = NULL,
-    .horbar = NULL,
+    .UI_CheckBox = NULL,
+    .UI_ComboBox = NULL,
+    .UI_DigInput = NULL,
+    .UI_StrInput = NULL,
+    .UI_ProcBar = NULL,
+    .UI_VerBar = NULL,
+    .UI_HorBar = NULL,
 };
 
 static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
@@ -756,18 +756,26 @@ static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
                                     line_size);
 }
 
-static void widgetUI_ComboBox()
+static void widgetUI_ComboBox_Init()
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+}
+
+static void widgetUI_ComboBox_Ctl()
 {
 }
 
 static void widgetUI_CheckBox()
 {
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
 static void widgetUI_DigInput()
 {
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
 static void widgetUI_StrInput()
 {
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }

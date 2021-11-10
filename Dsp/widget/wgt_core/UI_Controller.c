@@ -2,8 +2,12 @@
 #include <stdlib.h>
 
 /* internal function */
+static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 
 /* external function */
+UI_Controller_TypeDef UI_Controller = {
+    .Is_Init = UI_Get_InitSate,
+};
 
 /******************************* general function *********************************/
 
@@ -38,6 +42,8 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, uint32_t widget, ch
 
     GenData->selected = false;
     GenData->widget_addr = widget;
+
+    GenData->init = false;
 }
 
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
@@ -48,6 +54,11 @@ static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
     GenData->selected = select;
 
     return true;
+}
+
+static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData)
+{
+    return GenData.init;
 }
 
 /******************************* ui init function *********************************/
@@ -71,6 +82,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, uint32_t widget, U
     Obj->percent = 0.0;
 
     Obj->Mv_Dir = ProcBar_MoveDir_Default;
+    Obj->Gen_Data.init = true;
 
     return true;
 }
