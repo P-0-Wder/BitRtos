@@ -36,8 +36,6 @@ bool UI_Set_DspInterface(UI_DrawPoint point,
 static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
 {
     GenData->label = label;
-    GenData->label_dsp = false;
-    GenData->label_roll = false;
 
     GenData->x = x;
     GenData->y = y;
@@ -178,7 +176,6 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, uint8_t x
         return false;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
-    Obj->Gen_Data.label_dsp = true;
 
     Obj->checked = false;
     Obj->frame_size = frame_size;
@@ -194,7 +191,6 @@ static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_Type
     Obj->radius = radius;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
-    Obj->Gen_Data.label_dsp = true;
 
     Obj->item_id = group->item_num;
 
