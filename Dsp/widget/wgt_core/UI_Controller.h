@@ -53,7 +53,6 @@ typedef struct
     bool selected;
 
     uint32_t widget_addr;
-    UI_DrawStr DrawLabel; /* remove it */
     bool init;
 } UI_GeneralData_TypeDef;
 
@@ -70,7 +69,6 @@ typedef struct
     uint8_t height;
 
     ProcessBar_MoveDir_TypeDef Mv_Dir;
-    UI_DrawPoint DrawPoint;
 } UI_ProcessBarObj_TypeDef;
 
 typedef struct
