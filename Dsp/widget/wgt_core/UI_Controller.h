@@ -18,6 +18,15 @@ typedef void (*UI_DrawLabel)(uint8_t font, char *str, uint8_t x, uint8_t y);
 
 typedef int (*gen_callback)(uint32_t arg, uint32_t len);
 
+typedef struct
+{
+    void (*point)(uint8_t x, uint8_t y);
+    void (*line)(uint8_t s_x, uint8_t S_y, uint8_t e_x, uint8_t e_y, uint8_t line_width);
+    void (*circle)(uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width);
+    void (*rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
+    void (*str)(uint8_t font, char *str, uint8_t x, uint8_t y);
+} UI_DrawInterface_TypeDef;
+
 typedef enum
 {
     Auto_Reset = 0,
