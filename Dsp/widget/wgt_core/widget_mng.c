@@ -764,33 +764,15 @@ static uint32_t widgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
 
     /* init button */
-    if (!UI_Button_Init(btn, (uint32_t)GetCur_Active_Widget(), Widget_DrawRectangle, label, x, y, width, height, state))
+    if (!UI_Button_Init(btn, (uint32_t)GetCur_Active_Widget(),
+                        Widget_DrawRectangle, label, x, y, width,
+                        height, state))
         return NULL;
 
     return btn;
 }
 
 static bool widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
-{
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-}
-
-static void widgetUI_ComboBox_Ctl()
-{
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-}
-
-static void widgetUI_CheckBox_Ctl()
-{
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-}
-
-static void widgetUI_DigInput_Ctl()
-{
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-}
-
-static void widgetUI_StrInput_Ctl()
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
