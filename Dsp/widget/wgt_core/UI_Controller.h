@@ -30,8 +30,8 @@ typedef struct
 
 typedef enum
 {
-    Auto_Reset = 0,
-    No_Reset,
+    Reset_Btn = 0,
+    Lock_Btn,
 } UI_Button_Type;
 
 typedef enum

@@ -123,10 +123,10 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     if (Obj == NULL)
         return false;
 
-    if (Obj->type == Auto_Reset)
+    if (Obj->type == Reset_Btn)
     {
     }
-    else if (Obj->type == No_Reset)
+    else if (Obj->type == Lock_Btn)
     {
     }
     else
