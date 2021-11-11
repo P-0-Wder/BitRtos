@@ -9,13 +9,6 @@ static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
 static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
 
-/* external function */
-UI_Controller_TypeDef UI_Controller = {
-    .Is_Init = UI_Get_InitSate,
-    .Is_Selecetd = UI_Get_Selected,
-    .Selecte = UI_Selecte,
-};
-
 /******************************* general function *********************************/
 
 bool UI_Set_DspInterface(UI_DrawPoint point,
@@ -40,9 +33,9 @@ bool UI_Set_DspInterface(UI_DrawPoint point,
     return true;
 }
 
-static bool UI_LabelRoll_Control(UI_GeneralData_TypeDef *GenData, bool state)
+bool UI_LabelRoll_Control(UI_Handler hdl, bool state)
 {
-    if ((GenData == NULL) || (!GenData->label_dsp))
+    if (hdl == 0)
         return false;
 
     GenData->label_roll = state;

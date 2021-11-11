@@ -10,13 +10,14 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 
+typedef uint32_t UI_Handler;
 typedef void (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
 typedef void (*UI_DrawLine)(uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
 typedef void (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
 typedef void (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius, uint8_t line_width);
 typedef void (*UI_DrawStr)(uint8_t font, char *str, uint8_t x, uint8_t y);
 
-typedef int (*gen_callback)(uint32_t arg, uint32_t len);
+typedef int (*UI_Trigger_Callback)(uint32_t arg, uint32_t len);
 
 typedef struct
 {
@@ -130,7 +131,7 @@ typedef struct
     UI_GeneralData_TypeDef Gen_Data;
     bool check_state;
     UI_Button_Type type;
-    gen_callback callback;
+    UI_Trigger_Callback callback;
 
     uint8_t width;
     uint8_t height;
@@ -141,7 +142,7 @@ typedef struct
     char *name;
     bool selected;
     bool active;
-    gen_callback callback;
+    UI_Trigger_Callback callback;
 } UI_DropItemObj_TypeDef;
 
 typedef struct
@@ -179,13 +180,6 @@ typedef struct
     bool inputing;
 } UI_StrInputObj_TypeDef;
 
-typedef struct
-{
-    bool (*Is_Init)(UI_GeneralData_TypeDef GenData);
-    bool (*Selecte)(UI_GeneralData_TypeDef *GenData, bool select);
-    bool (*Is_Selecetd)(UI_GeneralData_TypeDef GenData);
-} UI_Controller_TypeDef;
-
 bool UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawLine line,
                          UI_DrawRectangle rectangle,
@@ -193,7 +187,5 @@ bool UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawStr str);
 
 bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, uint32_t widget, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state);
-
-extern UI_Controller_TypeDef UI_Controller;
 
 #endif
