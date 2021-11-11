@@ -764,7 +764,8 @@ static uint32_t widgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
 
     /* init button */
-    UI_Button_Init(btn, (uint32_t)GetCur_Active_Widget(), Widget_DrawRectangle, label, x, y, width, height, state);
+    if (!UI_Button_Init(btn, (uint32_t)GetCur_Active_Widget(), Widget_DrawRectangle, label, x, y, width, height, state))
+        return NULL;
 
     return btn;
 }
