@@ -60,19 +60,21 @@ static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData)
     return GenData.selected;
 }
 
-static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData)
-{
-    return GenData.init;
-}
-
-/******************************* ui init function *********************************/
-
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state)
+/********************************************** UI Button Object ***************************************************/
+/*
+*  the operation of button ctl is a async operation
+*  exti irq or input signal triiger first then out of the trigger code 
+*  check signal value doing process
+*/
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_Trigger_Type trigger, bool state)
 {
     if (Obj == NULL)
         return false;
 
-    Obj->check_state = state;
+    Obj->default_state = state;
+    Obj->state = state;
+    Obj->type = type;
+    Obj->trigger = trigger;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
@@ -83,6 +85,57 @@ bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y
 
     return true;
 }
+
+bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Trigger_Callback callback)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->callback = callback;
+
+    return true;
+}
+
+static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->default_state == Obj->state)
+        Obj->state = !Obj->default_state;
+
+    return true;
+}
+
+static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->default_state != Obj->state)
+        Obj->state = Obj->default_state;
+
+    return true;
+}
+
+static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->type == Auto_Reset)
+    {
+    }
+    else if (Obj->type == No_Reset)
+    {
+    }
+    else
+        return false;
+
+    return true;
+}
+
+/***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
 {
