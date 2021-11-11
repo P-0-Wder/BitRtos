@@ -38,8 +38,6 @@ typedef enum
 {
     Push_Trigger = 0,
     Release_Trigger,
-    StateChange_Trigger,
-    Keep_Trigger,
 } UI_Button_Trigger_Type;
 
 typedef enum
@@ -135,7 +133,8 @@ typedef struct
     bool default_state;
     bool state;
     UI_Button_Type type;
-    UI_Trigger_Callback callback;
+    UI_Trigger_Callback push_callback;
+    UI_Trigger_Callback release_callback;
     UI_Button_Trigger_Type trigger;
 
     uint8_t width;

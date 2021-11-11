@@ -102,7 +102,13 @@ static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj)
         return false;
 
     if (Obj->default_state == Obj->state)
+    {
         Obj->state = !Obj->default_state;
+
+        if (Obj->trigger == Push_Trigger)
+        {
+        }
+    }
 
     return true;
 }
@@ -113,7 +119,13 @@ static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj)
         return false;
 
     if (Obj->default_state != Obj->state)
+    {
         Obj->state = Obj->default_state;
+
+        if (Obj->trigger == Release_Trigger)
+        {
+        }
+    }
 
     return true;
 }
