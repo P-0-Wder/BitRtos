@@ -72,6 +72,23 @@ static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData)
 
 /******************************* ui init function *********************************/
 
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, uint32_t widget, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state)
+{
+    if ((Obj == NULL) || (UI_Draw_Func == NULL))
+        return false;
+
+    Obj->check_state = state;
+
+    UI_GenData_Init(&Obj->Gen_Data, widget, label, x, y);
+
+    Obj->width = width;
+    Obj->height = height;
+
+    Obj->Gen_Data.init = true;
+
+    return true;
+}
+
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, uint32_t widget, UI_DrawPoint UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
 {
     if ((UI_Draw_Func == NULL) || (Obj == NULL))

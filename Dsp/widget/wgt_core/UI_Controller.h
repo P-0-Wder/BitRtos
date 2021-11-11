@@ -122,6 +122,9 @@ typedef struct
     bool check_state;
     UI_Button_Type type;
     gen_callback callback;
+
+    uint8_t width;
+    uint8_t height;
 } UI_ButtonObj_TypeDef;
 
 typedef struct
@@ -173,6 +176,8 @@ typedef struct
     bool (*Selecte)(UI_GeneralData_TypeDef *GenData, bool select);
     bool (*Is_Selecetd)(UI_GeneralData_TypeDef GenData);
 } UI_Controller_TypeDef;
+
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, uint32_t widget, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state);
 
 extern UI_Controller_TypeDef UI_Controller;
 

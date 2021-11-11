@@ -757,26 +757,39 @@ static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
                                     line_size);
 }
 
-static void widgetUI_ComboBox_Init()
+static uint32_t widgetUI_Creat_Button()
+{
+    UI_ButtonObj_TypeDef *btn = NULL;
+
+    btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
+
+    /* init button */
+    UI_Button_Init(btn, (uint32_t)GetCur_Active_Widget(), );
+
+    return btn;
+}
+
+static void widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
 static void widgetUI_ComboBox_Ctl()
 {
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
-static void widgetUI_CheckBox()
+static void widgetUI_CheckBox_Ctl()
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
-static void widgetUI_DigInput()
+static void widgetUI_DigInput_Ctl()
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
-static void widgetUI_StrInput()
+static void widgetUI_StrInput_Ctl()
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
