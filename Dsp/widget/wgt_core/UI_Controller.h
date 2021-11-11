@@ -12,19 +12,19 @@
 
 typedef void (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
 typedef void (*UI_DrawLine)(uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
-typedef void (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_width);
+typedef void (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
 typedef void (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius, uint8_t line_width);
-typedef void (*UI_DrawLabel)(uint8_t font, char *str, uint8_t x, uint8_t y);
+typedef void (*UI_DrawStr)(uint8_t font, char *str, uint8_t x, uint8_t y);
 
 typedef int (*gen_callback)(uint32_t arg, uint32_t len);
 
 typedef struct
 {
-    void (*point)(uint8_t x, uint8_t y);
-    void (*line)(uint8_t s_x, uint8_t S_y, uint8_t e_x, uint8_t e_y, uint8_t line_width);
-    void (*circle)(uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width);
-    void (*rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
-    void (*str)(uint8_t font, char *str, uint8_t x, uint8_t y);
+    UI_DrawPoint draw_point;
+    UI_DrawLine draw_line;
+    UI_DrawRectangle draw_rectangle;
+    UI_DrawCircle draw_circle;
+    UI_DrawStr draw_str;
 } UI_DrawInterface_TypeDef;
 
 typedef enum
@@ -53,7 +53,7 @@ typedef struct
     bool selected;
 
     uint32_t widget_addr;
-    UI_DrawLabel DrawLabel;
+    UI_DrawStr DrawLabel; /* remove it */
     bool init;
 } UI_GeneralData_TypeDef;
 
@@ -187,6 +187,12 @@ typedef struct
     bool (*Selecte)(UI_GeneralData_TypeDef *GenData, bool select);
     bool (*Is_Selecetd)(UI_GeneralData_TypeDef GenData);
 } UI_Controller_TypeDef;
+
+bool UI_Set_DspInterface(UI_DrawPoint point,
+                         UI_DrawLine line,
+                         UI_DrawRectangle rectangle,
+                         UI_DrawCircle circle,
+                         UI_DrawStr str);
 
 bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, uint32_t widget, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state);
 

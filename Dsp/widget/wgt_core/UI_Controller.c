@@ -1,6 +1,9 @@
 #include "UI_Controller.h"
 #include <stdlib.h>
 
+/* internal object */
+static UI_DrawInterface_TypeDef UI_DspInterface;
+
 /* internal function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
@@ -14,6 +17,28 @@ UI_Controller_TypeDef UI_Controller = {
 };
 
 /******************************* general function *********************************/
+
+bool UI_Set_DspInterface(UI_DrawPoint point,
+                         UI_DrawLine line,
+                         UI_DrawRectangle rectangle,
+                         UI_DrawCircle circle,
+                         UI_DrawStr str)
+{
+    if ((point == NULL) ||
+        (line == NULL) ||
+        (rectangle == NULL) ||
+        (circle == NULL) ||
+        (str == NULL))
+        return false;
+
+    UI_DspInterface.draw_circle = circle;
+    UI_DspInterface.draw_line = line;
+    UI_DspInterface.draw_point = point;
+    UI_DspInterface.draw_rectangle = rectangle;
+    UI_DspInterface.draw_str = str;
+
+    return true;
+}
 
 static bool UI_LabelRoll_Control(UI_GeneralData_TypeDef *GenData, bool state)
 {
