@@ -86,12 +86,21 @@ bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y
     return true;
 }
 
-bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Trigger_Callback callback)
+bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback)
 {
     if (Obj == NULL)
         return false;
 
-    Obj->callback = callback;
+    if (type == Push_Trigger)
+    {
+        Obj->push_callback = callback;
+    }
+    else if (type == Release_Trigger)
+    {
+        Obj->release_callback = callback;
+    }
+    else
+        return false;
 
     return true;
 }
