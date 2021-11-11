@@ -327,11 +327,11 @@ static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
         {
             if (i == 0)
             {
-                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius);
+                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius, 1);
             }
             else if (Obj->checked)
             {
-                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius - i);
+                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius - i, 1);
             }
         }
     }
