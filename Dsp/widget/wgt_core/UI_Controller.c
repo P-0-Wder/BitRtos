@@ -66,7 +66,7 @@ static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData)
 *  exti irq or input signal triiger first then out of the trigger code 
 *  check signal value doing process
 */
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_Trigger_Type trigger, bool state)
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, bool state)
 {
     if (Obj == NULL)
         return false;
@@ -74,7 +74,6 @@ bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y
     Obj->default_state = state;
     Obj->state = state;
     Obj->type = type;
-    Obj->trigger = trigger;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
@@ -110,14 +109,21 @@ static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj)
     if (Obj == NULL)
         return false;
 
-    if (Obj->default_state == Obj->state)
+    if (Obj->type == Lock_Btn)
     {
-        Obj->state = !Obj->default_state;
-
-        if (Obj->trigger == Push_Trigger)
+    }
+    else if (Obj->type == Reset_Btn)
+    {
+        if (Obj->default_state == Obj->state)
         {
+            Obj->state = !Obj->default_state;
+
+            if (Obj->push_callback != NULL)
+                Obj->push_callback();
         }
     }
+    else
+        return false;
 
     return true;
 }
@@ -127,13 +133,15 @@ static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj)
     if (Obj == NULL)
         return false;
 
+    if (Obj->type == Lock_Btn)
+        return true;
+
     if (Obj->default_state != Obj->state)
     {
         Obj->state = Obj->default_state;
 
-        if (Obj->trigger == Release_Trigger)
-        {
-        }
+        if (Obj->release_callback != NULL)
+            Obj->release_callback();
     }
 
     return true;
@@ -142,15 +150,6 @@ static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj)
 static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 {
     if (Obj == NULL)
-        return false;
-
-    if (Obj->type == Reset_Btn)
-    {
-    }
-    else if (Obj->type == Lock_Btn)
-    {
-    }
-    else
         return false;
 
     return true;

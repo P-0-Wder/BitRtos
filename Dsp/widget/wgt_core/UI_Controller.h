@@ -17,7 +17,7 @@ typedef void (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t he
 typedef void (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius, uint8_t line_width);
 typedef void (*UI_DrawStr)(uint8_t font, char *str, uint8_t x, uint8_t y);
 
-typedef int (*UI_Trigger_Callback)(uint32_t arg, uint32_t len);
+typedef int (*UI_Trigger_Callback)(void);
 
 typedef struct
 {
@@ -135,7 +135,6 @@ typedef struct
     UI_Button_Type type;
     UI_Trigger_Callback push_callback;
     UI_Trigger_Callback release_callback;
-    UI_Button_Trigger_Type trigger;
 
     uint8_t width;
     uint8_t height;
@@ -190,6 +189,6 @@ bool UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawCircle circle,
                          UI_DrawStr str);
 
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_Trigger_Type trigger, bool state);
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, bool state);
 
 #endif
