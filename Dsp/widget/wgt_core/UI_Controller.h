@@ -53,7 +53,6 @@ typedef struct
 
     bool selected;
 
-    uint32_t widget_addr;
     bool init;
 } UI_GeneralData_TypeDef;
 
@@ -186,6 +185,6 @@ bool UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawCircle circle,
                          UI_DrawStr str);
 
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, uint32_t widget, UI_DrawRectangle UI_Draw_Func, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state);
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state);
 
 #endif
