@@ -769,7 +769,7 @@ static uint32_t widgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t
     return btn;
 }
 
-static void widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
+static bool widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
