@@ -10,10 +10,11 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 
-typedef bool (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
-typedef bool (*UI_DrawLine)(uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
-typedef bool (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_width);
-typedef bool (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius, uint8_t line_width);
+typedef void (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
+typedef void (*UI_DrawLine)(uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
+typedef void (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_width);
+typedef void (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius, uint8_t line_width);
+typedef void (*UI_DrawLabel)(uint8_t font, char *str, uint8_t x, uint8_t y);
 
 typedef int (*gen_callback)(uint32_t arg, uint32_t len);
 
@@ -43,6 +44,7 @@ typedef struct
     bool selected;
 
     uint32_t widget_addr;
+    UI_DrawLabel DrawLabel;
     bool init;
 } UI_GeneralData_TypeDef;
 
