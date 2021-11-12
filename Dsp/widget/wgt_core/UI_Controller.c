@@ -170,6 +170,8 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
             return false;
     }
 
+    /* display button */
+
     return true;
 }
 
