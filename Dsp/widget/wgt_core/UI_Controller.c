@@ -152,6 +152,10 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     if (Obj == NULL)
         return false;
 
+    if (Obj->type == Lock_Btn)
+    {
+    }
+
     return true;
 }
 
