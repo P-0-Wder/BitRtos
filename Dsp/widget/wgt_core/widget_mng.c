@@ -757,14 +757,14 @@ static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
                                     line_size);
 }
 
-static uint32_t widgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, bool state)
+static uint32_t widgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
 
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
 
     /* init button */
-    if (!UI_Button_Init(btn, label, x, y, width, height, state))
+    if (!UI_Button_Init(btn, label, x, y, width, height, type, state))
         return NULL;
 
     return btn;

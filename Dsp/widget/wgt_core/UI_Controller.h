@@ -42,6 +42,12 @@ typedef enum
 
 typedef enum
 {
+    UI_Btn_RlsUp = 0,
+    UI_Btn_PushDwn = 1,
+} UI_Button_State_List;
+
+typedef enum
+{
     ProcBar_MoveDir_Default = 0,
     ProcBar_MoveDir_Left = 0,
     ProcBar_MoveDir_Right = 1,
@@ -130,8 +136,8 @@ typedef struct
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
-    bool default_state;
-    bool state;
+    UI_Button_State_List default_state;
+    UI_Button_State_List state;
     UI_Button_Type type;
     UI_Trigger_Callback push_callback;
     UI_Trigger_Callback release_callback;
@@ -189,6 +195,6 @@ bool UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawCircle circle,
                          UI_DrawStr str);
 
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, bool state);
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 
 #endif

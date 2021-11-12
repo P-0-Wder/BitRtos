@@ -66,7 +66,7 @@ static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData)
 *  exti irq or input signal triiger first then out of the trigger code 
 *  check signal value doing process
 */
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, bool state)
+bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     if (Obj == NULL)
         return false;
@@ -154,6 +154,16 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
     if (Obj->type == Lock_Btn)
     {
+        if (Obj->state == UI_Btn_PushDwn)
+        {
+            Obj->push_callback();
+        }
+        else if (Obj->state == UI_Btn_RlsUp)
+        {
+            Obj->release_callback();
+        }
+        else
+            return false;
     }
 
     return true;
