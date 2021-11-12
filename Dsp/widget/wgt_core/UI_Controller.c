@@ -111,6 +111,10 @@ static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj)
 
     if (Obj->type == Lock_Btn)
     {
+        if (Obj->state == UI_Btn_RlsUp)
+            Obj->state = UI_Btn_PushDwn;
+        else
+            Obj->state = UI_Btn_RlsUp;
     }
     else if (Obj->type == Reset_Btn)
     {
