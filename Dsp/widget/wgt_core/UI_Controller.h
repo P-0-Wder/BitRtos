@@ -205,11 +205,15 @@ typedef struct
     bool inputing;
 } UI_StrInputObj_TypeDef;
 
-bool UI_Set_DspInterface(UI_DrawPoint point,
+void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawLine line,
                          UI_DrawRectangle rectangle,
+                         UI_DrawRadiusRectangle radius_rectangle,
                          UI_DrawCircle circle,
-                         UI_DrawStr str);
+                         UI_DrawStr str,
+                         UI_FillCircle fill_circle,
+                         UI_FillRectangle fill_rectangle,
+                         UI_FillRadiusRectangle fill_radius_rectangle);
 
 bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 

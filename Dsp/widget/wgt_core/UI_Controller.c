@@ -11,26 +11,26 @@ static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
 
 /******************************* general function *********************************/
 
-bool UI_Set_DspInterface(UI_DrawPoint point,
+void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawLine line,
                          UI_DrawRectangle rectangle,
+                         UI_DrawRadiusRectangle radius_rectangle,
                          UI_DrawCircle circle,
-                         UI_DrawStr str)
+                         UI_DrawStr str,
+                         UI_FillCircle fill_circle,
+                         UI_FillRectangle fill_rectangle,
+                         UI_FillRadiusRectangle fill_radius_rectangle)
 {
-    if ((point == NULL) ||
-        (line == NULL) ||
-        (rectangle == NULL) ||
-        (circle == NULL) ||
-        (str == NULL))
-        return false;
-
     UI_DspInterface.draw_circle = circle;
     UI_DspInterface.draw_line = line;
     UI_DspInterface.draw_point = point;
     UI_DspInterface.draw_rectangle = rectangle;
+    UI_DspInterface.draw_radius_rectangle = radius_rectangle;
     UI_DspInterface.draw_str = str;
 
-    return true;
+    UI_DspInterface.fill_circle = fill_circle;
+    UI_DspInterface.fill_radius_rectangle = fill_radius_rectangle;
+    UI_DspInterface.fill_rectangle = fill_rectangle;
 }
 
 static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
