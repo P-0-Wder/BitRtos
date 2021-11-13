@@ -60,6 +60,11 @@ static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData)
     return GenData.selected;
 }
 
+static bool UI_ShowSelector()
+{
+    return true;
+}
+
 /********************************************** UI Button Object ***************************************************/
 /*
 *  the operation of button ctl is a async operation
@@ -171,6 +176,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     }
 
     /* display button */
+    if (UI_DspInterface.draw_rectangle != NULL)
+        UI_DspInterface.draw_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, 0, 1);
+
+    if (UI_DspInterface.draw_str != NULL)
+        UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y);
 
     return true;
 }

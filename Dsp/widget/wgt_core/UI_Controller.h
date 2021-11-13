@@ -5,10 +5,12 @@
 #include <stdint.h>
 #include <string.h>
 #include "linked_list.h"
+#include "oledfont.h"
 
 #define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
+#define Default_Font Font_12
 
 typedef uint32_t UI_Handler;
 typedef void (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
