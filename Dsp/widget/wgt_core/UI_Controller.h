@@ -144,6 +144,9 @@ typedef struct
     UI_Trigger_Callback push_callback;
     UI_Trigger_Callback release_callback;
 
+    char *PushDown_Label;
+    char *release_Label;
+
     uint8_t width;
     uint8_t height;
 } UI_ButtonObj_TypeDef;
