@@ -86,6 +86,9 @@ bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y
     Obj->width = width;
     Obj->height = height;
 
+    Obj->PushDown_Label = NULL;
+    Obj->Release_Label = NULL;
+
     Obj->Gen_Data.init = true;
 
     return true;
@@ -106,7 +109,7 @@ static bool UI_Button_SetRelease_Label(UI_ButtonObj_TypeDef *Obj, char *Rls_Lbl)
     if (Obj == NULL)
         return false;
 
-    Obj->release_Label = Rls_Lbl;
+    Obj->Release_Label = Rls_Lbl;
 
     return true;
 }
@@ -198,19 +201,24 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
     /* display button on screen object */
     /* invert display color when button been push down */
-    if (UI_DspInterface.draw_rectangle != NULL)
-    {
-        UI_DspInterface.draw_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, 0, 1);
-    }
-    else
-        return false;
-
-    if (UI_DspInterface.draw_str != NULL)
+    if ((UI_DspInterface.draw_str != NULL) && (UI_DspInterface.draw_rectangle != NULL))
     {
         if (Obj->state == UI_Btn_PushDwn)
-            UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x, Obj->Gen_Data.y);
+        {
+            /* fill button frame */
+
+            /* invert string display */
+            if (Obj->PushDown_Label != NULL)
+                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x, Obj->Gen_Data.y);
+        }
         else
-            UI_DspInterface.draw_str(Default_Font, Obj->release_Label, Obj->Gen_Data.x, Obj->Gen_Data.y);
+        {
+            /* draw button frame */
+
+            /* display label normally */
+            if (Obj->Release_Label != NULL)
+                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x, Obj->Gen_Data.y);
+        }
     }
     else
         return false;
