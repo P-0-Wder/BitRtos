@@ -201,7 +201,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
     /* display button on screen object */
     /* invert display color when button been push down */
-    if ((UI_DspInterface.draw_str != NULL) && (UI_DspInterface.draw_rectangle != NULL))
+    if ((UI_DspInterface.draw_str != NULL) && (UI_DspInterface.fill_radius_rectangle != NULL) && (UI_DspInterface.draw_radius_rectangle != NULL))
     {
         if (Obj->state == UI_Btn_PushDwn)
         {
@@ -209,16 +209,16 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x, Obj->Gen_Data.y);
+                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
         }
         else
         {
             /* draw button frame */
-            UI_DspInterface.draw_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, Default_Button_FrameRadius, 1);
+            UI_DspInterface.draw_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, 1);
 
             /* display label normally */
             if (Obj->Release_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x, Obj->Gen_Data.y);
+                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x, Obj->Gen_Data.y, false);
         }
     }
     else
