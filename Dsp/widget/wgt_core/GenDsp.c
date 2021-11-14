@@ -15,6 +15,7 @@ GenDsp_DspArea_Limit_Range DspRange = {
 /* internal function definition */
 
 /* external draw funtion definition */
+static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str);
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set);
 static void GenDsp_SetRange(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x, uint8_t y, bool col_inv);
@@ -24,7 +25,10 @@ static void GenDsp_DrawCircle(uint8_t **map, uint8_t center_x, uint8_t center_y,
 static void GenDsp_DrawRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
 static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_sidth);
 static void GenDsp_DrawRad(uint8_t **map, uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size, int8_t angle);
-static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str);
+static void GenDsp_Draw_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
+static void GenDsp_FillCircle(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius);
+static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
 
 GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_img = NULL,
@@ -37,6 +41,10 @@ GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_point = GenDsp_DrawPoint,
     .draw_circle = GenDsp_DrawCircle,
     .draw_rectangle = GenDsp_DrawRectangle,
+    .draw_radius_rectangle = GenDsp_Draw_RadiusRectangle,
+    .fill_circle = GenDsp_FillCircle,
+    .fill_rectangle = GenDsp_FillRectangle,
+    .fill_radius_rectangle = GenDsp_Fill_RadiusRectangle,
 };
 
 static void GenDsp_SetRange(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
@@ -270,7 +278,7 @@ static void GenDsp_Draw_Circle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t ra
     }
 }
 
-void GenDsp_DrawCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad, uint8_t option)
+static void GenDsp_DrawCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad, uint8_t option)
 {
     /* check for bounding box */
 #ifdef U8G2_WITH_INTERSECTION
@@ -294,4 +302,20 @@ static void GenDsp_DrawRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t wi
 
     GenDsp_DrawLen(map, x_tmp, y, x_tmp, y_tmp, line_size);
     GenDsp_DrawLen(map, x, y_tmp, x_tmp, y_tmp, line_size);
+}
+
+static void GenDsp_Draw_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width)
+{
+}
+
+static void GenDsp_FillCircle(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius)
+{
+}
+
+static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+{
+}
+
+static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
+{
 }
