@@ -352,7 +352,13 @@ static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad
 
 static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height)
 {
-    //GenDsp_DrawPoint(map, x, y, true);
+    for (uint8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+    {
+        for (uint8_t y_tmp = y; y_tmp < y + height; y++)
+        {
+            GenDsp_DrawPoint(map, x_tmp, y_tmp, true);
+        }
+    }
 }
 
 static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
