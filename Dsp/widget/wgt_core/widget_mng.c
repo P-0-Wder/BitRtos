@@ -73,6 +73,10 @@ static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uin
 static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size);
 static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
 static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv);
+static void Widget_DrawRadiusRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size);
+static void Widget_FillCircle(uint8_t x, uint8_t y, uint8_t radius);
+static void Widget_FillRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+static void Widget_FillRadiusRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
 
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
