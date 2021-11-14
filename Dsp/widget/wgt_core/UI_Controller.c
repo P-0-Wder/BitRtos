@@ -206,6 +206,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         if (Obj->state == UI_Btn_PushDwn)
         {
             /* fill button frame */
+            UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, Default_Button_FrameRadius);
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
@@ -214,7 +215,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         else
         {
             /* draw button frame */
-            UI_DspInterface.draw_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, 1);
+            UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, Default_Button_FrameRadius, 1);
 
             /* display label normally */
             if (Obj->Release_Label != NULL)
