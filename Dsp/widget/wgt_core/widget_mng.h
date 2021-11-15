@@ -92,7 +92,12 @@ typedef struct
     void (*draw_str)(GenFont_List font, char *str, uint8_t x, uint8_t y, bool col_inv);
     void (*draw_num)(GenFont_List font, uint32_t num, uint8_t x, uint8_t y, bool col_inv);
     void (*draw_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
+    void (*draw_radius_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size);
     void (*draw_line)(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_width);
+
+    void (*fill_circle)(uint8_t x, uint8_t y, uint8_t radius);
+    void (*fill_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+    void (*fill_radius_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
 } Widget_DrawFunc_TypeDef;
 
 typedef struct

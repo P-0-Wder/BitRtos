@@ -344,19 +344,11 @@ static bool Widget_Show(void)
 
     if (GetCur_Active_Widget()->use_frame)
     {
-        /*Widget_DrawRectangle(0,
+        Widget_DrawRectangle(0,
                              0,
                              GetCur_Active_Widget()->width,
                              GetCur_Active_Widget()->height,
-                             1);*/
-
-        /* test part */
-        Widget_DrawRadiusRectangle(0,
-                                   0,
-                                   GetCur_Active_Widget()->width,
-                                   GetCur_Active_Widget()->height,
-                                   5,
-                                   1);
+                             1);
     }
 
     if (!GetCur_Active_Widget()->show_state)
