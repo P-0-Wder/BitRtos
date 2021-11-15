@@ -317,18 +317,17 @@ static void GenDsp_Draw_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uin
     uint8_t y_tmp_1 = y + height - 1;
 
     /* fixed */
-    GenDsp_Draw_Circle(map, x_start, y_tmp, radius, DRAW_UPPER_LEFT);
+    GenDsp_Draw_Circle(map, x_start, y_tmp, radius, DRAW_LOWER_LEFT);
     GenDsp_DrawLen(map, x, y_start, x, y_tmp, line_size);
 
-    GenDsp_Draw_Circle(map, x_tmp, y_tmp, radius, DRAW_UPPER_RIGHT);
+    GenDsp_Draw_Circle(map, x_tmp, y_tmp, radius, DRAW_LOWER_RIGHT);
     GenDsp_DrawLen(map, x_start, y_tmp_1, x_tmp, y_tmp_1, line_size);
 
-    GenDsp_Draw_Circle(map, x_start, y_start, radius, DRAW_LOWER_LEFT);
-    /* none fixed down below */
-    GenDsp_DrawLen(map, x_tmp, y, x_tmp, y_tmp, line_size);
+    GenDsp_Draw_Circle(map, x_start, y_start, radius, DRAW_UPPER_LEFT);
+    GenDsp_DrawLen(map, x_start, y, x_tmp, y, line_size);
 
-    GenDsp_Draw_Circle(map, x_tmp, y, radius, DRAW_LOWER_RIGHT);
-    GenDsp_DrawLen(map, x, y_tmp, x_tmp, y_tmp, line_size);
+    GenDsp_Draw_Circle(map, x_tmp, y_start, radius, DRAW_UPPER_RIGHT);
+    GenDsp_DrawLen(map, x_tmp_1, y_start, x_tmp_1, y_tmp, line_size);
 }
 
 static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t radius)

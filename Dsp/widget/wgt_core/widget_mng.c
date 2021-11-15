@@ -344,11 +344,19 @@ static bool Widget_Show(void)
 
     if (GetCur_Active_Widget()->use_frame)
     {
-        Widget_DrawRectangle(0,
+        /*Widget_DrawRectangle(0,
                              0,
                              GetCur_Active_Widget()->width,
                              GetCur_Active_Widget()->height,
-                             1);
+                             1);*/
+
+        /* test part */
+        Widget_DrawRadiusRectangle(0,
+                                   0,
+                                   GetCur_Active_Widget()->width,
+                                   GetCur_Active_Widget()->height,
+                                   5,
+                                   1);
     }
 
     if (!GetCur_Active_Widget()->show_state)
@@ -742,6 +750,24 @@ static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius
                                  center_y,
                                  radius,
                                  line_size);
+}
+
+static void Widget_DrawRadiusRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.draw_radius_rectangle(tmp->pixel_map,
+                                           x,
+                                           y,
+                                           width,
+                                           height,
+                                           radius,
+                                           line_size);
 }
 
 static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size)
