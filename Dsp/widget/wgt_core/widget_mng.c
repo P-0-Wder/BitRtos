@@ -78,6 +78,9 @@ static void Widget_FillCircle(uint8_t x, uint8_t y, uint8_t radius);
 static void Widget_FillRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 static void Widget_FillRadiusRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
 
+/* Widget UI control Interface */
+static void WidgetUI_Init(void);
+
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .UI_CheckBox = NULL,
@@ -831,7 +834,20 @@ static void Widget_FillRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
                                     height);
 }
 
-static uint32_t widgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
+static void WidgetUI_Init(void)
+{
+    UI_Set_DspInterface(WidgetDraw_Interface.draw_point,
+                        WidgetDraw_Interface.draw_line,
+                        WidgetDraw_Interface.draw_rectangle,
+                        WidgetDraw_Interface.draw_radius_rectangle,
+                        WidgetDraw_Interface.draw_circle,
+                        WidgetDraw_Interface.draw_str,
+                        WidgetDraw_Interface.fill_circle,
+                        WidgetDraw_Interface.fill_rectangle,
+                        WidgetDraw_Interface.fill_radius_rectangle);
+}
+
+static uint32_t WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
 
