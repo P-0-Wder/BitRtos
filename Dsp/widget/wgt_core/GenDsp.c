@@ -378,4 +378,21 @@ static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t wi
 
 static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
 {
+    uint8_t diff = 0;
+    uint8_t offset = 0;
+
+    if (width >= height)
+    {
+        diff = height;
+    }
+    else
+        diff = width;
+
+    while (diff)
+    {
+        GenDsp_Draw_RadiusRectangle(map, x + offset, y + offset, width - (2 * offset), height - (2 * offset), radius, 1);
+
+        diff--;
+        offset++;
+    }
 }
