@@ -779,6 +779,54 @@ static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t he
                                     line_size);
 }
 
+static void Widget_FillRadiusRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.fill_radius_rectangle(tmp->pixel_map,
+                                           x,
+                                           y,
+                                           width,
+                                           height,
+                                           radius);
+}
+
+static void Widget_FillCircle(uint8_t x, uint8_t y, uint8_t radius)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.fill_circle(tmp->pixel_map,
+                                 x,
+                                 y,
+                                 radius);
+}
+
+static void Widget_FillRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.fill_rectangle(tmp->pixel_map,
+                                    x,
+                                    y,
+                                    width,
+                                    height);
+}
+
 static uint32_t widgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
