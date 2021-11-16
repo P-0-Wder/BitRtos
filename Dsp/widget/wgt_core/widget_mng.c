@@ -92,11 +92,15 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
 static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
     .draw_str = Widget_DrawStr,
     .draw_rectangle = Widget_DrawRectangle,
+    .draw_radius_rectangle = Widget_DrawRadiusRectangle,
     .draw_point = Widget_DrawPoint,
     .draw_num = Widget_DrawNum,
     .draw_line = Widget_DrawLine,
     .draw_circle = Widget_DrawCircle,
     .draw_char = Widget_DrawChr,
+    .fill_circle = Widget_FillCircle,
+    .fill_radius_rectangle = Widget_FillRadiusRectangle,
+    .fill_rectangle = Widget_FillRectangle,
 };
 
 static Widget_Control_TypeDef WidgetCtl_Interface = {
