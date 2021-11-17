@@ -438,7 +438,7 @@ static void Task_SetStkPtr_Val(Task *tsk)
 {
     uint32_t *Tsk_Ptr_tmp = NULL;
 
-    memset(tsk->TCB.Stack, NULL, tsk->Stack_Depth);
+    memset(tsk->TCB.Stack, TASK_STACK_DEFAULT, tsk->Stack_Depth * sizeof(uint32_t));
 
     Tsk_Ptr_tmp = &tsk->TCB.Stack + (tsk->Stack_Depth - (uint32_t)1);
     Tsk_Ptr_tmp = (uint32_t *)((uint32_t)(Tsk_Ptr_tmp)&0XFFFFFFF8ul);
@@ -1080,4 +1080,20 @@ void Task_Statistic_Cast(uint32_t time_base)
     {
         CurRunTsk_Ptr->TskFuncUing_US += time_base;
     }
+}
+
+uint32_t Task_GetStackRemain(const Task_Handler hdl)
+{
+    uint32_t remain_size = 0;
+
+    __asm("cpsid i");
+
+    while ((uint8_t)(((Task *)hdl)->TCB.Stack + remain_size) == TASK_STACK_DEFAULT)
+    {
+        remain_size++;
+    }
+
+    __asm("cpsie i");
+
+    return (remain_size / 4);
 }

@@ -869,19 +869,9 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     if (!UI_Button_Init(btn, label, x, y, width, height, type, state))
         return NULL;
 
-    return btn;
+    return (UI_Button_Handle)btn;
 }
 
-/* bref   :
-*          set button push and release label
-*  param  : 
-*               Button Handler
-*               string on pushed state
-*               string on released state
-*  Return :
-*          true   setting done
-*          false  setting failed
-*/
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl)
 {
     if (Btn_Hdl == 0)

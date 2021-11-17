@@ -10,6 +10,8 @@
 #include "binary_tree.h"
 #include "linked_list.h"
 
+#define TASK_STACK_DEFAULT 0x8B
+
 #define TASK_REGISTED 1
 #define TASK_BAD_MEMSPC_REQ 0
 #define TASK_SUCCESS_MEMSPC_REQ 1

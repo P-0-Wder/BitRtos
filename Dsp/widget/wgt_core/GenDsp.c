@@ -332,36 +332,9 @@ static void GenDsp_Draw_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uin
 
 static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t radius)
 {
-    int32_t f;
-    int32_t ddF_x;
-    int32_t ddF_y;
-    uint32_t x;
-    uint32_t y;
-
-    f = 1;
-    f -= radius;
-    ddF_x = 1;
-    ddF_y = 0;
-    ddF_y -= radius;
-    ddF_y *= 2;
-    x = 0;
-    y = radius;
-
-    GenDsp_Draw_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
-
-    while (x < y)
+    while (radius--)
     {
-        if (f >= 0)
-        {
-            y--;
-            ddF_y += 2;
-            f += ddF_y;
-        }
-        x++;
-        ddF_x += 2;
-        f += ddF_x;
-
-        GenDsp_Draw_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
+        GenDsp_Draw_Circle(map, x0, y0, radius, DRAW_ALL);
     }
 }
 
