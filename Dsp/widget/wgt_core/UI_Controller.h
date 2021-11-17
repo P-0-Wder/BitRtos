@@ -219,5 +219,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_FillRadiusRectangle fill_radius_rectangle);
 
 bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+bool UI_Button_SetPush_Label(UI_ButtonObj_TypeDef *Obj, char *Psh_Lbl);
+bool UI_Button_SetRelease_Label(UI_ButtonObj_TypeDef *Obj, char *Rls_Lbl);
 
 #endif

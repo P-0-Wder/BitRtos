@@ -94,7 +94,7 @@ bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y
     return true;
 }
 
-static bool UI_Button_SetPush_Label(UI_ButtonObj_TypeDef *Obj, char *Psh_Lbl)
+bool UI_Button_SetPush_Label(UI_ButtonObj_TypeDef *Obj, char *Psh_Lbl)
 {
     if (Obj == NULL)
         return false;
@@ -104,7 +104,7 @@ static bool UI_Button_SetPush_Label(UI_ButtonObj_TypeDef *Obj, char *Psh_Lbl)
     return true;
 }
 
-static bool UI_Button_SetRelease_Label(UI_ButtonObj_TypeDef *Obj, char *Rls_Lbl)
+bool UI_Button_SetRelease_Label(UI_ButtonObj_TypeDef *Obj, char *Rls_Lbl)
 {
     if (Obj == NULL)
         return false;

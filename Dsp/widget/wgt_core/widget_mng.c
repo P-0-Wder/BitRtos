@@ -868,12 +868,26 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     return btn;
 }
 
-static bool WidgetUI_SetButton_Type(UI_Button_Handle Btn_Hdl)
+/* bref   :
+*          set button push and release label
+*  param  : 
+*               Button Handler
+*               string on pushed state
+*               string on released state
+*  Return :
+*          true   setting done
+*          false  setting failed
+*/
+static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl)
 {
     if (Btn_Hdl == 0)
         return false;
 
-    return true;
+    if (UI_Button_SetPush_Label((UI_ButtonObj_TypeDef *)Btn_Hdl, psh_lbl) &&
+        UI_Button_SetRelease_Label((UI_ButtonObj_TypeDef *)Btn_Hdl, rls_lbl))
+        return true;
+    else
+        return false;
 }
 
 static bool widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
