@@ -882,7 +882,7 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
     return true;
 }
 
-static bool widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
+/* fresh appropriate UI Item On this widget (only fresh the item need to display on current widget) */
+static bool Widget_UI_Ctl(Widget_Handle hdl)
 {
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }

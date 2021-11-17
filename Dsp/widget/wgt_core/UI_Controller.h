@@ -14,7 +14,7 @@
 #define Default_Button_FrameRadius 2
 
 typedef uint32_t UI_GenCTL_Handle;
-typedef uint32_t UI_Button_Handle;
+typedef UI_GenCTL_Handle UI_Button_Handle;
 
 typedef uint32_t UI_Handler;
 typedef void (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
