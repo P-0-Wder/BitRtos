@@ -103,6 +103,7 @@ typedef struct
 typedef struct
 {
     /* ui control section */
+    void (*UI_Button)();
     void (*UI_CheckBox)();
     void (*UI_ComboBox)();
     void (*UI_DigInput)();

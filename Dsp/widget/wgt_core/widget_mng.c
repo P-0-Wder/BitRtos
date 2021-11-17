@@ -91,6 +91,7 @@ static void WidgetUI_Init(void);
 
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
+    .UI_Button = NULL,
     .UI_CheckBox = NULL,
     .UI_ComboBox = NULL,
     .UI_DigInput = NULL,
@@ -872,16 +873,6 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     return btn;
 }
 
-/* bref   :
-*          set button push and release label
-*  param  : 
-*               Button Handler
-*               string on pushed state
-*               string on released state
-*  Return :
-*          true   setting done
-*          false  setting failed
-*/
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl)
 {
     if (Btn_Hdl == 0)
