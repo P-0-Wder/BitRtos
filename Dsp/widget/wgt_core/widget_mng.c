@@ -1,3 +1,11 @@
+/*
+* bref:
+* Need to Use OS Event Module to hook the widget process function with 
+* the Input Trigger Event
+* 
+* Coder : 8_B!T0
+*/
+
 #include "widget_mng.h"
 #include "SrvOled.h"
 #include "runtime.h"
