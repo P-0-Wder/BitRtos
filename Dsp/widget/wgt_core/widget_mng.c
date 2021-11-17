@@ -874,14 +874,12 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
 
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl)
 {
-    if (Btn_Hdl == 0)
+    if (Btn_Hdl == 0 ||
+        !UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_PushDwn, psh_lbl) ||
+        !UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_RlsUp, rls_lbl))
         return false;
 
-    if (UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_PushDwn, psh_lbl) &&
-        UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_RlsUp, rls_lbl))
-        return true;
-    else
-        return false;
+    return true;
 }
 
 static bool widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
