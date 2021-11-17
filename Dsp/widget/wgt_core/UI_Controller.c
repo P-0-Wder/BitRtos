@@ -4,10 +4,31 @@
 /* internal object */
 static UI_DrawInterface_TypeDef UI_DspInterface;
 
-/* internal function */
+/* external function */
+static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label);
+static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback);
+static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj);
+static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj);
+static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y);
+static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj);
+
+/* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
 static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
+static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, uint8_t dst_x, uint8_t dst_y);
+
+/* external Object var */
+UI_Button_Interface_TypeDef UI_Button = {
+    .ctl = UI_Button_Ctl,
+    .init = UI_Button_Init,
+    .push = UI_Button_Push,
+    .move = UI_Button_Move,
+    .release = UI_Button_Release,
+    .set_label = UI_Button_Set_Label,
+    .set_trogger_callback = UI_Button_Set_TriggerCallback,
+};
 
 /******************************* general function *********************************/
 
@@ -66,13 +87,24 @@ static bool UI_ShowSelector()
     return true;
 }
 
+static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, uint8_t dst_x, uint8_t dst_y)
+{
+    if (GenUI_Info == NULL)
+        return false;
+
+    GenUI_Info->x = dst_x;
+    GenUI_Info->y = dst_y;
+
+    return true;
+}
+
 /********************************************** UI Button Object ***************************************************/
 /*
 *  the operation of button ctl is a async operation
 *  exti irq or input signal triiger first then out of the trigger code 
 *  check signal value doing process
 */
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
+static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     if (Obj == NULL)
         return false;
@@ -94,27 +126,20 @@ bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y
     return true;
 }
 
-bool UI_Button_SetPush_Label(UI_ButtonObj_TypeDef *Obj, char *Psh_Lbl)
+static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label)
 {
     if (Obj == NULL)
         return false;
 
-    Obj->PushDown_Label = Psh_Lbl;
+    if (state == UI_Btn_PushDwn)
+        Obj->PushDown_Label = label;
+    else
+        Obj->Release_Label = label;
 
     return true;
 }
 
-bool UI_Button_SetRelease_Label(UI_ButtonObj_TypeDef *Obj, char *Rls_Lbl)
-{
-    if (Obj == NULL)
-        return false;
-
-    Obj->Release_Label = Rls_Lbl;
-
-    return true;
-}
-
-bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback)
+static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback)
 {
     if (Obj == NULL)
         return false;
@@ -178,6 +203,14 @@ static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj)
     }
 
     return true;
+}
+
+static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
 static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
@@ -466,19 +499,6 @@ static bool UI_StrInput_Ctl()
 
 static bool UI_Drop_Ctl()
 {
-
-    return true;
-}
-
-/******************************* general function *********************************/
-
-static bool UI_Move(UI_GeneralData_TypeDef *Obj, uint8_t x, uint8_t y)
-{
-    if (Obj == NULL)
-        return false;
-
-    Obj->x = x;
-    Obj->y = y;
 
     return true;
 }

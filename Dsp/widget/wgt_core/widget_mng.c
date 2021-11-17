@@ -866,7 +866,7 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
 
     /* init button */
-    if (!UI_Button_Init(btn, label, x, y, width, height, type, state))
+    if (!UI_Button.init(btn, label, x, y, width, height, type, state))
         return NULL;
 
     return (UI_Button_Handle)btn;
@@ -877,8 +877,8 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
     if (Btn_Hdl == 0)
         return false;
 
-    if (UI_Button_SetPush_Label((UI_ButtonObj_TypeDef *)Btn_Hdl, psh_lbl) &&
-        UI_Button_SetRelease_Label((UI_ButtonObj_TypeDef *)Btn_Hdl, rls_lbl))
+    if (UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_PushDwn, psh_lbl) &&
+        UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_RlsUp, rls_lbl))
         return true;
     else
         return false;

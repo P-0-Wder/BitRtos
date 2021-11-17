@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include "linked_list.h"
 #include "oledfont.h"
+#include "linked_list.h"
 
 #define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
@@ -44,6 +44,17 @@ typedef struct
     UI_FillRadiusRectangle fill_radius_rectangle;
 } UI_DrawInterface_TypeDef;
 
+typedef struct
+{
+    char *label;
+    uint8_t x;
+    uint8_t y;
+
+    bool selected;
+
+    bool init;
+} UI_GeneralData_TypeDef;
+
 typedef enum
 {
     Reset_Btn = 0,
@@ -62,23 +73,39 @@ typedef enum
     UI_Btn_PushDwn = 1,
 } UI_Button_State_List;
 
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
+    UI_Button_State_List default_state;
+    UI_Button_State_List state;
+    UI_Button_Type type;
+    UI_Trigger_Callback push_callback;
+    UI_Trigger_Callback release_callback;
+
+    char *PushDown_Label;
+    char *Release_Label;
+
+    uint8_t width;
+    uint8_t height;
+} UI_ButtonObj_TypeDef;
+
+typedef struct
+{
+    bool (*init)(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+    bool (*set_trogger_callback)(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback);
+    bool (*set_label)(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *Rls_Lbl);
+    bool (*push)(UI_ButtonObj_TypeDef *obj);
+    bool (*release)(UI_ButtonObj_TypeDef *obj);
+    bool (*ctl)(UI_ButtonObj_TypeDef *obj);
+    bool (*move)(UI_ButtonObj_TypeDef *obj, uint8_t x, uint8_t y);
+} UI_Button_Interface_TypeDef;
+
 typedef enum
 {
     ProcBar_MoveDir_Default = 0,
     ProcBar_MoveDir_Left = 0,
     ProcBar_MoveDir_Right = 1,
 } ProcessBar_MoveDir_TypeDef;
-
-typedef struct
-{
-    char *label;
-    uint8_t x;
-    uint8_t y;
-
-    bool selected;
-
-    bool init;
-} UI_GeneralData_TypeDef;
 
 typedef struct
 {
@@ -151,22 +178,6 @@ typedef struct
 
 typedef struct
 {
-    UI_GeneralData_TypeDef Gen_Data;
-    UI_Button_State_List default_state;
-    UI_Button_State_List state;
-    UI_Button_Type type;
-    UI_Trigger_Callback push_callback;
-    UI_Trigger_Callback release_callback;
-
-    char *PushDown_Label;
-    char *Release_Label;
-
-    uint8_t width;
-    uint8_t height;
-} UI_ButtonObj_TypeDef;
-
-typedef struct
-{
     char *name;
     bool selected;
     bool active;
@@ -218,8 +229,5 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_FillRectangle fill_rectangle,
                          UI_FillRadiusRectangle fill_radius_rectangle);
 
-bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
-bool UI_Button_SetPush_Label(UI_ButtonObj_TypeDef *Obj, char *Psh_Lbl);
-bool UI_Button_SetRelease_Label(UI_ButtonObj_TypeDef *Obj, char *Rls_Lbl);
-
+extern UI_Button_Interface_TypeDef UI_Button;
 #endif
