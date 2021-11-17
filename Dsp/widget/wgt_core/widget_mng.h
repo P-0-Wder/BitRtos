@@ -55,7 +55,9 @@ typedef enum
 
 /*
 * use linked list to distinguish which item in created ui item list.
-* need to be frsehed on the dispaly blackboard
+* need to be frsehed on the dispaly blackboard 
+* also we can use binary tree to sort the leaf item (make ui item as leaf item) 
+* to reduce the process cast
 */
 typedef struct
 {

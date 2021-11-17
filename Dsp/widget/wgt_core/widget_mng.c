@@ -10,6 +10,7 @@
 #include "SrvOled.h"
 #include "runtime.h"
 #include "linked_list.h"
+#include "binary_tree.h"
 #include "UI_Controller.h"
 #include "GenDsp.h"
 #include "mmu.h"
