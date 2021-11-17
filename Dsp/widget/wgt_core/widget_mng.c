@@ -141,6 +141,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 {
     WidgetObj_TypeDef *widget_tmp;
 
+    /* if is first time create a widget then init the widget_mng first */
     if (MonitorDataObj.max_display_cache == 0)
     {
         MonitorDataObj.max_display_cache = (SrvOled.get_range().height * SrvOled.get_range().width);
@@ -164,6 +165,9 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
             memset(widget_blackboard[column_index], NULL, SrvOled.get_range().width);
         }
+
+        /* init ui module */
+        WidgetUI_Init();
     }
 
     //widget_tmp = (WidgetObj_TypeDef *)malloc(sizeof(WidgetObj_TypeDef));
