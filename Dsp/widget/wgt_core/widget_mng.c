@@ -855,7 +855,7 @@ static void WidgetUI_Init(void)
                         WidgetDraw_Interface.fill_radius_rectangle);
 }
 
-static uint32_t WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
+static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
 
@@ -866,6 +866,14 @@ static uint32_t WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t
         return NULL;
 
     return btn;
+}
+
+static bool WidgetUI_SetButton_Type(UI_Button_Handle Btn_Hdl)
+{
+    if (Btn_Hdl == 0)
+        return false;
+
+    return true;
 }
 
 static bool widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
