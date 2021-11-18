@@ -66,10 +66,8 @@ static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set)
 
     if (set)
     {
-        if (map[y][x] == 0)
-            map[y][x] = 1;
-        else
-            map[y][x] = 0;
+        /* invert color */
+        map[y][x] = ~map[y][x];
     }
     else
         map[y][x] = 0;
