@@ -218,10 +218,12 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
 
 static void GenDsp_Draw_VLine(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width)
 {
+    GenDsp_DrawLen(map, x, y, x, y + len, line_width);
 }
 
 static void GenDsp_Draw_HLine(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width)
 {
+    GenDsp_DrawLen(map, x, y, x + len, y, line_width);
 }
 
 static void GenDsp_Draw_Circle_Section(uint8_t **map, uint8_t x, uint8_t y, uint8_t x0, uint8_t y0, uint8_t option)
@@ -347,37 +349,64 @@ static void GenDsp_Fill_Circle_Section(uint8_t **map, uint8_t x, uint8_t y, uint
     /* upper right */
     if (option & DRAW_UPPER_RIGHT)
     {
-        u8g2_DrawVLine(u8g2, x0 + x, y0 - y, y + 1);
-        u8g2_DrawVLine(u8g2, x0 + y, y0 - x, x + 1);
+        GenDsp_Draw_VLine(map, x0 + x, y0 - y, y + 1, 1);
+        GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1);
     }
 
     /* upper left */
     if (option & DRAW_UPPER_LEFT)
     {
-        u8g2_DrawVLine(u8g2, x0 - x, y0 - y, y + 1);
-        u8g2_DrawVLine(u8g2, x0 - y, y0 - x, x + 1);
+        GenDsp_Draw_VLine(map, x0 - x, y0 - y, y + 1, 1);
+        GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1);
     }
 
     /* lower right */
     if (option & DRAW_LOWER_RIGHT)
     {
-        u8g2_DrawVLine(u8g2, x0 + x, y0, y + 1);
-        u8g2_DrawVLine(u8g2, x0 + y, y0, x + 1);
+        GenDsp_Draw_VLine(map, x0 + x, y0, y + 1, 1);
+        GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1);
     }
 
     /* lower left */
     if (option & DRAW_LOWER_LEFT)
     {
-        u8g2_DrawVLine(u8g2, x0 - x, y0, y + 1);
-        u8g2_DrawVLine(u8g2, x0 - y, y0, x + 1);
+        GenDsp_Draw_VLine(map, x0 - x, y0, y + 1, 1);
+        GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1);
     }
 }
 
 static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t radius)
 {
-    while (radius--)
+    int8_t f;
+    int8_t ddF_x;
+    int8_t ddF_y;
+    uint8_t x;
+    uint8_t y;
+
+    f = 1;
+    f -= radius;
+    ddF_x = 1;
+    ddF_y = 0;
+    ddF_y -= radius;
+    ddF_y *= 2;
+    x = 0;
+    y = radius;
+
+    GenDsp_Fill_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
+
+    while (x < y)
     {
-        GenDsp_Draw_Circle(map, x0, y0, radius, DRAW_ALL);
+        if (f >= 0)
+        {
+            y--;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x++;
+        ddF_x += 2;
+        f += ddF_x;
+
+        GenDsp_Fill_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
     }
 }
 
