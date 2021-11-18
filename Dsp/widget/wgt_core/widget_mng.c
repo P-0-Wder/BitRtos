@@ -10,6 +10,7 @@
 #include "SrvOled.h"
 #include "runtime.h"
 #include "linked_list.h"
+#include "binary_tree.h"
 #include "UI_Controller.h"
 #include "GenDsp.h"
 #include "mmu.h"
@@ -867,25 +868,23 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
 
     /* init button */
-    if (!UI_Button_Init(btn, label, x, y, width, height, type, state))
+    if (!UI_Button.init(btn, label, x, y, width, height, type, state))
         return NULL;
 
-    return btn;
+    return (UI_Button_Handle)btn;
 }
 
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl)
 {
-    if (Btn_Hdl == 0)
+    if (Btn_Hdl == 0 ||
+        !UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_PushDwn, psh_lbl) ||
+        !UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_RlsUp, rls_lbl))
         return false;
 
-    if (UI_Button_SetPush_Label((UI_ButtonObj_TypeDef *)Btn_Hdl, psh_lbl) &&
-        UI_Button_SetRelease_Label((UI_ButtonObj_TypeDef *)Btn_Hdl, rls_lbl))
-        return true;
-    else
-        return false;
+    return true;
 }
 
-static bool widgetUI_Button_Ctl(UI_CheckBoxObj_TypeDef *obj)
+/* fresh appropriate UI Item On this widget (only fresh the item need to display on current widget) */
+static bool Widget_UI_Ctl(Widget_Handle hdl)
 {
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }

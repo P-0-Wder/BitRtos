@@ -29,12 +29,16 @@ static void GenDsp_Draw_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uin
 static void GenDsp_FillCircle(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius);
 static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
+static void GenDsp_Draw_HLine(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
+static void GenDsp_Draw_VLine(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
 
 GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_img = NULL,
     .draw_str = GenDsp_DrawStr,
     .draw_num = GenDsp_DrawNum,
     .draw_line = GenDsp_DrawLen,
+    .draw_vertical_line = GenDsp_Draw_VLine,
+    .draw_horizon_line = GenDsp_Draw_HLine,
     .str_len = GenDsp_GetStrLen,
     .draw_char = GenDsp_DrawChar,
     .set_range = GenDsp_SetRange,
@@ -212,6 +216,14 @@ static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint
     }
 }
 
+static void GenDsp_Draw_VLine(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width)
+{
+}
+
+static void GenDsp_Draw_HLine(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width)
+{
+}
+
 static void GenDsp_Draw_Circle_Section(uint8_t **map, uint8_t x, uint8_t y, uint8_t x0, uint8_t y0, uint8_t option)
 {
     /* upper right */
@@ -330,38 +342,42 @@ static void GenDsp_Draw_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uin
     GenDsp_DrawLen(map, x_tmp_1, y_start, x_tmp_1, y_tmp, line_size);
 }
 
+static void GenDsp_Fill_Circle_Section(uint8_t **map, uint8_t x, uint8_t y, uint8_t x0, uint8_t y0, uint8_t option)
+{
+    /* upper right */
+    if (option & DRAW_UPPER_RIGHT)
+    {
+        u8g2_DrawVLine(u8g2, x0 + x, y0 - y, y + 1);
+        u8g2_DrawVLine(u8g2, x0 + y, y0 - x, x + 1);
+    }
+
+    /* upper left */
+    if (option & DRAW_UPPER_LEFT)
+    {
+        u8g2_DrawVLine(u8g2, x0 - x, y0 - y, y + 1);
+        u8g2_DrawVLine(u8g2, x0 - y, y0 - x, x + 1);
+    }
+
+    /* lower right */
+    if (option & DRAW_LOWER_RIGHT)
+    {
+        u8g2_DrawVLine(u8g2, x0 + x, y0, y + 1);
+        u8g2_DrawVLine(u8g2, x0 + y, y0, x + 1);
+    }
+
+    /* lower left */
+    if (option & DRAW_LOWER_LEFT)
+    {
+        u8g2_DrawVLine(u8g2, x0 - x, y0, y + 1);
+        u8g2_DrawVLine(u8g2, x0 - y, y0, x + 1);
+    }
+}
+
 static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t radius)
 {
-    int32_t f;
-    int32_t ddF_x;
-    int32_t ddF_y;
-    uint32_t x;
-    uint32_t y;
-
-    f = 1;
-    f -= radius;
-    ddF_x = 1;
-    ddF_y = 0;
-    ddF_y -= radius;
-    ddF_y *= 2;
-    x = 0;
-    y = radius;
-
-    GenDsp_Draw_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
-
-    while (x < y)
+    while (radius--)
     {
-        if (f >= 0)
-        {
-            y--;
-            ddF_y += 2;
-            f += ddF_y;
-        }
-        x++;
-        ddF_x += 2;
-        f += ddF_x;
-
-        GenDsp_Draw_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
+        GenDsp_Draw_Circle(map, x0, y0, radius, DRAW_ALL);
     }
 }
 
