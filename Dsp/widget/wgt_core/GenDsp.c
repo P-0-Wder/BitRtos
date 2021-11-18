@@ -430,7 +430,6 @@ static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uin
     GenDsp_FillRectangle(map, x, y + radius, radius, height - 2 * radius);
     GenDsp_FillRectangle(map, x + width - radius, y + radius, radius, height - 2 * radius);
 
-    /* have bug down below */
     GenDsp_FillCircle(map, x + radius, y + radius, DRAW_LOWER_LEFT);
     GenDsp_FillCircle(map, x + width - radius, y + radius, DRAW_LOWER_RIGHT);
     GenDsp_FillCircle(map, x + radius, y + height - radius, DRAW_UPPER_LEFT);

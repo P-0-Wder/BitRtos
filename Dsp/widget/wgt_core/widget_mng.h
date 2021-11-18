@@ -22,7 +22,7 @@
 
 #define MAX_SUB_WIDGET_NUM 8
 
-#define MAX_FRESH_FRQ 500
+#define MAX_FRESH_FRQ 100
 
 #define DEFAULT_CACHE_CLEAR_TYPE Auto_Cache_Clear
 
@@ -113,6 +113,8 @@ typedef struct
     void (*draw_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
     void (*draw_radius_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size);
     void (*draw_line)(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_width);
+    void (*draw_vline)(uint8_t x, uint8_t y, uint8_t len, uint8_t line_size);
+    void (*draw_hline)(uint8_t x, uint8_t y, uint8_t len, uint8_t line_size);
 
     void (*fill_circle)(uint8_t x, uint8_t y, uint8_t radius);
     void (*fill_rectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height);

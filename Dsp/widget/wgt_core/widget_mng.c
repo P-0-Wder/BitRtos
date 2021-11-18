@@ -79,6 +79,8 @@ static void Widget_DrawPoint(uint8_t x, uint8_t y, bool set);
 static void Widget_DrawChr(Widget_Font font, char char_dsp, uint8_t x, uint8_t y, bool col_cnv);
 static void Widget_DrawStr(Widget_Font font, char *str_dsp, uint8_t x, uint8_t y, bool col_cnv);
 static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_size);
+static void Widget_DrawHLine(uint8_t x, uint8_t y, uint8_t len, uint8_t line_size);
+static void Widget_DrawVLine(uint8_t x, uint8_t y, uint8_t len, uint8_t line_size);
 static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size);
 static void Widget_DrawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_size);
 static void Widget_DrawNum(Widget_Font font, int32_t num, uint8_t x, uint8_t y, bool col_cnv);
@@ -109,6 +111,8 @@ static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
     .draw_point = Widget_DrawPoint,
     .draw_num = Widget_DrawNum,
     .draw_line = Widget_DrawLine,
+    .draw_hline = Widget_DrawHLine,
+    .draw_vline = Widget_DrawVLine,
     .draw_circle = Widget_DrawCircle,
     .draw_char = Widget_DrawChr,
     .fill_circle = Widget_FillCircle,
@@ -747,6 +751,30 @@ static void Widget_DrawLine(uint8_t start_x, uint8_t start_y, uint8_t end_x, uin
                                end_x,
                                end_y,
                                line_size);
+}
+
+static void Widget_DrawVLine(uint8_t x, uint8_t y, uint8_t len, uint8_t line_size)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.draw_vertical_line(tmp->pixel_map, x, y, len, line_size);
+}
+
+static void Widget_DrawHLine(uint8_t x, uint8_t y, uint8_t len, uint8_t line_size)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.draw_horizon_line(tmp->pixel_map, x, y, len, line_size);
 }
 
 static void Widget_DrawCircle(uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size)
