@@ -94,9 +94,9 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, uint8_t x,
                 return false;
 
             if (temp & 0x80)
-                GenDsp_DrawPoint(map, x, y, col_inv);
+                GenDsp_DrawPoint(map, x, y, col_inv ^ map[y][x]);
             else
-                GenDsp_DrawPoint(map, x, y, !col_inv);
+                GenDsp_DrawPoint(map, x, y, !col_inv ^ map[y][x]);
 
             temp <<= 1;
 
