@@ -7,6 +7,9 @@
 #include "oledfont.h"
 #include "linked_list.h"
 
+#define UI_DEFAULT_WIDTH 0
+#define UI_DEFAULT_HEIGHT 0
+
 #define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
