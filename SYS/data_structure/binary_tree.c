@@ -2,7 +2,6 @@
 coder: 8_B!T0
 bref: 
 to make search and sort function more effcient. so i create this file
-const
 in order to make doubly linked list can be mutual converted with binary tree
 and make some search function effcient.
 */

@@ -26,7 +26,7 @@ static void GenDsp_DrawRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t wi
 static void GenDsp_DrawLen(uint8_t **map, uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y, uint8_t line_sidth);
 static void GenDsp_DrawRad(uint8_t **map, uint8_t center_x, uint8_t center_y, uint8_t radius, uint8_t line_size, int8_t angle);
 static void GenDsp_Draw_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
-static void GenDsp_FillCircle(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius);
+static void GenDsp_FillCircle(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius, uint8_t option);
 static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
 static void GenDsp_Draw_HLine(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
@@ -66,8 +66,7 @@ static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set)
 
     if (set)
     {
-        /* invert color */
-        map[y][x] = ~map[y][x];
+        map[y][x] = 1;
     }
     else
         map[y][x] = 0;
@@ -297,14 +296,6 @@ static void GenDsp_Draw_Circle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t ra
 
 static void GenDsp_DrawCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad, uint8_t option)
 {
-    /* check for bounding box */
-#ifdef U8G2_WITH_INTERSECTION
-    {
-        if (u8g2_IsIntersection(u8g2, x0 - rad, y0 - rad, x0 + rad + 1, y0 + rad + 1) == 0)
-            return;
-    }
-#endif /* U8G2_WITH_INTERSECTION */
-
     /* draw circle */
     GenDsp_Draw_Circle(map, x0, y0, rad, DRAW_ALL);
 }
@@ -378,7 +369,7 @@ static void GenDsp_Fill_Circle_Section(uint8_t **map, uint8_t x, uint8_t y, uint
     }
 }
 
-static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t radius)
+static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t radius, uint8_t option)
 {
     int8_t f;
     int8_t ddF_x;
@@ -395,7 +386,7 @@ static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad
     x = 0;
     y = radius;
 
-    GenDsp_Fill_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
+    GenDsp_Fill_Circle_Section(map, x, y, x0, y0, option);
 
     while (x < y)
     {
@@ -409,7 +400,7 @@ static void GenDsp_FillCircle(uint8_t **map, uint8_t x0, uint8_t y0, uint8_t rad
         ddF_x += 2;
         f += ddF_x;
 
-        GenDsp_Fill_Circle_Section(map, x, y, x0, y0, DRAW_ALL);
+        GenDsp_Fill_Circle_Section(map, x, y, x0, y0, option);
     }
 }
 
@@ -417,7 +408,7 @@ static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t wi
 {
     for (uint8_t x_tmp = x; x_tmp < x + width; x_tmp++)
     {
-        for (uint8_t y_tmp = y; y_tmp < y + height; y++)
+        for (uint8_t y_tmp = y; y_tmp < y + height; y_tmp++)
         {
             GenDsp_DrawPoint(map, x_tmp, y_tmp, true);
         }
@@ -426,12 +417,12 @@ static void GenDsp_FillRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t wi
 
 static void GenDsp_Fill_RadiusRectangle(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
 {
-    GenDsp_FillRectangle(map, x - radius, y, width - 2 * radius, height);
-    GenDsp_FillRectangle(map, x, y + radius, radius, height - 2 * radius);
-    GenDsp_FillRectangle(map, x + width - radius, y + radius, radius, height - 2 * radius);
+    GenDsp_FillRectangle(map, x + radius, y, width - 2 * radius, height);
+    GenDsp_FillRectangle(map, x, y + radius, radius + 1, height - 2 * radius - 1);
+    GenDsp_FillRectangle(map, x + width - radius, y + radius, radius + 1, height - 2 * radius);
 
-    GenDsp_FillCircle(map, x + radius, y + radius, DRAW_LOWER_LEFT);
-    GenDsp_FillCircle(map, x + width - radius, y + radius, DRAW_LOWER_RIGHT);
-    GenDsp_FillCircle(map, x + radius, y + height - radius, DRAW_UPPER_LEFT);
-    GenDsp_FillCircle(map, x + width - radius, y + height - radius, DRAW_UPPER_RIGHT);
+    GenDsp_FillCircle(map, x + radius, y + radius, radius, DRAW_UPPER_LEFT);
+    GenDsp_FillCircle(map, x + width - radius, y + radius, radius, DRAW_UPPER_RIGHT);
+    GenDsp_FillCircle(map, x + radius, y + height - radius - 2, radius, DRAW_LOWER_LEFT);
+    GenDsp_FillCircle(map, x + width - radius, y + height - radius - 2, radius, DRAW_LOWER_RIGHT);
 }

@@ -857,7 +857,8 @@ static void Widget_FillCircle(uint8_t x, uint8_t y, uint8_t radius)
     GenDsp_Interface.fill_circle(tmp->pixel_map,
                                  x,
                                  y,
-                                 radius);
+                                 radius,
+                                 DRAW_ALL);
 }
 
 static void Widget_FillRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height)

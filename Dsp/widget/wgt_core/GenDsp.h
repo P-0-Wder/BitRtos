@@ -46,7 +46,7 @@ typedef struct
     void (*draw_horizon_line)(uint8_t **map, uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
     void (*draw_img)(uint8_t **map);
 
-    void (*fill_circle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius);
+    void (*fill_circle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t radius, uint8_t option);
     void (*fill_rectangle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
     void (*fill_radius_rectangle)(uint8_t **map, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
 
