@@ -13,6 +13,13 @@
 #define Default_Font Font_12
 #define Default_Button_FrameRadius 2
 
+#define DEFAULT_FONT font_12
+#define DEFAULT_BUTTON_PUSH_LABEL "yes"
+#define DEFAULT_BUTTON_RELEASE_LABEL "no"
+#define DEFAULT_BUTTON_WIDTH 25
+#define DEFAULT_BUTTON_HEIGHT 14
+#define DEFAULT__BUTTON_RADIUS 3
+
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 
