@@ -890,6 +890,11 @@ static void WidgetUI_Init(void)
                         WidgetDraw_Interface.fill_radius_rectangle);
 }
 
+static void WidgetUI_GetCur_SelectedCtl()
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+}
+
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
