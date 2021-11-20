@@ -61,7 +61,7 @@ typedef struct
 {
     WidgetUI_Type_List type;
     UI_GenCTL_Handle Handler;
-} WidgetUI_FreshItem_TypeDef;
+} WidgetUI_Item_TypeDef;
 
 typedef enum
 {
@@ -163,6 +163,7 @@ typedef struct
     char *name;
 
     uint8_t level;
+    uint8_t ui_ctl_num;
     item_obj *dsp_item;
     list_obj *uictl_item;
 } WidgetObj_TypeDef;

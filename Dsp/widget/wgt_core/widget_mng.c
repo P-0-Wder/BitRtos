@@ -54,6 +54,7 @@ static bool Widget_RoutateBlackboard(void);
 static bool Widget_MirrorBlackboard(void);
 static bool Widget_ClearDspCache(void);
 static bool Widget_Init_UIList(item_obj *first);
+static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_Item_TypeDef *item_prv, const WidgetUI_Item_TypeDef *item_nxt);
 
 /* external widget manager config function definition */
 static bool Widget_ConfigDisplay_RoutateDir(Oled_Routate_Direction_Def dir);
@@ -232,6 +233,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
 
     //clear ui controller first
     widget_tmp->uictl_item = NULL;
+    widget_tmp->ui_ctl_num = 0;
 
     return (Widget_Handle)widget_tmp;
 }
@@ -291,7 +293,7 @@ static bool Widget_Init_UIList(item_obj *first)
     if ((tmp->uictl_item == NULL) || (first == NULL))
         return false;
 
-    List_Init(tmp->uictl_item, first, by_condition, );
+    List_Init(tmp->uictl_item, first, by_condition, WidgetUI_InsertSequence_Callback);
 
     return true;
 }
@@ -914,6 +916,26 @@ static void WidgetUI_GetCur_SelectedCtl()
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
+static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_Item_TypeDef *item_prv, const WidgetUI_Item_TypeDef *item_nxt)
+{
+    uint8_t item_prv_y = 0;
+    uint8_t item_nxt_y = 0;
+
+    if ((item_prv == NULL) && (item_nxt == NULL))
+        return NULL;
+
+    if (item_prv == NULL)
+        return item_nxt;
+
+    if (item_nxt == NULL)
+        return item_prv;
+
+    if ((item_prv != NULL) && (item_nxt != NULL))
+    {
+        /* convert handler to pointer */
+    }
+}
+
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
@@ -933,6 +955,7 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     }
 
     /* insert list item */
+    tmp->ui_ctl_num++;
 
     return (UI_Button_Handle)btn;
 }
