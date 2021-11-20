@@ -53,6 +53,7 @@ static uint8_t Widget_GetError(void);
 static bool Widget_RoutateBlackboard(void);
 static bool Widget_MirrorBlackboard(void);
 static bool Widget_ClearDspCache(void);
+static bool Widget_Init_UIList(item_obj *first);
 
 /* external widget manager config function definition */
 static bool Widget_ConfigDisplay_RoutateDir(Oled_Routate_Direction_Def dir);
@@ -219,15 +220,18 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->Dsp = &WidgetDraw_Interface;
     widget_tmp->Ctl = &WidgetCtl_Interface;
 
-    widget_tmp->item = (item_obj *)MMU_Malloc(sizeof(item_obj));
+    widget_tmp->dsp_item = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
-    if (widget_tmp->item == NULL)
+    if (widget_tmp->dsp_item == NULL)
         return WIDGET_CREATE_ERROR;
 
-    List_ItemInit(widget_tmp->item, widget_tmp);
+    List_ItemInit(widget_tmp->dsp_item, widget_tmp);
 
     widget_tmp->use_frame = show_frame;
     widget_tmp->show_state = false;
+
+    //clear ui controller first
+    widget_tmp->uictl_item = NULL;
 
     return (Widget_Handle)widget_tmp;
 }
@@ -256,7 +260,7 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     height = ((WidgetObj_TypeDef *)(*hdl))->height;
     width = ((WidgetObj_TypeDef *)(*hdl))->width;
 
-    MMU_Free(((WidgetObj_TypeDef *)(*hdl))->item);
+    MMU_Free(((WidgetObj_TypeDef *)(*hdl))->dsp_item);
 
     MMU_Free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
 
@@ -274,6 +278,21 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     MMU_Free(*hdl);
 
     *hdl = 0;
+    return true;
+}
+
+static bool Widget_Init_UIList(item_obj *first)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    if (tmp->uictl_item == NULL)
+        tmp->uictl_item = (list_obj *)MMU_Malloc(sizeof(list_obj));
+
+    if ((tmp->uictl_item == NULL) || (first == NULL))
+        return false;
+
+    List_Init(tmp->uictl_item, first, by_condition, );
+
     return true;
 }
 
@@ -382,12 +401,12 @@ static bool Widget_Show(void)
 
         if (MonitorDataObj.widget_dsp_list != NULL)
         {
-            List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item);
+            List_Insert_Item(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->dsp_item);
         }
         else
         {
-            MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->item;
-            List_Init(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->item, by_order, NULL);
+            MonitorDataObj.widget_dsp_list = GetCur_Active_Widget()->dsp_item;
+            List_Init(MonitorDataObj.widget_dsp_list, GetCur_Active_Widget()->dsp_item, by_order, NULL);
         }
 
         Widget_SetFreshState(Fresh_State_Prepare);
@@ -405,7 +424,7 @@ static bool Widget_Hide(void)
 
     if (GetCur_Active_Widget()->show_state)
     {
-        List_Delete_Item(GetCur_Active_Widget()->item, NULL);
+        List_Delete_Item(GetCur_Active_Widget()->dsp_item, NULL);
         Widget_SetFreshState(Fresh_State_Prepare);
         GetCur_Active_Widget()->show_state = false;
 
@@ -904,6 +923,16 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     /* init button */
     if (!UI_Button.init(btn, label, x, y, width, height, type, state))
         return NULL;
+
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    if (tmp->uictl_item == NULL)
+    {
+        /* init ui ctl list first */
+        Widget_Init_UIList();
+    }
+
+    /* insert list item */
 
     return (UI_Button_Handle)btn;
 }

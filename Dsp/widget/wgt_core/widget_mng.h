@@ -56,8 +56,6 @@ typedef enum
 /*
 * use linked list to distinguish which item in created ui item list.
 * need to be frsehed on the dispaly blackboard 
-* also we can use binary tree to sort the leaf item (make ui item as leaf item) 
-* to reduce the process cast
 */
 typedef struct
 {
@@ -165,7 +163,8 @@ typedef struct
     char *name;
 
     uint8_t level;
-    item_obj *item;
+    item_obj *dsp_item;
+    list_obj *uictl_item;
 } WidgetObj_TypeDef;
 
 typedef struct
