@@ -913,7 +913,18 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
     return true;
 }
 
-/* fresh appropriate UI Item On this widget (only fresh the item need to display on current widget) */
-static bool Widget_UI_Ctl(Widget_Handle hdl)
+static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, uint8_t x, uint8_t y)
 {
+    if (Btn_Hdl == 0)
+        return false;
+
+    return UI_Button.move(Btn_Hdl, x, y);
+}
+
+static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
+{
+    if (Btn_Hdl == 0)
+        return false;
+
+    UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
 }
