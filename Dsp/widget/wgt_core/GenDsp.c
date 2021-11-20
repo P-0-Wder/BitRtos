@@ -61,7 +61,7 @@ static void GenDsp_SetRange(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
 
 static void GenDsp_DrawPoint(uint8_t **map, uint8_t x, uint8_t y, bool set)
 {
-    if ((x >= DspRange.x + DspRange.width) || (y >= DspRange.y + DspRange.heigh))
+    if ((x >= DspRange.width) || (y >= DspRange.heigh))
         return;
 
     if (set)
