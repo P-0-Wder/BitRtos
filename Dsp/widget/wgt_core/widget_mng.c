@@ -949,6 +949,7 @@ static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
 
 static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_Item_TypeDef *item_prv, const WidgetUI_Item_TypeDef *item_nxt)
 {
+    /* this 4 var down below can be optmized*/
     uint8_t item_prv_y = 0;
     uint8_t item_nxt_y = 0;
     uint8_t item_prv_x = 0;
