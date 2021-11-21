@@ -1001,9 +1001,19 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
 
     if (tmp->uictl_item == NULL)
     {
+        tmp->uictl_item = (item_obj *)MMU_Malloc(sizeof(item_obj));
+
         /* init ui ctl list first */
         Widget_Init_UIList();
     }
+
+    item_obj *ui_item = NULL;
+    ui_item = (item_obj *)MMU_Malloc(sizeof(ui_item));
+
+    if (ui_item == NULL)
+        return NULL;
+
+    List_Init();
 
     /* insert list item */
     tmp->ui_ctl_num++;
