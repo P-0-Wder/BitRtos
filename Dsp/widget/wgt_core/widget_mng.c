@@ -964,15 +964,27 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
     if (item_nxt == NULL)
         return item_prv;
 
-    if ((item_prv != NULL) && (item_nxt != NULL))
-    {
-        item_prv_x = WidgetUI_GetCoord(item_prv, WidgetUI_get_x);
-        item_prv_y = WidgetUI_GetCoord(item_prv, WidgetUI_get_y);
+    item_prv_x = WidgetUI_GetCoord(item_prv, WidgetUI_get_x);
+    item_prv_y = WidgetUI_GetCoord(item_prv, WidgetUI_get_y);
 
-        item_nxt_x = WidgetUI_GetCoord(item_nxt, WidgetUI_get_x);
-        item_nxt_y = WidgetUI_GetCoord(item_nxt, WidgetUI_get_y);
-        /* convert handler to pointer */
+    item_nxt_x = WidgetUI_GetCoord(item_nxt, WidgetUI_get_x);
+    item_nxt_y = WidgetUI_GetCoord(item_nxt, WidgetUI_get_y);
+
+    if (item_prv_y > item_nxt_y)
+    {
+        return item_nxt;
     }
+    else if (item_prv_y == item_nxt_y)
+    {
+        if (item_prv_x >= item_nxt_x)
+        {
+            return item_nxt;
+        }
+        else
+            return item_prv;
+    }
+    else
+        return item_prv;
 }
 
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
