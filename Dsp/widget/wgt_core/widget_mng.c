@@ -916,10 +916,43 @@ static void WidgetUI_GetCur_SelectedCtl()
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
+static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
+{
+    switch ((uint8_t)item->type)
+    {
+    case WidgetUI_Type_Button:
+
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return ((UI_ButtonObj_TypeDef *)item)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return ((UI_ButtonObj_TypeDef *)item)->Gen_Data.y;
+
+        case WidgetUI_get_width:
+            return ((UI_ButtonObj_TypeDef *)item)->width;
+
+        case WidgetUI_get_height:
+            return ((UI_ButtonObj_TypeDef *)item)->height;
+
+        default:
+            return 0;
+        }
+
+        break;
+
+    default:
+        return 0;
+    }
+}
+
 static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_Item_TypeDef *item_prv, const WidgetUI_Item_TypeDef *item_nxt)
 {
     uint8_t item_prv_y = 0;
     uint8_t item_nxt_y = 0;
+    uint8_t item_prv_x = 0;
+    uint8_t item_nxt_x = 0;
 
     if ((item_prv == NULL) && (item_nxt == NULL))
         return NULL;
@@ -932,6 +965,11 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
 
     if ((item_prv != NULL) && (item_nxt != NULL))
     {
+        item_prv_x = WidgetUI_GetCoord(item_prv, WidgetUI_get_x);
+        item_prv_y = WidgetUI_GetCoord(item_prv, WidgetUI_get_y);
+
+        item_nxt_x = WidgetUI_GetCoord(item_nxt, WidgetUI_get_x);
+        item_nxt_y = WidgetUI_GetCoord(item_nxt, WidgetUI_get_y);
         /* convert handler to pointer */
     }
 }

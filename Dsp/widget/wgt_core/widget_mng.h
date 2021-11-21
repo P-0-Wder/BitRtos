@@ -31,6 +31,14 @@ typedef uint32_t Widget_Handle;
 
 typedef enum
 {
+    WidgetUI_get_x = 0,
+    WidgetUI_get_y,
+    WidgetUI_get_width,
+    WidgetUI_get_height,
+} WidgetUI_GetGeneralInfo_List;
+
+typedef enum
+{
     Widget_NoExist = 0,
     Widget_Showing,
     Widget_Hiding,
