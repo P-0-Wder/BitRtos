@@ -1038,21 +1038,12 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
     return true;
 }
 
-static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type)
+static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback)
 {
     if (Btn_Hdl == 0)
         return false;
 
-    if (type == Push_Trigger)
-    {
-    }
-    else if (type == Release_Trigger)
-    {
-    }
-    else
-        return false;
-
-    return true;
+    return UI_Button.set_trogger_callback((UI_ButtonObj_TypeDef *)Btn_Hdl, type, Callback);
 }
 
 static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y)
