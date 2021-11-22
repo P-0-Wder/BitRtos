@@ -27,16 +27,16 @@ typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 
 typedef uint32_t UI_Handler;
-typedef void (*UI_DrawPoint)(uint8_t x, uint8_t y, bool state);
-typedef void (*UI_DrawLine)(uint8_t x, uint8_t y, uint8_t len, uint8_t line_width);
-typedef void (*UI_DrawRadiusRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
-typedef void (*UI_DrawRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t line_width);
-typedef void (*UI_DrawCircle)(uint8_t cneter_x, uint8_t cneter_y, uint8_t radius, uint8_t line_width);
-typedef void (*UI_DrawStr)(uint8_t font, char *str, uint8_t x, uint8_t y, bool inv);
+typedef void (*UI_DrawPoint)(int8_t x, int8_t y, bool state);
+typedef void (*UI_DrawLine)(int8_t x, int8_t y, uint8_t len, uint8_t line_width);
+typedef void (*UI_DrawRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
+typedef void (*UI_DrawRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_width);
+typedef void (*UI_DrawCircle)(int8_t cneter_x, int8_t cneter_y, uint8_t radius, uint8_t line_width);
+typedef void (*UI_DrawStr)(uint8_t font, char *str, int8_t x, int8_t y, bool inv);
 
-typedef void (*UI_FillRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
-typedef void (*UI_FillCircle)(uint8_t x, uint8_t y, uint8_t radius);
-typedef void (*UI_FillRadiusRectangle)(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
+typedef void (*UI_FillRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height);
+typedef void (*UI_FillCircle)(int8_t x, int8_t y, uint8_t radius);
+typedef void (*UI_FillRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius);
 
 typedef int (*UI_Trigger_Callback)(void);
 
@@ -57,8 +57,8 @@ typedef struct
 typedef struct
 {
     char *label;
-    uint8_t x;
-    uint8_t y;
+    int8_t x;
+    int8_t y;
 
     bool selected;
 

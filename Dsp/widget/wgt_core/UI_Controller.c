@@ -12,7 +12,7 @@
 static UI_DrawInterface_TypeDef UI_DspInterface;
 
 /* external function */
-static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label);
 static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback);
 static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj);
@@ -24,7 +24,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj);
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
 static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
-static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, uint8_t dst_x, uint8_t dst_y);
+static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y);
 
 /* external Object var */
 UI_Button_Interface_TypeDef UI_Button = {
@@ -94,7 +94,7 @@ static bool UI_ShowSelector()
     return true;
 }
 
-static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, uint8_t dst_x, uint8_t dst_y)
+static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y)
 {
     if (GenUI_Info == NULL)
         return false;
@@ -111,7 +111,7 @@ static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, uint8_t dst_x, uint8_t d
 *  exti irq or input signal triiger first then out of the trigger code 
 *  check signal value doing process
 */
-static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
+static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     if (Obj == NULL)
         return false;
