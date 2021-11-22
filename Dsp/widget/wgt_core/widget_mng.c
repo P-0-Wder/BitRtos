@@ -232,7 +232,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->show_state = false;
 
     //clear ui controller first
-    widget_tmp->uictl_item = NULL;
+    widget_tmp->uictl_list = NULL;
     widget_tmp->ui_ctl_num = 0;
 
     return (Widget_Handle)widget_tmp;
@@ -287,13 +287,13 @@ static bool Widget_Init_UIList(item_obj *first)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
-    if (tmp->uictl_item == NULL)
-        tmp->uictl_item = (list_obj *)MMU_Malloc(sizeof(list_obj));
+    if (tmp->uictl_list == NULL)
+        tmp->uictl_list = (list_obj *)MMU_Malloc(sizeof(list_obj));
 
-    if ((tmp->uictl_item == NULL) || (first == NULL))
+    if ((tmp->uictl_list == NULL) || (first == NULL))
         return false;
 
-    List_Init(tmp->uictl_item, first, by_condition, WidgetUI_InsertSequence_Callback);
+    List_Init(tmp->uictl_list, first, by_condition, WidgetUI_InsertSequence_Callback);
 
     return true;
 }
@@ -1005,11 +1005,10 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y,
     if (ui_item == NULL)
         return NULL;
 
-    List_Init();
+    List_ItemInit(ui_item, );
 
-    if (tmp->uictl_item == NULL)
+    if (tmp->uictl_list == NULL)
     {
-        tmp->uictl_item = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
         /* init ui ctl list first */
         Widget_Init_UIList();

@@ -173,7 +173,7 @@ typedef struct
     uint8_t level;
     uint8_t ui_ctl_num;
     item_obj *dsp_item;
-    list_obj *uictl_item;
+    list_obj *uictl_list;
 } WidgetObj_TypeDef;
 
 typedef struct
