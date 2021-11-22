@@ -990,28 +990,27 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
+    WidgetUI_Item_TypeDef *UI_ItemData_tmp = NULL;
+    item_obj *UI_Item = NULL;
 
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
+    UI_ItemData_tmp = (WidgetUI_Item_TypeDef *)MMU_Malloc(sizeof(WidgetUI_Item_TypeDef));
+    UI_Item = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
-    /* init button */
-    if (!UI_Button.init(btn, label, x, y, width, height, type, state))
+    if ((btn == NULL) ||
+        (UI_ItemData_tmp == NULL) ||
+        (UI_Item == NULL) ||
+        (!UI_Button.init(btn, label, x, y, width, height, type, state)))
         return NULL;
 
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
-    item_obj *ui_item = NULL;
-    ui_item = (item_obj *)MMU_Malloc(sizeof(ui_item));
-
-    if (ui_item == NULL)
-        return NULL;
-
-    List_ItemInit(ui_item, );
+    List_ItemInit(UI_Item, UI_ItemData_tmp);
 
     if (tmp->uictl_list == NULL)
     {
-
         /* init ui ctl list first */
-        Widget_Init_UIList();
+        Widget_Init_UIList(UI_Item);
     }
 
     /* insert list item */
