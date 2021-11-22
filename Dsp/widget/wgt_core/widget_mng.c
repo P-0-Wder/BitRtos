@@ -1038,6 +1038,23 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
     return true;
 }
 
+static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type)
+{
+    if (Btn_Hdl == 0)
+        return false;
+
+    if (type == Push_Trigger)
+    {
+    }
+    else if (type == Release_Trigger)
+    {
+    }
+    else
+        return false;
+
+    return true;
+}
+
 static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y)
 {
     if (Btn_Hdl == 0)
