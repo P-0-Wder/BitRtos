@@ -234,6 +234,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     //clear ui controller first
     widget_tmp->UICtl_List = NULL;
     widget_tmp->ui_ctl_num = 0;
+    widget_tmp->UI_CoordY_Offset = 0;
 
     return (Widget_Handle)widget_tmp;
 }
@@ -911,6 +912,11 @@ static void WidgetUI_Init(void)
                         WidgetDraw_Interface.fill_radius_rectangle);
 }
 
+static void WidgetUI_SetAll_CoordY_Offset(int8_t offset)
+{
+    GetCur_Active_Widget()->UI_CoordY_Offset = offset;
+}
+
 static void WidgetUI_GetCur_SelectedCtl()
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
@@ -1044,6 +1050,8 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
 {
     if (Btn_Hdl == 0)
         return false;
+
+    ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
 
     UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
 }

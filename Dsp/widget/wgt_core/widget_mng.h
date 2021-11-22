@@ -174,6 +174,8 @@ typedef struct
     uint8_t ui_ctl_num;
     item_obj *dsp_item;
     list_obj *UICtl_List;
+
+    int8_t UI_CoordY_Offset;
 } WidgetObj_TypeDef;
 
 typedef struct
