@@ -1053,7 +1053,7 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, u
     UI_ItemData_tmp->type = WidgetUI_Type_Button;
 
     if (tmp->CurSelected_CTL == NULL)
-        tmp->CurSelected_CTL = UI_ItemData_tmp;
+        tmp->CurSelected_CTL = UI_Item;
 
     return (UI_Button_Handle)btn;
 }
