@@ -923,18 +923,22 @@ static void WidgetUI_GetCur_SelectedCtl()
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
-static bool WidgetUI_SelectCtl(uint8_t index)
+static bool WidgetUI_SelectCtl(int8_t *search_offset)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
     item_obj *UIItem_tmp = tmp->UICtl_List;
-    uint8_t search = tmp->CurSelected_CTL;
 
-    if ((UIItem_tmp == NULL) || (index > tmp->ui_ctl_num))
+    if ((UIItem_tmp == NULL) ||
+        (*search_offset > tmp->ui_ctl_num) ||
+        ((*search_offset < 0) && (tmp->CurSelected_CTL == UIItem_tmp)))
         return false;
 
-    if (index >= search)
+    if (tmp->CurSelected_CTL == NULL)
+        tmp->CurSelected_CTL = UIItem_tmp;
+
+    if (*search_offset > 0)
     {
-        for (; search < index; UIItem_tmp = tmp->UICtl_List->nxt, search++)
+        for (; *search_offset > 0; UIItem_tmp = UIItem_tmp->nxt, *search_offset--)
         {
             if (UIItem_tmp == NULL)
             {
@@ -942,9 +946,20 @@ static bool WidgetUI_SelectCtl(uint8_t index)
             }
         }
     }
-    else
+    else if (*search_offset < 0)
     {
+        for (; *search_offset < 0; UIItem_tmp = UIItem_tmp->prv, *search_offset++)
+        {
+            if (UIItem_tmp == NULL)
+            {
+                return false;
+            }
+        }
     }
+
+    /* move UI selector on it */
+    tmp->CurSelected_CTL = UIItem_tmp;
+    return true;
 }
 
 static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
@@ -1051,9 +1066,6 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, u
     tmp->ui_ctl_num++;
     UI_ItemData_tmp->Handler = (UI_Button_Handle)btn;
     UI_ItemData_tmp->type = WidgetUI_Type_Button;
-
-    if (tmp->CurSelected_CTL == NULL)
-        tmp->CurSelected_CTL = UI_Item;
 
     return (UI_Button_Handle)btn;
 }

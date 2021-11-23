@@ -68,24 +68,7 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
     GenData->x = x;
     GenData->y = y;
 
-    GenData->selected = false;
-
     GenData->init = false;
-}
-
-static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select)
-{
-    if (GenData == NULL)
-        return false;
-
-    GenData->selected = select;
-
-    return true;
-}
-
-static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData)
-{
-    return GenData.selected;
 }
 
 /* still in developing about this selector */
@@ -420,7 +403,7 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if ((Obj->DrawLine == NULL) || (!Obj->Gen_Data.selected))
+    if (Obj->DrawLine == NULL)
         return false;
 
     return true;
@@ -428,7 +411,7 @@ static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if ((Obj->DrawLine == NULL) || (!Obj->Gen_Data.selected))
+    if (Obj->DrawLine == NULL)
         return false;
 
     return true;
@@ -436,7 +419,7 @@ static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 {
-    if ((Obj->DrawPoint == NULL) && (!Obj->Gen_Data.selected))
+    if (Obj->DrawPoint == NULL)
         return false;
 
     return true;
@@ -444,7 +427,7 @@ static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
 {
-    if ((Obj->DrawRectangle == NULL) || (!Obj->Gen_Data.selected))
+    if (Obj->DrawRectangle == NULL)
         return false;
 
     Obj->checked = state;
@@ -457,7 +440,7 @@ static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
 {
     UI_ComboBox_Group_TypeDef *group = NULL;
 
-    if ((Obj->DrawCircle == NULL) || (!Obj->Gen_Data.selected))
+    if (Obj->DrawCircle == NULL)
         return false;
 
     group = (UI_ComboBox_Group_TypeDef *)Obj->group_ptr;
