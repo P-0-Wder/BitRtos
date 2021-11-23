@@ -1,0 +1,2953 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"GenDsp.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.GenDsp_SetRange,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	GenDsp_SetRange:
+  26              	.LVL0:
+  27              	.LFB3:
+  28              		.file 1 "Dsp/widget/wgt_core/GenDsp.c"
+   1:Dsp/widget/wgt_core/GenDsp.c **** #include "GenDsp.h"
+   2:Dsp/widget/wgt_core/GenDsp.c **** #include "oledfont.h"
+   3:Dsp/widget/wgt_core/GenDsp.c **** #include <math.h>
+   4:Dsp/widget/wgt_core/GenDsp.c **** 
+   5:Dsp/widget/wgt_core/GenDsp.c **** #define DegToRad(x) x / (180 / M_PI)
+   6:Dsp/widget/wgt_core/GenDsp.c **** 
+   7:Dsp/widget/wgt_core/GenDsp.c **** /* internal variable */
+   8:Dsp/widget/wgt_core/GenDsp.c **** GenDsp_DspArea_Limit_Range DspRange = {
+   9:Dsp/widget/wgt_core/GenDsp.c ****     .width = 0,
+  10:Dsp/widget/wgt_core/GenDsp.c ****     .heigh = 0,
+  11:Dsp/widget/wgt_core/GenDsp.c ****     .x = 0,
+  12:Dsp/widget/wgt_core/GenDsp.c ****     .y = 0,
+  13:Dsp/widget/wgt_core/GenDsp.c **** };
+  14:Dsp/widget/wgt_core/GenDsp.c **** 
+  15:Dsp/widget/wgt_core/GenDsp.c **** /* internal function definition */
+  16:Dsp/widget/wgt_core/GenDsp.c **** 
+  17:Dsp/widget/wgt_core/GenDsp.c **** /* external draw funtion definition */
+  18:Dsp/widget/wgt_core/GenDsp.c **** static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str);
+  19:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawPoint(uint8_t **map, int8_t x, int8_t y, bool set);
+  20:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_SetRange(int8_t x, int8_t y, uint8_t width, uint8_t height);
+  21:Dsp/widget/wgt_core/GenDsp.c **** static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int8_t x, int8_t y, bool col_
+  22:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int8_t x, int8_t y, bool co
+  23:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int8_t x, int8_t y, bool
+  24:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawCircle(uint8_t **map, int8_t center_x, int8_t center_y, uint8_t radius, uint
+  25:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, 
+  26:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawLen(uint8_t **map, int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_
+  27:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawRad(uint8_t **map, int8_t center_x, int8_t center_y, uint8_t radius, uint8_t
+  28:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t h
+  29:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillCircle(uint8_t **map, int8_t x, int8_t y, uint8_t radius, uint8_t option);
+  30:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 2
+
+
+  31:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t h
+  32:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_HLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width);
+  33:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_VLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width);
+  34:Dsp/widget/wgt_core/GenDsp.c **** 
+  35:Dsp/widget/wgt_core/GenDsp.c **** GeneralDispalyProc_TypeDef GenDsp_Interface = {
+  36:Dsp/widget/wgt_core/GenDsp.c ****     .draw_img = NULL,
+  37:Dsp/widget/wgt_core/GenDsp.c ****     .draw_str = GenDsp_DrawStr,
+  38:Dsp/widget/wgt_core/GenDsp.c ****     .draw_num = GenDsp_DrawNum,
+  39:Dsp/widget/wgt_core/GenDsp.c ****     .draw_line = GenDsp_DrawLen,
+  40:Dsp/widget/wgt_core/GenDsp.c ****     .draw_vertical_line = GenDsp_Draw_VLine,
+  41:Dsp/widget/wgt_core/GenDsp.c ****     .draw_horizon_line = GenDsp_Draw_HLine,
+  42:Dsp/widget/wgt_core/GenDsp.c ****     .str_len = GenDsp_GetStrLen,
+  43:Dsp/widget/wgt_core/GenDsp.c ****     .draw_char = GenDsp_DrawChar,
+  44:Dsp/widget/wgt_core/GenDsp.c ****     .set_range = GenDsp_SetRange,
+  45:Dsp/widget/wgt_core/GenDsp.c ****     .draw_point = GenDsp_DrawPoint,
+  46:Dsp/widget/wgt_core/GenDsp.c ****     .draw_circle = GenDsp_DrawCircle,
+  47:Dsp/widget/wgt_core/GenDsp.c ****     .draw_rectangle = GenDsp_DrawRectangle,
+  48:Dsp/widget/wgt_core/GenDsp.c ****     .draw_radius_rectangle = GenDsp_Draw_RadiusRectangle,
+  49:Dsp/widget/wgt_core/GenDsp.c ****     .fill_circle = GenDsp_FillCircle,
+  50:Dsp/widget/wgt_core/GenDsp.c ****     .fill_rectangle = GenDsp_FillRectangle,
+  51:Dsp/widget/wgt_core/GenDsp.c ****     .fill_radius_rectangle = GenDsp_Fill_RadiusRectangle,
+  52:Dsp/widget/wgt_core/GenDsp.c **** };
+  53:Dsp/widget/wgt_core/GenDsp.c **** 
+  54:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_SetRange(int8_t x, int8_t y, uint8_t width, uint8_t height)
+  55:Dsp/widget/wgt_core/GenDsp.c **** {
+  29              		.loc 1 55 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              		.loc 1 55 1 is_stmt 0 view .LVU1
+  35 0000 10B4     		push	{r4}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 4
+  38              		.cfi_offset 4, -4
+  56:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.heigh = height;
+  39              		.loc 1 56 5 is_stmt 1 view .LVU2
+  40              		.loc 1 56 20 is_stmt 0 view .LVU3
+  41 0002 044C     		ldr	r4, .L3
+  42 0004 E370     		strb	r3, [r4, #3]
+  57:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.width = width;
+  43              		.loc 1 57 5 is_stmt 1 view .LVU4
+  44              		.loc 1 57 20 is_stmt 0 view .LVU5
+  45 0006 A270     		strb	r2, [r4, #2]
+  58:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.x = x;
+  46              		.loc 1 58 5 is_stmt 1 view .LVU6
+  47              		.loc 1 58 16 is_stmt 0 view .LVU7
+  48 0008 2070     		strb	r0, [r4]
+  59:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.y = y;
+  49              		.loc 1 59 5 is_stmt 1 view .LVU8
+  50              		.loc 1 59 16 is_stmt 0 view .LVU9
+  51 000a 6170     		strb	r1, [r4, #1]
+  60:Dsp/widget/wgt_core/GenDsp.c **** }
+  52              		.loc 1 60 1 view .LVU10
+  53 000c 5DF8044B 		ldr	r4, [sp], #4
+  54              	.LCFI1:
+  55              		.cfi_restore 4
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 3
+
+
+  56              		.cfi_def_cfa_offset 0
+  57 0010 7047     		bx	lr
+  58              	.L4:
+  59 0012 00BF     		.align	2
+  60              	.L3:
+  61 0014 00000000 		.word	.LANCHOR0
+  62              		.cfi_endproc
+  63              	.LFE3:
+  65              		.section	.text.GenDsp_DrawPoint,"ax",%progbits
+  66              		.align	1
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  70              		.fpu fpv4-sp-d16
+  72              	GenDsp_DrawPoint:
+  73              	.LVL1:
+  74              	.LFB4:
+  61:Dsp/widget/wgt_core/GenDsp.c **** 
+  62:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawPoint(uint8_t **map, int8_t x, int8_t y, bool set)
+  63:Dsp/widget/wgt_core/GenDsp.c **** {
+  75              		.loc 1 63 1 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		@ link register save eliminated.
+  80              		.loc 1 63 1 is_stmt 0 view .LVU12
+  81 0000 10B4     		push	{r4}
+  82              	.LCFI2:
+  83              		.cfi_def_cfa_offset 4
+  84              		.cfi_offset 4, -4
+  64:Dsp/widget/wgt_core/GenDsp.c ****     if ((x >= DspRange.width) || (y >= DspRange.heigh) || (x < 0) || (y < 0))
+  85              		.loc 1 64 5 is_stmt 1 view .LVU13
+  86              		.loc 1 64 23 is_stmt 0 view .LVU14
+  87 0002 0C4C     		ldr	r4, .L9
+  88 0004 94F802C0 		ldrb	ip, [r4, #2]	@ zero_extendqisi2
+  89              		.loc 1 64 8 view .LVU15
+  90 0008 6145     		cmp	r1, ip
+  91 000a 0BDA     		bge	.L5
+  92              		.loc 1 64 48 discriminator 1 view .LVU16
+  93 000c E478     		ldrb	r4, [r4, #3]	@ zero_extendqisi2
+  94              		.loc 1 64 31 discriminator 1 view .LVU17
+  95 000e A242     		cmp	r2, r4
+  96 0010 08DA     		bge	.L5
+  97              		.loc 1 64 56 discriminator 2 view .LVU18
+  98 0012 0029     		cmp	r1, #0
+  99 0014 06DB     		blt	.L5
+ 100              		.loc 1 64 67 discriminator 3 view .LVU19
+ 101 0016 002A     		cmp	r2, #0
+ 102 0018 04DB     		blt	.L5
+  65:Dsp/widget/wgt_core/GenDsp.c ****         return;
+  66:Dsp/widget/wgt_core/GenDsp.c **** 
+  67:Dsp/widget/wgt_core/GenDsp.c ****     if (set)
+ 103              		.loc 1 67 5 is_stmt 1 view .LVU20
+ 104              		.loc 1 67 8 is_stmt 0 view .LVU21
+ 105 001a 33B1     		cbz	r3, .L7
+  68:Dsp/widget/wgt_core/GenDsp.c ****     {
+  69:Dsp/widget/wgt_core/GenDsp.c ****         map[y][x] = 1;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 4
+
+
+ 106              		.loc 1 69 9 is_stmt 1 view .LVU22
+ 107              		.loc 1 69 12 is_stmt 0 view .LVU23
+ 108 001c 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 109              	.LVL2:
+ 110              		.loc 1 69 19 view .LVU24
+ 111 0020 0122     		movs	r2, #1
+ 112              	.LVL3:
+ 113              		.loc 1 69 19 view .LVU25
+ 114 0022 5A54     		strb	r2, [r3, r1]
+ 115              	.L5:
+  70:Dsp/widget/wgt_core/GenDsp.c ****     }
+  71:Dsp/widget/wgt_core/GenDsp.c ****     else
+  72:Dsp/widget/wgt_core/GenDsp.c ****         map[y][x] = 0;
+  73:Dsp/widget/wgt_core/GenDsp.c **** }
+ 116              		.loc 1 73 1 view .LVU26
+ 117 0024 5DF8044B 		ldr	r4, [sp], #4
+ 118              	.LCFI3:
+ 119              		.cfi_remember_state
+ 120              		.cfi_restore 4
+ 121              		.cfi_def_cfa_offset 0
+ 122 0028 7047     		bx	lr
+ 123              	.LVL4:
+ 124              	.L7:
+ 125              	.LCFI4:
+ 126              		.cfi_restore_state
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 127              		.loc 1 72 9 is_stmt 1 view .LVU27
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 128              		.loc 1 72 12 is_stmt 0 view .LVU28
+ 129 002a 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 130              	.LVL5:
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 131              		.loc 1 72 19 view .LVU29
+ 132 002e 0022     		movs	r2, #0
+ 133              	.LVL6:
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 134              		.loc 1 72 19 view .LVU30
+ 135 0030 5A54     		strb	r2, [r3, r1]
+ 136 0032 F7E7     		b	.L5
+ 137              	.L10:
+ 138              		.align	2
+ 139              	.L9:
+ 140 0034 00000000 		.word	.LANCHOR0
+ 141              		.cfi_endproc
+ 142              	.LFE4:
+ 144              		.section	.text.GenDsp_DrawChar,"ax",%progbits
+ 145              		.align	1
+ 146              		.syntax unified
+ 147              		.thumb
+ 148              		.thumb_func
+ 149              		.fpu fpv4-sp-d16
+ 151              	GenDsp_DrawChar:
+ 152              	.LVL7:
+ 153              	.LFB5:
+  74:Dsp/widget/wgt_core/GenDsp.c **** 
+  75:Dsp/widget/wgt_core/GenDsp.c **** static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int8_t x, int8_t y, bool col_
+  76:Dsp/widget/wgt_core/GenDsp.c **** {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 5
+
+
+ 154              		.loc 1 76 1 is_stmt 1 view -0
+ 155              		.cfi_startproc
+ 156              		@ args = 8, pretend = 0, frame = 8
+ 157              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158              		.loc 1 76 1 is_stmt 0 view .LVU32
+ 159 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 160              	.LCFI5:
+ 161              		.cfi_def_cfa_offset 36
+ 162              		.cfi_offset 4, -36
+ 163              		.cfi_offset 5, -32
+ 164              		.cfi_offset 6, -28
+ 165              		.cfi_offset 7, -24
+ 166              		.cfi_offset 8, -20
+ 167              		.cfi_offset 9, -16
+ 168              		.cfi_offset 10, -12
+ 169              		.cfi_offset 11, -8
+ 170              		.cfi_offset 14, -4
+ 171 0004 83B0     		sub	sp, sp, #12
+ 172              	.LCFI6:
+ 173              		.cfi_def_cfa_offset 48
+ 174 0006 1F46     		mov	r7, r3
+ 175 0008 9DF930A0 		ldrsb	r10, [sp, #48]
+ 176 000c 9DF834B0 		ldrb	fp, [sp, #52]	@ zero_extendqisi2
+  77:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t temp;
+ 177              		.loc 1 77 5 is_stmt 1 view .LVU33
+  78:Dsp/widget/wgt_core/GenDsp.c ****     int8_t y0 = y;
+ 178              		.loc 1 78 5 view .LVU34
+ 179              	.LVL8:
+  79:Dsp/widget/wgt_core/GenDsp.c ****     c -= ' ';
+ 180              		.loc 1 79 5 view .LVU35
+ 181              		.loc 1 79 7 is_stmt 0 view .LVU36
+ 182 0010 203A     		subs	r2, r2, #32
+ 183              	.LVL9:
+ 184              		.loc 1 79 7 view .LVU37
+ 185 0012 D3B2     		uxtb	r3, r2
+ 186              	.LVL10:
+ 187              		.loc 1 79 7 view .LVU38
+ 188 0014 0193     		str	r3, [sp, #4]
+ 189              	.LVL11:
+  80:Dsp/widget/wgt_core/GenDsp.c **** 
+  81:Dsp/widget/wgt_core/GenDsp.c ****     if (DspRange.width <= x)
+ 190              		.loc 1 81 5 is_stmt 1 view .LVU39
+ 191              		.loc 1 81 17 is_stmt 0 view .LVU40
+ 192 0016 2F4B     		ldr	r3, .L29
+ 193 0018 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 194              		.loc 1 81 8 view .LVU41
+ 195 001a BB42     		cmp	r3, r7
+ 196 001c 54DD     		ble	.L23
+ 197 001e 8146     		mov	r9, r0
+ 198 0020 8846     		mov	r8, r1
+ 199 0022 5446     		mov	r4, r10
+ 200              	.LBB2:
+  82:Dsp/widget/wgt_core/GenDsp.c ****         return false;
+  83:Dsp/widget/wgt_core/GenDsp.c **** 
+  84:Dsp/widget/wgt_core/GenDsp.c ****     for (uint8_t t = 0; t < font; t++)
+ 201              		.loc 1 84 18 view .LVU42
+ 202 0024 0023     		movs	r3, #0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 6
+
+
+ 203 0026 0093     		str	r3, [sp]
+ 204 0028 3EE0     		b	.L13
+ 205              	.LVL12:
+ 206              	.L28:
+  85:Dsp/widget/wgt_core/GenDsp.c ****     {
+  86:Dsp/widget/wgt_core/GenDsp.c ****         if (font == Font_12)
+  87:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1206[c][t];
+ 207              		.loc 1 87 13 is_stmt 1 view .LVU43
+ 208              		.loc 1 87 18 is_stmt 0 view .LVU44
+ 209 002a 019B     		ldr	r3, [sp, #4]
+ 210 002c 03EB4303 		add	r3, r3, r3, lsl #1
+ 211 0030 294A     		ldr	r2, .L29+4
+ 212 0032 02EB8303 		add	r3, r2, r3, lsl #2
+ 213 0036 009A     		ldr	r2, [sp]
+ 214 0038 9E5C     		ldrb	r6, [r3, r2]	@ zero_extendqisi2
+ 215              	.LVL13:
+ 216              		.loc 1 87 18 view .LVU45
+ 217 003a 41E0     		b	.L15
+ 218              	.LVL14:
+ 219              	.L16:
+ 220              	.LBB3:
+  88:Dsp/widget/wgt_core/GenDsp.c ****         else
+  89:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1608[c][t];
+  90:Dsp/widget/wgt_core/GenDsp.c **** 
+  91:Dsp/widget/wgt_core/GenDsp.c ****         for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
+  92:Dsp/widget/wgt_core/GenDsp.c ****         {
+  93:Dsp/widget/wgt_core/GenDsp.c ****             if ((DspRange.x + DspRange.width) <= x)
+  94:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+  95:Dsp/widget/wgt_core/GenDsp.c **** 
+  96:Dsp/widget/wgt_core/GenDsp.c ****             if (temp & 0x80)
+  97:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, col_inv ^ map[y][x]);
+  98:Dsp/widget/wgt_core/GenDsp.c ****             else
+  99:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, !col_inv ^ map[y][x]);
+ 221              		.loc 1 99 17 is_stmt 1 view .LVU46
+ 222              		.loc 1 99 45 is_stmt 0 view .LVU47
+ 223 003c 8BF00103 		eor	r3, fp, #1
+ 224              		.loc 1 99 59 view .LVU48
+ 225 0040 58F82420 		ldr	r2, [r8, r4, lsl #2]
+ 226              		.loc 1 99 62 view .LVU49
+ 227 0044 D25D     		ldrb	r2, [r2, r7]	@ zero_extendqisi2
+ 228              		.loc 1 99 17 view .LVU50
+ 229 0046 9B1A     		subs	r3, r3, r2
+ 230 0048 18BF     		it	ne
+ 231 004a 0123     		movne	r3, #1
+ 232 004c 2246     		mov	r2, r4
+ 233 004e 3946     		mov	r1, r7
+ 234 0050 4046     		mov	r0, r8
+ 235 0052 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 236              	.LVL15:
+ 237              	.L17:
+ 100:Dsp/widget/wgt_core/GenDsp.c **** 
+ 101:Dsp/widget/wgt_core/GenDsp.c ****             temp <<= 1;
+ 238              		.loc 1 101 13 is_stmt 1 view .LVU51
+ 239              		.loc 1 101 18 is_stmt 0 view .LVU52
+ 240 0056 7600     		lsls	r6, r6, #1
+ 241              	.LVL16:
+ 242              		.loc 1 101 18 view .LVU53
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 7
+
+
+ 243 0058 F6B2     		uxtb	r6, r6
+ 244              	.LVL17:
+ 102:Dsp/widget/wgt_core/GenDsp.c **** 
+ 103:Dsp/widget/wgt_core/GenDsp.c ****             y++;
+ 245              		.loc 1 103 13 is_stmt 1 view .LVU54
+ 246              		.loc 1 103 14 is_stmt 0 view .LVU55
+ 247 005a 0134     		adds	r4, r4, #1
+ 248              	.LVL18:
+ 249              		.loc 1 103 14 view .LVU56
+ 250 005c 64B2     		sxtb	r4, r4
+ 251              	.LVL19:
+ 104:Dsp/widget/wgt_core/GenDsp.c ****             if ((y - y0) >= font)
+ 252              		.loc 1 104 13 is_stmt 1 view .LVU57
+ 253              		.loc 1 104 20 is_stmt 0 view .LVU58
+ 254 005e A4EB0A03 		sub	r3, r4, r10
+ 255              		.loc 1 104 16 view .LVU59
+ 256 0062 4B45     		cmp	r3, r9
+ 257 0064 19DA     		bge	.L26
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 258              		.loc 1 91 61 is_stmt 1 discriminator 2 view .LVU60
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 259              		.loc 1 91 70 is_stmt 0 discriminator 2 view .LVU61
+ 260 0066 0135     		adds	r5, r5, #1
+ 261              	.LVL20:
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 262              		.loc 1 91 70 discriminator 2 view .LVU62
+ 263 0068 EDB2     		uxtb	r5, r5
+ 264              	.LVL21:
+ 265              	.L20:
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 266              		.loc 1 91 37 is_stmt 1 discriminator 1 view .LVU63
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 267              		.loc 1 91 9 is_stmt 0 discriminator 1 view .LVU64
+ 268 006a 072D     		cmp	r5, #7
+ 269 006c 18D8     		bhi	.L19
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 270              		.loc 1 93 13 is_stmt 1 view .LVU65
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 271              		.loc 1 93 26 is_stmt 0 view .LVU66
+ 272 006e 194A     		ldr	r2, .L29
+ 273 0070 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 274              		.loc 1 93 39 view .LVU67
+ 275 0072 9278     		ldrb	r2, [r2, #2]	@ zero_extendqisi2
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 276              		.loc 1 93 29 view .LVU68
+ 277 0074 1344     		add	r3, r3, r2
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 278              		.loc 1 93 16 view .LVU69
+ 279 0076 BB42     		cmp	r3, r7
+ 280 0078 28DD     		ble	.L24
+  96:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, col_inv ^ map[y][x]);
+ 281              		.loc 1 96 13 is_stmt 1 view .LVU70
+  96:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, col_inv ^ map[y][x]);
+ 282              		.loc 1 96 16 is_stmt 0 view .LVU71
+ 283 007a 16F0800F 		tst	r6, #128
+ 284 007e DDD0     		beq	.L16
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 8
+
+
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 285              		.loc 1 97 17 is_stmt 1 view .LVU72
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 286              		.loc 1 97 58 is_stmt 0 view .LVU73
+ 287 0080 58F82430 		ldr	r3, [r8, r4, lsl #2]
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 288              		.loc 1 97 61 view .LVU74
+ 289 0084 DB5D     		ldrb	r3, [r3, r7]	@ zero_extendqisi2
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 290              		.loc 1 97 17 view .LVU75
+ 291 0086 BBEB0303 		subs	r3, fp, r3
+ 292 008a 18BF     		it	ne
+ 293 008c 0123     		movne	r3, #1
+ 294 008e 2246     		mov	r2, r4
+ 295 0090 3946     		mov	r1, r7
+ 296 0092 4046     		mov	r0, r8
+ 297 0094 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 298              	.LVL22:
+ 299 0098 DDE7     		b	.L17
+ 300              	.L26:
+ 105:Dsp/widget/wgt_core/GenDsp.c ****             {
+ 106:Dsp/widget/wgt_core/GenDsp.c ****                 y = y0;
+ 301              		.loc 1 106 17 is_stmt 1 view .LVU76
+ 302              	.LVL23:
+ 107:Dsp/widget/wgt_core/GenDsp.c ****                 x++;
+ 303              		.loc 1 107 17 view .LVU77
+ 304              		.loc 1 107 18 is_stmt 0 view .LVU78
+ 305 009a 0137     		adds	r7, r7, #1
+ 306              	.LVL24:
+ 307              		.loc 1 107 18 view .LVU79
+ 308 009c 7FB2     		sxtb	r7, r7
+ 309              	.LVL25:
+ 108:Dsp/widget/wgt_core/GenDsp.c **** 
+ 109:Dsp/widget/wgt_core/GenDsp.c ****                 break;
+ 310              		.loc 1 109 17 is_stmt 1 view .LVU80
+ 106:Dsp/widget/wgt_core/GenDsp.c ****                 x++;
+ 311              		.loc 1 106 19 is_stmt 0 view .LVU81
+ 312 009e 5446     		mov	r4, r10
+ 313              	.LVL26:
+ 314              	.L19:
+ 106:Dsp/widget/wgt_core/GenDsp.c ****                 x++;
+ 315              		.loc 1 106 19 view .LVU82
+ 316              	.LBE3:
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 317              		.loc 1 84 35 is_stmt 1 discriminator 2 view .LVU83
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 318              		.loc 1 84 36 is_stmt 0 discriminator 2 view .LVU84
+ 319 00a0 009B     		ldr	r3, [sp]
+ 320 00a2 0133     		adds	r3, r3, #1
+ 321 00a4 DBB2     		uxtb	r3, r3
+ 322 00a6 0093     		str	r3, [sp]
+ 323              	.LVL27:
+ 324              	.L13:
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 325              		.loc 1 84 25 is_stmt 1 discriminator 1 view .LVU85
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 326              		.loc 1 84 5 is_stmt 0 discriminator 1 view .LVU86
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 9
+
+
+ 327 00a8 009B     		ldr	r3, [sp]
+ 328 00aa 4B45     		cmp	r3, r9
+ 329 00ac 0AD2     		bcs	.L27
+  86:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1206[c][t];
+ 330              		.loc 1 86 9 is_stmt 1 view .LVU87
+  86:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1206[c][t];
+ 331              		.loc 1 86 12 is_stmt 0 view .LVU88
+ 332 00ae B9F10C0F 		cmp	r9, #12
+ 333 00b2 BAD0     		beq	.L28
+  89:Dsp/widget/wgt_core/GenDsp.c **** 
+ 334              		.loc 1 89 13 is_stmt 1 view .LVU89
+  89:Dsp/widget/wgt_core/GenDsp.c **** 
+ 335              		.loc 1 89 18 is_stmt 0 view .LVU90
+ 336 00b4 094B     		ldr	r3, .L29+8
+ 337 00b6 019A     		ldr	r2, [sp, #4]
+ 338 00b8 03EB0213 		add	r3, r3, r2, lsl #4
+ 339 00bc 009A     		ldr	r2, [sp]
+ 340 00be 9E5C     		ldrb	r6, [r3, r2]	@ zero_extendqisi2
+ 341              	.LVL28:
+ 342              	.L15:
+  89:Dsp/widget/wgt_core/GenDsp.c **** 
+ 343              		.loc 1 89 18 view .LVU91
+ 344              	.LBE2:
+  76:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t temp;
+ 345              		.loc 1 76 1 discriminator 1 view .LVU92
+ 346 00c0 0025     		movs	r5, #0
+ 347 00c2 D2E7     		b	.L20
+ 348              	.LVL29:
+ 349              	.L27:
+ 110:Dsp/widget/wgt_core/GenDsp.c ****             }
+ 111:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 112:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 113:Dsp/widget/wgt_core/GenDsp.c **** 
+ 114:Dsp/widget/wgt_core/GenDsp.c ****     return true;
+ 350              		.loc 1 114 12 view .LVU93
+ 351 00c4 0120     		movs	r0, #1
+ 352              	.LBB5:
+ 353 00c6 02E0     		b	.L12
+ 354              	.LVL30:
+ 355              	.L23:
+ 356              		.loc 1 114 12 view .LVU94
+ 357              	.LBE5:
+  82:Dsp/widget/wgt_core/GenDsp.c **** 
+ 358              		.loc 1 82 16 view .LVU95
+ 359 00c8 0020     		movs	r0, #0
+ 360              	.LVL31:
+  82:Dsp/widget/wgt_core/GenDsp.c **** 
+ 361              		.loc 1 82 16 view .LVU96
+ 362 00ca 00E0     		b	.L12
+ 363              	.LVL32:
+ 364              	.L24:
+ 365              	.LBB6:
+ 366              	.LBB4:
+  94:Dsp/widget/wgt_core/GenDsp.c **** 
+ 367              		.loc 1 94 24 view .LVU97
+ 368 00cc 0020     		movs	r0, #0
+ 369              	.LVL33:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 10
+
+
+ 370              	.L12:
+  94:Dsp/widget/wgt_core/GenDsp.c **** 
+ 371              		.loc 1 94 24 view .LVU98
+ 372              	.LBE4:
+ 373              	.LBE6:
+ 115:Dsp/widget/wgt_core/GenDsp.c **** }
+ 374              		.loc 1 115 1 view .LVU99
+ 375 00ce 03B0     		add	sp, sp, #12
+ 376              	.LCFI7:
+ 377              		.cfi_def_cfa_offset 36
+ 378              		@ sp needed
+ 379 00d0 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 380              	.LVL34:
+ 381              	.L30:
+ 382              		.loc 1 115 1 view .LVU100
+ 383              		.align	2
+ 384              	.L29:
+ 385 00d4 00000000 		.word	.LANCHOR0
+ 386 00d8 00000000 		.word	oled_asc2_1206
+ 387 00dc 00000000 		.word	oled_asc2_1608
+ 388              		.cfi_endproc
+ 389              	.LFE5:
+ 391              		.section	.text.GenDsp_DrawStr,"ax",%progbits
+ 392              		.align	1
+ 393              		.syntax unified
+ 394              		.thumb
+ 395              		.thumb_func
+ 396              		.fpu fpv4-sp-d16
+ 398              	GenDsp_DrawStr:
+ 399              	.LVL35:
+ 400              	.LFB6:
+ 116:Dsp/widget/wgt_core/GenDsp.c **** 
+ 117:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int8_t x, int8_t y, bool co
+ 118:Dsp/widget/wgt_core/GenDsp.c **** {
+ 401              		.loc 1 118 1 is_stmt 1 view -0
+ 402              		.cfi_startproc
+ 403              		@ args = 8, pretend = 0, frame = 0
+ 404              		@ frame_needed = 0, uses_anonymous_args = 0
+ 405              		.loc 1 118 1 is_stmt 0 view .LVU102
+ 406 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 407              	.LCFI8:
+ 408              		.cfi_def_cfa_offset 28
+ 409              		.cfi_offset 4, -28
+ 410              		.cfi_offset 5, -24
+ 411              		.cfi_offset 6, -20
+ 412              		.cfi_offset 7, -16
+ 413              		.cfi_offset 8, -12
+ 414              		.cfi_offset 9, -8
+ 415              		.cfi_offset 14, -4
+ 416 0004 83B0     		sub	sp, sp, #12
+ 417              	.LCFI9:
+ 418              		.cfi_def_cfa_offset 40
+ 419 0006 0746     		mov	r7, r0
+ 420 0008 0E46     		mov	r6, r1
+ 421 000a 1546     		mov	r5, r2
+ 422 000c 1C46     		mov	r4, r3
+ 423 000e 9DF92890 		ldrsb	r9, [sp, #40]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 11
+
+
+ 424 0012 9DF82C80 		ldrb	r8, [sp, #44]	@ zero_extendqisi2
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 425              		.loc 1 119 5 is_stmt 1 view .LVU103
+ 426              		.loc 1 119 11 is_stmt 0 view .LVU104
+ 427 0016 02E0     		b	.L32
+ 428              	.LVL36:
+ 429              	.L36:
+ 120:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         if (GenDsp_DrawChar(font, map, *str, x, y, col_inv))
+ 122:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 123:Dsp/widget/wgt_core/GenDsp.c ****             x += FONT_WIDTH;
+ 430              		.loc 1 123 13 is_stmt 1 view .LVU105
+ 431              		.loc 1 123 15 is_stmt 0 view .LVU106
+ 432 0018 0834     		adds	r4, r4, #8
+ 433              	.LVL37:
+ 434              		.loc 1 123 15 view .LVU107
+ 435 001a 64B2     		sxtb	r4, r4
+ 436              	.LVL38:
+ 124:Dsp/widget/wgt_core/GenDsp.c ****             str++;
+ 437              		.loc 1 124 13 is_stmt 1 view .LVU108
+ 438              		.loc 1 124 16 is_stmt 0 view .LVU109
+ 439 001c 0135     		adds	r5, r5, #1
+ 440              	.LVL39:
+ 441              	.L32:
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 442              		.loc 1 119 11 is_stmt 1 view .LVU110
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 443              		.loc 1 119 12 is_stmt 0 view .LVU111
+ 444 001e 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 445              		.loc 1 119 11 view .LVU112
+ 446 0020 52B1     		cbz	r2, .L31
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 447              		.loc 1 121 9 is_stmt 1 view .LVU113
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 448              		.loc 1 121 13 is_stmt 0 view .LVU114
+ 449 0022 CDF80480 		str	r8, [sp, #4]
+ 450 0026 CDF80090 		str	r9, [sp]
+ 451 002a 2346     		mov	r3, r4
+ 452 002c 3146     		mov	r1, r6
+ 453 002e 3846     		mov	r0, r7
+ 454 0030 FFF7FEFF 		bl	GenDsp_DrawChar
+ 455              	.LVL40:
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 456              		.loc 1 121 12 view .LVU115
+ 457 0034 0028     		cmp	r0, #0
+ 458 0036 EFD1     		bne	.L36
+ 459              	.L31:
+ 125:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 126:Dsp/widget/wgt_core/GenDsp.c ****         else
+ 127:Dsp/widget/wgt_core/GenDsp.c ****             break;
+ 128:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 129:Dsp/widget/wgt_core/GenDsp.c **** }
+ 460              		.loc 1 129 1 view .LVU116
+ 461 0038 03B0     		add	sp, sp, #12
+ 462              	.LCFI10:
+ 463              		.cfi_def_cfa_offset 28
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 12
+
+
+ 464              		@ sp needed
+ 465 003a BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 466              		.loc 1 129 1 view .LVU117
+ 467              		.cfi_endproc
+ 468              	.LFE6:
+ 470              		.section	.text.GenDsp_GetStrLen,"ax",%progbits
+ 471              		.align	1
+ 472              		.syntax unified
+ 473              		.thumb
+ 474              		.thumb_func
+ 475              		.fpu fpv4-sp-d16
+ 477              	GenDsp_GetStrLen:
+ 478              	.LVL41:
+ 479              	.LFB8:
+ 130:Dsp/widget/wgt_core/GenDsp.c **** 
+ 131:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int8_t x, int8_t y, bool
+ 132:Dsp/widget/wgt_core/GenDsp.c **** {
+ 133:Dsp/widget/wgt_core/GenDsp.c ****     char num_buff[MAX_DSP_NUM_LEN];
+ 134:Dsp/widget/wgt_core/GenDsp.c **** 
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     sprintf(num_buff, "%d", num);
+ 136:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ 137:Dsp/widget/wgt_core/GenDsp.c **** }
+ 138:Dsp/widget/wgt_core/GenDsp.c **** 
+ 139:Dsp/widget/wgt_core/GenDsp.c **** static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str)
+ 140:Dsp/widget/wgt_core/GenDsp.c **** {
+ 480              		.loc 1 140 1 is_stmt 1 view -0
+ 481              		.cfi_startproc
+ 482              		@ args = 0, pretend = 0, frame = 0
+ 483              		@ frame_needed = 0, uses_anonymous_args = 0
+ 484              		@ link register save eliminated.
+ 141:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t len = 0;
+ 485              		.loc 1 141 5 view .LVU119
+ 142:Dsp/widget/wgt_core/GenDsp.c **** 
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 486              		.loc 1 143 5 view .LVU120
+ 141:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t len = 0;
+ 487              		.loc 1 141 13 is_stmt 0 view .LVU121
+ 488 0000 0020     		movs	r0, #0
+ 489              	.LVL42:
+ 490              		.loc 1 143 11 view .LVU122
+ 491 0002 02E0     		b	.L38
+ 492              	.LVL43:
+ 493              	.L39:
+ 144:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 145:Dsp/widget/wgt_core/GenDsp.c ****         len += FONT_WIDTH;
+ 494              		.loc 1 145 9 is_stmt 1 view .LVU123
+ 495              		.loc 1 145 13 is_stmt 0 view .LVU124
+ 496 0004 0830     		adds	r0, r0, #8
+ 497              	.LVL44:
+ 498              		.loc 1 145 13 view .LVU125
+ 499 0006 C0B2     		uxtb	r0, r0
+ 500              	.LVL45:
+ 146:Dsp/widget/wgt_core/GenDsp.c ****         str++;
+ 501              		.loc 1 146 9 is_stmt 1 view .LVU126
+ 502              		.loc 1 146 12 is_stmt 0 view .LVU127
+ 503 0008 0131     		adds	r1, r1, #1
+ 504              	.LVL46:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 13
+
+
+ 505              	.L38:
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 506              		.loc 1 143 11 is_stmt 1 view .LVU128
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 507              		.loc 1 143 12 is_stmt 0 view .LVU129
+ 508 000a 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 509              		.loc 1 143 11 view .LVU130
+ 510 000c 002B     		cmp	r3, #0
+ 511 000e F9D1     		bne	.L39
+ 147:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 148:Dsp/widget/wgt_core/GenDsp.c **** 
+ 149:Dsp/widget/wgt_core/GenDsp.c ****     return len;
+ 512              		.loc 1 149 5 is_stmt 1 view .LVU131
+ 150:Dsp/widget/wgt_core/GenDsp.c **** }
+ 513              		.loc 1 150 1 is_stmt 0 view .LVU132
+ 514 0010 7047     		bx	lr
+ 515              		.cfi_endproc
+ 516              	.LFE8:
+ 518              		.section	.text.GenDsp_DrawLen,"ax",%progbits
+ 519              		.align	1
+ 520              		.syntax unified
+ 521              		.thumb
+ 522              		.thumb_func
+ 523              		.fpu fpv4-sp-d16
+ 525              	GenDsp_DrawLen:
+ 526              	.LVL47:
+ 527              	.LFB9:
+ 151:Dsp/widget/wgt_core/GenDsp.c **** 
+ 152:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawLen(uint8_t **map, int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_
+ 153:Dsp/widget/wgt_core/GenDsp.c **** {
+ 528              		.loc 1 153 1 is_stmt 1 view -0
+ 529              		.cfi_startproc
+ 530              		@ args = 8, pretend = 0, frame = 16
+ 531              		@ frame_needed = 0, uses_anonymous_args = 0
+ 532              		.loc 1 153 1 is_stmt 0 view .LVU134
+ 533 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 534              	.LCFI11:
+ 535              		.cfi_def_cfa_offset 36
+ 536              		.cfi_offset 4, -36
+ 537              		.cfi_offset 5, -32
+ 538              		.cfi_offset 6, -28
+ 539              		.cfi_offset 7, -24
+ 540              		.cfi_offset 8, -20
+ 541              		.cfi_offset 9, -16
+ 542              		.cfi_offset 10, -12
+ 543              		.cfi_offset 11, -8
+ 544              		.cfi_offset 14, -4
+ 545 0004 85B0     		sub	sp, sp, #20
+ 546              	.LCFI12:
+ 547              		.cfi_def_cfa_offset 56
+ 548 0006 0190     		str	r0, [sp, #4]
+ 549 0008 8846     		mov	r8, r1
+ 550 000a 9146     		mov	r9, r2
+ 154:Dsp/widget/wgt_core/GenDsp.c ****     int8_t xerr = 0;
+ 551              		.loc 1 154 5 is_stmt 1 view .LVU135
+ 552              	.LVL48:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 14
+
+
+ 155:Dsp/widget/wgt_core/GenDsp.c ****     int8_t yerr = 0;
+ 553              		.loc 1 155 5 view .LVU136
+ 156:Dsp/widget/wgt_core/GenDsp.c ****     int8_t delta_x = end_x - start_x;
+ 554              		.loc 1 156 5 view .LVU137
+ 555              		.loc 1 156 28 is_stmt 0 view .LVU138
+ 556 000c DBB2     		uxtb	r3, r3
+ 557              		.loc 1 156 28 view .LVU139
+ 558 000e C9B2     		uxtb	r1, r1
+ 559              		.loc 1 156 28 view .LVU140
+ 560 0010 A3EB010A 		sub	r10, r3, r1
+ 561              		.loc 1 156 12 view .LVU141
+ 562 0014 4FFA8AFA 		sxtb	r10, r10
+ 563              	.LVL49:
+ 157:Dsp/widget/wgt_core/GenDsp.c ****     int8_t delta_y = end_y - start_y;
+ 564              		.loc 1 157 5 is_stmt 1 view .LVU142
+ 565              		.loc 1 157 28 is_stmt 0 view .LVU143
+ 566 0018 9DF83800 		ldrb	r0, [sp, #56]	@ zero_extendqisi2
+ 567              	.LVL50:
+ 568              		.loc 1 157 28 view .LVU144
+ 569 001c D2B2     		uxtb	r2, r2
+ 570              		.loc 1 157 28 view .LVU145
+ 571 001e A0EB020B 		sub	fp, r0, r2
+ 572              		.loc 1 157 12 view .LVU146
+ 573 0022 4FFA8BFB 		sxtb	fp, fp
+ 574              	.LVL51:
+ 158:Dsp/widget/wgt_core/GenDsp.c ****     int16_t distance;
+ 575              		.loc 1 158 5 is_stmt 1 view .LVU147
+ 159:Dsp/widget/wgt_core/GenDsp.c ****     int8_t uRow = start_x;
+ 576              		.loc 1 159 5 view .LVU148
+ 160:Dsp/widget/wgt_core/GenDsp.c ****     int8_t uCol = start_y;
+ 577              		.loc 1 160 5 view .LVU149
+ 161:Dsp/widget/wgt_core/GenDsp.c **** 
+ 162:Dsp/widget/wgt_core/GenDsp.c ****     int8_t incx, incy;
+ 578              		.loc 1 162 5 view .LVU150
+ 163:Dsp/widget/wgt_core/GenDsp.c **** 
+ 164:Dsp/widget/wgt_core/GenDsp.c ****     if (delta_x > 0)
+ 579              		.loc 1 164 5 view .LVU151
+ 580              		.loc 1 164 8 is_stmt 0 view .LVU152
+ 581 0026 BAF1000F 		cmp	r10, #0
+ 582 002a 0EDD     		ble	.L54
+ 165:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 166:Dsp/widget/wgt_core/GenDsp.c ****         incx = 1;
+ 583              		.loc 1 166 14 view .LVU153
+ 584 002c 0123     		movs	r3, #1
+ 585              	.LVL52:
+ 586              		.loc 1 166 14 view .LVU154
+ 587 002e 0293     		str	r3, [sp, #8]
+ 588              	.L41:
+ 589              	.LVL53:
+ 167:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 168:Dsp/widget/wgt_core/GenDsp.c ****     else if (delta_x == 0)
+ 169:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 170:Dsp/widget/wgt_core/GenDsp.c ****         incx = 0;
+ 171:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 172:Dsp/widget/wgt_core/GenDsp.c ****     else
+ 173:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 174:Dsp/widget/wgt_core/GenDsp.c ****         incx = -1;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 15
+
+
+ 175:Dsp/widget/wgt_core/GenDsp.c ****         delta_x = -delta_x;
+ 176:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 177:Dsp/widget/wgt_core/GenDsp.c **** 
+ 178:Dsp/widget/wgt_core/GenDsp.c ****     if (delta_y > 0)
+ 590              		.loc 1 178 5 is_stmt 1 view .LVU155
+ 591              		.loc 1 178 8 is_stmt 0 view .LVU156
+ 592 0030 BBF1000F 		cmp	fp, #0
+ 593 0034 16DD     		ble	.L55
+ 179:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 180:Dsp/widget/wgt_core/GenDsp.c ****         incy = 1;
+ 594              		.loc 1 180 14 view .LVU157
+ 595 0036 0123     		movs	r3, #1
+ 596 0038 0393     		str	r3, [sp, #12]
+ 597              	.LVL54:
+ 598              	.L42:
+ 181:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 182:Dsp/widget/wgt_core/GenDsp.c ****     else if (delta_y == 0)
+ 183:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 184:Dsp/widget/wgt_core/GenDsp.c ****         incy = 0;
+ 185:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 186:Dsp/widget/wgt_core/GenDsp.c ****     else
+ 187:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 188:Dsp/widget/wgt_core/GenDsp.c ****         incy = -1;
+ 189:Dsp/widget/wgt_core/GenDsp.c ****         delta_y = -delta_y;
+ 190:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 191:Dsp/widget/wgt_core/GenDsp.c **** 
+ 192:Dsp/widget/wgt_core/GenDsp.c ****     if (delta_x > delta_y)
+ 599              		.loc 1 192 5 is_stmt 1 view .LVU158
+ 600              		.loc 1 192 8 is_stmt 0 view .LVU159
+ 601 003a DA45     		cmp	r10, fp
+ 602 003c 1FDD     		ble	.L43
+ 193:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 194:Dsp/widget/wgt_core/GenDsp.c ****         distance = delta_x;
+ 603              		.loc 1 194 9 is_stmt 1 view .LVU160
+ 604              		.loc 1 194 18 is_stmt 0 view .LVU161
+ 605 003e 0FFA8AF7 		sxth	r7, r10
+ 606              	.LVL55:
+ 607              	.L44:
+ 195:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 196:Dsp/widget/wgt_core/GenDsp.c ****     else
+ 197:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 198:Dsp/widget/wgt_core/GenDsp.c ****         distance = delta_y;
+ 199:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 200:Dsp/widget/wgt_core/GenDsp.c **** 
+ 201:Dsp/widget/wgt_core/GenDsp.c ****     for (uint8_t t = 0; t < distance + 1; t++)
+ 608              		.loc 1 201 5 is_stmt 1 view .LVU162
+ 609              	.LBB7:
+ 610              		.loc 1 201 10 view .LVU163
+ 611              		.loc 1 201 18 is_stmt 0 view .LVU164
+ 612 0042 0026     		movs	r6, #0
+ 613              	.LBE7:
+ 155:Dsp/widget/wgt_core/GenDsp.c ****     int8_t delta_x = end_x - start_x;
+ 614              		.loc 1 155 12 view .LVU165
+ 615 0044 3546     		mov	r5, r6
+ 154:Dsp/widget/wgt_core/GenDsp.c ****     int8_t yerr = 0;
+ 616              		.loc 1 154 12 view .LVU166
+ 617 0046 3446     		mov	r4, r6
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 16
+
+
+ 618              	.LBB8:
+ 619              		.loc 1 201 5 view .LVU167
+ 620 0048 1EE0     		b	.L45
+ 621              	.LVL56:
+ 622              	.L54:
+ 623              		.loc 1 201 5 view .LVU168
+ 624              	.LBE8:
+ 168:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 625              		.loc 1 168 10 is_stmt 1 view .LVU169
+ 168:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 626              		.loc 1 168 13 is_stmt 0 view .LVU170
+ 627 004a BAF1000F 		cmp	r10, #0
+ 628 004e 06D0     		beq	.L50
+ 174:Dsp/widget/wgt_core/GenDsp.c ****         delta_x = -delta_x;
+ 629              		.loc 1 174 9 is_stmt 1 view .LVU171
+ 630              	.LVL57:
+ 175:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 631              		.loc 1 175 9 view .LVU172
+ 175:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 632              		.loc 1 175 17 is_stmt 0 view .LVU173
+ 633 0050 CB1A     		subs	r3, r1, r3
+ 634 0052 4FFA83FA 		sxtb	r10, r3
+ 635              	.LVL58:
+ 174:Dsp/widget/wgt_core/GenDsp.c ****         delta_x = -delta_x;
+ 636              		.loc 1 174 14 view .LVU174
+ 637 0056 4FF0FF33 		mov	r3, #-1
+ 638 005a 0293     		str	r3, [sp, #8]
+ 639 005c E8E7     		b	.L41
+ 640              	.LVL59:
+ 641              	.L50:
+ 170:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 642              		.loc 1 170 14 view .LVU175
+ 643 005e CDF808A0 		str	r10, [sp, #8]
+ 644 0062 E5E7     		b	.L41
+ 645              	.LVL60:
+ 646              	.L55:
+ 182:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 647              		.loc 1 182 10 is_stmt 1 view .LVU176
+ 182:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 648              		.loc 1 182 13 is_stmt 0 view .LVU177
+ 649 0064 BBF1000F 		cmp	fp, #0
+ 650 0068 06D0     		beq	.L52
+ 188:Dsp/widget/wgt_core/GenDsp.c ****         delta_y = -delta_y;
+ 651              		.loc 1 188 9 is_stmt 1 view .LVU178
+ 652              	.LVL61:
+ 189:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 653              		.loc 1 189 9 view .LVU179
+ 189:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 654              		.loc 1 189 17 is_stmt 0 view .LVU180
+ 655 006a 121A     		subs	r2, r2, r0
+ 656 006c 4FFA82FB 		sxtb	fp, r2
+ 657              	.LVL62:
+ 188:Dsp/widget/wgt_core/GenDsp.c ****         delta_y = -delta_y;
+ 658              		.loc 1 188 14 view .LVU181
+ 659 0070 4FF0FF33 		mov	r3, #-1
+ 660 0074 0393     		str	r3, [sp, #12]
+ 661 0076 E0E7     		b	.L42
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 17
+
+
+ 662              	.LVL63:
+ 663              	.L52:
+ 184:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 664              		.loc 1 184 14 view .LVU182
+ 665 0078 CDF80CB0 		str	fp, [sp, #12]
+ 666 007c DDE7     		b	.L42
+ 667              	.LVL64:
+ 668              	.L43:
+ 198:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 669              		.loc 1 198 9 is_stmt 1 view .LVU183
+ 198:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 670              		.loc 1 198 18 is_stmt 0 view .LVU184
+ 671 007e 0FFA8BF7 		sxth	r7, fp
+ 672              	.LVL65:
+ 198:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 673              		.loc 1 198 18 view .LVU185
+ 674 0082 DEE7     		b	.L44
+ 675              	.LVL66:
+ 676              	.L47:
+ 677              	.LBB9:
+ 678              		.loc 1 201 43 is_stmt 1 discriminator 2 view .LVU186
+ 679              		.loc 1 201 44 is_stmt 0 discriminator 2 view .LVU187
+ 680 0084 0136     		adds	r6, r6, #1
+ 681              	.LVL67:
+ 682              		.loc 1 201 44 discriminator 2 view .LVU188
+ 683 0086 F6B2     		uxtb	r6, r6
+ 684              	.LVL68:
+ 685              	.L45:
+ 686              		.loc 1 201 25 is_stmt 1 discriminator 1 view .LVU189
+ 687              		.loc 1 201 5 is_stmt 0 discriminator 1 view .LVU190
+ 688 0088 B742     		cmp	r7, r6
+ 689 008a 1EDB     		blt	.L56
+ 202:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 203:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, uRow, uCol, true);
+ 690              		.loc 1 203 9 is_stmt 1 view .LVU191
+ 691 008c 0123     		movs	r3, #1
+ 692 008e 4A46     		mov	r2, r9
+ 693 0090 4146     		mov	r1, r8
+ 694 0092 0198     		ldr	r0, [sp, #4]
+ 695 0094 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 696              	.LVL69:
+ 204:Dsp/widget/wgt_core/GenDsp.c **** 
+ 205:Dsp/widget/wgt_core/GenDsp.c ****         xerr += delta_x;
+ 697              		.loc 1 205 9 view .LVU192
+ 698              		.loc 1 205 14 is_stmt 0 view .LVU193
+ 699 0098 5444     		add	r4, r4, r10
+ 700              	.LVL70:
+ 701              		.loc 1 205 14 view .LVU194
+ 702 009a E2B2     		uxtb	r2, r4
+ 703 009c 64B2     		sxtb	r4, r4
+ 704              	.LVL71:
+ 206:Dsp/widget/wgt_core/GenDsp.c ****         yerr += delta_y;
+ 705              		.loc 1 206 9 is_stmt 1 view .LVU195
+ 706              		.loc 1 206 14 is_stmt 0 view .LVU196
+ 707 009e 5D44     		add	r5, r5, fp
+ 708              	.LVL72:
+ 709              		.loc 1 206 14 view .LVU197
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 18
+
+
+ 710 00a0 EBB2     		uxtb	r3, r5
+ 711 00a2 6DB2     		sxtb	r5, r5
+ 712              	.LVL73:
+ 207:Dsp/widget/wgt_core/GenDsp.c **** 
+ 208:Dsp/widget/wgt_core/GenDsp.c ****         if (xerr >= distance)
+ 713              		.loc 1 208 9 is_stmt 1 view .LVU198
+ 714              		.loc 1 208 18 is_stmt 0 view .LVU199
+ 715 00a4 21B2     		sxth	r1, r4
+ 716              		.loc 1 208 12 view .LVU200
+ 717 00a6 B942     		cmp	r1, r7
+ 718 00a8 05DB     		blt	.L46
+ 209:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 210:Dsp/widget/wgt_core/GenDsp.c ****             xerr -= distance;
+ 719              		.loc 1 210 13 is_stmt 1 view .LVU201
+ 720              		.loc 1 210 18 is_stmt 0 view .LVU202
+ 721 00aa D21B     		subs	r2, r2, r7
+ 722 00ac 54B2     		sxtb	r4, r2
+ 723              	.LVL74:
+ 211:Dsp/widget/wgt_core/GenDsp.c ****             uRow += incx;
+ 724              		.loc 1 211 13 is_stmt 1 view .LVU203
+ 725              		.loc 1 211 18 is_stmt 0 view .LVU204
+ 726 00ae 029A     		ldr	r2, [sp, #8]
+ 727 00b0 9044     		add	r8, r8, r2
+ 728              	.LVL75:
+ 729              		.loc 1 211 18 view .LVU205
+ 730 00b2 4FFA88F8 		sxtb	r8, r8
+ 731              	.LVL76:
+ 732              	.L46:
+ 212:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 213:Dsp/widget/wgt_core/GenDsp.c ****         if (yerr >= distance)
+ 733              		.loc 1 213 9 is_stmt 1 view .LVU206
+ 734              		.loc 1 213 18 is_stmt 0 view .LVU207
+ 735 00b6 2AB2     		sxth	r2, r5
+ 736              		.loc 1 213 12 view .LVU208
+ 737 00b8 BA42     		cmp	r2, r7
+ 738 00ba E3DB     		blt	.L47
+ 214:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 215:Dsp/widget/wgt_core/GenDsp.c ****             yerr -= distance;
+ 739              		.loc 1 215 13 is_stmt 1 view .LVU209
+ 740              		.loc 1 215 18 is_stmt 0 view .LVU210
+ 741 00bc DB1B     		subs	r3, r3, r7
+ 742 00be 5DB2     		sxtb	r5, r3
+ 743              	.LVL77:
+ 216:Dsp/widget/wgt_core/GenDsp.c ****             uCol += incy;
+ 744              		.loc 1 216 13 is_stmt 1 view .LVU211
+ 745              		.loc 1 216 18 is_stmt 0 view .LVU212
+ 746 00c0 039B     		ldr	r3, [sp, #12]
+ 747 00c2 9944     		add	r9, r9, r3
+ 748              	.LVL78:
+ 749              		.loc 1 216 18 view .LVU213
+ 750 00c4 4FFA89F9 		sxtb	r9, r9
+ 751              	.LVL79:
+ 752              		.loc 1 216 18 view .LVU214
+ 753 00c8 DCE7     		b	.L47
+ 754              	.L56:
+ 755              		.loc 1 216 18 view .LVU215
+ 756              	.LBE9:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 19
+
+
+ 217:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 218:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 219:Dsp/widget/wgt_core/GenDsp.c **** }
+ 757              		.loc 1 219 1 view .LVU216
+ 758 00ca 05B0     		add	sp, sp, #20
+ 759              	.LCFI13:
+ 760              		.cfi_def_cfa_offset 36
+ 761              		@ sp needed
+ 762 00cc BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 763              		.loc 1 219 1 view .LVU217
+ 764              		.cfi_endproc
+ 765              	.LFE9:
+ 767              		.section	.text.GenDsp_Draw_VLine,"ax",%progbits
+ 768              		.align	1
+ 769              		.syntax unified
+ 770              		.thumb
+ 771              		.thumb_func
+ 772              		.fpu fpv4-sp-d16
+ 774              	GenDsp_Draw_VLine:
+ 775              	.LVL80:
+ 776              	.LFB10:
+ 220:Dsp/widget/wgt_core/GenDsp.c **** 
+ 221:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_VLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width)
+ 222:Dsp/widget/wgt_core/GenDsp.c **** {
+ 777              		.loc 1 222 1 is_stmt 1 view -0
+ 778              		.cfi_startproc
+ 779              		@ args = 4, pretend = 0, frame = 0
+ 780              		@ frame_needed = 0, uses_anonymous_args = 0
+ 781              		.loc 1 222 1 is_stmt 0 view .LVU219
+ 782 0000 10B5     		push	{r4, lr}
+ 783              	.LCFI14:
+ 784              		.cfi_def_cfa_offset 8
+ 785              		.cfi_offset 4, -8
+ 786              		.cfi_offset 14, -4
+ 787 0002 82B0     		sub	sp, sp, #8
+ 788              	.LCFI15:
+ 789              		.cfi_def_cfa_offset 16
+ 223:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y, x, y + len, line_width);
+ 790              		.loc 1 223 5 is_stmt 1 view .LVU220
+ 791              		.loc 1 223 36 is_stmt 0 view .LVU221
+ 792 0004 1344     		add	r3, r3, r2
+ 793              	.LVL81:
+ 794              		.loc 1 223 5 view .LVU222
+ 795 0006 9DF81040 		ldrb	r4, [sp, #16]	@ zero_extendqisi2
+ 796 000a 0194     		str	r4, [sp, #4]
+ 797 000c 5BB2     		sxtb	r3, r3
+ 798 000e 0093     		str	r3, [sp]
+ 799 0010 0B46     		mov	r3, r1
+ 800 0012 FFF7FEFF 		bl	GenDsp_DrawLen
+ 801              	.LVL82:
+ 224:Dsp/widget/wgt_core/GenDsp.c **** }
+ 802              		.loc 1 224 1 view .LVU223
+ 803 0016 02B0     		add	sp, sp, #8
+ 804              	.LCFI16:
+ 805              		.cfi_def_cfa_offset 8
+ 806              		@ sp needed
+ 807 0018 10BD     		pop	{r4, pc}
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 20
+
+
+ 808              		.loc 1 224 1 view .LVU224
+ 809              		.cfi_endproc
+ 810              	.LFE10:
+ 812              		.section	.text.GenDsp_Draw_HLine,"ax",%progbits
+ 813              		.align	1
+ 814              		.syntax unified
+ 815              		.thumb
+ 816              		.thumb_func
+ 817              		.fpu fpv4-sp-d16
+ 819              	GenDsp_Draw_HLine:
+ 820              	.LVL83:
+ 821              	.LFB11:
+ 225:Dsp/widget/wgt_core/GenDsp.c **** 
+ 226:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_HLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width)
+ 227:Dsp/widget/wgt_core/GenDsp.c **** {
+ 822              		.loc 1 227 1 is_stmt 1 view -0
+ 823              		.cfi_startproc
+ 824              		@ args = 4, pretend = 0, frame = 0
+ 825              		@ frame_needed = 0, uses_anonymous_args = 0
+ 826              		.loc 1 227 1 is_stmt 0 view .LVU226
+ 827 0000 10B5     		push	{r4, lr}
+ 828              	.LCFI17:
+ 829              		.cfi_def_cfa_offset 8
+ 830              		.cfi_offset 4, -8
+ 831              		.cfi_offset 14, -4
+ 832 0002 82B0     		sub	sp, sp, #8
+ 833              	.LCFI18:
+ 834              		.cfi_def_cfa_offset 16
+ 228:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y, x + len, y, line_width);
+ 835              		.loc 1 228 5 is_stmt 1 view .LVU227
+ 836              		.loc 1 228 33 is_stmt 0 view .LVU228
+ 837 0004 0B44     		add	r3, r3, r1
+ 838              	.LVL84:
+ 839              		.loc 1 228 5 view .LVU229
+ 840 0006 9DF81040 		ldrb	r4, [sp, #16]	@ zero_extendqisi2
+ 841 000a 0194     		str	r4, [sp, #4]
+ 842 000c 0092     		str	r2, [sp]
+ 843 000e 5BB2     		sxtb	r3, r3
+ 844 0010 FFF7FEFF 		bl	GenDsp_DrawLen
+ 845              	.LVL85:
+ 229:Dsp/widget/wgt_core/GenDsp.c **** }
+ 846              		.loc 1 229 1 view .LVU230
+ 847 0014 02B0     		add	sp, sp, #8
+ 848              	.LCFI19:
+ 849              		.cfi_def_cfa_offset 8
+ 850              		@ sp needed
+ 851 0016 10BD     		pop	{r4, pc}
+ 852              		.loc 1 229 1 view .LVU231
+ 853              		.cfi_endproc
+ 854              	.LFE11:
+ 856              		.section	.text.GenDsp_Draw_Circle_Section,"ax",%progbits
+ 857              		.align	1
+ 858              		.syntax unified
+ 859              		.thumb
+ 860              		.thumb_func
+ 861              		.fpu fpv4-sp-d16
+ 863              	GenDsp_Draw_Circle_Section:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 21
+
+
+ 864              	.LVL86:
+ 865              	.LFB12:
+ 230:Dsp/widget/wgt_core/GenDsp.c **** 
+ 231:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_Circle_Section(uint8_t **map, int8_t x, int8_t y, int8_t x0, int8_t y0, uin
+ 232:Dsp/widget/wgt_core/GenDsp.c **** {
+ 866              		.loc 1 232 1 is_stmt 1 view -0
+ 867              		.cfi_startproc
+ 868              		@ args = 8, pretend = 0, frame = 8
+ 869              		@ frame_needed = 0, uses_anonymous_args = 0
+ 870              		.loc 1 232 1 is_stmt 0 view .LVU233
+ 871 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 872              	.LCFI20:
+ 873              		.cfi_def_cfa_offset 36
+ 874              		.cfi_offset 4, -36
+ 875              		.cfi_offset 5, -32
+ 876              		.cfi_offset 6, -28
+ 877              		.cfi_offset 7, -24
+ 878              		.cfi_offset 8, -20
+ 879              		.cfi_offset 9, -16
+ 880              		.cfi_offset 10, -12
+ 881              		.cfi_offset 11, -8
+ 882              		.cfi_offset 14, -4
+ 883 0004 83B0     		sub	sp, sp, #12
+ 884              	.LCFI21:
+ 885              		.cfi_def_cfa_offset 48
+ 886 0006 0546     		mov	r5, r0
+ 887 0008 0091     		str	r1, [sp]
+ 888 000a 0192     		str	r2, [sp, #4]
+ 889 000c 1C46     		mov	r4, r3
+ 890 000e 9DF93070 		ldrsb	r7, [sp, #48]
+ 891 0012 9DF83460 		ldrb	r6, [sp, #52]	@ zero_extendqisi2
+ 233:Dsp/widget/wgt_core/GenDsp.c ****     /* upper right */
+ 234:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_RIGHT)
+ 892              		.loc 1 234 5 is_stmt 1 view .LVU234
+ 893              		.loc 1 234 8 is_stmt 0 view .LVU235
+ 894 0016 16F0010F 		tst	r6, #1
+ 895 001a 0BD1     		bne	.L67
+ 896              	.LVL87:
+ 897              	.L62:
+ 235:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + x, y0 - y, 1);
+ 237:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, 1);
+ 238:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 239:Dsp/widget/wgt_core/GenDsp.c **** 
+ 240:Dsp/widget/wgt_core/GenDsp.c ****     /* upper left */
+ 241:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_LEFT)
+ 898              		.loc 1 241 5 is_stmt 1 view .LVU236
+ 899              		.loc 1 241 8 is_stmt 0 view .LVU237
+ 900 001c 16F0020F 		tst	r6, #2
+ 901 0020 24D1     		bne	.L68
+ 902              	.L63:
+ 242:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - x, y0 - y, 1);
+ 244:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, 1);
+ 245:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 246:Dsp/widget/wgt_core/GenDsp.c **** 
+ 247:Dsp/widget/wgt_core/GenDsp.c ****     /* lower right */
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 22
+
+
+ 248:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_RIGHT)
+ 903              		.loc 1 248 5 is_stmt 1 view .LVU238
+ 904              		.loc 1 248 8 is_stmt 0 view .LVU239
+ 905 0022 16F0080F 		tst	r6, #8
+ 906 0026 3ED1     		bne	.L69
+ 907              	.L64:
+ 249:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + x, y0 + y, 1);
+ 251:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, 1);
+ 252:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 253:Dsp/widget/wgt_core/GenDsp.c **** 
+ 254:Dsp/widget/wgt_core/GenDsp.c ****     /* lower left */
+ 255:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_LEFT)
+ 908              		.loc 1 255 5 is_stmt 1 view .LVU240
+ 909              		.loc 1 255 8 is_stmt 0 view .LVU241
+ 910 0028 16F0040F 		tst	r6, #4
+ 911 002c 58D1     		bne	.L70
+ 912              	.L61:
+ 256:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - x, y0 + y, 1);
+ 258:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, 1);
+ 259:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 260:Dsp/widget/wgt_core/GenDsp.c **** }
+ 913              		.loc 1 260 1 view .LVU242
+ 914 002e 03B0     		add	sp, sp, #12
+ 915              	.LCFI22:
+ 916              		.cfi_remember_state
+ 917              		.cfi_def_cfa_offset 36
+ 918              		@ sp needed
+ 919 0030 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 920              	.LVL88:
+ 921              	.L67:
+ 922              	.LCFI23:
+ 923              		.cfi_restore_state
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, 1);
+ 924              		.loc 1 236 9 is_stmt 1 view .LVU243
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, 1);
+ 925              		.loc 1 236 34 is_stmt 0 view .LVU244
+ 926 0034 5FFA83F8 		uxtb	r8, r3
+ 927 0038 9DF800A0 		ldrb	r10, [sp]	@ zero_extendqisi2
+ 928 003c 08EB0A01 		add	r1, r8, r10
+ 929              	.LVL89:
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, 1);
+ 930              		.loc 1 236 42 view .LVU245
+ 931 0040 5FFA87F9 		uxtb	r9, r7
+ 932 0044 9DF804B0 		ldrb	fp, [sp, #4]	@ zero_extendqisi2
+ 933 0048 A9EB0B02 		sub	r2, r9, fp
+ 934              	.LVL90:
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, 1);
+ 935              		.loc 1 236 9 view .LVU246
+ 936 004c 0123     		movs	r3, #1
+ 937              	.LVL91:
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, 1);
+ 938              		.loc 1 236 9 view .LVU247
+ 939 004e 52B2     		sxtb	r2, r2
+ 940 0050 49B2     		sxtb	r1, r1
+ 941 0052 FFF7FEFF 		bl	GenDsp_DrawPoint
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 23
+
+
+ 942              	.LVL92:
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 943              		.loc 1 237 9 is_stmt 1 view .LVU248
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 944              		.loc 1 237 34 is_stmt 0 view .LVU249
+ 945 0056 08EB0B01 		add	r1, r8, fp
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 946              		.loc 1 237 42 view .LVU250
+ 947 005a A9EB0A02 		sub	r2, r9, r10
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 948              		.loc 1 237 9 view .LVU251
+ 949 005e 0123     		movs	r3, #1
+ 950 0060 52B2     		sxtb	r2, r2
+ 951 0062 49B2     		sxtb	r1, r1
+ 952 0064 2846     		mov	r0, r5
+ 953 0066 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 954              	.LVL93:
+ 955 006a D7E7     		b	.L62
+ 956              	.LVL94:
+ 957              	.L68:
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, 1);
+ 958              		.loc 1 243 9 is_stmt 1 view .LVU252
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, 1);
+ 959              		.loc 1 243 34 is_stmt 0 view .LVU253
+ 960 006c 5FFA84F8 		uxtb	r8, r4
+ 961 0070 9DF800A0 		ldrb	r10, [sp]	@ zero_extendqisi2
+ 962 0074 A8EB0A01 		sub	r1, r8, r10
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, 1);
+ 963              		.loc 1 243 42 view .LVU254
+ 964 0078 5FFA87F9 		uxtb	r9, r7
+ 965 007c 9DF804B0 		ldrb	fp, [sp, #4]	@ zero_extendqisi2
+ 966 0080 A9EB0B02 		sub	r2, r9, fp
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, 1);
+ 967              		.loc 1 243 9 view .LVU255
+ 968 0084 0123     		movs	r3, #1
+ 969 0086 52B2     		sxtb	r2, r2
+ 970 0088 49B2     		sxtb	r1, r1
+ 971 008a 2846     		mov	r0, r5
+ 972 008c FFF7FEFF 		bl	GenDsp_DrawPoint
+ 973              	.LVL95:
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 974              		.loc 1 244 9 is_stmt 1 view .LVU256
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 975              		.loc 1 244 34 is_stmt 0 view .LVU257
+ 976 0090 A8EB0B01 		sub	r1, r8, fp
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 977              		.loc 1 244 42 view .LVU258
+ 978 0094 A9EB0A02 		sub	r2, r9, r10
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 979              		.loc 1 244 9 view .LVU259
+ 980 0098 0123     		movs	r3, #1
+ 981 009a 52B2     		sxtb	r2, r2
+ 982 009c 49B2     		sxtb	r1, r1
+ 983 009e 2846     		mov	r0, r5
+ 984 00a0 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 985              	.LVL96:
+ 986 00a4 BDE7     		b	.L63
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 24
+
+
+ 987              	.L69:
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, 1);
+ 988              		.loc 1 250 9 is_stmt 1 view .LVU260
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, 1);
+ 989              		.loc 1 250 34 is_stmt 0 view .LVU261
+ 990 00a6 5FFA84F8 		uxtb	r8, r4
+ 991 00aa 9DF80090 		ldrb	r9, [sp]	@ zero_extendqisi2
+ 992 00ae 08EB0901 		add	r1, r8, r9
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, 1);
+ 993              		.loc 1 250 42 view .LVU262
+ 994 00b2 5FFA87FA 		uxtb	r10, r7
+ 995 00b6 9DF804B0 		ldrb	fp, [sp, #4]	@ zero_extendqisi2
+ 996 00ba 0AEB0B02 		add	r2, r10, fp
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, 1);
+ 997              		.loc 1 250 9 view .LVU263
+ 998 00be 0123     		movs	r3, #1
+ 999 00c0 52B2     		sxtb	r2, r2
+ 1000 00c2 49B2     		sxtb	r1, r1
+ 1001 00c4 2846     		mov	r0, r5
+ 1002 00c6 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1003              	.LVL97:
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1004              		.loc 1 251 9 is_stmt 1 view .LVU264
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1005              		.loc 1 251 34 is_stmt 0 view .LVU265
+ 1006 00ca 08EB0B01 		add	r1, r8, fp
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1007              		.loc 1 251 42 view .LVU266
+ 1008 00ce 09EB0A02 		add	r2, r9, r10
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1009              		.loc 1 251 9 view .LVU267
+ 1010 00d2 0123     		movs	r3, #1
+ 1011 00d4 52B2     		sxtb	r2, r2
+ 1012 00d6 49B2     		sxtb	r1, r1
+ 1013 00d8 2846     		mov	r0, r5
+ 1014 00da FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1015              	.LVL98:
+ 1016 00de A3E7     		b	.L64
+ 1017              	.L70:
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, 1);
+ 1018              		.loc 1 257 9 is_stmt 1 view .LVU268
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, 1);
+ 1019              		.loc 1 257 34 is_stmt 0 view .LVU269
+ 1020 00e0 E4B2     		uxtb	r4, r4
+ 1021 00e2 9DF80080 		ldrb	r8, [sp]	@ zero_extendqisi2
+ 1022 00e6 A4EB0801 		sub	r1, r4, r8
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, 1);
+ 1023              		.loc 1 257 42 view .LVU270
+ 1024 00ea FFB2     		uxtb	r7, r7
+ 1025 00ec 9DF80460 		ldrb	r6, [sp, #4]	@ zero_extendqisi2
+ 1026 00f0 BA19     		adds	r2, r7, r6
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, 1);
+ 1027              		.loc 1 257 9 view .LVU271
+ 1028 00f2 0123     		movs	r3, #1
+ 1029 00f4 52B2     		sxtb	r2, r2
+ 1030 00f6 49B2     		sxtb	r1, r1
+ 1031 00f8 2846     		mov	r0, r5
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 25
+
+
+ 1032 00fa FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1033              	.LVL99:
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1034              		.loc 1 258 9 is_stmt 1 view .LVU272
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1035              		.loc 1 258 34 is_stmt 0 view .LVU273
+ 1036 00fe A41B     		subs	r4, r4, r6
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1037              		.loc 1 258 42 view .LVU274
+ 1038 0100 08EB0702 		add	r2, r8, r7
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1039              		.loc 1 258 9 view .LVU275
+ 1040 0104 0123     		movs	r3, #1
+ 1041 0106 52B2     		sxtb	r2, r2
+ 1042 0108 61B2     		sxtb	r1, r4
+ 1043 010a 2846     		mov	r0, r5
+ 1044 010c FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1045              	.LVL100:
+ 1046              		.loc 1 260 1 view .LVU276
+ 1047 0110 8DE7     		b	.L61
+ 1048              		.cfi_endproc
+ 1049              	.LFE12:
+ 1051              		.section	.text.GenDsp_Draw_Circle,"ax",%progbits
+ 1052              		.align	1
+ 1053              		.syntax unified
+ 1054              		.thumb
+ 1055              		.thumb_func
+ 1056              		.fpu fpv4-sp-d16
+ 1058              	GenDsp_Draw_Circle:
+ 1059              	.LVL101:
+ 1060              	.LFB13:
+ 261:Dsp/widget/wgt_core/GenDsp.c **** 
+ 262:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_Circle(uint8_t **map, int8_t x0, int8_t y0, uint8_t rad, uint8_t option)
+ 263:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1061              		.loc 1 263 1 is_stmt 1 view -0
+ 1062              		.cfi_startproc
+ 1063              		@ args = 4, pretend = 0, frame = 8
+ 1064              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1065              		.loc 1 263 1 is_stmt 0 view .LVU278
+ 1066 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1067              	.LCFI24:
+ 1068              		.cfi_def_cfa_offset 36
+ 1069              		.cfi_offset 4, -36
+ 1070              		.cfi_offset 5, -32
+ 1071              		.cfi_offset 6, -28
+ 1072              		.cfi_offset 7, -24
+ 1073              		.cfi_offset 8, -20
+ 1074              		.cfi_offset 9, -16
+ 1075              		.cfi_offset 10, -12
+ 1076              		.cfi_offset 11, -8
+ 1077              		.cfi_offset 14, -4
+ 1078 0004 85B0     		sub	sp, sp, #20
+ 1079              	.LCFI25:
+ 1080              		.cfi_def_cfa_offset 56
+ 1081 0006 0390     		str	r0, [sp, #12]
+ 1082 0008 8946     		mov	r9, r1
+ 1083 000a 9246     		mov	r10, r2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 26
+
+
+ 1084 000c 9DF838B0 		ldrb	fp, [sp, #56]	@ zero_extendqisi2
+ 264:Dsp/widget/wgt_core/GenDsp.c ****     int8_t f;
+ 1085              		.loc 1 264 5 is_stmt 1 view .LVU279
+ 265:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_x;
+ 1086              		.loc 1 265 5 view .LVU280
+ 266:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_y;
+ 1087              		.loc 1 266 5 view .LVU281
+ 267:Dsp/widget/wgt_core/GenDsp.c ****     int8_t x;
+ 1088              		.loc 1 267 5 view .LVU282
+ 268:Dsp/widget/wgt_core/GenDsp.c ****     int8_t y;
+ 1089              		.loc 1 268 5 view .LVU283
+ 269:Dsp/widget/wgt_core/GenDsp.c **** 
+ 270:Dsp/widget/wgt_core/GenDsp.c ****     f = 1;
+ 1090              		.loc 1 270 5 view .LVU284
+ 1091              	.LVL102:
+ 271:Dsp/widget/wgt_core/GenDsp.c ****     f -= rad;
+ 1092              		.loc 1 271 5 view .LVU285
+ 1093              		.loc 1 271 7 is_stmt 0 view .LVU286
+ 1094 0010 C3F10104 		rsb	r4, r3, #1
+ 1095 0014 64B2     		sxtb	r4, r4
+ 1096              	.LVL103:
+ 272:Dsp/widget/wgt_core/GenDsp.c ****     ddF_x = 1;
+ 1097              		.loc 1 272 5 is_stmt 1 view .LVU287
+ 273:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 1098              		.loc 1 273 5 view .LVU288
+ 274:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y -= rad;
+ 1099              		.loc 1 274 5 view .LVU289
+ 275:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y *= 2;
+ 1100              		.loc 1 275 5 view .LVU290
+ 1101              		.loc 1 275 11 is_stmt 0 view .LVU291
+ 1102 0016 C3EBC318 		rsb	r8, r3, r3, lsl #7
+ 1103 001a 4FEA4808 		lsl	r8, r8, #1
+ 1104 001e 4FFA88F8 		sxtb	r8, r8
+ 1105              	.LVL104:
+ 276:Dsp/widget/wgt_core/GenDsp.c ****     x = 0;
+ 1106              		.loc 1 276 5 is_stmt 1 view .LVU292
+ 277:Dsp/widget/wgt_core/GenDsp.c ****     y = rad;
+ 1107              		.loc 1 277 5 view .LVU293
+ 1108              		.loc 1 277 7 is_stmt 0 view .LVU294
+ 1109 0022 5EB2     		sxtb	r6, r3
+ 1110              	.LVL105:
+ 278:Dsp/widget/wgt_core/GenDsp.c **** 
+ 279:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle_Section(map, x, y, x0, y0, option);
+ 1111              		.loc 1 279 5 is_stmt 1 view .LVU295
+ 1112 0024 CDF804B0 		str	fp, [sp, #4]
+ 1113 0028 0092     		str	r2, [sp]
+ 1114 002a 0B46     		mov	r3, r1
+ 1115              	.LVL106:
+ 1116              		.loc 1 279 5 is_stmt 0 view .LVU296
+ 1117 002c 3246     		mov	r2, r6
+ 1118              	.LVL107:
+ 1119              		.loc 1 279 5 view .LVU297
+ 1120 002e 0021     		movs	r1, #0
+ 1121              	.LVL108:
+ 1122              		.loc 1 279 5 view .LVU298
+ 1123 0030 FFF7FEFF 		bl	GenDsp_Draw_Circle_Section
+ 1124              	.LVL109:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 27
+
+
+ 280:Dsp/widget/wgt_core/GenDsp.c **** 
+ 281:Dsp/widget/wgt_core/GenDsp.c ****     while (x < y)
+ 1125              		.loc 1 281 5 is_stmt 1 view .LVU299
+ 276:Dsp/widget/wgt_core/GenDsp.c ****     y = rad;
+ 1126              		.loc 1 276 7 is_stmt 0 view .LVU300
+ 1127 0034 0025     		movs	r5, #0
+ 272:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 1128              		.loc 1 272 11 view .LVU301
+ 1129 0036 0127     		movs	r7, #1
+ 1130              		.loc 1 281 11 view .LVU302
+ 1131 0038 19E0     		b	.L72
+ 1132              	.LVL110:
+ 1133              	.L77:
+ 282:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 283:Dsp/widget/wgt_core/GenDsp.c ****         if (f >= 0)
+ 284:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 285:Dsp/widget/wgt_core/GenDsp.c ****             y--;
+ 1134              		.loc 1 285 13 is_stmt 1 view .LVU303
+ 1135              		.loc 1 285 14 is_stmt 0 view .LVU304
+ 1136 003a 013E     		subs	r6, r6, #1
+ 1137              	.LVL111:
+ 1138              		.loc 1 285 14 view .LVU305
+ 1139 003c 76B2     		sxtb	r6, r6
+ 1140              	.LVL112:
+ 286:Dsp/widget/wgt_core/GenDsp.c ****             ddF_y += 2;
+ 1141              		.loc 1 286 13 is_stmt 1 view .LVU306
+ 1142              		.loc 1 286 19 is_stmt 0 view .LVU307
+ 1143 003e 08F10203 		add	r3, r8, #2
+ 1144 0042 4FFA83F8 		sxtb	r8, r3
+ 1145              	.LVL113:
+ 287:Dsp/widget/wgt_core/GenDsp.c ****             f += ddF_y;
+ 1146              		.loc 1 287 13 is_stmt 1 view .LVU308
+ 1147              		.loc 1 287 15 is_stmt 0 view .LVU309
+ 1148 0046 54FA83F4 		uxtab	r4, r4, r3
+ 1149              	.LVL114:
+ 1150              		.loc 1 287 15 view .LVU310
+ 1151 004a 64B2     		sxtb	r4, r4
+ 1152              	.LVL115:
+ 1153              	.L73:
+ 288:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 289:Dsp/widget/wgt_core/GenDsp.c ****         x++;
+ 1154              		.loc 1 289 9 is_stmt 1 view .LVU311
+ 1155              		.loc 1 289 10 is_stmt 0 view .LVU312
+ 1156 004c 0135     		adds	r5, r5, #1
+ 1157              	.LVL116:
+ 1158              		.loc 1 289 10 view .LVU313
+ 1159 004e 6DB2     		sxtb	r5, r5
+ 1160              	.LVL117:
+ 290:Dsp/widget/wgt_core/GenDsp.c ****         ddF_x += 2;
+ 1161              		.loc 1 290 9 is_stmt 1 view .LVU314
+ 1162              		.loc 1 290 15 is_stmt 0 view .LVU315
+ 1163 0050 BB1C     		adds	r3, r7, #2
+ 1164 0052 5FB2     		sxtb	r7, r3
+ 1165              	.LVL118:
+ 291:Dsp/widget/wgt_core/GenDsp.c ****         f += ddF_x;
+ 1166              		.loc 1 291 9 is_stmt 1 view .LVU316
+ 1167              		.loc 1 291 11 is_stmt 0 view .LVU317
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 28
+
+
+ 1168 0054 54FA83F4 		uxtab	r4, r4, r3
+ 1169              	.LVL119:
+ 1170              		.loc 1 291 11 view .LVU318
+ 1171 0058 64B2     		sxtb	r4, r4
+ 1172              	.LVL120:
+ 292:Dsp/widget/wgt_core/GenDsp.c **** 
+ 293:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_Circle_Section(map, x, y, x0, y0, option);
+ 1173              		.loc 1 293 9 is_stmt 1 view .LVU319
+ 1174 005a CDF804B0 		str	fp, [sp, #4]
+ 1175 005e CDF800A0 		str	r10, [sp]
+ 1176 0062 4B46     		mov	r3, r9
+ 1177 0064 3246     		mov	r2, r6
+ 1178 0066 2946     		mov	r1, r5
+ 1179 0068 0398     		ldr	r0, [sp, #12]
+ 1180 006a FFF7FEFF 		bl	GenDsp_Draw_Circle_Section
+ 1181              	.LVL121:
+ 1182              	.L72:
+ 281:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1183              		.loc 1 281 11 view .LVU320
+ 1184 006e B542     		cmp	r5, r6
+ 1185 0070 02DA     		bge	.L76
+ 283:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1186              		.loc 1 283 9 view .LVU321
+ 283:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1187              		.loc 1 283 12 is_stmt 0 view .LVU322
+ 1188 0072 002C     		cmp	r4, #0
+ 1189 0074 E1DA     		bge	.L77
+ 1190 0076 E9E7     		b	.L73
+ 1191              	.L76:
+ 294:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 295:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1192              		.loc 1 295 1 view .LVU323
+ 1193 0078 05B0     		add	sp, sp, #20
+ 1194              	.LCFI26:
+ 1195              		.cfi_def_cfa_offset 36
+ 1196              		@ sp needed
+ 1197 007a BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1198              		.loc 1 295 1 view .LVU324
+ 1199              		.cfi_endproc
+ 1200              	.LFE13:
+ 1202              		.section	.text.GenDsp_DrawCircle,"ax",%progbits
+ 1203              		.align	1
+ 1204              		.syntax unified
+ 1205              		.thumb
+ 1206              		.thumb_func
+ 1207              		.fpu fpv4-sp-d16
+ 1209              	GenDsp_DrawCircle:
+ 1210              	.LVL122:
+ 1211              	.LFB14:
+ 296:Dsp/widget/wgt_core/GenDsp.c **** 
+ 297:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawCircle(uint8_t **map, int8_t x0, int8_t y0, uint8_t rad, uint8_t option)
+ 298:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1212              		.loc 1 298 1 is_stmt 1 view -0
+ 1213              		.cfi_startproc
+ 1214              		@ args = 4, pretend = 0, frame = 0
+ 1215              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1216              		.loc 1 298 1 is_stmt 0 view .LVU326
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 29
+
+
+ 1217 0000 10B5     		push	{r4, lr}
+ 1218              	.LCFI27:
+ 1219              		.cfi_def_cfa_offset 8
+ 1220              		.cfi_offset 4, -8
+ 1221              		.cfi_offset 14, -4
+ 1222 0002 82B0     		sub	sp, sp, #8
+ 1223              	.LCFI28:
+ 1224              		.cfi_def_cfa_offset 16
+ 299:Dsp/widget/wgt_core/GenDsp.c ****     /* draw circle */
+ 300:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x0, y0, rad, DRAW_ALL);
+ 1225              		.loc 1 300 5 is_stmt 1 view .LVU327
+ 1226 0004 0F24     		movs	r4, #15
+ 1227 0006 0094     		str	r4, [sp]
+ 1228 0008 FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1229              	.LVL123:
+ 301:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1230              		.loc 1 301 1 is_stmt 0 view .LVU328
+ 1231 000c 02B0     		add	sp, sp, #8
+ 1232              	.LCFI29:
+ 1233              		.cfi_def_cfa_offset 8
+ 1234              		@ sp needed
+ 1235 000e 10BD     		pop	{r4, pc}
+ 1236              		.loc 1 301 1 view .LVU329
+ 1237              		.cfi_endproc
+ 1238              	.LFE14:
+ 1240              		.section	.text.GenDsp_DrawRectangle,"ax",%progbits
+ 1241              		.align	1
+ 1242              		.syntax unified
+ 1243              		.thumb
+ 1244              		.thumb_func
+ 1245              		.fpu fpv4-sp-d16
+ 1247              	GenDsp_DrawRectangle:
+ 1248              	.LVL124:
+ 1249              	.LFB15:
+ 302:Dsp/widget/wgt_core/GenDsp.c **** 
+ 303:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, 
+ 304:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1250              		.loc 1 304 1 is_stmt 1 view -0
+ 1251              		.cfi_startproc
+ 1252              		@ args = 8, pretend = 0, frame = 0
+ 1253              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1254              		.loc 1 304 1 is_stmt 0 view .LVU331
+ 1255 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 1256              	.LCFI30:
+ 1257              		.cfi_def_cfa_offset 28
+ 1258              		.cfi_offset 4, -28
+ 1259              		.cfi_offset 5, -24
+ 1260              		.cfi_offset 6, -20
+ 1261              		.cfi_offset 7, -16
+ 1262              		.cfi_offset 8, -12
+ 1263              		.cfi_offset 9, -8
+ 1264              		.cfi_offset 14, -4
+ 1265 0004 83B0     		sub	sp, sp, #12
+ 1266              	.LCFI31:
+ 1267              		.cfi_def_cfa_offset 40
+ 1268 0006 8046     		mov	r8, r0
+ 1269 0008 0E46     		mov	r6, r1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 30
+
+
+ 1270 000a 1746     		mov	r7, r2
+ 1271 000c 9DF82C90 		ldrb	r9, [sp, #44]	@ zero_extendqisi2
+ 305:Dsp/widget/wgt_core/GenDsp.c ****     int8_t x_tmp = x + width - 1;
+ 1272              		.loc 1 305 5 is_stmt 1 view .LVU332
+ 1273              		.loc 1 305 22 is_stmt 0 view .LVU333
+ 1274 0010 5D18     		adds	r5, r3, r1
+ 1275 0012 EDB2     		uxtb	r5, r5
+ 1276              		.loc 1 305 30 view .LVU334
+ 1277 0014 013D     		subs	r5, r5, #1
+ 1278              		.loc 1 305 12 view .LVU335
+ 1279 0016 6DB2     		sxtb	r5, r5
+ 1280              	.LVL125:
+ 306:Dsp/widget/wgt_core/GenDsp.c ****     int8_t y_tmp = y + height - 1;
+ 1281              		.loc 1 306 5 is_stmt 1 view .LVU336
+ 1282              		.loc 1 306 22 is_stmt 0 view .LVU337
+ 1283 0018 9DF82840 		ldrb	r4, [sp, #40]	@ zero_extendqisi2
+ 1284 001c 1444     		add	r4, r4, r2
+ 1285 001e E4B2     		uxtb	r4, r4
+ 1286              		.loc 1 306 31 view .LVU338
+ 1287 0020 013C     		subs	r4, r4, #1
+ 1288              		.loc 1 306 12 view .LVU339
+ 1289 0022 64B2     		sxtb	r4, r4
+ 1290              	.LVL126:
+ 307:Dsp/widget/wgt_core/GenDsp.c **** 
+ 308:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y, x_tmp, y, line_size);
+ 1291              		.loc 1 308 5 is_stmt 1 view .LVU340
+ 1292 0024 CDF80490 		str	r9, [sp, #4]
+ 1293 0028 0092     		str	r2, [sp]
+ 1294 002a 2B46     		mov	r3, r5
+ 1295              	.LVL127:
+ 1296              		.loc 1 308 5 is_stmt 0 view .LVU341
+ 1297 002c FFF7FEFF 		bl	GenDsp_DrawLen
+ 1298              	.LVL128:
+ 309:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y, x, y_tmp, line_size);
+ 1299              		.loc 1 309 5 is_stmt 1 view .LVU342
+ 1300 0030 CDF80490 		str	r9, [sp, #4]
+ 1301 0034 0094     		str	r4, [sp]
+ 1302 0036 3346     		mov	r3, r6
+ 1303 0038 3A46     		mov	r2, r7
+ 1304 003a 3146     		mov	r1, r6
+ 1305 003c 4046     		mov	r0, r8
+ 1306 003e FFF7FEFF 		bl	GenDsp_DrawLen
+ 1307              	.LVL129:
+ 310:Dsp/widget/wgt_core/GenDsp.c **** 
+ 311:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x_tmp, y, x_tmp, y_tmp, line_size);
+ 1308              		.loc 1 311 5 view .LVU343
+ 1309 0042 CDF80490 		str	r9, [sp, #4]
+ 1310 0046 0094     		str	r4, [sp]
+ 1311 0048 2B46     		mov	r3, r5
+ 1312 004a 3A46     		mov	r2, r7
+ 1313 004c 2946     		mov	r1, r5
+ 1314 004e 4046     		mov	r0, r8
+ 1315 0050 FFF7FEFF 		bl	GenDsp_DrawLen
+ 1316              	.LVL130:
+ 312:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y_tmp, x_tmp, y_tmp, line_size);
+ 1317              		.loc 1 312 5 view .LVU344
+ 1318 0054 CDF80490 		str	r9, [sp, #4]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 31
+
+
+ 1319 0058 0094     		str	r4, [sp]
+ 1320 005a 2B46     		mov	r3, r5
+ 1321 005c 2246     		mov	r2, r4
+ 1322 005e 3146     		mov	r1, r6
+ 1323 0060 4046     		mov	r0, r8
+ 1324 0062 FFF7FEFF 		bl	GenDsp_DrawLen
+ 1325              	.LVL131:
+ 313:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1326              		.loc 1 313 1 is_stmt 0 view .LVU345
+ 1327 0066 03B0     		add	sp, sp, #12
+ 1328              	.LCFI32:
+ 1329              		.cfi_def_cfa_offset 28
+ 1330              		@ sp needed
+ 1331 0068 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 1332              		.loc 1 313 1 view .LVU346
+ 1333              		.cfi_endproc
+ 1334              	.LFE15:
+ 1336              		.section	.text.GenDsp_Draw_RadiusRectangle,"ax",%progbits
+ 1337              		.align	1
+ 1338              		.syntax unified
+ 1339              		.thumb
+ 1340              		.thumb_func
+ 1341              		.fpu fpv4-sp-d16
+ 1343              	GenDsp_Draw_RadiusRectangle:
+ 1344              	.LVL132:
+ 1345              	.LFB16:
+ 314:Dsp/widget/wgt_core/GenDsp.c **** 
+ 315:Dsp/widget/wgt_core/GenDsp.c **** /* bug in this function */
+ 316:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t h
+ 317:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1346              		.loc 1 317 1 is_stmt 1 view -0
+ 1347              		.cfi_startproc
+ 1348              		@ args = 12, pretend = 0, frame = 16
+ 1349              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1350              		.loc 1 317 1 is_stmt 0 view .LVU348
+ 1351 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1352              	.LCFI33:
+ 1353              		.cfi_def_cfa_offset 36
+ 1354              		.cfi_offset 4, -36
+ 1355              		.cfi_offset 5, -32
+ 1356              		.cfi_offset 6, -28
+ 1357              		.cfi_offset 7, -24
+ 1358              		.cfi_offset 8, -20
+ 1359              		.cfi_offset 9, -16
+ 1360              		.cfi_offset 10, -12
+ 1361              		.cfi_offset 11, -8
+ 1362              		.cfi_offset 14, -4
+ 1363 0004 87B0     		sub	sp, sp, #28
+ 1364              	.LCFI34:
+ 1365              		.cfi_def_cfa_offset 64
+ 1366 0006 0446     		mov	r4, r0
+ 1367 0008 9DF84470 		ldrb	r7, [sp, #68]	@ zero_extendqisi2
+ 1368 000c 9DF848B0 		ldrb	fp, [sp, #72]	@ zero_extendqisi2
+ 318:Dsp/widget/wgt_core/GenDsp.c ****     int8_t x_start = x + radius;
+ 1369              		.loc 1 318 5 is_stmt 1 view .LVU349
+ 1370              		.loc 1 318 24 is_stmt 0 view .LVU350
+ 1371 0010 0391     		str	r1, [sp, #12]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 32
+
+
+ 1372 0012 9DF80C10 		ldrb	r1, [sp, #12]	@ zero_extendqisi2
+ 1373              	.LVL133:
+ 1374              		.loc 1 318 24 view .LVU351
+ 1375 0016 01EB0709 		add	r9, r1, r7
+ 1376              		.loc 1 318 12 view .LVU352
+ 1377 001a 4FFA89F9 		sxtb	r9, r9
+ 1378              	.LVL134:
+ 319:Dsp/widget/wgt_core/GenDsp.c ****     int8_t y_start = y + radius;
+ 1379              		.loc 1 319 5 is_stmt 1 view .LVU353
+ 1380              		.loc 1 319 24 is_stmt 0 view .LVU354
+ 1381 001e 0492     		str	r2, [sp, #16]
+ 1382 0020 9DF81020 		ldrb	r2, [sp, #16]	@ zero_extendqisi2
+ 1383              	.LVL135:
+ 1384              		.loc 1 319 24 view .LVU355
+ 1385 0024 02EB0708 		add	r8, r2, r7
+ 1386              		.loc 1 319 12 view .LVU356
+ 1387 0028 4FFA88F8 		sxtb	r8, r8
+ 1388              	.LVL136:
+ 320:Dsp/widget/wgt_core/GenDsp.c **** 
+ 321:Dsp/widget/wgt_core/GenDsp.c ****     int8_t x_tmp = x + width - 1 - radius;
+ 1389              		.loc 1 321 5 is_stmt 1 view .LVU357
+ 1390              		.loc 1 321 22 is_stmt 0 view .LVU358
+ 1391 002c 1944     		add	r1, r1, r3
+ 1392 002e C9B2     		uxtb	r1, r1
+ 1393              		.loc 1 321 34 view .LVU359
+ 1394 0030 CE1B     		subs	r6, r1, r7
+ 1395 0032 013E     		subs	r6, r6, #1
+ 1396              		.loc 1 321 12 view .LVU360
+ 1397 0034 76B2     		sxtb	r6, r6
+ 1398              	.LVL137:
+ 322:Dsp/widget/wgt_core/GenDsp.c ****     int8_t y_tmp = y + height - 1 - radius;
+ 1399              		.loc 1 322 5 is_stmt 1 view .LVU361
+ 1400              		.loc 1 322 22 is_stmt 0 view .LVU362
+ 1401 0036 9DF84030 		ldrb	r3, [sp, #64]	@ zero_extendqisi2
+ 1402              	.LVL138:
+ 1403              		.loc 1 322 22 view .LVU363
+ 1404 003a 1344     		add	r3, r3, r2
+ 1405 003c DBB2     		uxtb	r3, r3
+ 1406              		.loc 1 322 35 view .LVU364
+ 1407 003e DD1B     		subs	r5, r3, r7
+ 1408 0040 013D     		subs	r5, r5, #1
+ 1409              		.loc 1 322 12 view .LVU365
+ 1410 0042 6DB2     		sxtb	r5, r5
+ 1411              	.LVL139:
+ 323:Dsp/widget/wgt_core/GenDsp.c **** 
+ 324:Dsp/widget/wgt_core/GenDsp.c ****     int8_t x_tmp_1 = x + width - 1;
+ 1412              		.loc 1 324 5 is_stmt 1 view .LVU366
+ 1413              		.loc 1 324 32 is_stmt 0 view .LVU367
+ 1414 0044 0139     		subs	r1, r1, #1
+ 1415              		.loc 1 324 12 view .LVU368
+ 1416 0046 4FFA81FA 		sxtb	r10, r1
+ 1417              	.LVL140:
+ 325:Dsp/widget/wgt_core/GenDsp.c ****     int8_t y_tmp_1 = y + height - 1;
+ 1418              		.loc 1 325 5 is_stmt 1 view .LVU369
+ 1419              		.loc 1 325 33 is_stmt 0 view .LVU370
+ 1420 004a 013B     		subs	r3, r3, #1
+ 1421              		.loc 1 325 12 view .LVU371
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 33
+
+
+ 1422 004c 5BB2     		sxtb	r3, r3
+ 1423 004e 0593     		str	r3, [sp, #20]
+ 1424              	.LVL141:
+ 326:Dsp/widget/wgt_core/GenDsp.c **** 
+ 327:Dsp/widget/wgt_core/GenDsp.c ****     /* fixed */
+ 328:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_start, y_tmp, radius, DRAW_LOWER_LEFT);
+ 1425              		.loc 1 328 5 is_stmt 1 view .LVU372
+ 1426 0050 0423     		movs	r3, #4
+ 1427 0052 0093     		str	r3, [sp]
+ 1428 0054 3B46     		mov	r3, r7
+ 1429 0056 2A46     		mov	r2, r5
+ 1430 0058 4946     		mov	r1, r9
+ 1431 005a FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1432              	.LVL142:
+ 329:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y_start, x, y_tmp, line_size);
+ 1433              		.loc 1 329 5 view .LVU373
+ 1434 005e CDF804B0 		str	fp, [sp, #4]
+ 1435 0062 0095     		str	r5, [sp]
+ 1436 0064 0399     		ldr	r1, [sp, #12]
+ 1437 0066 0B46     		mov	r3, r1
+ 1438 0068 4246     		mov	r2, r8
+ 1439 006a 2046     		mov	r0, r4
+ 1440 006c FFF7FEFF 		bl	GenDsp_DrawLen
+ 1441              	.LVL143:
+ 330:Dsp/widget/wgt_core/GenDsp.c **** 
+ 331:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_tmp, y_tmp, radius, DRAW_LOWER_RIGHT);
+ 1442              		.loc 1 331 5 view .LVU374
+ 1443 0070 0823     		movs	r3, #8
+ 1444 0072 0093     		str	r3, [sp]
+ 1445 0074 3B46     		mov	r3, r7
+ 1446 0076 2A46     		mov	r2, r5
+ 1447 0078 3146     		mov	r1, r6
+ 1448 007a 2046     		mov	r0, r4
+ 1449 007c FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1450              	.LVL144:
+ 332:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x_start, y_tmp_1, x_tmp, y_tmp_1, line_size);
+ 1451              		.loc 1 332 5 view .LVU375
+ 1452 0080 CDF804B0 		str	fp, [sp, #4]
+ 1453 0084 059A     		ldr	r2, [sp, #20]
+ 1454 0086 0092     		str	r2, [sp]
+ 1455 0088 3346     		mov	r3, r6
+ 1456 008a 4946     		mov	r1, r9
+ 1457 008c 2046     		mov	r0, r4
+ 1458 008e FFF7FEFF 		bl	GenDsp_DrawLen
+ 1459              	.LVL145:
+ 333:Dsp/widget/wgt_core/GenDsp.c **** 
+ 334:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_start, y_start, radius, DRAW_UPPER_LEFT);
+ 1460              		.loc 1 334 5 view .LVU376
+ 1461 0092 0223     		movs	r3, #2
+ 1462 0094 0093     		str	r3, [sp]
+ 1463 0096 3B46     		mov	r3, r7
+ 1464 0098 4246     		mov	r2, r8
+ 1465 009a 4946     		mov	r1, r9
+ 1466 009c 2046     		mov	r0, r4
+ 1467 009e FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1468              	.LVL146:
+ 335:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x_start, y, x_tmp, y, line_size);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 34
+
+
+ 1469              		.loc 1 335 5 view .LVU377
+ 1470 00a2 CDF804B0 		str	fp, [sp, #4]
+ 1471 00a6 049A     		ldr	r2, [sp, #16]
+ 1472 00a8 0092     		str	r2, [sp]
+ 1473 00aa 3346     		mov	r3, r6
+ 1474 00ac 4946     		mov	r1, r9
+ 1475 00ae 2046     		mov	r0, r4
+ 1476 00b0 FFF7FEFF 		bl	GenDsp_DrawLen
+ 1477              	.LVL147:
+ 336:Dsp/widget/wgt_core/GenDsp.c **** 
+ 337:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_tmp, y_start, radius, DRAW_UPPER_RIGHT);
+ 1478              		.loc 1 337 5 view .LVU378
+ 1479 00b4 0123     		movs	r3, #1
+ 1480 00b6 0093     		str	r3, [sp]
+ 1481 00b8 3B46     		mov	r3, r7
+ 1482 00ba 4246     		mov	r2, r8
+ 1483 00bc 3146     		mov	r1, r6
+ 1484 00be 2046     		mov	r0, r4
+ 1485 00c0 FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1486              	.LVL148:
+ 338:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x_tmp_1, y_start, x_tmp_1, y_tmp, line_size);
+ 1487              		.loc 1 338 5 view .LVU379
+ 1488 00c4 CDF804B0 		str	fp, [sp, #4]
+ 1489 00c8 0095     		str	r5, [sp]
+ 1490 00ca 5346     		mov	r3, r10
+ 1491 00cc 4246     		mov	r2, r8
+ 1492 00ce 5146     		mov	r1, r10
+ 1493 00d0 2046     		mov	r0, r4
+ 1494 00d2 FFF7FEFF 		bl	GenDsp_DrawLen
+ 1495              	.LVL149:
+ 339:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1496              		.loc 1 339 1 is_stmt 0 view .LVU380
+ 1497 00d6 07B0     		add	sp, sp, #28
+ 1498              	.LCFI35:
+ 1499              		.cfi_def_cfa_offset 36
+ 1500              		@ sp needed
+ 1501 00d8 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1502              		.loc 1 339 1 view .LVU381
+ 1503              		.cfi_endproc
+ 1504              	.LFE16:
+ 1506              		.section	.text.GenDsp_Fill_Circle_Section,"ax",%progbits
+ 1507              		.align	1
+ 1508              		.syntax unified
+ 1509              		.thumb
+ 1510              		.thumb_func
+ 1511              		.fpu fpv4-sp-d16
+ 1513              	GenDsp_Fill_Circle_Section:
+ 1514              	.LVL150:
+ 1515              	.LFB17:
+ 340:Dsp/widget/wgt_core/GenDsp.c **** 
+ 341:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Fill_Circle_Section(uint8_t **map, int8_t x, int8_t y, int8_t x0, int8_t y0, uin
+ 342:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1516              		.loc 1 342 1 is_stmt 1 view -0
+ 1517              		.cfi_startproc
+ 1518              		@ args = 8, pretend = 0, frame = 16
+ 1519              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1520              		.loc 1 342 1 is_stmt 0 view .LVU383
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 35
+
+
+ 1521 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1522              	.LCFI36:
+ 1523              		.cfi_def_cfa_offset 36
+ 1524              		.cfi_offset 4, -36
+ 1525              		.cfi_offset 5, -32
+ 1526              		.cfi_offset 6, -28
+ 1527              		.cfi_offset 7, -24
+ 1528              		.cfi_offset 8, -20
+ 1529              		.cfi_offset 9, -16
+ 1530              		.cfi_offset 10, -12
+ 1531              		.cfi_offset 11, -8
+ 1532              		.cfi_offset 14, -4
+ 1533 0004 87B0     		sub	sp, sp, #28
+ 1534              	.LCFI37:
+ 1535              		.cfi_def_cfa_offset 64
+ 1536 0006 0446     		mov	r4, r0
+ 1537 0008 0391     		str	r1, [sp, #12]
+ 1538 000a 0492     		str	r2, [sp, #16]
+ 1539 000c 0593     		str	r3, [sp, #20]
+ 1540 000e 9DF94060 		ldrsb	r6, [sp, #64]
+ 1541 0012 9DF84450 		ldrb	r5, [sp, #68]	@ zero_extendqisi2
+ 343:Dsp/widget/wgt_core/GenDsp.c ****     /* upper right */
+ 344:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_RIGHT)
+ 1542              		.loc 1 344 5 is_stmt 1 view .LVU384
+ 1543              		.loc 1 344 8 is_stmt 0 view .LVU385
+ 1544 0016 15F0010F 		tst	r5, #1
+ 1545 001a 0BD1     		bne	.L90
+ 1546              	.LVL151:
+ 1547              	.L85:
+ 345:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 346:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + x, y0 - y, y + 1, 1);
+ 347:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1);
+ 348:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 349:Dsp/widget/wgt_core/GenDsp.c **** 
+ 350:Dsp/widget/wgt_core/GenDsp.c ****     /* upper left */
+ 351:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_LEFT)
+ 1548              		.loc 1 351 5 is_stmt 1 view .LVU386
+ 1549              		.loc 1 351 8 is_stmt 0 view .LVU387
+ 1550 001c 15F0020F 		tst	r5, #2
+ 1551 0020 2ED1     		bne	.L91
+ 1552              	.L86:
+ 352:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 353:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - x, y0 - y, y + 1, 1);
+ 354:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1);
+ 355:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 356:Dsp/widget/wgt_core/GenDsp.c **** 
+ 357:Dsp/widget/wgt_core/GenDsp.c ****     /* lower right */
+ 358:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_RIGHT)
+ 1553              		.loc 1 358 5 is_stmt 1 view .LVU388
+ 1554              		.loc 1 358 8 is_stmt 0 view .LVU389
+ 1555 0022 15F0080F 		tst	r5, #8
+ 1556 0026 52D1     		bne	.L92
+ 1557              	.L87:
+ 359:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 360:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + x, y0, y + 1, 1);
+ 361:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1);
+ 362:Dsp/widget/wgt_core/GenDsp.c ****     }
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 36
+
+
+ 363:Dsp/widget/wgt_core/GenDsp.c **** 
+ 364:Dsp/widget/wgt_core/GenDsp.c ****     /* lower left */
+ 365:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_LEFT)
+ 1558              		.loc 1 365 5 is_stmt 1 view .LVU390
+ 1559              		.loc 1 365 8 is_stmt 0 view .LVU391
+ 1560 0028 15F0040F 		tst	r5, #4
+ 1561 002c 70D1     		bne	.L93
+ 1562              	.L84:
+ 366:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 367:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - x, y0, y + 1, 1);
+ 368:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1);
+ 369:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 370:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1563              		.loc 1 370 1 view .LVU392
+ 1564 002e 07B0     		add	sp, sp, #28
+ 1565              	.LCFI38:
+ 1566              		.cfi_remember_state
+ 1567              		.cfi_def_cfa_offset 36
+ 1568              		@ sp needed
+ 1569 0030 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1570              	.LVL152:
+ 1571              	.L90:
+ 1572              	.LCFI39:
+ 1573              		.cfi_restore_state
+ 346:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1);
+ 1574              		.loc 1 346 9 is_stmt 1 view .LVU393
+ 346:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1);
+ 1575              		.loc 1 346 35 is_stmt 0 view .LVU394
+ 1576 0034 9DF81470 		ldrb	r7, [sp, #20]	@ zero_extendqisi2
+ 1577 0038 9DF80C90 		ldrb	r9, [sp, #12]	@ zero_extendqisi2
+ 1578 003c 07EB0901 		add	r1, r7, r9
+ 1579              	.LVL153:
+ 346:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1);
+ 1580              		.loc 1 346 43 view .LVU395
+ 1581 0040 5FFA86F8 		uxtb	r8, r6
+ 1582 0044 9DF810A0 		ldrb	r10, [sp, #16]	@ zero_extendqisi2
+ 1583 0048 A8EB0A02 		sub	r2, r8, r10
+ 1584              	.LVL154:
+ 346:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1);
+ 1585              		.loc 1 346 9 view .LVU396
+ 1586 004c 0AF10103 		add	r3, r10, #1
+ 1587              	.LVL155:
+ 346:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1);
+ 1588              		.loc 1 346 9 view .LVU397
+ 1589 0050 4FF0010B 		mov	fp, #1
+ 1590 0054 CDF800B0 		str	fp, [sp]
+ 1591 0058 DBB2     		uxtb	r3, r3
+ 1592 005a 52B2     		sxtb	r2, r2
+ 1593 005c 49B2     		sxtb	r1, r1
+ 1594 005e FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1595              	.LVL156:
+ 347:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1596              		.loc 1 347 9 is_stmt 1 view .LVU398
+ 347:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1597              		.loc 1 347 35 is_stmt 0 view .LVU399
+ 1598 0062 07EB0A01 		add	r1, r7, r10
+ 347:Dsp/widget/wgt_core/GenDsp.c ****     }
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 37
+
+
+ 1599              		.loc 1 347 43 view .LVU400
+ 1600 0066 A8EB0902 		sub	r2, r8, r9
+ 347:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1601              		.loc 1 347 9 view .LVU401
+ 1602 006a 09EB0B03 		add	r3, r9, fp
+ 1603 006e CDF800B0 		str	fp, [sp]
+ 1604 0072 DBB2     		uxtb	r3, r3
+ 1605 0074 52B2     		sxtb	r2, r2
+ 1606 0076 49B2     		sxtb	r1, r1
+ 1607 0078 2046     		mov	r0, r4
+ 1608 007a FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1609              	.LVL157:
+ 1610 007e CDE7     		b	.L85
+ 1611              	.L91:
+ 353:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1);
+ 1612              		.loc 1 353 9 is_stmt 1 view .LVU402
+ 353:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1);
+ 1613              		.loc 1 353 35 is_stmt 0 view .LVU403
+ 1614 0080 9DF81470 		ldrb	r7, [sp, #20]	@ zero_extendqisi2
+ 1615 0084 9DF80C90 		ldrb	r9, [sp, #12]	@ zero_extendqisi2
+ 1616 0088 A7EB0901 		sub	r1, r7, r9
+ 353:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1);
+ 1617              		.loc 1 353 43 view .LVU404
+ 1618 008c 5FFA86F8 		uxtb	r8, r6
+ 1619 0090 9DF810A0 		ldrb	r10, [sp, #16]	@ zero_extendqisi2
+ 1620 0094 A8EB0A02 		sub	r2, r8, r10
+ 353:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1);
+ 1621              		.loc 1 353 9 view .LVU405
+ 1622 0098 0AF10103 		add	r3, r10, #1
+ 1623 009c 4FF0010B 		mov	fp, #1
+ 1624 00a0 CDF800B0 		str	fp, [sp]
+ 1625 00a4 DBB2     		uxtb	r3, r3
+ 1626 00a6 52B2     		sxtb	r2, r2
+ 1627 00a8 49B2     		sxtb	r1, r1
+ 1628 00aa 2046     		mov	r0, r4
+ 1629 00ac FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1630              	.LVL158:
+ 354:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1631              		.loc 1 354 9 is_stmt 1 view .LVU406
+ 354:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1632              		.loc 1 354 35 is_stmt 0 view .LVU407
+ 1633 00b0 A7EB0A01 		sub	r1, r7, r10
+ 354:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1634              		.loc 1 354 43 view .LVU408
+ 1635 00b4 A8EB0902 		sub	r2, r8, r9
+ 354:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1636              		.loc 1 354 9 view .LVU409
+ 1637 00b8 09EB0B03 		add	r3, r9, fp
+ 1638 00bc CDF800B0 		str	fp, [sp]
+ 1639 00c0 DBB2     		uxtb	r3, r3
+ 1640 00c2 52B2     		sxtb	r2, r2
+ 1641 00c4 49B2     		sxtb	r1, r1
+ 1642 00c6 2046     		mov	r0, r4
+ 1643 00c8 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1644              	.LVL159:
+ 1645 00cc A9E7     		b	.L86
+ 1646              	.L92:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 38
+
+
+ 360:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1);
+ 1647              		.loc 1 360 9 is_stmt 1 view .LVU410
+ 360:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1);
+ 1648              		.loc 1 360 35 is_stmt 0 view .LVU411
+ 1649 00ce 9DF81470 		ldrb	r7, [sp, #20]	@ zero_extendqisi2
+ 1650 00d2 9DF80C80 		ldrb	r8, [sp, #12]	@ zero_extendqisi2
+ 1651 00d6 07EB0801 		add	r1, r7, r8
+ 360:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1);
+ 1652              		.loc 1 360 9 view .LVU412
+ 1653 00da 9DF810A0 		ldrb	r10, [sp, #16]	@ zero_extendqisi2
+ 1654 00de 0AF10103 		add	r3, r10, #1
+ 1655 00e2 4FF00109 		mov	r9, #1
+ 1656 00e6 CDF80090 		str	r9, [sp]
+ 1657 00ea DBB2     		uxtb	r3, r3
+ 1658 00ec 3246     		mov	r2, r6
+ 1659 00ee 49B2     		sxtb	r1, r1
+ 1660 00f0 2046     		mov	r0, r4
+ 1661 00f2 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1662              	.LVL160:
+ 361:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1663              		.loc 1 361 9 is_stmt 1 view .LVU413
+ 361:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1664              		.loc 1 361 35 is_stmt 0 view .LVU414
+ 1665 00f6 07EB0A01 		add	r1, r7, r10
+ 361:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1666              		.loc 1 361 9 view .LVU415
+ 1667 00fa 08EB0903 		add	r3, r8, r9
+ 1668 00fe CDF80090 		str	r9, [sp]
+ 1669 0102 DBB2     		uxtb	r3, r3
+ 1670 0104 3246     		mov	r2, r6
+ 1671 0106 49B2     		sxtb	r1, r1
+ 1672 0108 2046     		mov	r0, r4
+ 1673 010a FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1674              	.LVL161:
+ 1675 010e 8BE7     		b	.L87
+ 1676              	.L93:
+ 367:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1);
+ 1677              		.loc 1 367 9 is_stmt 1 view .LVU416
+ 367:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1);
+ 1678              		.loc 1 367 35 is_stmt 0 view .LVU417
+ 1679 0110 9DF81470 		ldrb	r7, [sp, #20]	@ zero_extendqisi2
+ 1680 0114 9DF80C80 		ldrb	r8, [sp, #12]	@ zero_extendqisi2
+ 1681 0118 A7EB0801 		sub	r1, r7, r8
+ 367:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1);
+ 1682              		.loc 1 367 9 view .LVU418
+ 1683 011c 9DF81050 		ldrb	r5, [sp, #16]	@ zero_extendqisi2
+ 1684 0120 6B1C     		adds	r3, r5, #1
+ 1685 0122 4FF00109 		mov	r9, #1
+ 1686 0126 CDF80090 		str	r9, [sp]
+ 1687 012a DBB2     		uxtb	r3, r3
+ 1688 012c 3246     		mov	r2, r6
+ 1689 012e 49B2     		sxtb	r1, r1
+ 1690 0130 2046     		mov	r0, r4
+ 1691 0132 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1692              	.LVL162:
+ 368:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1693              		.loc 1 368 9 is_stmt 1 view .LVU419
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 39
+
+
+ 368:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1694              		.loc 1 368 35 is_stmt 0 view .LVU420
+ 1695 0136 791B     		subs	r1, r7, r5
+ 368:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1696              		.loc 1 368 9 view .LVU421
+ 1697 0138 08EB0903 		add	r3, r8, r9
+ 1698 013c CDF80090 		str	r9, [sp]
+ 1699 0140 DBB2     		uxtb	r3, r3
+ 1700 0142 3246     		mov	r2, r6
+ 1701 0144 49B2     		sxtb	r1, r1
+ 1702 0146 2046     		mov	r0, r4
+ 1703 0148 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1704              	.LVL163:
+ 1705              		.loc 1 370 1 view .LVU422
+ 1706 014c 6FE7     		b	.L84
+ 1707              		.cfi_endproc
+ 1708              	.LFE17:
+ 1710              		.section	.text.GenDsp_FillCircle,"ax",%progbits
+ 1711              		.align	1
+ 1712              		.syntax unified
+ 1713              		.thumb
+ 1714              		.thumb_func
+ 1715              		.fpu fpv4-sp-d16
+ 1717              	GenDsp_FillCircle:
+ 1718              	.LVL164:
+ 1719              	.LFB18:
+ 371:Dsp/widget/wgt_core/GenDsp.c **** 
+ 372:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillCircle(uint8_t **map, int8_t x0, int8_t y0, uint8_t radius, uint8_t option)
+ 373:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1720              		.loc 1 373 1 is_stmt 1 view -0
+ 1721              		.cfi_startproc
+ 1722              		@ args = 4, pretend = 0, frame = 8
+ 1723              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1724              		.loc 1 373 1 is_stmt 0 view .LVU424
+ 1725 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1726              	.LCFI40:
+ 1727              		.cfi_def_cfa_offset 36
+ 1728              		.cfi_offset 4, -36
+ 1729              		.cfi_offset 5, -32
+ 1730              		.cfi_offset 6, -28
+ 1731              		.cfi_offset 7, -24
+ 1732              		.cfi_offset 8, -20
+ 1733              		.cfi_offset 9, -16
+ 1734              		.cfi_offset 10, -12
+ 1735              		.cfi_offset 11, -8
+ 1736              		.cfi_offset 14, -4
+ 1737 0004 85B0     		sub	sp, sp, #20
+ 1738              	.LCFI41:
+ 1739              		.cfi_def_cfa_offset 56
+ 1740 0006 0390     		str	r0, [sp, #12]
+ 1741 0008 8946     		mov	r9, r1
+ 1742 000a 9246     		mov	r10, r2
+ 1743 000c 9DF838B0 		ldrb	fp, [sp, #56]	@ zero_extendqisi2
+ 374:Dsp/widget/wgt_core/GenDsp.c ****     int8_t f;
+ 1744              		.loc 1 374 5 is_stmt 1 view .LVU425
+ 375:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_x;
+ 1745              		.loc 1 375 5 view .LVU426
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 40
+
+
+ 376:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_y;
+ 1746              		.loc 1 376 5 view .LVU427
+ 377:Dsp/widget/wgt_core/GenDsp.c ****     int8_t x;
+ 1747              		.loc 1 377 5 view .LVU428
+ 378:Dsp/widget/wgt_core/GenDsp.c ****     int8_t y;
+ 1748              		.loc 1 378 5 view .LVU429
+ 379:Dsp/widget/wgt_core/GenDsp.c **** 
+ 380:Dsp/widget/wgt_core/GenDsp.c ****     f = 1;
+ 1749              		.loc 1 380 5 view .LVU430
+ 1750              	.LVL165:
+ 381:Dsp/widget/wgt_core/GenDsp.c ****     f -= radius;
+ 1751              		.loc 1 381 5 view .LVU431
+ 1752              		.loc 1 381 7 is_stmt 0 view .LVU432
+ 1753 0010 C3F10104 		rsb	r4, r3, #1
+ 1754 0014 64B2     		sxtb	r4, r4
+ 1755              	.LVL166:
+ 382:Dsp/widget/wgt_core/GenDsp.c ****     ddF_x = 1;
+ 1756              		.loc 1 382 5 is_stmt 1 view .LVU433
+ 383:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 1757              		.loc 1 383 5 view .LVU434
+ 384:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y -= radius;
+ 1758              		.loc 1 384 5 view .LVU435
+ 385:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y *= 2;
+ 1759              		.loc 1 385 5 view .LVU436
+ 1760              		.loc 1 385 11 is_stmt 0 view .LVU437
+ 1761 0016 C3EBC318 		rsb	r8, r3, r3, lsl #7
+ 1762 001a 4FEA4808 		lsl	r8, r8, #1
+ 1763 001e 4FFA88F8 		sxtb	r8, r8
+ 1764              	.LVL167:
+ 386:Dsp/widget/wgt_core/GenDsp.c ****     x = 0;
+ 1765              		.loc 1 386 5 is_stmt 1 view .LVU438
+ 387:Dsp/widget/wgt_core/GenDsp.c ****     y = radius;
+ 1766              		.loc 1 387 5 view .LVU439
+ 1767              		.loc 1 387 7 is_stmt 0 view .LVU440
+ 1768 0022 5EB2     		sxtb	r6, r3
+ 1769              	.LVL168:
+ 388:Dsp/widget/wgt_core/GenDsp.c **** 
+ 389:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Fill_Circle_Section(map, x, y, x0, y0, option);
+ 1770              		.loc 1 389 5 is_stmt 1 view .LVU441
+ 1771 0024 CDF804B0 		str	fp, [sp, #4]
+ 1772 0028 0092     		str	r2, [sp]
+ 1773 002a 0B46     		mov	r3, r1
+ 1774              	.LVL169:
+ 1775              		.loc 1 389 5 is_stmt 0 view .LVU442
+ 1776 002c 3246     		mov	r2, r6
+ 1777              	.LVL170:
+ 1778              		.loc 1 389 5 view .LVU443
+ 1779 002e 0021     		movs	r1, #0
+ 1780              	.LVL171:
+ 1781              		.loc 1 389 5 view .LVU444
+ 1782 0030 FFF7FEFF 		bl	GenDsp_Fill_Circle_Section
+ 1783              	.LVL172:
+ 390:Dsp/widget/wgt_core/GenDsp.c **** 
+ 391:Dsp/widget/wgt_core/GenDsp.c ****     while (x < y)
+ 1784              		.loc 1 391 5 is_stmt 1 view .LVU445
+ 386:Dsp/widget/wgt_core/GenDsp.c ****     y = radius;
+ 1785              		.loc 1 386 7 is_stmt 0 view .LVU446
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 41
+
+
+ 1786 0034 0025     		movs	r5, #0
+ 382:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 1787              		.loc 1 382 11 view .LVU447
+ 1788 0036 0127     		movs	r7, #1
+ 1789              		.loc 1 391 11 view .LVU448
+ 1790 0038 19E0     		b	.L95
+ 1791              	.LVL173:
+ 1792              	.L100:
+ 392:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 393:Dsp/widget/wgt_core/GenDsp.c ****         if (f >= 0)
+ 394:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 395:Dsp/widget/wgt_core/GenDsp.c ****             y--;
+ 1793              		.loc 1 395 13 is_stmt 1 view .LVU449
+ 1794              		.loc 1 395 14 is_stmt 0 view .LVU450
+ 1795 003a 013E     		subs	r6, r6, #1
+ 1796              	.LVL174:
+ 1797              		.loc 1 395 14 view .LVU451
+ 1798 003c 76B2     		sxtb	r6, r6
+ 1799              	.LVL175:
+ 396:Dsp/widget/wgt_core/GenDsp.c ****             ddF_y += 2;
+ 1800              		.loc 1 396 13 is_stmt 1 view .LVU452
+ 1801              		.loc 1 396 19 is_stmt 0 view .LVU453
+ 1802 003e 08F10203 		add	r3, r8, #2
+ 1803 0042 4FFA83F8 		sxtb	r8, r3
+ 1804              	.LVL176:
+ 397:Dsp/widget/wgt_core/GenDsp.c ****             f += ddF_y;
+ 1805              		.loc 1 397 13 is_stmt 1 view .LVU454
+ 1806              		.loc 1 397 15 is_stmt 0 view .LVU455
+ 1807 0046 54FA83F4 		uxtab	r4, r4, r3
+ 1808              	.LVL177:
+ 1809              		.loc 1 397 15 view .LVU456
+ 1810 004a 64B2     		sxtb	r4, r4
+ 1811              	.LVL178:
+ 1812              	.L96:
+ 398:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 399:Dsp/widget/wgt_core/GenDsp.c ****         x++;
+ 1813              		.loc 1 399 9 is_stmt 1 view .LVU457
+ 1814              		.loc 1 399 10 is_stmt 0 view .LVU458
+ 1815 004c 0135     		adds	r5, r5, #1
+ 1816              	.LVL179:
+ 1817              		.loc 1 399 10 view .LVU459
+ 1818 004e 6DB2     		sxtb	r5, r5
+ 1819              	.LVL180:
+ 400:Dsp/widget/wgt_core/GenDsp.c ****         ddF_x += 2;
+ 1820              		.loc 1 400 9 is_stmt 1 view .LVU460
+ 1821              		.loc 1 400 15 is_stmt 0 view .LVU461
+ 1822 0050 BB1C     		adds	r3, r7, #2
+ 1823 0052 5FB2     		sxtb	r7, r3
+ 1824              	.LVL181:
+ 401:Dsp/widget/wgt_core/GenDsp.c ****         f += ddF_x;
+ 1825              		.loc 1 401 9 is_stmt 1 view .LVU462
+ 1826              		.loc 1 401 11 is_stmt 0 view .LVU463
+ 1827 0054 54FA83F4 		uxtab	r4, r4, r3
+ 1828              	.LVL182:
+ 1829              		.loc 1 401 11 view .LVU464
+ 1830 0058 64B2     		sxtb	r4, r4
+ 1831              	.LVL183:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 42
+
+
+ 402:Dsp/widget/wgt_core/GenDsp.c **** 
+ 403:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Fill_Circle_Section(map, x, y, x0, y0, option);
+ 1832              		.loc 1 403 9 is_stmt 1 view .LVU465
+ 1833 005a CDF804B0 		str	fp, [sp, #4]
+ 1834 005e CDF800A0 		str	r10, [sp]
+ 1835 0062 4B46     		mov	r3, r9
+ 1836 0064 3246     		mov	r2, r6
+ 1837 0066 2946     		mov	r1, r5
+ 1838 0068 0398     		ldr	r0, [sp, #12]
+ 1839 006a FFF7FEFF 		bl	GenDsp_Fill_Circle_Section
+ 1840              	.LVL184:
+ 1841              	.L95:
+ 391:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1842              		.loc 1 391 11 view .LVU466
+ 1843 006e B542     		cmp	r5, r6
+ 1844 0070 02DA     		bge	.L99
+ 393:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1845              		.loc 1 393 9 view .LVU467
+ 393:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1846              		.loc 1 393 12 is_stmt 0 view .LVU468
+ 1847 0072 002C     		cmp	r4, #0
+ 1848 0074 E1DA     		bge	.L100
+ 1849 0076 E9E7     		b	.L96
+ 1850              	.L99:
+ 404:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 405:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1851              		.loc 1 405 1 view .LVU469
+ 1852 0078 05B0     		add	sp, sp, #20
+ 1853              	.LCFI42:
+ 1854              		.cfi_def_cfa_offset 36
+ 1855              		@ sp needed
+ 1856 007a BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1857              		.loc 1 405 1 view .LVU470
+ 1858              		.cfi_endproc
+ 1859              	.LFE18:
+ 1861              		.section	.text.GenDsp_FillRectangle,"ax",%progbits
+ 1862              		.align	1
+ 1863              		.syntax unified
+ 1864              		.thumb
+ 1865              		.thumb_func
+ 1866              		.fpu fpv4-sp-d16
+ 1868              	GenDsp_FillRectangle:
+ 1869              	.LVL185:
+ 1870              	.LFB19:
+ 406:Dsp/widget/wgt_core/GenDsp.c **** 
+ 407:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height)
+ 408:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1871              		.loc 1 408 1 is_stmt 1 view -0
+ 1872              		.cfi_startproc
+ 1873              		@ args = 4, pretend = 0, frame = 0
+ 1874              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1875              		.loc 1 408 1 is_stmt 0 view .LVU472
+ 1876 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 1877              	.LCFI43:
+ 1878              		.cfi_def_cfa_offset 32
+ 1879              		.cfi_offset 4, -32
+ 1880              		.cfi_offset 5, -28
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 43
+
+
+ 1881              		.cfi_offset 6, -24
+ 1882              		.cfi_offset 7, -20
+ 1883              		.cfi_offset 8, -16
+ 1884              		.cfi_offset 9, -12
+ 1885              		.cfi_offset 10, -8
+ 1886              		.cfi_offset 14, -4
+ 1887 0004 8046     		mov	r8, r0
+ 1888 0006 8946     		mov	r9, r1
+ 1889 0008 1646     		mov	r6, r2
+ 1890 000a 9A46     		mov	r10, r3
+ 1891 000c 9DF82070 		ldrb	r7, [sp, #32]	@ zero_extendqisi2
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 1892              		.loc 1 409 5 is_stmt 1 view .LVU473
+ 1893              	.LBB10:
+ 1894              		.loc 1 409 10 view .LVU474
+ 1895              	.LVL186:
+ 1896              		.loc 1 409 17 is_stmt 0 view .LVU475
+ 1897 0010 0D46     		mov	r5, r1
+ 1898              		.loc 1 409 5 view .LVU476
+ 1899 0012 0CE0     		b	.L102
+ 1900              	.LVL187:
+ 1901              	.L103:
+ 1902              	.LBB11:
+ 410:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         for (int8_t y_tmp = y; y_tmp < y + height; y_tmp++)
+ 412:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 413:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, y_tmp, true);
+ 1903              		.loc 1 413 13 is_stmt 1 discriminator 3 view .LVU477
+ 1904 0014 0123     		movs	r3, #1
+ 1905 0016 2246     		mov	r2, r4
+ 1906 0018 2946     		mov	r1, r5
+ 1907 001a 4046     		mov	r0, r8
+ 1908 001c FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1909              	.LVL188:
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1910              		.loc 1 411 52 discriminator 3 view .LVU478
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1911              		.loc 1 411 57 is_stmt 0 discriminator 3 view .LVU479
+ 1912 0020 0134     		adds	r4, r4, #1
+ 1913              	.LVL189:
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1914              		.loc 1 411 57 discriminator 3 view .LVU480
+ 1915 0022 64B2     		sxtb	r4, r4
+ 1916              	.LVL190:
+ 1917              	.L104:
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1918              		.loc 1 411 32 is_stmt 1 discriminator 1 view .LVU481
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1919              		.loc 1 411 42 is_stmt 0 discriminator 1 view .LVU482
+ 1920 0024 F319     		adds	r3, r6, r7
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1921              		.loc 1 411 9 discriminator 1 view .LVU483
+ 1922 0026 9C42     		cmp	r4, r3
+ 1923 0028 F4DB     		blt	.L103
+ 1924              	.LBE11:
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 1925              		.loc 1 409 47 is_stmt 1 discriminator 2 view .LVU484
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 44
+
+
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 1926              		.loc 1 409 52 is_stmt 0 discriminator 2 view .LVU485
+ 1927 002a 0135     		adds	r5, r5, #1
+ 1928              	.LVL191:
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 1929              		.loc 1 409 52 discriminator 2 view .LVU486
+ 1930 002c 6DB2     		sxtb	r5, r5
+ 1931              	.LVL192:
+ 1932              	.L102:
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 1933              		.loc 1 409 28 is_stmt 1 discriminator 1 view .LVU487
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 1934              		.loc 1 409 38 is_stmt 0 discriminator 1 view .LVU488
+ 1935 002e 09EB0A03 		add	r3, r9, r10
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 1936              		.loc 1 409 5 discriminator 1 view .LVU489
+ 1937 0032 9D42     		cmp	r5, r3
+ 1938 0034 01DA     		bge	.L107
+ 1939              	.LBB12:
+ 411:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1940              		.loc 1 411 21 view .LVU490
+ 1941 0036 3446     		mov	r4, r6
+ 1942 0038 F4E7     		b	.L104
+ 1943              	.L107:
+ 1944              	.LBE12:
+ 1945              	.LBE10:
+ 414:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 415:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 416:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1946              		.loc 1 416 1 view .LVU491
+ 1947 003a BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1948              		.loc 1 416 1 view .LVU492
+ 1949              		.cfi_endproc
+ 1950              	.LFE19:
+ 1952              		.section	.text.GenDsp_Fill_RadiusRectangle,"ax",%progbits
+ 1953              		.align	1
+ 1954              		.syntax unified
+ 1955              		.thumb
+ 1956              		.thumb_func
+ 1957              		.fpu fpv4-sp-d16
+ 1959              	GenDsp_Fill_RadiusRectangle:
+ 1960              	.LVL193:
+ 1961              	.LFB20:
+ 417:Dsp/widget/wgt_core/GenDsp.c **** 
+ 418:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t h
+ 419:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1962              		.loc 1 419 1 is_stmt 1 view -0
+ 1963              		.cfi_startproc
+ 1964              		@ args = 8, pretend = 0, frame = 16
+ 1965              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1966              		.loc 1 419 1 is_stmt 0 view .LVU494
+ 1967 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1968              	.LCFI44:
+ 1969              		.cfi_def_cfa_offset 36
+ 1970              		.cfi_offset 4, -36
+ 1971              		.cfi_offset 5, -32
+ 1972              		.cfi_offset 6, -28
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 45
+
+
+ 1973              		.cfi_offset 7, -24
+ 1974              		.cfi_offset 8, -20
+ 1975              		.cfi_offset 9, -16
+ 1976              		.cfi_offset 10, -12
+ 1977              		.cfi_offset 11, -8
+ 1978              		.cfi_offset 14, -4
+ 1979 0004 87B0     		sub	sp, sp, #28
+ 1980              	.LCFI45:
+ 1981              		.cfi_def_cfa_offset 64
+ 1982 0006 8046     		mov	r8, r0
+ 1983 0008 1446     		mov	r4, r2
+ 1984 000a 9DF840B0 		ldrb	fp, [sp, #64]	@ zero_extendqisi2
+ 1985 000e 9DF84460 		ldrb	r6, [sp, #68]	@ zero_extendqisi2
+ 420:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillRectangle(map, x + radius, y, width - 2 * radius, height);
+ 1986              		.loc 1 420 5 is_stmt 1 view .LVU495
+ 1987              		.loc 1 420 33 is_stmt 0 view .LVU496
+ 1988 0012 0391     		str	r1, [sp, #12]
+ 1989 0014 9DF80C50 		ldrb	r5, [sp, #12]	@ zero_extendqisi2
+ 1990 0018 05EB060A 		add	r10, r5, r6
+ 1991              		.loc 1 420 5 view .LVU497
+ 1992 001c 4FFA8AFA 		sxtb	r10, r10
+ 1993 0020 7700     		lsls	r7, r6, #1
+ 1994 0022 FFB2     		uxtb	r7, r7
+ 1995 0024 0593     		str	r3, [sp, #20]
+ 1996 0026 DB1B     		subs	r3, r3, r7
+ 1997              	.LVL194:
+ 1998              		.loc 1 420 5 view .LVU498
+ 1999 0028 CDF800B0 		str	fp, [sp]
+ 2000 002c DBB2     		uxtb	r3, r3
+ 2001 002e 5146     		mov	r1, r10
+ 2002              	.LVL195:
+ 2003              		.loc 1 420 5 view .LVU499
+ 2004 0030 FFF7FEFF 		bl	GenDsp_FillRectangle
+ 2005              	.LVL196:
+ 421:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillRectangle(map, x, y + radius, radius + 1, height - 2 * radius - 1);
+ 2006              		.loc 1 421 5 is_stmt 1 view .LVU500
+ 2007              		.loc 1 421 36 is_stmt 0 view .LVU501
+ 2008 0034 E4B2     		uxtb	r4, r4
+ 2009 0036 04EB0609 		add	r9, r4, r6
+ 2010              		.loc 1 421 5 view .LVU502
+ 2011 003a 4FFA89F9 		sxtb	r9, r9
+ 2012 003e 731C     		adds	r3, r6, #1
+ 2013 0040 D8B2     		uxtb	r0, r3
+ 2014              		.loc 1 421 65 view .LVU503
+ 2015 0042 ABEB0707 		sub	r7, fp, r7
+ 2016 0046 FFB2     		uxtb	r7, r7
+ 2017              		.loc 1 421 5 view .LVU504
+ 2018 0048 7B1E     		subs	r3, r7, #1
+ 2019 004a DBB2     		uxtb	r3, r3
+ 2020 004c 0093     		str	r3, [sp]
+ 2021 004e 0490     		str	r0, [sp, #16]
+ 2022 0050 0346     		mov	r3, r0
+ 2023 0052 4A46     		mov	r2, r9
+ 2024 0054 0399     		ldr	r1, [sp, #12]
+ 2025 0056 4046     		mov	r0, r8
+ 2026 0058 FFF7FEFF 		bl	GenDsp_FillRectangle
+ 2027              	.LVL197:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 46
+
+
+ 422:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillRectangle(map, x + width - radius, y + radius, radius + 1, height - 2 * radius);
+ 2028              		.loc 1 422 5 is_stmt 1 view .LVU505
+ 2029              		.loc 1 422 33 is_stmt 0 view .LVU506
+ 2030 005c 059A     		ldr	r2, [sp, #20]
+ 2031 005e 1544     		add	r5, r5, r2
+ 2032 0060 EDB2     		uxtb	r5, r5
+ 2033              		.loc 1 422 41 view .LVU507
+ 2034 0062 AD1B     		subs	r5, r5, r6
+ 2035              		.loc 1 422 5 view .LVU508
+ 2036 0064 6DB2     		sxtb	r5, r5
+ 2037 0066 0097     		str	r7, [sp]
+ 2038 0068 049B     		ldr	r3, [sp, #16]
+ 2039 006a 4A46     		mov	r2, r9
+ 2040 006c 2946     		mov	r1, r5
+ 2041 006e 4046     		mov	r0, r8
+ 2042 0070 FFF7FEFF 		bl	GenDsp_FillRectangle
+ 2043              	.LVL198:
+ 423:Dsp/widget/wgt_core/GenDsp.c **** 
+ 424:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + radius, y + radius, radius, DRAW_UPPER_LEFT);
+ 2044              		.loc 1 424 5 is_stmt 1 view .LVU509
+ 2045 0074 0223     		movs	r3, #2
+ 2046 0076 0093     		str	r3, [sp]
+ 2047 0078 3346     		mov	r3, r6
+ 2048 007a 4A46     		mov	r2, r9
+ 2049 007c 5146     		mov	r1, r10
+ 2050 007e 4046     		mov	r0, r8
+ 2051 0080 FFF7FEFF 		bl	GenDsp_FillCircle
+ 2052              	.LVL199:
+ 425:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + width - radius, y + radius, radius, DRAW_UPPER_RIGHT);
+ 2053              		.loc 1 425 5 view .LVU510
+ 2054 0084 0123     		movs	r3, #1
+ 2055 0086 0093     		str	r3, [sp]
+ 2056 0088 3346     		mov	r3, r6
+ 2057 008a 4A46     		mov	r2, r9
+ 2058 008c 2946     		mov	r1, r5
+ 2059 008e 4046     		mov	r0, r8
+ 2060 0090 FFF7FEFF 		bl	GenDsp_FillCircle
+ 2061              	.LVL200:
+ 426:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + radius, y + height - radius - 2, radius, DRAW_LOWER_LEFT);
+ 2062              		.loc 1 426 5 view .LVU511
+ 2063              		.loc 1 426 42 is_stmt 0 view .LVU512
+ 2064 0094 5C44     		add	r4, r4, fp
+ 2065 0096 E4B2     		uxtb	r4, r4
+ 2066              		.loc 1 426 51 view .LVU513
+ 2067 0098 A41B     		subs	r4, r4, r6
+ 2068 009a E4B2     		uxtb	r4, r4
+ 2069              		.loc 1 426 60 view .LVU514
+ 2070 009c 023C     		subs	r4, r4, #2
+ 2071              		.loc 1 426 5 view .LVU515
+ 2072 009e 64B2     		sxtb	r4, r4
+ 2073 00a0 0423     		movs	r3, #4
+ 2074 00a2 0093     		str	r3, [sp]
+ 2075 00a4 3346     		mov	r3, r6
+ 2076 00a6 2246     		mov	r2, r4
+ 2077 00a8 5146     		mov	r1, r10
+ 2078 00aa 4046     		mov	r0, r8
+ 2079 00ac FFF7FEFF 		bl	GenDsp_FillCircle
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 47
+
+
+ 2080              	.LVL201:
+ 427:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + width - radius, y + height - radius - 2, radius, DRAW_LOWER_RIGHT);
+ 2081              		.loc 1 427 5 is_stmt 1 view .LVU516
+ 2082 00b0 0823     		movs	r3, #8
+ 2083 00b2 0093     		str	r3, [sp]
+ 2084 00b4 3346     		mov	r3, r6
+ 2085 00b6 2246     		mov	r2, r4
+ 2086 00b8 2946     		mov	r1, r5
+ 2087 00ba 4046     		mov	r0, r8
+ 2088 00bc FFF7FEFF 		bl	GenDsp_FillCircle
+ 2089              	.LVL202:
+ 428:Dsp/widget/wgt_core/GenDsp.c **** }
+ 2090              		.loc 1 428 1 is_stmt 0 view .LVU517
+ 2091 00c0 07B0     		add	sp, sp, #28
+ 2092              	.LCFI46:
+ 2093              		.cfi_def_cfa_offset 36
+ 2094              		@ sp needed
+ 2095 00c2 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 2096              		.loc 1 428 1 view .LVU518
+ 2097              		.cfi_endproc
+ 2098              	.LFE20:
+ 2100              		.section	.rodata.GenDsp_DrawNum.str1.4,"aMS",%progbits,1
+ 2101              		.align	2
+ 2102              	.LC0:
+ 2103 0000 256400   		.ascii	"%d\000"
+ 2104              		.section	.text.GenDsp_DrawNum,"ax",%progbits
+ 2105              		.align	1
+ 2106              		.syntax unified
+ 2107              		.thumb
+ 2108              		.thumb_func
+ 2109              		.fpu fpv4-sp-d16
+ 2111              	GenDsp_DrawNum:
+ 2112              	.LVL203:
+ 2113              	.LFB7:
+ 132:Dsp/widget/wgt_core/GenDsp.c ****     char num_buff[MAX_DSP_NUM_LEN];
+ 2114              		.loc 1 132 1 is_stmt 1 view -0
+ 2115              		.cfi_startproc
+ 2116              		@ args = 8, pretend = 0, frame = 16
+ 2117              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132:Dsp/widget/wgt_core/GenDsp.c ****     char num_buff[MAX_DSP_NUM_LEN];
+ 2118              		.loc 1 132 1 is_stmt 0 view .LVU520
+ 2119 0000 70B5     		push	{r4, r5, r6, lr}
+ 2120              	.LCFI47:
+ 2121              		.cfi_def_cfa_offset 16
+ 2122              		.cfi_offset 4, -16
+ 2123              		.cfi_offset 5, -12
+ 2124              		.cfi_offset 6, -8
+ 2125              		.cfi_offset 14, -4
+ 2126 0002 86B0     		sub	sp, sp, #24
+ 2127              	.LCFI48:
+ 2128              		.cfi_def_cfa_offset 40
+ 2129 0004 0446     		mov	r4, r0
+ 2130 0006 0D46     		mov	r5, r1
+ 2131 0008 1E46     		mov	r6, r3
+ 133:Dsp/widget/wgt_core/GenDsp.c **** 
+ 2132              		.loc 1 133 5 is_stmt 1 view .LVU521
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 48
+
+
+ 2133              		.loc 1 135 5 view .LVU522
+ 2134 000a 0949     		ldr	r1, .L112
+ 2135              	.LVL204:
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ 2136              		.loc 1 135 5 is_stmt 0 view .LVU523
+ 2137 000c 03A8     		add	r0, sp, #12
+ 2138              	.LVL205:
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ 2139              		.loc 1 135 5 view .LVU524
+ 2140 000e FFF7FEFF 		bl	sprintf
+ 2141              	.LVL206:
+ 136:Dsp/widget/wgt_core/GenDsp.c **** }
+ 2142              		.loc 1 136 5 is_stmt 1 view .LVU525
+ 2143 0012 9DF82C30 		ldrb	r3, [sp, #44]	@ zero_extendqisi2
+ 2144 0016 0193     		str	r3, [sp, #4]
+ 2145 0018 9DF92830 		ldrsb	r3, [sp, #40]
+ 2146 001c 0093     		str	r3, [sp]
+ 2147 001e 3346     		mov	r3, r6
+ 2148 0020 03AA     		add	r2, sp, #12
+ 2149 0022 2946     		mov	r1, r5
+ 2150 0024 2046     		mov	r0, r4
+ 2151 0026 FFF7FEFF 		bl	GenDsp_DrawStr
+ 2152              	.LVL207:
+ 137:Dsp/widget/wgt_core/GenDsp.c **** 
+ 2153              		.loc 1 137 1 is_stmt 0 view .LVU526
+ 2154 002a 06B0     		add	sp, sp, #24
+ 2155              	.LCFI49:
+ 2156              		.cfi_def_cfa_offset 16
+ 2157              		@ sp needed
+ 2158 002c 70BD     		pop	{r4, r5, r6, pc}
+ 2159              	.LVL208:
+ 2160              	.L113:
+ 137:Dsp/widget/wgt_core/GenDsp.c **** 
+ 2161              		.loc 1 137 1 view .LVU527
+ 2162 002e 00BF     		.align	2
+ 2163              	.L112:
+ 2164 0030 00000000 		.word	.LC0
+ 2165              		.cfi_endproc
+ 2166              	.LFE7:
+ 2168              		.global	GenDsp_Interface
+ 2169              		.global	DspRange
+ 2170              		.section	.bss.DspRange,"aw",%nobits
+ 2171              		.align	2
+ 2172              		.set	.LANCHOR0,. + 0
+ 2175              	DspRange:
+ 2176 0000 00000000 		.space	4
+ 2177              		.section	.data.GenDsp_Interface,"aw"
+ 2178              		.align	2
+ 2181              	GenDsp_Interface:
+ 2182 0000 00000000 		.word	GenDsp_SetRange
+ 2183 0004 00000000 		.word	GenDsp_DrawPoint
+ 2184 0008 00000000 		.word	GenDsp_DrawCircle
+ 2185 000c 00000000 		.word	GenDsp_DrawChar
+ 2186 0010 00000000 		.word	GenDsp_DrawStr
+ 2187 0014 00000000 		.word	GenDsp_DrawNum
+ 2188 0018 00000000 		.word	GenDsp_DrawRectangle
+ 2189 001c 00000000 		.word	GenDsp_Draw_RadiusRectangle
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 49
+
+
+ 2190 0020 00000000 		.word	GenDsp_DrawLen
+ 2191 0024 00000000 		.word	GenDsp_Draw_VLine
+ 2192 0028 00000000 		.word	GenDsp_Draw_HLine
+ 2193 002c 00000000 		.word	0
+ 2194 0030 00000000 		.word	GenDsp_FillCircle
+ 2195 0034 00000000 		.word	GenDsp_FillRectangle
+ 2196 0038 00000000 		.word	GenDsp_Fill_RadiusRectangle
+ 2197 003c 00000000 		.word	GenDsp_GetStrLen
+ 2198              		.text
+ 2199              	.Letext0:
+ 2200              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 2201              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 2202              		.file 4 "Dsp/screen/font/oledfont.h"
+ 2203              		.file 5 "Dsp/widget/wgt_core/GenDsp.h"
+ 2204              		.file 6 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/std
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s 			page 50
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 GenDsp.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:18     .text.GenDsp_SetRange:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:25     .text.GenDsp_SetRange:0000000000000000 GenDsp_SetRange
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:61     .text.GenDsp_SetRange:0000000000000014 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:66     .text.GenDsp_DrawPoint:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:72     .text.GenDsp_DrawPoint:0000000000000000 GenDsp_DrawPoint
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:140    .text.GenDsp_DrawPoint:0000000000000034 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:145    .text.GenDsp_DrawChar:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:151    .text.GenDsp_DrawChar:0000000000000000 GenDsp_DrawChar
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:385    .text.GenDsp_DrawChar:00000000000000d4 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:392    .text.GenDsp_DrawStr:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:398    .text.GenDsp_DrawStr:0000000000000000 GenDsp_DrawStr
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:471    .text.GenDsp_GetStrLen:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:477    .text.GenDsp_GetStrLen:0000000000000000 GenDsp_GetStrLen
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:519    .text.GenDsp_DrawLen:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:525    .text.GenDsp_DrawLen:0000000000000000 GenDsp_DrawLen
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:768    .text.GenDsp_Draw_VLine:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:774    .text.GenDsp_Draw_VLine:0000000000000000 GenDsp_Draw_VLine
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:813    .text.GenDsp_Draw_HLine:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:819    .text.GenDsp_Draw_HLine:0000000000000000 GenDsp_Draw_HLine
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:857    .text.GenDsp_Draw_Circle_Section:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:863    .text.GenDsp_Draw_Circle_Section:0000000000000000 GenDsp_Draw_Circle_Section
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1052   .text.GenDsp_Draw_Circle:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1058   .text.GenDsp_Draw_Circle:0000000000000000 GenDsp_Draw_Circle
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1203   .text.GenDsp_DrawCircle:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1209   .text.GenDsp_DrawCircle:0000000000000000 GenDsp_DrawCircle
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1241   .text.GenDsp_DrawRectangle:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1247   .text.GenDsp_DrawRectangle:0000000000000000 GenDsp_DrawRectangle
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1337   .text.GenDsp_Draw_RadiusRectangle:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1343   .text.GenDsp_Draw_RadiusRectangle:0000000000000000 GenDsp_Draw_RadiusRectangle
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1507   .text.GenDsp_Fill_Circle_Section:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1513   .text.GenDsp_Fill_Circle_Section:0000000000000000 GenDsp_Fill_Circle_Section
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1711   .text.GenDsp_FillCircle:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1717   .text.GenDsp_FillCircle:0000000000000000 GenDsp_FillCircle
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1862   .text.GenDsp_FillRectangle:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1868   .text.GenDsp_FillRectangle:0000000000000000 GenDsp_FillRectangle
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1953   .text.GenDsp_Fill_RadiusRectangle:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:1959   .text.GenDsp_Fill_RadiusRectangle:0000000000000000 GenDsp_Fill_RadiusRectangle
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2101   .rodata.GenDsp_DrawNum.str1.4:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2105   .text.GenDsp_DrawNum:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2111   .text.GenDsp_DrawNum:0000000000000000 GenDsp_DrawNum
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2164   .text.GenDsp_DrawNum:0000000000000030 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2181   .data.GenDsp_Interface:0000000000000000 GenDsp_Interface
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2175   .bss.DspRange:0000000000000000 DspRange
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2171   .bss.DspRange:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccf3SDmY.s:2178   .data.GenDsp_Interface:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+oled_asc2_1206
+oled_asc2_1608
+sprintf
