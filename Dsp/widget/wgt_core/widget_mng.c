@@ -926,7 +926,7 @@ static void WidgetUI_GetCur_SelectedCtl()
 static bool WidgetUI_SelectCtl(int8_t *search_offset)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-    item_obj *UIItem_tmp = tmp->UICtl_List;
+    item_obj *UIItem_tmp = tmp->CurSelected_CTL;
 
     if ((UIItem_tmp == NULL) ||
         (*search_offset > tmp->ui_ctl_num) ||
@@ -934,7 +934,7 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
         return false;
 
     if (tmp->CurSelected_CTL == NULL)
-        tmp->CurSelected_CTL = UIItem_tmp;
+        tmp->CurSelected_CTL = tmp->UICtl_List;
 
     if (*search_offset > 0)
     {
