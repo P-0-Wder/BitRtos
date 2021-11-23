@@ -176,6 +176,7 @@ typedef struct
     list_obj *UICtl_List;
 
     int8_t UI_CoordY_Offset;
+    WidgetUI_Item_TypeDef *CurSelected_CTL;
 } WidgetObj_TypeDef;
 
 typedef struct

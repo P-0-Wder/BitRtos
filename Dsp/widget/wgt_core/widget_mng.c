@@ -235,6 +235,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->UICtl_List = NULL;
     widget_tmp->ui_ctl_num = 0;
     widget_tmp->UI_CoordY_Offset = 0;
+    widget_tmp->CurSelected_CTL = NULL;
 
     return (Widget_Handle)widget_tmp;
 }
@@ -922,6 +923,30 @@ static void WidgetUI_GetCur_SelectedCtl()
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
+static bool WidgetUI_SelectCtl(uint8_t index)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+    item_obj *UIItem_tmp = tmp->UICtl_List;
+    uint8_t search = tmp->CurSelected_CTL;
+
+    if ((UIItem_tmp == NULL) || (index > tmp->ui_ctl_num))
+        return false;
+
+    if (index >= search)
+    {
+        for (; search < index; UIItem_tmp = tmp->UICtl_List->nxt, search++)
+        {
+            if (UIItem_tmp == NULL)
+            {
+                return false;
+            }
+        }
+    }
+    else
+    {
+    }
+}
+
 static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
 {
     switch ((uint8_t)item->type)
@@ -1024,6 +1049,11 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, u
 
     /* insert list item */
     tmp->ui_ctl_num++;
+    UI_ItemData_tmp->Handler = (UI_Button_Handle)btn;
+    UI_ItemData_tmp->type = WidgetUI_Type_Button;
+
+    if (tmp->CurSelected_CTL == NULL)
+        tmp->CurSelected_CTL = UI_ItemData_tmp;
 
     return (UI_Button_Handle)btn;
 }
