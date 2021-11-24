@@ -71,6 +71,10 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     {
     case UI_Type_Button:
         // show button selector
+        ((UI_ButtonObj_TypeDef *)(item->Handler))->width;
+        ((UI_ButtonObj_TypeDef *)(item->Handler))->height;
+        ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x;
+        ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y;
         break;
 
     default:

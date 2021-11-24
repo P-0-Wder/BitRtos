@@ -26,7 +26,6 @@
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 
-typedef uint32_t UI_Handler;
 typedef void (*UI_DrawPoint)(int8_t x, int8_t y, bool state);
 typedef void (*UI_DrawLine)(int8_t x, int8_t y, uint8_t len, uint8_t line_width);
 typedef void (*UI_DrawRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width);
