@@ -408,6 +408,7 @@ typedef struct
 #define shellGetPath(_shell)            ((_shell)->info.path)
 
 void shellInit(Shell *shell, char *buffer, unsigned short size);
+void shellWriteByte(Shell *shell, const char data);
 unsigned short shellWriteString(Shell *shell, const char *string);
 void shellPrint(Shell *shell, char *fmt, ...);
 void shellScan(Shell *shell, char *fmt, ...);

@@ -232,8 +232,7 @@ void Serial_SendBuff(USART_TypeDef *Serial_port, char *Buff, uint16_t Len)
 {
 	for (uint8_t Buff_index = 0; Buff_index < Len; Buff_index++)
 	{
-		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET)
-			;
+		while (USART_GetFlagStatus(Serial_port, USART_FLAG_TC) == RESET);
 		USART_SendData(Serial_port, Buff[Buff_index]);
 	}
 }
@@ -258,8 +257,7 @@ void Serial_DMA_SendBuff(Serial_List serial_id, uint16_t len)
 	DMA_SetCurrDataCounter(Serial_DMA_TX_Stream[serial_id], (uint16_t)len);
 	DMA_Cmd(Serial_DMA_TX_Stream[serial_id], ENABLE);
 
-	while (DMA_GetFlagStatus(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]) != RESET)
-		;
+	// while (DMA_GetFlagStatus(Serial_DMA_TX_Stream[serial_id], DMA_TX_FinishFlag[serial_id]) != RESET);
 }
 
 void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx, u32 chx, u32 par, u32 mar, u16 ndtr)

@@ -7,7 +7,7 @@
 extern Shell shell;
 
 void Shell_Init(void);
-
+void user_shell_write_byte(const int *ch,...);
 
 #endif
 

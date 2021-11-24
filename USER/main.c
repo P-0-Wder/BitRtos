@@ -24,7 +24,6 @@ int main(void)
 	Serial_DMA_RXTX_Init(Serial_1,115200,3,3,&shell_recv,dma_shell_buf,40,0);
 	Shell_Init();
 	SystemInit();
-
 	while(1)
 	{
 		
@@ -34,18 +33,12 @@ int main(void)
 	return 0;
 }
 
+#if 0
 void sum(void)
 {
-	user_shell_write_byte('n',4);
+	user_printf_shell("sd");
 }
 SHELL_EXPORT_CMD(
 SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
 sum, sum, test);
-
-void test1(void)
-{
-	user_shell_write('j');
-}
-SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
-test1, test1, test);
+#endif

@@ -262,7 +262,7 @@ Shell* shellGetCurrent(void)
  * @param shell shell对象
  * @param data 字符数据
  */
-static void shellWriteByte(Shell *shell, const char data)
+void shellWriteByte(Shell *shell, const char data)
 {
     shell->write(data);
     delay_us(50);
