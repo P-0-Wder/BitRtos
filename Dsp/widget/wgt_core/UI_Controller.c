@@ -66,6 +66,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
 }
 
 /* still in developing about this selector */
+/* FYI different UI Item Got different selector */
 bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 {
     if ((item == NULL) ||

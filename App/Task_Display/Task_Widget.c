@@ -79,7 +79,7 @@ static void TestWidget_Dynamic_Dsp(void)
     Widget_Mng.Control(test3)->Clear();
     //Widget_Mng.Control(test3)->Move(15 + dis, 15);
     Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad, true);
-    Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad - 3, false);
+    Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad - 2, false);
 
     Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "8_B!T0", 15, 22, true);
     Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
