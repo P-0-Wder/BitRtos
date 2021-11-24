@@ -122,15 +122,20 @@ typedef struct
 
 typedef struct
 {
+
+} WidgetUI_Button_Interface_TypeDef;
+
+typedef struct
+{
     /* ui control section */
-    void (*UI_Button)();
-    void (*UI_CheckBox)();
-    void (*UI_ComboBox)();
-    void (*UI_DigInput)();
-    void (*UI_StrInput)();
-    void (*UI_ProcBar)();
-    void (*UI_VerBar)();
-    void (*UI_HorBar)();
+    WidgetUI_Button_Interface_TypeDef (*Button)(void);
+    // void (*UI_CheckBox)();
+    // void (*UI_ComboBox)();
+    // void (*UI_DigInput)();
+    // void (*UI_StrInput)();
+    // void (*UI_ProcBar)();
+    // void (*UI_VerBar)();
+    // void (*UI_HorBar)();
 } WidgetUI_Utils_TypeDef;
 
 typedef struct

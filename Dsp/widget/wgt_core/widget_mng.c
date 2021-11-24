@@ -98,14 +98,14 @@ static void WidgetUI_Init(void);
 
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
-    .UI_Button = NULL,
-    .UI_CheckBox = NULL,
-    .UI_ComboBox = NULL,
-    .UI_DigInput = NULL,
-    .UI_StrInput = NULL,
-    .UI_ProcBar = NULL,
-    .UI_VerBar = NULL,
-    .UI_HorBar = NULL,
+    .Button = NULL,
+    // .UI_CheckBox = NULL,
+    // .UI_ComboBox = NULL,
+    // .UI_DigInput = NULL,
+    // .UI_StrInput = NULL,
+    // .UI_ProcBar = NULL,
+    // .UI_VerBar = NULL,
+    // .UI_HorBar = NULL,
 };
 
 static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
