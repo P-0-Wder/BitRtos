@@ -61,6 +61,24 @@ void UI_Set_DspInterface(UI_DrawPoint point,
     UI_DspInterface.fill_rectangle = fill_rectangle;
 }
 
+/* still in developing about this selector */
+bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
+{
+    if (item == NULL)
+        return false;
+
+    switch ((uint8_t)(item->type))
+    {
+    case UI_Type_Button:
+        // show button selector
+        break;
+
+    default:
+        break;
+    }
+    return true;
+}
+
 static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
 {
     GenData->label = label;
@@ -69,12 +87,6 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
     GenData->y = y;
 
     GenData->init = false;
-}
-
-/* still in developing about this selector */
-static bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
-{
-    return true;
 }
 
 static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y)

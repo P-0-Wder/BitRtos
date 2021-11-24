@@ -964,17 +964,7 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     /* move UI selector on it */
     tmp->CurSelected_CTL = UIItem_tmp;
 
-    switch ((uint8_t)(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->type))
-    {
-    case UI_Type_Button:
-        // show button selector
-        break;
-
-    default:
-        break;
-    }
-
-    return true;
+    return UI_ShowSelector((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data));
 }
 
 static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)

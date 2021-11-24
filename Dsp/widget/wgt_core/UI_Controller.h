@@ -254,5 +254,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_FillRectangle fill_rectangle,
                          UI_FillRadiusRectangle fill_radius_rectangle);
 
+bool UI_ShowSelector(WidgetUI_Item_TypeDef *item);
+
 extern UI_Button_Interface_TypeDef UI_Button;
 #endif
