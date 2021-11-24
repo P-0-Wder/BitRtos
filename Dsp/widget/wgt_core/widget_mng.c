@@ -693,6 +693,7 @@ static bool Widget_FreshAll(void)
     }
 }
 
+/************************************** widget draw interface ******************************************/
 static void Widget_DrawPoint(int8_t x, int8_t y, bool set)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
@@ -900,6 +901,9 @@ static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t heig
                                     height);
 }
 
+/************************************** widget draw interface ******************************************/
+
+/************************************** widget UI interface ******************************************/
 static void WidgetUI_Init(void)
 {
     UI_Set_DspInterface(WidgetDraw_Interface.draw_point,
@@ -1105,3 +1109,4 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
 
     UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
 }
+/************************************** widget UI interface ******************************************/
