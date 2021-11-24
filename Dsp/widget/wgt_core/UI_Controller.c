@@ -68,7 +68,8 @@ void UI_Set_DspInterface(UI_DrawPoint point,
 /* still in developing about this selector */
 bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 {
-    if (item == NULL)
+    if ((item == NULL) ||
+        (UI_DspInterface.fill_circle_section != NULL))
         return false;
 
     switch ((uint8_t)(item->type))
