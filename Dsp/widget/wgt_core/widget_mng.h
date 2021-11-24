@@ -92,22 +92,32 @@ typedef enum
     WIdget_Operate_Exectue,
 } WidgetState_List;
 
+typedef enum
+{
+    Circle_Left_Up = 0,
+    Circle_Left_Down,
+    Circle_Right_Up,
+    Circle_Right_Down,
+} WidgetCircle_Section_List;
+
 typedef struct
 {
-    void (*draw_point)(int8_t x, int8_t y, bool set);
-    void (*draw_circle)(int8_t x, int8_t y, uint8_t radius, uint8_t line_size);
+    void (*draw_point)(int8_t x, int8_t y, bool col_inv);
+    void (*draw_circle)(int8_t x, int8_t y, uint8_t radius, uint8_t line_size, bool col_inv);
+    void (*draw_circle_section)(int8_t x, int8_t y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_inv);
     void (*draw_char)(GenFont_List font, char c, int8_t x, int8_t y, bool col_inv);
     void (*draw_str)(GenFont_List font, char *str, int8_t x, int8_t y, bool col_inv);
     void (*draw_num)(GenFont_List font, uint32_t num, int8_t x, int8_t y, bool col_inv);
-    void (*draw_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size);
-    void (*draw_radius_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size);
-    void (*draw_line)(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_width);
-    void (*draw_vline)(int8_t x, int8_t y, uint8_t len, uint8_t line_size);
-    void (*draw_hline)(int8_t x, int8_t y, uint8_t len, uint8_t line_size);
+    void (*draw_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_inv);
+    void (*draw_radius_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_inv);
+    void (*draw_line)(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_width, bool col_inv);
+    void (*draw_vline)(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_inv);
+    void (*draw_hline)(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_inv);
 
-    void (*fill_circle)(int8_t x, int8_t y, uint8_t radius);
-    void (*fill_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height);
-    void (*fill_radius_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius);
+    void (*fill_circle)(int8_t x, int8_t y, uint8_t radius, bool col_inv);
+    void (*fill_circle_section)(int8_t x, int8_t y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_inv);
+    void (*fill_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_inv);
+    void (*fill_radius_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
 } Widget_DrawFunc_TypeDef;
 
 typedef struct

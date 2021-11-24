@@ -44,12 +44,15 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawRectangle rectangle,
                          UI_DrawRadiusRectangle radius_rectangle,
                          UI_DrawCircle circle,
+                         UI_DrawCircleSection circle_section,
                          UI_DrawStr str,
                          UI_FillCircle fill_circle,
+                         UI_FillCircle_Section fillcircle_section,
                          UI_FillRectangle fill_rectangle,
                          UI_FillRadiusRectangle fill_radius_rectangle)
 {
     UI_DspInterface.draw_circle = circle;
+    UI_DspInterface.draw_circle_section = circle_section;
     UI_DspInterface.draw_line = line;
     UI_DspInterface.draw_point = point;
     UI_DspInterface.draw_rectangle = rectangle;
@@ -57,6 +60,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
     UI_DspInterface.draw_str = str;
 
     UI_DspInterface.fill_circle = fill_circle;
+    UI_DspInterface.fill_circle_section = fillcircle_section;
     UI_DspInterface.fill_radius_rectangle = fill_radius_rectangle;
     UI_DspInterface.fill_rectangle = fill_rectangle;
 }
@@ -245,7 +249,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         if (Obj->state == UI_Btn_PushDwn)
         {
             /* fill button frame */
-            UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x + 1, Obj->Gen_Data.y + 1, Obj->width - 1, Obj->height - 1, Default_Button_FrameRadius);
+            UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x + 1, Obj->Gen_Data.y + 1, Obj->width - 1, Obj->height - 1, Default_Button_FrameRadius, true);
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
@@ -254,11 +258,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         else
         {
             /* draw button frame */
-            UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, Default_Button_FrameRadius, 1);
+            UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, Default_Button_FrameRadius, 1, true);
 
             /* display label normally */
             if (Obj->Release_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x, Obj->Gen_Data.y, false);
+                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
         }
     }
     else
@@ -477,11 +481,11 @@ static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
         {
             if (i == 0)
             {
-                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius, 1);
+                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius, 1, true);
             }
             else if (Obj->checked)
             {
-                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius - i, 1);
+                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius - i, 1, true);
             }
         }
     }

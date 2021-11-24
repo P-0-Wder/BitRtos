@@ -80,16 +80,18 @@ static WidgetDsp_Status_List Widget_DspStatus(void);
 static void Widget_DrawPoint(int8_t x, int8_t y, bool set);
 static void Widget_DrawChr(Widget_Font font, char char_dsp, int8_t x, int8_t y, bool col_cnv);
 static void Widget_DrawStr(Widget_Font font, char *str_dsp, int8_t x, int8_t y, bool col_cnv);
-static void Widget_DrawLine(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_size);
-static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size);
-static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size);
-static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t line_size);
-static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size);
+static void Widget_DrawLine(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_size, bool col_cnv);
+static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv);
+static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv);
+static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t line_size, bool col_cnv);
+static void Widget_DrawCircle_Section(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_cnv);
+static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_cnv);
 static void Widget_DrawNum(Widget_Font font, int32_t num, int8_t x, int8_t y, bool col_cnv);
-static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size);
-static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius);
-static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height);
-static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius);
+static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_cnv);
+static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius, bool col_cnv);
+static void Widget_FillCircle_Section(int8_t x, int8_t y, uint8_t radius, uint8_t section, bool col_cnv);
+static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_cnv);
+static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv);
 
 /* Widget UI control Interface */
 static void WidgetUI_Init(void);
@@ -116,8 +118,10 @@ static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
     .draw_hline = Widget_DrawHLine,
     .draw_vline = Widget_DrawVLine,
     .draw_circle = Widget_DrawCircle,
+    .draw_circle_section = Widget_DrawCircle_Section,
     .draw_char = Widget_DrawChr,
     .fill_circle = Widget_FillCircle,
+    .fill_circle_section = Widget_FillCircle_Section,
     .fill_radius_rectangle = Widget_FillRadiusRectangle,
     .fill_rectangle = Widget_FillRectangle,
 };
@@ -396,7 +400,8 @@ static bool Widget_Show(void)
                              0,
                              GetCur_Active_Widget()->width,
                              GetCur_Active_Widget()->height,
-                             1);
+                             1,
+                             true);
     }
 
     if (!GetCur_Active_Widget()->show_state)
@@ -760,7 +765,7 @@ static void Widget_DrawStr(Widget_Font font, char *str_dsp, int8_t x, int8_t y, 
                               col_cnv);
 }
 
-static void Widget_DrawLine(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_size)
+static void Widget_DrawLine(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -774,10 +779,11 @@ static void Widget_DrawLine(int8_t start_x, int8_t start_y, int8_t end_x, int8_t
                                start_y,
                                end_x,
                                end_y,
-                               line_size);
+                               line_size,
+                               col_cnv);
 }
 
-static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size)
+static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -786,10 +792,10 @@ static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size)
                                tmp->width,
                                tmp->height);
 
-    GenDsp_Interface.draw_vertical_line(tmp->pixel_map, x, y, len, line_size);
+    GenDsp_Interface.draw_vertical_line(tmp->pixel_map, x, y, len, line_size, col_cnv);
 }
 
-static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size)
+static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -798,10 +804,10 @@ static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size)
                                tmp->width,
                                tmp->height);
 
-    GenDsp_Interface.draw_horizon_line(tmp->pixel_map, x, y, len, line_size);
+    GenDsp_Interface.draw_horizon_line(tmp->pixel_map, x, y, len, line_size, col_cnv);
 }
 
-static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t line_size)
+static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -814,10 +820,28 @@ static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, 
                                  center_x,
                                  center_y,
                                  radius,
-                                 line_size);
+                                 DRAW_ALL,
+                                 col_cnv);
 }
 
-static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size)
+static void Widget_DrawCircle_Section(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_cnv)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.draw_circle(tmp->pixel_map,
+                                 center_x,
+                                 center_y,
+                                 radius,
+                                 section,
+                                 col_cnv);
+}
+
+static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -832,10 +856,11 @@ static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_
                                            width,
                                            height,
                                            radius,
-                                           line_size);
+                                           line_size,
+                                           col_cnv);
 }
 
-static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size)
+static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -849,10 +874,11 @@ static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t heig
                                     y,
                                     width,
                                     height,
-                                    line_size);
+                                    line_size,
+                                    col_cnv);
 }
 
-static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius)
+static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -866,10 +892,11 @@ static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_
                                            y,
                                            width,
                                            height,
-                                           radius);
+                                           radius,
+                                           col_cnv);
 }
 
-static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius)
+static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -882,10 +909,28 @@ static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius)
                                  x,
                                  y,
                                  radius,
-                                 DRAW_ALL);
+                                 DRAW_ALL,
+                                 col_cnv);
 }
 
-static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height)
+static void Widget_FillCircle_Section(int8_t x, int8_t y, uint8_t radius, uint8_t section, bool col_cnv)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    GenDsp_Interface.set_range(tmp->cord_x,
+                               tmp->cord_y,
+                               tmp->width,
+                               tmp->height);
+
+    GenDsp_Interface.fill_circle(tmp->pixel_map,
+                                 x,
+                                 y,
+                                 radius,
+                                 section,
+                                 col_cnv);
+}
+
+static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -898,7 +943,8 @@ static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t heig
                                     x,
                                     y,
                                     width,
-                                    height);
+                                    height,
+                                    col_cnv);
 }
 
 /************************************** widget draw interface ******************************************/
@@ -911,8 +957,10 @@ static void WidgetUI_Init(void)
                         WidgetDraw_Interface.draw_rectangle,
                         WidgetDraw_Interface.draw_radius_rectangle,
                         WidgetDraw_Interface.draw_circle,
+                        WidgetDraw_Interface.draw_circle_section,
                         WidgetDraw_Interface.draw_str,
                         WidgetDraw_Interface.fill_circle,
+                        WidgetDraw_Interface.fill_circle_section,
                         WidgetDraw_Interface.fill_rectangle,
                         WidgetDraw_Interface.fill_radius_rectangle);
 }
