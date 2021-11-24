@@ -141,6 +141,7 @@ typedef struct
     bool (*Clear)(void);
     WidgetDsp_Status_List (*Dsp_status)(void);
     Widget_DrawFunc_TypeDef *(*Draw)(void);
+    WidgetUI_Utils_TypeDef *(*UI)(void);
 } Widget_Control_TypeDef;
 
 typedef struct
