@@ -56,23 +56,6 @@ typedef enum
 
 typedef enum
 {
-    WidgetUI_Type_Button = 0,
-
-    WidgetUI_Type_Sum,
-} WidgetUI_Type_List;
-
-/*
-* use linked list to distinguish which item in created ui item list.
-* need to be frsehed on the dispaly blackboard 
-*/
-typedef struct
-{
-    WidgetUI_Type_List type;
-    UI_GenCTL_Handle Handler;
-} WidgetUI_Item_TypeDef;
-
-typedef enum
-{
     Fresh_State_DrvInit = 0,
     Fresh_State_DrvError,
     Fresh_State_Prepare,

@@ -72,7 +72,7 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
 }
 
 /* still in developing about this selector */
-static bool UI_ShowSelector()
+static bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 {
     return true;
 }

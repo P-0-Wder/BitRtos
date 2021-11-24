@@ -40,6 +40,23 @@ typedef void (*UI_FillRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_
 
 typedef int (*UI_Trigger_Callback)(void);
 
+typedef enum
+{
+    UI_Type_Button = 0,
+
+    UI_Type_Sum,
+} WidgetUI_Type_List;
+
+/*
+* use linked list to distinguish which item in created ui item list.
+* need to be frsehed on the dispaly blackboard 
+*/
+typedef struct
+{
+    WidgetUI_Type_List type;
+    UI_GenCTL_Handle Handler;
+} WidgetUI_Item_TypeDef;
+
 typedef struct
 {
     UI_DrawPoint draw_point;

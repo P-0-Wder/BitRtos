@@ -966,7 +966,7 @@ static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
 {
     switch ((uint8_t)item->type)
     {
-    case WidgetUI_Type_Button:
+    case UI_Type_Button:
 
         switch ((uint8_t)option)
         {
@@ -1065,7 +1065,7 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, u
     /* insert list item */
     tmp->ui_ctl_num++;
     UI_ItemData_tmp->Handler = (UI_Button_Handle)btn;
-    UI_ItemData_tmp->type = WidgetUI_Type_Button;
+    UI_ItemData_tmp->type = UI_Type_Button;
 
     return (UI_Button_Handle)btn;
 }
