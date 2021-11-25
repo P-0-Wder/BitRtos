@@ -87,10 +87,17 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     {
     case UI_Type_Button:
         /* comput button selector coordinate first */
-        ((UI_ButtonObj_TypeDef *)(item->Handler))->width;
-        ((UI_ButtonObj_TypeDef *)(item->Handler))->height;
-        ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x;
-        ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y;
+        Btn_Slct_LftUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + Default_Button_FrameRadius;
+        Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_TypeDef *)(item->Handler))->height - Default_Button_FrameRadius;
+
+        Btn_Slct_LftDwn_X = Btn_Slct_LftUp_X;
+        Btn_Slct_LftDwn_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + Default_Button_FrameRadius;
+
+        Btn_Slct_RgtUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + ((UI_ButtonObj_TypeDef *)(item->Handler))->width - Default_Button_FrameRadius;
+        Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
+
+        Btn_Slct_RgtDwn_X = Btn_Slct_RgtUp_X;
+        Btn_Slct_RgtDwn_Y = Btn_Slct_LftDwn_Y;
 
         // show button selector
         UI_DspInterface.fill_circle_section(Btn_Slct_LftUp_X, Btn_Slct_LftUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Up, true);
@@ -104,7 +111,6 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 
         UI_DspInterface.fill_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Down, true);
         UI_DspInterface.fill_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_LINE_SIZE, UICircle_Right_Down, false);
-
         break;
 
     default:
