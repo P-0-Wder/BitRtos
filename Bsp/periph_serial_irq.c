@@ -39,6 +39,8 @@ void USART1_IRQHandler(void)
 			Serial_Get_IRQ_RxCallback(Serial_1)(Serial_RX_Buff[Serial_1], rec);
 		}
 
+		memset(Serial_RX_Buff[Serial_1], NULL, SERIAL_MAX_RECLEN);
+
 		DMA_ClearFlag(Serial1_DMA_RX_Stream, DMA_FLAG_TCIF5);
 		DMA_SetCurrDataCounter(Serial1_DMA_RX_Stream, SERIAL_MAX_RECLEN);
 		DMA_Cmd(Serial1_DMA_RX_Stream, ENABLE);
@@ -72,6 +74,8 @@ void USART2_IRQHandler(void)
 		{
 			Serial_Get_IRQ_RxCallback(Serial_2)(Serial_RX_Buff[Serial_2], rec);
 		}
+
+		memset(Serial_RX_Buff[Serial_2], NULL, SERIAL_MAX_RECLEN);
 
 		DMA_ClearFlag(Serial2_DMA_RX_Stream, DMA_FLAG_TCIF5);
 		DMA_SetCurrDataCounter(Serial2_DMA_RX_Stream, SERIAL_MAX_RECLEN);
