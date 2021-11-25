@@ -9,6 +9,10 @@ TaskShell_State_List TaskState = Shell_State_Init;
 
 static void Shell_RecCallback(uint8_t *data, uint16_t len)
 {
+    for (uint16_t i = 0; i < len; i++)
+    {
+        shellHandler(Shell_GetInstence(), data[i]);
+    }
 }
 
 static int Shell_Write(const uint8_t *ch, uint16_t len)
@@ -49,3 +53,5 @@ void TaskShell_Core(Task_Handler self)
         break;
     }
 }
+
+// SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN, sum, sum, test);
