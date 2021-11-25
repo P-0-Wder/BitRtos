@@ -107,7 +107,7 @@ void Task_Serial_Test(Task_Handler self)
 	}
 }
 
-/* code up top only for test */
+/* the code up top is only for the test currently */
 int main(void)
 {
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_0, GPIOB);

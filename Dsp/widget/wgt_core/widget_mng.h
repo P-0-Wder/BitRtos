@@ -122,11 +122,18 @@ typedef struct
 
 typedef struct
 {
-
+    bool (*create)(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+    bool (*Set_OprLabel)(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
+    bool (*Set_TriggerCallback)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
+    bool (*Move)(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
+    bool (*Fresh)(UI_Button_Handle Btn_Hdl);
 } WidgetUI_Button_Interface_TypeDef;
 
 typedef struct
 {
+    bool (*Selector_Ctl)(int8_t *search_offset);
+    void (*Set_CoordY_Offset)(int8_t offset);
+
     /* ui control section */
     WidgetUI_Button_Interface_TypeDef (*Button)(void);
     // void (*UI_CheckBox)();
