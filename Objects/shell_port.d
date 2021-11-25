@@ -15,7 +15,7 @@ Objects/shell_port.o: SYS/shell/shell_port.c SYS/shell/shell.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
  Bsp/periph_serial.h Bsp/periph_dma.h SYS/shell/shell_port.h \
- SYS/common/sys.h SYS/delay/delay.h Bsp/periph_dma.h
+ SYS/common/sys.h Bsp/periph_dma.h
 SYS/shell/shell.h:
 SYS/shell/shell_cfg.h:
 USER/stm32f4xx.h:
@@ -55,5 +55,4 @@ Bsp/periph_serial.h:
 Bsp/periph_dma.h:
 SYS/shell/shell_port.h:
 SYS/common/sys.h:
-SYS/delay/delay.h:
 Bsp/periph_dma.h:
