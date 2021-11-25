@@ -1,0 +1,409 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"shell_port.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.user_shell_write,"ax",%progbits
+  18              		.align	1
+  19              		.global	user_shell_write
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	user_shell_write:
+  27              	.LVL0:
+  28              	.LFB126:
+  29              		.file 1 "SYS/shell/shell_port.c"
+   1:SYS/shell/shell_port.c **** #include "shell.h"
+   2:SYS/shell/shell_port.c **** #include <stdio.h>
+   3:SYS/shell/shell_port.c **** #include "stm32f4xx.h"
+   4:SYS/shell/shell_port.c **** #include "periph_serial.h"
+   5:SYS/shell/shell_port.c **** #include "shell_port.h"
+   6:SYS/shell/shell_port.c **** #include "stm32f4xx_usart.h"
+   7:SYS/shell/shell_port.c **** #include "delay.h"
+   8:SYS/shell/shell_port.c **** #include "periph_dma.h"
+   9:SYS/shell/shell_port.c **** 
+  10:SYS/shell/shell_port.c **** Shell shell;
+  11:SYS/shell/shell_port.c **** char shell_buff[512];
+  12:SYS/shell/shell_port.c **** int dma_shell_buf[40] = {0};
+  13:SYS/shell/shell_port.c **** 
+  14:SYS/shell/shell_port.c **** void user_shell_write(const int ch)
+  15:SYS/shell/shell_port.c **** {	
+  30              		.loc 1 15 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 15 1 is_stmt 0 view .LVU1
+  35 0000 08B5     		push	{r3, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 3, -8
+  39              		.cfi_offset 14, -4
+  16:SYS/shell/shell_port.c **** 		dma_shell_buf[0] = ch;
+  40              		.loc 1 16 3 is_stmt 1 view .LVU2
+  41              		.loc 1 16 20 is_stmt 0 view .LVU3
+  42 0002 094B     		ldr	r3, .L5
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 2
+
+
+  43 0004 1860     		str	r0, [r3]
+  17:SYS/shell/shell_port.c **** 		Serial_DMA_SendBuff(Serial_1,1);
+  44              		.loc 1 17 3 is_stmt 1 view .LVU4
+  45 0006 0121     		movs	r1, #1
+  46 0008 0020     		movs	r0, #0
+  47              	.LVL1:
+  48              		.loc 1 17 3 is_stmt 0 view .LVU5
+  49 000a FFF7FEFF 		bl	Serial_DMA_SendBuff
+  50              	.LVL2:
+  18:SYS/shell/shell_port.c **** 		while(DMA_GetFlagStatus(DMA2_Stream7,DMA_FLAG_TCIF7) != RESET)
+  51              		.loc 1 18 3 is_stmt 1 view .LVU6
+  52              		.loc 1 18 8 view .LVU7
+  53              		.loc 1 18 9 is_stmt 0 view .LVU8
+  54 000e 4FF02051 		mov	r1, #671088640
+  55 0012 0648     		ldr	r0, .L5+4
+  56 0014 FFF7FEFF 		bl	DMA_GetFlagStatus
+  57              	.LVL3:
+  58              		.loc 1 18 8 view .LVU9
+  59 0018 00B9     		cbnz	r0, .L4
+  60              	.L1:
+  19:SYS/shell/shell_port.c **** 		{
+  20:SYS/shell/shell_port.c **** 			DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);//清除DMA2_Steam7传输完成标志
+  21:SYS/shell/shell_port.c **** 			break;
+  22:SYS/shell/shell_port.c **** 		}
+  23:SYS/shell/shell_port.c **** }
+  61              		.loc 1 23 1 view .LVU10
+  62 001a 08BD     		pop	{r3, pc}
+  63              	.L4:
+  20:SYS/shell/shell_port.c **** 			break;
+  64              		.loc 1 20 4 is_stmt 1 view .LVU11
+  65 001c 4FF02051 		mov	r1, #671088640
+  66 0020 0248     		ldr	r0, .L5+4
+  67 0022 FFF7FEFF 		bl	DMA_ClearFlag
+  68              	.LVL4:
+  21:SYS/shell/shell_port.c **** 		}
+  69              		.loc 1 21 4 view .LVU12
+  70              		.loc 1 23 1 is_stmt 0 view .LVU13
+  71 0026 F8E7     		b	.L1
+  72              	.L6:
+  73              		.align	2
+  74              	.L5:
+  75 0028 00000000 		.word	.LANCHOR0
+  76 002c B8640240 		.word	1073898680
+  77              		.cfi_endproc
+  78              	.LFE126:
+  80              		.section	.text.user_printf_shell,"ax",%progbits
+  81              		.align	1
+  82              		.global	user_printf_shell
+  83              		.syntax unified
+  84              		.thumb
+  85              		.thumb_func
+  86              		.fpu fpv4-sp-d16
+  88              	user_printf_shell:
+  89              	.LVL5:
+  90              	.LFB127:
+  24:SYS/shell/shell_port.c **** 
+  25:SYS/shell/shell_port.c **** /*can print the characters to the terminal with this function */
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 3
+
+
+  26:SYS/shell/shell_port.c **** void user_printf_shell(const int *ch,...)
+  27:SYS/shell/shell_port.c **** {
+  91              		.loc 1 27 1 is_stmt 1 view -0
+  92              		.cfi_startproc
+  93              		@ args = 4, pretend = 16, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 1
+  95              		.loc 1 27 1 is_stmt 0 view .LVU15
+  96 0000 0FB4     		push	{r0, r1, r2, r3}
+  97              	.LCFI1:
+  98              		.cfi_def_cfa_offset 16
+  99              		.cfi_offset 0, -16
+ 100              		.cfi_offset 1, -12
+ 101              		.cfi_offset 2, -8
+ 102              		.cfi_offset 3, -4
+ 103 0002 08B5     		push	{r3, lr}
+ 104              	.LCFI2:
+ 105              		.cfi_def_cfa_offset 24
+ 106              		.cfi_offset 3, -24
+ 107              		.cfi_offset 14, -20
+  28:SYS/shell/shell_port.c **** 	shellWriteString(&shell,ch);
+ 108              		.loc 1 28 2 is_stmt 1 view .LVU16
+ 109 0004 0299     		ldr	r1, [sp, #8]
+ 110 0006 0348     		ldr	r0, .L9
+ 111 0008 FFF7FEFF 		bl	shellWriteString
+ 112              	.LVL6:
+  29:SYS/shell/shell_port.c **** }
+ 113              		.loc 1 29 1 is_stmt 0 view .LVU17
+ 114 000c BDE80840 		pop	{r3, lr}
+ 115              	.LCFI3:
+ 116              		.cfi_restore 14
+ 117              		.cfi_restore 3
+ 118              		.cfi_def_cfa_offset 16
+ 119 0010 04B0     		add	sp, sp, #16
+ 120              	.LCFI4:
+ 121              		.cfi_restore 3
+ 122              		.cfi_restore 2
+ 123              		.cfi_restore 1
+ 124              		.cfi_restore 0
+ 125              		.cfi_def_cfa_offset 0
+ 126 0012 7047     		bx	lr
+ 127              	.L10:
+ 128              		.align	2
+ 129              	.L9:
+ 130 0014 00000000 		.word	.LANCHOR1
+ 131              		.cfi_endproc
+ 132              	.LFE127:
+ 134              		.section	.text.bt_printf,"ax",%progbits
+ 135              		.align	1
+ 136              		.global	bt_printf
+ 137              		.syntax unified
+ 138              		.thumb
+ 139              		.thumb_func
+ 140              		.fpu fpv4-sp-d16
+ 142              	bt_printf:
+ 143              	.LVL7:
+ 144              	.LFB128:
+  30:SYS/shell/shell_port.c **** 
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 4
+
+
+  31:SYS/shell/shell_port.c **** void bt_printf(const char *fmt, ...)
+  32:SYS/shell/shell_port.c **** {
+ 145              		.loc 1 32 1 is_stmt 1 view -0
+ 146              		.cfi_startproc
+ 147              		@ args = 4, pretend = 16, frame = 0
+ 148              		@ frame_needed = 0, uses_anonymous_args = 1
+ 149              		.loc 1 32 1 is_stmt 0 view .LVU19
+ 150 0000 0FB4     		push	{r0, r1, r2, r3}
+ 151              	.LCFI5:
+ 152              		.cfi_def_cfa_offset 16
+ 153              		.cfi_offset 0, -16
+ 154              		.cfi_offset 1, -12
+ 155              		.cfi_offset 2, -8
+ 156              		.cfi_offset 3, -4
+ 157 0002 70B5     		push	{r4, r5, r6, lr}
+ 158              	.LCFI6:
+ 159              		.cfi_def_cfa_offset 32
+ 160              		.cfi_offset 4, -32
+ 161              		.cfi_offset 5, -28
+ 162              		.cfi_offset 6, -24
+ 163              		.cfi_offset 14, -20
+ 164 0004 049E     		ldr	r6, [sp, #16]
+  33:SYS/shell/shell_port.c **** 	va_list args;
+ 165              		.loc 1 33 2 is_stmt 1 view .LVU20
+  34:SYS/shell/shell_port.c **** 	static char bt_log_buf[128];
+ 166              		.loc 1 34 2 view .LVU21
+  35:SYS/shell/shell_port.c **** 	int i = 0;
+ 167              		.loc 1 35 2 view .LVU22
+ 168              	.LVL8:
+  36:SYS/shell/shell_port.c **** 	int x = 0;
+ 169              		.loc 1 36 2 view .LVU23
+  37:SYS/shell/shell_port.c **** 	va_start(args,fmt);
+ 170              		.loc 1 37 2 view .LVU24
+ 171 0006 3146     		mov	r1, r6
+ 172 0008 0024     		movs	r4, #0
+ 173              	.LVL9:
+ 174              		.loc 1 37 2 is_stmt 0 view .LVU25
+ 175 000a 2046     		mov	r0, r4
+ 176 000c FFF7FEFF 		bl	va_start
+ 177              	.LVL10:
+  38:SYS/shell/shell_port.c **** 
+  39:SYS/shell/shell_port.c **** 
+  40:SYS/shell/shell_port.c **** 	vsnprintf(bt_log_buf,sizeof(bt_log_buf)-1,fmt,args);
+ 178              		.loc 1 40 2 is_stmt 1 view .LVU26
+ 179 0010 084D     		ldr	r5, .L13
+ 180 0012 2346     		mov	r3, r4
+ 181 0014 3246     		mov	r2, r6
+ 182 0016 7F21     		movs	r1, #127
+ 183 0018 2846     		mov	r0, r5
+ 184 001a FFF7FEFF 		bl	vsnprintf
+ 185              	.LVL11:
+  41:SYS/shell/shell_port.c **** 	user_printf_shell(bt_log_buf);
+ 186              		.loc 1 41 2 view .LVU27
+ 187 001e 2846     		mov	r0, r5
+ 188 0020 FFF7FEFF 		bl	user_printf_shell
+ 189              	.LVL12:
+  42:SYS/shell/shell_port.c **** 	va_end(args);
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 5
+
+
+ 190              		.loc 1 42 2 view .LVU28
+ 191 0024 2046     		mov	r0, r4
+ 192 0026 FFF7FEFF 		bl	va_end
+ 193              	.LVL13:
+  43:SYS/shell/shell_port.c **** }
+ 194              		.loc 1 43 1 is_stmt 0 view .LVU29
+ 195 002a BDE87040 		pop	{r4, r5, r6, lr}
+ 196              	.LCFI7:
+ 197              		.cfi_restore 14
+ 198              		.cfi_restore 6
+ 199              		.cfi_restore 5
+ 200              		.cfi_restore 4
+ 201              		.cfi_def_cfa_offset 16
+ 202              	.LVL14:
+ 203              		.loc 1 43 1 view .LVU30
+ 204 002e 04B0     		add	sp, sp, #16
+ 205              	.LCFI8:
+ 206              		.cfi_restore 3
+ 207              		.cfi_restore 2
+ 208              		.cfi_restore 1
+ 209              		.cfi_restore 0
+ 210              		.cfi_def_cfa_offset 0
+ 211 0030 7047     		bx	lr
+ 212              	.L14:
+ 213 0032 00BF     		.align	2
+ 214              	.L13:
+ 215 0034 00000000 		.word	.LANCHOR2
+ 216              		.cfi_endproc
+ 217              	.LFE128:
+ 219              		.section	.text.Shell_Init,"ax",%progbits
+ 220              		.align	1
+ 221              		.global	Shell_Init
+ 222              		.syntax unified
+ 223              		.thumb
+ 224              		.thumb_func
+ 225              		.fpu fpv4-sp-d16
+ 227              	Shell_Init:
+ 228              	.LFB129:
+  44:SYS/shell/shell_port.c **** 
+  45:SYS/shell/shell_port.c **** void Shell_Init(void)
+  46:SYS/shell/shell_port.c **** {
+ 229              		.loc 1 46 1 is_stmt 1 view -0
+ 230              		.cfi_startproc
+ 231              		@ args = 0, pretend = 0, frame = 0
+ 232              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233 0000 08B5     		push	{r3, lr}
+ 234              	.LCFI9:
+ 235              		.cfi_def_cfa_offset 8
+ 236              		.cfi_offset 3, -8
+ 237              		.cfi_offset 14, -4
+  47:SYS/shell/shell_port.c **** 	shell.write = user_shell_write;
+ 238              		.loc 1 47 2 view .LVU32
+ 239              		.loc 1 47 14 is_stmt 0 view .LVU33
+ 240 0002 0448     		ldr	r0, .L17
+ 241 0004 044B     		ldr	r3, .L17+4
+ 242 0006 8366     		str	r3, [r0, #104]
+  48:SYS/shell/shell_port.c **** 	
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 6
+
+
+  49:SYS/shell/shell_port.c **** 	shellInit(&shell,shell_buff,512);
+ 243              		.loc 1 49 2 is_stmt 1 view .LVU34
+ 244 0008 4FF40072 		mov	r2, #512
+ 245 000c 0349     		ldr	r1, .L17+8
+ 246 000e FFF7FEFF 		bl	shellInit
+ 247              	.LVL15:
+  50:SYS/shell/shell_port.c **** }
+ 248              		.loc 1 50 1 is_stmt 0 view .LVU35
+ 249 0012 08BD     		pop	{r3, pc}
+ 250              	.L18:
+ 251              		.align	2
+ 252              	.L17:
+ 253 0014 00000000 		.word	.LANCHOR1
+ 254 0018 00000000 		.word	user_shell_write
+ 255 001c 00000000 		.word	.LANCHOR3
+ 256              		.cfi_endproc
+ 257              	.LFE129:
+ 259              		.global	dma_shell_buf
+ 260              		.global	shell_buff
+ 261              		.global	shell
+ 262              		.section	.bss.bt_log_buf.0,"aw",%nobits
+ 263              		.align	2
+ 264              		.set	.LANCHOR2,. + 0
+ 267              	bt_log_buf.0:
+ 268 0000 00000000 		.space	128
+ 268      00000000 
+ 268      00000000 
+ 268      00000000 
+ 268      00000000 
+ 269              		.section	.bss.dma_shell_buf,"aw",%nobits
+ 270              		.align	2
+ 271              		.set	.LANCHOR0,. + 0
+ 274              	dma_shell_buf:
+ 275 0000 00000000 		.space	160
+ 275      00000000 
+ 275      00000000 
+ 275      00000000 
+ 275      00000000 
+ 276              		.section	.bss.shell,"aw",%nobits
+ 277              		.align	2
+ 278              		.set	.LANCHOR1,. + 0
+ 281              	shell:
+ 282 0000 00000000 		.space	108
+ 282      00000000 
+ 282      00000000 
+ 282      00000000 
+ 282      00000000 
+ 283              		.section	.bss.shell_buff,"aw",%nobits
+ 284              		.align	2
+ 285              		.set	.LANCHOR3,. + 0
+ 288              	shell_buff:
+ 289 0000 00000000 		.space	512
+ 289      00000000 
+ 289      00000000 
+ 289      00000000 
+ 289      00000000 
+ 290              		.text
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 7
+
+
+ 291              	.Letext0:
+ 292              		.file 2 "SYS/shell/shell.h"
+ 293              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 294              		.file 4 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\lib\\gcc\\arm-none
+ 295              		.file 5 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 296              		.file 6 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 297              		.file 7 "USER/stm32f4xx.h"
+ 298              		.file 8 "Bsp/periph_serial.h"
+ 299              		.file 9 "SYS/shell/shell_port.h"
+ 300              		.file 10 "FWLIB/inc/stm32f4xx_dma.h"
+ 301              		.file 11 "<built-in>"
+ARM GAS  C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 shell_port.c
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:18     .text.user_shell_write:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:26     .text.user_shell_write:00000000 user_shell_write
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:75     .text.user_shell_write:00000028 $d
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:81     .text.user_printf_shell:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:88     .text.user_printf_shell:00000000 user_printf_shell
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:130    .text.user_printf_shell:00000014 $d
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:135    .text.bt_printf:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:142    .text.bt_printf:00000000 bt_printf
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:215    .text.bt_printf:00000034 $d
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:220    .text.Shell_Init:00000000 $t
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:227    .text.Shell_Init:00000000 Shell_Init
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:253    .text.Shell_Init:00000014 $d
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:274    .bss.dma_shell_buf:00000000 dma_shell_buf
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:288    .bss.shell_buff:00000000 shell_buff
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:281    .bss.shell:00000000 shell
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:263    .bss.bt_log_buf.0:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:267    .bss.bt_log_buf.0:00000000 bt_log_buf.0
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:270    .bss.dma_shell_buf:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:277    .bss.shell:00000000 $d
+C:\Users\huav\AppData\Local\Temp\ccJ4r9IS.s:284    .bss.shell_buff:00000000 $d
+
+UNDEFINED SYMBOLS
+Serial_DMA_SendBuff
+DMA_GetFlagStatus
+DMA_ClearFlag
+shellWriteString
+va_start
+vsnprintf
+va_end
+shellInit

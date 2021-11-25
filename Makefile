@@ -47,6 +47,11 @@ SYS/common/reboot.c \
 SYS/common/sys.c \
 SYS/memng/mmu.c \
 SYS/crc/crc16.c \
+SYS/shell/shell_cmd_list.c \
+SYS/shell/shell_companion.c \
+SYS/shell/shell_ext.c \
+SYS/shell/shell_port.c \
+SYS/shell/shell.c \
 Dsp/screen/font/oledfont.c \
 Dsp/screen/device/oled1306.c \
 Dsp/screen/service/SrvOled.c \
@@ -224,6 +229,7 @@ C_INCLUDES =  \
 -ISYS/crc \
 -ISYS/memng \
 -ISYS/faultcheck \
+-ISYS/shell \
 -IUSB/config \
 -IUSB/core \
 -IUSER \
