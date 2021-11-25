@@ -69,6 +69,16 @@ void UI_Set_DspInterface(UI_DrawPoint point,
 /* FYI different UI Item Got different selector */
 bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 {
+    /* button selector coordinate */
+    int8_t Btn_Slct_LftUp_X = 0;
+    int8_t Btn_Slct_LftUp_Y = 0;
+    int8_t Btn_Slct_LftDwn_X = 0;
+    int8_t Btn_Slct_LftDwn_Y = 0;
+    int8_t Btn_Slct_RgtUp_X = 0;
+    int8_t Btn_Slct_RgtUp_Y = 0;
+    int8_t Btn_Slct_RgtDwn_X = 0;
+    int8_t Btn_Slct_RgtDwn_Y = 0;
+
     if ((item == NULL) ||
         (UI_DspInterface.fill_circle_section != NULL))
         return false;
@@ -76,11 +86,25 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     switch ((uint8_t)(item->type))
     {
     case UI_Type_Button:
-        // show button selector
+        /* comput button selector coordinate first */
         ((UI_ButtonObj_TypeDef *)(item->Handler))->width;
         ((UI_ButtonObj_TypeDef *)(item->Handler))->height;
         ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x;
         ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y;
+
+        // show button selector
+        UI_DspInterface.fill_circle_section(Btn_Slct_LftUp_X, Btn_Slct_LftUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Up, true);
+        UI_DspInterface.fill_circle_section(Btn_Slct_LftUp_X, Btn_Slct_LftUp_Y, BUTTON_SELECTOR_LINE_SIZE, UICircle_Left_Up, false);
+
+        UI_DspInterface.fill_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Down, true);
+        UI_DspInterface.fill_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_LINE_SIZE, UICircle_Left_Down, false);
+
+        UI_DspInterface.fill_circle_section(Btn_Slct_RgtUp_X, Btn_Slct_RgtUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Up, true);
+        UI_DspInterface.fill_circle_section(Btn_Slct_RgtUp_X, Btn_Slct_RgtUp_Y, BUTTON_SELECTOR_LINE_SIZE, UICircle_Right_Up, false);
+
+        UI_DspInterface.fill_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Down, true);
+        UI_DspInterface.fill_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_LINE_SIZE, UICircle_Right_Down, false);
+
         break;
 
     default:
