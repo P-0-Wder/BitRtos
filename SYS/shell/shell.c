@@ -85,14 +85,13 @@ static const char *shellText[] =
         [SHELL_TEXT_INFO] =
             "\r\n\r\n"
             "/************  BitRtos  ************\\r\n\r\n"
-            "Team Mate:\r\n"
-            "                  8_B!T0\r\n"
+            "Team Mate:        8_B!T0\r\n"
             "                  WHY\r\n"
             "\r\n"
             "Build:            "__DATE__
             " "__TIME__
             "\r\n"
-            "Shell Version:    " SHELL_VERSION "\r\n"
+            "Shell   Version:  " SHELL_VERSION "\r\n"
             "BitRtos Version:  " RTOS_VERSION "\r\n",
 #endif
         [SHELL_TEXT_CMD_TOO_LONG] =
