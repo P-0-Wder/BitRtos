@@ -338,8 +338,8 @@ typedef struct shell_def
         unsigned char isActive : 1;  /**< 当前活动Shell */
         unsigned char tabFlag : 1;   /**< tab标志 */
     } status;
-    signed char (*read)(char *);             /**< shell读函数 */
-    void (*write)(const char, uint16_t len); /**< shell写函数 */
+    signed char (*read)(char *);           /**< shell读函数 */
+    void (*write)(const char *, uint16_t); /**< shell写函数 */
 } Shell;
 
 /**

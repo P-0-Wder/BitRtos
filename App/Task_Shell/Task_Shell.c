@@ -26,7 +26,7 @@ static bool Shell_PortInit(void)
 
     DrvSerial_Config_Typedef Serial1_Cfg;
 
-    Serial1_Cfg.baudrate = Serial_921600;
+    Serial1_Cfg.baudrate = Serial_115200;
     Serial1_Cfg.PreemptionPriority = 3;
     Serial1_Cfg.SubPriority = 0;
     Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
@@ -41,9 +41,11 @@ void TaskShell_Core(Task_Handler self)
     switch ((uint8_t)TaskState)
     {
     case Shell_State_Init:
+        __asm("cpsid i");
         Shell_PortInit();
-        // Shell_Init(Shell_Write);
+        Shell_Init(Shell_Write);
         TaskState = Shell_State_Polling;
+        __asm("cpsie i");
         break;
 
     case Shell_State_Polling:

@@ -32,7 +32,6 @@ static void bt_printf(const char *fmt, ...)
 void Shell_Init(Shell_Write_Callback callback)
 {
 	shell.write = callback;
-
 	shellInit(&shell, shell_buff, sizeof(shell_buff));
 }
 

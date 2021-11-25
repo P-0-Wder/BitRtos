@@ -163,6 +163,7 @@ ShellCommand *shellSeekCommand(Shell *shell,
  */
 void shellInit(Shell *shell, char *buffer, unsigned short size)
 {
+    __asm("cpsid i");
     shell->parser.length = 0;
     shell->parser.cursor = 0;
     shell->history.offset = 0;
@@ -204,6 +205,7 @@ void shellInit(Shell *shell, char *buffer, unsigned short size)
                                          shell->commandList.base,
                                          0));
     shellWriteCommandLine(shell, 1);
+    __asm("cpsie i");
 }
 
 /**
