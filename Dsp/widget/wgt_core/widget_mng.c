@@ -95,6 +95,20 @@ static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_
 
 /* Widget UI control Interface */
 static void WidgetUI_Init(void);
+static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
+static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
+static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
+static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
+
+/* Wisget Button Interface */
+WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
+    .create = WidgetUI_Creat_Button,
+    .Set_OprLabel = WidgetUI_SetButton_OprLabel,
+    .Set_TriggerCallback = WidgetUI_SetButton_TriggerCallback,
+    .Move = WidgetUI_Move_Button,
+    .Fresh = WidgetUI_Fresh_Button,
+};
 
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
@@ -1158,4 +1172,9 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
 
     UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
 }
+
+/* button push */
+
+/* button release */
+
 /************************************** widget UI interface ******************************************/
