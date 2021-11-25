@@ -75,7 +75,7 @@ int main(void)
 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_1KHZ, Group_0, Task_Priority_0, Task_test_1, 200);
 	test2_tsk_hdl = Task_Create("test 2", TASK_EXEC_4KHZ, Group_0, Task_Priority_2, Task_test_2, 200);
 	test3_tsk_hdl = Task_Create("test 3", TASK_EXEC_2KHZ, Group_0, Task_Priority_3, Task_test_3, 200);
-	test4_tsk_hdl = Task_Create("Shell", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, TaskShell_Core, 512);
+	test4_tsk_hdl = Task_Create("Shell", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, TaskShell_Core, 1024);
 
 	TaskSystem_Start();
 

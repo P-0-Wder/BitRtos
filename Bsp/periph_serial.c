@@ -126,8 +126,8 @@ void Serial_IRQ_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPr
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 	USART_ITConfig(Serial_Port[Serial], USART_IT_RXNE, ENABLE);
 
-	memset(Serial_TX_Buff[Serial], NULL, sizeof(Serial_TX_Buff[Serial]));
-	memset(Serial_RX_Buff[Serial], NULL, sizeof(Serial_RX_Buff[Serial]));
+	memset(Serial_TX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
+	memset(Serial_RX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
 
 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENABLE);
 }
@@ -154,8 +154,8 @@ void Serial_DMA_RX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPr
 
 	periph_nvic_Structure_Setting(Serial_RX_IRQ_Channel[Serial], PreemptionPriority, SubPriority, ENABLE);
 
-	memset(Serial_TX_Buff[Serial], NULL, sizeof(Serial_TX_Buff[Serial]));
-	memset(Serial_RX_Buff[Serial], NULL, sizeof(Serial_RX_Buff[Serial]));
+	memset(Serial_TX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
+	memset(Serial_RX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
 
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 }
@@ -177,8 +177,8 @@ void Serial_DMA_TX_Init(Serial_List Serial, uint32_t bound, uint8_t PreemptionPr
 	periph_DMA_WithIRQ_Init(Serial_DMA_CLK[Serial], Serial_DMA_TX_Stream[Serial], &DMA_TX_InitStructure, DMA_IT_TC, DISABLE);
 	periph_nvic_Structure_Setting(Serial_DMA_TX_IRQ_Channel[Serial], PreemptionPriority, SubPriority + 1, ENABLE);
 
-	memset(Serial_TX_Buff[Serial], NULL, sizeof(Serial_TX_Buff[Serial]));
-	memset(Serial_RX_Buff[Serial], NULL, sizeof(Serial_RX_Buff[Serial]));
+	memset(Serial_TX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
+	memset(Serial_RX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
 
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 }
@@ -231,8 +231,8 @@ void Serial_DMA_RXTX_Init(Serial_List Serial, uint32_t bound, uint8_t Preemption
 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Rx, ENABLE);
 	USART_DMACmd(Serial_Port[Serial], USART_DMAReq_Tx, ENABLE);
 
-	memset(Serial_TX_Buff[Serial], NULL, sizeof(Serial_TX_Buff[Serial]));
-	memset(Serial_RX_Buff[Serial], NULL, sizeof(Serial_RX_Buff[Serial]));
+	memset(Serial_TX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
+	memset(Serial_RX_Buff[Serial], NULL, SERIAL_MAX_RECLEN);
 
 	USART_Cmd(Serial_Port[Serial], ENABLE);
 }

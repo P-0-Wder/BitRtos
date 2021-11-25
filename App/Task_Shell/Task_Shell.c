@@ -42,7 +42,7 @@ void TaskShell_Core(Task_Handler self)
     {
     case Shell_State_Init:
         Shell_PortInit();
-        Shell_Init(Shell_Write);
+        // Shell_Init(Shell_Write);
         TaskState = Shell_State_Polling;
         break;
 
