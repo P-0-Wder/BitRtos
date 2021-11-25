@@ -2,6 +2,8 @@
 #include "drv_serial.h"
 #include "shell_port.h"
 
+Task_Handler Shell_Tsk_Hdl;
+
 #define SHELL_SERIAL_PORT DrvSerial_1
 
 /* internal variable */
@@ -20,7 +22,7 @@ static int Shell_Write(const uint8_t *ch, uint16_t len)
     DrvSerial.write(SHELL_SERIAL_PORT, ch, len);
 }
 
-static bool Shell_PortInit(void)
+bool TaskShell_Init(void)
 {
     static TaskShell_State_List TaskState = Shell_State_Init;
 
@@ -33,7 +35,13 @@ static bool Shell_PortInit(void)
     Serial1_Cfg.Irq_Callback = Shell_RecCallback;
     Serial1_Cfg.send_mode = DrvSerial_Send_Async;
 
-    return DrvSerial.ctl(SHELL_SERIAL_PORT, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg));
+    if (DrvSerial.ctl(SHELL_SERIAL_PORT, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg)))
+    {
+        Shell_Init(Shell_Write);
+        return true;
+    }
+
+    return false;
 }
 
 void TaskShell_Core(Task_Handler self)
@@ -41,11 +49,7 @@ void TaskShell_Core(Task_Handler self)
     switch ((uint8_t)TaskState)
     {
     case Shell_State_Init:
-        __asm("cpsid i");
-        Shell_PortInit();
-        Shell_Init(Shell_Write);
         TaskState = Shell_State_Polling;
-        __asm("cpsie i");
         break;
 
     case Shell_State_Polling:

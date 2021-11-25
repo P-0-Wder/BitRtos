@@ -108,6 +108,7 @@ static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t l
     if (!DrvSerial_SrcInfo[portx].inuse)
         return;
 
+    memset(Serial_TX_Buff[portx], NULL, len);
     memcpy(Serial_TX_Buff[portx], data, len);
 
     if ((DrvSerial_SrcInfo[portx].cfg.mode == DrvSerial_MODE_Normal) || (DrvSerial_SrcInfo[portx].cfg.mode == DrvSerial_MODE_DMA_Rx))

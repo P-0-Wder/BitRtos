@@ -14,6 +14,7 @@
 #include "stdarg.h"
 #include "shell_ext.h"
 #include "stm32f4xx_usart.h"
+#include "task_manager_cfg.h"
 
 #if SHELL_USING_CMD_EXPORT == 1
 /**
@@ -82,18 +83,17 @@ static const char *shellText[] =
     {
 #if SHELL_SHOW_INFO == 1
         [SHELL_TEXT_INFO] =
+            "\r\n\r\n"
+            "/************  BitRtos  ************\\r\n\r\n"
+            "Team Mate:\r\n"
+            "                  8_B!T0\r\n"
+            "                  WHY\r\n"
             "\r\n"
-            "  ____    _      _       ___      _                   \r\n"
-            " |    \\  /_\\    | |     | _ \\   | |              ___ \r\n"
-            " |    |   _   __| |__   ||_|/ __| |__   ___    //    \r\n"
-            " |----/  | | |__   __|  |  \\ |__   __|  //   \\  \\__    \r\n"
-            " |    |  | |    | |_    | |\\    | |_   ||   ||      \\  \r\n"
-            " \\____/  |_|    |___/   |_| \\   |___/   \\___//   ___//  \r\n"
-            "\r\n"
-            "Build:       "__DATE__
+            "Build:            "__DATE__
             " "__TIME__
             "\r\n"
-            "Version:     " SHELL_VERSION "\r\n",
+            "Shell Version:    " SHELL_VERSION "\r\n"
+            "BitRtos Version:  " RTOS_VERSION "\r\n",
 #endif
         [SHELL_TEXT_CMD_TOO_LONG] =
             "\r\nWarning: Command is too long\r\n",
@@ -163,7 +163,6 @@ ShellCommand *shellSeekCommand(Shell *shell,
  */
 void shellInit(Shell *shell, char *buffer, unsigned short size)
 {
-    __asm("cpsid i");
     shell->parser.length = 0;
     shell->parser.cursor = 0;
     shell->history.offset = 0;
@@ -205,7 +204,6 @@ void shellInit(Shell *shell, char *buffer, unsigned short size)
                                          shell->commandList.base,
                                          0));
     shellWriteCommandLine(shell, 1);
-    __asm("cpsie i");
 }
 
 /**

@@ -1,6 +1,8 @@
 #ifndef __TASK_MANAGER_CFG_H
 #define __TASK_MANAGER_CFG_H
 
+#define RTOS_VERSION "1.0.0"
+
 #define POLL_SCHEDULER 1
 #define PREEMPTIVE_SCHDULER 2
 
