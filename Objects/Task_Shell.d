@@ -17,7 +17,8 @@ Objects/Task_Shell.o: App/Task_Shell/Task_Shell.c \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_dma.h \
- SYS/shell/shell.h SYS/shell/shell_cfg.h
+ SYS/shell/shell_port.h SYS/common/sys.h SYS/shell/shell.h \
+ SYS/shell/shell_cfg.h
 App/Task_Shell/Task_Shell.h:
 SYS/task_manager/task_manager.h:
 SYS/runtime/runtime.h:
@@ -60,5 +61,7 @@ FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 Bsp/periph_dma.h:
+SYS/shell/shell_port.h:
+SYS/common/sys.h:
 SYS/shell/shell.h:
 SYS/shell/shell_cfg.h:

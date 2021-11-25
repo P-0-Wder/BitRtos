@@ -4,7 +4,10 @@
 #include "sys.h"
 #include "shell.h"
 
-void Shell_Init(void);
+typedef int (*Shell_Write_Callback)(const uint8_t *ch, uint16_t len);
+
+void Shell_Init(Shell_Write_Callback callback);
+Shell *Shell_GetInstence(void);
 void user_shell_write_byte(const int *ch, ...);
 
 #endif
