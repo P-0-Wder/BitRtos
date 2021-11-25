@@ -11,7 +11,7 @@ static Shell shell;
 static char shell_buff[SHELL_BUFF_SIZE];
 
 /*can print the characters to the terminal with this function */
-static void user_printf_shell(const int *ch, ...)
+void Shell_Printf(const int *ch, ...)
 {
 	shellWriteString(&shell, ch);
 }
@@ -25,7 +25,7 @@ static void bt_printf(const char *fmt, ...)
 	va_start(args, fmt);
 
 	vsnprintf(bt_log_buf, strlen(bt_log_buf) - 1, fmt, args);
-	user_printf_shell(bt_log_buf);
+	Shell_Printf(bt_log_buf);
 	va_end(args);
 }
 
