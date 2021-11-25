@@ -135,6 +135,7 @@ USER/main.c \
 App/Task_Display/Task_Widget.c \
 App/Task_Input/Task_Input.c \
 App/Task_Input/Input_IO_Def.c \
+App/Task_Shell/Task_Shell.c \
 Dev/Dev_5DirButton.c \
 Dev/Dev_Button.c \
 Dev/Dev_Toggle.c \
@@ -236,6 +237,7 @@ C_INCLUDES =  \
 -IApp/Task_Input \
 -IApp/Task_Display \
 -IApp/Task_Input \
+-IApp/Task_Shell \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

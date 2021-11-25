@@ -3,9 +3,10 @@
 
 #define Serial_Default_Baudrate Serial_115200
 
+extern uint8_t Serial_TX_Buff[Serial_Port_Sum][SERIAL_MAX_RECLEN];
+extern uint8_t Serial_RX_Buff[Serial_Port_Sum][SERIAL_MAX_RECLEN];
+
 /* internal virable */
-static uint8_t Serial_TX_Buff[DrvSerial_Sum][SERIAL_MAX_RECLEN];
-static uint8_t Serial_RX_Buff[DrvSerial_Sum][SERIAL_MAX_RECLEN];
 static DrvSerial_SrcInfo_TypeDef DrvSerial_SrcInfo[DrvSerial_Sum] = {
     {.inuse = false},
     {.inuse = false},

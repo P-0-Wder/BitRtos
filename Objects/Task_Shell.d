@@ -1,5 +1,8 @@
-Objects/shell_port.o: SYS/shell/shell_port.c SYS/shell/shell.h \
- SYS/shell/shell_cfg.h USER/stm32f4xx.h F4_CORE/core_cm4.h \
+Objects/Task_Shell.o: App/Task_Shell/Task_Shell.c \
+ App/Task_Shell/Task_Shell.h SYS/task_manager/task_manager.h \
+ SYS/runtime/runtime.h SYS/task_manager/task_manager_cfg.h \
+ SYS/data_structure/binary_tree.h SYS/data_structure/linked_list.h \
+ Drv/drv_serial.h Bsp/periph_serial.h USER/stm32f4xx.h F4_CORE/core_cm4.h \
  F4_CORE/core_cmInstr.h F4_CORE/core_cmFunc.h F4_CORE/core_cmSimd.h \
  USER/system_stm32f4xx.h USER/stm32f4xx_conf.h FWLIB/inc/stm32f4xx_adc.h \
  FWLIB/inc/stm32f4xx_crc.h FWLIB/inc/stm32f4xx_dbgmcu.h \
@@ -13,11 +16,16 @@ Objects/shell_port.o: SYS/shell/shell_port.c SYS/shell/shell.h \
  FWLIB/inc/stm32f4xx_wwdg.h FWLIB/inc/misc.h FWLIB/inc/stm32f4xx_cryp.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
- FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
- SYS/shell/shell_port.h SYS/common/sys.h Drv/drv_serial.h \
- Bsp/periph_serial.h Bsp/periph_dma.h
-SYS/shell/shell.h:
-SYS/shell/shell_cfg.h:
+ FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_dma.h \
+ SYS/shell/shell.h SYS/shell/shell_cfg.h
+App/Task_Shell/Task_Shell.h:
+SYS/task_manager/task_manager.h:
+SYS/runtime/runtime.h:
+SYS/task_manager/task_manager_cfg.h:
+SYS/data_structure/binary_tree.h:
+SYS/data_structure/linked_list.h:
+Drv/drv_serial.h:
+Bsp/periph_serial.h:
 USER/stm32f4xx.h:
 F4_CORE/core_cm4.h:
 F4_CORE/core_cmInstr.h:
@@ -51,8 +59,6 @@ FWLIB/inc/stm32f4xx_can.h:
 FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
-SYS/shell/shell_port.h:
-SYS/common/sys.h:
-Drv/drv_serial.h:
-Bsp/periph_serial.h:
 Bsp/periph_dma.h:
+SYS/shell/shell.h:
+SYS/shell/shell_cfg.h:

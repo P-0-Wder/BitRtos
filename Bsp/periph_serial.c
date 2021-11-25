@@ -6,6 +6,9 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_dma.h"
 
+uint8_t Serial_TX_Buff[Serial_Port_Sum][SERIAL_MAX_RECLEN];
+uint8_t Serial_RX_Buff[Serial_Port_Sum][SERIAL_MAX_RECLEN];
+
 Serial_IRQ_Callback IRQ_Callback[Serial_Port_Sum] = {NULL};
 
 #ifdef STM32F40XX

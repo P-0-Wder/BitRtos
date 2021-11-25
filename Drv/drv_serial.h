@@ -7,8 +7,6 @@
 #include <string.h>
 #include "periph_serial.h"
 
-#define SERIAL_MAX_RECLEN 1024
-
 typedef enum
 {
     DrvSerial_1 = Serial_1,

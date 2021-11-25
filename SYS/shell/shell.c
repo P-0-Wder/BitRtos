@@ -248,7 +248,7 @@ Shell *shellGetCurrent(void)
  */
 void shellWriteByte(Shell *shell, const char data)
 {
-    shell->write(data);
+    shell->write(&data, sizeof(data));
 }
 
 /**
@@ -263,11 +263,8 @@ unsigned short shellWriteString(Shell *shell, const char *string)
 {
     unsigned short count = 0;
     SHELL_ASSERT(shell->write, return 0);
-    while (*string)
-    {
-        shell->write(*string++);
-        count++;
-    }
+
+    shell->write(string, strlen(string));
     return count;
 }
 
@@ -281,17 +278,18 @@ unsigned short shellWriteString(Shell *shell, const char *string)
  */
 static unsigned short shellWriteCommandDesc(Shell *shell, const char *string)
 {
+    const char dot = '.';
     unsigned short count = 0;
     SHELL_ASSERT(shell->write, return 0);
     while (*string && *string != '\r' && *string != '\n' && count < 36)
     {
-        shell->write(*string++);
+        shell->write(*string++, 1);
         count++;
         if (count >= 36 && *(string + 1))
         {
-            shell->write('.');
-            shell->write('.');
-            shell->write('.');
+            shell->write(&dot, sizeof(dot));
+            shell->write(&dot, sizeof(dot));
+            shell->write(&dot, sizeof(dot));
         }
     }
     return count;
@@ -368,7 +366,7 @@ void shellScan(Shell *shell, char *fmt, ...)
         {
             if (shell->read(&buffer[index]) == 0)
             {
-                shell->write(buffer[index]);
+                shell->write(&buffer[index], sizeof(buffer[index]));
                 index++;
             }
         } while (buffer[index - 1] != '\r' && buffer[index - 1] != '\n' && index < SHELL_SCAN_BUFFER);

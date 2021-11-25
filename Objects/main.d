@@ -17,7 +17,7 @@ Objects/main.o: USER/main.c SYS/runtime/runtime.h Bsp/periph_gpio.h \
  Bsp/periph_serial.h Bsp/periph_dma.h SYS/task_manager/task_manager.h \
  SYS/task_manager/task_manager_cfg.h SYS/data_structure/binary_tree.h \
  SYS/data_structure/linked_list.h App/Task_Display/Task_Widget.h \
- SYS/memng/mmu.h
+ App/Task_Shell/Task_Shell.h
 SYS/runtime/runtime.h:
 Bsp/periph_gpio.h:
 USER/stm32f4xx.h:
@@ -61,4 +61,4 @@ SYS/task_manager/task_manager_cfg.h:
 SYS/data_structure/binary_tree.h:
 SYS/data_structure/linked_list.h:
 App/Task_Display/Task_Widget.h:
-SYS/memng/mmu.h:
+App/Task_Shell/Task_Shell.h:

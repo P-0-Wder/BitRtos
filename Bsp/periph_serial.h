@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define SERIAL_MAX_RECLEN 1024
+
 #define Serial_Port_Sum 4
 
 #define SBUS_BOUND 100000

@@ -1,48 +1,59 @@
 #include "shell.h"
 #include <stdio.h>
+#include <stdarg.h>
 #include "stm32f4xx.h"
-#include "periph_serial.h"
 #include "shell_port.h"
-#include "stm32f4xx_usart.h"
-#include "periph_dma.h"
+#include "drv_serial.h"
 
-Shell shell;
-char shell_buff[512];
+#define SHELL_BUFF_SIZE 512
+#define Shell_SerialPort DrvSerial_1
+
+static Shell shell;
+char shell_buff[SHELL_BUFF_SIZE];
 int dma_shell_buf[40] = {0};
 
-void user_shell_write(const int ch)
+static void user_shell_write(uint8_t *ch, uint16_t len)
 {
-	dma_shell_buf[0] = ch;
-	Serial_DMA_SendBuff(Serial_1, 1);
-	while (DMA_GetFlagStatus(DMA2_Stream7, DMA_FLAG_TCIF7) != RESET)
-	{
-		DMA_ClearFlag(DMA2_Stream7, DMA_FLAG_TCIF7); //清除DMA2_Steam7传输完成标志
-		break;
-	}
+	DrvSerial.write(Shell_SerialPort, ch, len);
 }
 
 /*can print the characters to the terminal with this function */
-void user_printf_shell(const int *ch, ...)
+static void user_printf_shell(const int *ch, ...)
 {
 	shellWriteString(&shell, ch);
 }
 
-void bt_printf(const char *fmt, ...)
+static void bt_printf(const char *fmt, ...)
 {
 	va_list args;
-	static char bt_log_buf[128];
+	static char *bt_log_buf = NULL;
 	int i = 0;
 	int x = 0;
 	va_start(args, fmt);
 
-	vsnprintf(bt_log_buf, sizeof(bt_log_buf) - 1, fmt, args);
+	vsnprintf(bt_log_buf, strlen(bt_log_buf) - 1, fmt, args);
 	user_printf_shell(bt_log_buf);
 	va_end(args);
 }
 
+static SYS_Shell_Serial_IRQ_Callback(uint8_t *data, uint16_t len)
+{
+}
+
 void Shell_Init(void)
 {
+	DrvSerial_Config_Typedef Serial1_Cfg;
+
+	Serial1_Cfg.baudrate = Serial_921600;
+	Serial1_Cfg.PreemptionPriority = 3;
+	Serial1_Cfg.SubPriority = 0;
+	Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
+	Serial1_Cfg.Irq_Callback = SYS_Shell_Serial_IRQ_Callback;
+	Serial1_Cfg.send_mode = DrvSerial_Send_Async;
+
+	DrvSerial.ctl(DrvSerial_1, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg));
+
 	shell.write = user_shell_write;
 
-	shellInit(&shell, shell_buff, 512);
+	shellInit(&shell, shell_buff, SHELL_BUFF_SIZE);
 }

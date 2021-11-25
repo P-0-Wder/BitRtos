@@ -5,7 +5,7 @@
 #include "drv_serial.h"
 #include "task_manager.h"
 #include "Task_Widget.h"
-#include "mmu.h"
+#include "Task_Shell.h"
 
 Task_Handler test1_tsk_hdl;
 Task_Handler test2_tsk_hdl;
@@ -52,61 +52,6 @@ void Task_test_4(Task_Handler self)
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_0, HI);
 }
 
-/* serial test */
-typedef enum
-{
-	TaskSerial_Init = 0,
-	TaskSerial_Init_Failed,
-	TaskSerial_RunTest,
-} TaskSerial_State_List;
-
-void Task_Serial_Test(Task_Handler self)
-{
-	static TaskSerial_State_List TaskSerial_State = TaskSerial_Init;
-	DrvSerial_Config_Typedef Serial1_Cfg;
-
-	volatile uint8_t *test = NULL;
-
-	test = (uint8_t *)MMU_Malloc(500);
-
-	if ((test != NULL) && ((uint32_t)test & 0xF0000000 != 0x10000000))
-		while (1)
-			;
-
-	if (test != NULL)
-		MMU_Free(test);
-
-	switch ((uint8_t)TaskSerial_State)
-	{
-	case TaskSerial_Init:
-		Serial1_Cfg.baudrate = Serial_115200;
-		Serial1_Cfg.PreemptionPriority = 3;
-		Serial1_Cfg.SubPriority = 0;
-		Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
-		Serial1_Cfg.Irq_Callback = NULL;
-		Serial1_Cfg.send_mode = DrvSerial_Send_Async;
-
-		if (!DrvSerial.ctl(DrvSerial_1, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg)))
-		{
-			TaskSerial_State = TaskSerial_Init_Failed;
-		}
-		else
-			TaskSerial_State = TaskSerial_RunTest;
-		break;
-
-	case TaskSerial_Init_Failed:
-		break;
-
-	case TaskSerial_RunTest:
-		DrvSerial.write(DrvSerial_1, "8_B!T0  Test\r\n", strlen("8_B!T0  Test\r\n"));
-		DrvSerial.write(DrvSerial_1, "WOO 8_B!T0  Test again\r\n", strlen("WOO 8_B!T0  Test again\r\n"));
-		break;
-
-	default:
-		break;
-	}
-}
-
 /* the code up top is only for the test currently */
 int main(void)
 {
@@ -130,7 +75,7 @@ int main(void)
 	test1_tsk_hdl = Task_Create("test 1", TASK_EXEC_1KHZ, Group_0, Task_Priority_0, Task_test_1, 200);
 	test2_tsk_hdl = Task_Create("test 2", TASK_EXEC_4KHZ, Group_0, Task_Priority_2, Task_test_2, 200);
 	test3_tsk_hdl = Task_Create("test 3", TASK_EXEC_2KHZ, Group_0, Task_Priority_3, Task_test_3, 200);
-	test4_tsk_hdl = Task_Create("test 4", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, Task_Serial_Test, 100);
+	test4_tsk_hdl = Task_Create("Shell", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, TaskShell_Core, 512);
 
 	TaskSystem_Start();
 
