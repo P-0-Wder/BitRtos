@@ -13,9 +13,7 @@
 #include "stdio.h"
 #include "stdarg.h"
 #include "shell_ext.h"
-#include "delay.h"
 #include "stm32f4xx_usart.h"
-
 
 #if SHELL_USING_CMD_EXPORT == 1
 /**
@@ -25,29 +23,27 @@ const char shellCmdDefaultUser[] = SHELL_DEFAULT_USER;
 const char shellPasswordDefaultUser[] = SHELL_DEFAULT_USER_PASSWORD;
 const char shellDesDefaultUser[] = "default user";
 const ShellCommand shellUserDefault SECTION("shellCommand") =
-{
-    .attr.value = SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_USER),
-    .data.user.name = shellCmdDefaultUser,
-    .data.user.password = shellPasswordDefaultUser,
-    .data.user.desc = shellDesDefaultUser
-};
+    {
+        .attr.value = SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_USER),
+        .data.user.name = shellCmdDefaultUser,
+        .data.user.password = shellPasswordDefaultUser,
+        .data.user.desc = shellDesDefaultUser};
 #endif
 
 #if SHELL_USING_CMD_EXPORT == 1
-    #if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && __ARMCC_VERSION >= 6000000)
-        extern const unsigned int shellCommand$$Base;
-        extern const unsigned int shellCommand$$Limit;
-    #elif defined(__ICCARM__) || defined(__ICCRX__)
-        #pragma section="shellCommand"
-    #elif defined(__GNUC__)
-        extern const unsigned int _shell_command_start;
-        extern const unsigned int _shell_command_end;
-    #endif
-#else
-    extern const ShellCommand shellCommandList[];
-    extern const unsigned short shellCommandCount;
+#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && __ARMCC_VERSION >= 6000000)
+extern const unsigned int shellCommand$$Base;
+extern const unsigned int shellCommand$$Limit;
+#elif defined(__ICCARM__) || defined(__ICCRX__)
+#pragma section = "shellCommand"
+#elif defined(__GNUC__)
+extern const unsigned int _shell_command_start;
+extern const unsigned int _shell_command_end;
 #endif
-
+#else
+extern const ShellCommand shellCommandList[];
+extern const unsigned short shellCommandCount;
+#endif
 
 /**
  * @brief shell 常量文本索引
@@ -55,110 +51,107 @@ const ShellCommand shellUserDefault SECTION("shellCommand") =
 enum
 {
 #if SHELL_SHOW_INFO == 1
-    SHELL_TEXT_INFO,                                    /**< shell信息 */
+    SHELL_TEXT_INFO, /**< shell信息 */
 #endif
-    SHELL_TEXT_CMD_TOO_LONG,                            /**< 命令过长 */
-    SHELL_TEXT_CMD_LIST,                                /**< 可执行命令列表标题 */
-    SHELL_TEXT_VAR_LIST,                                /**< 变量列表标题 */
-    SHELL_TEXT_USER_LIST,                               /**< 用户列表标题 */
-    SHELL_TEXT_KEY_LIST,                                /**< 按键列表标题 */
-    SHELL_TEXT_CMD_NOT_FOUND,                           /**< 命令未找到 */
-    SHELL_TEXT_POINT_CANNOT_MODIFY,                     /**< 指针变量不允许修改 */
-    SHELL_TEXT_VAR_READ_ONLY_CANNOT_MODIFY,             /**< 只读变量不允许修改 */
-    SHELL_TEXT_NOT_VAR,                                 /**< 命令不是变量 */
-    SHELL_TEXT_VAR_NOT_FOUND,                           /**< 变量未找到 */
-    SHELL_TEXT_HELP_HEADER,                             /**< help头 */
-    SHELL_TEXT_PASSWORD_HINT,                           /**< 密码输入提示 */
-    SHELL_TEXT_PASSWORD_ERROR,                          /**< 密码错误 */
-    SHELL_TEXT_CLEAR_CONSOLE,                           /**< 清空控制台 */
-    SHELL_TEXT_CLEAR_LINE,                              /**< 清空当前行 */
-    SHELL_TEXT_TYPE_CMD,                                /**< 命令类型 */
-    SHELL_TEXT_TYPE_VAR,                                /**< 变量类型 */
-    SHELL_TEXT_TYPE_USER,                               /**< 用户类型 */
-    SHELL_TEXT_TYPE_KEY,                                /**< 按键类型 */
-    SHELL_TEXT_TYPE_NONE,                               /**< 非法类型 */
+    SHELL_TEXT_CMD_TOO_LONG,                /**< 命令过长 */
+    SHELL_TEXT_CMD_LIST,                    /**< 可执行命令列表标题 */
+    SHELL_TEXT_VAR_LIST,                    /**< 变量列表标题 */
+    SHELL_TEXT_USER_LIST,                   /**< 用户列表标题 */
+    SHELL_TEXT_KEY_LIST,                    /**< 按键列表标题 */
+    SHELL_TEXT_CMD_NOT_FOUND,               /**< 命令未找到 */
+    SHELL_TEXT_POINT_CANNOT_MODIFY,         /**< 指针变量不允许修改 */
+    SHELL_TEXT_VAR_READ_ONLY_CANNOT_MODIFY, /**< 只读变量不允许修改 */
+    SHELL_TEXT_NOT_VAR,                     /**< 命令不是变量 */
+    SHELL_TEXT_VAR_NOT_FOUND,               /**< 变量未找到 */
+    SHELL_TEXT_HELP_HEADER,                 /**< help头 */
+    SHELL_TEXT_PASSWORD_HINT,               /**< 密码输入提示 */
+    SHELL_TEXT_PASSWORD_ERROR,              /**< 密码错误 */
+    SHELL_TEXT_CLEAR_CONSOLE,               /**< 清空控制台 */
+    SHELL_TEXT_CLEAR_LINE,                  /**< 清空当前行 */
+    SHELL_TEXT_TYPE_CMD,                    /**< 命令类型 */
+    SHELL_TEXT_TYPE_VAR,                    /**< 变量类型 */
+    SHELL_TEXT_TYPE_USER,                   /**< 用户类型 */
+    SHELL_TEXT_TYPE_KEY,                    /**< 按键类型 */
+    SHELL_TEXT_TYPE_NONE,                   /**< 非法类型 */
 #if SHELL_EXEC_UNDEF_FUNC == 1
-    SHELL_TEXT_PARAM_ERROR,                             /**< 参数错误 */
+    SHELL_TEXT_PARAM_ERROR, /**< 参数错误 */
 #endif
 };
-
-
-
 
 static const char *shellText[] =
-{
+    {
 #if SHELL_SHOW_INFO == 1
-    [SHELL_TEXT_INFO] =
-        "\r\n"
-		"  ____    _      _       ___      _                   \r\n"
-		" |    \\  /_\\    | |     | _ \\   | |              ___ \r\n"
-		" |    |   _   __| |__   ||_|/ __| |__   ___    //    \r\n"
-		" |----/  | | |__   __|  |  \\ |__   __|  //   \\  \\__    \r\n"
-		" |    |  | |    | |_    | |\\    | |_   ||   ||      \\  \r\n"
-		" \\____/  |_|    |___/   |_| \\   |___/   \\___//   ___//  \r\n"
-        "\r\n"
-        "Build:       "__DATE__" "__TIME__"\r\n"
-        "Version:     "SHELL_VERSION"\r\n",
+        [SHELL_TEXT_INFO] =
+            "\r\n"
+            "  ____    _      _       ___      _                   \r\n"
+            " |    \\  /_\\    | |     | _ \\   | |              ___ \r\n"
+            " |    |   _   __| |__   ||_|/ __| |__   ___    //    \r\n"
+            " |----/  | | |__   __|  |  \\ |__   __|  //   \\  \\__    \r\n"
+            " |    |  | |    | |_    | |\\    | |_   ||   ||      \\  \r\n"
+            " \\____/  |_|    |___/   |_| \\   |___/   \\___//   ___//  \r\n"
+            "\r\n"
+            "Build:       "__DATE__
+            " "__TIME__
+            "\r\n"
+            "Version:     " SHELL_VERSION "\r\n",
 #endif
-    [SHELL_TEXT_CMD_TOO_LONG] = 
-        "\r\nWarning: Command is too long\r\n",
-    [SHELL_TEXT_CMD_LIST] = 
-        "\r\nCommand List:\r\n",
-    [SHELL_TEXT_VAR_LIST] = 
-        "\r\nVar List:\r\n",
-    [SHELL_TEXT_USER_LIST] = 
-        "\r\nUser List:\r\n",
-    [SHELL_TEXT_KEY_LIST] =
-        "\r\nKey List:\r\n",
-    [SHELL_TEXT_CMD_NOT_FOUND] = 
-        "Command not Found\r\n",
-    [SHELL_TEXT_POINT_CANNOT_MODIFY] = 
-        "can't set pointer\r\n",
-    [SHELL_TEXT_VAR_READ_ONLY_CANNOT_MODIFY] = 
-        "can't set read only var\r\n",
-    [SHELL_TEXT_NOT_VAR] =
-        " is not a var\r\n",
-    [SHELL_TEXT_VAR_NOT_FOUND] = 
-        "Var not Fount\r\n",
-    [SHELL_TEXT_HELP_HEADER] =
-        "command help of ",
-    [SHELL_TEXT_PASSWORD_HINT] = 
-        "\r\nPlease input password:",
-    [SHELL_TEXT_PASSWORD_ERROR] = 
-        "\r\npassword error\r\n",
-    [SHELL_TEXT_CLEAR_CONSOLE] = 
-        "\033[2J\033[1H",
-    [SHELL_TEXT_CLEAR_LINE] = 
-        "\033[2K\r",
-    [SHELL_TEXT_TYPE_CMD] = 
-        "CMD \r\n",
-    [SHELL_TEXT_TYPE_VAR] = 
-        "VAR",
-    [SHELL_TEXT_TYPE_USER] = 
-        "USER",
-    [SHELL_TEXT_TYPE_KEY] = 
-        "KEY",
-    [SHELL_TEXT_TYPE_NONE] = 
-        "NONE",
+        [SHELL_TEXT_CMD_TOO_LONG] =
+            "\r\nWarning: Command is too long\r\n",
+        [SHELL_TEXT_CMD_LIST] =
+            "\r\nCommand List:\r\n",
+        [SHELL_TEXT_VAR_LIST] =
+            "\r\nVar List:\r\n",
+        [SHELL_TEXT_USER_LIST] =
+            "\r\nUser List:\r\n",
+        [SHELL_TEXT_KEY_LIST] =
+            "\r\nKey List:\r\n",
+        [SHELL_TEXT_CMD_NOT_FOUND] =
+            "Command not Found\r\n",
+        [SHELL_TEXT_POINT_CANNOT_MODIFY] =
+            "can't set pointer\r\n",
+        [SHELL_TEXT_VAR_READ_ONLY_CANNOT_MODIFY] =
+            "can't set read only var\r\n",
+        [SHELL_TEXT_NOT_VAR] =
+            " is not a var\r\n",
+        [SHELL_TEXT_VAR_NOT_FOUND] =
+            "Var not Fount\r\n",
+        [SHELL_TEXT_HELP_HEADER] =
+            "command help of ",
+        [SHELL_TEXT_PASSWORD_HINT] =
+            "\r\nPlease input password:",
+        [SHELL_TEXT_PASSWORD_ERROR] =
+            "\r\npassword error\r\n",
+        [SHELL_TEXT_CLEAR_CONSOLE] =
+            "\033[2J\033[1H",
+        [SHELL_TEXT_CLEAR_LINE] =
+            "\033[2K\r",
+        [SHELL_TEXT_TYPE_CMD] =
+            "CMD \r\n",
+        [SHELL_TEXT_TYPE_VAR] =
+            "VAR",
+        [SHELL_TEXT_TYPE_USER] =
+            "USER",
+        [SHELL_TEXT_TYPE_KEY] =
+            "KEY",
+        [SHELL_TEXT_TYPE_NONE] =
+            "NONE",
 #if SHELL_EXEC_UNDEF_FUNC == 1
-    [SHELL_TEXT_PARAM_ERROR] = 
-        "Parameter error\r\n",
+        [SHELL_TEXT_PARAM_ERROR] =
+            "Parameter error\r\n",
 #endif
 };
-
 
 /**
  * @brief shell对象表
  */
 static Shell *shellList[SHELL_MAX_NUMBER] = {NULL};
 
-
 static void shellAdd(Shell *shell);
 static void shellWriteCommandLine(Shell *shell, unsigned char newline);
 static void shellWriteReturnValue(Shell *shell, int value);
 static int shellShowVar(Shell *shell, ShellCommand *command);
 static void shellSetUser(Shell *shell, const ShellCommand *user);
-ShellCommand* shellSeekCommand(Shell *shell,
+ShellCommand *shellSeekCommand(Shell *shell,
                                const char *cmd,
                                ShellCommand *base,
                                unsigned short compareLength);
@@ -186,25 +179,19 @@ void shellInit(Shell *shell, char *buffer, unsigned short size)
     }
 
 #if SHELL_USING_CMD_EXPORT == 1
-    #if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && __ARMCC_VERSION >= 6000000)
-        shell->commandList.base = (ShellCommand *)(&shellCommand$$Base);
-        shell->commandList.count = ((unsigned int)(&shellCommand$$Limit)
-                                - (unsigned int)(&shellCommand$$Base))
-                                / sizeof(ShellCommand);
+#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && __ARMCC_VERSION >= 6000000)
+    shell->commandList.base = (ShellCommand *)(&shellCommand$$Base);
+    shell->commandList.count = ((unsigned int)(&shellCommand$$Limit) - (unsigned int)(&shellCommand$$Base)) / sizeof(ShellCommand);
 
-    #elif defined(__ICCARM__) || defined(__ICCRX__)
-        shell->commandList.base = (ShellCommand *)(__section_begin("shellCommand"));
-        shell->commandList.count = ((unsigned int)(__section_end("shellCommand"))
-                                - (unsigned int)(__section_begin("shellCommand")))
-                                / sizeof(ShellCommand);
-    #elif defined(__GNUC__)
-        shell->commandList.base = (ShellCommand *)(&_shell_command_start);
-        shell->commandList.count = ((unsigned int)(&_shell_command_end)
-                                - (unsigned int)(&_shell_command_start))
-                                / sizeof(ShellCommand);
-    #else
-        #error not supported compiler, please use command table mode
-    #endif
+#elif defined(__ICCARM__) || defined(__ICCRX__)
+    shell->commandList.base = (ShellCommand *)(__section_begin("shellCommand"));
+    shell->commandList.count = ((unsigned int)(__section_end("shellCommand")) - (unsigned int)(__section_begin("shellCommand"))) / sizeof(ShellCommand);
+#elif defined(__GNUC__)
+    shell->commandList.base = (ShellCommand *)(&_shell_command_start);
+    shell->commandList.count = ((unsigned int)(&_shell_command_end) - (unsigned int)(&_shell_command_start)) / sizeof(ShellCommand);
+#else
+#error not supported compiler, please use command table mode
+#endif
 #else
     shell->commandList.base = (ShellCommand *)shellCommandList;
     shell->commandList.count = shellCommandCount;
@@ -218,7 +205,6 @@ void shellInit(Shell *shell, char *buffer, unsigned short size)
                                          0));
     shellWriteCommandLine(shell, 1);
 }
-
 
 /**
  * @brief 添加shell
@@ -237,13 +223,12 @@ static void shellAdd(Shell *shell)
     }
 }
 
-
 /**
  * @brief 获取当前活动shell
  * 
  * @return Shell* 当前活动shell对象
  */
-Shell* shellGetCurrent(void)
+Shell *shellGetCurrent(void)
 {
     for (short i = 0; i < SHELL_MAX_NUMBER; i++)
     {
@@ -255,7 +240,6 @@ Shell* shellGetCurrent(void)
     return NULL;
 }
 
-
 /**
  * @brief shell写字符
  * 
@@ -265,9 +249,7 @@ Shell* shellGetCurrent(void)
 void shellWriteByte(Shell *shell, const char data)
 {
     shell->write(data);
-    delay_us(50);
 }
-
 
 /**
  * @brief shell 写字符串
@@ -281,15 +263,13 @@ unsigned short shellWriteString(Shell *shell, const char *string)
 {
     unsigned short count = 0;
     SHELL_ASSERT(shell->write, return 0);
-    while(*string)
+    while (*string)
     {
-        shell->write(*string ++);
-        count ++;
-        delay_us(100);
+        shell->write(*string++);
+        count++;
     }
     return count;
 }
-
 
 /**
  * @brief shell 写命令描述字符串
@@ -303,14 +283,10 @@ static unsigned short shellWriteCommandDesc(Shell *shell, const char *string)
 {
     unsigned short count = 0;
     SHELL_ASSERT(shell->write, return 0);
-    while(*string
-        && *string != '\r'
-        && *string != '\n'
-        && count < 36)
+    while (*string && *string != '\r' && *string != '\n' && count < 36)
     {
-        shell->write(*string ++);
-        delay_us(10);
-        count ++;
+        shell->write(*string++);
+        count++;
         if (count >= 36 && *(string + 1))
         {
             shell->write('.');
@@ -320,7 +296,6 @@ static unsigned short shellWriteCommandDesc(Shell *shell, const char *string)
     }
     return count;
 }
-
 
 /**
  * @brief shell写命令提示符
@@ -348,7 +323,6 @@ static void shellWriteCommandLine(Shell *shell, unsigned char newline)
     }
 }
 
-
 #if SHELL_PRINT_BUFFER > 0
 /**
  * @brief shell格式化输出
@@ -362,16 +336,15 @@ void shellPrint(Shell *shell, char *fmt, ...)
     char buffer[SHELL_PRINT_BUFFER];
     va_list vargs;
 
-    SHELL_ASSERT(shell, return);
+    SHELL_ASSERT(shell, return );
 
     va_start(vargs, fmt);
     vsnprintf(buffer, SHELL_PRINT_BUFFER - 1, fmt, vargs);
     va_end(vargs);
-    
+
     shellWriteString(shell, buffer);
 }
 #endif
-
 
 #if SHELL_SCAN_BUFFER > 0
 /**
@@ -387,17 +360,18 @@ void shellScan(Shell *shell, char *fmt, ...)
     va_list vargs;
     short index = 0;
 
-    SHELL_ASSERT(shell, return);
+    SHELL_ASSERT(shell, return );
 
     if (shell->read)
     {
-        do {
+        do
+        {
             if (shell->read(&buffer[index]) == 0)
             {
                 shell->write(buffer[index]);
                 index++;
             }
-        } while (buffer[index -1] != '\r' && buffer[index -1] != '\n' && index < SHELL_SCAN_BUFFER);
+        } while (buffer[index - 1] != '\r' && buffer[index - 1] != '\n' && index < SHELL_SCAN_BUFFER);
         shellWriteString(shell, "\r\n");
         buffer[index] = '\0';
     }
@@ -407,7 +381,6 @@ void shellScan(Shell *shell, char *fmt, ...)
     va_end(vargs);
 }
 #endif
-
 
 /**
  * @brief shell 检查命令权限
@@ -420,15 +393,10 @@ void shellScan(Shell *shell, char *fmt, ...)
  */
 signed char shellCheckPermission(Shell *shell, ShellCommand *command)
 {
-    return ((!command->attr.attrs.permission
-                || command->attr.attrs.type == SHELL_TYPE_USER
-                || (command->attr.attrs.permission 
-                    & shell->info.user->attr.attrs.permission))
-            && (shell->status.isChecked
-                || command->attr.attrs.enableUnchecked))
-            ? 0 : -1;
+    return ((!command->attr.attrs.permission || command->attr.attrs.type == SHELL_TYPE_USER || (command->attr.attrs.permission & shell->info.user->attr.attrs.permission)) && (shell->status.isChecked || command->attr.attrs.enableUnchecked))
+               ? 0
+               : -1;
 }
-
 
 /**
  * @brief int转16进制字符串
@@ -451,7 +419,6 @@ signed char shellToHex(unsigned int value, char *buffer)
     }
     return 8 - i;
 }
-
 
 /**
 * @brief int转10进制字符串
@@ -479,12 +446,12 @@ signed char shellToDec(int value, char *buffer)
     {
         buffer[--i] = '-';
     }
-    if (value == 0) {
+    if (value == 0)
+    {
         buffer[--i] = '0';
     }
     return 11 - i;
 }
-
 
 /**
  * @brief shell字符串复制
@@ -493,7 +460,7 @@ signed char shellToDec(int value, char *buffer)
  * @param src 源字符串
  * @return unsigned short 字符串长度
  */
-static unsigned short shellStringCopy(char *dest, char* src)
+static unsigned short shellStringCopy(char *dest, char *src)
 {
     unsigned short count = 0;
     while (*(src + count))
@@ -505,7 +472,6 @@ static unsigned short shellStringCopy(char *dest, char* src)
     return count;
 }
 
-
 /**
  * @brief shell字符串比较
  * 
@@ -513,23 +479,22 @@ static unsigned short shellStringCopy(char *dest, char* src)
  * @param src 源字符串
  * @return unsigned short 匹配长度
  */
-static unsigned short shellStringCompare(char* dest, char *src)
+static unsigned short shellStringCompare(char *dest, char *src)
 {
     unsigned short match = 0;
     unsigned short i = 0;
 
-    while (*(dest +i) && *(src + i))
+    while (*(dest + i) && *(src + i))
     {
-        if (*(dest + i) != *(src +i))
+        if (*(dest + i) != *(src + i))
         {
             break;
         }
-        match ++;
+        match++;
         i++;
     }
     return match;
 }
-
 
 /**
  * @brief shell获取命令名
@@ -537,7 +502,7 @@ static unsigned short shellStringCompare(char* dest, char *src)
  * @param command 命令
  * @return const char* 命令名
  */
-static const char* shellGetCommandName(ShellCommand *command)
+static const char *shellGetCommandName(ShellCommand *command)
 {
     static char buffer[9];
     for (unsigned char i = 0; i < 9; i++)
@@ -563,14 +528,13 @@ static const char* shellGetCommandName(ShellCommand *command)
     }
 }
 
-
 /**
  * @brief shell获取命令描述
  * 
  * @param command 命令
  * @return const char* 命令描述
  */
-static const char* shellGetCommandDesc(ShellCommand *command)
+static const char *shellGetCommandDesc(ShellCommand *command)
 {
     if (command->attr.attrs.type <= SHELL_TYPE_CMD_FUNC)
     {
@@ -602,7 +566,8 @@ void shellListItem(Shell *shell, ShellCommand *item)
 
     spaceLength = 22 - shellWriteString(shell, shellGetCommandName(item));
     spaceLength = (spaceLength > 0) ? spaceLength : 4;
-    do {
+    do
+    {
         shellWriteByte(shell, '-');
     } while (--spaceLength);
     if (item->attr.attrs.type <= SHELL_TYPE_CMD_FUNC)
@@ -637,7 +602,6 @@ void shellListItem(Shell *shell, ShellCommand *item)
     // shellWriteString(shell, "\r\n");
 }
 
-
 /**
  * @brief shell列出可执行命令
  * 
@@ -649,14 +613,12 @@ void shellListCommand(Shell *shell)
     shellWriteString(shell, shellText[SHELL_TEXT_CMD_LIST]);
     for (short i = 0; i < shell->commandList.count; i++)
     {
-        if (base[i].attr.attrs.type <= SHELL_TYPE_CMD_FUNC
-            && shellCheckPermission(shell, &base[i]) == 0)
+        if (base[i].attr.attrs.type <= SHELL_TYPE_CMD_FUNC && shellCheckPermission(shell, &base[i]) == 0)
         {
             shellListItem(shell, &base[i]);
         }
     }
 }
-
 
 /**
  * @brief shell列出变量
@@ -669,15 +631,12 @@ void shellListVar(Shell *shell)
     shellWriteString(shell, shellText[SHELL_TEXT_VAR_LIST]);
     for (short i = 0; i < shell->commandList.count; i++)
     {
-        if (base[i].attr.attrs.type > SHELL_TYPE_CMD_FUNC
-            && base[i].attr.attrs.type <= SHELL_TYPE_VAR_NODE
-            && shellCheckPermission(shell, &base[i]) == 0)
+        if (base[i].attr.attrs.type > SHELL_TYPE_CMD_FUNC && base[i].attr.attrs.type <= SHELL_TYPE_VAR_NODE && shellCheckPermission(shell, &base[i]) == 0)
         {
             shellListItem(shell, &base[i]);
         }
     }
 }
-
 
 /**
  * @brief shell列出用户
@@ -690,15 +649,12 @@ void shellListUser(Shell *shell)
     shellWriteString(shell, shellText[SHELL_TEXT_USER_LIST]);
     for (short i = 0; i < shell->commandList.count; i++)
     {
-        if (base[i].attr.attrs.type > SHELL_TYPE_VAR_NODE
-            && base[i].attr.attrs.type <= SHELL_TYPE_USER
-            && shellCheckPermission(shell, &base[i]) == 0)
+        if (base[i].attr.attrs.type > SHELL_TYPE_VAR_NODE && base[i].attr.attrs.type <= SHELL_TYPE_USER && shellCheckPermission(shell, &base[i]) == 0)
         {
             shellListItem(shell, &base[i]);
         }
     }
 }
-
 
 /**
  * @brief shell列出按键
@@ -711,15 +667,12 @@ void shellListKey(Shell *shell)
     shellWriteString(shell, shellText[SHELL_TEXT_KEY_LIST]);
     for (short i = 0; i < shell->commandList.count; i++)
     {
-        if (base[i].attr.attrs.type > SHELL_TYPE_USER
-            && base[i].attr.attrs.type <= SHELL_TYPE_KEY
-            && shellCheckPermission(shell, &base[i]) == 0)
+        if (base[i].attr.attrs.type > SHELL_TYPE_USER && base[i].attr.attrs.type <= SHELL_TYPE_KEY && shellCheckPermission(shell, &base[i]) == 0)
         {
             shellListItem(shell, &base[i]);
         }
     }
 }
-
 
 /**
  * @brief shell列出所有命令
@@ -740,7 +693,6 @@ void shellListAll(Shell *shell)
 #endif
 }
 
-
 /**
  * @brief shell删除命令行数据
  * 
@@ -755,7 +707,6 @@ void shellDeleteCommandLine(Shell *shell, unsigned char length)
     }
 }
 
-
 /**
  * @brief shell 清空命令行输入
  * 
@@ -769,7 +720,6 @@ void shellClearCommandLine(Shell *shell)
     }
     shellDeleteCommandLine(shell, shell->parser.length);
 }
-
 
 /**
  * @brief shell插入一个字符到光标位置
@@ -800,7 +750,7 @@ void shellInsertByte(Shell *shell, char data)
     {
         for (short i = shell->parser.length - shell->parser.cursor; i > 0; i--)
         {
-            shell->parser.buffer[shell->parser.cursor + i] = 
+            shell->parser.buffer[shell->parser.cursor + i] =
                 shell->parser.buffer[shell->parser.cursor + i - 1];
         }
         shell->parser.buffer[shell->parser.cursor++] = data;
@@ -816,7 +766,6 @@ void shellInsertByte(Shell *shell, char data)
     }
 }
 
-
 /**
  * @brief shell 删除字节
  * 
@@ -827,8 +776,7 @@ void shellDeleteByte(Shell *shell, signed char direction)
 {
     char offset = (direction == -1) ? 1 : 0;
 
-    if ((shell->parser.cursor == 0 && direction == 1)
-        || (shell->parser.cursor == shell->parser.length && direction == -1))
+    if ((shell->parser.cursor == 0 && direction == 1) || (shell->parser.cursor == shell->parser.length && direction == -1))
     {
         return;
     }
@@ -843,7 +791,7 @@ void shellDeleteByte(Shell *shell, signed char direction)
     {
         for (short i = offset; i < shell->parser.length - shell->parser.cursor; i++)
         {
-            shell->parser.buffer[shell->parser.cursor + i - 1] = 
+            shell->parser.buffer[shell->parser.cursor + i - 1] =
                 shell->parser.buffer[shell->parser.cursor + i];
         }
         shell->parser.length--;
@@ -865,7 +813,6 @@ void shellDeleteByte(Shell *shell, signed char direction)
     }
 }
 
-
 /**
  * @brief shell 解析参数
  * 
@@ -884,9 +831,7 @@ static void shellParserParam(Shell *shell)
     shell->parser.paramCount = 0;
     for (unsigned short i = 0; i < shell->parser.length; i++)
     {
-        if (quotes != 0
-            || (shell->parser.buffer[i] != ' '
-                && shell->parser.buffer[i] != 0))
+        if (quotes != 0 || (shell->parser.buffer[i] != ' ' && shell->parser.buffer[i] != 0))
         {
             if (shell->parser.buffer[i] == '\"')
             {
@@ -901,8 +846,7 @@ static void shellParserParam(Shell *shell)
                 }
                 record = 0;
             }
-            if (shell->parser.buffer[i] == '\\'
-                && shell->parser.buffer[i + 1] != 0)
+            if (shell->parser.buffer[i] == '\\' && shell->parser.buffer[i + 1] != 0)
             {
                 i++;
             }
@@ -914,7 +858,6 @@ static void shellParserParam(Shell *shell)
         }
     }
 }
-
 
 /**
  * @brief shell去除字符串参数头尾的双引号
@@ -939,7 +882,6 @@ static void shellRemoveParamQuotes(Shell *shell)
     }
 }
 
-
 /**
  * @brief shell匹配命令
  * 
@@ -949,7 +891,7 @@ static void shellRemoveParamQuotes(Shell *shell)
  * @param compareLength 匹配字符串长度
  * @return ShellCommand* 匹配到的命令
  */
-ShellCommand* shellSeekCommand(Shell *shell,
+ShellCommand *shellSeekCommand(Shell *shell,
                                const char *cmd,
                                ShellCommand *base,
                                unsigned short compareLength)
@@ -957,11 +899,10 @@ ShellCommand* shellSeekCommand(Shell *shell,
     const char *name;
     int ret;
     unsigned short count = shell->commandList.count -
-        ((int)base - (int)shell->commandList.base) / sizeof(ShellCommand);
+                           ((int)base - (int)shell->commandList.base) / sizeof(ShellCommand);
     for (unsigned short i = 0; i < count; i++)
     {
-        if (base[i].attr.attrs.type == SHELL_TYPE_KEY
-            || shellCheckPermission(shell, &base[i]) != 0)
+        if (base[i].attr.attrs.type == SHELL_TYPE_KEY || shellCheckPermission(shell, &base[i]) != 0)
         {
             continue;
         }
@@ -984,7 +925,6 @@ ShellCommand* shellSeekCommand(Shell *shell,
     }
     return NULL;
 }
-
 
 /**
  * @brief shell 获取变量值
@@ -1012,16 +952,15 @@ int shellGetVarValue(Shell *shell, ShellCommand *command)
         value = (int)(command->data.var.value);
         break;
     case SHELL_TYPE_VAR_NODE:
-        value = ((ShellNodeVarAttr *)command->data.var.value)->get ?
-                    ((ShellNodeVarAttr *)command->data.var.value)
-                        ->get(((ShellNodeVarAttr *)command->data.var.value)->var) : 0;
+        value = ((ShellNodeVarAttr *)command->data.var.value)->get ? ((ShellNodeVarAttr *)command->data.var.value)
+                                                                         ->get(((ShellNodeVarAttr *)command->data.var.value)->var)
+                                                                   : 0;
         break;
     default:
         break;
     }
     return value;
 }
-
 
 /**
  * @brief shell设置变量值
@@ -1077,7 +1016,6 @@ int shellSetVarValue(Shell *shell, ShellCommand *command, int value)
     return shellShowVar(shell, command);
 }
 
-
 /**
  * @brief shell变量输出
  * 
@@ -1089,7 +1027,7 @@ static int shellShowVar(Shell *shell, ShellCommand *command)
 {
     char buffer[12] = "00000000000";
     int value = shellGetVarValue(shell, command);
-    
+
     shellWriteString(shell, command->data.var.name);
     shellWriteString(shell, " = ");
 
@@ -1120,7 +1058,6 @@ static int shellShowVar(Shell *shell, ShellCommand *command)
     return value;
 }
 
-
 /**
  * @brief shell设置变量
  * 
@@ -1144,8 +1081,7 @@ int shellSetVar(char *name, int value)
         shellWriteString(shell, shellText[SHELL_TEXT_VAR_NOT_FOUND]);
         return 0;
     }
-    if (command->attr.attrs.type < SHELL_TYPE_VAR_INT
-        || command->attr.attrs.type > SHELL_TYPE_VAR_NODE)
+    if (command->attr.attrs.type < SHELL_TYPE_VAR_INT || command->attr.attrs.type > SHELL_TYPE_VAR_NODE)
     {
         shellWriteString(shell, name);
         shellWriteString(shell, shellText[SHELL_TEXT_NOT_VAR]);
@@ -1154,9 +1090,8 @@ int shellSetVar(char *name, int value)
     return shellSetVarValue(shell, command, value);
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
-setVar, shellSetVar, set var);
-
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN,
+    setVar, shellSetVar, set var);
 
 /**
  * @brief shell运行命令
@@ -1191,8 +1126,7 @@ unsigned int shellRunCommand(Shell *shell, ShellCommand *command)
             shellWriteReturnValue(shell, returnValue);
         }
     }
-    else if (command->attr.attrs.type >= SHELL_TYPE_VAR_INT
-        && command->attr.attrs.type <= SHELL_TYPE_VAR_NODE)
+    else if (command->attr.attrs.type >= SHELL_TYPE_VAR_INT && command->attr.attrs.type <= SHELL_TYPE_VAR_NODE)
     {
         shellShowVar(shell, command);
     }
@@ -1205,7 +1139,6 @@ unsigned int shellRunCommand(Shell *shell, ShellCommand *command)
     return returnValue;
 }
 
-
 /**
  * @brief shell校验密码
  * 
@@ -1216,9 +1149,9 @@ static void shellCheckPassword(Shell *shell)
     if (strcmp(shell->parser.buffer, shell->info.user->data.user.password) == 0)
     {
         shell->status.isChecked = 1;
-    #if SHELL_SHOW_INFO == 1
+#if SHELL_SHOW_INFO == 1
         shellWriteString(shell, shellText[SHELL_TEXT_INFO]);
-    #endif
+#endif
     }
     else
     {
@@ -1227,7 +1160,6 @@ static void shellCheckPassword(Shell *shell)
     shell->parser.length = 0;
     shell->parser.cursor = 0;
 }
-
 
 /**
  * @brief shell设置用户
@@ -1238,12 +1170,11 @@ static void shellCheckPassword(Shell *shell)
 static void shellSetUser(Shell *shell, const ShellCommand *user)
 {
     shell->info.user = user;
-    shell->status.isChecked = 
-        ((user->data.user.password && strlen(user->data.user.password) != 0)
-            && (shell->parser.paramCount < 2
-                || strcmp(user->data.user.password, shell->parser.param[1]) != 0))
-         ? 0 : 1;
-        
+    shell->status.isChecked =
+        ((user->data.user.password && strlen(user->data.user.password) != 0) && (shell->parser.paramCount < 2 || strcmp(user->data.user.password, shell->parser.param[1]) != 0))
+            ? 0
+            : 1;
+
 #if SHELL_CLS_WHEN_LOGIN == 1
     shellWriteString(shell, shellText[SHELL_TEXT_CLEAR_CONSOLE]);
 #endif
@@ -1254,7 +1185,6 @@ static void shellSetUser(Shell *shell, const ShellCommand *user)
     }
 #endif
 }
-
 
 /**
  * @brief shell写返回值
@@ -1277,7 +1207,6 @@ static void shellWriteReturnValue(Shell *shell, int value)
     shellWriteString(shell, "\r\n");
 }
 
-
 /**
  * @brief shell历史记录添加
  * 
@@ -1286,10 +1215,8 @@ static void shellWriteReturnValue(Shell *shell, int value)
 static void shellHistoryAdd(Shell *shell)
 {
     shell->history.offset = 0;
-    if (shell->history.number > 0
-        && strcmp(shell->history.item[(shell->history.record == 0 ? 
-                SHELL_HISTORY_MAX_NUMBER : shell->history.record) - 1],
-                shell->parser.buffer) == 0)
+    if (shell->history.number > 0 && strcmp(shell->history.item[(shell->history.record == 0 ? SHELL_HISTORY_MAX_NUMBER : shell->history.record) - 1],
+                                            shell->parser.buffer) == 0)
     {
         return;
     }
@@ -1308,7 +1235,6 @@ static void shellHistoryAdd(Shell *shell)
     }
 }
 
-
 /**
  * @brief shell历史记录查找
  * 
@@ -1319,12 +1245,12 @@ static void shellHistory(Shell *shell, signed char dir)
 {
     if (dir > 0)
     {
-        if (shell->history.offset-- <= 
-            -((shell->history.number > shell->history.record) ?
-                shell->history.number : shell->history.record))
+        if (shell->history.offset-- <=
+            -((shell->history.number > shell->history.record) ? shell->history.number : shell->history.record))
         {
             shell->history.offset = -((shell->history.number > shell->history.record)
-                                    ? shell->history.number : shell->history.record);
+                                          ? shell->history.number
+                                          : shell->history.record);
         }
     }
     else if (dir < 0)
@@ -1347,17 +1273,14 @@ static void shellHistory(Shell *shell, signed char dir)
     else
     {
         if ((shell->parser.length = shellStringCopy(shell->parser.buffer,
-                shell->history.item[(shell->history.record + SHELL_HISTORY_MAX_NUMBER
-                    + shell->history.offset) % SHELL_HISTORY_MAX_NUMBER])) == 0)
+                                                    shell->history.item[(shell->history.record + SHELL_HISTORY_MAX_NUMBER + shell->history.offset) % SHELL_HISTORY_MAX_NUMBER])) == 0)
         {
             return;
         }
         shell->parser.cursor = shell->parser.length;
         shellWriteString(shell, shell->parser.buffer);
     }
-    
 }
-
 
 /**
  * @brief shell 常规输入
@@ -1371,7 +1294,6 @@ void shellNormalInput(Shell *shell, char data)
     shellInsertByte(shell, data);
 }
 
-
 /**
  * @brief shell运行命令
  * 
@@ -1379,7 +1301,7 @@ void shellNormalInput(Shell *shell, char data)
  */
 void shellExec(Shell *shell)
 {
-    
+
     if (shell->parser.length == 0)
     {
         return;
@@ -1417,7 +1339,6 @@ void shellExec(Shell *shell)
     }
 }
 
-
 /**
  * @brief shell上方向键输入
  * 
@@ -1429,7 +1350,6 @@ void shellUp(Shell *shell)
 }
 SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0), 0x1B5B4100, shellUp, up);
 
-
 /**
  * @brief shell下方向键输入
  * 
@@ -1440,7 +1360,6 @@ void shellDown(Shell *shell)
     shellHistory(shell, -1);
 }
 SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0), 0x1B5B4200, shellDown, down);
-
 
 /**
  * @brief shell右方向键输入
@@ -1454,9 +1373,8 @@ void shellRight(Shell *shell)
         shellWriteByte(shell, shell->parser.buffer[shell->parser.cursor++]);
     }
 }
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x1B5B4300, shellRight, right);
-
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x1B5B4300, shellRight, right);
 
 /**
  * @brief shell左方向键输入
@@ -1471,9 +1389,8 @@ void shellLeft(Shell *shell)
         shell->parser.cursor--;
     }
 }
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x1B5B4400, shellLeft, left);
-
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x1B5B4400, shellLeft, left);
 
 /**
  * @brief shell Tab按键处理
@@ -1498,10 +1415,8 @@ void shellTab(Shell *shell)
         ShellCommand *base = (ShellCommand *)shell->commandList.base;
         for (short i = 0; i < shell->commandList.count; i++)
         {
-            if (shellCheckPermission(shell, &base[i]) == 0
-                && shellStringCompare(shell->parser.buffer,
-                                   (char *)shellGetCommandName(&base[i]))
-                        == shell->parser.length)
+            if (shellCheckPermission(shell, &base[i]) == 0 && shellStringCompare(shell->parser.buffer,
+                                                                                 (char *)shellGetCommandName(&base[i])) == shell->parser.length)
             {
                 if (matchNum != 0)
                 {
@@ -1510,7 +1425,7 @@ void shellTab(Shell *shell)
                         shellWriteString(shell, "\r\n");
                     }
                     shellListItem(shell, &base[lastMatchIndex]);
-                    length = 
+                    length =
                         shellStringCompare((char *)shellGetCommandName(&base[lastMatchIndex]),
                                            (char *)shellGetCommandName(&base[i]));
                     maxMatch = (maxMatch > length) ? length : maxMatch;
@@ -1529,7 +1444,7 @@ void shellTab(Shell *shell)
         }
         if (matchNum != 0)
         {
-            shell->parser.length = 
+            shell->parser.length =
                 shellStringCopy(shell->parser.buffer,
                                 (char *)shellGetCommandName(&base[lastMatchIndex]));
         }
@@ -1546,9 +1461,7 @@ void shellTab(Shell *shell)
 
     if (SHELL_GET_TICK())
     {
-        if (matchNum == 1
-            && shell->status.tabFlag
-            && SHELL_GET_TICK() - shell->info.activeTime < SHELL_DOUBLE_CLICK_TIME)
+        if (matchNum == 1 && shell->status.tabFlag && SHELL_GET_TICK() - shell->info.activeTime < SHELL_DOUBLE_CLICK_TIME)
         {
             shellClearCommandLine(shell);
             for (short i = shell->parser.length; i >= 0; i--)
@@ -1569,7 +1482,6 @@ void shellTab(Shell *shell)
 }
 SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0), 0x09000000, shellTab, tab);
 
-
 /**
  * @brief shell 退格
  * 
@@ -1579,11 +1491,10 @@ void shellBackspace(Shell *shell)
 {
     shellDeleteByte(shell, 1);
 }
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x08000000, shellBackspace, backspace);
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x7F000000, shellBackspace, backspace);
-
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x08000000, shellBackspace, backspace);
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x7F000000, shellBackspace, backspace);
 
 /**
  * @brief shell 删除
@@ -1594,9 +1505,8 @@ void shellDelete(Shell *shell)
 {
     shellDeleteByte(shell, -1);
 }
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x1B5B337E, shellDelete, delete);
-
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x1B5B337E, shellDelete, delete);
 
 /**
  * @brief shell 回车处理
@@ -1609,18 +1519,17 @@ void shellEnter(Shell *shell)
     shellWriteCommandLine(shell, 1);
 }
 #if SHELL_ENTER_LF == 1
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x0A000000, shellEnter, enter);
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x0A000000, shellEnter, enter);
 #endif
 #if SHELL_ENTER_CR == 1
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x0D000000, shellEnter, enter);
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x0D000000, shellEnter, enter);
 #endif
 #if SHELL_ENTER_CRLF == 1
-SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
-0x0D0A0000, shellEnter, enter);
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0) | SHELL_CMD_ENABLE_UNCHECKED,
+                 0x0D0A0000, shellEnter, enter);
 #endif
-
 
 /**
  * @brief shell help
@@ -1631,7 +1540,7 @@ SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0)|SHELL_CMD_ENABLE_UNCHECKED,
 void shellHelp(int argc, char *argv[])
 {
     Shell *shell = shellGetCurrent();
-    SHELL_ASSERT(shell, return);
+    SHELL_ASSERT(shell, return );
     if (argc == 1)
     {
         shellListAll(shell);
@@ -1657,8 +1566,8 @@ void shellHelp(int argc, char *argv[])
     }
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-help, shellHelp, show command info\r\nhelp [cmd]);
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN) | SHELL_CMD_DISABLE_RETURN,
+    help, shellHelp, show command info\r\nhelp[cmd]);
 
 /**
  * @brief shell 输入处理
@@ -1668,12 +1577,10 @@ help, shellHelp, show command info\r\nhelp [cmd]);
  */
 void shellHandler(Shell *shell, char data)
 {
-    SHELL_ASSERT(data, return);
+    SHELL_ASSERT(data, return );
 
 #if SHELL_LOCK_TIMEOUT > 0
-    if (shell->info.user->data.user.password
-        && strlen(shell->info.user->data.user.password) != 0
-        && SHELL_GET_TICK())
+    if (shell->info.user->data.user.password && strlen(shell->info.user->data.user.password) != 0 && SHELL_GET_TICK())
     {
         if (SHELL_GET_TICK() - shell->info.activeTime > SHELL_LOCK_TIMEOUT)
         {
@@ -1706,19 +1613,14 @@ void shellHandler(Shell *shell, char data)
     for (short i = 0; i < shell->commandList.count; i++)
     {
         /* 判断是否是按键定义并验证权限 */
-        if (base[i].attr.attrs.type == SHELL_TYPE_KEY
-            && shellCheckPermission(shell, &(base[i])) == 0)
+        if (base[i].attr.attrs.type == SHELL_TYPE_KEY && shellCheckPermission(shell, &(base[i])) == 0)
         {
             /* 对输入的字节同按键键值进行匹配 */
-            if ((base[i].data.key.value & keyFilter) == shell->parser.keyValue
-                && (base[i].data.key.value & (0xFF << keyByteOffset))
-                    == (data << keyByteOffset))
+            if ((base[i].data.key.value & keyFilter) == shell->parser.keyValue && (base[i].data.key.value & (0xFF << keyByteOffset)) == (data << keyByteOffset))
             {
                 shell->parser.keyValue |= data << keyByteOffset;
                 data = 0x00;
-                if (keyByteOffset == 0 
-                    || (base[i].data.key.value & (0xFF << (keyByteOffset - 8)))
-                        == 0x00000000)
+                if (keyByteOffset == 0 || (base[i].data.key.value & (0xFF << (keyByteOffset - 8))) == 0x00000000)
                 {
                     if (base[i].data.key.function)
                     {
@@ -1743,7 +1645,6 @@ void shellHandler(Shell *shell, char data)
     }
 }
 
-
 #if SHELL_SUPPORT_END_LINE == 1
 void shellWriteEndLine(Shell *shell, char *buffer, int len)
 {
@@ -1751,7 +1652,7 @@ void shellWriteEndLine(Shell *shell, char *buffer, int len)
     {
         shellWriteString(shell, shellText[SHELL_TEXT_CLEAR_LINE]);
     }
-    while (len --)
+    while (len--)
     {
         shell->write(*buffer++);
     }
@@ -1770,7 +1671,6 @@ void shellWriteEndLine(Shell *shell, char *buffer, int len)
 }
 #endif /** SHELL_SUPPORT_END_LINE == 1 */
 
-
 /**
  * @brief shell 任务
  * 
@@ -1782,7 +1682,7 @@ void shellTask(void *param)
     Shell *shell = (Shell *)param;
     char data;
 #if SHELL_TASK_WHILE == 1
-    while(1)
+    while (1)
     {
 #endif
         if (shell->read && shell->read(&data) == 0)
@@ -1793,7 +1693,6 @@ void shellTask(void *param)
     }
 #endif
 }
-
 
 /**
  * @brief shell 输出用户列表(shell调用)
@@ -1807,9 +1706,8 @@ void shellUsers(void)
     }
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
-users, shellUsers, list all user);
-
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN,
+    users, shellUsers, list all user);
 
 /**
  * @brief shell 输出命令列表(shell调用)
@@ -1823,9 +1721,8 @@ void shellCmds(void)
     }
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
-cmds, shellCmds, list all cmd);
-
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN,
+    cmds, shellCmds, list all cmd);
 
 /**
  * @brief shell 输出变量列表(shell调用)
@@ -1839,9 +1736,8 @@ void shellVars(void)
     }
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
-vars, shellVars, list all var);
-
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN,
+    vars, shellVars, list all var);
 
 /**
  * @brief shell 输出按键列表(shell调用)
@@ -1855,9 +1751,8 @@ void shellKeys(void)
     }
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
-keys, shellKeys, list all key);
-
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN,
+    keys, shellKeys, list all key);
 
 /**
  * @brief shell 清空控制台(shell调用)
@@ -1871,9 +1766,8 @@ void shellClear(void)
     }
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)|SHELL_CMD_DISABLE_RETURN,
-clear, shellClear, clear console);
-
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN,
+    clear, shellClear, clear console);
 
 /**
  * @brief shell执行命令
@@ -1900,7 +1794,6 @@ int shellRun(Shell *shell, const char *cmd)
     }
 }
 
-
 #if SHELL_EXEC_UNDEF_FUNC == 1
 /**
  * @brief shell执行未定义函数
@@ -1917,8 +1810,7 @@ int shellExecute(int argc, char *argv[])
         int (*func)() = (int (*)())shellExtParsePara(shell, argv[1]);
         shellPrint(shell, "%08x\r\n", func);
         ShellCommand command = {
-            .attr.value = SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC)
-                          |SHELL_CMD_DISABLE_RETURN,
+            .attr.value = SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN,
             .data.cmd.function = func,
         };
         return shellExtRun(shell, &command, argc - 1, &argv[1]);
@@ -1930,6 +1822,6 @@ int shellExecute(int argc, char *argv[])
     }
 }
 SHELL_EXPORT_CMD(
-SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN)|SHELL_CMD_DISABLE_RETURN,
-exec, shellExecute, execute function undefined);
+    SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN) | SHELL_CMD_DISABLE_RETURN,
+    exec, shellExecute, execute function undefined);
 #endif
