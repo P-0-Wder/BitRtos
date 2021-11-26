@@ -199,6 +199,7 @@ typedef struct
     bool (*Delete)(Widget_Handle *hdl);
     bool (*trigger_fresh)(void);
     bool (*fresh_all)(void);
+    bool (*Operate)(UI_Button_Trigger_Type type);
 } Widget_GenProcFunc_TypeDef;
 
 extern Widget_GenProcFunc_TypeDef Widget_Mng;

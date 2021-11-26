@@ -1181,8 +1181,20 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
     UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
 }
 
-/* button push */
+/* button operate */
+static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type)
+{
+    if ((Btn_Hdl == 0) || (type > Release_Trigger))
+        return false;
 
-/* button release */
+    if (type == Push_Trigger)
+    {
+        UI_Button.push((UI_ButtonObj_TypeDef *)Btn_Hdl);
+    }
+    else
+    {
+        UI_Button.release((UI_ButtonObj_TypeDef *)Btn_Hdl);
+    }
+}
 
 /************************************** widget UI interface ******************************************/
