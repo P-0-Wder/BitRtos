@@ -22,7 +22,7 @@ static int Shell_Write(const uint8_t *ch, uint16_t len)
     DrvSerial.write(SHELL_SERIAL_PORT, ch, len);
 }
 
-bool TaskShell_Init(void)
+static bool TaskShell_Init(void)
 {
     static TaskShell_State_List TaskState = Shell_State_Init;
 
@@ -49,6 +49,7 @@ void TaskShell_Core(Task_Handler self)
     switch ((uint8_t)TaskState)
     {
     case Shell_State_Init:
+        TaskShell_Init();
         TaskState = Shell_State_Polling;
         break;
 

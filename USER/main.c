@@ -41,7 +41,6 @@ int main(void)
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
 
 	SystemInit();
-	TaskShell_Init();
 
 	TaskWidget_Hdl = Task_Create("Widget", TASK_EXEC_100HZ, Group_0, Task_Priority_1, TaskWidget_Core, 200);
 	Shell_Tsk_Hdl = Task_Create("Shell", TASK_EXEC_1KHZ, Group_0, Task_Priority_4, TaskShell_Core, 1024);
