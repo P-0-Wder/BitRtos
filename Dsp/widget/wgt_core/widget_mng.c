@@ -106,6 +106,7 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
 static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
 static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
 static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
+static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
 
 /* Wisget Button Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
@@ -114,6 +115,7 @@ WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .Set_TriggerCallback = WidgetUI_SetButton_TriggerCallback,
     .Move = WidgetUI_Move_Button,
     .Fresh = WidgetUI_Fresh_Button,
+    .Operate = WidgetUI_Button_Operate,
 };
 
 /* for temp we init each var as null */

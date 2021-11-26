@@ -1,13 +1,6 @@
 #include "UI_Controller.h"
 #include <stdlib.h>
 
-#define DEFAULT_FONT font_12
-#define DEFAULT_BUTTON_PUSH_LABEL "yes"
-#define DEFAULT_BUTTON_RELEASE_LABEL "no"
-#define DEFAULT_BUTTON_WIDTH 25
-#define DEFAULT_BUTTON_HEIGHT 14
-#define DEFAULT__BUTTON_RADIUS 3
-
 /* internal object */
 static UI_DrawInterface_TypeDef UI_DspInterface;
 
@@ -285,7 +278,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
         }
         else
         {
@@ -294,7 +287,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
             /* display label normally */
             if (Obj->Release_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 6, Obj->Gen_Data.y, true);
         }
     }
     else

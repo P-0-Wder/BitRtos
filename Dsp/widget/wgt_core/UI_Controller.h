@@ -14,7 +14,7 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 #define Default_Font Font_12
-#define Default_Button_FrameRadius 2
+#define Default_Button_FrameRadius 3
 
 #define DEFAULT_FONT font_12
 #define DEFAULT_BUTTON_PUSH_LABEL "yes"

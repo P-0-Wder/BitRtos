@@ -128,6 +128,7 @@ typedef struct
     bool (*Set_TriggerCallback)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
     bool (*Move)(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
     bool (*Fresh)(UI_Button_Handle Btn_Hdl);
+    bool (*Operate)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
 } WidgetUI_Button_Interface_TypeDef;
 
 typedef struct
