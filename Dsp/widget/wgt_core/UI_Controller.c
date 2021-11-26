@@ -257,11 +257,13 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     {
         if (Obj->state == UI_Btn_PushDwn)
         {
-            Obj->push_callback();
+            if (Obj->push_callback)
+                Obj->push_callback();
         }
         else if (Obj->state == UI_Btn_RlsUp)
         {
-            Obj->release_callback();
+            if (Obj->release_callback)
+                Obj->release_callback();
         }
         else
             return false;
