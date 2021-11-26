@@ -93,7 +93,10 @@ static void Widget_FillCircle_Section(int8_t x, int8_t y, uint8_t radius, uint8_
 static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_cnv);
 static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv);
 
-/* Widget UI control Interface */
+/* Widget UI Get Button Interface */
+static WidgetUI_Button_Interface_TypeDef WidgetUI_GetButton_Instance(void);
+
+/* Widget UI Button Mathod */
 static void WidgetUI_Init(void);
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
@@ -112,7 +115,7 @@ WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
 
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
-    .Button = NULL,
+    .Button = WidgetUI_GetButton_Instance,
     // .UI_CheckBox = NULL,
     // .UI_ComboBox = NULL,
     // .UI_DigInput = NULL,
@@ -1098,6 +1101,11 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
     }
     else
         return item_prv;
+}
+
+static WidgetUI_Button_Interface_TypeDef WidgetUI_GetButton_Instance(void)
+{
+    return WidgetUI_Button;
 }
 
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
