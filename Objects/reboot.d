@@ -13,7 +13,7 @@ Objects/reboot.o: SYS/common/reboot.c USER/stm32f4xx.h F4_CORE/core_cm4.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
- SYS/common/reboot.h
+ SYS/common/reboot.h SYS/shell/shell.h SYS/shell/shell_cfg.h
 USER/stm32f4xx.h:
 F4_CORE/core_cm4.h:
 F4_CORE/core_cmInstr.h:
@@ -48,3 +48,5 @@ FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 SYS/common/reboot.h:
+SYS/shell/shell.h:
+SYS/shell/shell_cfg.h:

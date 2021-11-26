@@ -59,9 +59,3 @@ void TaskShell_Core(Task_Handler self)
         break;
     }
 }
-
-void sum(void)
-{
-    Shell_Printf("sd");
-}
-SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_FUNC) | SHELL_CMD_DISABLE_RETURN, sum, sum, test);
