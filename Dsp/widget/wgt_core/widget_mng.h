@@ -100,6 +100,7 @@ typedef enum
     Circle_Right_Down,
 } WidgetCircle_Section_List;
 
+#pragma pack(1)
 typedef struct
 {
     void (*draw_point)(int8_t x, int8_t y, bool col_inv);
@@ -122,7 +123,7 @@ typedef struct
 
 typedef struct
 {
-    bool (*create)(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+    UI_Button_Handle (*create)(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
     bool (*Set_OprLabel)(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
     bool (*Set_TriggerCallback)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
     bool (*Move)(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
@@ -135,7 +136,7 @@ typedef struct
     void (*Set_CoordY_Offset)(int8_t offset);
 
     /* ui control section */
-    WidgetUI_Button_Interface_TypeDef (*Button)(void);
+    WidgetUI_Button_Interface_TypeDef *(*Button)(void);
     // void (*UI_CheckBox)();
     // void (*UI_ComboBox)();
     // void (*UI_DigInput)();
@@ -203,5 +204,6 @@ typedef struct
 } Widget_GenProcFunc_TypeDef;
 
 extern Widget_GenProcFunc_TypeDef Widget_Mng;
+#pragma pack()
 
 #endif

@@ -24,6 +24,8 @@ static void TaskWidget_Init(void)
     //test2 = Widget_Mng.Create(50, 5, 50, 20, "test2", true);
     test3 = Widget_Mng.Create(15, 15, 70, 40, "test3", true);
     test4 = Widget_Mng.Create(0, 0, 128, 64, "test4", true);
+
+    Widget_Mng.Control(test4)->UI()->Button()->create("test", 80, 20, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Reset_Btn, UI_Btn_RlsUp);
 }
 
 static void TestWidget_Dynamic_Dsp(void)

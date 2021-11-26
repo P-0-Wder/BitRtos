@@ -94,10 +94,13 @@ static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t heig
 static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv);
 
 /* Widget UI Get Button Interface */
-static WidgetUI_Button_Interface_TypeDef WidgetUI_GetButton_Instance(void);
+static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
+
+/* general UI Mathod */
+static void WidgetUI_Init(void);
+static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void);
 
 /* Widget UI Button Mathod */
-static void WidgetUI_Init(void);
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
 static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
@@ -150,6 +153,7 @@ static Widget_Control_TypeDef WidgetCtl_Interface = {
     .Draw = Widget_DrawInterface,
     .Clear = Widget_Clear,
     .Dsp_status = Widget_DspStatus,
+    .UI = WidgetUI_GetUtil,
 };
 
 static Widget_Config_TypeDef Widget_Config = {
@@ -982,6 +986,11 @@ static void WidgetUI_Init(void)
                         WidgetDraw_Interface.fill_radius_rectangle);
 }
 
+static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void)
+{
+    return &WidgetUI_Interface;
+}
+
 static void WidgetUI_SetAll_CoordY_Offset(int8_t offset)
 {
     GetCur_Active_Widget()->UI_CoordY_Offset = offset;
@@ -1103,9 +1112,9 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
         return item_prv;
 }
 
-static WidgetUI_Button_Interface_TypeDef WidgetUI_GetButton_Instance(void)
+static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void)
 {
-    return WidgetUI_Button;
+    return &WidgetUI_Button;
 }
 
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
