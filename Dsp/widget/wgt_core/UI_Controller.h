@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "oledfont.h"
+#include "runtime.h"
 #include "linked_list.h"
 
 #define UI_DEFAULT_WIDTH 0
@@ -14,17 +15,17 @@
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
 #define Default_Font Font_12
-#define Default_Button_FrameRadius 3
 
 #define DEFAULT_FONT font_12
 #define DEFAULT_BUTTON_PUSH_LABEL "yes"
 #define DEFAULT_BUTTON_RELEASE_LABEL "no"
 #define DEFAULT_BUTTON_WIDTH 25
 #define DEFAULT_BUTTON_HEIGHT 14
-#define DEFAULT__BUTTON_RADIUS 3
+#define DEFAULT_BUTTON_RADIUS 3
+#define DEFAULT_BUTTON_RELEASE_TIME 300
 
 #define BUTTON_SELECTOR_LINE_SIZE 2
-#define BUTTON_SELECTOR_RADIUS (Default_Button_FrameRadius + BUTTON_SELECTOR_LINE_SIZE)
+#define BUTTON_SELECTOR_RADIUS (DEFAULT_BUTTON_RADIUS + BUTTON_SELECTOR_LINE_SIZE)
 
 typedef enum
 {
@@ -123,6 +124,8 @@ typedef struct
 
     char *PushDown_Label;
     char *Release_Label;
+
+    SYSTEM_RunTime trigger_time;
 
     uint8_t width;
     uint8_t height;

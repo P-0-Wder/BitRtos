@@ -1,4 +1,5 @@
 #include "UI_Controller.h"
+#include "runtime.h"
 #include <stdlib.h>
 
 /* internal object */
@@ -80,13 +81,13 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     {
     case UI_Type_Button:
         /* comput button selector coordinate first */
-        Btn_Slct_LftUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + Default_Button_FrameRadius;
-        Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_TypeDef *)(item->Handler))->height - Default_Button_FrameRadius;
+        Btn_Slct_LftUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + DEFAULT_BUTTON_RADIUS;
+        Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_TypeDef *)(item->Handler))->height - DEFAULT_BUTTON_RADIUS;
 
         Btn_Slct_LftDwn_X = Btn_Slct_LftUp_X;
-        Btn_Slct_LftDwn_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + Default_Button_FrameRadius;
+        Btn_Slct_LftDwn_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + DEFAULT_BUTTON_RADIUS;
 
-        Btn_Slct_RgtUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + ((UI_ButtonObj_TypeDef *)(item->Handler))->width - Default_Button_FrameRadius;
+        Btn_Slct_RgtUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + ((UI_ButtonObj_TypeDef *)(item->Handler))->width - DEFAULT_BUTTON_RADIUS;
         Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
 
         Btn_Slct_RgtDwn_X = Btn_Slct_RgtUp_X;
@@ -147,6 +148,7 @@ static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int
     Obj->default_state = state;
     Obj->state = state;
     Obj->type = type;
+    Obj->trigger_time = 0;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
@@ -197,6 +199,8 @@ static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj)
 {
     if (Obj == NULL)
         return false;
+
+    Obj->trigger_time = Get_CurrentRunningMs();
 
     if (Obj->type == Lock_Btn)
     {
@@ -250,6 +254,8 @@ static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y)
 
 static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 {
+    SYSTEM_RunTime Cur_Rt = Get_CurrentRunningMs();
+
     if (Obj == NULL)
         return false;
 
@@ -268,6 +274,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         else
             return false;
     }
+    else
+    {
+        if ((Obj->state == UI_Btn_PushDwn) && (Cur_Rt - Obj->trigger_time >= DEFAULT_BUTTON_RELEASE_TIME))
+            UI_Button_Release(Obj);
+    }
 
     /* display button on screen object */
     /* invert display color when button been push down */
@@ -276,7 +287,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         if (Obj->state == UI_Btn_PushDwn)
         {
             /* fill button frame */
-            UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x + 1, Obj->Gen_Data.y + 1, Obj->width - 1, Obj->height - 1, Default_Button_FrameRadius, true);
+            UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x + 1, Obj->Gen_Data.y + 1, Obj->width - 1, Obj->height - 1, DEFAULT_BUTTON_RADIUS, true);
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
@@ -285,7 +296,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         else
         {
             /* draw button frame */
-            UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, Default_Button_FrameRadius, 1, true);
+            UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, 1, true);
 
             /* display label normally */
             if (Obj->Release_Label != NULL)
