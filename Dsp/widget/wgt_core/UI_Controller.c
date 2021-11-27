@@ -276,8 +276,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     }
     else
     {
-        if ((Obj->state == UI_Btn_PushDwn) && (Cur_Rt - Obj->trigger_time >= DEFAULT_BUTTON_RELEASE_TIME))
+        if ((Obj->state == UI_Btn_PushDwn) && ((Cur_Rt - Obj->trigger_time) >= DEFAULT_BUTTON_RELEASE_TIME))
+        {
+            Obj->trigger_time = Get_CurrentRunningMs();
             UI_Button_Release(Obj);
+        }
     }
 
     /* display button on screen object */
