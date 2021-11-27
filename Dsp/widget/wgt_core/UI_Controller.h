@@ -24,15 +24,15 @@
 #define DEFAULT_BUTTON_RADIUS 3
 #define DEFAULT_BUTTON_STATE UI_Btn_RlsUp
 
-#define BUTTON_SELECTOR_LINE_SIZE 2
-#define BUTTON_SELECTOR_RADIUS (DEFAULT_BUTTON_RADIUS + BUTTON_SELECTOR_LINE_SIZE)
+#define BUTTON_SELECTOR_LINE_SIZE 1
+#define BUTTON_SELECTOR_RADIUS 2
 
 typedef enum
 {
-    UICircle_Left_Up = 0,
-    UICircle_Left_Down,
-    UICircle_Right_Up,
-    UICircle_Right_Down,
+    UICircle_Left_Up = 0x02,
+    UICircle_Left_Down = 0x04,
+    UICircle_Right_Up = 0x01,
+    UICircle_Right_Down = 0x08,
 } UICircle_Section_List;
 
 typedef uint32_t UI_GenCTL_Handle;

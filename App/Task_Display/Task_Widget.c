@@ -14,7 +14,8 @@ static Widget_Handle test4;
 /* external function definition */
 Task_Handler TaskWidget_Hdl = 0;
 
-static UI_Button_Handle test_btn = 0;
+static UI_Button_Handle test_btn_1 = 0;
+static UI_Button_Handle test_btn_2 = 0;
 
 /* internal function definition */
 
@@ -24,10 +25,11 @@ static void TaskWidget_Init(void)
 
     test1 = Widget_Mng.Create(20, 2, 25, 20, "test1", true);
     //test2 = Widget_Mng.Create(50, 5, 50, 20, "test2", true);
-    test3 = Widget_Mng.Create(15, 15, 70, 40, "test3", true);
+    test3 = Widget_Mng.Create(10, 15, 70, 40, "test3", true);
     test4 = Widget_Mng.Create(0, 0, 128, 64, "test4", true);
 
-    test_btn = Widget_Mng.Control(test4)->UI()->Button()->create("test", 93, 20, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Reset_Btn, DEFAULT_BUTTON_STATE);
+    test_btn_1 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_1", 90, 5, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Reset_Btn, DEFAULT_BUTTON_STATE);
+    test_btn_2 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_2", 90, 10 + DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Lock_Btn, DEFAULT_BUTTON_STATE);
 }
 
 static void TestWidget_Dynamic_Dsp(void)
@@ -44,7 +46,8 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (rad >= 32)
         {
-            Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn, UI_Btn_PushDwn);
+            Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_PushDwn);
+            Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_PushDwn);
             change = true;
         }
     }
@@ -54,7 +57,8 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (rad <= 2)
         {
-            Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn, UI_Btn_RlsUp);
+            Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_RlsUp);
+            Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_RlsUp);
             change = false;
         }
     }
@@ -82,9 +86,13 @@ static void TestWidget_Dynamic_Dsp(void)
         }
     }
 
+    static uint8_t selector = 1;
+
     Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
-    Widget_Mng.Control(test4)->UI()->Button()->Fresh(test_btn);
+    Widget_Mng.Control(test4)->UI()->Show_Selector(selector);
+    Widget_Mng.Control(test4)->UI()->Button()->Fresh(test_btn_1);
+    Widget_Mng.Control(test4)->UI()->Button()->Fresh(test_btn_2);
     Widget_Mng.Control(test4)->Show();
 
     Widget_Mng.Control(test3)->Clear();

@@ -94,10 +94,10 @@ typedef enum
 
 typedef enum
 {
-    Circle_Left_Up = 0,
-    Circle_Left_Down,
-    Circle_Right_Up,
-    Circle_Right_Down,
+    Circle_Left_Up = 0x02,
+    Circle_Left_Down = 0x04,
+    Circle_Right_Up = 0x01,
+    Circle_Right_Down = 0x08,
 } WidgetCircle_Section_List;
 
 #pragma pack(1)
@@ -133,7 +133,7 @@ typedef struct
 
 typedef struct
 {
-    bool (*Selector_Ctl)(int8_t *search_offset);
+    bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
 
     /* ui control section */

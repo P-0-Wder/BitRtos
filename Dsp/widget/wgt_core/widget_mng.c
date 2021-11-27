@@ -99,6 +99,7 @@ static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 /* general UI Mathod */
 static void WidgetUI_Init(void);
 static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void);
+static bool WidgetUI_SelectCtl(int8_t *search_offset);
 
 /* Widget UI Button Mathod */
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
@@ -120,6 +121,7 @@ WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
 
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
+    .Show_Selector = WidgetUI_SelectCtl,
     .Button = WidgetUI_GetButton_Instance,
     // .UI_CheckBox = NULL,
     // .UI_ComboBox = NULL,
@@ -259,7 +261,7 @@ static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width
     widget_tmp->show_state = false;
 
     //clear ui controller first
-    widget_tmp->UICtl_List = NULL;
+    widget_tmp->UICtl_List == NULL;
     widget_tmp->ui_ctl_num = 0;
     widget_tmp->UI_CoordY_Offset = 0;
     widget_tmp->CurSelected_CTL = NULL;
@@ -309,21 +311,6 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     MMU_Free(*hdl);
 
     *hdl = 0;
-    return true;
-}
-
-static bool Widget_Init_UIList(item_obj *first)
-{
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-
-    if (tmp->UICtl_List == NULL)
-        tmp->UICtl_List = (list_obj *)MMU_Malloc(sizeof(list_obj));
-
-    if ((tmp->UICtl_List == NULL) || (first == NULL))
-        return false;
-
-    List_Init(tmp->UICtl_List, first, by_condition, WidgetUI_InsertSequence_Callback);
-
     return true;
 }
 
@@ -1005,16 +992,13 @@ static void WidgetUI_GetCur_SelectedCtl()
 
 static bool WidgetUI_SelectCtl(int8_t *search_offset)
 {
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
-    item_obj *UIItem_tmp = tmp->CurSelected_CTL;
+    volatile WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+    volatile item_obj *UIItem_tmp = tmp->CurSelected_CTL;
 
     if ((UIItem_tmp == NULL) ||
         (*search_offset > tmp->ui_ctl_num) ||
-        (tmp->CurSelected_CTL == UIItem_tmp))
+        (tmp->CurSelected_CTL == NULL))
         return false;
-
-    if (tmp->CurSelected_CTL == NULL)
-        tmp->CurSelected_CTL = tmp->UICtl_List;
 
     if (*search_offset > 0)
     {
@@ -1124,6 +1108,7 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, u
     UI_ButtonObj_TypeDef *btn = NULL;
     WidgetUI_Item_TypeDef *UI_ItemData_tmp = NULL;
     item_obj *UI_Item = NULL;
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
     UI_ItemData_tmp = (WidgetUI_Item_TypeDef *)MMU_Malloc(sizeof(WidgetUI_Item_TypeDef));
@@ -1135,23 +1120,25 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, u
         (!UI_Button.init(btn, label, x, y, width, height, type, state)))
         return NULL;
 
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+    UI_ItemData_tmp->Handler = (UI_Button_Handle)btn;
+    UI_ItemData_tmp->type = UI_Type_Button;
 
     List_ItemInit(UI_Item, UI_ItemData_tmp);
 
-    if (tmp->UICtl_List == NULL)
+    if (tmp->UICtl_List != NULL)
     {
-        /* init ui ctl list first */
-        if (!Widget_Init_UIList(UI_Item))
-            return NULL;
+        List_Insert_Item(tmp->UICtl_List, UI_Item);
     }
     else
-        List_Insert_Item(tmp->UICtl_List, UI_Item);
+    {
+        tmp->UICtl_List = UI_Item;
+        tmp->CurSelected_CTL = UI_Item;
+
+        List_Init(tmp->UICtl_List, NULL, by_condition, WidgetUI_InsertSequence_Callback);
+    }
 
     /* insert list item */
     tmp->ui_ctl_num++;
-    UI_ItemData_tmp->Handler = (UI_Button_Handle)btn;
-    UI_ItemData_tmp->type = UI_Type_Button;
 
     return (UI_Button_Handle)btn;
 }
