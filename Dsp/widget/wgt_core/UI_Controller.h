@@ -22,7 +22,7 @@
 #define DEFAULT_BUTTON_WIDTH 25
 #define DEFAULT_BUTTON_HEIGHT 14
 #define DEFAULT_BUTTON_RADIUS 3
-#define DEFAULT_BUTTON_RELEASE_TIME 300
+#define DEFAULT_BUTTON_RELEASE_TIME 200
 
 #define BUTTON_SELECTOR_LINE_SIZE 2
 #define BUTTON_SELECTOR_RADIUS (DEFAULT_BUTTON_RADIUS + BUTTON_SELECTOR_LINE_SIZE)
@@ -103,8 +103,8 @@ typedef enum
 
 typedef enum
 {
-    Push_Trigger = 0,
-    Release_Trigger,
+    Release_Trigger = 0,
+    Push_Trigger,
 } UI_Button_Trigger_Type;
 
 typedef enum

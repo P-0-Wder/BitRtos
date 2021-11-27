@@ -1195,7 +1195,7 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
 /* button operate */
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type)
 {
-    if ((Btn_Hdl == 0) || (type > Release_Trigger))
+    if ((Btn_Hdl == 0) || (type > Push_Trigger))
         return false;
 
     if (type == Push_Trigger)
