@@ -1002,9 +1002,9 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
 
     if (*search_offset > 0)
     {
-        for (; *search_offset > 0; UIItem_tmp = UIItem_tmp->nxt, *search_offset--)
+        for (; *search_offset > 0; UIItem_tmp = UIItem_tmp->nxt, (*search_offset)--)
         {
-            if (UIItem_tmp == NULL)
+            if (UIItem_tmp->nxt == NULL)
             {
                 return false;
             }
@@ -1012,9 +1012,9 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     }
     else if (*search_offset < 0)
     {
-        for (; *search_offset < 0; UIItem_tmp = UIItem_tmp->prv, *search_offset++)
+        for (; *search_offset < 0; UIItem_tmp = UIItem_tmp->prv, (*search_offset)++)
         {
-            if (UIItem_tmp == NULL)
+            if (UIItem_tmp->prv == NULL)
             {
                 return false;
             }

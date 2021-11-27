@@ -39,6 +39,7 @@ static void TestWidget_Dynamic_Dsp(void)
 
     static int8_t dis = 0;
     static bool move = false;
+    static int8_t selector = 1;
 
     if (!change)
     {
@@ -46,6 +47,8 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (rad >= 32)
         {
+            selector = 1;
+
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_PushDwn);
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_PushDwn);
             change = true;
@@ -57,6 +60,8 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (rad <= 2)
         {
+            selector = -1;
+
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_RlsUp);
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_RlsUp);
             change = false;
@@ -86,11 +91,10 @@ static void TestWidget_Dynamic_Dsp(void)
         }
     }
 
-    static uint8_t selector = 1;
-
     Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
-    Widget_Mng.Control(test4)->UI()->Show_Selector(selector);
+
+    Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);
     Widget_Mng.Control(test4)->UI()->Button()->Fresh(test_btn_1);
     Widget_Mng.Control(test4)->UI()->Button()->Fresh(test_btn_2);
     Widget_Mng.Control(test4)->Show();
