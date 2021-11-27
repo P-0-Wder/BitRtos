@@ -1010,7 +1010,7 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
 
     if ((UIItem_tmp == NULL) ||
         (*search_offset > tmp->ui_ctl_num) ||
-        ((*search_offset < 0) && (tmp->CurSelected_CTL == UIItem_tmp)))
+        (tmp->CurSelected_CTL == UIItem_tmp))
         return false;
 
     if (tmp->CurSelected_CTL == NULL)

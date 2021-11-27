@@ -148,7 +148,6 @@ static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int
     Obj->default_state = state;
     Obj->state = state;
     Obj->type = type;
-    Obj->trigger_time = 0;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
@@ -199,8 +198,6 @@ static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj)
 {
     if (Obj == NULL)
         return false;
-
-    Obj->trigger_time = Get_CurrentRunningMs();
 
     if (Obj->type == Lock_Btn)
     {
@@ -274,14 +271,6 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         else
             return false;
     }
-    else
-    {
-        if ((Obj->state == UI_Btn_PushDwn) && (Cur_Rt > (Obj->trigger_time + DEFAULT_BUTTON_RELEASE_TIME)))
-        {
-            Obj->trigger_time = Cur_Rt;
-            UI_Button_Release(Obj);
-        }
-    }
 
     /* display button on screen object */
     /* invert display color when button been push down */
@@ -294,16 +283,24 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
+                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
         }
         else
         {
             /* draw button frame */
             UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, 1, true);
 
-            /* display label normally */
-            if (Obj->Release_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 6, Obj->Gen_Data.y, true);
+            if (Obj->type == Lock_Btn)
+            {
+                /* display label normally */
+                if (Obj->Release_Label != NULL)
+                    UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 9, Obj->Gen_Data.y, true);
+            }
+            else
+            {
+                if (Obj->PushDown_Label != NULL)
+                    UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
+            }
         }
     }
     else

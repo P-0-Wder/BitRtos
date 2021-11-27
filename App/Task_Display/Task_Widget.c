@@ -27,7 +27,7 @@ static void TaskWidget_Init(void)
     test3 = Widget_Mng.Create(15, 15, 70, 40, "test3", true);
     test4 = Widget_Mng.Create(0, 0, 128, 64, "test4", true);
 
-    test_btn = Widget_Mng.Control(test4)->UI()->Button()->create("test", 95, 20, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Reset_Btn, UI_Btn_RlsUp);
+    test_btn = Widget_Mng.Control(test4)->UI()->Button()->create("test", 93, 20, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Reset_Btn, DEFAULT_BUTTON_STATE);
 }
 
 static void TestWidget_Dynamic_Dsp(void)
@@ -54,7 +54,7 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (rad <= 2)
         {
-            //Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn, UI_Btn_RlsUp);
+            Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn, UI_Btn_RlsUp);
             change = false;
         }
     }
@@ -88,7 +88,7 @@ static void TestWidget_Dynamic_Dsp(void)
     Widget_Mng.Control(test4)->Show();
 
     Widget_Mng.Control(test3)->Clear();
-    Widget_Mng.Control(test3)->Move(15 + dis, 15);
+    Widget_Mng.Control(test3)->Move(15 /* + dis*/, 15);
     Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad, true);
     Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad - 2, false);
 

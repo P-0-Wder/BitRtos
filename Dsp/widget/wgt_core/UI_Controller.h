@@ -19,10 +19,10 @@
 #define DEFAULT_FONT font_12
 #define DEFAULT_BUTTON_PUSH_LABEL "yes"
 #define DEFAULT_BUTTON_RELEASE_LABEL "no"
-#define DEFAULT_BUTTON_WIDTH 25
-#define DEFAULT_BUTTON_HEIGHT 14
+#define DEFAULT_BUTTON_WIDTH 30
+#define DEFAULT_BUTTON_HEIGHT 16
 #define DEFAULT_BUTTON_RADIUS 3
-#define DEFAULT_BUTTON_RELEASE_TIME 200
+#define DEFAULT_BUTTON_STATE UI_Btn_RlsUp
 
 #define BUTTON_SELECTOR_LINE_SIZE 2
 #define BUTTON_SELECTOR_RADIUS (DEFAULT_BUTTON_RADIUS + BUTTON_SELECTOR_LINE_SIZE)
@@ -124,8 +124,6 @@ typedef struct
 
     char *PushDown_Label;
     char *Release_Label;
-
-    SYSTEM_RunTime trigger_time;
 
     uint8_t width;
     uint8_t height;
