@@ -24,6 +24,9 @@
 #define DEFAULT_BUTTON_RADIUS 3
 #define DEFAULT_BUTTON_STATE UI_Btn_RlsUp
 
+#define DEFAULT_CHECKBOX_FRAME_SIZE 6
+#define DEFAULT_CHECKBOX_STATE false
+
 #define BUTTON_SELECTOR_LINE_SIZE 1
 #define BUTTON_SELECTOR_RADIUS 2
 
@@ -51,7 +54,8 @@ typedef void (*UI_FillCircle)(int8_t x, int8_t y, uint8_t radius, bool col_inv);
 typedef void (*UI_FillCircle_Section)(int8_t x, int8_t y, uint8_t radius, uint8_t section, bool col_inv);
 typedef void (*UI_FillRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
 
-typedef int (*UI_Trigger_Callback)(void);
+typedef int (*UI_ButtonTrigger_Callback)(void);
+typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 
 typedef enum
 {
@@ -119,8 +123,8 @@ typedef struct
     UI_Button_State_List default_state;
     UI_Button_State_List state;
     UI_Button_Type type;
-    UI_Trigger_Callback push_callback;
-    UI_Trigger_Callback release_callback;
+    UI_ButtonTrigger_Callback push_callback;
+    UI_ButtonTrigger_Callback release_callback;
 
     char *PushDown_Label;
     char *Release_Label;
@@ -131,8 +135,17 @@ typedef struct
 
 typedef struct
 {
+    UI_GeneralData_TypeDef Gen_Data;
+    UI_CheckBoxTrigger_Callback callback;
+    bool checked;
+
+    UI_DrawRectangle DrawRectangle;
+} UI_CheckBoxObj_TypeDef;
+
+typedef struct
+{
     bool (*init)(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
-    bool (*set_trogger_callback)(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback);
+    bool (*set_trogger_callback)(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback);
     bool (*set_label)(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *Rls_Lbl);
     bool (*push)(UI_ButtonObj_TypeDef *obj);
     bool (*release)(UI_ButtonObj_TypeDef *obj);
@@ -192,15 +205,6 @@ typedef struct
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
-    uint8_t frame_size;
-    bool checked;
-
-    UI_DrawRectangle DrawRectangle;
-} UI_CheckBoxObj_TypeDef;
-
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
     uint8_t item_id;
     void *group_ptr;
     bool checked;
@@ -221,7 +225,7 @@ typedef struct
     char *name;
     bool selected;
     bool active;
-    UI_Trigger_Callback callback;
+    UI_ButtonTrigger_Callback callback;
 } UI_DropItemObj_TypeDef;
 
 typedef struct

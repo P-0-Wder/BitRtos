@@ -8,7 +8,7 @@ static UI_DrawInterface_TypeDef UI_DspInterface;
 /* external function */
 static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label);
-static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback);
+static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback);
 static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj);
 static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj);
 static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y);
@@ -168,7 +168,7 @@ static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List 
     return true;
 }
 
-static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_Trigger_Callback callback)
+static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback)
 {
     if (Obj == NULL)
         return false;
@@ -398,7 +398,6 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, uint8_t x
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     Obj->checked = false;
-    Obj->frame_size = frame_size;
 
     return true;
 }

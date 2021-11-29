@@ -104,7 +104,7 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset);
 /* Widget UI Button Mathod */
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
-static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
+static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback);
 static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
 static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
@@ -1153,7 +1153,7 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
     return true;
 }
 
-static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback)
+static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback)
 {
     if (Btn_Hdl == 0)
         return false;

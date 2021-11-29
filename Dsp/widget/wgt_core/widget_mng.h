@@ -125,7 +125,7 @@ typedef struct
 {
     UI_Button_Handle (*create)(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
     bool (*Set_OprLabel)(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
-    bool (*Set_TriggerCallback)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_Trigger_Callback Callback);
+    bool (*Set_TriggerCallback)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback);
     bool (*Move)(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
     bool (*Fresh)(UI_Button_Handle Btn_Hdl);
     bool (*Operate)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
