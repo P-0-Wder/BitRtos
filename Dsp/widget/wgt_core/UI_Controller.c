@@ -311,6 +311,7 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, uint8_t x
 
     Obj->checked = state;
     Obj->callback = NULL;
+    Obj->UI_selected = false;
 
     return true;
 }
@@ -332,6 +333,24 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
         return false;
 
     Obj->checked = state;
+
+    return true;
+}
+
+static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    return UI_Move(&(Obj->Gen_Data), x, y);
+}
+
+static bool UI_CheckBox_Selected(UI_CheckBoxObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->UI_selected = true;
 
     return true;
 }

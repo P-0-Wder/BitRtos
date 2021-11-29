@@ -139,6 +139,7 @@ typedef struct
     UI_GeneralData_TypeDef Gen_Data;
     UI_CheckBoxTrigger_Callback callback;
     bool checked;
+    bool UI_selected;
 } UI_CheckBoxObj_TypeDef;
 
 typedef struct
