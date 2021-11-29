@@ -355,6 +355,16 @@ static bool UI_CheckBox_Selected(UI_CheckBoxObj_TypeDef *Obj)
     return true;
 }
 
+static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->checked = !Obj->checked;
+
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
