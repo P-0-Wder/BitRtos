@@ -302,6 +302,40 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     return true;
 }
 
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
+{
+    if ((Obj == NULL) || (frame_size <= 4))
+        return false;
+
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+
+    Obj->checked = state;
+    Obj->callback = NULL;
+
+    return true;
+}
+
+static bool UI_CheckBox_SetCallback(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrigger_Callback callback)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->callback = callback;
+
+    return true;
+}
+
+static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
+{
+    if ((UI_DspInterface.fill_rectangle == NULL) ||
+        (UI_DspInterface.draw_rectangle == NULL))
+        return false;
+
+    Obj->checked = state;
+
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
@@ -390,18 +424,6 @@ static UI_ComboBox_Group_TypeDef *UI_ComboGroup_Create(char *label)
     return ComboGroup_Tmp;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t frame_size, bool state)
-{
-    if ((Obj == NULL) || (frame_size <= 4))
-        return false;
-
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
-
-    Obj->checked = false;
-
-    return true;
-}
-
 static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
 {
     if ((Obj == NULL) || (group == NULL) || (group->item_num >= MAX_COMBOBOX_ITEM))
@@ -471,16 +493,6 @@ static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
 {
     if (Obj->DrawPoint == NULL)
         return false;
-
-    return true;
-}
-
-static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
-{
-    if (Obj->DrawRectangle == NULL)
-        return false;
-
-    Obj->checked = state;
 
     return true;
 }

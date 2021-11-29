@@ -8,6 +8,10 @@
 #include "runtime.h"
 #include "linked_list.h"
 
+typedef uint32_t UI_GenCTL_Handle;
+typedef UI_GenCTL_Handle UI_Button_Handle;
+typedef UI_GenCTL_Handle UI_CheckBox_Handle;
+
 #define UI_DEFAULT_WIDTH 0
 #define UI_DEFAULT_HEIGHT 0
 
@@ -37,9 +41,6 @@ typedef enum
     UICircle_Right_Up = 0x01,
     UICircle_Right_Down = 0x08,
 } UICircle_Section_List;
-
-typedef uint32_t UI_GenCTL_Handle;
-typedef UI_GenCTL_Handle UI_Button_Handle;
 
 typedef void (*UI_DrawPoint)(int8_t x, int8_t y, bool state);
 typedef void (*UI_DrawLine)(int8_t x, int8_t y, uint8_t len, uint8_t line_width, bool col_inv);
@@ -138,8 +139,6 @@ typedef struct
     UI_GeneralData_TypeDef Gen_Data;
     UI_CheckBoxTrigger_Callback callback;
     bool checked;
-
-    UI_DrawRectangle DrawRectangle;
 } UI_CheckBoxObj_TypeDef;
 
 typedef struct
