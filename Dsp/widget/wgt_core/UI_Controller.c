@@ -351,6 +351,9 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
 
     Obj->checked = !Obj->checked;
 
+    if (Obj->callback)
+        Obj->callback(Obj->checked);
+
     return true;
 }
 
