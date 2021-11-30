@@ -113,7 +113,7 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
     GenData->x = x;
     GenData->y = y;
 
-    GenData->init = false;
+    GenData->operatable = false;
 }
 
 static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y)
@@ -149,8 +149,6 @@ static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int
 
     Obj->PushDown_Label = DEFAULT_BUTTON_PUSH_LABEL;
     Obj->Release_Label = DEFAULT_BUTTON_RELEASE_LABEL;
-
-    Obj->Gen_Data.init = true;
 
     return true;
 }
@@ -375,7 +373,6 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8
     Obj->percent = 0.0;
 
     Obj->Mv_Dir = ProcBar_MoveDir_Default;
-    Obj->Gen_Data.init = true;
 
     return true;
 }

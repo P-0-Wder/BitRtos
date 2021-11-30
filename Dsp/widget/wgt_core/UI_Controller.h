@@ -97,7 +97,7 @@ typedef struct
     int8_t x;
     int8_t y;
 
-    bool init;
+    bool operatable;
 } UI_GeneralData_TypeDef;
 
 typedef enum
