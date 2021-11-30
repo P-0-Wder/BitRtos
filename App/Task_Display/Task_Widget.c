@@ -95,8 +95,7 @@ static void TestWidget_Dynamic_Dsp(void)
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
 
     Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);
-    Widget_Mng.Control(test4)->UI()->Button()->Fresh(test_btn_1);
-    Widget_Mng.Control(test4)->UI()->Button()->Fresh(test_btn_2);
+    Widget_Mng.Control(test4)->UI()->Fresh();
     Widget_Mng.Control(test4)->Show();
 
     Widget_Mng.Control(test3)->Clear();

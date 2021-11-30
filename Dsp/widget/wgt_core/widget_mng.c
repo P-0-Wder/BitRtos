@@ -100,6 +100,7 @@ static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 static void WidgetUI_Init(void);
 static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void);
 static bool WidgetUI_SelectCtl(int8_t *search_offset);
+static void WidgetUI_Fresh(void);
 
 /* Widget UI Button Mathod */
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
@@ -115,13 +116,13 @@ WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .Set_OprLabel = WidgetUI_SetButton_OprLabel,
     .Set_TriggerCallback = WidgetUI_SetButton_TriggerCallback,
     .Move = WidgetUI_Move_Button,
-    .Fresh = WidgetUI_Fresh_Button,
     .Operate = WidgetUI_Button_Operate,
 };
 
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
+    .Fresh = WidgetUI_Fresh,
     .Button = WidgetUI_GetButton_Instance,
     // .UI_CheckBox = NULL,
     // .UI_ComboBox = NULL,
