@@ -95,8 +95,8 @@ typedef struct
 typedef struct
 {
     char *label;
-    int8_t x;
-    int8_t y;
+    int16_t x;
+    int16_t y;
 
     bool operatable;
 } UI_GeneralData_TypeDef;
@@ -161,6 +161,7 @@ typedef struct
     bool (*Set_Callback)(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrigger_Callback callback);
     bool (*Move)(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y);
     bool (*Trigger)(UI_CheckBoxObj_TypeDef *Obj);
+    bool (*ctl)(UI_CheckBoxObj_TypeDef *Obj);
 } UI_CheckBox_Interface_TypeDef;
 
 typedef enum

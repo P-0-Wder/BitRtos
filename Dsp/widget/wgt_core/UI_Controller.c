@@ -20,6 +20,7 @@ static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, int8_t x,
 static bool UI_CheckBox_SetCallback(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrigger_Callback callback);
 static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y);
 static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj);
+static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -39,6 +40,7 @@ UI_Button_Interface_TypeDef UI_Button = {
 };
 
 UI_CheckBox_Interface_TypeDef UI_CheckBox = {
+    .ctl = UI_CheckBox_Ctl,
     .init = UI_CheckBox_Init,
     .Set_Callback = UI_CheckBox_SetCallback,
     .Move = UI_CheckBox_Move,

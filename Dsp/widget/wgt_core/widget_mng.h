@@ -103,32 +103,39 @@ typedef enum
 #pragma pack(1)
 typedef struct
 {
-    void (*draw_point)(int8_t x, int8_t y, bool col_inv);
-    void (*draw_circle)(int8_t x, int8_t y, uint8_t radius, uint8_t line_size, bool col_inv);
-    void (*draw_circle_section)(int8_t x, int8_t y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_inv);
-    void (*draw_char)(GenFont_List font, char c, int8_t x, int8_t y, bool col_inv);
-    void (*draw_str)(GenFont_List font, char *str, int8_t x, int8_t y, bool col_inv);
-    void (*draw_num)(GenFont_List font, uint32_t num, int8_t x, int8_t y, bool col_inv);
-    void (*draw_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_inv);
-    void (*draw_radius_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_inv);
+    void (*draw_point)(int16_t x, int16_t y, bool col_inv);
+    void (*draw_circle)(int16_t x, int16_t y, uint8_t radius, uint8_t line_size, bool col_inv);
+    void (*draw_circle_section)(int16_t x, int16_t y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_inv);
+    void (*draw_char)(GenFont_List font, char c, int16_t x, int16_t y, bool col_inv);
+    void (*draw_str)(GenFont_List font, char *str, int16_t x, int16_t y, bool col_inv);
+    void (*draw_num)(GenFont_List font, uint32_t num, int16_t x, int16_t y, bool col_inv);
+    void (*draw_rectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_inv);
+    void (*draw_radius_rectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_inv);
     void (*draw_line)(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_width, bool col_inv);
-    void (*draw_vline)(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_inv);
-    void (*draw_hline)(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_inv);
+    void (*draw_vline)(int16_t x, int16_t y, uint8_t len, uint8_t line_size, bool col_inv);
+    void (*draw_hline)(int16_t x, int16_t y, uint8_t len, uint8_t line_size, bool col_inv);
 
-    void (*fill_circle)(int8_t x, int8_t y, uint8_t radius, bool col_inv);
-    void (*fill_circle_section)(int8_t x, int8_t y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_inv);
-    void (*fill_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_inv);
-    void (*fill_radius_rectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
+    void (*fill_circle)(int16_t x, int16_t y, uint8_t radius, bool col_inv);
+    void (*fill_circle_section)(int16_t x, int16_t y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_inv);
+    void (*fill_rectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, bool col_inv);
+    void (*fill_radius_rectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
 } Widget_DrawFunc_TypeDef;
 
 typedef struct
 {
-    UI_Button_Handle (*create)(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+    UI_Button_Handle (*create)(char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
     bool (*Set_OprLabel)(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
     bool (*Set_TriggerCallback)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback);
-    bool (*Move)(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
+    bool (*Move)(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y);
     bool (*Operate)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
 } WidgetUI_Button_Interface_TypeDef;
+
+typedef struct
+{
+    UI_CheckBox_Handle (*create)(char *label, int16_t x, int16_t y, bool state);
+    bool (*Move)(UI_CheckBox_Handle checkbox_hdl, int16_t x, int16_t y);
+    bool (*Trigger)(UI_CheckBox_Handle checkbox_hdl);
+} WidgetUI_CheckBox_Interface_TypeDef;
 
 typedef struct
 {
@@ -152,7 +159,7 @@ typedef struct
 {
     bool (*Show)(void);
     bool (*Hide)(void);
-    bool (*Move)(uint8_t x, uint8_t y);
+    bool (*Move)(uint16_t x, uint16_t y);
     bool (*Clear)(void);
     WidgetDsp_Status_List (*Dsp_status)(void);
     Widget_DrawFunc_TypeDef *(*Draw)(void);
@@ -166,8 +173,8 @@ typedef struct
     bool is_selected;
     bool show_state;
 
-    int8_t cord_x;
-    int8_t cord_y;
+    int16_t cord_x;
+    int16_t cord_y;
     uint8_t width;
     uint8_t height;
     uint8_t **pixel_map;

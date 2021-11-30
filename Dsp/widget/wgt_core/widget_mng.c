@@ -61,7 +61,7 @@ static bool Widget_ConfigDisplay_RoutateDir(Oled_Routate_Direction_Def dir);
 static bool Widget_ConfigDisplay_MirrorDir(Oled_Mirror_Direction_Def dir);
 
 /* external widget manager function definition */
-static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
+static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
@@ -71,27 +71,27 @@ static bool Widget_SetFreshFrq(uint8_t frq);
 static bool Widget_Show(void);
 static bool Widget_Hide(void);
 static bool Widget_Clear(void);
-static bool Widget_MoveTo(int8_t x, int8_t y);
+static bool Widget_MoveTo(int16_t x, int16_t y);
 static bool Widget_CheckFlashTrigger(void);
 static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
 static WidgetDsp_Status_List Widget_DspStatus(void);
 
 /* widget draw function interface */
-static void Widget_DrawPoint(int8_t x, int8_t y, bool set);
-static void Widget_DrawChr(Widget_Font font, char char_dsp, int8_t x, int8_t y, bool col_cnv);
-static void Widget_DrawStr(Widget_Font font, char *str_dsp, int8_t x, int8_t y, bool col_cnv);
+static void Widget_DrawPoint(int16_t x, int16_t y, bool set);
+static void Widget_DrawChr(Widget_Font font, char char_dsp, int16_t x, int16_t y, bool col_cnv);
+static void Widget_DrawStr(Widget_Font font, char *str_dsp, int16_t x, int16_t y, bool col_cnv);
 static void Widget_DrawLine(int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_size, bool col_cnv);
-static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv);
-static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv);
-static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t line_size, bool col_cnv);
-static void Widget_DrawCircle_Section(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_cnv);
-static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_cnv);
-static void Widget_DrawNum(Widget_Font font, int32_t num, int8_t x, int8_t y, bool col_cnv);
-static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_cnv);
-static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius, bool col_cnv);
-static void Widget_FillCircle_Section(int8_t x, int8_t y, uint8_t radius, uint8_t section, bool col_cnv);
-static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_cnv);
-static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv);
+static void Widget_DrawHLine(int16_t x, int16_t y, uint8_t len, uint8_t line_size, bool col_cnv);
+static void Widget_DrawVLine(int16_t x, int16_t y, uint8_t len, uint8_t line_size, bool col_cnv);
+static void Widget_DrawCircle(int16_t center_x, int16_t center_y, uint8_t radius, uint8_t line_size, bool col_cnv);
+static void Widget_DrawCircle_Section(int16_t center_x, int16_t center_y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_cnv);
+static void Widget_DrawRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_cnv);
+static void Widget_DrawNum(Widget_Font font, int32_t num, int16_t x, int16_t y, bool col_cnv);
+static void Widget_DrawRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_cnv);
+static void Widget_FillCircle(int16_t x, int16_t y, uint8_t radius, bool col_cnv);
+static void Widget_FillCircle_Section(int16_t x, int16_t y, uint8_t radius, uint8_t section, bool col_cnv);
+static void Widget_FillRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, bool col_cnv);
+static void Widget_FillRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv);
 
 /* Widget UI Get Button Interface */
 static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
@@ -103,10 +103,10 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset);
 static void WidgetUI_Fresh(void);
 
 /* Widget UI Button Mathod */
-static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
 static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback);
-static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y);
+static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y);
 static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
 
@@ -175,7 +175,7 @@ Widget_GenProcFunc_TypeDef Widget_Mng = {
     .trigger_fresh = Widget_CheckFlashTrigger,
 };
 
-static Widget_Handle Widget_Create(uint8_t cord_x, uint8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame)
+static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -467,7 +467,7 @@ static WidgetDsp_Status_List Widget_DspStatus(void)
     return Widget_Hiding;
 }
 
-static bool Widget_MoveTo(int8_t x, int8_t y)
+static bool Widget_MoveTo(int16_t x, int16_t y)
 {
     if (GetCur_Active_Widget() == NULL)
         return false;
@@ -712,7 +712,7 @@ static bool Widget_FreshAll(void)
 }
 
 /************************************** widget draw interface ******************************************/
-static void Widget_DrawPoint(int8_t x, int8_t y, bool set)
+static void Widget_DrawPoint(int16_t x, int16_t y, bool set)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -727,7 +727,7 @@ static void Widget_DrawPoint(int8_t x, int8_t y, bool set)
                                 set);
 }
 
-static void Widget_DrawNum(Widget_Font font, int32_t num, int8_t x, int8_t y, bool col_cnv)
+static void Widget_DrawNum(Widget_Font font, int32_t num, int16_t x, int16_t y, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -744,7 +744,7 @@ static void Widget_DrawNum(Widget_Font font, int32_t num, int8_t x, int8_t y, bo
                               col_cnv);
 }
 
-static void Widget_DrawChr(Widget_Font font, char char_dsp, int8_t x, int8_t y, bool col_cnv)
+static void Widget_DrawChr(Widget_Font font, char char_dsp, int16_t x, int16_t y, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -761,7 +761,7 @@ static void Widget_DrawChr(Widget_Font font, char char_dsp, int8_t x, int8_t y, 
                                col_cnv);
 }
 
-static void Widget_DrawStr(Widget_Font font, char *str_dsp, int8_t x, int8_t y, bool col_cnv)
+static void Widget_DrawStr(Widget_Font font, char *str_dsp, int16_t x, int16_t y, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -796,7 +796,7 @@ static void Widget_DrawLine(int8_t start_x, int8_t start_y, int8_t end_x, int8_t
                                col_cnv);
 }
 
-static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv)
+static void Widget_DrawVLine(int16_t x, int16_t y, uint8_t len, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -808,7 +808,7 @@ static void Widget_DrawVLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size,
     GenDsp_Interface.draw_vertical_line(tmp->pixel_map, x, y, len, line_size, col_cnv);
 }
 
-static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size, bool col_cnv)
+static void Widget_DrawHLine(int16_t x, int16_t y, uint8_t len, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -820,7 +820,7 @@ static void Widget_DrawHLine(int8_t x, int8_t y, uint8_t len, uint8_t line_size,
     GenDsp_Interface.draw_horizon_line(tmp->pixel_map, x, y, len, line_size, col_cnv);
 }
 
-static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t line_size, bool col_cnv)
+static void Widget_DrawCircle(int16_t center_x, int16_t center_y, uint8_t radius, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -837,7 +837,7 @@ static void Widget_DrawCircle(int8_t center_x, int8_t center_y, uint8_t radius, 
                                  col_cnv);
 }
 
-static void Widget_DrawCircle_Section(int8_t center_x, int8_t center_y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_cnv)
+static void Widget_DrawCircle_Section(int16_t center_x, int16_t center_y, uint8_t radius, uint8_t section, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -854,7 +854,7 @@ static void Widget_DrawCircle_Section(int8_t center_x, int8_t center_y, uint8_t 
                                  col_cnv);
 }
 
-static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_cnv)
+static void Widget_DrawRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -873,7 +873,7 @@ static void Widget_DrawRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_
                                            col_cnv);
 }
 
-static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_cnv)
+static void Widget_DrawRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -891,7 +891,7 @@ static void Widget_DrawRectangle(int8_t x, int8_t y, uint8_t width, uint8_t heig
                                     col_cnv);
 }
 
-static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv)
+static void Widget_FillRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -909,7 +909,7 @@ static void Widget_FillRadiusRectangle(int8_t x, int8_t y, uint8_t width, uint8_
                                            col_cnv);
 }
 
-static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius, bool col_cnv)
+static void Widget_FillCircle(int16_t x, int16_t y, uint8_t radius, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -926,7 +926,7 @@ static void Widget_FillCircle(int8_t x, int8_t y, uint8_t radius, bool col_cnv)
                                  col_cnv);
 }
 
-static void Widget_FillCircle_Section(int8_t x, int8_t y, uint8_t radius, uint8_t section, bool col_cnv)
+static void Widget_FillCircle_Section(int16_t x, int16_t y, uint8_t radius, uint8_t section, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -943,7 +943,7 @@ static void Widget_FillCircle_Section(int8_t x, int8_t y, uint8_t radius, uint8_
                                  col_cnv);
 }
 
-static void Widget_FillRectangle(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_cnv)
+static void Widget_FillRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, bool col_cnv)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
@@ -1172,7 +1172,7 @@ static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void)
     return &WidgetUI_Button;
 }
 
-static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
+static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     UI_ButtonObj_TypeDef *btn = NULL;
 
@@ -1204,7 +1204,7 @@ static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Butt
     return UI_Button.set_trogger_callback((UI_ButtonObj_TypeDef *)Btn_Hdl, type, Callback);
 }
 
-static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int8_t x, int8_t y)
+static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y)
 {
     if (Btn_Hdl == 0)
         return false;
@@ -1244,7 +1244,7 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
 /************************************** widget Button interface ******************************************/
 
 /************************************** widget CheckBox interface ******************************************/
-static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int8_t x, int8_t y, bool state)
+static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16_t y, bool state)
 {
     UI_CheckBoxObj_TypeDef *checkbox = NULL;
 
@@ -1274,6 +1274,21 @@ static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int x, int y
         return false;
 
     return UI_CheckBox.Move((UI_CheckBoxObj_TypeDef *)checkbox_hdl, x, y);
+}
+
+static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
+{
+    if (checkbox_hdl == 0)
+        return false;
+
+    ((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+    if ((((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+        ((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y < 0)
+        return false;
+
+    UI_CheckBox.ctl((UI_CheckBoxObj_TypeDef *)checkbox_hdl);
+
+    return true;
 }
 
 /************************************** widget CheckBox interface ******************************************/
