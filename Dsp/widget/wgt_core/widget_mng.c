@@ -1129,6 +1129,8 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
         return item_prv;
 }
 
+/************************************** widget Button interface ******************************************/
+
 static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void)
 {
     return &WidgetUI_Button;
@@ -1229,7 +1231,9 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
         UI_Button.release((UI_ButtonObj_TypeDef *)Btn_Hdl);
     }
 }
+/************************************** widget Button interface ******************************************/
 
+/************************************** widget CheckBox interface ******************************************/
 static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int8_t x, int8_t y, bool state)
 {
     UI_CheckBoxObj_TypeDef *checkbox = NULL;
@@ -1243,6 +1247,20 @@ static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int8_t x, int8_t
 
     if ((checkbox) || (UI_ItemData_tmp) || (UI_Item))
         return NULL;
+
+    UI_CheckBox.init(checkbox, label, x, y, state);
 }
+
+static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl)
+{
+    if (checkbox_hdl == 0)
+        return false;
+
+    UI_CheckBox.Trigger((UI_ButtonObj_TypeDef *)checkbox_hdl);
+
+    return true;
+}
+
+/************************************** widget CheckBox interface ******************************************/
 
 /************************************** widget UI interface ******************************************/
