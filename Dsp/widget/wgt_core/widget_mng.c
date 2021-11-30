@@ -1245,10 +1245,13 @@ static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int8_t x, int8_t
     UI_ItemData_tmp = (WidgetUI_Item_TypeDef *)MMU_Malloc(sizeof(WidgetUI_Item_TypeDef));
     UI_Item = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
-    if ((checkbox) || (UI_ItemData_tmp) || (UI_Item))
+    if ((checkbox) ||
+        (UI_ItemData_tmp) ||
+        (UI_Item) ||
+        (!UI_CheckBox.init(checkbox, label, x, y, state)))
         return NULL;
 
-    UI_CheckBox.init(checkbox, label, x, y, state);
+    return ((UI_CheckBox_Handle)checkbox);
 }
 
 static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl)
