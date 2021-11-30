@@ -71,7 +71,7 @@ static bool Widget_SetFreshFrq(uint8_t frq);
 static bool Widget_Show(void);
 static bool Widget_Hide(void);
 static bool Widget_Clear(void);
-static bool Widget_MoveTo(uint8_t x, uint8_t y);
+static bool Widget_MoveTo(int8_t x, int8_t y);
 static bool Widget_CheckFlashTrigger(void);
 static Widget_DrawFunc_TypeDef *Widget_DrawInterface(void);
 static WidgetDsp_Status_List Widget_DspStatus(void);
@@ -467,7 +467,7 @@ static WidgetDsp_Status_List Widget_DspStatus(void)
     return Widget_Hiding;
 }
 
-static bool Widget_MoveTo(uint8_t x, uint8_t y)
+static bool Widget_MoveTo(int8_t x, int8_t y)
 {
     if (GetCur_Active_Widget() == NULL)
         return false;
@@ -1266,6 +1266,14 @@ static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl)
     UI_CheckBox.Trigger((UI_ButtonObj_TypeDef *)checkbox_hdl);
 
     return true;
+}
+
+static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int x, int y)
+{
+    if (checkbox_hdl == 0)
+        return false;
+
+    return UI_CheckBox.Move((UI_CheckBoxObj_TypeDef *)checkbox_hdl, x, y);
 }
 
 /************************************** widget CheckBox interface ******************************************/

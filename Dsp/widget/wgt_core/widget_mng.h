@@ -132,11 +132,12 @@ typedef struct
 
 typedef struct
 {
+    /* general UI function mathod */
     bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
     void (*Fresh)(void);
 
-    /* ui control section */
+    /* ui control interface section */
     WidgetUI_Button_Interface_TypeDef *(*Button)(void);
     // void (*UI_CheckBox)();
     // void (*UI_ComboBox)();

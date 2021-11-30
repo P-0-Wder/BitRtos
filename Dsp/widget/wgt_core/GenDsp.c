@@ -16,21 +16,21 @@ GenDsp_DspArea_Limit_Range DspRange = {
 
 /* external draw funtion definition */
 static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str);
-static void GenDsp_DrawPoint(uint8_t **map, int8_t x, int8_t y, bool set);
-static void GenDsp_SetRange(int8_t x, int8_t y, uint8_t width, uint8_t height);
-static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int8_t x, int8_t y, bool col_inv);
-static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int8_t x, int8_t y, bool col_inv);
-static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int8_t x, int8_t y, bool col_inv);
-static void GenDsp_DrawCircle(uint8_t **map, int8_t center_x, int8_t center_y, uint8_t radius, uint8_t option, bool col_inv);
-static void GenDsp_DrawRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_inv);
+static void GenDsp_DrawPoint(uint8_t **map, int16_t x, int16_t y, bool set);
+static void GenDsp_SetRange(int16_t x, int16_t y, uint8_t width, uint8_t height);
+static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x, int16_t y, bool col_inv);
+static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int16_t x, int16_t y, bool col_inv);
+static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int16_t x, int16_t y, bool col_inv);
+static void GenDsp_DrawCircle(uint8_t **map, int16_t center_x, int16_t center_y, uint8_t radius, uint8_t option, bool col_inv);
+static void GenDsp_DrawRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_inv);
 static void GenDsp_DrawLen(uint8_t **map, int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_sidth, bool col_inv);
 static void GenDsp_DrawRad(uint8_t **map, int8_t center_x, int8_t center_y, uint8_t radius, uint8_t line_size, int8_t angle, bool col_inv);
-static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width, bool col_inv);
-static void GenDsp_FillCircle(uint8_t **map, int8_t x, int8_t y, uint8_t radius, uint8_t option, bool col_inv);
-static void GenDsp_FillRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_inv);
-static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
-static void GenDsp_Draw_HLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width, bool col_inv);
-static void GenDsp_Draw_VLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width, bool col_inv);
+static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width, bool col_inv);
+static void GenDsp_FillCircle(uint8_t **map, int16_t x, int16_t y, uint8_t radius, uint8_t option, bool col_inv);
+static void GenDsp_FillRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, bool col_inv);
+static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
+static void GenDsp_Draw_HLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv);
+static void GenDsp_Draw_VLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv);
 
 GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .draw_img = NULL,
@@ -51,7 +51,7 @@ GeneralDispalyProc_TypeDef GenDsp_Interface = {
     .fill_radius_rectangle = GenDsp_Fill_RadiusRectangle,
 };
 
-static void GenDsp_SetRange(int8_t x, int8_t y, uint8_t width, uint8_t height)
+static void GenDsp_SetRange(int16_t x, int16_t y, uint8_t width, uint8_t height)
 {
     DspRange.heigh = height;
     DspRange.width = width;
@@ -59,7 +59,7 @@ static void GenDsp_SetRange(int8_t x, int8_t y, uint8_t width, uint8_t height)
     DspRange.y = y;
 }
 
-static void GenDsp_DrawPoint(uint8_t **map, int8_t x, int8_t y, bool set)
+static void GenDsp_DrawPoint(uint8_t **map, int16_t x, int16_t y, bool set)
 {
     if ((x >= DspRange.width) || (y >= DspRange.heigh) || (x < 0) || (y < 0))
         return;
@@ -72,10 +72,10 @@ static void GenDsp_DrawPoint(uint8_t **map, int8_t x, int8_t y, bool set)
         map[y][x] = 0;
 }
 
-static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int8_t x, int8_t y, bool col_inv)
+static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x, int16_t y, bool col_inv)
 {
     uint8_t temp;
-    int8_t y0 = y;
+    int16_t y0 = y;
     c -= ' ';
 
     if (DspRange.width <= x)
@@ -114,7 +114,7 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int8_t x, 
     return true;
 }
 
-static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int8_t x, int8_t y, bool col_inv)
+static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int16_t x, int16_t y, bool col_inv)
 {
     while (*str != '\0')
     {
@@ -128,7 +128,7 @@ static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int8_t x
     }
 }
 
-static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int8_t x, int8_t y, bool col_inv)
+static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int16_t x, int16_t y, bool col_inv)
 {
     char num_buff[MAX_DSP_NUM_LEN];
 
@@ -151,8 +151,8 @@ static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str)
 
 static void GenDsp_DrawLen(uint8_t **map, int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_y, uint8_t line_sidth, bool col_inv)
 {
-    int8_t xerr = 0;
-    int8_t yerr = 0;
+    int16_t xerr = 0;
+    int16_t yerr = 0;
     int8_t delta_x = end_x - start_x;
     int8_t delta_y = end_y - start_y;
     int16_t distance;
@@ -218,17 +218,17 @@ static void GenDsp_DrawLen(uint8_t **map, int8_t start_x, int8_t start_y, int8_t
     }
 }
 
-static void GenDsp_Draw_VLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width, bool col_inv)
+static void GenDsp_Draw_VLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv)
 {
     GenDsp_DrawLen(map, x, y, x, y + len, line_width, col_inv);
 }
 
-static void GenDsp_Draw_HLine(uint8_t **map, int8_t x, int8_t y, uint8_t len, uint8_t line_width, bool col_inv)
+static void GenDsp_Draw_HLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv)
 {
     GenDsp_DrawLen(map, x, y, x + len, y, line_width, col_inv);
 }
 
-static void GenDsp_Draw_Circle_Section(uint8_t **map, int8_t x, int8_t y, int8_t x0, int8_t y0, uint8_t option, bool col_inv)
+static void GenDsp_Draw_Circle_Section(uint8_t **map, int16_t x, int16_t y, int16_t x0, int16_t y0, uint8_t option, bool col_inv)
 {
     /* upper right */
     if (option & DRAW_UPPER_RIGHT)
@@ -259,13 +259,13 @@ static void GenDsp_Draw_Circle_Section(uint8_t **map, int8_t x, int8_t y, int8_t
     }
 }
 
-static void GenDsp_Draw_Circle(uint8_t **map, int8_t x0, int8_t y0, uint8_t rad, uint8_t option, bool col_inv)
+static void GenDsp_Draw_Circle(uint8_t **map, int16_t x0, int16_t y0, uint8_t rad, uint8_t option, bool col_inv)
 {
     int8_t f;
     int8_t ddF_x;
     int8_t ddF_y;
-    int8_t x;
-    int8_t y;
+    int16_t x;
+    int16_t y;
 
     f = 1;
     f -= rad;
@@ -294,16 +294,16 @@ static void GenDsp_Draw_Circle(uint8_t **map, int8_t x0, int8_t y0, uint8_t rad,
     }
 }
 
-static void GenDsp_DrawCircle(uint8_t **map, int8_t x0, int8_t y0, uint8_t rad, uint8_t option, bool col_inv)
+static void GenDsp_DrawCircle(uint8_t **map, int16_t x0, int16_t y0, uint8_t rad, uint8_t option, bool col_inv)
 {
     /* draw circle */
     GenDsp_Draw_Circle(map, x0, y0, rad, option, col_inv);
 }
 
-static void GenDsp_DrawRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_inv)
+static void GenDsp_DrawRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t line_size, bool col_inv)
 {
-    int8_t x_tmp = x + width - 1;
-    int8_t y_tmp = y + height - 1;
+    int16_t x_tmp = x + width - 1;
+    int16_t y_tmp = y + height - 1;
 
     GenDsp_DrawLen(map, x, y, x_tmp, y, line_size, col_inv);
     GenDsp_DrawLen(map, x, y, x, y_tmp, line_size, col_inv);
@@ -313,16 +313,16 @@ static void GenDsp_DrawRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t widt
 }
 
 /* bug in this function */
-static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_inv)
+static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_size, bool col_inv)
 {
-    int8_t x_start = x + radius;
-    int8_t y_start = y + radius;
+    int16_t x_start = x + radius;
+    int16_t y_start = y + radius;
 
-    int8_t x_tmp = x + width - 1 - radius;
-    int8_t y_tmp = y + height - 1 - radius;
+    int16_t x_tmp = x + width - 1 - radius;
+    int16_t y_tmp = y + height - 1 - radius;
 
-    int8_t x_tmp_1 = x + width - 1;
-    int8_t y_tmp_1 = y + height - 1;
+    int16_t x_tmp_1 = x + width - 1;
+    int16_t y_tmp_1 = y + height - 1;
 
     /* fixed */
     GenDsp_Draw_Circle(map, x_start, y_tmp, radius, DRAW_LOWER_LEFT, col_inv);
@@ -338,7 +338,7 @@ static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8
     GenDsp_DrawLen(map, x_tmp_1, y_start, x_tmp_1, y_tmp, line_size, col_inv);
 }
 
-static void GenDsp_Fill_Circle_Section(uint8_t **map, int8_t x, int8_t y, int8_t x0, int8_t y0, uint8_t option, bool col_inv)
+static void GenDsp_Fill_Circle_Section(uint8_t **map, int16_t x, int16_t y, int16_t x0, int16_t y0, uint8_t option, bool col_inv)
 {
     /* upper right */
     if (option & DRAW_UPPER_RIGHT)
@@ -369,13 +369,13 @@ static void GenDsp_Fill_Circle_Section(uint8_t **map, int8_t x, int8_t y, int8_t
     }
 }
 
-static void GenDsp_FillCircle(uint8_t **map, int8_t x0, int8_t y0, uint8_t radius, uint8_t option, bool col_inv)
+static void GenDsp_FillCircle(uint8_t **map, int16_t x0, int16_t y0, uint8_t radius, uint8_t option, bool col_inv)
 {
     int8_t f;
     int8_t ddF_x;
     int8_t ddF_y;
-    int8_t x;
-    int8_t y;
+    int16_t x;
+    int16_t y;
 
     f = 1;
     f -= radius;
@@ -404,18 +404,18 @@ static void GenDsp_FillCircle(uint8_t **map, int8_t x0, int8_t y0, uint8_t radiu
     }
 }
 
-static void GenDsp_FillRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_inv)
+static void GenDsp_FillRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, bool col_inv)
 {
-    for (int8_t x_tmp = x; x_tmp < x + width; x_tmp++)
+    for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
     {
-        for (int8_t y_tmp = y; y_tmp < y + height; y_tmp++)
+        for (int16_t y_tmp = y; y_tmp < y + height; y_tmp++)
         {
             GenDsp_DrawPoint(map, x_tmp, y_tmp, col_inv);
         }
     }
 }
 
-static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv)
+static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv)
 {
     GenDsp_FillRectangle(map, x + radius, y, width - 2 * radius, height, col_inv);
     GenDsp_FillRectangle(map, x, y + radius, radius + 1, height - 2 * radius - 1, col_inv);
