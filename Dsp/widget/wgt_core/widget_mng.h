@@ -135,6 +135,7 @@ typedef struct
     UI_CheckBox_Handle (*create)(char *label, int16_t x, int16_t y, bool state);
     bool (*Move)(UI_CheckBox_Handle checkbox_hdl, int16_t x, int16_t y);
     bool (*Trigger)(UI_CheckBox_Handle checkbox_hdl);
+    bool (*Set_CallBack)(UI_CheckBox_Handle checkbox_hdl, UI_CheckBoxTrigger_Callback callback);
 } WidgetUI_CheckBox_Interface_TypeDef;
 
 typedef struct
@@ -146,7 +147,7 @@ typedef struct
 
     /* ui control interface section */
     WidgetUI_Button_Interface_TypeDef *(*Button)(void);
-    // void (*UI_CheckBox)();
+    WidgetUI_CheckBox_Interface_TypeDef *(*UI_CheckBox)(void);
     // void (*UI_ComboBox)();
     // void (*UI_DigInput)();
     // void (*UI_StrInput)();
