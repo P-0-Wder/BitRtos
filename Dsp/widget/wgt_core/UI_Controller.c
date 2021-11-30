@@ -362,6 +362,8 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
 
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 {
+    uint16_t StrDsp_Len = strlen(Obj->Gen_Data.label) * Default_Font;
+
     if ((Obj != NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
         (UI_DspInterface.fill_rectangle == NULL) ||
