@@ -145,14 +145,20 @@ typedef struct
 
 typedef struct
 {
-    bool (*init)(UI_ButtonObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+    bool (*init)(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
     bool (*set_trogger_callback)(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback);
     bool (*set_label)(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *Rls_Lbl);
     bool (*push)(UI_ButtonObj_TypeDef *obj);
     bool (*release)(UI_ButtonObj_TypeDef *obj);
     bool (*ctl)(UI_ButtonObj_TypeDef *obj);
-    bool (*move)(UI_ButtonObj_TypeDef *obj, uint8_t x, uint8_t y);
+    bool (*move)(UI_ButtonObj_TypeDef *obj, int8_t x, int8_t y);
 } UI_Button_Interface_TypeDef;
+
+typedef struct
+{
+    bool (*init)(UI_CheckBoxObj_TypeDef *Obj, char *label, int8_t x, int8_t y, bool state);
+    /* data */
+} UI_CheckBox_Interface_TypeDef;
 
 typedef enum
 {
@@ -279,4 +285,5 @@ void UI_Set_DspInterface(UI_DrawPoint point,
 bool UI_ShowSelector(WidgetUI_Item_TypeDef *item);
 
 extern UI_Button_Interface_TypeDef UI_Button;
+extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
 #endif

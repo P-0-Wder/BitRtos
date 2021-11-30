@@ -31,6 +31,10 @@ UI_Button_Interface_TypeDef UI_Button = {
     .set_trogger_callback = UI_Button_Set_TriggerCallback,
 };
 
+UI_CheckBox_Interface_TypeDef UI_CheckBox = {
+    .init = NULL,
+};
+
 /******************************* general function *********************************/
 
 void UI_Set_DspInterface(UI_DrawPoint point,

@@ -1,0 +1,1665 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"UI_Controller.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.UI_GenData_Init,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	UI_GenData_Init:
+  26              	.LVL0:
+  27              	.LFB2:
+  28              		.file 1 "Dsp/widget/wgt_core/UI_Controller.c"
+   1:Dsp/widget/wgt_core/UI_Controller.c **** #include "UI_Controller.h"
+   2:Dsp/widget/wgt_core/UI_Controller.c **** #include "runtime.h"
+   3:Dsp/widget/wgt_core/UI_Controller.c **** #include <stdlib.h>
+   4:Dsp/widget/wgt_core/UI_Controller.c **** 
+   5:Dsp/widget/wgt_core/UI_Controller.c **** /* internal object */
+   6:Dsp/widget/wgt_core/UI_Controller.c **** static UI_DrawInterface_TypeDef UI_DspInterface;
+   7:Dsp/widget/wgt_core/UI_Controller.c **** 
+   8:Dsp/widget/wgt_core/UI_Controller.c **** /* external function */
+   9:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t widt
+  10:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label)
+  11:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, U
+  12:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj);
+  13:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj);
+  14:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y);
+  15:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj);
+  16:Dsp/widget/wgt_core/UI_Controller.c **** 
+  17:Dsp/widget/wgt_core/UI_Controller.c **** /* general function */
+  18:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
+  19:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
+  20:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
+  21:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y);
+  22:Dsp/widget/wgt_core/UI_Controller.c **** 
+  23:Dsp/widget/wgt_core/UI_Controller.c **** /* external Object var */
+  24:Dsp/widget/wgt_core/UI_Controller.c **** UI_Button_Interface_TypeDef UI_Button = {
+  25:Dsp/widget/wgt_core/UI_Controller.c ****     .ctl = UI_Button_Ctl,
+  26:Dsp/widget/wgt_core/UI_Controller.c ****     .init = UI_Button_Init,
+  27:Dsp/widget/wgt_core/UI_Controller.c ****     .push = UI_Button_Push,
+  28:Dsp/widget/wgt_core/UI_Controller.c ****     .move = UI_Button_Move,
+  29:Dsp/widget/wgt_core/UI_Controller.c ****     .release = UI_Button_Release,
+  30:Dsp/widget/wgt_core/UI_Controller.c ****     .set_label = UI_Button_Set_Label,
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 2
+
+
+  31:Dsp/widget/wgt_core/UI_Controller.c ****     .set_trogger_callback = UI_Button_Set_TriggerCallback,
+  32:Dsp/widget/wgt_core/UI_Controller.c **** };
+  33:Dsp/widget/wgt_core/UI_Controller.c **** 
+  34:Dsp/widget/wgt_core/UI_Controller.c **** UI_CheckBox_Interface_TypeDef UI_CheckBox = {
+  35:Dsp/widget/wgt_core/UI_Controller.c ****     .init = NULL,
+  36:Dsp/widget/wgt_core/UI_Controller.c **** };
+  37:Dsp/widget/wgt_core/UI_Controller.c **** 
+  38:Dsp/widget/wgt_core/UI_Controller.c **** /******************************* general function *********************************/
+  39:Dsp/widget/wgt_core/UI_Controller.c **** 
+  40:Dsp/widget/wgt_core/UI_Controller.c **** void UI_Set_DspInterface(UI_DrawPoint point,
+  41:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_DrawLine line,
+  42:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_DrawRectangle rectangle,
+  43:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_DrawRadiusRectangle radius_rectangle,
+  44:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_DrawCircle circle,
+  45:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_DrawCircleSection circle_section,
+  46:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_DrawStr str,
+  47:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_FillCircle fill_circle,
+  48:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_FillCircle_Section fillcircle_section,
+  49:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_FillRectangle fill_rectangle,
+  50:Dsp/widget/wgt_core/UI_Controller.c ****                          UI_FillRadiusRectangle fill_radius_rectangle)
+  51:Dsp/widget/wgt_core/UI_Controller.c **** {
+  52:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_circle = circle;
+  53:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_circle_section = circle_section;
+  54:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_line = line;
+  55:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_point = point;
+  56:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_rectangle = rectangle;
+  57:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_radius_rectangle = radius_rectangle;
+  58:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_str = str;
+  59:Dsp/widget/wgt_core/UI_Controller.c **** 
+  60:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_circle = fill_circle;
+  61:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_circle_section = fillcircle_section;
+  62:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_radius_rectangle = fill_radius_rectangle;
+  63:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_rectangle = fill_rectangle;
+  64:Dsp/widget/wgt_core/UI_Controller.c **** }
+  65:Dsp/widget/wgt_core/UI_Controller.c **** 
+  66:Dsp/widget/wgt_core/UI_Controller.c **** /* still in developing about this selector */
+  67:Dsp/widget/wgt_core/UI_Controller.c **** /* FYI different UI Item Got different selector */
+  68:Dsp/widget/wgt_core/UI_Controller.c **** bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
+  69:Dsp/widget/wgt_core/UI_Controller.c **** {
+  70:Dsp/widget/wgt_core/UI_Controller.c ****     /* button selector coordinate */
+  71:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_LftUp_X = 0;
+  72:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_LftUp_Y = 0;
+  73:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_LftDwn_X = 0;
+  74:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_LftDwn_Y = 0;
+  75:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtUp_X = 0;
+  76:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtUp_Y = 0;
+  77:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtDwn_X = 0;
+  78:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtDwn_Y = 0;
+  79:Dsp/widget/wgt_core/UI_Controller.c **** 
+  80:Dsp/widget/wgt_core/UI_Controller.c ****     if ((item == NULL) ||
+  81:Dsp/widget/wgt_core/UI_Controller.c ****         (UI_DspInterface.fill_circle_section == NULL))
+  82:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+  83:Dsp/widget/wgt_core/UI_Controller.c **** 
+  84:Dsp/widget/wgt_core/UI_Controller.c ****     switch ((uint8_t)(item->type))
+  85:Dsp/widget/wgt_core/UI_Controller.c ****     {
+  86:Dsp/widget/wgt_core/UI_Controller.c ****     case UI_Type_Button:
+  87:Dsp/widget/wgt_core/UI_Controller.c ****         /* comput button selector coordinate first */
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 3
+
+
+  88:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x;
+  89:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_T
+  90:Dsp/widget/wgt_core/UI_Controller.c **** 
+  91:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftDwn_X = Btn_Slct_LftUp_X;
+  92:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftDwn_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y;
+  93:Dsp/widget/wgt_core/UI_Controller.c **** 
+  94:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + ((UI_ButtonObj_T
+  95:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
+  96:Dsp/widget/wgt_core/UI_Controller.c **** 
+  97:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtDwn_X = Btn_Slct_RgtUp_X;
+  98:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtDwn_Y = Btn_Slct_LftDwn_Y;
+  99:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 100:Dsp/widget/wgt_core/UI_Controller.c ****         // show button selector
+ 101:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_LftUp_X, Btn_Slct_LftUp_Y, BUTTON_SELECTOR_RAD
+ 102:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_R
+ 103:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_RgtUp_X, Btn_Slct_RgtUp_Y, BUTTON_SELECTOR_RAD
+ 104:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_R
+ 105:Dsp/widget/wgt_core/UI_Controller.c ****         break;
+ 106:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 107:Dsp/widget/wgt_core/UI_Controller.c ****     default:
+ 108:Dsp/widget/wgt_core/UI_Controller.c ****         break;
+ 109:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 110:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+ 111:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 112:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 113:Dsp/widget/wgt_core/UI_Controller.c **** static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
+ 114:Dsp/widget/wgt_core/UI_Controller.c **** {
+  29              		.loc 1 114 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+ 115:Dsp/widget/wgt_core/UI_Controller.c ****     GenData->label = label;
+  34              		.loc 1 115 5 view .LVU1
+  35              		.loc 1 115 20 is_stmt 0 view .LVU2
+  36 0000 0160     		str	r1, [r0]
+ 116:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 117:Dsp/widget/wgt_core/UI_Controller.c ****     GenData->x = x;
+  37              		.loc 1 117 5 is_stmt 1 view .LVU3
+  38              		.loc 1 117 16 is_stmt 0 view .LVU4
+  39 0002 0271     		strb	r2, [r0, #4]
+ 118:Dsp/widget/wgt_core/UI_Controller.c ****     GenData->y = y;
+  40              		.loc 1 118 5 is_stmt 1 view .LVU5
+  41              		.loc 1 118 16 is_stmt 0 view .LVU6
+  42 0004 4371     		strb	r3, [r0, #5]
+ 119:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 120:Dsp/widget/wgt_core/UI_Controller.c ****     GenData->operatable = false;
+  43              		.loc 1 120 5 is_stmt 1 view .LVU7
+  44              		.loc 1 120 25 is_stmt 0 view .LVU8
+  45 0006 0023     		movs	r3, #0
+  46              	.LVL1:
+  47              		.loc 1 120 25 view .LVU9
+  48 0008 8371     		strb	r3, [r0, #6]
+ 121:Dsp/widget/wgt_core/UI_Controller.c **** }
+  49              		.loc 1 121 1 view .LVU10
+  50 000a 7047     		bx	lr
+  51              		.cfi_endproc
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 4
+
+
+  52              	.LFE2:
+  54              		.section	.text.UI_Move,"ax",%progbits
+  55              		.align	1
+  56              		.syntax unified
+  57              		.thumb
+  58              		.thumb_func
+  59              		.fpu fpv4-sp-d16
+  61              	UI_Move:
+  62              	.LVL2:
+  63              	.LFB3:
+ 122:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 123:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y)
+ 124:Dsp/widget/wgt_core/UI_Controller.c **** {
+  64              		.loc 1 124 1 is_stmt 1 view -0
+  65              		.cfi_startproc
+  66              		@ args = 0, pretend = 0, frame = 0
+  67              		@ frame_needed = 0, uses_anonymous_args = 0
+  68              		@ link register save eliminated.
+ 125:Dsp/widget/wgt_core/UI_Controller.c ****     if (GenUI_Info == NULL)
+  69              		.loc 1 125 5 view .LVU12
+  70              		.loc 1 125 8 is_stmt 0 view .LVU13
+  71 0000 18B1     		cbz	r0, .L4
+ 126:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 127:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 128:Dsp/widget/wgt_core/UI_Controller.c ****     GenUI_Info->x = dst_x;
+  72              		.loc 1 128 5 is_stmt 1 view .LVU14
+  73              		.loc 1 128 19 is_stmt 0 view .LVU15
+  74 0002 0171     		strb	r1, [r0, #4]
+ 129:Dsp/widget/wgt_core/UI_Controller.c ****     GenUI_Info->y = dst_y;
+  75              		.loc 1 129 5 is_stmt 1 view .LVU16
+  76              		.loc 1 129 19 is_stmt 0 view .LVU17
+  77 0004 4271     		strb	r2, [r0, #5]
+ 130:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 131:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+  78              		.loc 1 131 5 is_stmt 1 view .LVU18
+  79              		.loc 1 131 12 is_stmt 0 view .LVU19
+  80 0006 0120     		movs	r0, #1
+  81              	.LVL3:
+  82              		.loc 1 131 12 view .LVU20
+  83 0008 7047     		bx	lr
+  84              	.LVL4:
+  85              	.L4:
+ 126:Dsp/widget/wgt_core/UI_Controller.c **** 
+  86              		.loc 1 126 16 view .LVU21
+  87 000a 0020     		movs	r0, #0
+  88              	.LVL5:
+ 132:Dsp/widget/wgt_core/UI_Controller.c **** }
+  89              		.loc 1 132 1 view .LVU22
+  90 000c 7047     		bx	lr
+  91              		.cfi_endproc
+  92              	.LFE3:
+  94              		.section	.rodata.UI_Button_Init.str1.4,"aMS",%progbits,1
+  95              		.align	2
+  96              	.LC0:
+  97 0000 79657300 		.ascii	"yes\000"
+  98              		.align	2
+  99              	.LC1:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 5
+
+
+ 100 0004 6E6F00   		.ascii	"no\000"
+ 101              		.section	.text.UI_Button_Init,"ax",%progbits
+ 102              		.align	1
+ 103              		.syntax unified
+ 104              		.thumb
+ 105              		.thumb_func
+ 106              		.fpu fpv4-sp-d16
+ 108              	UI_Button_Init:
+ 109              	.LVL6:
+ 110              	.LFB4:
+ 133:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 134:Dsp/widget/wgt_core/UI_Controller.c **** /********************************************** UI Button Object **********************************
+ 135:Dsp/widget/wgt_core/UI_Controller.c **** /*
+ 136:Dsp/widget/wgt_core/UI_Controller.c **** *  the operation of button ctl is a async operation
+ 137:Dsp/widget/wgt_core/UI_Controller.c **** *  exti irq or input signal triiger first then out of the trigger code 
+ 138:Dsp/widget/wgt_core/UI_Controller.c **** *  check signal value doing process
+ 139:Dsp/widget/wgt_core/UI_Controller.c **** */
+ 140:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t widt
+ 141:Dsp/widget/wgt_core/UI_Controller.c **** {
+ 111              		.loc 1 141 1 is_stmt 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ args = 16, pretend = 0, frame = 0
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115              		.loc 1 141 1 is_stmt 0 view .LVU24
+ 116 0000 10B5     		push	{r4, lr}
+ 117              	.LCFI0:
+ 118              		.cfi_def_cfa_offset 8
+ 119              		.cfi_offset 4, -8
+ 120              		.cfi_offset 14, -4
+ 121 0002 9DF814C0 		ldrb	ip, [sp, #20]	@ zero_extendqisi2
+ 142:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 122              		.loc 1 142 5 is_stmt 1 view .LVU25
+ 123              		.loc 1 142 8 is_stmt 0 view .LVU26
+ 124 0006 D0B1     		cbz	r0, .L7
+ 125 0008 0446     		mov	r4, r0
+ 143:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 144:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 145:Dsp/widget/wgt_core/UI_Controller.c ****     Obj->default_state = state;
+ 126              		.loc 1 145 5 is_stmt 1 view .LVU27
+ 127              		.loc 1 145 24 is_stmt 0 view .LVU28
+ 128 000a 80F808C0 		strb	ip, [r0, #8]
+ 146:Dsp/widget/wgt_core/UI_Controller.c ****     Obj->state = state;
+ 129              		.loc 1 146 5 is_stmt 1 view .LVU29
+ 130              		.loc 1 146 16 is_stmt 0 view .LVU30
+ 131 000e 80F809C0 		strb	ip, [r0, #9]
+ 147:Dsp/widget/wgt_core/UI_Controller.c ****     Obj->type = type;
+ 132              		.loc 1 147 5 is_stmt 1 view .LVU31
+ 133              		.loc 1 147 15 is_stmt 0 view .LVU32
+ 134 0012 9DF81000 		ldrb	r0, [sp, #16]	@ zero_extendqisi2
+ 135              	.LVL7:
+ 136              		.loc 1 147 15 view .LVU33
+ 137 0016 A072     		strb	r0, [r4, #10]
+ 148:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 149:Dsp/widget/wgt_core/UI_Controller.c ****     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+ 138              		.loc 1 149 5 is_stmt 1 view .LVU34
+ 139 0018 DBB2     		uxtb	r3, r3
+ 140              		.loc 1 149 5 is_stmt 0 view .LVU35
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 6
+
+
+ 141 001a D2B2     		uxtb	r2, r2
+ 142              		.loc 1 149 5 view .LVU36
+ 143 001c 2046     		mov	r0, r4
+ 144 001e FFF7FEFF 		bl	UI_GenData_Init
+ 145              	.LVL8:
+ 150:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 151:Dsp/widget/wgt_core/UI_Controller.c ****     Obj->width = width;
+ 146              		.loc 1 151 5 is_stmt 1 view .LVU37
+ 147              		.loc 1 151 16 is_stmt 0 view .LVU38
+ 148 0022 9DF80830 		ldrb	r3, [sp, #8]	@ zero_extendqisi2
+ 149 0026 E376     		strb	r3, [r4, #27]
+ 152:Dsp/widget/wgt_core/UI_Controller.c ****     Obj->height = height;
+ 150              		.loc 1 152 5 is_stmt 1 view .LVU39
+ 151              		.loc 1 152 17 is_stmt 0 view .LVU40
+ 152 0028 9DF80C30 		ldrb	r3, [sp, #12]	@ zero_extendqisi2
+ 153 002c 2377     		strb	r3, [r4, #28]
+ 153:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 154:Dsp/widget/wgt_core/UI_Controller.c ****     Obj->PushDown_Label = DEFAULT_BUTTON_PUSH_LABEL;
+ 154              		.loc 1 154 5 is_stmt 1 view .LVU41
+ 155              		.loc 1 154 25 is_stmt 0 view .LVU42
+ 156 002e 054B     		ldr	r3, .L9
+ 157 0030 C4F81330 		str	r3, [r4, #19]	@ unaligned
+ 155:Dsp/widget/wgt_core/UI_Controller.c ****     Obj->Release_Label = DEFAULT_BUTTON_RELEASE_LABEL;
+ 158              		.loc 1 155 5 is_stmt 1 view .LVU43
+ 159              		.loc 1 155 24 is_stmt 0 view .LVU44
+ 160 0034 044B     		ldr	r3, .L9+4
+ 161 0036 C4F81730 		str	r3, [r4, #23]	@ unaligned
+ 156:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 157:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+ 162              		.loc 1 157 5 is_stmt 1 view .LVU45
+ 163              		.loc 1 157 12 is_stmt 0 view .LVU46
+ 164 003a 0120     		movs	r0, #1
+ 165              	.LVL9:
+ 166              	.L6:
+ 158:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 167              		.loc 1 158 1 view .LVU47
+ 168 003c 10BD     		pop	{r4, pc}
+ 169              	.LVL10:
+ 170              	.L7:
+ 143:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 171              		.loc 1 143 16 view .LVU48
+ 172 003e 0020     		movs	r0, #0
+ 173              	.LVL11:
+ 143:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 174              		.loc 1 143 16 view .LVU49
+ 175 0040 FCE7     		b	.L6
+ 176              	.L10:
+ 177 0042 00BF     		.align	2
+ 178              	.L9:
+ 179 0044 00000000 		.word	.LC0
+ 180 0048 04000000 		.word	.LC1
+ 181              		.cfi_endproc
+ 182              	.LFE4:
+ 184              		.section	.text.UI_Button_Set_Label,"ax",%progbits
+ 185              		.align	1
+ 186              		.syntax unified
+ 187              		.thumb
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 7
+
+
+ 188              		.thumb_func
+ 189              		.fpu fpv4-sp-d16
+ 191              	UI_Button_Set_Label:
+ 192              	.LVL12:
+ 193              	.LFB5:
+ 159:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 160:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label)
+ 161:Dsp/widget/wgt_core/UI_Controller.c **** {
+ 194              		.loc 1 161 1 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              		@ link register save eliminated.
+ 162:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 199              		.loc 1 162 5 view .LVU51
+ 200              		.loc 1 162 8 is_stmt 0 view .LVU52
+ 201 0000 48B1     		cbz	r0, .L14
+ 163:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 164:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 165:Dsp/widget/wgt_core/UI_Controller.c ****     if (state == UI_Btn_PushDwn)
+ 202              		.loc 1 165 5 is_stmt 1 view .LVU53
+ 203              		.loc 1 165 8 is_stmt 0 view .LVU54
+ 204 0002 0129     		cmp	r1, #1
+ 205 0004 03D0     		beq	.L15
+ 166:Dsp/widget/wgt_core/UI_Controller.c ****         Obj->PushDown_Label = label;
+ 167:Dsp/widget/wgt_core/UI_Controller.c ****     else
+ 168:Dsp/widget/wgt_core/UI_Controller.c ****         Obj->Release_Label = label;
+ 206              		.loc 1 168 9 is_stmt 1 view .LVU55
+ 207              		.loc 1 168 28 is_stmt 0 view .LVU56
+ 208 0006 C0F81720 		str	r2, [r0, #23]	@ unaligned
+ 169:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 170:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+ 209              		.loc 1 170 12 view .LVU57
+ 210 000a 0120     		movs	r0, #1
+ 211              	.LVL13:
+ 212              		.loc 1 170 12 view .LVU58
+ 213 000c 7047     		bx	lr
+ 214              	.LVL14:
+ 215              	.L15:
+ 166:Dsp/widget/wgt_core/UI_Controller.c ****         Obj->PushDown_Label = label;
+ 216              		.loc 1 166 9 is_stmt 1 view .LVU59
+ 166:Dsp/widget/wgt_core/UI_Controller.c ****         Obj->PushDown_Label = label;
+ 217              		.loc 1 166 29 is_stmt 0 view .LVU60
+ 218 000e C0F81320 		str	r2, [r0, #19]	@ unaligned
+ 219              		.loc 1 170 12 view .LVU61
+ 220 0012 0120     		movs	r0, #1
+ 221              	.LVL15:
+ 222              		.loc 1 170 12 view .LVU62
+ 223 0014 7047     		bx	lr
+ 224              	.LVL16:
+ 225              	.L14:
+ 163:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 226              		.loc 1 163 16 view .LVU63
+ 227 0016 0020     		movs	r0, #0
+ 228              	.LVL17:
+ 171:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 229              		.loc 1 171 1 view .LVU64
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 8
+
+
+ 230 0018 7047     		bx	lr
+ 231              		.cfi_endproc
+ 232              	.LFE5:
+ 234              		.section	.text.UI_Button_Set_TriggerCallback,"ax",%progbits
+ 235              		.align	1
+ 236              		.syntax unified
+ 237              		.thumb
+ 238              		.thumb_func
+ 239              		.fpu fpv4-sp-d16
+ 241              	UI_Button_Set_TriggerCallback:
+ 242              	.LVL18:
+ 243              	.LFB6:
+ 172:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 173:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, U
+ 174:Dsp/widget/wgt_core/UI_Controller.c **** {
+ 244              		.loc 1 174 1 is_stmt 1 view -0
+ 245              		.cfi_startproc
+ 246              		@ args = 0, pretend = 0, frame = 0
+ 247              		@ frame_needed = 0, uses_anonymous_args = 0
+ 248              		@ link register save eliminated.
+ 175:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 249              		.loc 1 175 5 view .LVU66
+ 250              		.loc 1 175 8 is_stmt 0 view .LVU67
+ 251 0000 50B1     		cbz	r0, .L19
+ 176:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 177:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 178:Dsp/widget/wgt_core/UI_Controller.c ****     if (type == Push_Trigger)
+ 252              		.loc 1 178 5 is_stmt 1 view .LVU68
+ 253              		.loc 1 178 8 is_stmt 0 view .LVU69
+ 254 0002 0129     		cmp	r1, #1
+ 255 0004 04D0     		beq	.L21
+ 179:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 180:Dsp/widget/wgt_core/UI_Controller.c ****         Obj->push_callback = callback;
+ 181:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 182:Dsp/widget/wgt_core/UI_Controller.c ****     else if (type == Release_Trigger)
+ 256              		.loc 1 182 10 is_stmt 1 view .LVU70
+ 257              		.loc 1 182 13 is_stmt 0 view .LVU71
+ 258 0006 49B9     		cbnz	r1, .L20
+ 183:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 184:Dsp/widget/wgt_core/UI_Controller.c ****         Obj->release_callback = callback;
+ 259              		.loc 1 184 9 is_stmt 1 view .LVU72
+ 260              		.loc 1 184 31 is_stmt 0 view .LVU73
+ 261 0008 C0F80F20 		str	r2, [r0, #15]	@ unaligned
+ 185:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 186:Dsp/widget/wgt_core/UI_Controller.c ****     else
+ 187:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 188:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 189:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+ 262              		.loc 1 189 12 view .LVU74
+ 263 000c 0120     		movs	r0, #1
+ 264              	.LVL19:
+ 265              		.loc 1 189 12 view .LVU75
+ 266 000e 7047     		bx	lr
+ 267              	.LVL20:
+ 268              	.L21:
+ 180:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 269              		.loc 1 180 9 is_stmt 1 view .LVU76
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 9
+
+
+ 180:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 270              		.loc 1 180 28 is_stmt 0 view .LVU77
+ 271 0010 C0F80B20 		str	r2, [r0, #11]	@ unaligned
+ 272              		.loc 1 189 12 view .LVU78
+ 273 0014 0120     		movs	r0, #1
+ 274              	.LVL21:
+ 275              		.loc 1 189 12 view .LVU79
+ 276 0016 7047     		bx	lr
+ 277              	.LVL22:
+ 278              	.L19:
+ 176:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 279              		.loc 1 176 16 view .LVU80
+ 280 0018 0020     		movs	r0, #0
+ 281              	.LVL23:
+ 176:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 282              		.loc 1 176 16 view .LVU81
+ 283 001a 7047     		bx	lr
+ 284              	.LVL24:
+ 285              	.L20:
+ 187:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 286              		.loc 1 187 16 view .LVU82
+ 287 001c 0020     		movs	r0, #0
+ 288              	.LVL25:
+ 190:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 289              		.loc 1 190 1 view .LVU83
+ 290 001e 7047     		bx	lr
+ 291              		.cfi_endproc
+ 292              	.LFE6:
+ 294              		.section	.text.UI_Button_Push,"ax",%progbits
+ 295              		.align	1
+ 296              		.syntax unified
+ 297              		.thumb
+ 298              		.thumb_func
+ 299              		.fpu fpv4-sp-d16
+ 301              	UI_Button_Push:
+ 302              	.LVL26:
+ 303              	.LFB7:
+ 191:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 192:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj)
+ 193:Dsp/widget/wgt_core/UI_Controller.c **** {
+ 304              		.loc 1 193 1 is_stmt 1 view -0
+ 305              		.cfi_startproc
+ 306              		@ args = 0, pretend = 0, frame = 0
+ 307              		@ frame_needed = 0, uses_anonymous_args = 0
+ 194:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 308              		.loc 1 194 5 view .LVU85
+ 309              		.loc 1 194 8 is_stmt 0 view .LVU86
+ 310 0000 F0B1     		cbz	r0, .L26
+ 193:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 311              		.loc 1 193 1 view .LVU87
+ 312 0002 08B5     		push	{r3, lr}
+ 313              	.LCFI1:
+ 314              		.cfi_def_cfa_offset 8
+ 315              		.cfi_offset 3, -8
+ 316              		.cfi_offset 14, -4
+ 317 0004 0346     		mov	r3, r0
+ 195:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 10
+
+
+ 196:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 197:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj->type == Lock_Btn)
+ 318              		.loc 1 197 5 is_stmt 1 view .LVU88
+ 319              		.loc 1 197 12 is_stmt 0 view .LVU89
+ 320 0006 827A     		ldrb	r2, [r0, #10]	@ zero_extendqisi2
+ 321              		.loc 1 197 8 view .LVU90
+ 322 0008 012A     		cmp	r2, #1
+ 323 000a 06D0     		beq	.L34
+ 198:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 199:Dsp/widget/wgt_core/UI_Controller.c ****         if (Obj->state == UI_Btn_RlsUp)
+ 200:Dsp/widget/wgt_core/UI_Controller.c ****             Obj->state = UI_Btn_PushDwn;
+ 201:Dsp/widget/wgt_core/UI_Controller.c ****         else
+ 202:Dsp/widget/wgt_core/UI_Controller.c ****             Obj->state = UI_Btn_RlsUp;
+ 203:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 204:Dsp/widget/wgt_core/UI_Controller.c ****     else if (Obj->type == Reset_Btn)
+ 324              		.loc 1 204 10 is_stmt 1 view .LVU91
+ 325              		.loc 1 204 13 is_stmt 0 view .LVU92
+ 326 000c D2B9     		cbnz	r2, .L27
+ 205:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 206:Dsp/widget/wgt_core/UI_Controller.c ****         if (Obj->default_state == Obj->state)
+ 327              		.loc 1 206 9 is_stmt 1 view .LVU93
+ 328              		.loc 1 206 16 is_stmt 0 view .LVU94
+ 329 000e 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ 330              		.loc 1 206 38 view .LVU95
+ 331 0010 417A     		ldrb	r1, [r0, #9]	@ zero_extendqisi2
+ 332              		.loc 1 206 12 view .LVU96
+ 333 0012 8A42     		cmp	r2, r1
+ 334 0014 0AD0     		beq	.L35
+ 207:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 208:Dsp/widget/wgt_core/UI_Controller.c ****             Obj->state = !Obj->default_state;
+ 209:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 210:Dsp/widget/wgt_core/UI_Controller.c ****             if (Obj->push_callback != NULL)
+ 211:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 212:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 213:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 214:Dsp/widget/wgt_core/UI_Controller.c ****     else
+ 215:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 216:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 217:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+ 335              		.loc 1 217 12 view .LVU97
+ 336 0016 0120     		movs	r0, #1
+ 337              	.LVL27:
+ 338              	.L23:
+ 218:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 339              		.loc 1 218 1 view .LVU98
+ 340 0018 08BD     		pop	{r3, pc}
+ 341              	.LVL28:
+ 342              	.L34:
+ 199:Dsp/widget/wgt_core/UI_Controller.c ****             Obj->state = UI_Btn_PushDwn;
+ 343              		.loc 1 199 9 is_stmt 1 view .LVU99
+ 199:Dsp/widget/wgt_core/UI_Controller.c ****             Obj->state = UI_Btn_PushDwn;
+ 344              		.loc 1 199 16 is_stmt 0 view .LVU100
+ 345 001a 427A     		ldrb	r2, [r0, #9]	@ zero_extendqisi2
+ 199:Dsp/widget/wgt_core/UI_Controller.c ****             Obj->state = UI_Btn_PushDwn;
+ 346              		.loc 1 199 12 view .LVU101
+ 347 001c 12B9     		cbnz	r2, .L25
+ 200:Dsp/widget/wgt_core/UI_Controller.c ****         else
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 11
+
+
+ 348              		.loc 1 200 13 is_stmt 1 view .LVU102
+ 200:Dsp/widget/wgt_core/UI_Controller.c ****         else
+ 349              		.loc 1 200 24 is_stmt 0 view .LVU103
+ 350 001e 0120     		movs	r0, #1
+ 351              	.LVL29:
+ 200:Dsp/widget/wgt_core/UI_Controller.c ****         else
+ 352              		.loc 1 200 24 view .LVU104
+ 353 0020 5872     		strb	r0, [r3, #9]
+ 354 0022 F9E7     		b	.L23
+ 355              	.LVL30:
+ 356              	.L25:
+ 202:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 357              		.loc 1 202 13 is_stmt 1 view .LVU105
+ 202:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 358              		.loc 1 202 24 is_stmt 0 view .LVU106
+ 359 0024 0022     		movs	r2, #0
+ 360 0026 4272     		strb	r2, [r0, #9]
+ 217:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 361              		.loc 1 217 12 view .LVU107
+ 362 0028 0120     		movs	r0, #1
+ 363              	.LVL31:
+ 217:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 364              		.loc 1 217 12 view .LVU108
+ 365 002a F5E7     		b	.L23
+ 366              	.LVL32:
+ 367              	.L35:
+ 208:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 368              		.loc 1 208 13 is_stmt 1 view .LVU109
+ 208:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 369              		.loc 1 208 26 is_stmt 0 view .LVU110
+ 370 002c B2FA82F2 		clz	r2, r2
+ 371 0030 5209     		lsrs	r2, r2, #5
+ 208:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 372              		.loc 1 208 24 view .LVU111
+ 373 0032 4272     		strb	r2, [r0, #9]
+ 210:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 374              		.loc 1 210 13 is_stmt 1 view .LVU112
+ 210:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 375              		.loc 1 210 20 is_stmt 0 view .LVU113
+ 376 0034 D0F80B30 		ldr	r3, [r0, #11]	@ unaligned
+ 210:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 377              		.loc 1 210 16 view .LVU114
+ 378 0038 33B1     		cbz	r3, .L29
+ 211:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 379              		.loc 1 211 17 is_stmt 1 view .LVU115
+ 380 003a 9847     		blx	r3
+ 381              	.LVL33:
+ 217:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 382              		.loc 1 217 12 is_stmt 0 view .LVU116
+ 383 003c 0120     		movs	r0, #1
+ 384 003e EBE7     		b	.L23
+ 385              	.LVL34:
+ 386              	.L26:
+ 387              	.LCFI2:
+ 388              		.cfi_def_cfa_offset 0
+ 389              		.cfi_restore 3
+ 390              		.cfi_restore 14
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 12
+
+
+ 195:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 391              		.loc 1 195 16 view .LVU117
+ 392 0040 0020     		movs	r0, #0
+ 393              	.LVL35:
+ 394              		.loc 1 218 1 view .LVU118
+ 395 0042 7047     		bx	lr
+ 396              	.LVL36:
+ 397              	.L27:
+ 398              	.LCFI3:
+ 399              		.cfi_def_cfa_offset 8
+ 400              		.cfi_offset 3, -8
+ 401              		.cfi_offset 14, -4
+ 215:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 402              		.loc 1 215 16 view .LVU119
+ 403 0044 0020     		movs	r0, #0
+ 404              	.LVL37:
+ 215:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 405              		.loc 1 215 16 view .LVU120
+ 406 0046 E7E7     		b	.L23
+ 407              	.LVL38:
+ 408              	.L29:
+ 217:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 409              		.loc 1 217 12 view .LVU121
+ 410 0048 0120     		movs	r0, #1
+ 411              	.LVL39:
+ 217:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 412              		.loc 1 217 12 view .LVU122
+ 413 004a E5E7     		b	.L23
+ 414              		.cfi_endproc
+ 415              	.LFE7:
+ 417              		.section	.text.UI_Button_Release,"ax",%progbits
+ 418              		.align	1
+ 419              		.syntax unified
+ 420              		.thumb
+ 421              		.thumb_func
+ 422              		.fpu fpv4-sp-d16
+ 424              	UI_Button_Release:
+ 425              	.LVL40:
+ 426              	.LFB8:
+ 219:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 220:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj)
+ 221:Dsp/widget/wgt_core/UI_Controller.c **** {
+ 427              		.loc 1 221 1 is_stmt 1 view -0
+ 428              		.cfi_startproc
+ 429              		@ args = 0, pretend = 0, frame = 0
+ 430              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 431              		.loc 1 222 5 view .LVU124
+ 432              		.loc 1 222 8 is_stmt 0 view .LVU125
+ 433 0000 70B1     		cbz	r0, .L38
+ 221:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 434              		.loc 1 221 1 view .LVU126
+ 435 0002 08B5     		push	{r3, lr}
+ 436              	.LCFI4:
+ 437              		.cfi_def_cfa_offset 8
+ 438              		.cfi_offset 3, -8
+ 439              		.cfi_offset 14, -4
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 13
+
+
+ 223:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 224:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 225:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj->type == Lock_Btn)
+ 440              		.loc 1 225 5 is_stmt 1 view .LVU127
+ 441              		.loc 1 225 12 is_stmt 0 view .LVU128
+ 442 0004 827A     		ldrb	r2, [r0, #10]	@ zero_extendqisi2
+ 443              		.loc 1 225 8 view .LVU129
+ 444 0006 012A     		cmp	r2, #1
+ 445 0008 0CD0     		beq	.L39
+ 226:Dsp/widget/wgt_core/UI_Controller.c ****         return true;
+ 227:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 228:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj->default_state != Obj->state)
+ 446              		.loc 1 228 5 is_stmt 1 view .LVU130
+ 447              		.loc 1 228 12 is_stmt 0 view .LVU131
+ 448 000a 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ 449              		.loc 1 228 34 view .LVU132
+ 450 000c 417A     		ldrb	r1, [r0, #9]	@ zero_extendqisi2
+ 451              		.loc 1 228 8 view .LVU133
+ 452 000e 8A42     		cmp	r2, r1
+ 453 0010 0AD0     		beq	.L40
+ 229:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 230:Dsp/widget/wgt_core/UI_Controller.c ****         Obj->state = Obj->default_state;
+ 454              		.loc 1 230 9 is_stmt 1 view .LVU134
+ 455              		.loc 1 230 20 is_stmt 0 view .LVU135
+ 456 0012 4272     		strb	r2, [r0, #9]
+ 231:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 232:Dsp/widget/wgt_core/UI_Controller.c ****         if (Obj->release_callback != NULL)
+ 457              		.loc 1 232 9 is_stmt 1 view .LVU136
+ 458              		.loc 1 232 16 is_stmt 0 view .LVU137
+ 459 0014 D0F80F30 		ldr	r3, [r0, #15]	@ unaligned
+ 460              		.loc 1 232 12 view .LVU138
+ 461 0018 43B1     		cbz	r3, .L41
+ 233:Dsp/widget/wgt_core/UI_Controller.c ****             Obj->release_callback();
+ 462              		.loc 1 233 13 is_stmt 1 view .LVU139
+ 463 001a 9847     		blx	r3
+ 464              	.LVL41:
+ 234:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 235:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 236:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+ 465              		.loc 1 236 12 is_stmt 0 view .LVU140
+ 466 001c 0120     		movs	r0, #1
+ 467              	.L37:
+ 237:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 468              		.loc 1 237 1 view .LVU141
+ 469 001e 08BD     		pop	{r3, pc}
+ 470              	.LVL42:
+ 471              	.L38:
+ 472              	.LCFI5:
+ 473              		.cfi_def_cfa_offset 0
+ 474              		.cfi_restore 3
+ 475              		.cfi_restore 14
+ 223:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 476              		.loc 1 223 16 view .LVU142
+ 477 0020 0020     		movs	r0, #0
+ 478              	.LVL43:
+ 479              		.loc 1 237 1 view .LVU143
+ 480 0022 7047     		bx	lr
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 14
+
+
+ 481              	.LVL44:
+ 482              	.L39:
+ 483              	.LCFI6:
+ 484              		.cfi_def_cfa_offset 8
+ 485              		.cfi_offset 3, -8
+ 486              		.cfi_offset 14, -4
+ 226:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 487              		.loc 1 226 16 view .LVU144
+ 488 0024 0120     		movs	r0, #1
+ 489              	.LVL45:
+ 226:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 490              		.loc 1 226 16 view .LVU145
+ 491 0026 FAE7     		b	.L37
+ 492              	.LVL46:
+ 493              	.L40:
+ 236:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 494              		.loc 1 236 12 view .LVU146
+ 495 0028 0120     		movs	r0, #1
+ 496              	.LVL47:
+ 236:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 497              		.loc 1 236 12 view .LVU147
+ 498 002a F8E7     		b	.L37
+ 499              	.LVL48:
+ 500              	.L41:
+ 236:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 501              		.loc 1 236 12 view .LVU148
+ 502 002c 0120     		movs	r0, #1
+ 503              	.LVL49:
+ 236:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 504              		.loc 1 236 12 view .LVU149
+ 505 002e F6E7     		b	.L37
+ 506              		.cfi_endproc
+ 507              	.LFE8:
+ 509              		.section	.text.UI_Button_Move,"ax",%progbits
+ 510              		.align	1
+ 511              		.syntax unified
+ 512              		.thumb
+ 513              		.thumb_func
+ 514              		.fpu fpv4-sp-d16
+ 516              	UI_Button_Move:
+ 517              	.LVL50:
+ 518              	.LFB9:
+ 238:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 239:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y)
+ 240:Dsp/widget/wgt_core/UI_Controller.c **** {
+ 519              		.loc 1 240 1 is_stmt 1 view -0
+ 520              		.cfi_startproc
+ 521              		@ args = 0, pretend = 0, frame = 0
+ 522              		@ frame_needed = 0, uses_anonymous_args = 0
+ 241:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 523              		.loc 1 241 5 view .LVU151
+ 524              		.loc 1 241 8 is_stmt 0 view .LVU152
+ 525 0000 28B1     		cbz	r0, .L48
+ 240:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 526              		.loc 1 240 1 view .LVU153
+ 527 0002 08B5     		push	{r3, lr}
+ 528              	.LCFI7:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 15
+
+
+ 529              		.cfi_def_cfa_offset 8
+ 530              		.cfi_offset 3, -8
+ 531              		.cfi_offset 14, -4
+ 242:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 243:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 244:Dsp/widget/wgt_core/UI_Controller.c ****     return UI_Move(&(Obj->Gen_Data), x, y);
+ 532              		.loc 1 244 5 is_stmt 1 view .LVU154
+ 533              		.loc 1 244 12 is_stmt 0 view .LVU155
+ 534 0004 52B2     		sxtb	r2, r2
+ 535              		.loc 1 244 12 view .LVU156
+ 536 0006 49B2     		sxtb	r1, r1
+ 537              		.loc 1 244 12 view .LVU157
+ 538 0008 FFF7FEFF 		bl	UI_Move
+ 539              	.LVL51:
+ 245:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 540              		.loc 1 245 1 view .LVU158
+ 541 000c 08BD     		pop	{r3, pc}
+ 542              	.LVL52:
+ 543              	.L48:
+ 544              	.LCFI8:
+ 545              		.cfi_def_cfa_offset 0
+ 546              		.cfi_restore 3
+ 547              		.cfi_restore 14
+ 242:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 548              		.loc 1 242 16 view .LVU159
+ 549 000e 0020     		movs	r0, #0
+ 550              	.LVL53:
+ 551              		.loc 1 245 1 view .LVU160
+ 552 0010 7047     		bx	lr
+ 553              		.cfi_endproc
+ 554              	.LFE9:
+ 556              		.section	.text.UI_Button_Ctl,"ax",%progbits
+ 557              		.align	1
+ 558              		.syntax unified
+ 559              		.thumb
+ 560              		.thumb_func
+ 561              		.fpu fpv4-sp-d16
+ 563              	UI_Button_Ctl:
+ 564              	.LVL54:
+ 565              	.LFB10:
+ 246:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 247:Dsp/widget/wgt_core/UI_Controller.c **** static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
+ 248:Dsp/widget/wgt_core/UI_Controller.c **** {
+ 566              		.loc 1 248 1 is_stmt 1 view -0
+ 567              		.cfi_startproc
+ 568              		@ args = 0, pretend = 0, frame = 0
+ 569              		@ frame_needed = 0, uses_anonymous_args = 0
+ 570              		.loc 1 248 1 is_stmt 0 view .LVU162
+ 571 0000 70B5     		push	{r4, r5, r6, lr}
+ 572              	.LCFI9:
+ 573              		.cfi_def_cfa_offset 16
+ 574              		.cfi_offset 4, -16
+ 575              		.cfi_offset 5, -12
+ 576              		.cfi_offset 6, -8
+ 577              		.cfi_offset 14, -4
+ 578 0002 84B0     		sub	sp, sp, #16
+ 579              	.LCFI10:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 16
+
+
+ 580              		.cfi_def_cfa_offset 32
+ 581 0004 0446     		mov	r4, r0
+ 249:Dsp/widget/wgt_core/UI_Controller.c ****     SYSTEM_RunTime Cur_Rt = Get_CurrentRunningMs();
+ 582              		.loc 1 249 5 is_stmt 1 view .LVU163
+ 583              		.loc 1 249 29 is_stmt 0 view .LVU164
+ 584 0006 FFF7FEFF 		bl	Get_CurrentRunningMs
+ 585              	.LVL55:
+ 250:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 251:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj == NULL)
+ 586              		.loc 1 251 5 is_stmt 1 view .LVU165
+ 587              		.loc 1 251 8 is_stmt 0 view .LVU166
+ 588 000a 002C     		cmp	r4, #0
+ 589 000c 6BD0     		beq	.L59
+ 252:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 253:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 254:Dsp/widget/wgt_core/UI_Controller.c ****     if (Obj->type == Lock_Btn)
+ 590              		.loc 1 254 5 is_stmt 1 view .LVU167
+ 591              		.loc 1 254 12 is_stmt 0 view .LVU168
+ 592 000e A37A     		ldrb	r3, [r4, #10]	@ zero_extendqisi2
+ 593              		.loc 1 254 8 view .LVU169
+ 594 0010 012B     		cmp	r3, #1
+ 595 0012 2DD0     		beq	.L68
+ 596              	.L55:
+ 255:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 256:Dsp/widget/wgt_core/UI_Controller.c ****         if (Obj->state == UI_Btn_PushDwn)
+ 257:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 258:Dsp/widget/wgt_core/UI_Controller.c ****             if (Obj->push_callback)
+ 259:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 260:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 261:Dsp/widget/wgt_core/UI_Controller.c ****         else if (Obj->state == UI_Btn_RlsUp)
+ 262:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 263:Dsp/widget/wgt_core/UI_Controller.c ****             if (Obj->release_callback)
+ 264:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->release_callback();
+ 265:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 266:Dsp/widget/wgt_core/UI_Controller.c ****         else
+ 267:Dsp/widget/wgt_core/UI_Controller.c ****             return false;
+ 268:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 269:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 270:Dsp/widget/wgt_core/UI_Controller.c ****     /* display button on screen object */
+ 271:Dsp/widget/wgt_core/UI_Controller.c ****     /* invert display color when button been push down */
+ 272:Dsp/widget/wgt_core/UI_Controller.c ****     if ((UI_DspInterface.draw_str != NULL) && (UI_DspInterface.fill_radius_rectangle != NULL) && (U
+ 597              		.loc 1 272 5 is_stmt 1 view .LVU170
+ 598              		.loc 1 272 25 is_stmt 0 view .LVU171
+ 599 0014 3C4B     		ldr	r3, .L72
+ 600 0016 1B68     		ldr	r3, [r3]
+ 601              		.loc 1 272 8 view .LVU172
+ 602 0018 002B     		cmp	r3, #0
+ 603 001a 69D0     		beq	.L61
+ 604              		.loc 1 272 63 discriminator 1 view .LVU173
+ 605 001c 3A4B     		ldr	r3, .L72
+ 606 001e 9D6A     		ldr	r5, [r3, #40]
+ 607              		.loc 1 272 44 discriminator 1 view .LVU174
+ 608 0020 002D     		cmp	r5, #0
+ 609 0022 67D0     		beq	.L62
+ 610              		.loc 1 272 114 discriminator 2 view .LVU175
+ 611 0024 DE68     		ldr	r6, [r3, #12]
+ 612              		.loc 1 272 95 discriminator 2 view .LVU176
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 17
+
+
+ 613 0026 002E     		cmp	r6, #0
+ 614 0028 66D0     		beq	.L63
+ 273:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 274:Dsp/widget/wgt_core/UI_Controller.c ****         if (Obj->state == UI_Btn_PushDwn)
+ 615              		.loc 1 274 9 is_stmt 1 view .LVU177
+ 616              		.loc 1 274 16 is_stmt 0 view .LVU178
+ 617 002a 637A     		ldrb	r3, [r4, #9]	@ zero_extendqisi2
+ 618              		.loc 1 274 12 view .LVU179
+ 619 002c 012B     		cmp	r3, #1
+ 620 002e 30D0     		beq	.L69
+ 275:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 276:Dsp/widget/wgt_core/UI_Controller.c ****             /* fill button frame */
+ 277:Dsp/widget/wgt_core/UI_Controller.c ****             UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj
+ 278:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 279:Dsp/widget/wgt_core/UI_Controller.c ****             /* invert string display */
+ 280:Dsp/widget/wgt_core/UI_Controller.c ****             if (Obj->PushDown_Label != NULL)
+ 281:Dsp/widget/wgt_core/UI_Controller.c ****                 UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Ob
+ 282:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 283:Dsp/widget/wgt_core/UI_Controller.c ****         else
+ 284:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 285:Dsp/widget/wgt_core/UI_Controller.c ****             /* draw button frame */
+ 286:Dsp/widget/wgt_core/UI_Controller.c ****             UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj
+ 621              		.loc 1 286 13 is_stmt 1 view .LVU180
+ 622 0030 0123     		movs	r3, #1
+ 623 0032 0293     		str	r3, [sp, #8]
+ 624 0034 0193     		str	r3, [sp, #4]
+ 625 0036 0323     		movs	r3, #3
+ 626 0038 0093     		str	r3, [sp]
+ 627 003a 237F     		ldrb	r3, [r4, #28]	@ zero_extendqisi2
+ 628 003c E27E     		ldrb	r2, [r4, #27]	@ zero_extendqisi2
+ 629 003e 94F90510 		ldrsb	r1, [r4, #5]
+ 630 0042 94F90400 		ldrsb	r0, [r4, #4]
+ 631 0046 B047     		blx	r6
+ 632              	.LVL56:
+ 287:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 288:Dsp/widget/wgt_core/UI_Controller.c ****             if (Obj->type == Lock_Btn)
+ 633              		.loc 1 288 13 view .LVU181
+ 634              		.loc 1 288 20 is_stmt 0 view .LVU182
+ 635 0048 A37A     		ldrb	r3, [r4, #10]	@ zero_extendqisi2
+ 636              		.loc 1 288 16 view .LVU183
+ 637 004a 012B     		cmp	r3, #1
+ 638 004c 3BD0     		beq	.L70
+ 289:Dsp/widget/wgt_core/UI_Controller.c ****             {
+ 290:Dsp/widget/wgt_core/UI_Controller.c ****                 /* display label normally */
+ 291:Dsp/widget/wgt_core/UI_Controller.c ****                 if (Obj->Release_Label != NULL)
+ 292:Dsp/widget/wgt_core/UI_Controller.c ****                     UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 9,
+ 293:Dsp/widget/wgt_core/UI_Controller.c ****             }
+ 294:Dsp/widget/wgt_core/UI_Controller.c ****             else
+ 295:Dsp/widget/wgt_core/UI_Controller.c ****             {
+ 296:Dsp/widget/wgt_core/UI_Controller.c ****                 if (Obj->PushDown_Label != NULL)
+ 639              		.loc 1 296 17 is_stmt 1 view .LVU184
+ 640              		.loc 1 296 24 is_stmt 0 view .LVU185
+ 641 004e D4F81310 		ldr	r1, [r4, #19]	@ unaligned
+ 642              		.loc 1 296 20 view .LVU186
+ 643 0052 0029     		cmp	r1, #0
+ 644 0054 56D0     		beq	.L66
+ 297:Dsp/widget/wgt_core/UI_Controller.c ****                     UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 18
+
+
+ 645              		.loc 1 297 21 is_stmt 1 view .LVU187
+ 646              		.loc 1 297 36 is_stmt 0 view .LVU188
+ 647 0056 2C4B     		ldr	r3, .L72
+ 648 0058 1E68     		ldr	r6, [r3]
+ 649              		.loc 1 297 94 view .LVU189
+ 650 005a 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 651              		.loc 1 297 97 view .LVU190
+ 652 005c 0532     		adds	r2, r2, #5
+ 653              		.loc 1 297 21 view .LVU191
+ 654 005e 0125     		movs	r5, #1
+ 655 0060 0095     		str	r5, [sp]
+ 656 0062 94F90530 		ldrsb	r3, [r4, #5]
+ 657 0066 52B2     		sxtb	r2, r2
+ 658 0068 0C20     		movs	r0, #12
+ 659 006a B047     		blx	r6
+ 660              	.LVL57:
+ 298:Dsp/widget/wgt_core/UI_Controller.c ****             }
+ 299:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 300:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 301:Dsp/widget/wgt_core/UI_Controller.c ****     else
+ 302:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 303:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 304:Dsp/widget/wgt_core/UI_Controller.c ****     return true;
+ 661              		.loc 1 304 12 view .LVU192
+ 662 006c 2846     		mov	r0, r5
+ 663 006e 3BE0     		b	.L54
+ 664              	.L68:
+ 256:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 665              		.loc 1 256 9 is_stmt 1 view .LVU193
+ 256:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 666              		.loc 1 256 16 is_stmt 0 view .LVU194
+ 667 0070 637A     		ldrb	r3, [r4, #9]	@ zero_extendqisi2
+ 256:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 668              		.loc 1 256 12 view .LVU195
+ 669 0072 012B     		cmp	r3, #1
+ 670 0074 07D0     		beq	.L71
+ 261:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 671              		.loc 1 261 14 is_stmt 1 view .LVU196
+ 261:Dsp/widget/wgt_core/UI_Controller.c ****         {
+ 672              		.loc 1 261 17 is_stmt 0 view .LVU197
+ 673 0076 002B     		cmp	r3, #0
+ 674 0078 38D1     		bne	.L60
+ 263:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->release_callback();
+ 675              		.loc 1 263 13 is_stmt 1 view .LVU198
+ 263:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->release_callback();
+ 676              		.loc 1 263 20 is_stmt 0 view .LVU199
+ 677 007a D4F80F30 		ldr	r3, [r4, #15]	@ unaligned
+ 263:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->release_callback();
+ 678              		.loc 1 263 16 view .LVU200
+ 679 007e 002B     		cmp	r3, #0
+ 680 0080 C8D0     		beq	.L55
+ 264:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 681              		.loc 1 264 17 is_stmt 1 view .LVU201
+ 682 0082 9847     		blx	r3
+ 683              	.LVL58:
+ 684 0084 C6E7     		b	.L55
+ 685              	.L71:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 19
+
+
+ 258:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 686              		.loc 1 258 13 view .LVU202
+ 258:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 687              		.loc 1 258 20 is_stmt 0 view .LVU203
+ 688 0086 D4F80B30 		ldr	r3, [r4, #11]	@ unaligned
+ 258:Dsp/widget/wgt_core/UI_Controller.c ****                 Obj->push_callback();
+ 689              		.loc 1 258 16 view .LVU204
+ 690 008a 002B     		cmp	r3, #0
+ 691 008c C2D0     		beq	.L55
+ 259:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 692              		.loc 1 259 17 is_stmt 1 view .LVU205
+ 693 008e 9847     		blx	r3
+ 694              	.LVL59:
+ 695 0090 C0E7     		b	.L55
+ 696              	.L69:
+ 277:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 697              		.loc 1 277 13 view .LVU206
+ 698 0092 0193     		str	r3, [sp, #4]
+ 699 0094 0323     		movs	r3, #3
+ 700 0096 0093     		str	r3, [sp]
+ 701 0098 237F     		ldrb	r3, [r4, #28]	@ zero_extendqisi2
+ 702 009a E27E     		ldrb	r2, [r4, #27]	@ zero_extendqisi2
+ 703 009c 94F90510 		ldrsb	r1, [r4, #5]
+ 704 00a0 94F90400 		ldrsb	r0, [r4, #4]
+ 705 00a4 A847     		blx	r5
+ 706              	.LVL60:
+ 280:Dsp/widget/wgt_core/UI_Controller.c ****                 UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Ob
+ 707              		.loc 1 280 13 view .LVU207
+ 280:Dsp/widget/wgt_core/UI_Controller.c ****                 UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Ob
+ 708              		.loc 1 280 20 is_stmt 0 view .LVU208
+ 709 00a6 D4F81310 		ldr	r1, [r4, #19]	@ unaligned
+ 280:Dsp/widget/wgt_core/UI_Controller.c ****                 UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Ob
+ 710              		.loc 1 280 16 view .LVU209
+ 711 00aa 39B3     		cbz	r1, .L64
+ 281:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 712              		.loc 1 281 17 is_stmt 1 view .LVU210
+ 281:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 713              		.loc 1 281 32 is_stmt 0 view .LVU211
+ 714 00ac 164B     		ldr	r3, .L72
+ 715 00ae 1E68     		ldr	r6, [r3]
+ 281:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 716              		.loc 1 281 90 view .LVU212
+ 717 00b0 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 281:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 718              		.loc 1 281 93 view .LVU213
+ 719 00b2 0532     		adds	r2, r2, #5
+ 281:Dsp/widget/wgt_core/UI_Controller.c ****         }
+ 720              		.loc 1 281 17 view .LVU214
+ 721 00b4 0125     		movs	r5, #1
+ 722 00b6 0095     		str	r5, [sp]
+ 723 00b8 94F90530 		ldrsb	r3, [r4, #5]
+ 724 00bc 52B2     		sxtb	r2, r2
+ 725 00be 0C20     		movs	r0, #12
+ 726 00c0 B047     		blx	r6
+ 727              	.LVL61:
+ 728              		.loc 1 304 12 view .LVU215
+ 729 00c2 2846     		mov	r0, r5
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 20
+
+
+ 730 00c4 10E0     		b	.L54
+ 731              	.L70:
+ 291:Dsp/widget/wgt_core/UI_Controller.c ****                     UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 9,
+ 732              		.loc 1 291 17 is_stmt 1 view .LVU216
+ 291:Dsp/widget/wgt_core/UI_Controller.c ****                     UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 9,
+ 733              		.loc 1 291 24 is_stmt 0 view .LVU217
+ 734 00c6 D4F81710 		ldr	r1, [r4, #23]	@ unaligned
+ 291:Dsp/widget/wgt_core/UI_Controller.c ****                     UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 9,
+ 735              		.loc 1 291 20 view .LVU218
+ 736 00ca C9B1     		cbz	r1, .L65
+ 292:Dsp/widget/wgt_core/UI_Controller.c ****             }
+ 737              		.loc 1 292 21 is_stmt 1 view .LVU219
+ 292:Dsp/widget/wgt_core/UI_Controller.c ****             }
+ 738              		.loc 1 292 36 is_stmt 0 view .LVU220
+ 739 00cc 0E4B     		ldr	r3, .L72
+ 740 00ce 1E68     		ldr	r6, [r3]
+ 292:Dsp/widget/wgt_core/UI_Controller.c ****             }
+ 741              		.loc 1 292 93 view .LVU221
+ 742 00d0 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 292:Dsp/widget/wgt_core/UI_Controller.c ****             }
+ 743              		.loc 1 292 96 view .LVU222
+ 744 00d2 0932     		adds	r2, r2, #9
+ 292:Dsp/widget/wgt_core/UI_Controller.c ****             }
+ 745              		.loc 1 292 21 view .LVU223
+ 746 00d4 0125     		movs	r5, #1
+ 747 00d6 0095     		str	r5, [sp]
+ 748 00d8 94F90530 		ldrsb	r3, [r4, #5]
+ 749 00dc 52B2     		sxtb	r2, r2
+ 750 00de 0C20     		movs	r0, #12
+ 751 00e0 B047     		blx	r6
+ 752              	.LVL62:
+ 753              		.loc 1 304 12 view .LVU224
+ 754 00e2 2846     		mov	r0, r5
+ 755 00e4 00E0     		b	.L54
+ 756              	.L59:
+ 252:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 757              		.loc 1 252 16 view .LVU225
+ 758 00e6 0020     		movs	r0, #0
+ 759              	.L54:
+ 305:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 760              		.loc 1 305 1 view .LVU226
+ 761 00e8 04B0     		add	sp, sp, #16
+ 762              	.LCFI11:
+ 763              		.cfi_remember_state
+ 764              		.cfi_def_cfa_offset 16
+ 765              		@ sp needed
+ 766 00ea 70BD     		pop	{r4, r5, r6, pc}
+ 767              	.LVL63:
+ 768              	.L60:
+ 769              	.LCFI12:
+ 770              		.cfi_restore_state
+ 267:Dsp/widget/wgt_core/UI_Controller.c ****     }
+ 771              		.loc 1 267 20 view .LVU227
+ 772 00ec 0020     		movs	r0, #0
+ 773 00ee FBE7     		b	.L54
+ 774              	.L61:
+ 302:Dsp/widget/wgt_core/UI_Controller.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 21
+
+
+ 775              		.loc 1 302 16 view .LVU228
+ 776 00f0 0020     		movs	r0, #0
+ 777 00f2 F9E7     		b	.L54
+ 778              	.L62:
+ 779 00f4 0020     		movs	r0, #0
+ 780 00f6 F7E7     		b	.L54
+ 781              	.L63:
+ 782 00f8 0020     		movs	r0, #0
+ 783 00fa F5E7     		b	.L54
+ 784              	.L64:
+ 304:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 785              		.loc 1 304 12 view .LVU229
+ 786 00fc 0120     		movs	r0, #1
+ 787 00fe F3E7     		b	.L54
+ 788              	.L65:
+ 304:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 789              		.loc 1 304 12 view .LVU230
+ 790 0100 0120     		movs	r0, #1
+ 791 0102 F1E7     		b	.L54
+ 792              	.L66:
+ 304:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 793              		.loc 1 304 12 view .LVU231
+ 794 0104 0120     		movs	r0, #1
+ 795 0106 EFE7     		b	.L54
+ 796              	.L73:
+ 797              		.align	2
+ 798              	.L72:
+ 799 0108 00000000 		.word	.LANCHOR0
+ 800              		.cfi_endproc
+ 801              	.LFE10:
+ 803              		.section	.text.UI_Set_DspInterface,"ax",%progbits
+ 804              		.align	1
+ 805              		.global	UI_Set_DspInterface
+ 806              		.syntax unified
+ 807              		.thumb
+ 808              		.thumb_func
+ 809              		.fpu fpv4-sp-d16
+ 811              	UI_Set_DspInterface:
+ 812              	.LVL64:
+ 813              	.LFB0:
+  51:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_circle = circle;
+ 814              		.loc 1 51 1 is_stmt 1 view -0
+ 815              		.cfi_startproc
+ 816              		@ args = 28, pretend = 0, frame = 0
+ 817              		@ frame_needed = 0, uses_anonymous_args = 0
+ 818              		@ link register save eliminated.
+  51:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_circle = circle;
+ 819              		.loc 1 51 1 is_stmt 0 view .LVU233
+ 820 0000 30B4     		push	{r4, r5}
+ 821              	.LCFI13:
+ 822              		.cfi_def_cfa_offset 8
+ 823              		.cfi_offset 4, -8
+ 824              		.cfi_offset 5, -4
+  52:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_circle_section = circle_section;
+ 825              		.loc 1 52 5 is_stmt 1 view .LVU234
+  52:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_circle_section = circle_section;
+ 826              		.loc 1 52 33 is_stmt 0 view .LVU235
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 22
+
+
+ 827 0002 0A4C     		ldr	r4, .L76
+ 828 0004 029D     		ldr	r5, [sp, #8]
+ 829 0006 6561     		str	r5, [r4, #20]
+  53:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_line = line;
+ 830              		.loc 1 53 5 is_stmt 1 view .LVU236
+  53:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_line = line;
+ 831              		.loc 1 53 41 is_stmt 0 view .LVU237
+ 832 0008 039D     		ldr	r5, [sp, #12]
+ 833 000a A561     		str	r5, [r4, #24]
+  54:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_point = point;
+ 834              		.loc 1 54 5 is_stmt 1 view .LVU238
+  54:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_point = point;
+ 835              		.loc 1 54 31 is_stmt 0 view .LVU239
+ 836 000c A160     		str	r1, [r4, #8]
+  55:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_rectangle = rectangle;
+ 837              		.loc 1 55 5 is_stmt 1 view .LVU240
+  55:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_rectangle = rectangle;
+ 838              		.loc 1 55 32 is_stmt 0 view .LVU241
+ 839 000e 6060     		str	r0, [r4, #4]
+  56:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_radius_rectangle = radius_rectangle;
+ 840              		.loc 1 56 5 is_stmt 1 view .LVU242
+  56:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_radius_rectangle = radius_rectangle;
+ 841              		.loc 1 56 36 is_stmt 0 view .LVU243
+ 842 0010 2261     		str	r2, [r4, #16]
+  57:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_str = str;
+ 843              		.loc 1 57 5 is_stmt 1 view .LVU244
+  57:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.draw_str = str;
+ 844              		.loc 1 57 43 is_stmt 0 view .LVU245
+ 845 0012 E360     		str	r3, [r4, #12]
+  58:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 846              		.loc 1 58 5 is_stmt 1 view .LVU246
+  58:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 847              		.loc 1 58 30 is_stmt 0 view .LVU247
+ 848 0014 049B     		ldr	r3, [sp, #16]
+ 849              	.LVL65:
+  58:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 850              		.loc 1 58 30 view .LVU248
+ 851 0016 2360     		str	r3, [r4]
+  60:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_circle_section = fillcircle_section;
+ 852              		.loc 1 60 5 is_stmt 1 view .LVU249
+  60:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_circle_section = fillcircle_section;
+ 853              		.loc 1 60 33 is_stmt 0 view .LVU250
+ 854 0018 059B     		ldr	r3, [sp, #20]
+ 855 001a 2362     		str	r3, [r4, #32]
+  61:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_radius_rectangle = fill_radius_rectangle;
+ 856              		.loc 1 61 5 is_stmt 1 view .LVU251
+  61:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_radius_rectangle = fill_radius_rectangle;
+ 857              		.loc 1 61 41 is_stmt 0 view .LVU252
+ 858 001c 069B     		ldr	r3, [sp, #24]
+ 859 001e 6362     		str	r3, [r4, #36]
+  62:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_rectangle = fill_rectangle;
+ 860              		.loc 1 62 5 is_stmt 1 view .LVU253
+  62:Dsp/widget/wgt_core/UI_Controller.c ****     UI_DspInterface.fill_rectangle = fill_rectangle;
+ 861              		.loc 1 62 43 is_stmt 0 view .LVU254
+ 862 0020 089B     		ldr	r3, [sp, #32]
+ 863 0022 A362     		str	r3, [r4, #40]
+  63:Dsp/widget/wgt_core/UI_Controller.c **** }
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 23
+
+
+ 864              		.loc 1 63 5 is_stmt 1 view .LVU255
+  63:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 865              		.loc 1 63 36 is_stmt 0 view .LVU256
+ 866 0024 079B     		ldr	r3, [sp, #28]
+ 867 0026 E361     		str	r3, [r4, #28]
+  64:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 868              		.loc 1 64 1 view .LVU257
+ 869 0028 30BC     		pop	{r4, r5}
+ 870              	.LCFI14:
+ 871              		.cfi_restore 5
+ 872              		.cfi_restore 4
+ 873              		.cfi_def_cfa_offset 0
+ 874              	.LVL66:
+  64:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 875              		.loc 1 64 1 view .LVU258
+ 876 002a 7047     		bx	lr
+ 877              	.L77:
+ 878              		.align	2
+ 879              	.L76:
+ 880 002c 00000000 		.word	.LANCHOR0
+ 881              		.cfi_endproc
+ 882              	.LFE0:
+ 884              		.section	.text.UI_ShowSelector,"ax",%progbits
+ 885              		.align	1
+ 886              		.global	UI_ShowSelector
+ 887              		.syntax unified
+ 888              		.thumb
+ 889              		.thumb_func
+ 890              		.fpu fpv4-sp-d16
+ 892              	UI_ShowSelector:
+ 893              	.LVL67:
+ 894              	.LFB1:
+  69:Dsp/widget/wgt_core/UI_Controller.c ****     /* button selector coordinate */
+ 895              		.loc 1 69 1 is_stmt 1 view -0
+ 896              		.cfi_startproc
+ 897              		@ args = 0, pretend = 0, frame = 0
+ 898              		@ frame_needed = 0, uses_anonymous_args = 0
+  71:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_LftUp_Y = 0;
+ 899              		.loc 1 71 5 view .LVU260
+  72:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_LftDwn_X = 0;
+ 900              		.loc 1 72 5 view .LVU261
+  73:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_LftDwn_Y = 0;
+ 901              		.loc 1 73 5 view .LVU262
+  74:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtUp_X = 0;
+ 902              		.loc 1 74 5 view .LVU263
+  75:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtUp_Y = 0;
+ 903              		.loc 1 75 5 view .LVU264
+  76:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtDwn_X = 0;
+ 904              		.loc 1 76 5 view .LVU265
+  77:Dsp/widget/wgt_core/UI_Controller.c ****     int8_t Btn_Slct_RgtDwn_Y = 0;
+ 905              		.loc 1 77 5 view .LVU266
+  78:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 906              		.loc 1 78 5 view .LVU267
+  80:Dsp/widget/wgt_core/UI_Controller.c ****         (UI_DspInterface.fill_circle_section == NULL))
+ 907              		.loc 1 80 5 view .LVU268
+  80:Dsp/widget/wgt_core/UI_Controller.c ****         (UI_DspInterface.fill_circle_section == NULL))
+ 908              		.loc 1 80 8 is_stmt 0 view .LVU269
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 24
+
+
+ 909 0000 0028     		cmp	r0, #0
+ 910 0002 3FD0     		beq	.L80
+  81:Dsp/widget/wgt_core/UI_Controller.c ****         return false;
+ 911              		.loc 1 81 25 discriminator 1 view .LVU270
+ 912 0004 224A     		ldr	r2, .L87
+ 913 0006 526A     		ldr	r2, [r2, #36]
+  80:Dsp/widget/wgt_core/UI_Controller.c ****         (UI_DspInterface.fill_circle_section == NULL))
+ 914              		.loc 1 80 24 discriminator 1 view .LVU271
+ 915 0008 002A     		cmp	r2, #0
+ 916 000a 3DD0     		beq	.L81
+  84:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 917              		.loc 1 84 5 is_stmt 1 view .LVU272
+  84:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 918              		.loc 1 84 27 is_stmt 0 view .LVU273
+ 919 000c 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+  84:Dsp/widget/wgt_core/UI_Controller.c ****     {
+ 920              		.loc 1 84 5 view .LVU274
+ 921 000e 002A     		cmp	r2, #0
+ 922 0010 3CD1     		bne	.L82
+  69:Dsp/widget/wgt_core/UI_Controller.c ****     /* button selector coordinate */
+ 923              		.loc 1 69 1 view .LVU275
+ 924 0012 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 925              	.LCFI15:
+ 926              		.cfi_def_cfa_offset 32
+ 927              		.cfi_offset 4, -32
+ 928              		.cfi_offset 5, -28
+ 929              		.cfi_offset 6, -24
+ 930              		.cfi_offset 7, -20
+ 931              		.cfi_offset 8, -16
+ 932              		.cfi_offset 9, -12
+ 933              		.cfi_offset 10, -8
+ 934              		.cfi_offset 14, -4
+ 935 0016 82B0     		sub	sp, sp, #8
+ 936              	.LCFI16:
+ 937              		.cfi_def_cfa_offset 40
+  88:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_T
+ 938              		.loc 1 88 9 is_stmt 1 view .LVU276
+  88:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_T
+ 939              		.loc 1 88 58 is_stmt 0 view .LVU277
+ 940 0018 4368     		ldr	r3, [r0, #4]
+  88:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_T
+ 941              		.loc 1 88 26 view .LVU278
+ 942 001a 93F90490 		ldrsb	r9, [r3, #4]
+ 943              	.LVL68:
+  89:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 944              		.loc 1 89 9 is_stmt 1 view .LVU279
+  89:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 945              		.loc 1 89 79 is_stmt 0 view .LVU280
+ 946 001e 93F90580 		ldrsb	r8, [r3, #5]
+  89:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 947              		.loc 1 89 125 view .LVU281
+ 948 0022 1D7F     		ldrb	r5, [r3, #28]	@ zero_extendqisi2
+  89:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 949              		.loc 1 89 82 view .LVU282
+ 950 0024 55FA88F5 		uxtab	r5, r5, r8
+ 951 0028 EDB2     		uxtb	r5, r5
+  89:Dsp/widget/wgt_core/UI_Controller.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 25
+
+
+ 952              		.loc 1 89 134 view .LVU283
+ 953 002a 013D     		subs	r5, r5, #1
+  89:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 954              		.loc 1 89 26 view .LVU284
+ 955 002c 4FFA85FA 		sxtb	r10, r5
+ 956              	.LVL69:
+  91:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_LftDwn_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y;
+ 957              		.loc 1 91 9 is_stmt 1 view .LVU285
+  92:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 958              		.loc 1 92 9 view .LVU286
+  94:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
+ 959              		.loc 1 94 9 view .LVU287
+  94:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
+ 960              		.loc 1 94 125 is_stmt 0 view .LVU288
+ 961 0030 DE7E     		ldrb	r6, [r3, #27]	@ zero_extendqisi2
+  94:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
+ 962              		.loc 1 94 82 view .LVU289
+ 963 0032 56FA89F6 		uxtab	r6, r6, r9
+  94:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
+ 964              		.loc 1 94 26 view .LVU290
+ 965 0036 76B2     		sxtb	r6, r6
+ 966              	.LVL70:
+  95:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 967              		.loc 1 95 9 is_stmt 1 view .LVU291
+  97:Dsp/widget/wgt_core/UI_Controller.c ****         Btn_Slct_RgtDwn_Y = Btn_Slct_LftDwn_Y;
+ 968              		.loc 1 97 9 view .LVU292
+  98:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 969              		.loc 1 98 9 view .LVU293
+ 101:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_R
+ 970              		.loc 1 101 9 view .LVU294
+ 101:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_R
+ 971              		.loc 1 101 24 is_stmt 0 view .LVU295
+ 972 0038 154F     		ldr	r7, .L87
+ 101:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_R
+ 973              		.loc 1 101 9 view .LVU296
+ 974 003a 0124     		movs	r4, #1
+ 975 003c 0194     		str	r4, [sp, #4]
+ 976 003e 0094     		str	r4, [sp]
+ 977 0040 0423     		movs	r3, #4
+ 978 0042 0222     		movs	r2, #2
+ 979 0044 5146     		mov	r1, r10
+ 980 0046 4846     		mov	r0, r9
+ 981              	.LVL71:
+ 101:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_R
+ 982              		.loc 1 101 9 view .LVU297
+ 983 0048 BD69     		ldr	r5, [r7, #24]
+ 984 004a A847     		blx	r5
+ 985              	.LVL72:
+ 102:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_RgtUp_X, Btn_Slct_RgtUp_Y, BUTTON_SELECTOR_RAD
+ 986              		.loc 1 102 9 is_stmt 1 view .LVU298
+ 987 004c 0194     		str	r4, [sp, #4]
+ 988 004e 0094     		str	r4, [sp]
+ 989 0050 0223     		movs	r3, #2
+ 990 0052 1A46     		mov	r2, r3
+ 991 0054 4146     		mov	r1, r8
+ 992 0056 4846     		mov	r0, r9
+ 993 0058 BD69     		ldr	r5, [r7, #24]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 26
+
+
+ 994 005a A847     		blx	r5
+ 995              	.LVL73:
+ 103:Dsp/widget/wgt_core/UI_Controller.c ****         UI_DspInterface.draw_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_R
+ 996              		.loc 1 103 9 view .LVU299
+ 997 005c 0194     		str	r4, [sp, #4]
+ 998 005e 0094     		str	r4, [sp]
+ 999 0060 0823     		movs	r3, #8
+ 1000 0062 0222     		movs	r2, #2
+ 1001 0064 5146     		mov	r1, r10
+ 1002 0066 3046     		mov	r0, r6
+ 1003 0068 BD69     		ldr	r5, [r7, #24]
+ 1004 006a A847     		blx	r5
+ 1005              	.LVL74:
+ 104:Dsp/widget/wgt_core/UI_Controller.c ****         break;
+ 1006              		.loc 1 104 9 view .LVU300
+ 104:Dsp/widget/wgt_core/UI_Controller.c ****         break;
+ 1007              		.loc 1 104 24 is_stmt 0 view .LVU301
+ 1008 006c BD69     		ldr	r5, [r7, #24]
+ 104:Dsp/widget/wgt_core/UI_Controller.c ****         break;
+ 1009              		.loc 1 104 9 view .LVU302
+ 1010 006e 0194     		str	r4, [sp, #4]
+ 1011 0070 0094     		str	r4, [sp]
+ 1012 0072 2346     		mov	r3, r4
+ 1013 0074 0222     		movs	r2, #2
+ 1014 0076 4146     		mov	r1, r8
+ 1015 0078 3046     		mov	r0, r6
+ 1016 007a A847     		blx	r5
+ 1017              	.LVL75:
+ 105:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 1018              		.loc 1 105 9 is_stmt 1 view .LVU303
+ 110:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 1019              		.loc 1 110 12 is_stmt 0 view .LVU304
+ 1020 007c 2046     		mov	r0, r4
+ 111:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 1021              		.loc 1 111 1 view .LVU305
+ 1022 007e 02B0     		add	sp, sp, #8
+ 1023              	.LCFI17:
+ 1024              		.cfi_def_cfa_offset 32
+ 1025              		@ sp needed
+ 1026 0080 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1027              	.LVL76:
+ 1028              	.L80:
+ 1029              	.LCFI18:
+ 1030              		.cfi_def_cfa_offset 0
+ 1031              		.cfi_restore 4
+ 1032              		.cfi_restore 5
+ 1033              		.cfi_restore 6
+ 1034              		.cfi_restore 7
+ 1035              		.cfi_restore 8
+ 1036              		.cfi_restore 9
+ 1037              		.cfi_restore 10
+ 1038              		.cfi_restore 14
+  82:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 1039              		.loc 1 82 16 view .LVU306
+ 1040 0084 0020     		movs	r0, #0
+ 1041              	.LVL77:
+  82:Dsp/widget/wgt_core/UI_Controller.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 27
+
+
+ 1042              		.loc 1 82 16 view .LVU307
+ 1043 0086 7047     		bx	lr
+ 1044              	.LVL78:
+ 1045              	.L81:
+  82:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 1046              		.loc 1 82 16 view .LVU308
+ 1047 0088 0020     		movs	r0, #0
+ 1048              	.LVL79:
+  82:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 1049              		.loc 1 82 16 view .LVU309
+ 1050 008a 7047     		bx	lr
+ 1051              	.LVL80:
+ 1052              	.L82:
+ 110:Dsp/widget/wgt_core/UI_Controller.c **** }
+ 1053              		.loc 1 110 12 view .LVU310
+ 1054 008c 0120     		movs	r0, #1
+ 1055              	.LVL81:
+ 111:Dsp/widget/wgt_core/UI_Controller.c **** 
+ 1056              		.loc 1 111 1 view .LVU311
+ 1057 008e 7047     		bx	lr
+ 1058              	.L88:
+ 1059              		.align	2
+ 1060              	.L87:
+ 1061 0090 00000000 		.word	.LANCHOR0
+ 1062              		.cfi_endproc
+ 1063              	.LFE1:
+ 1065              		.global	UI_CheckBox
+ 1066              		.global	UI_Button
+ 1067              		.section	.bss.UI_CheckBox,"aw",%nobits
+ 1068              		.align	2
+ 1071              	UI_CheckBox:
+ 1072 0000 00000000 		.space	4
+ 1073              		.section	.bss.UI_DspInterface,"aw",%nobits
+ 1074              		.align	2
+ 1075              		.set	.LANCHOR0,. + 0
+ 1078              	UI_DspInterface:
+ 1079 0000 00000000 		.space	44
+ 1079      00000000 
+ 1079      00000000 
+ 1079      00000000 
+ 1079      00000000 
+ 1080              		.section	.data.UI_Button,"aw"
+ 1081              		.align	2
+ 1084              	UI_Button:
+ 1085 0000 00000000 		.word	UI_Button_Init
+ 1086 0004 00000000 		.word	UI_Button_Set_TriggerCallback
+ 1087 0008 00000000 		.word	UI_Button_Set_Label
+ 1088 000c 00000000 		.word	UI_Button_Push
+ 1089 0010 00000000 		.word	UI_Button_Release
+ 1090 0014 00000000 		.word	UI_Button_Ctl
+ 1091 0018 00000000 		.word	UI_Button_Move
+ 1092              		.text
+ 1093              	.Letext0:
+ 1094              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 1095              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 1096              		.file 4 "SYS/runtime/runtime.h"
+ 1097              		.file 5 "Dsp/widget/wgt_core/UI_Controller.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 28
+
+
+ 1098              		.file 6 "Dsp/screen/font/oledfont.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s 			page 29
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 UI_Controller.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:18     .text.UI_GenData_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:25     .text.UI_GenData_Init:0000000000000000 UI_GenData_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:55     .text.UI_Move:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:61     .text.UI_Move:0000000000000000 UI_Move
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:95     .rodata.UI_Button_Init.str1.4:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:102    .text.UI_Button_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:108    .text.UI_Button_Init:0000000000000000 UI_Button_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:179    .text.UI_Button_Init:0000000000000044 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:185    .text.UI_Button_Set_Label:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:191    .text.UI_Button_Set_Label:0000000000000000 UI_Button_Set_Label
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:235    .text.UI_Button_Set_TriggerCallback:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:241    .text.UI_Button_Set_TriggerCallback:0000000000000000 UI_Button_Set_TriggerCallback
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:295    .text.UI_Button_Push:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:301    .text.UI_Button_Push:0000000000000000 UI_Button_Push
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:418    .text.UI_Button_Release:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:424    .text.UI_Button_Release:0000000000000000 UI_Button_Release
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:510    .text.UI_Button_Move:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:516    .text.UI_Button_Move:0000000000000000 UI_Button_Move
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:557    .text.UI_Button_Ctl:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:563    .text.UI_Button_Ctl:0000000000000000 UI_Button_Ctl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:799    .text.UI_Button_Ctl:0000000000000108 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:804    .text.UI_Set_DspInterface:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:811    .text.UI_Set_DspInterface:0000000000000000 UI_Set_DspInterface
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:880    .text.UI_Set_DspInterface:000000000000002c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:885    .text.UI_ShowSelector:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:892    .text.UI_ShowSelector:0000000000000000 UI_ShowSelector
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:1061   .text.UI_ShowSelector:0000000000000090 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:1071   .bss.UI_CheckBox:0000000000000000 UI_CheckBox
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:1084   .data.UI_Button:0000000000000000 UI_Button
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:1068   .bss.UI_CheckBox:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:1074   .bss.UI_DspInterface:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:1078   .bss.UI_DspInterface:0000000000000000 UI_DspInterface
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccOy5xt7.s:1081   .data.UI_Button:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+Get_CurrentRunningMs
