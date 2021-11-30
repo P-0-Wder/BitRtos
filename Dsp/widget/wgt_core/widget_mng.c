@@ -1031,6 +1031,8 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
 
 static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
 {
+    if ((UI_item == NULL) || (UI_item->data == NULL))
+        return false;
 
     return false;
 }
@@ -1039,7 +1041,7 @@ static void WidgetUI_Fresh(void)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
-    // List_traverse_HaltByCondition();
+    List_traverse_HaltByCondition(tmp->UICtl_List, WidgetUI_Fresh_CallBack, NULL, pre_callback, false);
 }
 
 static int8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
