@@ -1,0 +1,553 @@
+ARM GAS  /tmp/ccz1RXIR.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"misc.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.NVIC_PriorityGroupConfig,"ax",%progbits
+  18              		.align	1
+  19              		.global	NVIC_PriorityGroupConfig
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	NVIC_PriorityGroupConfig:
+  26              	.LFB123:
+  27              		.file 1 "FWLIB/src/misc.c"
+   1:FWLIB/src/misc.c **** /**
+   2:FWLIB/src/misc.c ****   ******************************************************************************
+   3:FWLIB/src/misc.c ****   * @file    misc.c
+   4:FWLIB/src/misc.c ****   * @author  MCD Application Team
+   5:FWLIB/src/misc.c ****   * @version V1.8.0
+   6:FWLIB/src/misc.c ****   * @date    04-November-2016
+   7:FWLIB/src/misc.c ****   * @brief   This file provides all the miscellaneous firmware functions (add-on
+   8:FWLIB/src/misc.c ****   *          to CMSIS functions).
+   9:FWLIB/src/misc.c ****   *          
+  10:FWLIB/src/misc.c ****   *  @verbatim   
+  11:FWLIB/src/misc.c ****   *                               
+  12:FWLIB/src/misc.c ****   *          ===================================================================      
+  13:FWLIB/src/misc.c ****   *                        How to configure Interrupts using driver 
+  14:FWLIB/src/misc.c ****   *          ===================================================================      
+  15:FWLIB/src/misc.c ****   * 
+  16:FWLIB/src/misc.c ****   *            This section provide functions allowing to configure the NVIC interrupts (IRQ).
+  17:FWLIB/src/misc.c ****   *            The Cortex-M4 exceptions are managed by CMSIS functions.
+  18:FWLIB/src/misc.c ****   *
+  19:FWLIB/src/misc.c ****   *            1. Configure the NVIC Priority Grouping using NVIC_PriorityGroupConfig()
+  20:FWLIB/src/misc.c ****   *                function according to the following table.
+  21:FWLIB/src/misc.c ****  
+  22:FWLIB/src/misc.c ****   *  The table below gives the allowed values of the pre-emption priority and subpriority according
+  23:FWLIB/src/misc.c ****   *  to the Priority Grouping configuration performed by NVIC_PriorityGroupConfig function
+  24:FWLIB/src/misc.c ****   *    ============================================================================================
+  25:FWLIB/src/misc.c ****   *      NVIC_PriorityGroup   | NVIC_IRQChannelPreemptionPriority | NVIC_IRQChannelSubPriority  |  
+  26:FWLIB/src/misc.c ****   *    ============================================================================================
+  27:FWLIB/src/misc.c ****   *     NVIC_PriorityGroup_0  |                0                  |            0-15             | 0
+  28:FWLIB/src/misc.c ****   *                           |                                   |                             | 4
+  29:FWLIB/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  30:FWLIB/src/misc.c ****   *     NVIC_PriorityGroup_1  |                0-1                |            0-7              | 1
+  31:FWLIB/src/misc.c ****   *                           |                                   |                             | 3
+ARM GAS  /tmp/ccz1RXIR.s 			page 2
+
+
+  32:FWLIB/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  33:FWLIB/src/misc.c ****   *     NVIC_PriorityGroup_2  |                0-3                |            0-3              | 2
+  34:FWLIB/src/misc.c ****   *                           |                                   |                             | 2
+  35:FWLIB/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  36:FWLIB/src/misc.c ****   *     NVIC_PriorityGroup_3  |                0-7                |            0-1              | 3
+  37:FWLIB/src/misc.c ****   *                           |                                   |                             | 1
+  38:FWLIB/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  39:FWLIB/src/misc.c ****   *     NVIC_PriorityGroup_4  |                0-15               |            0                | 4
+  40:FWLIB/src/misc.c ****   *                           |                                   |                             | 0
+  41:FWLIB/src/misc.c ****   *    ============================================================================================
+  42:FWLIB/src/misc.c ****   *
+  43:FWLIB/src/misc.c ****   *            2. Enable and Configure the priority of the selected IRQ Channels using NVIC_Init() 
+  44:FWLIB/src/misc.c ****   *
+  45:FWLIB/src/misc.c ****   * @note  When the NVIC_PriorityGroup_0 is selected, IRQ pre-emption is no more possible. 
+  46:FWLIB/src/misc.c ****   *        The pending IRQ priority will be managed only by the subpriority.
+  47:FWLIB/src/misc.c ****   *
+  48:FWLIB/src/misc.c ****   * @note  IRQ priority order (sorted by highest to lowest priority):
+  49:FWLIB/src/misc.c ****   *         - Lowest pre-emption priority
+  50:FWLIB/src/misc.c ****   *         - Lowest subpriority
+  51:FWLIB/src/misc.c ****   *         - Lowest hardware priority (IRQ number)
+  52:FWLIB/src/misc.c ****   *
+  53:FWLIB/src/misc.c ****   *  @endverbatim
+  54:FWLIB/src/misc.c ****   *
+  55:FWLIB/src/misc.c ****   ******************************************************************************
+  56:FWLIB/src/misc.c ****   * @attention
+  57:FWLIB/src/misc.c ****   *
+  58:FWLIB/src/misc.c ****   * <h2><center>&copy; COPYRIGHT 2016 STMicroelectronics</center></h2>
+  59:FWLIB/src/misc.c ****   *
+  60:FWLIB/src/misc.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  61:FWLIB/src/misc.c ****   * You may not use this file except in compliance with the License.
+  62:FWLIB/src/misc.c ****   * You may obtain a copy of the License at:
+  63:FWLIB/src/misc.c ****   *
+  64:FWLIB/src/misc.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  65:FWLIB/src/misc.c ****   *
+  66:FWLIB/src/misc.c ****   * Unless required by applicable law or agreed to in writing, software 
+  67:FWLIB/src/misc.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  68:FWLIB/src/misc.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  69:FWLIB/src/misc.c ****   * See the License for the specific language governing permissions and
+  70:FWLIB/src/misc.c ****   * limitations under the License.
+  71:FWLIB/src/misc.c ****   *
+  72:FWLIB/src/misc.c ****   ******************************************************************************
+  73:FWLIB/src/misc.c ****   */
+  74:FWLIB/src/misc.c **** 
+  75:FWLIB/src/misc.c **** /* Includes ------------------------------------------------------------------*/
+  76:FWLIB/src/misc.c **** #include "misc.h"
+  77:FWLIB/src/misc.c **** 
+  78:FWLIB/src/misc.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+  79:FWLIB/src/misc.c ****   * @{
+  80:FWLIB/src/misc.c ****   */
+  81:FWLIB/src/misc.c **** 
+  82:FWLIB/src/misc.c **** /** @defgroup MISC 
+  83:FWLIB/src/misc.c ****   * @brief MISC driver modules
+  84:FWLIB/src/misc.c ****   * @{
+  85:FWLIB/src/misc.c ****   */
+  86:FWLIB/src/misc.c **** 
+  87:FWLIB/src/misc.c **** /* Private typedef -----------------------------------------------------------*/
+  88:FWLIB/src/misc.c **** /* Private define ------------------------------------------------------------*/
+ARM GAS  /tmp/ccz1RXIR.s 			page 3
+
+
+  89:FWLIB/src/misc.c **** #define AIRCR_VECTKEY_MASK    ((uint32_t)0x05FA0000)
+  90:FWLIB/src/misc.c **** 
+  91:FWLIB/src/misc.c **** /* Private macro -------------------------------------------------------------*/
+  92:FWLIB/src/misc.c **** /* Private variables ---------------------------------------------------------*/
+  93:FWLIB/src/misc.c **** /* Private function prototypes -----------------------------------------------*/
+  94:FWLIB/src/misc.c **** /* Private functions ---------------------------------------------------------*/
+  95:FWLIB/src/misc.c **** 
+  96:FWLIB/src/misc.c **** /** @defgroup MISC_Private_Functions
+  97:FWLIB/src/misc.c ****   * @{
+  98:FWLIB/src/misc.c ****   */
+  99:FWLIB/src/misc.c **** 
+ 100:FWLIB/src/misc.c **** /**
+ 101:FWLIB/src/misc.c ****   * @brief  Configures the priority grouping: pre-emption priority and subpriority.
+ 102:FWLIB/src/misc.c ****   * @param  NVIC_PriorityGroup: specifies the priority grouping bits length. 
+ 103:FWLIB/src/misc.c ****   *   This parameter can be one of the following values:
+ 104:FWLIB/src/misc.c ****   *     @arg NVIC_PriorityGroup_0: 0 bits for pre-emption priority
+ 105:FWLIB/src/misc.c ****   *                                4 bits for subpriority
+ 106:FWLIB/src/misc.c ****   *     @arg NVIC_PriorityGroup_1: 1 bits for pre-emption priority
+ 107:FWLIB/src/misc.c ****   *                                3 bits for subpriority
+ 108:FWLIB/src/misc.c ****   *     @arg NVIC_PriorityGroup_2: 2 bits for pre-emption priority
+ 109:FWLIB/src/misc.c ****   *                                2 bits for subpriority
+ 110:FWLIB/src/misc.c ****   *     @arg NVIC_PriorityGroup_3: 3 bits for pre-emption priority
+ 111:FWLIB/src/misc.c ****   *                                1 bits for subpriority
+ 112:FWLIB/src/misc.c ****   *     @arg NVIC_PriorityGroup_4: 4 bits for pre-emption priority
+ 113:FWLIB/src/misc.c ****   *                                0 bits for subpriority
+ 114:FWLIB/src/misc.c ****   * @note   When the NVIC_PriorityGroup_0 is selected, IRQ pre-emption is no more possible. 
+ 115:FWLIB/src/misc.c ****   *         The pending IRQ priority will be managed only by the subpriority. 
+ 116:FWLIB/src/misc.c ****   * @retval None
+ 117:FWLIB/src/misc.c ****   */
+ 118:FWLIB/src/misc.c **** void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup)
+ 119:FWLIB/src/misc.c **** {
+  28              		.loc 1 119 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+ 120:FWLIB/src/misc.c ****   /* Check the parameters */
+ 121:FWLIB/src/misc.c ****   assert_param(IS_NVIC_PRIORITY_GROUP(NVIC_PriorityGroup));
+ 122:FWLIB/src/misc.c ****   
+ 123:FWLIB/src/misc.c ****   /* Set the PRIGROUP[10:8] bits according to NVIC_PriorityGroup value */
+ 124:FWLIB/src/misc.c ****   SCB->AIRCR = AIRCR_VECTKEY_MASK | NVIC_PriorityGroup;
+  34              		.loc 1 124 0
+  35 0000 40F0BF60 		orr	r0, r0, #100139008
+  36              	.LVL1:
+  37 0004 40F40030 		orr	r0, r0, #131072
+  38 0008 014B     		ldr	r3, .L2
+  39 000a D860     		str	r0, [r3, #12]
+  40 000c 7047     		bx	lr
+  41              	.L3:
+  42 000e 00BF     		.align	2
+  43              	.L2:
+  44 0010 00ED00E0 		.word	-536810240
+  45              		.cfi_endproc
+  46              	.LFE123:
+  48              		.section	.text.NVIC_Init,"ax",%progbits
+  49              		.align	1
+ARM GAS  /tmp/ccz1RXIR.s 			page 4
+
+
+  50              		.global	NVIC_Init
+  51              		.syntax unified
+  52              		.thumb
+  53              		.thumb_func
+  54              		.fpu fpv4-sp-d16
+  56              	NVIC_Init:
+  57              	.LFB124:
+ 125:FWLIB/src/misc.c **** }
+ 126:FWLIB/src/misc.c **** 
+ 127:FWLIB/src/misc.c **** /**
+ 128:FWLIB/src/misc.c ****   * @brief  Initializes the NVIC peripheral according to the specified
+ 129:FWLIB/src/misc.c ****   *         parameters in the NVIC_InitStruct.
+ 130:FWLIB/src/misc.c ****   * @note   To configure interrupts priority correctly, the NVIC_PriorityGroupConfig()
+ 131:FWLIB/src/misc.c ****   *         function should be called before. 
+ 132:FWLIB/src/misc.c ****   * @param  NVIC_InitStruct: pointer to a NVIC_InitTypeDef structure that contains
+ 133:FWLIB/src/misc.c ****   *         the configuration information for the specified NVIC peripheral.
+ 134:FWLIB/src/misc.c ****   * @retval None
+ 135:FWLIB/src/misc.c ****   */
+ 136:FWLIB/src/misc.c **** void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct)
+ 137:FWLIB/src/misc.c **** {
+  58              		.loc 1 137 0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  63              	.LVL2:
+ 138:FWLIB/src/misc.c ****   uint8_t tmppriority = 0x00, tmppre = 0x00, tmpsub = 0x0F;
+ 139:FWLIB/src/misc.c ****   
+ 140:FWLIB/src/misc.c ****   /* Check the parameters */
+ 141:FWLIB/src/misc.c ****   assert_param(IS_FUNCTIONAL_STATE(NVIC_InitStruct->NVIC_IRQChannelCmd));
+ 142:FWLIB/src/misc.c ****   assert_param(IS_NVIC_PREEMPTION_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority));  
+ 143:FWLIB/src/misc.c ****   assert_param(IS_NVIC_SUB_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelSubPriority));
+ 144:FWLIB/src/misc.c ****     
+ 145:FWLIB/src/misc.c ****   if (NVIC_InitStruct->NVIC_IRQChannelCmd != DISABLE)
+  64              		.loc 1 145 0
+  65 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+  66 0002 5BB9     		cbnz	r3, .L11
+ 146:FWLIB/src/misc.c ****   {
+ 147:FWLIB/src/misc.c ****     /* Compute the Corresponding IRQ Priority --------------------------------*/    
+ 148:FWLIB/src/misc.c ****     tmppriority = (0x700 - ((SCB->AIRCR) & (uint32_t)0x700))>> 0x08;
+ 149:FWLIB/src/misc.c ****     tmppre = (0x4 - tmppriority);
+ 150:FWLIB/src/misc.c ****     tmpsub = tmpsub >> tmppriority;
+ 151:FWLIB/src/misc.c **** 
+ 152:FWLIB/src/misc.c ****     tmppriority = NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << tmppre;
+ 153:FWLIB/src/misc.c ****     tmppriority |=  (uint8_t)(NVIC_InitStruct->NVIC_IRQChannelSubPriority & tmpsub);
+ 154:FWLIB/src/misc.c ****         
+ 155:FWLIB/src/misc.c ****     tmppriority = tmppriority << 0x04;
+ 156:FWLIB/src/misc.c ****         
+ 157:FWLIB/src/misc.c ****     NVIC->IP[NVIC_InitStruct->NVIC_IRQChannel] = tmppriority;
+ 158:FWLIB/src/misc.c ****     
+ 159:FWLIB/src/misc.c ****     /* Enable the Selected IRQ Channels --------------------------------------*/
+ 160:FWLIB/src/misc.c ****     NVIC->ISER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+ 161:FWLIB/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 162:FWLIB/src/misc.c ****   }
+ 163:FWLIB/src/misc.c ****   else
+ 164:FWLIB/src/misc.c ****   {
+ 165:FWLIB/src/misc.c ****     /* Disable the Selected IRQ Channels -------------------------------------*/
+ARM GAS  /tmp/ccz1RXIR.s 			page 5
+
+
+ 166:FWLIB/src/misc.c ****     NVIC->ICER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+  67              		.loc 1 166 0
+  68 0004 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+  69 0006 5A09     		lsrs	r2, r3, #5
+ 167:FWLIB/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+  70              		.loc 1 167 0
+  71 0008 03F01F03 		and	r3, r3, #31
+  72 000c 0121     		movs	r1, #1
+  73 000e 01FA03F3 		lsl	r3, r1, r3
+ 166:FWLIB/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+  74              		.loc 1 166 0
+  75 0012 2032     		adds	r2, r2, #32
+  76 0014 1449     		ldr	r1, .L12
+  77 0016 41F82230 		str	r3, [r1, r2, lsl #2]
+ 168:FWLIB/src/misc.c ****   }
+ 169:FWLIB/src/misc.c **** }
+  78              		.loc 1 169 0
+  79 001a 7047     		bx	lr
+  80              	.L11:
+ 137:FWLIB/src/misc.c ****   uint8_t tmppriority = 0x00, tmppre = 0x00, tmpsub = 0x0F;
+  81              		.loc 1 137 0
+  82 001c 10B4     		push	{r4}
+  83              	.LCFI0:
+  84              		.cfi_def_cfa_offset 4
+  85              		.cfi_offset 4, -4
+ 148:FWLIB/src/misc.c ****     tmppre = (0x4 - tmppriority);
+  86              		.loc 1 148 0
+  87 001e 134B     		ldr	r3, .L12+4
+  88 0020 DA68     		ldr	r2, [r3, #12]
+  89 0022 D243     		mvns	r2, r2
+  90 0024 C2F30222 		ubfx	r2, r2, #8, #3
+  91              	.LVL3:
+ 149:FWLIB/src/misc.c ****     tmpsub = tmpsub >> tmppriority;
+  92              		.loc 1 149 0
+  93 0028 C2F10403 		rsb	r3, r2, #4
+  94 002c DCB2     		uxtb	r4, r3
+  95              	.LVL4:
+ 150:FWLIB/src/misc.c **** 
+  96              		.loc 1 150 0
+  97 002e 0F21     		movs	r1, #15
+  98 0030 41FA02F2 		asr	r2, r1, r2
+  99              	.LVL5:
+ 152:FWLIB/src/misc.c ****     tmppriority |=  (uint8_t)(NVIC_InitStruct->NVIC_IRQChannelSubPriority & tmpsub);
+ 100              		.loc 1 152 0
+ 101 0034 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 102 0036 A340     		lsls	r3, r3, r4
+ 103 0038 DBB2     		uxtb	r3, r3
+ 104              	.LVL6:
+ 153:FWLIB/src/misc.c ****         
+ 105              		.loc 1 153 0
+ 106 003a 8178     		ldrb	r1, [r0, #2]	@ zero_extendqisi2
+ 107 003c 0A40     		ands	r2, r2, r1
+ 108              	.LVL7:
+ 109 003e 1343     		orrs	r3, r3, r2
+ 110              	.LVL8:
+ 155:FWLIB/src/misc.c ****         
+ 111              		.loc 1 155 0
+ARM GAS  /tmp/ccz1RXIR.s 			page 6
+
+
+ 112 0040 1B01     		lsls	r3, r3, #4
+ 113              	.LVL9:
+ 114 0042 DBB2     		uxtb	r3, r3
+ 115              	.LVL10:
+ 157:FWLIB/src/misc.c ****     
+ 116              		.loc 1 157 0
+ 117 0044 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 118 0046 0849     		ldr	r1, .L12
+ 119 0048 0A44     		add	r2, r2, r1
+ 120 004a 82F80033 		strb	r3, [r2, #768]
+ 160:FWLIB/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 121              		.loc 1 160 0
+ 122 004e 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 123              	.LVL11:
+ 124 0050 5809     		lsrs	r0, r3, #5
+ 125              	.LVL12:
+ 161:FWLIB/src/misc.c ****   }
+ 126              		.loc 1 161 0
+ 127 0052 03F01F03 		and	r3, r3, #31
+ 128 0056 0122     		movs	r2, #1
+ 129              	.LVL13:
+ 130 0058 02FA03F3 		lsl	r3, r2, r3
+ 160:FWLIB/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 131              		.loc 1 160 0
+ 132 005c 41F82030 		str	r3, [r1, r0, lsl #2]
+ 133              		.loc 1 169 0
+ 134 0060 5DF8044B 		ldr	r4, [sp], #4
+ 135              	.LCFI1:
+ 136              		.cfi_restore 4
+ 137              		.cfi_def_cfa_offset 0
+ 138              	.LVL14:
+ 139 0064 7047     		bx	lr
+ 140              	.L13:
+ 141 0066 00BF     		.align	2
+ 142              	.L12:
+ 143 0068 00E100E0 		.word	-536813312
+ 144 006c 00ED00E0 		.word	-536810240
+ 145              		.cfi_endproc
+ 146              	.LFE124:
+ 148              		.section	.text.NVIC_SetVectorTable,"ax",%progbits
+ 149              		.align	1
+ 150              		.global	NVIC_SetVectorTable
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.fpu fpv4-sp-d16
+ 156              	NVIC_SetVectorTable:
+ 157              	.LFB125:
+ 170:FWLIB/src/misc.c **** 
+ 171:FWLIB/src/misc.c **** /**
+ 172:FWLIB/src/misc.c ****   * @brief  Sets the vector table location and Offset.
+ 173:FWLIB/src/misc.c ****   * @param  NVIC_VectTab: specifies if the vector table is in RAM or FLASH memory.
+ 174:FWLIB/src/misc.c ****   *   This parameter can be one of the following values:
+ 175:FWLIB/src/misc.c ****   *     @arg NVIC_VectTab_RAM: Vector Table in internal SRAM.
+ 176:FWLIB/src/misc.c ****   *     @arg NVIC_VectTab_FLASH: Vector Table in internal FLASH.
+ 177:FWLIB/src/misc.c ****   * @param  Offset: Vector Table base offset field. This value must be a multiple of 0x200.
+ 178:FWLIB/src/misc.c ****   * @retval None
+ARM GAS  /tmp/ccz1RXIR.s 			page 7
+
+
+ 179:FWLIB/src/misc.c ****   */
+ 180:FWLIB/src/misc.c **** void NVIC_SetVectorTable(uint32_t NVIC_VectTab, uint32_t Offset)
+ 181:FWLIB/src/misc.c **** { 
+ 158              		.loc 1 181 0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              		@ link register save eliminated.
+ 163              	.LVL15:
+ 182:FWLIB/src/misc.c ****   /* Check the parameters */
+ 183:FWLIB/src/misc.c ****   assert_param(IS_NVIC_VECTTAB(NVIC_VectTab));
+ 184:FWLIB/src/misc.c ****   assert_param(IS_NVIC_OFFSET(Offset));  
+ 185:FWLIB/src/misc.c ****    
+ 186:FWLIB/src/misc.c ****   SCB->VTOR = NVIC_VectTab | (Offset & (uint32_t)0x1FFFFF80);
+ 164              		.loc 1 186 0
+ 165 0000 21F06041 		bic	r1, r1, #-536870912
+ 166              	.LVL16:
+ 167 0004 21F07F01 		bic	r1, r1, #127
+ 168 0008 0143     		orrs	r1, r1, r0
+ 169 000a 014B     		ldr	r3, .L15
+ 170 000c 9960     		str	r1, [r3, #8]
+ 171 000e 7047     		bx	lr
+ 172              	.L16:
+ 173              		.align	2
+ 174              	.L15:
+ 175 0010 00ED00E0 		.word	-536810240
+ 176              		.cfi_endproc
+ 177              	.LFE125:
+ 179              		.section	.text.NVIC_SystemLPConfig,"ax",%progbits
+ 180              		.align	1
+ 181              		.global	NVIC_SystemLPConfig
+ 182              		.syntax unified
+ 183              		.thumb
+ 184              		.thumb_func
+ 185              		.fpu fpv4-sp-d16
+ 187              	NVIC_SystemLPConfig:
+ 188              	.LFB126:
+ 187:FWLIB/src/misc.c **** }
+ 188:FWLIB/src/misc.c **** 
+ 189:FWLIB/src/misc.c **** /**
+ 190:FWLIB/src/misc.c ****   * @brief  Selects the condition for the system to enter low power mode.
+ 191:FWLIB/src/misc.c ****   * @param  LowPowerMode: Specifies the new mode for the system to enter low power mode.
+ 192:FWLIB/src/misc.c ****   *   This parameter can be one of the following values:
+ 193:FWLIB/src/misc.c ****   *     @arg NVIC_LP_SEVONPEND: Low Power SEV on Pend.
+ 194:FWLIB/src/misc.c ****   *     @arg NVIC_LP_SLEEPDEEP: Low Power DEEPSLEEP request.
+ 195:FWLIB/src/misc.c ****   *     @arg NVIC_LP_SLEEPONEXIT: Low Power Sleep on Exit.
+ 196:FWLIB/src/misc.c ****   * @param  NewState: new state of LP condition. This parameter can be: ENABLE or DISABLE.
+ 197:FWLIB/src/misc.c ****   * @retval None
+ 198:FWLIB/src/misc.c ****   */
+ 199:FWLIB/src/misc.c **** void NVIC_SystemLPConfig(uint8_t LowPowerMode, FunctionalState NewState)
+ 200:FWLIB/src/misc.c **** {
+ 189              		.loc 1 200 0
+ 190              		.cfi_startproc
+ 191              		@ args = 0, pretend = 0, frame = 0
+ 192              		@ frame_needed = 0, uses_anonymous_args = 0
+ 193              		@ link register save eliminated.
+ 194              	.LVL17:
+ARM GAS  /tmp/ccz1RXIR.s 			page 8
+
+
+ 201:FWLIB/src/misc.c ****   /* Check the parameters */
+ 202:FWLIB/src/misc.c ****   assert_param(IS_NVIC_LP(LowPowerMode));
+ 203:FWLIB/src/misc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));  
+ 204:FWLIB/src/misc.c ****   
+ 205:FWLIB/src/misc.c ****   if (NewState != DISABLE)
+ 195              		.loc 1 205 0
+ 196 0000 29B9     		cbnz	r1, .L20
+ 206:FWLIB/src/misc.c ****   {
+ 207:FWLIB/src/misc.c ****     SCB->SCR |= LowPowerMode;
+ 208:FWLIB/src/misc.c ****   }
+ 209:FWLIB/src/misc.c ****   else
+ 210:FWLIB/src/misc.c ****   {
+ 211:FWLIB/src/misc.c ****     SCB->SCR &= (uint32_t)(~(uint32_t)LowPowerMode);
+ 197              		.loc 1 211 0
+ 198 0002 054A     		ldr	r2, .L21
+ 199 0004 1369     		ldr	r3, [r2, #16]
+ 200 0006 23EA0000 		bic	r0, r3, r0
+ 201              	.LVL18:
+ 202 000a 1061     		str	r0, [r2, #16]
+ 203 000c 7047     		bx	lr
+ 204              	.LVL19:
+ 205              	.L20:
+ 207:FWLIB/src/misc.c ****   }
+ 206              		.loc 1 207 0
+ 207 000e 024B     		ldr	r3, .L21
+ 208 0010 1A69     		ldr	r2, [r3, #16]
+ 209 0012 1043     		orrs	r0, r0, r2
+ 210              	.LVL20:
+ 211 0014 1861     		str	r0, [r3, #16]
+ 212 0016 7047     		bx	lr
+ 213              	.L22:
+ 214              		.align	2
+ 215              	.L21:
+ 216 0018 00ED00E0 		.word	-536810240
+ 217              		.cfi_endproc
+ 218              	.LFE126:
+ 220              		.section	.text.SysTick_CLKSourceConfig,"ax",%progbits
+ 221              		.align	1
+ 222              		.global	SysTick_CLKSourceConfig
+ 223              		.syntax unified
+ 224              		.thumb
+ 225              		.thumb_func
+ 226              		.fpu fpv4-sp-d16
+ 228              	SysTick_CLKSourceConfig:
+ 229              	.LFB127:
+ 212:FWLIB/src/misc.c ****   }
+ 213:FWLIB/src/misc.c **** }
+ 214:FWLIB/src/misc.c **** 
+ 215:FWLIB/src/misc.c **** /**
+ 216:FWLIB/src/misc.c ****   * @brief  Configures the SysTick clock source.
+ 217:FWLIB/src/misc.c ****   * @param  SysTick_CLKSource: specifies the SysTick clock source.
+ 218:FWLIB/src/misc.c ****   *   This parameter can be one of the following values:
+ 219:FWLIB/src/misc.c ****   *     @arg SysTick_CLKSource_HCLK_Div8: AHB clock divided by 8 selected as SysTick clock source.
+ 220:FWLIB/src/misc.c ****   *     @arg SysTick_CLKSource_HCLK: AHB clock selected as SysTick clock source.
+ 221:FWLIB/src/misc.c ****   * @retval None
+ 222:FWLIB/src/misc.c ****   */
+ 223:FWLIB/src/misc.c **** void SysTick_CLKSourceConfig(uint32_t SysTick_CLKSource)
+ARM GAS  /tmp/ccz1RXIR.s 			page 9
+
+
+ 224:FWLIB/src/misc.c **** {
+ 230              		.loc 1 224 0
+ 231              		.cfi_startproc
+ 232              		@ args = 0, pretend = 0, frame = 0
+ 233              		@ frame_needed = 0, uses_anonymous_args = 0
+ 234              		@ link register save eliminated.
+ 235              	.LVL21:
+ 225:FWLIB/src/misc.c ****   /* Check the parameters */
+ 226:FWLIB/src/misc.c ****   assert_param(IS_SYSTICK_CLK_SOURCE(SysTick_CLKSource));
+ 227:FWLIB/src/misc.c ****   if (SysTick_CLKSource == SysTick_CLKSource_HCLK)
+ 236              		.loc 1 227 0
+ 237 0000 0428     		cmp	r0, #4
+ 238 0002 05D0     		beq	.L26
+ 228:FWLIB/src/misc.c ****   {
+ 229:FWLIB/src/misc.c ****     SysTick->CTRL |= SysTick_CLKSource_HCLK;
+ 230:FWLIB/src/misc.c ****   }
+ 231:FWLIB/src/misc.c ****   else
+ 232:FWLIB/src/misc.c ****   {
+ 233:FWLIB/src/misc.c ****     SysTick->CTRL &= SysTick_CLKSource_HCLK_Div8;
+ 239              		.loc 1 233 0
+ 240 0004 054A     		ldr	r2, .L27
+ 241 0006 1368     		ldr	r3, [r2]
+ 242 0008 23F00403 		bic	r3, r3, #4
+ 243 000c 1360     		str	r3, [r2]
+ 244 000e 7047     		bx	lr
+ 245              	.L26:
+ 229:FWLIB/src/misc.c ****   }
+ 246              		.loc 1 229 0
+ 247 0010 024A     		ldr	r2, .L27
+ 248 0012 1368     		ldr	r3, [r2]
+ 249 0014 43F00403 		orr	r3, r3, #4
+ 250 0018 1360     		str	r3, [r2]
+ 251 001a 7047     		bx	lr
+ 252              	.L28:
+ 253              		.align	2
+ 254              	.L27:
+ 255 001c 10E000E0 		.word	-536813552
+ 256              		.cfi_endproc
+ 257              	.LFE127:
+ 259              		.text
+ 260              	.Letext0:
+ 261              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 262              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 263              		.file 4 "F4_CORE/core_cm4.h"
+ 264              		.file 5 "USER/system_stm32f4xx.h"
+ 265              		.file 6 "USER/stm32f4xx.h"
+ 266              		.file 7 "FWLIB/inc/misc.h"
+ARM GAS  /tmp/ccz1RXIR.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 misc.c
+     /tmp/ccz1RXIR.s:18     .text.NVIC_PriorityGroupConfig:0000000000000000 $t
+     /tmp/ccz1RXIR.s:25     .text.NVIC_PriorityGroupConfig:0000000000000000 NVIC_PriorityGroupConfig
+     /tmp/ccz1RXIR.s:44     .text.NVIC_PriorityGroupConfig:0000000000000010 $d
+     /tmp/ccz1RXIR.s:49     .text.NVIC_Init:0000000000000000 $t
+     /tmp/ccz1RXIR.s:56     .text.NVIC_Init:0000000000000000 NVIC_Init
+     /tmp/ccz1RXIR.s:143    .text.NVIC_Init:0000000000000068 $d
+     /tmp/ccz1RXIR.s:149    .text.NVIC_SetVectorTable:0000000000000000 $t
+     /tmp/ccz1RXIR.s:156    .text.NVIC_SetVectorTable:0000000000000000 NVIC_SetVectorTable
+     /tmp/ccz1RXIR.s:175    .text.NVIC_SetVectorTable:0000000000000010 $d
+     /tmp/ccz1RXIR.s:180    .text.NVIC_SystemLPConfig:0000000000000000 $t
+     /tmp/ccz1RXIR.s:187    .text.NVIC_SystemLPConfig:0000000000000000 NVIC_SystemLPConfig
+     /tmp/ccz1RXIR.s:216    .text.NVIC_SystemLPConfig:0000000000000018 $d
+     /tmp/ccz1RXIR.s:221    .text.SysTick_CLKSourceConfig:0000000000000000 $t
+     /tmp/ccz1RXIR.s:228    .text.SysTick_CLKSourceConfig:0000000000000000 SysTick_CLKSourceConfig
+     /tmp/ccz1RXIR.s:255    .text.SysTick_CLKSourceConfig:000000000000001c $d
+                     .debug_frame:0000000000000010 $d
+
+NO UNDEFINED SYMBOLS

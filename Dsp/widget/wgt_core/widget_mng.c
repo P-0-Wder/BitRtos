@@ -39,7 +39,7 @@ static uint8_t Error_Code;
 
 /* internal function */
 static WidgetObj_TypeDef *GetCur_Active_Widget(void);
-static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
+static int Widget_Fusion(item_obj *item, WidgetObj_TypeDef *hdl, void *arg);
 static bool Widget_ClearBlackBoard(void);
 static void WIdget_ClearFreshState(WidgetFresh_State_List state);
 static void Widget_SetFreshState(WidgetFresh_State_List state);
@@ -532,7 +532,7 @@ static bool Widget_ClearBlackBoard(void)
     return true;
 }
 
-static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
+static int Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 {
     if ((obj->cord_x == 0) &&
         (obj->cord_y == 0) &&
@@ -553,6 +553,8 @@ static void Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
             memcpy(&widget_blackboard[row][obj->cord_x], obj->pixel_map[row - obj->cord_y], obj->width);
         }
     }
+
+    return 0;
 }
 
 static uint8_t Widget_GetError(void)
@@ -1027,7 +1029,10 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     return UI_ShowSelector((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data));
 }
 
-static void;
+static void WidgetUI_Fresh(void)
+{
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+}
 
 static int8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
 {

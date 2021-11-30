@@ -49,7 +49,7 @@ typedef struct list_item
 
 typedef item_obj list_obj;
 
-typedef void (*list_traverse_callback)(item_obj *item, void *arg_1, void *arg_2);
+typedef int (*list_traverse_callback)(item_obj *item, void *arg_1, void *arg_2);
 
 void List_Init(list_obj *list, item_obj *first_item, list_arrangement_mode mode, item_compare_callback callback);
 void List_ItemInit(item_obj *obj, void *arg);

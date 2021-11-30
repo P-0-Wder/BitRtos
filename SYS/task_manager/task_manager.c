@@ -923,7 +923,7 @@ TaskSys_State TaskSys_Get_State(void)
     return TskSys_state;
 }
 
-static void Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void *arg)
+static int Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void *arg)
 {
     if (data != NULL)
     {
@@ -936,6 +936,8 @@ static void Task_CrtList_TraversePoll_callback(item_obj *item, void *data, void 
             Task_SetReady((Task *)data);
         }
     }
+
+    return 0;
 }
 
 void Task_Scheduler(void)

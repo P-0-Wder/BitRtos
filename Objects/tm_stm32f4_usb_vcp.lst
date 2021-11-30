@@ -1,0 +1,1341 @@
+ARM GAS  /tmp/ccPtRvZx.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"tm_stm32f4_usb_vcp.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.TM_USB_VCP_BufferEmpty,"ax",%progbits
+  18              		.align	1
+  19              		.global	TM_USB_VCP_BufferEmpty
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	TM_USB_VCP_BufferEmpty:
+  26              	.LFB125:
+  27              		.file 1 "USB/config/tm_stm32f4_usb_vcp.c"
+   1:USB/config/tm_stm32f4_usb_vcp.c **** /**	
+   2:USB/config/tm_stm32f4_usb_vcp.c ****  * |----------------------------------------------------------------------
+   3:USB/config/tm_stm32f4_usb_vcp.c ****  * | Copyright (C) Tilen Majerle, 2014
+   4:USB/config/tm_stm32f4_usb_vcp.c ****  * | 
+   5:USB/config/tm_stm32f4_usb_vcp.c ****  * | This program is free software: you can redistribute it and/or modify
+   6:USB/config/tm_stm32f4_usb_vcp.c ****  * | it under the terms of the GNU General Public License as published by
+   7:USB/config/tm_stm32f4_usb_vcp.c ****  * | the Free Software Foundation, either version 3 of the License, or
+   8:USB/config/tm_stm32f4_usb_vcp.c ****  * | any later version.
+   9:USB/config/tm_stm32f4_usb_vcp.c ****  * |  
+  10:USB/config/tm_stm32f4_usb_vcp.c ****  * | This program is distributed in the hope that it will be useful,
+  11:USB/config/tm_stm32f4_usb_vcp.c ****  * | but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:USB/config/tm_stm32f4_usb_vcp.c ****  * | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:USB/config/tm_stm32f4_usb_vcp.c ****  * | GNU General Public License for more details.
+  14:USB/config/tm_stm32f4_usb_vcp.c ****  * | 
+  15:USB/config/tm_stm32f4_usb_vcp.c ****  * | You should have received a copy of the GNU General Public License
+  16:USB/config/tm_stm32f4_usb_vcp.c ****  * | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:USB/config/tm_stm32f4_usb_vcp.c ****  * |----------------------------------------------------------------------
+  18:USB/config/tm_stm32f4_usb_vcp.c ****  */
+  19:USB/config/tm_stm32f4_usb_vcp.c **** #include "tm_stm32f4_usb_vcp.h"
+  20:USB/config/tm_stm32f4_usb_vcp.c **** #include "usbd_usr.h"
+  21:USB/config/tm_stm32f4_usb_vcp.c **** #include "usb_conf.h"
+  22:USB/config/tm_stm32f4_usb_vcp.c **** #include "usbd_desc.h"
+  23:USB/config/tm_stm32f4_usb_vcp.c **** 
+  24:USB/config/tm_stm32f4_usb_vcp.c **** const uint8_t PackEnd[2] = {0X0D, 0X0A};
+  25:USB/config/tm_stm32f4_usb_vcp.c **** 
+  26:USB/config/tm_stm32f4_usb_vcp.c **** /* Private */
+  27:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_IRQ_Data TM_IRQ_Data;
+  28:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_IRQ TM_USB_VCP_IRQ_Status = TM_USB_VCP_IRQ_RESET;
+  29:USB/config/tm_stm32f4_usb_vcp.c **** uint8_t TM_INT_USB_VCP_ReceiveBuffer[USB_VCP_RECEIVE_BUFFER_LENGTH];
+  30:USB/config/tm_stm32f4_usb_vcp.c **** uint32_t tm_int_usb_vcp_buf_in, tm_int_usb_vcp_buf_out, tm_int_usb_vcp_buf_num;
+  31:USB/config/tm_stm32f4_usb_vcp.c **** extern TM_USB_VCP_Result TM_USB_VCP_INT_Status;
+ARM GAS  /tmp/ccPtRvZx.s 			page 2
+
+
+  32:USB/config/tm_stm32f4_usb_vcp.c **** extern LINE_CODING linecoding;
+  33:USB/config/tm_stm32f4_usb_vcp.c **** uint8_t TM_USB_VCP_INT_Init = 0;
+  34:USB/config/tm_stm32f4_usb_vcp.c **** USB_OTG_CORE_HANDLE USB_OTG_dev;
+  35:USB/config/tm_stm32f4_usb_vcp.c **** 
+  36:USB/config/tm_stm32f4_usb_vcp.c **** /* USB VCP Internal receive buffer */
+  37:USB/config/tm_stm32f4_usb_vcp.c **** extern uint8_t TM_INT_USB_VCP_ReceiveBuffer[USB_VCP_RECEIVE_BUFFER_LENGTH];
+  38:USB/config/tm_stm32f4_usb_vcp.c **** 
+  39:USB/config/tm_stm32f4_usb_vcp.c **** void TM_USB_VCP_Reset_IRQ(void);
+  40:USB/config/tm_stm32f4_usb_vcp.c **** 
+  41:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_USB_VCP_Init(void)
+  42:USB/config/tm_stm32f4_usb_vcp.c **** {
+  43:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Initialize USB */
+  44:USB/config/tm_stm32f4_usb_vcp.c **** 	USBD_Init(&USB_OTG_dev,
+  45:USB/config/tm_stm32f4_usb_vcp.c **** #ifdef USE_USB_OTG_FS
+  46:USB/config/tm_stm32f4_usb_vcp.c **** 			  USB_OTG_FS_CORE_ID,
+  47:USB/config/tm_stm32f4_usb_vcp.c **** #else
+  48:USB/config/tm_stm32f4_usb_vcp.c **** 			  USB_OTG_HS_CORE_ID,
+  49:USB/config/tm_stm32f4_usb_vcp.c **** #endif
+  50:USB/config/tm_stm32f4_usb_vcp.c **** 			  &USR_desc,
+  51:USB/config/tm_stm32f4_usb_vcp.c **** 			  &USBD_CDC_cb,
+  52:USB/config/tm_stm32f4_usb_vcp.c **** 			  &USR_cb);
+  53:USB/config/tm_stm32f4_usb_vcp.c **** 
+  54:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Reset buffer counters */
+  55:USB/config/tm_stm32f4_usb_vcp.c **** 	tm_int_usb_vcp_buf_in = 0;
+  56:USB/config/tm_stm32f4_usb_vcp.c **** 	tm_int_usb_vcp_buf_out = 0;
+  57:USB/config/tm_stm32f4_usb_vcp.c **** 	tm_int_usb_vcp_buf_num = 0;
+  58:USB/config/tm_stm32f4_usb_vcp.c **** 
+  59:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Initialized */
+  60:USB/config/tm_stm32f4_usb_vcp.c **** 	TM_USB_VCP_INT_Init = 1;
+  61:USB/config/tm_stm32f4_usb_vcp.c **** 
+  62:USB/config/tm_stm32f4_usb_vcp.c **** 	TM_USB_VCP_Reset_IRQ();
+  63:USB/config/tm_stm32f4_usb_vcp.c **** 
+  64:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Return OK */
+  65:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_OK;
+  66:USB/config/tm_stm32f4_usb_vcp.c **** }
+  67:USB/config/tm_stm32f4_usb_vcp.c **** 
+  68:USB/config/tm_stm32f4_usb_vcp.c **** uint8_t TM_USB_VCP_BufferEmpty(void)
+  69:USB/config/tm_stm32f4_usb_vcp.c **** {
+  28              		.loc 1 69 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  70:USB/config/tm_stm32f4_usb_vcp.c **** 	return (tm_int_usb_vcp_buf_num == 0);
+  33              		.loc 1 70 0
+  34 0000 024B     		ldr	r3, .L2
+  35 0002 1868     		ldr	r0, [r3]
+  71:USB/config/tm_stm32f4_usb_vcp.c **** }
+  36              		.loc 1 71 0
+  37 0004 B0FA80F0 		clz	r0, r0
+  38 0008 4009     		lsrs	r0, r0, #5
+  39 000a 7047     		bx	lr
+  40              	.L3:
+  41              		.align	2
+  42              	.L2:
+  43 000c 00000000 		.word	tm_int_usb_vcp_buf_num
+  44              		.cfi_endproc
+ARM GAS  /tmp/ccPtRvZx.s 			page 3
+
+
+  45              	.LFE125:
+  47              		.section	.text.TM_USB_VCP_BufferFull,"ax",%progbits
+  48              		.align	1
+  49              		.global	TM_USB_VCP_BufferFull
+  50              		.syntax unified
+  51              		.thumb
+  52              		.thumb_func
+  53              		.fpu fpv4-sp-d16
+  55              	TM_USB_VCP_BufferFull:
+  56              	.LFB126:
+  72:USB/config/tm_stm32f4_usb_vcp.c **** 
+  73:USB/config/tm_stm32f4_usb_vcp.c **** uint8_t TM_USB_VCP_BufferFull(void)
+  74:USB/config/tm_stm32f4_usb_vcp.c **** {
+  57              		.loc 1 74 0
+  58              		.cfi_startproc
+  59              		@ args = 0, pretend = 0, frame = 0
+  60              		@ frame_needed = 0, uses_anonymous_args = 0
+  61              		@ link register save eliminated.
+  75:USB/config/tm_stm32f4_usb_vcp.c **** 	return (tm_int_usb_vcp_buf_num == USB_VCP_RECEIVE_BUFFER_LENGTH);
+  62              		.loc 1 75 0
+  63 0000 034B     		ldr	r3, .L5
+  64 0002 1868     		ldr	r0, [r3]
+  76:USB/config/tm_stm32f4_usb_vcp.c **** }
+  65              		.loc 1 76 0
+  66 0004 B0F5807F 		cmp	r0, #256
+  67 0008 14BF     		ite	ne
+  68 000a 0020     		movne	r0, #0
+  69 000c 0120     		moveq	r0, #1
+  70 000e 7047     		bx	lr
+  71              	.L6:
+  72              		.align	2
+  73              	.L5:
+  74 0010 00000000 		.word	tm_int_usb_vcp_buf_num
+  75              		.cfi_endproc
+  76              	.LFE126:
+  78              		.section	.text.TM_USB_VCP_FindCharacter,"ax",%progbits
+  79              		.align	1
+  80              		.global	TM_USB_VCP_FindCharacter
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  84              		.fpu fpv4-sp-d16
+  86              	TM_USB_VCP_FindCharacter:
+  87              	.LFB127:
+  77:USB/config/tm_stm32f4_usb_vcp.c **** 
+  78:USB/config/tm_stm32f4_usb_vcp.c **** uint8_t TM_USB_VCP_FindCharacter(volatile char c)
+  79:USB/config/tm_stm32f4_usb_vcp.c **** {
+  88              		.loc 1 79 0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 8
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              		@ link register save eliminated.
+  93              	.LVL0:
+  94 0000 82B0     		sub	sp, sp, #8
+  95              	.LCFI0:
+  96              		.cfi_def_cfa_offset 8
+  97 0002 8DF80700 		strb	r0, [sp, #7]
+ARM GAS  /tmp/ccPtRvZx.s 			page 4
+
+
+  80:USB/config/tm_stm32f4_usb_vcp.c **** 	uint16_t num, out;
+  81:USB/config/tm_stm32f4_usb_vcp.c **** 
+  82:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Temp variables */
+  83:USB/config/tm_stm32f4_usb_vcp.c **** 	num = tm_int_usb_vcp_buf_num;
+  98              		.loc 1 83 0
+  99 0006 0D4B     		ldr	r3, .L16
+ 100 0008 1A88     		ldrh	r2, [r3]
+ 101              	.LVL1:
+  84:USB/config/tm_stm32f4_usb_vcp.c **** 	out = tm_int_usb_vcp_buf_out;
+ 102              		.loc 1 84 0
+ 103 000a 0D4B     		ldr	r3, .L16+4
+ 104 000c 1B88     		ldrh	r3, [r3]
+ 105              	.LVL2:
+  85:USB/config/tm_stm32f4_usb_vcp.c **** 
+  86:USB/config/tm_stm32f4_usb_vcp.c **** 	while (num > 0)
+ 106              		.loc 1 86 0
+ 107 000e 0AE0     		b	.L8
+ 108              	.LVL3:
+ 109              	.L9:
+  87:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+  88:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Check overflow */
+  89:USB/config/tm_stm32f4_usb_vcp.c **** 		if (out == USB_VCP_RECEIVE_BUFFER_LENGTH)
+  90:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+  91:USB/config/tm_stm32f4_usb_vcp.c **** 			out = 0;
+  92:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+  93:USB/config/tm_stm32f4_usb_vcp.c **** 		if (TM_INT_USB_VCP_ReceiveBuffer[out] == c)
+ 110              		.loc 1 93 0
+ 111 0010 0C49     		ldr	r1, .L16+8
+ 112 0012 C85C     		ldrb	r0, [r1, r3]	@ zero_extendqisi2
+ 113 0014 9DF80710 		ldrb	r1, [sp, #7]	@ zero_extendqisi2
+ 114 0018 C9B2     		uxtb	r1, r1
+ 115 001a 8842     		cmp	r0, r1
+ 116 001c 0CD0     		beq	.L13
+  94:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+  95:USB/config/tm_stm32f4_usb_vcp.c **** 			/* Character found */
+  96:USB/config/tm_stm32f4_usb_vcp.c **** 			return 1;
+  97:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+  98:USB/config/tm_stm32f4_usb_vcp.c **** 		out++;
+ 117              		.loc 1 98 0
+ 118 001e 0133     		adds	r3, r3, #1
+ 119              	.LVL4:
+ 120 0020 9BB2     		uxth	r3, r3
+ 121              	.LVL5:
+  99:USB/config/tm_stm32f4_usb_vcp.c **** 		num--;
+ 122              		.loc 1 99 0
+ 123 0022 013A     		subs	r2, r2, #1
+ 124              	.LVL6:
+ 125 0024 92B2     		uxth	r2, r2
+ 126              	.LVL7:
+ 127              	.L8:
+  86:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 128              		.loc 1 86 0
+ 129 0026 22B1     		cbz	r2, .L15
+  89:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 130              		.loc 1 89 0
+ 131 0028 B3F5807F 		cmp	r3, #256
+ 132 002c F0D1     		bne	.L9
+ARM GAS  /tmp/ccPtRvZx.s 			page 5
+
+
+  91:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 133              		.loc 1 91 0
+ 134 002e 0023     		movs	r3, #0
+ 135              	.LVL8:
+ 136 0030 EEE7     		b	.L9
+ 137              	.LVL9:
+ 138              	.L15:
+ 100:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 101:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 102:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Character is not in buffer */
+ 103:USB/config/tm_stm32f4_usb_vcp.c **** 	return 0;
+ 139              		.loc 1 103 0
+ 140 0032 0020     		movs	r0, #0
+ 141              	.L10:
+ 104:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 142              		.loc 1 104 0
+ 143 0034 02B0     		add	sp, sp, #8
+ 144              	.LCFI1:
+ 145              		.cfi_remember_state
+ 146              		.cfi_def_cfa_offset 0
+ 147              		@ sp needed
+ 148 0036 7047     		bx	lr
+ 149              	.L13:
+ 150              	.LCFI2:
+ 151              		.cfi_restore_state
+  96:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 152              		.loc 1 96 0
+ 153 0038 0120     		movs	r0, #1
+ 154 003a FBE7     		b	.L10
+ 155              	.L17:
+ 156              		.align	2
+ 157              	.L16:
+ 158 003c 00000000 		.word	tm_int_usb_vcp_buf_num
+ 159 0040 00000000 		.word	tm_int_usb_vcp_buf_out
+ 160 0044 00000000 		.word	TM_INT_USB_VCP_ReceiveBuffer
+ 161              		.cfi_endproc
+ 162              	.LFE127:
+ 164              		.section	.text.TM_USB_VCP_Getc,"ax",%progbits
+ 165              		.align	1
+ 166              		.global	TM_USB_VCP_Getc
+ 167              		.syntax unified
+ 168              		.thumb
+ 169              		.thumb_func
+ 170              		.fpu fpv4-sp-d16
+ 172              	TM_USB_VCP_Getc:
+ 173              	.LFB128:
+ 105:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 106:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_USB_VCP_Getc(uint8_t *c)
+ 107:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 174              		.loc 1 107 0
+ 175              		.cfi_startproc
+ 176              		@ args = 0, pretend = 0, frame = 0
+ 177              		@ frame_needed = 0, uses_anonymous_args = 0
+ 178              		@ link register save eliminated.
+ 179              	.LVL10:
+ 108:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Any data in buffer */
+ 109:USB/config/tm_stm32f4_usb_vcp.c **** 	if (tm_int_usb_vcp_buf_num > 0)
+ARM GAS  /tmp/ccPtRvZx.s 			page 6
+
+
+ 180              		.loc 1 109 0
+ 181 0000 0E4B     		ldr	r3, .L22
+ 182 0002 1B68     		ldr	r3, [r3]
+ 183 0004 B3B1     		cbz	r3, .L19
+ 110:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 111:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Check overflow */
+ 112:USB/config/tm_stm32f4_usb_vcp.c **** 		if (tm_int_usb_vcp_buf_out >= USB_VCP_RECEIVE_BUFFER_LENGTH)
+ 184              		.loc 1 112 0
+ 185 0006 0E4B     		ldr	r3, .L22+4
+ 186 0008 1B68     		ldr	r3, [r3]
+ 187 000a FF2B     		cmp	r3, #255
+ 188 000c 02D9     		bls	.L20
+ 113:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 114:USB/config/tm_stm32f4_usb_vcp.c **** 			tm_int_usb_vcp_buf_out = 0;
+ 189              		.loc 1 114 0
+ 190 000e 0022     		movs	r2, #0
+ 191 0010 0B4B     		ldr	r3, .L22+4
+ 192 0012 1A60     		str	r2, [r3]
+ 193              	.L20:
+ 115:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 116:USB/config/tm_stm32f4_usb_vcp.c **** 		*c = TM_INT_USB_VCP_ReceiveBuffer[tm_int_usb_vcp_buf_out];
+ 194              		.loc 1 116 0
+ 195 0014 0B49     		ldr	r1, .L22+8
+ 196 0016 0A4A     		ldr	r2, .L22+4
+ 197 0018 1368     		ldr	r3, [r2]
+ 198 001a CB5C     		ldrb	r3, [r1, r3]	@ zero_extendqisi2
+ 199 001c 0370     		strb	r3, [r0]
+ 117:USB/config/tm_stm32f4_usb_vcp.c **** 		TM_INT_USB_VCP_ReceiveBuffer[tm_int_usb_vcp_buf_out] = 0;
+ 200              		.loc 1 117 0
+ 201 001e 1368     		ldr	r3, [r2]
+ 202 0020 0020     		movs	r0, #0
+ 203              	.LVL11:
+ 204 0022 C854     		strb	r0, [r1, r3]
+ 118:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 119:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Set counters */
+ 120:USB/config/tm_stm32f4_usb_vcp.c **** 		tm_int_usb_vcp_buf_out++;
+ 205              		.loc 1 120 0
+ 206 0024 0133     		adds	r3, r3, #1
+ 207 0026 1360     		str	r3, [r2]
+ 121:USB/config/tm_stm32f4_usb_vcp.c **** 		tm_int_usb_vcp_buf_num--;
+ 208              		.loc 1 121 0
+ 209 0028 044A     		ldr	r2, .L22
+ 210 002a 1368     		ldr	r3, [r2]
+ 211 002c 013B     		subs	r3, r3, #1
+ 212 002e 1360     		str	r3, [r2]
+ 122:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 123:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Data OK */
+ 124:USB/config/tm_stm32f4_usb_vcp.c **** 		return TM_USB_VCP_DATA_OK;
+ 213              		.loc 1 124 0
+ 214 0030 0320     		movs	r0, #3
+ 215 0032 7047     		bx	lr
+ 216              	.LVL12:
+ 217              	.L19:
+ 125:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 126:USB/config/tm_stm32f4_usb_vcp.c **** 	*c = 0;
+ 218              		.loc 1 126 0
+ 219 0034 0023     		movs	r3, #0
+ARM GAS  /tmp/ccPtRvZx.s 			page 7
+
+
+ 220 0036 0370     		strb	r3, [r0]
+ 127:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Data not ready */
+ 128:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_DATA_EMPTY;
+ 221              		.loc 1 128 0
+ 222 0038 0420     		movs	r0, #4
+ 223              	.LVL13:
+ 129:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 224              		.loc 1 129 0
+ 225 003a 7047     		bx	lr
+ 226              	.L23:
+ 227              		.align	2
+ 228              	.L22:
+ 229 003c 00000000 		.word	tm_int_usb_vcp_buf_num
+ 230 0040 00000000 		.word	tm_int_usb_vcp_buf_out
+ 231 0044 00000000 		.word	TM_INT_USB_VCP_ReceiveBuffer
+ 232              		.cfi_endproc
+ 233              	.LFE128:
+ 235              		.section	.text.TM_USB_VCP_Putc,"ax",%progbits
+ 236              		.align	1
+ 237              		.global	TM_USB_VCP_Putc
+ 238              		.syntax unified
+ 239              		.thumb
+ 240              		.thumb_func
+ 241              		.fpu fpv4-sp-d16
+ 243              	TM_USB_VCP_Putc:
+ 244              	.LFB129:
+ 130:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 131:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_USB_VCP_Putc(volatile char c)
+ 132:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 245              		.loc 1 132 0
+ 246              		.cfi_startproc
+ 247              		@ args = 0, pretend = 0, frame = 16
+ 248              		@ frame_needed = 0, uses_anonymous_args = 0
+ 249              	.LVL14:
+ 250 0000 00B5     		push	{lr}
+ 251              	.LCFI3:
+ 252              		.cfi_def_cfa_offset 4
+ 253              		.cfi_offset 14, -4
+ 254 0002 85B0     		sub	sp, sp, #20
+ 255              	.LCFI4:
+ 256              		.cfi_def_cfa_offset 24
+ 257 0004 8DF80700 		strb	r0, [sp, #7]
+ 133:USB/config/tm_stm32f4_usb_vcp.c **** 	uint8_t ce = (uint8_t)c;
+ 258              		.loc 1 133 0
+ 259 0008 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 260              	.LVL15:
+ 261 000c 04A8     		add	r0, sp, #16
+ 262 000e 00F8013D 		strb	r3, [r0, #-1]!
+ 134:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 135:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Send data over USB */
+ 136:USB/config/tm_stm32f4_usb_vcp.c **** 	VCP_DataTx(&ce, 1);
+ 263              		.loc 1 136 0
+ 264 0012 0121     		movs	r1, #1
+ 265 0014 FFF7FEFF 		bl	VCP_DataTx
+ 266              	.LVL16:
+ 137:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 138:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Return OK */
+ARM GAS  /tmp/ccPtRvZx.s 			page 8
+
+
+ 139:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_OK;
+ 140:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 267              		.loc 1 140 0
+ 268 0018 0020     		movs	r0, #0
+ 269 001a 05B0     		add	sp, sp, #20
+ 270              	.LCFI5:
+ 271              		.cfi_def_cfa_offset 4
+ 272              		@ sp needed
+ 273 001c 5DF804FB 		ldr	pc, [sp], #4
+ 274              		.cfi_endproc
+ 275              	.LFE129:
+ 277              		.section	.text.TM_USB_VCP_Puts,"ax",%progbits
+ 278              		.align	1
+ 279              		.global	TM_USB_VCP_Puts
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ 283              		.fpu fpv4-sp-d16
+ 285              	TM_USB_VCP_Puts:
+ 286              	.LFB130:
+ 141:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 142:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_USB_VCP_Puts(char *str)
+ 143:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 287              		.loc 1 143 0
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 0
+ 290              		@ frame_needed = 0, uses_anonymous_args = 0
+ 291              	.LVL17:
+ 292 0000 10B5     		push	{r4, lr}
+ 293              	.LCFI6:
+ 294              		.cfi_def_cfa_offset 8
+ 295              		.cfi_offset 4, -8
+ 296              		.cfi_offset 14, -4
+ 297 0002 0446     		mov	r4, r0
+ 144:USB/config/tm_stm32f4_usb_vcp.c **** 	while (*str)
+ 298              		.loc 1 144 0
+ 299 0004 02E0     		b	.L27
+ 300              	.LVL18:
+ 301              	.L28:
+ 145:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 146:USB/config/tm_stm32f4_usb_vcp.c **** 		TM_USB_VCP_Putc(*str++);
+ 302              		.loc 1 146 0
+ 303 0006 0134     		adds	r4, r4, #1
+ 304              	.LVL19:
+ 305 0008 FFF7FEFF 		bl	TM_USB_VCP_Putc
+ 306              	.LVL20:
+ 307              	.L27:
+ 144:USB/config/tm_stm32f4_usb_vcp.c **** 	while (*str)
+ 308              		.loc 1 144 0
+ 309 000c 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+ 310 000e 0028     		cmp	r0, #0
+ 311 0010 F9D1     		bne	.L28
+ 147:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 148:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 149:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Return OK */
+ 150:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_OK;
+ 151:USB/config/tm_stm32f4_usb_vcp.c **** }
+ARM GAS  /tmp/ccPtRvZx.s 			page 9
+
+
+ 312              		.loc 1 151 0
+ 313 0012 10BD     		pop	{r4, pc}
+ 314              		.cfi_endproc
+ 315              	.LFE130:
+ 317              		.section	.text.TM_USB_VCP_Send,"ax",%progbits
+ 318              		.align	1
+ 319              		.global	TM_USB_VCP_Send
+ 320              		.syntax unified
+ 321              		.thumb
+ 322              		.thumb_func
+ 323              		.fpu fpv4-sp-d16
+ 325              	TM_USB_VCP_Send:
+ 326              	.LFB131:
+ 152:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 153:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_USB_VCP_Send(uint8_t *DataArray, uint32_t Length)
+ 154:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 327              		.loc 1 154 0
+ 328              		.cfi_startproc
+ 329              		@ args = 0, pretend = 0, frame = 0
+ 330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331              	.LVL21:
+ 332 0000 08B5     		push	{r3, lr}
+ 333              	.LCFI7:
+ 334              		.cfi_def_cfa_offset 8
+ 335              		.cfi_offset 3, -8
+ 336              		.cfi_offset 14, -4
+ 155:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Send array */
+ 156:USB/config/tm_stm32f4_usb_vcp.c **** 	VCP_DataTx(DataArray, Length);
+ 337              		.loc 1 156 0
+ 338 0002 FFF7FEFF 		bl	VCP_DataTx
+ 339              	.LVL22:
+ 157:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 158:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Return OK */
+ 159:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_OK;
+ 160:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 340              		.loc 1 160 0
+ 341 0006 0020     		movs	r0, #0
+ 342 0008 08BD     		pop	{r3, pc}
+ 343              		.cfi_endproc
+ 344              	.LFE131:
+ 346              		.section	.text.TM_USB_VCP_Gets,"ax",%progbits
+ 347              		.align	1
+ 348              		.global	TM_USB_VCP_Gets
+ 349              		.syntax unified
+ 350              		.thumb
+ 351              		.thumb_func
+ 352              		.fpu fpv4-sp-d16
+ 354              	TM_USB_VCP_Gets:
+ 355              	.LFB132:
+ 161:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 162:USB/config/tm_stm32f4_usb_vcp.c **** uint16_t TM_USB_VCP_Gets(char *buffer, uint16_t bufsize)
+ 163:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 356              		.loc 1 163 0
+ 357              		.cfi_startproc
+ 358              		@ args = 0, pretend = 0, frame = 8
+ 359              		@ frame_needed = 0, uses_anonymous_args = 0
+ 360              	.LVL23:
+ARM GAS  /tmp/ccPtRvZx.s 			page 10
+
+
+ 361 0000 70B5     		push	{r4, r5, r6, lr}
+ 362              	.LCFI8:
+ 363              		.cfi_def_cfa_offset 16
+ 364              		.cfi_offset 4, -16
+ 365              		.cfi_offset 5, -12
+ 366              		.cfi_offset 6, -8
+ 367              		.cfi_offset 14, -4
+ 368 0002 82B0     		sub	sp, sp, #8
+ 369              	.LCFI9:
+ 370              		.cfi_def_cfa_offset 24
+ 371 0004 0546     		mov	r5, r0
+ 372 0006 0E46     		mov	r6, r1
+ 373              	.LVL24:
+ 164:USB/config/tm_stm32f4_usb_vcp.c **** 	uint16_t i = 0;
+ 165:USB/config/tm_stm32f4_usb_vcp.c **** 	uint8_t c;
+ 166:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 167:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Check for any data on USART */
+ 168:USB/config/tm_stm32f4_usb_vcp.c **** 	if (TM_USB_VCP_BufferEmpty() || (!TM_USB_VCP_FindCharacter('\n') && !TM_USB_VCP_BufferFull()))
+ 374              		.loc 1 168 0
+ 375 0008 FFF7FEFF 		bl	TM_USB_VCP_BufferEmpty
+ 376              	.LVL25:
+ 377 000c 18B1     		cbz	r0, .L42
+ 169:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 170:USB/config/tm_stm32f4_usb_vcp.c **** 		return 0;
+ 378              		.loc 1 170 0
+ 379 000e 0024     		movs	r4, #0
+ 380              	.LVL26:
+ 381              	.L33:
+ 171:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 172:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 173:USB/config/tm_stm32f4_usb_vcp.c **** 	/* If available buffer size is more than 0 characters */
+ 174:USB/config/tm_stm32f4_usb_vcp.c **** 	while (i < (bufsize - 1))
+ 175:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 176:USB/config/tm_stm32f4_usb_vcp.c **** 		/* We have available data */
+ 177:USB/config/tm_stm32f4_usb_vcp.c **** 		while (TM_USB_VCP_Getc(&c) != TM_USB_VCP_DATA_OK)
+ 178:USB/config/tm_stm32f4_usb_vcp.c **** 			;
+ 179:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Save new data */
+ 180:USB/config/tm_stm32f4_usb_vcp.c **** 		buffer[i] = (char)c;
+ 181:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Check for end of string */
+ 182:USB/config/tm_stm32f4_usb_vcp.c **** 		if (buffer[i] == '\n')
+ 183:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 184:USB/config/tm_stm32f4_usb_vcp.c **** 			i++;
+ 185:USB/config/tm_stm32f4_usb_vcp.c **** 			/* Done */
+ 186:USB/config/tm_stm32f4_usb_vcp.c **** 			break;
+ 187:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 188:USB/config/tm_stm32f4_usb_vcp.c **** 		else
+ 189:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 190:USB/config/tm_stm32f4_usb_vcp.c **** 			i++;
+ 191:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 192:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 193:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 194:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Add zero to the end of string */
+ 195:USB/config/tm_stm32f4_usb_vcp.c **** 	buffer[i] = 0;
+ 196:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 197:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Return number of characters in string */
+ 198:USB/config/tm_stm32f4_usb_vcp.c **** 	return i;
+ 199:USB/config/tm_stm32f4_usb_vcp.c **** }
+ARM GAS  /tmp/ccPtRvZx.s 			page 11
+
+
+ 382              		.loc 1 199 0
+ 383 0010 2046     		mov	r0, r4
+ 384 0012 02B0     		add	sp, sp, #8
+ 385              	.LCFI10:
+ 386              		.cfi_remember_state
+ 387              		.cfi_def_cfa_offset 16
+ 388              		@ sp needed
+ 389 0014 70BD     		pop	{r4, r5, r6, pc}
+ 390              	.LVL27:
+ 391              	.L42:
+ 392              	.LCFI11:
+ 393              		.cfi_restore_state
+ 168:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 394              		.loc 1 168 0 discriminator 1
+ 395 0016 0A20     		movs	r0, #10
+ 396 0018 FFF7FEFF 		bl	TM_USB_VCP_FindCharacter
+ 397              	.LVL28:
+ 398 001c 48B9     		cbnz	r0, .L39
+ 168:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 399              		.loc 1 168 0 is_stmt 0 discriminator 2
+ 400 001e FFF7FEFF 		bl	TM_USB_VCP_BufferFull
+ 401              	.LVL29:
+ 402 0022 C0B1     		cbz	r0, .L40
+ 403 0024 0024     		movs	r4, #0
+ 404 0026 05E0     		b	.L34
+ 405              	.LVL30:
+ 406              	.L43:
+ 184:USB/config/tm_stm32f4_usb_vcp.c **** 			/* Done */
+ 407              		.loc 1 184 0 is_stmt 1
+ 408 0028 0134     		adds	r4, r4, #1
+ 409              	.LVL31:
+ 410 002a A4B2     		uxth	r4, r4
+ 411              	.LVL32:
+ 412              	.L37:
+ 195:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 413              		.loc 1 195 0
+ 414 002c 0023     		movs	r3, #0
+ 415 002e 2B55     		strb	r3, [r5, r4]
+ 198:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 416              		.loc 1 198 0
+ 417 0030 EEE7     		b	.L33
+ 418              	.LVL33:
+ 419              	.L39:
+ 420 0032 0024     		movs	r4, #0
+ 421              	.LVL34:
+ 422              	.L34:
+ 174:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 423              		.loc 1 174 0
+ 424 0034 731E     		subs	r3, r6, #1
+ 425 0036 9C42     		cmp	r4, r3
+ 426 0038 F8DA     		bge	.L37
+ 427              	.L35:
+ 177:USB/config/tm_stm32f4_usb_vcp.c **** 			;
+ 428              		.loc 1 177 0 discriminator 1
+ 429 003a 0DF10700 		add	r0, sp, #7
+ 430 003e FFF7FEFF 		bl	TM_USB_VCP_Getc
+ 431              	.LVL35:
+ARM GAS  /tmp/ccPtRvZx.s 			page 12
+
+
+ 432 0042 0328     		cmp	r0, #3
+ 433 0044 F9D1     		bne	.L35
+ 180:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Check for end of string */
+ 434              		.loc 1 180 0
+ 435 0046 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 436 004a 2B55     		strb	r3, [r5, r4]
+ 182:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 437              		.loc 1 182 0
+ 438 004c 0A2B     		cmp	r3, #10
+ 439 004e EBD0     		beq	.L43
+ 190:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 440              		.loc 1 190 0
+ 441 0050 0134     		adds	r4, r4, #1
+ 442              	.LVL36:
+ 443 0052 A4B2     		uxth	r4, r4
+ 444              	.LVL37:
+ 445 0054 EEE7     		b	.L34
+ 446              	.LVL38:
+ 447              	.L40:
+ 170:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 448              		.loc 1 170 0
+ 449 0056 0024     		movs	r4, #0
+ 450 0058 DAE7     		b	.L33
+ 451              		.cfi_endproc
+ 452              	.LFE132:
+ 454              		.section	.text.TM_INT_USB_VCP_AddReceived,"ax",%progbits
+ 455              		.align	1
+ 456              		.global	TM_INT_USB_VCP_AddReceived
+ 457              		.syntax unified
+ 458              		.thumb
+ 459              		.thumb_func
+ 460              		.fpu fpv4-sp-d16
+ 462              	TM_INT_USB_VCP_AddReceived:
+ 463              	.LFB133:
+ 200:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 201:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_INT_USB_VCP_AddReceived(uint8_t c)
+ 202:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 464              		.loc 1 202 0
+ 465              		.cfi_startproc
+ 466              		@ args = 0, pretend = 0, frame = 0
+ 467              		@ frame_needed = 0, uses_anonymous_args = 0
+ 468              		@ link register save eliminated.
+ 469              	.LVL39:
+ 203:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Still available data in buffer */
+ 204:USB/config/tm_stm32f4_usb_vcp.c **** 	if (tm_int_usb_vcp_buf_num < USB_VCP_RECEIVE_BUFFER_LENGTH)
+ 470              		.loc 1 204 0
+ 471 0000 0D4B     		ldr	r3, .L53
+ 472 0002 1B68     		ldr	r3, [r3]
+ 473 0004 FF2B     		cmp	r3, #255
+ 474 0006 01D9     		bls	.L52
+ 205:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 206:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Check for overflow */
+ 207:USB/config/tm_stm32f4_usb_vcp.c **** 		if (tm_int_usb_vcp_buf_in >= USB_VCP_RECEIVE_BUFFER_LENGTH)
+ 208:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 209:USB/config/tm_stm32f4_usb_vcp.c **** 			tm_int_usb_vcp_buf_in = 0;
+ 210:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 211:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Add character to buffer */
+ARM GAS  /tmp/ccPtRvZx.s 			page 13
+
+
+ 212:USB/config/tm_stm32f4_usb_vcp.c **** 		TM_INT_USB_VCP_ReceiveBuffer[tm_int_usb_vcp_buf_in] = c;
+ 213:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Increase counters */
+ 214:USB/config/tm_stm32f4_usb_vcp.c **** 		tm_int_usb_vcp_buf_in++;
+ 215:USB/config/tm_stm32f4_usb_vcp.c **** 		tm_int_usb_vcp_buf_num++;
+ 216:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 217:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Return OK */
+ 218:USB/config/tm_stm32f4_usb_vcp.c **** 		return TM_USB_VCP_OK;
+ 219:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 220:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 221:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Return Buffer full */
+ 222:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_RECEIVE_BUFFER_FULL;
+ 475              		.loc 1 222 0
+ 476 0008 0220     		movs	r0, #2
+ 477              	.LVL40:
+ 478 000a 7047     		bx	lr
+ 479              	.LVL41:
+ 480              	.L52:
+ 202:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Still available data in buffer */
+ 481              		.loc 1 202 0
+ 482 000c 10B4     		push	{r4}
+ 483              	.LCFI12:
+ 484              		.cfi_def_cfa_offset 4
+ 485              		.cfi_offset 4, -4
+ 207:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 486              		.loc 1 207 0
+ 487 000e 0B4A     		ldr	r2, .L53+4
+ 488 0010 1268     		ldr	r2, [r2]
+ 489 0012 FF2A     		cmp	r2, #255
+ 490 0014 02D9     		bls	.L46
+ 209:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 491              		.loc 1 209 0
+ 492 0016 0021     		movs	r1, #0
+ 493 0018 084A     		ldr	r2, .L53+4
+ 494 001a 1160     		str	r1, [r2]
+ 495              	.L46:
+ 212:USB/config/tm_stm32f4_usb_vcp.c **** 		/* Increase counters */
+ 496              		.loc 1 212 0
+ 497 001c 0749     		ldr	r1, .L53+4
+ 498 001e 0A68     		ldr	r2, [r1]
+ 499 0020 074C     		ldr	r4, .L53+8
+ 500 0022 A054     		strb	r0, [r4, r2]
+ 214:USB/config/tm_stm32f4_usb_vcp.c **** 		tm_int_usb_vcp_buf_num++;
+ 501              		.loc 1 214 0
+ 502 0024 0132     		adds	r2, r2, #1
+ 503 0026 0A60     		str	r2, [r1]
+ 215:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 504              		.loc 1 215 0
+ 505 0028 0133     		adds	r3, r3, #1
+ 506 002a 034A     		ldr	r2, .L53
+ 507 002c 1360     		str	r3, [r2]
+ 218:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 508              		.loc 1 218 0
+ 509 002e 0020     		movs	r0, #0
+ 510              	.LVL42:
+ 223:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 511              		.loc 1 223 0
+ 512 0030 5DF8044B 		ldr	r4, [sp], #4
+ARM GAS  /tmp/ccPtRvZx.s 			page 14
+
+
+ 513              	.LCFI13:
+ 514              		.cfi_restore 4
+ 515              		.cfi_def_cfa_offset 0
+ 516              	.LVL43:
+ 517 0034 7047     		bx	lr
+ 518              	.L54:
+ 519 0036 00BF     		.align	2
+ 520              	.L53:
+ 521 0038 00000000 		.word	tm_int_usb_vcp_buf_num
+ 522 003c 00000000 		.word	tm_int_usb_vcp_buf_in
+ 523 0040 00000000 		.word	TM_INT_USB_VCP_ReceiveBuffer
+ 524              		.cfi_endproc
+ 525              	.LFE133:
+ 527              		.section	.text.TM_USB_VCP_GetStatus,"ax",%progbits
+ 528              		.align	1
+ 529              		.global	TM_USB_VCP_GetStatus
+ 530              		.syntax unified
+ 531              		.thumb
+ 532              		.thumb_func
+ 533              		.fpu fpv4-sp-d16
+ 535              	TM_USB_VCP_GetStatus:
+ 536              	.LFB134:
+ 224:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 225:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_USB_VCP_GetStatus(void)
+ 226:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 537              		.loc 1 226 0
+ 538              		.cfi_startproc
+ 539              		@ args = 0, pretend = 0, frame = 0
+ 540              		@ frame_needed = 0, uses_anonymous_args = 0
+ 541              		@ link register save eliminated.
+ 227:USB/config/tm_stm32f4_usb_vcp.c **** 	if (TM_USB_VCP_INT_Init)
+ 542              		.loc 1 227 0
+ 543 0000 034B     		ldr	r3, .L58
+ 544 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 545 0004 13B1     		cbz	r3, .L57
+ 228:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 229:USB/config/tm_stm32f4_usb_vcp.c **** 		return TM_USB_VCP_INT_Status;
+ 546              		.loc 1 229 0
+ 547 0006 034B     		ldr	r3, .L58+4
+ 548 0008 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 549 000a 7047     		bx	lr
+ 550              	.L57:
+ 230:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 231:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_ERROR;
+ 551              		.loc 1 231 0
+ 552 000c 0120     		movs	r0, #1
+ 232:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 553              		.loc 1 232 0
+ 554 000e 7047     		bx	lr
+ 555              	.L59:
+ 556              		.align	2
+ 557              	.L58:
+ 558 0010 00000000 		.word	.LANCHOR0
+ 559 0014 00000000 		.word	TM_USB_VCP_INT_Status
+ 560              		.cfi_endproc
+ 561              	.LFE134:
+ 563              		.section	.text.TM_USB_VCP_GetSettings,"ax",%progbits
+ARM GAS  /tmp/ccPtRvZx.s 			page 15
+
+
+ 564              		.align	1
+ 565              		.global	TM_USB_VCP_GetSettings
+ 566              		.syntax unified
+ 567              		.thumb
+ 568              		.thumb_func
+ 569              		.fpu fpv4-sp-d16
+ 571              	TM_USB_VCP_GetSettings:
+ 572              	.LFB135:
+ 233:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 234:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_Result TM_USB_VCP_GetSettings(TM_USB_VCP_Settings_t *Settings)
+ 235:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 573              		.loc 1 235 0
+ 574              		.cfi_startproc
+ 575              		@ args = 0, pretend = 0, frame = 0
+ 576              		@ frame_needed = 0, uses_anonymous_args = 0
+ 577              		@ link register save eliminated.
+ 578              	.LVL44:
+ 236:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Fill data */
+ 237:USB/config/tm_stm32f4_usb_vcp.c **** 	Settings->Baudrate = linecoding.bitrate;
+ 579              		.loc 1 237 0
+ 580 0000 064B     		ldr	r3, .L61
+ 581 0002 1A68     		ldr	r2, [r3]
+ 582 0004 0260     		str	r2, [r0]
+ 238:USB/config/tm_stm32f4_usb_vcp.c **** 	Settings->DataBits = linecoding.datatype;
+ 583              		.loc 1 238 0
+ 584 0006 9A79     		ldrb	r2, [r3, #6]	@ zero_extendqisi2
+ 585 0008 4271     		strb	r2, [r0, #5]
+ 239:USB/config/tm_stm32f4_usb_vcp.c **** 	Settings->Parity = linecoding.paritytype;
+ 586              		.loc 1 239 0
+ 587 000a 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 588 000c 8271     		strb	r2, [r0, #6]
+ 240:USB/config/tm_stm32f4_usb_vcp.c **** 	Settings->Stopbits = linecoding.format;
+ 589              		.loc 1 240 0
+ 590 000e 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 591 0010 0271     		strb	r2, [r0, #4]
+ 241:USB/config/tm_stm32f4_usb_vcp.c **** 	Settings->Changed = linecoding.changed;
+ 592              		.loc 1 241 0
+ 593 0012 DA79     		ldrb	r2, [r3, #7]	@ zero_extendqisi2
+ 594 0014 C271     		strb	r2, [r0, #7]
+ 242:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 243:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Clear changed flag */
+ 244:USB/config/tm_stm32f4_usb_vcp.c **** 	linecoding.changed = 0;
+ 595              		.loc 1 244 0
+ 596 0016 0020     		movs	r0, #0
+ 597              	.LVL45:
+ 598 0018 D871     		strb	r0, [r3, #7]
+ 245:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 246:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Return OK */
+ 247:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_OK;
+ 248:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 599              		.loc 1 248 0
+ 600 001a 7047     		bx	lr
+ 601              	.L62:
+ 602              		.align	2
+ 603              	.L61:
+ 604 001c 00000000 		.word	linecoding
+ 605              		.cfi_endproc
+ARM GAS  /tmp/ccPtRvZx.s 			page 16
+
+
+ 606              	.LFE135:
+ 608              		.section	.text.TM_USB_VCP_Set_IRQ,"ax",%progbits
+ 609              		.align	1
+ 610              		.global	TM_USB_VCP_Set_IRQ
+ 611              		.syntax unified
+ 612              		.thumb
+ 613              		.thumb_func
+ 614              		.fpu fpv4-sp-d16
+ 616              	TM_USB_VCP_Set_IRQ:
+ 617              	.LFB136:
+ 249:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 250:USB/config/tm_stm32f4_usb_vcp.c **** void TM_USB_VCP_Set_IRQ(uint8_t *data, uint16_t data_len)
+ 251:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 618              		.loc 1 251 0
+ 619              		.cfi_startproc
+ 620              		@ args = 0, pretend = 0, frame = 0
+ 621              		@ frame_needed = 0, uses_anonymous_args = 0
+ 622              		@ link register save eliminated.
+ 623              	.LVL46:
+ 624              	.LBB2:
+ 252:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 253:USB/config/tm_stm32f4_usb_vcp.c **** 	for (uint16_t i = 0; i < data_len; i++)
+ 625              		.loc 1 253 0
+ 626 0000 0023     		movs	r3, #0
+ 627              	.LVL47:
+ 628 0002 8B42     		cmp	r3, r1
+ 629 0004 19D2     		bcs	.L72
+ 630              	.LBE2:
+ 251:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 631              		.loc 1 251 0
+ 632 0006 30B4     		push	{r4, r5}
+ 633              	.LCFI14:
+ 634              		.cfi_def_cfa_offset 8
+ 635              		.cfi_offset 4, -8
+ 636              		.cfi_offset 5, -4
+ 637 0008 06E0     		b	.L67
+ 638              	.L65:
+ 639              	.LBB3:
+ 254:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 255:USB/config/tm_stm32f4_usb_vcp.c **** 		TM_IRQ_Data.Buff[TM_IRQ_Data.Data_Len] = data[i];
+ 256:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 257:USB/config/tm_stm32f4_usb_vcp.c **** 		if ((data[i] == PackEnd[0]) && (data[i + 1] == PackEnd[1]))
+ 258:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 259:USB/config/tm_stm32f4_usb_vcp.c **** 			TM_USB_VCP_IRQ_Status = TM_USB_VCP_IRQ_SET;
+ 260:USB/config/tm_stm32f4_usb_vcp.c **** 			break;
+ 261:USB/config/tm_stm32f4_usb_vcp.c **** 		}
+ 262:USB/config/tm_stm32f4_usb_vcp.c **** 		else
+ 263:USB/config/tm_stm32f4_usb_vcp.c **** 			TM_IRQ_Data.Data_Len++;
+ 640              		.loc 1 263 0 discriminator 2
+ 641 000a 0134     		adds	r4, r4, #1
+ 642 000c 0B4A     		ldr	r2, .L73
+ 643 000e 1480     		strh	r4, [r2]	@ movhi
+ 253:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 644              		.loc 1 253 0 discriminator 2
+ 645 0010 0133     		adds	r3, r3, #1
+ 646              	.LVL48:
+ 647 0012 9BB2     		uxth	r3, r3
+ARM GAS  /tmp/ccPtRvZx.s 			page 17
+
+
+ 648              	.LVL49:
+ 649 0014 8B42     		cmp	r3, r1
+ 650 0016 0ED2     		bcs	.L63
+ 651              	.L67:
+ 255:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 652              		.loc 1 255 0
+ 653 0018 084A     		ldr	r2, .L73
+ 654 001a 1488     		ldrh	r4, [r2]
+ 655 001c C55C     		ldrb	r5, [r0, r3]	@ zero_extendqisi2
+ 656 001e 2244     		add	r2, r2, r4
+ 657 0020 9570     		strb	r5, [r2, #2]
+ 257:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 658              		.loc 1 257 0
+ 659 0022 C25C     		ldrb	r2, [r0, r3]	@ zero_extendqisi2
+ 660 0024 0D2A     		cmp	r2, #13
+ 661 0026 F0D1     		bne	.L65
+ 257:USB/config/tm_stm32f4_usb_vcp.c **** 		{
+ 662              		.loc 1 257 0 is_stmt 0 discriminator 1
+ 663 0028 C218     		adds	r2, r0, r3
+ 664 002a 5278     		ldrb	r2, [r2, #1]	@ zero_extendqisi2
+ 665 002c 0A2A     		cmp	r2, #10
+ 666 002e ECD1     		bne	.L65
+ 259:USB/config/tm_stm32f4_usb_vcp.c **** 			break;
+ 667              		.loc 1 259 0 is_stmt 1
+ 668 0030 0122     		movs	r2, #1
+ 669 0032 034B     		ldr	r3, .L73+4
+ 670              	.LVL50:
+ 671 0034 1A70     		strb	r2, [r3]
+ 672              	.L63:
+ 673              	.LBE3:
+ 264:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 265:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 674              		.loc 1 265 0
+ 675 0036 30BC     		pop	{r4, r5}
+ 676              	.LCFI15:
+ 677              		.cfi_restore 5
+ 678              		.cfi_restore 4
+ 679              		.cfi_def_cfa_offset 0
+ 680 0038 7047     		bx	lr
+ 681              	.LVL51:
+ 682              	.L72:
+ 683 003a 7047     		bx	lr
+ 684              	.L74:
+ 685              		.align	2
+ 686              	.L73:
+ 687 003c 00000000 		.word	TM_IRQ_Data
+ 688 0040 00000000 		.word	.LANCHOR1
+ 689              		.cfi_endproc
+ 690              	.LFE136:
+ 692              		.section	.text.TM_USB_VCP_Get_IRQState,"ax",%progbits
+ 693              		.align	1
+ 694              		.global	TM_USB_VCP_Get_IRQState
+ 695              		.syntax unified
+ 696              		.thumb
+ 697              		.thumb_func
+ 698              		.fpu fpv4-sp-d16
+ 700              	TM_USB_VCP_Get_IRQState:
+ARM GAS  /tmp/ccPtRvZx.s 			page 18
+
+
+ 701              	.LFB137:
+ 266:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 267:USB/config/tm_stm32f4_usb_vcp.c **** TM_USB_VCP_IRQ TM_USB_VCP_Get_IRQState(void)
+ 268:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 702              		.loc 1 268 0
+ 703              		.cfi_startproc
+ 704              		@ args = 0, pretend = 0, frame = 0
+ 705              		@ frame_needed = 0, uses_anonymous_args = 0
+ 706              		@ link register save eliminated.
+ 269:USB/config/tm_stm32f4_usb_vcp.c **** 	return TM_USB_VCP_IRQ_Status;
+ 270:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 707              		.loc 1 270 0
+ 708 0000 014B     		ldr	r3, .L76
+ 709 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 710 0004 7047     		bx	lr
+ 711              	.L77:
+ 712 0006 00BF     		.align	2
+ 713              	.L76:
+ 714 0008 00000000 		.word	.LANCHOR1
+ 715              		.cfi_endproc
+ 716              	.LFE137:
+ 718              		.section	.text.TM_USB_VCP_Set_IRQPRC,"ax",%progbits
+ 719              		.align	1
+ 720              		.global	TM_USB_VCP_Set_IRQPRC
+ 721              		.syntax unified
+ 722              		.thumb
+ 723              		.thumb_func
+ 724              		.fpu fpv4-sp-d16
+ 726              	TM_USB_VCP_Set_IRQPRC:
+ 727              	.LFB138:
+ 271:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 272:USB/config/tm_stm32f4_usb_vcp.c **** void TM_USB_VCP_Set_IRQPRC(void)
+ 273:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 728              		.loc 1 273 0
+ 729              		.cfi_startproc
+ 730              		@ args = 0, pretend = 0, frame = 0
+ 731              		@ frame_needed = 0, uses_anonymous_args = 0
+ 732              		@ link register save eliminated.
+ 274:USB/config/tm_stm32f4_usb_vcp.c **** 	TM_USB_VCP_IRQ_Status = TM_USB_VCP_IRQ_PRC;
+ 733              		.loc 1 274 0
+ 734 0000 0222     		movs	r2, #2
+ 735 0002 014B     		ldr	r3, .L79
+ 736 0004 1A70     		strb	r2, [r3]
+ 737 0006 7047     		bx	lr
+ 738              	.L80:
+ 739              		.align	2
+ 740              	.L79:
+ 741 0008 00000000 		.word	.LANCHOR1
+ 742              		.cfi_endproc
+ 743              	.LFE138:
+ 745              		.section	.text.TM_USB_VCP_Reset_IRQ,"ax",%progbits
+ 746              		.align	1
+ 747              		.global	TM_USB_VCP_Reset_IRQ
+ 748              		.syntax unified
+ 749              		.thumb
+ 750              		.thumb_func
+ 751              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/ccPtRvZx.s 			page 19
+
+
+ 753              	TM_USB_VCP_Reset_IRQ:
+ 754              	.LFB139:
+ 275:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 276:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 277:USB/config/tm_stm32f4_usb_vcp.c **** void TM_USB_VCP_Reset_IRQ(void)
+ 278:USB/config/tm_stm32f4_usb_vcp.c **** {
+ 755              		.loc 1 278 0
+ 756              		.cfi_startproc
+ 757              		@ args = 0, pretend = 0, frame = 0
+ 758              		@ frame_needed = 0, uses_anonymous_args = 0
+ 759              		@ link register save eliminated.
+ 279:USB/config/tm_stm32f4_usb_vcp.c **** 	TM_USB_VCP_IRQ_Status = TM_USB_VCP_IRQ_RESET;
+ 760              		.loc 1 279 0
+ 761 0000 0023     		movs	r3, #0
+ 762 0002 074A     		ldr	r2, .L84
+ 763 0004 1370     		strb	r3, [r2]
+ 280:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 281:USB/config/tm_stm32f4_usb_vcp.c **** 	TM_IRQ_Data.Data_Len = 0;
+ 764              		.loc 1 281 0
+ 765 0006 074A     		ldr	r2, .L84+4
+ 766 0008 1380     		strh	r3, [r2]	@ movhi
+ 767              	.LVL52:
+ 768              	.LBB4:
+ 282:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 283:USB/config/tm_stm32f4_usb_vcp.c **** 	for (uint16_t i = 0; i < USB_VCP_RECEIVE_BUFFER_LENGTH; i++)
+ 769              		.loc 1 283 0
+ 770 000a 05E0     		b	.L82
+ 771              	.LVL53:
+ 772              	.L83:
+ 284:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 285:USB/config/tm_stm32f4_usb_vcp.c **** 		TM_IRQ_Data.Buff[i] = 0;
+ 773              		.loc 1 285 0 discriminator 3
+ 774 000c 054A     		ldr	r2, .L84+4
+ 775 000e 1A44     		add	r2, r2, r3
+ 776 0010 0021     		movs	r1, #0
+ 777 0012 9170     		strb	r1, [r2, #2]
+ 283:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 778              		.loc 1 283 0 discriminator 3
+ 779 0014 0133     		adds	r3, r3, #1
+ 780              	.LVL54:
+ 781 0016 9BB2     		uxth	r3, r3
+ 782              	.LVL55:
+ 783              	.L82:
+ 283:USB/config/tm_stm32f4_usb_vcp.c **** 	{
+ 784              		.loc 1 283 0 is_stmt 0 discriminator 1
+ 785 0018 FF2B     		cmp	r3, #255
+ 786 001a F7D9     		bls	.L83
+ 787              	.LBE4:
+ 286:USB/config/tm_stm32f4_usb_vcp.c **** 	}
+ 287:USB/config/tm_stm32f4_usb_vcp.c **** }
+ 788              		.loc 1 287 0 is_stmt 1
+ 789 001c 7047     		bx	lr
+ 790              	.L85:
+ 791 001e 00BF     		.align	2
+ 792              	.L84:
+ 793 0020 00000000 		.word	.LANCHOR1
+ 794 0024 00000000 		.word	TM_IRQ_Data
+ARM GAS  /tmp/ccPtRvZx.s 			page 20
+
+
+ 795              		.cfi_endproc
+ 796              	.LFE139:
+ 798              		.section	.text.TM_USB_VCP_Init,"ax",%progbits
+ 799              		.align	1
+ 800              		.global	TM_USB_VCP_Init
+ 801              		.syntax unified
+ 802              		.thumb
+ 803              		.thumb_func
+ 804              		.fpu fpv4-sp-d16
+ 806              	TM_USB_VCP_Init:
+ 807              	.LFB124:
+  42:USB/config/tm_stm32f4_usb_vcp.c **** 	/* Initialize USB */
+ 808              		.loc 1 42 0
+ 809              		.cfi_startproc
+ 810              		@ args = 0, pretend = 0, frame = 0
+ 811              		@ frame_needed = 0, uses_anonymous_args = 0
+ 812 0000 10B5     		push	{r4, lr}
+ 813              	.LCFI16:
+ 814              		.cfi_def_cfa_offset 8
+ 815              		.cfi_offset 4, -8
+ 816              		.cfi_offset 14, -4
+ 817 0002 82B0     		sub	sp, sp, #8
+ 818              	.LCFI17:
+ 819              		.cfi_def_cfa_offset 16
+  44:USB/config/tm_stm32f4_usb_vcp.c **** #ifdef USE_USB_OTG_FS
+ 820              		.loc 1 44 0
+ 821 0004 0B4B     		ldr	r3, .L88
+ 822 0006 0093     		str	r3, [sp]
+ 823 0008 0B4B     		ldr	r3, .L88+4
+ 824 000a 0C4A     		ldr	r2, .L88+8
+ 825 000c 0121     		movs	r1, #1
+ 826 000e 0C48     		ldr	r0, .L88+12
+ 827 0010 FFF7FEFF 		bl	USBD_Init
+ 828              	.LVL56:
+  55:USB/config/tm_stm32f4_usb_vcp.c **** 	tm_int_usb_vcp_buf_out = 0;
+ 829              		.loc 1 55 0
+ 830 0014 0024     		movs	r4, #0
+ 831 0016 0B4B     		ldr	r3, .L88+16
+ 832 0018 1C60     		str	r4, [r3]
+  56:USB/config/tm_stm32f4_usb_vcp.c **** 	tm_int_usb_vcp_buf_num = 0;
+ 833              		.loc 1 56 0
+ 834 001a 0B4B     		ldr	r3, .L88+20
+ 835 001c 1C60     		str	r4, [r3]
+  57:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 836              		.loc 1 57 0
+ 837 001e 0B4B     		ldr	r3, .L88+24
+ 838 0020 1C60     		str	r4, [r3]
+  60:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 839              		.loc 1 60 0
+ 840 0022 0122     		movs	r2, #1
+ 841 0024 0A4B     		ldr	r3, .L88+28
+ 842 0026 1A70     		strb	r2, [r3]
+  62:USB/config/tm_stm32f4_usb_vcp.c **** 
+ 843              		.loc 1 62 0
+ 844 0028 FFF7FEFF 		bl	TM_USB_VCP_Reset_IRQ
+ 845              	.LVL57:
+  66:USB/config/tm_stm32f4_usb_vcp.c **** 
+ARM GAS  /tmp/ccPtRvZx.s 			page 21
+
+
+ 846              		.loc 1 66 0
+ 847 002c 2046     		mov	r0, r4
+ 848 002e 02B0     		add	sp, sp, #8
+ 849              	.LCFI18:
+ 850              		.cfi_def_cfa_offset 8
+ 851              		@ sp needed
+ 852 0030 10BD     		pop	{r4, pc}
+ 853              	.L89:
+ 854 0032 00BF     		.align	2
+ 855              	.L88:
+ 856 0034 00000000 		.word	USR_cb
+ 857 0038 00000000 		.word	USBD_CDC_cb
+ 858 003c 00000000 		.word	USR_desc
+ 859 0040 00000000 		.word	USB_OTG_dev
+ 860 0044 00000000 		.word	tm_int_usb_vcp_buf_in
+ 861 0048 00000000 		.word	tm_int_usb_vcp_buf_out
+ 862 004c 00000000 		.word	tm_int_usb_vcp_buf_num
+ 863 0050 00000000 		.word	.LANCHOR0
+ 864              		.cfi_endproc
+ 865              	.LFE124:
+ 867              		.comm	USB_OTG_dev,1524,4
+ 868              		.global	TM_USB_VCP_INT_Init
+ 869              		.comm	tm_int_usb_vcp_buf_num,4,4
+ 870              		.comm	tm_int_usb_vcp_buf_out,4,4
+ 871              		.comm	tm_int_usb_vcp_buf_in,4,4
+ 872              		.comm	TM_INT_USB_VCP_ReceiveBuffer,256,4
+ 873              		.global	TM_USB_VCP_IRQ_Status
+ 874              		.comm	TM_IRQ_Data,258,4
+ 875              		.global	PackEnd
+ 876              		.section	.bss.TM_USB_VCP_INT_Init,"aw",%nobits
+ 877              		.set	.LANCHOR0,. + 0
+ 880              	TM_USB_VCP_INT_Init:
+ 881 0000 00       		.space	1
+ 882              		.section	.bss.TM_USB_VCP_IRQ_Status,"aw",%nobits
+ 883              		.set	.LANCHOR1,. + 0
+ 886              	TM_USB_VCP_IRQ_Status:
+ 887 0000 00       		.space	1
+ 888              		.section	.rodata.PackEnd,"a",%progbits
+ 889              		.align	2
+ 892              	PackEnd:
+ 893 0000 0D       		.byte	13
+ 894 0001 0A       		.byte	10
+ 895              		.text
+ 896              	.Letext0:
+ 897              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 898              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 899              		.file 4 "F4_CORE/core_cm4.h"
+ 900              		.file 5 "USER/system_stm32f4xx.h"
+ 901              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 902              		.file 7 "/usr/include/newlib/sys/_types.h"
+ 903              		.file 8 "/usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h"
+ 904              		.file 9 "/usr/include/newlib/sys/reent.h"
+ 905              		.file 10 "USB/core/usb_regs.h"
+ 906              		.file 11 "USB/core/usb_core.h"
+ 907              		.file 12 "USB/core/usbd_cdc_core.h"
+ 908              		.file 13 "USB/core/usbd_desc.h"
+ 909              		.file 14 "USB/core/usbd_cdc_vcp.h"
+ARM GAS  /tmp/ccPtRvZx.s 			page 22
+
+
+ 910              		.file 15 "USB/core/usb_defines.h"
+ 911              		.file 16 "USB/config/tm_stm32f4_usb_vcp.h"
+ 912              		.file 17 "USB/core/usbd_usr.h"
+ 913              		.file 18 "USB/core/usbd_core.h"
+ARM GAS  /tmp/ccPtRvZx.s 			page 23
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 tm_stm32f4_usb_vcp.c
+     /tmp/ccPtRvZx.s:18     .text.TM_USB_VCP_BufferEmpty:0000000000000000 $t
+     /tmp/ccPtRvZx.s:25     .text.TM_USB_VCP_BufferEmpty:0000000000000000 TM_USB_VCP_BufferEmpty
+     /tmp/ccPtRvZx.s:43     .text.TM_USB_VCP_BufferEmpty:000000000000000c $d
+                            *COM*:0000000000000004 tm_int_usb_vcp_buf_num
+     /tmp/ccPtRvZx.s:48     .text.TM_USB_VCP_BufferFull:0000000000000000 $t
+     /tmp/ccPtRvZx.s:55     .text.TM_USB_VCP_BufferFull:0000000000000000 TM_USB_VCP_BufferFull
+     /tmp/ccPtRvZx.s:74     .text.TM_USB_VCP_BufferFull:0000000000000010 $d
+     /tmp/ccPtRvZx.s:79     .text.TM_USB_VCP_FindCharacter:0000000000000000 $t
+     /tmp/ccPtRvZx.s:86     .text.TM_USB_VCP_FindCharacter:0000000000000000 TM_USB_VCP_FindCharacter
+     /tmp/ccPtRvZx.s:158    .text.TM_USB_VCP_FindCharacter:000000000000003c $d
+                            *COM*:0000000000000004 tm_int_usb_vcp_buf_out
+                            *COM*:0000000000000100 TM_INT_USB_VCP_ReceiveBuffer
+     /tmp/ccPtRvZx.s:165    .text.TM_USB_VCP_Getc:0000000000000000 $t
+     /tmp/ccPtRvZx.s:172    .text.TM_USB_VCP_Getc:0000000000000000 TM_USB_VCP_Getc
+     /tmp/ccPtRvZx.s:229    .text.TM_USB_VCP_Getc:000000000000003c $d
+     /tmp/ccPtRvZx.s:236    .text.TM_USB_VCP_Putc:0000000000000000 $t
+     /tmp/ccPtRvZx.s:243    .text.TM_USB_VCP_Putc:0000000000000000 TM_USB_VCP_Putc
+     /tmp/ccPtRvZx.s:278    .text.TM_USB_VCP_Puts:0000000000000000 $t
+     /tmp/ccPtRvZx.s:285    .text.TM_USB_VCP_Puts:0000000000000000 TM_USB_VCP_Puts
+     /tmp/ccPtRvZx.s:318    .text.TM_USB_VCP_Send:0000000000000000 $t
+     /tmp/ccPtRvZx.s:325    .text.TM_USB_VCP_Send:0000000000000000 TM_USB_VCP_Send
+     /tmp/ccPtRvZx.s:347    .text.TM_USB_VCP_Gets:0000000000000000 $t
+     /tmp/ccPtRvZx.s:354    .text.TM_USB_VCP_Gets:0000000000000000 TM_USB_VCP_Gets
+     /tmp/ccPtRvZx.s:455    .text.TM_INT_USB_VCP_AddReceived:0000000000000000 $t
+     /tmp/ccPtRvZx.s:462    .text.TM_INT_USB_VCP_AddReceived:0000000000000000 TM_INT_USB_VCP_AddReceived
+     /tmp/ccPtRvZx.s:521    .text.TM_INT_USB_VCP_AddReceived:0000000000000038 $d
+                            *COM*:0000000000000004 tm_int_usb_vcp_buf_in
+     /tmp/ccPtRvZx.s:528    .text.TM_USB_VCP_GetStatus:0000000000000000 $t
+     /tmp/ccPtRvZx.s:535    .text.TM_USB_VCP_GetStatus:0000000000000000 TM_USB_VCP_GetStatus
+     /tmp/ccPtRvZx.s:558    .text.TM_USB_VCP_GetStatus:0000000000000010 $d
+     /tmp/ccPtRvZx.s:564    .text.TM_USB_VCP_GetSettings:0000000000000000 $t
+     /tmp/ccPtRvZx.s:571    .text.TM_USB_VCP_GetSettings:0000000000000000 TM_USB_VCP_GetSettings
+     /tmp/ccPtRvZx.s:604    .text.TM_USB_VCP_GetSettings:000000000000001c $d
+     /tmp/ccPtRvZx.s:609    .text.TM_USB_VCP_Set_IRQ:0000000000000000 $t
+     /tmp/ccPtRvZx.s:616    .text.TM_USB_VCP_Set_IRQ:0000000000000000 TM_USB_VCP_Set_IRQ
+     /tmp/ccPtRvZx.s:687    .text.TM_USB_VCP_Set_IRQ:000000000000003c $d
+                            *COM*:0000000000000102 TM_IRQ_Data
+     /tmp/ccPtRvZx.s:693    .text.TM_USB_VCP_Get_IRQState:0000000000000000 $t
+     /tmp/ccPtRvZx.s:700    .text.TM_USB_VCP_Get_IRQState:0000000000000000 TM_USB_VCP_Get_IRQState
+     /tmp/ccPtRvZx.s:714    .text.TM_USB_VCP_Get_IRQState:0000000000000008 $d
+     /tmp/ccPtRvZx.s:719    .text.TM_USB_VCP_Set_IRQPRC:0000000000000000 $t
+     /tmp/ccPtRvZx.s:726    .text.TM_USB_VCP_Set_IRQPRC:0000000000000000 TM_USB_VCP_Set_IRQPRC
+     /tmp/ccPtRvZx.s:741    .text.TM_USB_VCP_Set_IRQPRC:0000000000000008 $d
+     /tmp/ccPtRvZx.s:746    .text.TM_USB_VCP_Reset_IRQ:0000000000000000 $t
+     /tmp/ccPtRvZx.s:753    .text.TM_USB_VCP_Reset_IRQ:0000000000000000 TM_USB_VCP_Reset_IRQ
+     /tmp/ccPtRvZx.s:793    .text.TM_USB_VCP_Reset_IRQ:0000000000000020 $d
+     /tmp/ccPtRvZx.s:799    .text.TM_USB_VCP_Init:0000000000000000 $t
+     /tmp/ccPtRvZx.s:806    .text.TM_USB_VCP_Init:0000000000000000 TM_USB_VCP_Init
+     /tmp/ccPtRvZx.s:856    .text.TM_USB_VCP_Init:0000000000000034 $d
+                            *COM*:00000000000005f4 USB_OTG_dev
+     /tmp/ccPtRvZx.s:880    .bss.TM_USB_VCP_INT_Init:0000000000000000 TM_USB_VCP_INT_Init
+     /tmp/ccPtRvZx.s:886    .bss.TM_USB_VCP_IRQ_Status:0000000000000000 TM_USB_VCP_IRQ_Status
+     /tmp/ccPtRvZx.s:892    .rodata.PackEnd:0000000000000000 PackEnd
+     /tmp/ccPtRvZx.s:881    .bss.TM_USB_VCP_INT_Init:0000000000000000 $d
+     /tmp/ccPtRvZx.s:887    .bss.TM_USB_VCP_IRQ_Status:0000000000000000 $d
+ARM GAS  /tmp/ccPtRvZx.s 			page 24
+
+
+     /tmp/ccPtRvZx.s:889    .rodata.PackEnd:0000000000000000 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+VCP_DataTx
+TM_USB_VCP_INT_Status
+linecoding
+USBD_Init
+USR_cb
+USBD_CDC_cb
+USR_desc

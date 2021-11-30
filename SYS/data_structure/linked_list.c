@@ -205,6 +205,33 @@ void List_Insert_Item(list_obj *list, item_obj *item)
     }
 }
 
+list_error_code List_traverse_ByCondition(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial, int condition)
+{
+    if (list != NULL)
+    {
+        if ((callback != NULL) && (cb_serial == pre_callback))
+        {
+            if (condition == callback(list, list->data, arg))
+                return list_no_error;
+        }
+
+        if (list->nxt != NULL)
+        {
+            List_traverse(list->nxt, callback, arg, cb_serial);
+        }
+
+        if ((callback != NULL) && (cb_serial == sub_callback))
+        {
+            if (condition == callback(list, list->data, arg))
+                return list_no_error;
+        }
+    }
+    else
+        return list_obj_error;
+
+    return list_no_error;
+}
+
 list_error_code List_traverse(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial)
 {
     if (list != NULL)

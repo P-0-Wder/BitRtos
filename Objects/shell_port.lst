@@ -1,0 +1,237 @@
+ARM GAS  /tmp/ccoBGy8q.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"shell_port.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Shell_Printf,"ax",%progbits
+  18              		.align	1
+  19              		.global	Shell_Printf
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	Shell_Printf:
+  26              	.LFB124:
+  27              		.file 1 "SYS/shell/shell_port.c"
+   1:SYS/shell/shell_port.c **** #include "shell.h"
+   2:SYS/shell/shell_port.c **** #include <stdio.h>
+   3:SYS/shell/shell_port.c **** #include <stdarg.h>
+   4:SYS/shell/shell_port.c **** #include "stm32f4xx.h"
+   5:SYS/shell/shell_port.c **** #include "shell_port.h"
+   6:SYS/shell/shell_port.c **** #include "drv_serial.h"
+   7:SYS/shell/shell_port.c **** 
+   8:SYS/shell/shell_port.c **** #define SHELL_BUFF_SIZE SERIAL_MAX_RECLEN
+   9:SYS/shell/shell_port.c **** 
+  10:SYS/shell/shell_port.c **** static Shell shell;
+  11:SYS/shell/shell_port.c **** static char shell_buff[SHELL_BUFF_SIZE];
+  12:SYS/shell/shell_port.c **** 
+  13:SYS/shell/shell_port.c **** /*can print the characters to the terminal with this function */
+  14:SYS/shell/shell_port.c **** void Shell_Printf(const int *ch, ...)
+  15:SYS/shell/shell_port.c **** {
+  28              		.loc 1 15 0
+  29              		.cfi_startproc
+  30              		@ args = 4, pretend = 16, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 1
+  32              	.LVL0:
+  33 0000 0FB4     		push	{r0, r1, r2, r3}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 0, -16
+  37              		.cfi_offset 1, -12
+  38              		.cfi_offset 2, -8
+  39              		.cfi_offset 3, -4
+  40 0002 08B5     		push	{r3, lr}
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 24
+  43              		.cfi_offset 3, -24
+ARM GAS  /tmp/ccoBGy8q.s 			page 2
+
+
+  44              		.cfi_offset 14, -20
+  16:SYS/shell/shell_port.c **** 	shellWriteString(&shell, ch);
+  45              		.loc 1 16 0
+  46 0004 0299     		ldr	r1, [sp, #8]
+  47 0006 0348     		ldr	r0, .L3
+  48 0008 FFF7FEFF 		bl	shellWriteString
+  49              	.LVL1:
+  17:SYS/shell/shell_port.c **** }
+  50              		.loc 1 17 0
+  51 000c BDE80840 		pop	{r3, lr}
+  52              	.LCFI2:
+  53              		.cfi_restore 14
+  54              		.cfi_restore 3
+  55              		.cfi_def_cfa_offset 16
+  56 0010 04B0     		add	sp, sp, #16
+  57              	.LCFI3:
+  58              		.cfi_restore 3
+  59              		.cfi_restore 2
+  60              		.cfi_restore 1
+  61              		.cfi_restore 0
+  62              		.cfi_def_cfa_offset 0
+  63 0012 7047     		bx	lr
+  64              	.L4:
+  65              		.align	2
+  66              	.L3:
+  67 0014 00000000 		.word	.LANCHOR0
+  68              		.cfi_endproc
+  69              	.LFE124:
+  71              		.section	.text.Shell_Init,"ax",%progbits
+  72              		.align	1
+  73              		.global	Shell_Init
+  74              		.syntax unified
+  75              		.thumb
+  76              		.thumb_func
+  77              		.fpu fpv4-sp-d16
+  79              	Shell_Init:
+  80              	.LFB126:
+  18:SYS/shell/shell_port.c **** 
+  19:SYS/shell/shell_port.c **** static void bt_printf(const char *fmt, ...)
+  20:SYS/shell/shell_port.c **** {
+  21:SYS/shell/shell_port.c **** 	va_list args;
+  22:SYS/shell/shell_port.c **** 	static char *bt_log_buf = NULL;
+  23:SYS/shell/shell_port.c **** 	int i = 0;
+  24:SYS/shell/shell_port.c **** 	int x = 0;
+  25:SYS/shell/shell_port.c **** 	va_start(args, fmt);
+  26:SYS/shell/shell_port.c **** 
+  27:SYS/shell/shell_port.c **** 	vsnprintf(bt_log_buf, strlen(bt_log_buf) - 1, fmt, args);
+  28:SYS/shell/shell_port.c **** 	Shell_Printf(bt_log_buf);
+  29:SYS/shell/shell_port.c **** 	va_end(args);
+  30:SYS/shell/shell_port.c **** }
+  31:SYS/shell/shell_port.c **** 
+  32:SYS/shell/shell_port.c **** void Shell_Init(Shell_Write_Callback callback)
+  33:SYS/shell/shell_port.c **** {
+  81              		.loc 1 33 0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 0
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccoBGy8q.s 			page 3
+
+
+  85              	.LVL2:
+  86 0000 08B5     		push	{r3, lr}
+  87              	.LCFI4:
+  88              		.cfi_def_cfa_offset 8
+  89              		.cfi_offset 3, -8
+  90              		.cfi_offset 14, -4
+  34:SYS/shell/shell_port.c **** 	shell.write = callback;
+  91              		.loc 1 34 0
+  92 0002 044B     		ldr	r3, .L7
+  93 0004 9866     		str	r0, [r3, #104]
+  35:SYS/shell/shell_port.c **** 	shellInit(&shell, shell_buff, sizeof(shell_buff));
+  94              		.loc 1 35 0
+  95 0006 4FF40072 		mov	r2, #512
+  96 000a 0349     		ldr	r1, .L7+4
+  97 000c 1846     		mov	r0, r3
+  98              	.LVL3:
+  99 000e FFF7FEFF 		bl	shellInit
+ 100              	.LVL4:
+ 101 0012 08BD     		pop	{r3, pc}
+ 102              	.L8:
+ 103              		.align	2
+ 104              	.L7:
+ 105 0014 00000000 		.word	.LANCHOR0
+ 106 0018 00000000 		.word	.LANCHOR1
+ 107              		.cfi_endproc
+ 108              	.LFE126:
+ 110              		.section	.text.Shell_GetInstence,"ax",%progbits
+ 111              		.align	1
+ 112              		.global	Shell_GetInstence
+ 113              		.syntax unified
+ 114              		.thumb
+ 115              		.thumb_func
+ 116              		.fpu fpv4-sp-d16
+ 118              	Shell_GetInstence:
+ 119              	.LFB127:
+  36:SYS/shell/shell_port.c **** }
+  37:SYS/shell/shell_port.c **** 
+  38:SYS/shell/shell_port.c **** Shell *Shell_GetInstence(void)
+  39:SYS/shell/shell_port.c **** {
+ 120              		.loc 1 39 0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+  40:SYS/shell/shell_port.c **** 	return &shell;
+  41:SYS/shell/shell_port.c **** }...
+ 125              		.loc 1 41 0
+ 126 0000 0048     		ldr	r0, .L10
+ 127 0002 7047     		bx	lr
+ 128              	.L11:
+ 129              		.align	2
+ 130              	.L10:
+ 131 0004 00000000 		.word	.LANCHOR0
+ 132              		.cfi_endproc
+ 133              	.LFE127:
+ 135              		.section	.bss.shell,"aw",%nobits
+ 136              		.align	2
+ARM GAS  /tmp/ccoBGy8q.s 			page 4
+
+
+ 137              		.set	.LANCHOR0,. + 0
+ 140              	shell:
+ 141 0000 00000000 		.space	108
+ 141      00000000 
+ 141      00000000 
+ 141      00000000 
+ 141      00000000 
+ 142              		.section	.bss.shell_buff,"aw",%nobits
+ 143              		.align	2
+ 144              		.set	.LANCHOR1,. + 0
+ 147              	shell_buff:
+ 148 0000 00000000 		.space	512
+ 148      00000000 
+ 148      00000000 
+ 148      00000000 
+ 148      00000000 
+ 149              		.text
+ 150              	.Letext0:
+ 151              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 152              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 153              		.file 4 "SYS/shell/shell.h"
+ 154              		.file 5 "/usr/include/newlib/sys/lock.h"
+ 155              		.file 6 "/usr/include/newlib/sys/_types.h"
+ 156              		.file 7 "/usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h"
+ 157              		.file 8 "/usr/include/newlib/sys/reent.h"
+ 158              		.file 9 "F4_CORE/core_cm4.h"
+ 159              		.file 10 "USER/system_stm32f4xx.h"
+ 160              		.file 11 "SYS/shell/shell_port.h"
+ 161              		.file 12 "/usr/include/newlib/stdlib.h"
+ 162              		.file 13 "Bsp/periph_serial.h"
+ 163              		.file 14 "Drv/drv_serial.h"
+ARM GAS  /tmp/ccoBGy8q.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 shell_port.c
+     /tmp/ccoBGy8q.s:18     .text.Shell_Printf:0000000000000000 $t
+     /tmp/ccoBGy8q.s:25     .text.Shell_Printf:0000000000000000 Shell_Printf
+     /tmp/ccoBGy8q.s:67     .text.Shell_Printf:0000000000000014 $d
+     /tmp/ccoBGy8q.s:72     .text.Shell_Init:0000000000000000 $t
+     /tmp/ccoBGy8q.s:79     .text.Shell_Init:0000000000000000 Shell_Init
+     /tmp/ccoBGy8q.s:105    .text.Shell_Init:0000000000000014 $d
+     /tmp/ccoBGy8q.s:111    .text.Shell_GetInstence:0000000000000000 $t
+     /tmp/ccoBGy8q.s:118    .text.Shell_GetInstence:0000000000000000 Shell_GetInstence
+     /tmp/ccoBGy8q.s:131    .text.Shell_GetInstence:0000000000000004 $d
+     /tmp/ccoBGy8q.s:136    .bss.shell:0000000000000000 $d
+     /tmp/ccoBGy8q.s:140    .bss.shell:0000000000000000 shell
+     /tmp/ccoBGy8q.s:143    .bss.shell_buff:0000000000000000 $d
+     /tmp/ccoBGy8q.s:147    .bss.shell_buff:0000000000000000 shell_buff
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+shellWriteString
+shellInit

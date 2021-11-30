@@ -1,0 +1,563 @@
+ARM GAS  /tmp/ccH1KTUO.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"usbd_ioreq.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.USBD_CtlSendData,"ax",%progbits
+  18              		.align	1
+  19              		.global	USBD_CtlSendData
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	USBD_CtlSendData:
+  26              	.LFB124:
+  27              		.file 1 "USB/core/usbd_ioreq.c"
+   1:USB/core/usbd_ioreq.c **** /**
+   2:USB/core/usbd_ioreq.c ****   ******************************************************************************
+   3:USB/core/usbd_ioreq.c ****   * @file    usbd_ioreq.c
+   4:USB/core/usbd_ioreq.c ****   * @author  MCD Application Team
+   5:USB/core/usbd_ioreq.c ****   * @version V1.1.0
+   6:USB/core/usbd_ioreq.c ****   * @date    19-March-2012
+   7:USB/core/usbd_ioreq.c ****   * @brief   This file provides the IO requests APIs for control endpoints.
+   8:USB/core/usbd_ioreq.c ****   ******************************************************************************
+   9:USB/core/usbd_ioreq.c ****   * @attention
+  10:USB/core/usbd_ioreq.c ****   *
+  11:USB/core/usbd_ioreq.c ****   * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  12:USB/core/usbd_ioreq.c ****   *
+  13:USB/core/usbd_ioreq.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  14:USB/core/usbd_ioreq.c ****   * You may not use this file except in compliance with the License.
+  15:USB/core/usbd_ioreq.c ****   * You may obtain a copy of the License at:
+  16:USB/core/usbd_ioreq.c ****   *
+  17:USB/core/usbd_ioreq.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  18:USB/core/usbd_ioreq.c ****   *
+  19:USB/core/usbd_ioreq.c ****   * Unless required by applicable law or agreed to in writing, software 
+  20:USB/core/usbd_ioreq.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  21:USB/core/usbd_ioreq.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  22:USB/core/usbd_ioreq.c ****   * See the License for the specific language governing permissions and
+  23:USB/core/usbd_ioreq.c ****   * limitations under the License.
+  24:USB/core/usbd_ioreq.c ****   *
+  25:USB/core/usbd_ioreq.c ****   ******************************************************************************
+  26:USB/core/usbd_ioreq.c ****   */ 
+  27:USB/core/usbd_ioreq.c **** 
+  28:USB/core/usbd_ioreq.c **** /* Includes ------------------------------------------------------------------*/
+  29:USB/core/usbd_ioreq.c **** #include "usbd_ioreq.h"
+  30:USB/core/usbd_ioreq.c **** 
+  31:USB/core/usbd_ioreq.c **** /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+ARM GAS  /tmp/ccH1KTUO.s 			page 2
+
+
+  32:USB/core/usbd_ioreq.c ****   * @{
+  33:USB/core/usbd_ioreq.c ****   */
+  34:USB/core/usbd_ioreq.c **** 
+  35:USB/core/usbd_ioreq.c **** 
+  36:USB/core/usbd_ioreq.c **** /** @defgroup USBD_IOREQ 
+  37:USB/core/usbd_ioreq.c ****   * @brief control I/O requests module
+  38:USB/core/usbd_ioreq.c ****   * @{
+  39:USB/core/usbd_ioreq.c ****   */ 
+  40:USB/core/usbd_ioreq.c **** 
+  41:USB/core/usbd_ioreq.c **** /** @defgroup USBD_IOREQ_Private_TypesDefinitions
+  42:USB/core/usbd_ioreq.c ****   * @{
+  43:USB/core/usbd_ioreq.c ****   */ 
+  44:USB/core/usbd_ioreq.c **** /**
+  45:USB/core/usbd_ioreq.c ****   * @}
+  46:USB/core/usbd_ioreq.c ****   */ 
+  47:USB/core/usbd_ioreq.c **** 
+  48:USB/core/usbd_ioreq.c **** 
+  49:USB/core/usbd_ioreq.c **** /** @defgroup USBD_IOREQ_Private_Defines
+  50:USB/core/usbd_ioreq.c ****   * @{
+  51:USB/core/usbd_ioreq.c ****   */ 
+  52:USB/core/usbd_ioreq.c **** 
+  53:USB/core/usbd_ioreq.c **** /**
+  54:USB/core/usbd_ioreq.c ****   * @}
+  55:USB/core/usbd_ioreq.c ****   */ 
+  56:USB/core/usbd_ioreq.c **** 
+  57:USB/core/usbd_ioreq.c **** 
+  58:USB/core/usbd_ioreq.c **** /** @defgroup USBD_IOREQ_Private_Macros
+  59:USB/core/usbd_ioreq.c ****   * @{
+  60:USB/core/usbd_ioreq.c ****   */ 
+  61:USB/core/usbd_ioreq.c **** /**
+  62:USB/core/usbd_ioreq.c ****   * @}
+  63:USB/core/usbd_ioreq.c ****   */ 
+  64:USB/core/usbd_ioreq.c **** 
+  65:USB/core/usbd_ioreq.c **** 
+  66:USB/core/usbd_ioreq.c **** /** @defgroup USBD_IOREQ_Private_Variables
+  67:USB/core/usbd_ioreq.c ****   * @{
+  68:USB/core/usbd_ioreq.c ****   */ 
+  69:USB/core/usbd_ioreq.c **** 
+  70:USB/core/usbd_ioreq.c **** /**
+  71:USB/core/usbd_ioreq.c ****   * @}
+  72:USB/core/usbd_ioreq.c ****   */ 
+  73:USB/core/usbd_ioreq.c **** 
+  74:USB/core/usbd_ioreq.c **** 
+  75:USB/core/usbd_ioreq.c **** /** @defgroup USBD_IOREQ_Private_FunctionPrototypes
+  76:USB/core/usbd_ioreq.c ****   * @{
+  77:USB/core/usbd_ioreq.c ****   */ 
+  78:USB/core/usbd_ioreq.c **** /**
+  79:USB/core/usbd_ioreq.c ****   * @}
+  80:USB/core/usbd_ioreq.c ****   */ 
+  81:USB/core/usbd_ioreq.c **** 
+  82:USB/core/usbd_ioreq.c **** 
+  83:USB/core/usbd_ioreq.c **** /** @defgroup USBD_IOREQ_Private_Functions
+  84:USB/core/usbd_ioreq.c ****   * @{
+  85:USB/core/usbd_ioreq.c ****   */ 
+  86:USB/core/usbd_ioreq.c **** 
+  87:USB/core/usbd_ioreq.c **** /**
+  88:USB/core/usbd_ioreq.c **** * @brief  USBD_CtlSendData
+ARM GAS  /tmp/ccH1KTUO.s 			page 3
+
+
+  89:USB/core/usbd_ioreq.c **** *         send data on the ctl pipe
+  90:USB/core/usbd_ioreq.c **** * @param  pdev: device instance
+  91:USB/core/usbd_ioreq.c **** * @param  buff: pointer to data buffer
+  92:USB/core/usbd_ioreq.c **** * @param  len: length of data to be sent
+  93:USB/core/usbd_ioreq.c **** * @retval status
+  94:USB/core/usbd_ioreq.c **** */
+  95:USB/core/usbd_ioreq.c **** USBD_Status  USBD_CtlSendData (USB_OTG_CORE_HANDLE  *pdev, 
+  96:USB/core/usbd_ioreq.c ****                                uint8_t *pbuf,
+  97:USB/core/usbd_ioreq.c ****                                uint16_t len)
+  98:USB/core/usbd_ioreq.c **** {
+  28              		.loc 1 98 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38 0002 0446     		mov	r4, r0
+  39 0004 1346     		mov	r3, r2
+  40              	.LVL1:
+  99:USB/core/usbd_ioreq.c ****   USBD_Status ret = USBD_OK;
+ 100:USB/core/usbd_ioreq.c ****   
+ 101:USB/core/usbd_ioreq.c ****   pdev->dev.in_ep[0].total_data_len = len;
+  41              		.loc 1 101 0
+  42 0006 C4F83C21 		str	r2, [r4, #316]
+ 102:USB/core/usbd_ioreq.c ****   pdev->dev.in_ep[0].rem_data_len   = len;
+  43              		.loc 1 102 0
+  44 000a C4F83821 		str	r2, [r4, #312]
+ 103:USB/core/usbd_ioreq.c ****   pdev->dev.device_state = USB_OTG_EP0_DATA_IN;
+  45              		.loc 1 103 0
+  46 000e 0222     		movs	r2, #2
+  47              	.LVL2:
+  48 0010 80F81121 		strb	r2, [r0, #273]
+ 104:USB/core/usbd_ioreq.c **** 
+ 105:USB/core/usbd_ioreq.c ****   DCD_EP_Tx (pdev, 0, pbuf, len);
+  49              		.loc 1 105 0
+  50 0014 0A46     		mov	r2, r1
+  51 0016 0021     		movs	r1, #0
+  52              	.LVL3:
+  53 0018 FFF7FEFF 		bl	DCD_EP_Tx
+  54              	.LVL4:
+ 106:USB/core/usbd_ioreq.c ****  
+ 107:USB/core/usbd_ioreq.c ****   return ret;
+ 108:USB/core/usbd_ioreq.c **** }
+  55              		.loc 1 108 0
+  56 001c 0020     		movs	r0, #0
+  57 001e 10BD     		pop	{r4, pc}
+  58              		.cfi_endproc
+  59              	.LFE124:
+  61              		.section	.text.USBD_CtlContinueSendData,"ax",%progbits
+  62              		.align	1
+  63              		.global	USBD_CtlContinueSendData
+  64              		.syntax unified
+  65              		.thumb
+ARM GAS  /tmp/ccH1KTUO.s 			page 4
+
+
+  66              		.thumb_func
+  67              		.fpu fpv4-sp-d16
+  69              	USBD_CtlContinueSendData:
+  70              	.LFB125:
+ 109:USB/core/usbd_ioreq.c **** 
+ 110:USB/core/usbd_ioreq.c **** /**
+ 111:USB/core/usbd_ioreq.c **** * @brief  USBD_CtlContinueSendData
+ 112:USB/core/usbd_ioreq.c **** *         continue sending data on the ctl pipe
+ 113:USB/core/usbd_ioreq.c **** * @param  pdev: device instance
+ 114:USB/core/usbd_ioreq.c **** * @param  buff: pointer to data buffer
+ 115:USB/core/usbd_ioreq.c **** * @param  len: length of data to be sent
+ 116:USB/core/usbd_ioreq.c **** * @retval status
+ 117:USB/core/usbd_ioreq.c **** */
+ 118:USB/core/usbd_ioreq.c **** USBD_Status  USBD_CtlContinueSendData (USB_OTG_CORE_HANDLE  *pdev, 
+ 119:USB/core/usbd_ioreq.c ****                                        uint8_t *pbuf,
+ 120:USB/core/usbd_ioreq.c ****                                        uint16_t len)
+ 121:USB/core/usbd_ioreq.c **** {
+  71              		.loc 1 121 0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  75              	.LVL5:
+  76 0000 08B5     		push	{r3, lr}
+  77              	.LCFI1:
+  78              		.cfi_def_cfa_offset 8
+  79              		.cfi_offset 3, -8
+  80              		.cfi_offset 14, -4
+  81              	.LVL6:
+ 122:USB/core/usbd_ioreq.c ****   USBD_Status ret = USBD_OK;
+ 123:USB/core/usbd_ioreq.c ****   
+ 124:USB/core/usbd_ioreq.c ****   DCD_EP_Tx (pdev, 0, pbuf, len);
+  82              		.loc 1 124 0
+  83 0002 1346     		mov	r3, r2
+  84 0004 0A46     		mov	r2, r1
+  85              	.LVL7:
+  86 0006 0021     		movs	r1, #0
+  87              	.LVL8:
+  88 0008 FFF7FEFF 		bl	DCD_EP_Tx
+  89              	.LVL9:
+ 125:USB/core/usbd_ioreq.c ****   
+ 126:USB/core/usbd_ioreq.c ****   
+ 127:USB/core/usbd_ioreq.c ****   return ret;
+ 128:USB/core/usbd_ioreq.c **** }
+  90              		.loc 1 128 0
+  91 000c 0020     		movs	r0, #0
+  92 000e 08BD     		pop	{r3, pc}
+  93              		.cfi_endproc
+  94              	.LFE125:
+  96              		.section	.text.USBD_CtlPrepareRx,"ax",%progbits
+  97              		.align	1
+  98              		.global	USBD_CtlPrepareRx
+  99              		.syntax unified
+ 100              		.thumb
+ 101              		.thumb_func
+ 102              		.fpu fpv4-sp-d16
+ 104              	USBD_CtlPrepareRx:
+ 105              	.LFB126:
+ARM GAS  /tmp/ccH1KTUO.s 			page 5
+
+
+ 129:USB/core/usbd_ioreq.c **** 
+ 130:USB/core/usbd_ioreq.c **** /**
+ 131:USB/core/usbd_ioreq.c **** * @brief  USBD_CtlPrepareRx
+ 132:USB/core/usbd_ioreq.c **** *         receive data on the ctl pipe
+ 133:USB/core/usbd_ioreq.c **** * @param  pdev: USB OTG device instance
+ 134:USB/core/usbd_ioreq.c **** * @param  buff: pointer to data buffer
+ 135:USB/core/usbd_ioreq.c **** * @param  len: length of data to be received
+ 136:USB/core/usbd_ioreq.c **** * @retval status
+ 137:USB/core/usbd_ioreq.c **** */
+ 138:USB/core/usbd_ioreq.c **** USBD_Status  USBD_CtlPrepareRx (USB_OTG_CORE_HANDLE  *pdev,
+ 139:USB/core/usbd_ioreq.c ****                                   uint8_t *pbuf,                                  
+ 140:USB/core/usbd_ioreq.c ****                                   uint16_t len)
+ 141:USB/core/usbd_ioreq.c **** {
+ 106              		.loc 1 141 0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 0
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110              	.LVL10:
+ 111 0000 10B5     		push	{r4, lr}
+ 112              	.LCFI2:
+ 113              		.cfi_def_cfa_offset 8
+ 114              		.cfi_offset 4, -8
+ 115              		.cfi_offset 14, -4
+ 116 0002 0446     		mov	r4, r0
+ 117 0004 1346     		mov	r3, r2
+ 118              	.LVL11:
+ 142:USB/core/usbd_ioreq.c ****   USBD_Status ret = USBD_OK;
+ 143:USB/core/usbd_ioreq.c ****   
+ 144:USB/core/usbd_ioreq.c ****   pdev->dev.out_ep[0].total_data_len = len;
+ 119              		.loc 1 144 0
+ 120 0006 C4F89423 		str	r2, [r4, #916]
+ 145:USB/core/usbd_ioreq.c ****   pdev->dev.out_ep[0].rem_data_len   = len;
+ 121              		.loc 1 145 0
+ 122 000a C4F89023 		str	r2, [r4, #912]
+ 146:USB/core/usbd_ioreq.c ****   pdev->dev.device_state = USB_OTG_EP0_DATA_OUT;
+ 123              		.loc 1 146 0
+ 124 000e 0322     		movs	r2, #3
+ 125              	.LVL12:
+ 126 0010 80F81121 		strb	r2, [r0, #273]
+ 147:USB/core/usbd_ioreq.c ****   
+ 148:USB/core/usbd_ioreq.c ****   DCD_EP_PrepareRx (pdev,
+ 127              		.loc 1 148 0
+ 128 0014 0A46     		mov	r2, r1
+ 129 0016 0021     		movs	r1, #0
+ 130              	.LVL13:
+ 131 0018 FFF7FEFF 		bl	DCD_EP_PrepareRx
+ 132              	.LVL14:
+ 149:USB/core/usbd_ioreq.c ****                     0,
+ 150:USB/core/usbd_ioreq.c ****                     pbuf,
+ 151:USB/core/usbd_ioreq.c ****                     len);
+ 152:USB/core/usbd_ioreq.c ****   
+ 153:USB/core/usbd_ioreq.c **** 
+ 154:USB/core/usbd_ioreq.c ****   return ret;
+ 155:USB/core/usbd_ioreq.c **** }
+ 133              		.loc 1 155 0
+ 134 001c 0020     		movs	r0, #0
+ 135 001e 10BD     		pop	{r4, pc}
+ARM GAS  /tmp/ccH1KTUO.s 			page 6
+
+
+ 136              		.cfi_endproc
+ 137              	.LFE126:
+ 139              		.section	.text.USBD_CtlContinueRx,"ax",%progbits
+ 140              		.align	1
+ 141              		.global	USBD_CtlContinueRx
+ 142              		.syntax unified
+ 143              		.thumb
+ 144              		.thumb_func
+ 145              		.fpu fpv4-sp-d16
+ 147              	USBD_CtlContinueRx:
+ 148              	.LFB127:
+ 156:USB/core/usbd_ioreq.c **** 
+ 157:USB/core/usbd_ioreq.c **** /**
+ 158:USB/core/usbd_ioreq.c **** * @brief  USBD_CtlContinueRx
+ 159:USB/core/usbd_ioreq.c **** *         continue receive data on the ctl pipe
+ 160:USB/core/usbd_ioreq.c **** * @param  pdev: USB OTG device instance
+ 161:USB/core/usbd_ioreq.c **** * @param  buff: pointer to data buffer
+ 162:USB/core/usbd_ioreq.c **** * @param  len: length of data to be received
+ 163:USB/core/usbd_ioreq.c **** * @retval status
+ 164:USB/core/usbd_ioreq.c **** */
+ 165:USB/core/usbd_ioreq.c **** USBD_Status  USBD_CtlContinueRx (USB_OTG_CORE_HANDLE  *pdev, 
+ 166:USB/core/usbd_ioreq.c ****                                           uint8_t *pbuf,                                          
+ 167:USB/core/usbd_ioreq.c ****                                           uint16_t len)
+ 168:USB/core/usbd_ioreq.c **** {
+ 149              		.loc 1 168 0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 0
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153              	.LVL15:
+ 154 0000 08B5     		push	{r3, lr}
+ 155              	.LCFI3:
+ 156              		.cfi_def_cfa_offset 8
+ 157              		.cfi_offset 3, -8
+ 158              		.cfi_offset 14, -4
+ 159              	.LVL16:
+ 169:USB/core/usbd_ioreq.c ****   USBD_Status ret = USBD_OK;
+ 170:USB/core/usbd_ioreq.c ****   
+ 171:USB/core/usbd_ioreq.c ****   DCD_EP_PrepareRx (pdev,
+ 160              		.loc 1 171 0
+ 161 0002 1346     		mov	r3, r2
+ 162 0004 0A46     		mov	r2, r1
+ 163              	.LVL17:
+ 164 0006 0021     		movs	r1, #0
+ 165              	.LVL18:
+ 166 0008 FFF7FEFF 		bl	DCD_EP_PrepareRx
+ 167              	.LVL19:
+ 172:USB/core/usbd_ioreq.c ****                     0,                     
+ 173:USB/core/usbd_ioreq.c ****                     pbuf,                         
+ 174:USB/core/usbd_ioreq.c ****                     len);
+ 175:USB/core/usbd_ioreq.c ****   return ret;
+ 176:USB/core/usbd_ioreq.c **** }
+ 168              		.loc 1 176 0
+ 169 000c 0020     		movs	r0, #0
+ 170 000e 08BD     		pop	{r3, pc}
+ 171              		.cfi_endproc
+ 172              	.LFE127:
+ 174              		.section	.text.USBD_CtlSendStatus,"ax",%progbits
+ARM GAS  /tmp/ccH1KTUO.s 			page 7
+
+
+ 175              		.align	1
+ 176              		.global	USBD_CtlSendStatus
+ 177              		.syntax unified
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.fpu fpv4-sp-d16
+ 182              	USBD_CtlSendStatus:
+ 183              	.LFB128:
+ 177:USB/core/usbd_ioreq.c **** /**
+ 178:USB/core/usbd_ioreq.c **** * @brief  USBD_CtlSendStatus
+ 179:USB/core/usbd_ioreq.c **** *         send zero lzngth packet on the ctl pipe
+ 180:USB/core/usbd_ioreq.c **** * @param  pdev: USB OTG device instance
+ 181:USB/core/usbd_ioreq.c **** * @retval status
+ 182:USB/core/usbd_ioreq.c **** */
+ 183:USB/core/usbd_ioreq.c **** USBD_Status  USBD_CtlSendStatus (USB_OTG_CORE_HANDLE  *pdev)
+ 184:USB/core/usbd_ioreq.c **** {
+ 184              		.loc 1 184 0
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 0
+ 187              		@ frame_needed = 0, uses_anonymous_args = 0
+ 188              	.LVL20:
+ 189 0000 10B5     		push	{r4, lr}
+ 190              	.LCFI4:
+ 191              		.cfi_def_cfa_offset 8
+ 192              		.cfi_offset 4, -8
+ 193              		.cfi_offset 14, -4
+ 194 0002 0446     		mov	r4, r0
+ 195              	.LVL21:
+ 185:USB/core/usbd_ioreq.c ****   USBD_Status ret = USBD_OK;
+ 186:USB/core/usbd_ioreq.c ****   pdev->dev.device_state = USB_OTG_EP0_STATUS_IN;
+ 196              		.loc 1 186 0
+ 197 0004 0423     		movs	r3, #4
+ 198 0006 80F81131 		strb	r3, [r0, #273]
+ 187:USB/core/usbd_ioreq.c ****   DCD_EP_Tx (pdev,
+ 199              		.loc 1 187 0
+ 200 000a 0023     		movs	r3, #0
+ 201 000c 1A46     		mov	r2, r3
+ 202 000e 1946     		mov	r1, r3
+ 203 0010 FFF7FEFF 		bl	DCD_EP_Tx
+ 204              	.LVL22:
+ 188:USB/core/usbd_ioreq.c ****              0,
+ 189:USB/core/usbd_ioreq.c ****              NULL, 
+ 190:USB/core/usbd_ioreq.c ****              0); 
+ 191:USB/core/usbd_ioreq.c ****   
+ 192:USB/core/usbd_ioreq.c ****   USB_OTG_EP0_OutStart(pdev);  
+ 205              		.loc 1 192 0
+ 206 0014 2046     		mov	r0, r4
+ 207 0016 FFF7FEFF 		bl	USB_OTG_EP0_OutStart
+ 208              	.LVL23:
+ 193:USB/core/usbd_ioreq.c ****   
+ 194:USB/core/usbd_ioreq.c ****   return ret;
+ 195:USB/core/usbd_ioreq.c **** }
+ 209              		.loc 1 195 0
+ 210 001a 0020     		movs	r0, #0
+ 211 001c 10BD     		pop	{r4, pc}
+ 212              		.cfi_endproc
+ 213              	.LFE128:
+ARM GAS  /tmp/ccH1KTUO.s 			page 8
+
+
+ 215              		.section	.text.USBD_CtlReceiveStatus,"ax",%progbits
+ 216              		.align	1
+ 217              		.global	USBD_CtlReceiveStatus
+ 218              		.syntax unified
+ 219              		.thumb
+ 220              		.thumb_func
+ 221              		.fpu fpv4-sp-d16
+ 223              	USBD_CtlReceiveStatus:
+ 224              	.LFB129:
+ 196:USB/core/usbd_ioreq.c **** 
+ 197:USB/core/usbd_ioreq.c **** /**
+ 198:USB/core/usbd_ioreq.c **** * @brief  USBD_CtlReceiveStatus
+ 199:USB/core/usbd_ioreq.c **** *         receive zero lzngth packet on the ctl pipe
+ 200:USB/core/usbd_ioreq.c **** * @param  pdev: USB OTG device instance
+ 201:USB/core/usbd_ioreq.c **** * @retval status
+ 202:USB/core/usbd_ioreq.c **** */
+ 203:USB/core/usbd_ioreq.c **** USBD_Status  USBD_CtlReceiveStatus (USB_OTG_CORE_HANDLE  *pdev)
+ 204:USB/core/usbd_ioreq.c **** {
+ 225              		.loc 1 204 0
+ 226              		.cfi_startproc
+ 227              		@ args = 0, pretend = 0, frame = 0
+ 228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 229              	.LVL24:
+ 230 0000 10B5     		push	{r4, lr}
+ 231              	.LCFI5:
+ 232              		.cfi_def_cfa_offset 8
+ 233              		.cfi_offset 4, -8
+ 234              		.cfi_offset 14, -4
+ 235 0002 0446     		mov	r4, r0
+ 236              	.LVL25:
+ 205:USB/core/usbd_ioreq.c ****   USBD_Status ret = USBD_OK;
+ 206:USB/core/usbd_ioreq.c ****   pdev->dev.device_state = USB_OTG_EP0_STATUS_OUT;  
+ 237              		.loc 1 206 0
+ 238 0004 0523     		movs	r3, #5
+ 239 0006 80F81131 		strb	r3, [r0, #273]
+ 207:USB/core/usbd_ioreq.c ****   DCD_EP_PrepareRx ( pdev,
+ 240              		.loc 1 207 0
+ 241 000a 0023     		movs	r3, #0
+ 242 000c 1A46     		mov	r2, r3
+ 243 000e 1946     		mov	r1, r3
+ 244 0010 FFF7FEFF 		bl	DCD_EP_PrepareRx
+ 245              	.LVL26:
+ 208:USB/core/usbd_ioreq.c ****                     0,
+ 209:USB/core/usbd_ioreq.c ****                     NULL,
+ 210:USB/core/usbd_ioreq.c ****                     0);  
+ 211:USB/core/usbd_ioreq.c **** 
+ 212:USB/core/usbd_ioreq.c ****   USB_OTG_EP0_OutStart(pdev);
+ 246              		.loc 1 212 0
+ 247 0014 2046     		mov	r0, r4
+ 248 0016 FFF7FEFF 		bl	USB_OTG_EP0_OutStart
+ 249              	.LVL27:
+ 213:USB/core/usbd_ioreq.c ****   
+ 214:USB/core/usbd_ioreq.c ****   return ret;
+ 215:USB/core/usbd_ioreq.c **** }
+ 250              		.loc 1 215 0
+ 251 001a 0020     		movs	r0, #0
+ 252 001c 10BD     		pop	{r4, pc}
+ARM GAS  /tmp/ccH1KTUO.s 			page 9
+
+
+ 253              		.cfi_endproc
+ 254              	.LFE129:
+ 256              		.section	.text.USBD_GetRxCount,"ax",%progbits
+ 257              		.align	1
+ 258              		.global	USBD_GetRxCount
+ 259              		.syntax unified
+ 260              		.thumb
+ 261              		.thumb_func
+ 262              		.fpu fpv4-sp-d16
+ 264              	USBD_GetRxCount:
+ 265              	.LFB130:
+ 216:USB/core/usbd_ioreq.c **** 
+ 217:USB/core/usbd_ioreq.c **** 
+ 218:USB/core/usbd_ioreq.c **** /**
+ 219:USB/core/usbd_ioreq.c **** * @brief  USBD_GetRxCount
+ 220:USB/core/usbd_ioreq.c **** *         returns the received data length
+ 221:USB/core/usbd_ioreq.c **** * @param  pdev: USB OTG device instance
+ 222:USB/core/usbd_ioreq.c **** *         epnum: endpoint index
+ 223:USB/core/usbd_ioreq.c **** * @retval Rx Data blength
+ 224:USB/core/usbd_ioreq.c **** */
+ 225:USB/core/usbd_ioreq.c **** uint16_t  USBD_GetRxCount (USB_OTG_CORE_HANDLE  *pdev , uint8_t epnum)
+ 226:USB/core/usbd_ioreq.c **** {
+ 266              		.loc 1 226 0
+ 267              		.cfi_startproc
+ 268              		@ args = 0, pretend = 0, frame = 0
+ 269              		@ frame_needed = 0, uses_anonymous_args = 0
+ 270              		@ link register save eliminated.
+ 271              	.LVL28:
+ 227:USB/core/usbd_ioreq.c ****   return pdev->dev.out_ep[epnum].xfer_count;
+ 272              		.loc 1 227 0
+ 273 0000 01EB8101 		add	r1, r1, r1, lsl #2
+ 274              	.LVL29:
+ 275 0004 CB00     		lsls	r3, r1, #3
+ 276 0006 1844     		add	r0, r0, r3
+ 277              	.LVL30:
+ 228:USB/core/usbd_ioreq.c **** }
+ 278              		.loc 1 228 0
+ 279 0008 B0F88C03 		ldrh	r0, [r0, #908]
+ 280 000c 7047     		bx	lr
+ 281              		.cfi_endproc
+ 282              	.LFE130:
+ 284              		.text
+ 285              	.Letext0:
+ 286              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 287              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 288              		.file 4 "F4_CORE/core_cm4.h"
+ 289              		.file 5 "USER/system_stm32f4xx.h"
+ 290              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 291              		.file 7 "/usr/include/newlib/sys/_types.h"
+ 292              		.file 8 "/usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h"
+ 293              		.file 9 "/usr/include/newlib/sys/reent.h"
+ 294              		.file 10 "USB/core/usb_regs.h"
+ 295              		.file 11 "USB/core/usb_core.h"
+ 296              		.file 12 "USB/core/usbd_core.h"
+ 297              		.file 13 "USB/core/usb_dcd.h"
+ARM GAS  /tmp/ccH1KTUO.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbd_ioreq.c
+     /tmp/ccH1KTUO.s:18     .text.USBD_CtlSendData:0000000000000000 $t
+     /tmp/ccH1KTUO.s:25     .text.USBD_CtlSendData:0000000000000000 USBD_CtlSendData
+     /tmp/ccH1KTUO.s:62     .text.USBD_CtlContinueSendData:0000000000000000 $t
+     /tmp/ccH1KTUO.s:69     .text.USBD_CtlContinueSendData:0000000000000000 USBD_CtlContinueSendData
+     /tmp/ccH1KTUO.s:97     .text.USBD_CtlPrepareRx:0000000000000000 $t
+     /tmp/ccH1KTUO.s:104    .text.USBD_CtlPrepareRx:0000000000000000 USBD_CtlPrepareRx
+     /tmp/ccH1KTUO.s:140    .text.USBD_CtlContinueRx:0000000000000000 $t
+     /tmp/ccH1KTUO.s:147    .text.USBD_CtlContinueRx:0000000000000000 USBD_CtlContinueRx
+     /tmp/ccH1KTUO.s:175    .text.USBD_CtlSendStatus:0000000000000000 $t
+     /tmp/ccH1KTUO.s:182    .text.USBD_CtlSendStatus:0000000000000000 USBD_CtlSendStatus
+     /tmp/ccH1KTUO.s:216    .text.USBD_CtlReceiveStatus:0000000000000000 $t
+     /tmp/ccH1KTUO.s:223    .text.USBD_CtlReceiveStatus:0000000000000000 USBD_CtlReceiveStatus
+     /tmp/ccH1KTUO.s:257    .text.USBD_GetRxCount:0000000000000000 $t
+     /tmp/ccH1KTUO.s:264    .text.USBD_GetRxCount:0000000000000000 USBD_GetRxCount
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+DCD_EP_Tx
+DCD_EP_PrepareRx
+USB_OTG_EP0_OutStart

@@ -1,0 +1,381 @@
+ARM GAS  /tmp/ccKbK2fa.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Dev_Button.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DevButton_Get_Sum,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	DevButton_Get_Sum:
+  25              	.LFB123:
+  26              		.file 1 "Dev/Dev_Button.c"
+   1:Dev/Dev_Button.c **** #include "Dev_Button.h"
+   2:Dev/Dev_Button.c **** #include "drv_gpio.h"
+   3:Dev/Dev_Button.c **** #include <string.h>
+   4:Dev/Dev_Button.c **** 
+   5:Dev/Dev_Button.c **** /* internal variable */
+   6:Dev/Dev_Button.c **** static uint8_t button_num = 0;
+   7:Dev/Dev_Button.c **** 
+   8:Dev/Dev_Button.c **** /* internal function */
+   9:Dev/Dev_Button.c **** static bool DevButton_Init(Button_Obj_TypeDef *Obj, DrvGPIO_Obj_TypeDef *io);
+  10:Dev/Dev_Button.c **** static bool DevButton_Invert(Button_Obj_TypeDef *Obj);
+  11:Dev/Dev_Button.c **** static Button_State_List DevButton_Get(Button_Obj_TypeDef *Obj);
+  12:Dev/Dev_Button.c **** static uint8_t DevButton_Get_Sum(void);
+  13:Dev/Dev_Button.c **** 
+  14:Dev/Dev_Button.c **** /* external variable */
+  15:Dev/Dev_Button.c **** DevButton_TypeDef DrvButton = {
+  16:Dev/Dev_Button.c ****     .Open = DevButton_Init,
+  17:Dev/Dev_Button.c ****     .Invert = DevButton_Invert,
+  18:Dev/Dev_Button.c ****     .Get = DevButton_Get,
+  19:Dev/Dev_Button.c ****     .get_button_sum = DevButton_Get_Sum,
+  20:Dev/Dev_Button.c **** };
+  21:Dev/Dev_Button.c **** 
+  22:Dev/Dev_Button.c **** static uint8_t DevButton_Get_Sum(void)
+  23:Dev/Dev_Button.c **** {
+  27              		.loc 1 23 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  24:Dev/Dev_Button.c ****     return button_num;
+  25:Dev/Dev_Button.c **** }
+  32              		.loc 1 25 0
+  33 0000 014B     		ldr	r3, .L2
+ARM GAS  /tmp/ccKbK2fa.s 			page 2
+
+
+  34 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  35 0004 7047     		bx	lr
+  36              	.L3:
+  37 0006 00BF     		.align	2
+  38              	.L2:
+  39 0008 00000000 		.word	.LANCHOR0
+  40              		.cfi_endproc
+  41              	.LFE123:
+  43              		.section	.text.DevButton_Init,"ax",%progbits
+  44              		.align	1
+  45              		.syntax unified
+  46              		.thumb
+  47              		.thumb_func
+  48              		.fpu fpv4-sp-d16
+  50              	DevButton_Init:
+  51              	.LFB124:
+  26:Dev/Dev_Button.c **** 
+  27:Dev/Dev_Button.c **** static bool DevButton_Init(Button_Obj_TypeDef *Obj, DrvGPIO_Obj_TypeDef *io)
+  28:Dev/Dev_Button.c **** {
+  52              		.loc 1 28 0
+  53              		.cfi_startproc
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              	.LVL0:
+  57 0000 38B5     		push	{r3, r4, r5, lr}
+  58              	.LCFI0:
+  59              		.cfi_def_cfa_offset 16
+  60              		.cfi_offset 3, -16
+  61              		.cfi_offset 4, -12
+  62              		.cfi_offset 5, -8
+  63              		.cfi_offset 14, -4
+  29:Dev/Dev_Button.c ****     if ((io == NULL) || (Obj == NULL))
+  64              		.loc 1 29 0
+  65 0002 89B1     		cbz	r1, .L5
+  66 0004 0B46     		mov	r3, r1
+  67              		.loc 1 29 0 is_stmt 0 discriminator 1
+  68 0006 78B1     		cbz	r0, .L5
+  69 0008 0446     		mov	r4, r0
+  30:Dev/Dev_Button.c ****     {
+  31:Dev/Dev_Button.c ****         Obj->init_state = false;
+  32:Dev/Dev_Button.c ****         return false;
+  33:Dev/Dev_Button.c ****     }
+  34:Dev/Dev_Button.c **** 
+  35:Dev/Dev_Button.c ****     Obj->io = io;
+  70              		.loc 1 35 0 is_stmt 1
+  71 000a 6160     		str	r1, [r4, #4]
+  36:Dev/Dev_Button.c ****     Obj->invert = false;
+  72              		.loc 1 36 0
+  73 000c 0022     		movs	r2, #0
+  74 000e 4270     		strb	r2, [r0, #1]
+  37:Dev/Dev_Button.c **** 
+  38:Dev/Dev_Button.c ****     DrvGPIO.open(Obj->io, GPIO_Input, NULL);
+  75              		.loc 1 38 0
+  76 0010 0749     		ldr	r1, .L9
+  77              	.LVL1:
+  78 0012 0D68     		ldr	r5, [r1]
+  79 0014 0121     		movs	r1, #1
+ARM GAS  /tmp/ccKbK2fa.s 			page 3
+
+
+  80 0016 1846     		mov	r0, r3
+  81              	.LVL2:
+  82 0018 A847     		blx	r5
+  83              	.LVL3:
+  39:Dev/Dev_Button.c **** 
+  40:Dev/Dev_Button.c ****     button_num++;
+  84              		.loc 1 40 0
+  85 001a 064A     		ldr	r2, .L9+4
+  86 001c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  87 001e 0133     		adds	r3, r3, #1
+  88 0020 1370     		strb	r3, [r2]
+  41:Dev/Dev_Button.c **** 
+  42:Dev/Dev_Button.c ****     Obj->init_state = true;
+  89              		.loc 1 42 0
+  90 0022 0120     		movs	r0, #1
+  91 0024 2070     		strb	r0, [r4]
+  43:Dev/Dev_Button.c ****     return true;
+  44:Dev/Dev_Button.c **** }
+  92              		.loc 1 44 0
+  93 0026 38BD     		pop	{r3, r4, r5, pc}
+  94              	.LVL4:
+  95              	.L5:
+  31:Dev/Dev_Button.c ****         return false;
+  96              		.loc 1 31 0
+  97 0028 0023     		movs	r3, #0
+  98 002a 0370     		strb	r3, [r0]
+  32:Dev/Dev_Button.c ****     }
+  99              		.loc 1 32 0
+ 100 002c 1846     		mov	r0, r3
+ 101              	.LVL5:
+ 102 002e 38BD     		pop	{r3, r4, r5, pc}
+ 103              	.L10:
+ 104              		.align	2
+ 105              	.L9:
+ 106 0030 00000000 		.word	DrvGPIO
+ 107 0034 00000000 		.word	.LANCHOR0
+ 108              		.cfi_endproc
+ 109              	.LFE124:
+ 111              		.section	.text.DevButton_Invert,"ax",%progbits
+ 112              		.align	1
+ 113              		.syntax unified
+ 114              		.thumb
+ 115              		.thumb_func
+ 116              		.fpu fpv4-sp-d16
+ 118              	DevButton_Invert:
+ 119              	.LFB125:
+  45:Dev/Dev_Button.c **** 
+  46:Dev/Dev_Button.c **** static bool DevButton_Invert(Button_Obj_TypeDef *Obj)
+  47:Dev/Dev_Button.c **** {
+ 120              		.loc 1 47 0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+ 125              	.LVL6:
+  48:Dev/Dev_Button.c ****     if ((Obj == NULL) || (!Obj->init_state))
+ 126              		.loc 1 48 0
+ARM GAS  /tmp/ccKbK2fa.s 			page 4
+
+
+ 127 0000 0346     		mov	r3, r0
+ 128 0002 30B1     		cbz	r0, .L13
+ 129              		.loc 1 48 0 is_stmt 0 discriminator 1
+ 130 0004 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 131              	.LVL7:
+ 132 0006 28B1     		cbz	r0, .L12
+  49:Dev/Dev_Button.c ****         return false;
+  50:Dev/Dev_Button.c **** 
+  51:Dev/Dev_Button.c ****     Obj->invert = !Obj->invert;
+ 133              		.loc 1 51 0 is_stmt 1
+ 134 0008 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 135 000a 82F00102 		eor	r2, r2, #1
+ 136 000e 5A70     		strb	r2, [r3, #1]
+  52:Dev/Dev_Button.c **** 
+  53:Dev/Dev_Button.c ****     return true;
+ 137              		.loc 1 53 0
+ 138 0010 7047     		bx	lr
+ 139              	.LVL8:
+ 140              	.L13:
+  49:Dev/Dev_Button.c ****         return false;
+ 141              		.loc 1 49 0
+ 142 0012 0020     		movs	r0, #0
+ 143              	.LVL9:
+ 144              	.L12:
+  54:Dev/Dev_Button.c **** }
+ 145              		.loc 1 54 0
+ 146 0014 7047     		bx	lr
+ 147              		.cfi_endproc
+ 148              	.LFE125:
+ 150              		.section	.text.DevButton_Get,"ax",%progbits
+ 151              		.align	1
+ 152              		.syntax unified
+ 153              		.thumb
+ 154              		.thumb_func
+ 155              		.fpu fpv4-sp-d16
+ 157              	DevButton_Get:
+ 158              	.LFB126:
+  55:Dev/Dev_Button.c **** 
+  56:Dev/Dev_Button.c **** static Button_State_List DevButton_Get(Button_Obj_TypeDef *Obj)
+  57:Dev/Dev_Button.c **** {
+ 159              		.loc 1 57 0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163              	.LVL10:
+  58:Dev/Dev_Button.c ****     bool btn_state = false;
+  59:Dev/Dev_Button.c **** 
+  60:Dev/Dev_Button.c ****     if ((Obj == NULL) || (!Obj->init_state))
+ 164              		.loc 1 60 0
+ 165 0000 98B1     		cbz	r0, .L17
+  57:Dev/Dev_Button.c ****     bool btn_state = false;
+ 166              		.loc 1 57 0 discriminator 1
+ 167 0002 10B5     		push	{r4, lr}
+ 168              	.LCFI1:
+ 169              		.cfi_def_cfa_offset 8
+ 170              		.cfi_offset 4, -8
+ 171              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccKbK2fa.s 			page 5
+
+
+ 172 0004 0446     		mov	r4, r0
+ 173              		.loc 1 60 0 discriminator 1
+ 174 0006 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 175 0008 0AB9     		cbnz	r2, .L25
+  61:Dev/Dev_Button.c ****         return Btn_Err;
+ 176              		.loc 1 61 0
+ 177 000a 0220     		movs	r0, #2
+ 178              	.LVL11:
+ 179 000c 10BD     		pop	{r4, pc}
+ 180              	.LVL12:
+ 181              	.L25:
+  62:Dev/Dev_Button.c **** 
+  63:Dev/Dev_Button.c ****     if (DrvGPIO.get(Obj))
+ 182              		.loc 1 63 0
+ 183 000e 094B     		ldr	r3, .L27
+ 184 0010 DB68     		ldr	r3, [r3, #12]
+ 185 0012 9847     		blx	r3
+ 186              	.LVL13:
+ 187 0014 18B1     		cbz	r0, .L16
+  64:Dev/Dev_Button.c ****     {
+  65:Dev/Dev_Button.c ****         if (Obj->invert)
+ 188              		.loc 1 65 0
+ 189 0016 6378     		ldrb	r3, [r4, #1]	@ zero_extendqisi2
+ 190 0018 4BB1     		cbz	r3, .L19
+  66:Dev/Dev_Button.c ****         {
+  67:Dev/Dev_Button.c ****             return Btn_Dwn;
+ 191              		.loc 1 67 0
+ 192 001a 0120     		movs	r0, #1
+ 193 001c 10BD     		pop	{r4, pc}
+ 194              	.LVL14:
+ 195              	.L16:
+  68:Dev/Dev_Button.c ****         }
+  69:Dev/Dev_Button.c ****         else
+  70:Dev/Dev_Button.c ****             return Btn_Up;
+  71:Dev/Dev_Button.c ****     }
+  72:Dev/Dev_Button.c ****     else
+  73:Dev/Dev_Button.c ****     {
+  74:Dev/Dev_Button.c ****         if (Obj->invert)
+ 196              		.loc 1 74 0
+ 197 001e 6378     		ldrb	r3, [r4, #1]	@ zero_extendqisi2
+ 198 0020 0BB9     		cbnz	r3, .L26
+  75:Dev/Dev_Button.c ****         {
+  76:Dev/Dev_Button.c ****             return Btn_Up;
+  77:Dev/Dev_Button.c ****         }
+  78:Dev/Dev_Button.c ****         else
+  79:Dev/Dev_Button.c ****             return Btn_Dwn;
+ 199              		.loc 1 79 0
+ 200 0022 0120     		movs	r0, #1
+  80:Dev/Dev_Button.c ****     }
+  81:Dev/Dev_Button.c **** }
+ 201              		.loc 1 81 0
+ 202 0024 10BD     		pop	{r4, pc}
+ 203              	.LVL15:
+ 204              	.L26:
+  76:Dev/Dev_Button.c ****         }
+ 205              		.loc 1 76 0
+ 206 0026 0020     		movs	r0, #0
+ARM GAS  /tmp/ccKbK2fa.s 			page 6
+
+
+ 207 0028 10BD     		pop	{r4, pc}
+ 208              	.LVL16:
+ 209              	.L17:
+ 210              	.LCFI2:
+ 211              		.cfi_def_cfa_offset 0
+ 212              		.cfi_restore 4
+ 213              		.cfi_restore 14
+  61:Dev/Dev_Button.c **** 
+ 214              		.loc 1 61 0
+ 215 002a 0220     		movs	r0, #2
+ 216              	.LVL17:
+ 217 002c 7047     		bx	lr
+ 218              	.LVL18:
+ 219              	.L19:
+ 220              	.LCFI3:
+ 221              		.cfi_def_cfa_offset 8
+ 222              		.cfi_offset 4, -8
+ 223              		.cfi_offset 14, -4
+  70:Dev/Dev_Button.c ****     }
+ 224              		.loc 1 70 0
+ 225 002e 0020     		movs	r0, #0
+ 226 0030 10BD     		pop	{r4, pc}
+ 227              	.LVL19:
+ 228              	.L28:
+ 229 0032 00BF     		.align	2
+ 230              	.L27:
+ 231 0034 00000000 		.word	DrvGPIO
+ 232              		.cfi_endproc
+ 233              	.LFE126:
+ 235              		.global	DrvButton
+ 236              		.section	.bss.button_num,"aw",%nobits
+ 237              		.set	.LANCHOR0,. + 0
+ 240              	button_num:
+ 241 0000 00       		.space	1
+ 242              		.section	.data.DrvButton,"aw",%progbits
+ 243              		.align	2
+ 246              	DrvButton:
+ 247 0000 00000000 		.word	DevButton_Init
+ 248 0004 00000000 		.word	DevButton_Invert
+ 249 0008 00000000 		.word	DevButton_Get
+ 250 000c 00000000 		.word	DevButton_Get_Sum
+ 251              		.text
+ 252              	.Letext0:
+ 253              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 254              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 255              		.file 4 "F4_CORE/core_cm4.h"
+ 256              		.file 5 "USER/system_stm32f4xx.h"
+ 257              		.file 6 "Bsp/periph_gpio.h"
+ 258              		.file 7 "Drv/drv_gpio.h"
+ 259              		.file 8 "Dev/Dev_Button.h"
+ 260              		.file 9 "/usr/include/newlib/sys/lock.h"
+ 261              		.file 10 "/usr/include/newlib/sys/_types.h"
+ 262              		.file 11 "/usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h"
+ 263              		.file 12 "/usr/include/newlib/sys/reent.h"
+ARM GAS  /tmp/ccKbK2fa.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Dev_Button.c
+     /tmp/ccKbK2fa.s:18     .text.DevButton_Get_Sum:0000000000000000 $t
+     /tmp/ccKbK2fa.s:24     .text.DevButton_Get_Sum:0000000000000000 DevButton_Get_Sum
+     /tmp/ccKbK2fa.s:39     .text.DevButton_Get_Sum:0000000000000008 $d
+     /tmp/ccKbK2fa.s:44     .text.DevButton_Init:0000000000000000 $t
+     /tmp/ccKbK2fa.s:50     .text.DevButton_Init:0000000000000000 DevButton_Init
+     /tmp/ccKbK2fa.s:106    .text.DevButton_Init:0000000000000030 $d
+     /tmp/ccKbK2fa.s:112    .text.DevButton_Invert:0000000000000000 $t
+     /tmp/ccKbK2fa.s:118    .text.DevButton_Invert:0000000000000000 DevButton_Invert
+     /tmp/ccKbK2fa.s:151    .text.DevButton_Get:0000000000000000 $t
+     /tmp/ccKbK2fa.s:157    .text.DevButton_Get:0000000000000000 DevButton_Get
+     /tmp/ccKbK2fa.s:231    .text.DevButton_Get:0000000000000034 $d
+     /tmp/ccKbK2fa.s:246    .data.DrvButton:0000000000000000 DrvButton
+     /tmp/ccKbK2fa.s:240    .bss.button_num:0000000000000000 button_num
+     /tmp/ccKbK2fa.s:241    .bss.button_num:0000000000000000 $d
+     /tmp/ccKbK2fa.s:243    .data.DrvButton:0000000000000000 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+DrvGPIO

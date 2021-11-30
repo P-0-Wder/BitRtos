@@ -1,0 +1,2539 @@
+ARM GAS  /tmp/cckthDNs.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32f4xx_dma.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DMA_DeInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	DMA_DeInit
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DMA_DeInit:
+  26              	.LFB123:
+  27              		.file 1 "FWLIB/src/stm32f4xx_dma.c"
+   1:FWLIB/src/stm32f4xx_dma.c **** /**
+   2:FWLIB/src/stm32f4xx_dma.c ****   ******************************************************************************
+   3:FWLIB/src/stm32f4xx_dma.c ****   * @file    stm32f4xx_dma.c
+   4:FWLIB/src/stm32f4xx_dma.c ****   * @author  MCD Application Team
+   5:FWLIB/src/stm32f4xx_dma.c ****   * @version V1.8.0
+   6:FWLIB/src/stm32f4xx_dma.c ****   * @date    04-November-2016
+   7:FWLIB/src/stm32f4xx_dma.c ****   * @brief   This file provides firmware functions to manage the following 
+   8:FWLIB/src/stm32f4xx_dma.c ****   *          functionalities of the Direct Memory Access controller (DMA):           
+   9:FWLIB/src/stm32f4xx_dma.c ****   *           + Initialization and Configuration
+  10:FWLIB/src/stm32f4xx_dma.c ****   *           + Data Counter
+  11:FWLIB/src/stm32f4xx_dma.c ****   *           + Double Buffer mode configuration and command  
+  12:FWLIB/src/stm32f4xx_dma.c ****   *           + Interrupts and flags management
+  13:FWLIB/src/stm32f4xx_dma.c ****   *           
+  14:FWLIB/src/stm32f4xx_dma.c ****   @verbatim      
+  15:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================      
+  16:FWLIB/src/stm32f4xx_dma.c ****                        ##### How to use this driver #####
+  17:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================
+  18:FWLIB/src/stm32f4xx_dma.c ****     [..] 
+  19:FWLIB/src/stm32f4xx_dma.c ****       (#) Enable The DMA controller clock using RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_DMA1, ENABLE)
+  20:FWLIB/src/stm32f4xx_dma.c ****           function for DMA1 or using RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_DMA2, ENABLE)
+  21:FWLIB/src/stm32f4xx_dma.c ****           function for DMA2.
+  22:FWLIB/src/stm32f4xx_dma.c ****   
+  23:FWLIB/src/stm32f4xx_dma.c ****       (#) Enable and configure the peripheral to be connected to the DMA Stream
+  24:FWLIB/src/stm32f4xx_dma.c ****           (except for internal SRAM / FLASH memories: no initialization is 
+  25:FWLIB/src/stm32f4xx_dma.c ****           necessary). 
+  26:FWLIB/src/stm32f4xx_dma.c ****           
+  27:FWLIB/src/stm32f4xx_dma.c ****       (#) For a given Stream, program the required configuration through following parameters:   
+  28:FWLIB/src/stm32f4xx_dma.c ****           Source and Destination addresses, Transfer Direction, Transfer size, Source and Destinati
+  29:FWLIB/src/stm32f4xx_dma.c ****           data formats, Circular or Normal mode, Stream Priority level, Source and Destination 
+  30:FWLIB/src/stm32f4xx_dma.c ****           Incrementation mode, FIFO mode and its Threshold (if needed), Burst 
+  31:FWLIB/src/stm32f4xx_dma.c ****           mode for Source and/or Destination (if needed) using the DMA_Init() function.
+ARM GAS  /tmp/cckthDNs.s 			page 2
+
+
+  32:FWLIB/src/stm32f4xx_dma.c ****           To avoid filling unnecessary fields, you can call DMA_StructInit() function
+  33:FWLIB/src/stm32f4xx_dma.c ****           to initialize a given structure with default values (reset values), the modify
+  34:FWLIB/src/stm32f4xx_dma.c ****           only necessary fields 
+  35:FWLIB/src/stm32f4xx_dma.c ****           (ie. Source and Destination addresses, Transfer size and Data Formats).
+  36:FWLIB/src/stm32f4xx_dma.c ****   
+  37:FWLIB/src/stm32f4xx_dma.c ****       (#) Enable the NVIC and the corresponding interrupt(s) using the function 
+  38:FWLIB/src/stm32f4xx_dma.c ****           DMA_ITConfig() if you need to use DMA interrupts. 
+  39:FWLIB/src/stm32f4xx_dma.c ****   
+  40:FWLIB/src/stm32f4xx_dma.c ****       (#) Optionally, if the Circular mode is enabled, you can use the Double buffer mode by config
+  41:FWLIB/src/stm32f4xx_dma.c ****           the second Memory address and the first Memory to be used through the function 
+  42:FWLIB/src/stm32f4xx_dma.c ****           DMA_DoubleBufferModeConfig(). Then enable the Double buffer mode through the function
+  43:FWLIB/src/stm32f4xx_dma.c ****           DMA_DoubleBufferModeCmd(). These operations must be done before step 6.
+  44:FWLIB/src/stm32f4xx_dma.c ****       
+  45:FWLIB/src/stm32f4xx_dma.c ****       (#) Enable the DMA stream using the DMA_Cmd() function. 
+  46:FWLIB/src/stm32f4xx_dma.c ****                   
+  47:FWLIB/src/stm32f4xx_dma.c ****       (#) Activate the needed Stream Request using PPP_DMACmd() function for
+  48:FWLIB/src/stm32f4xx_dma.c ****           any PPP peripheral except internal SRAM and FLASH (ie. SPI, USART ...)
+  49:FWLIB/src/stm32f4xx_dma.c ****           The function allowing this operation is provided in each PPP peripheral
+  50:FWLIB/src/stm32f4xx_dma.c ****           driver (ie. SPI_DMACmd for SPI peripheral).
+  51:FWLIB/src/stm32f4xx_dma.c ****           Once the Stream is enabled, it is not possible to modify its configuration
+  52:FWLIB/src/stm32f4xx_dma.c ****           unless the stream is stopped and disabled.
+  53:FWLIB/src/stm32f4xx_dma.c ****           After enabling the Stream, it is advised to monitor the EN bit status using
+  54:FWLIB/src/stm32f4xx_dma.c ****           the function DMA_GetCmdStatus(). In case of configuration errors or bus errors
+  55:FWLIB/src/stm32f4xx_dma.c ****           this bit will remain reset and all transfers on this Stream will remain on hold.      
+  56:FWLIB/src/stm32f4xx_dma.c ****   
+  57:FWLIB/src/stm32f4xx_dma.c ****       (#) Optionally, you can configure the number of data to be transferred
+  58:FWLIB/src/stm32f4xx_dma.c ****           when the Stream is disabled (ie. after each Transfer Complete event
+  59:FWLIB/src/stm32f4xx_dma.c ****           or when a Transfer Error occurs) using the function DMA_SetCurrDataCounter().
+  60:FWLIB/src/stm32f4xx_dma.c ****           And you can get the number of remaining data to be transferred using 
+  61:FWLIB/src/stm32f4xx_dma.c ****           the function DMA_GetCurrDataCounter() at run time (when the DMA Stream is
+  62:FWLIB/src/stm32f4xx_dma.c ****           enabled and running).  
+  63:FWLIB/src/stm32f4xx_dma.c ****                      
+  64:FWLIB/src/stm32f4xx_dma.c ****       (#) To control DMA events you can use one of the following two methods:
+  65:FWLIB/src/stm32f4xx_dma.c ****         (##) Check on DMA Stream flags using the function DMA_GetFlagStatus().  
+  66:FWLIB/src/stm32f4xx_dma.c ****         (##) Use DMA interrupts through the function DMA_ITConfig() at initialization
+  67:FWLIB/src/stm32f4xx_dma.c ****              phase and DMA_GetITStatus() function into interrupt routines in
+  68:FWLIB/src/stm32f4xx_dma.c ****              communication phase.
+  69:FWLIB/src/stm32f4xx_dma.c ****     [..]     
+  70:FWLIB/src/stm32f4xx_dma.c ****           After checking on a flag you should clear it using DMA_ClearFlag()
+  71:FWLIB/src/stm32f4xx_dma.c ****           function. And after checking on an interrupt event you should 
+  72:FWLIB/src/stm32f4xx_dma.c ****           clear it using DMA_ClearITPendingBit() function.    
+  73:FWLIB/src/stm32f4xx_dma.c ****                 
+  74:FWLIB/src/stm32f4xx_dma.c ****       (#) Optionally, if Circular mode and Double Buffer mode are enabled, you can modify
+  75:FWLIB/src/stm32f4xx_dma.c ****           the Memory Addresses using the function DMA_MemoryTargetConfig(). Make sure that
+  76:FWLIB/src/stm32f4xx_dma.c ****           the Memory Address to be modified is not the one currently in use by DMA Stream.
+  77:FWLIB/src/stm32f4xx_dma.c ****           This condition can be monitored using the function DMA_GetCurrentMemoryTarget().
+  78:FWLIB/src/stm32f4xx_dma.c ****                 
+  79:FWLIB/src/stm32f4xx_dma.c ****       (#) Optionally, Pause-Resume operations may be performed:
+  80:FWLIB/src/stm32f4xx_dma.c ****           The DMA_Cmd() function may be used to perform Pause-Resume operation. 
+  81:FWLIB/src/stm32f4xx_dma.c ****           When a transfer is ongoing, calling this function to disable the 
+  82:FWLIB/src/stm32f4xx_dma.c ****           Stream will cause the transfer to be paused. All configuration registers 
+  83:FWLIB/src/stm32f4xx_dma.c ****           and the number of remaining data will be preserved. When calling again 
+  84:FWLIB/src/stm32f4xx_dma.c ****           this function to re-enable the Stream, the transfer will be resumed from 
+  85:FWLIB/src/stm32f4xx_dma.c ****           the point where it was paused.          
+  86:FWLIB/src/stm32f4xx_dma.c ****                    
+  87:FWLIB/src/stm32f4xx_dma.c ****       -@- Memory-to-Memory transfer is possible by setting the address of the memory into
+  88:FWLIB/src/stm32f4xx_dma.c ****            the Peripheral registers. In this mode, Circular mode and Double Buffer mode
+ARM GAS  /tmp/cckthDNs.s 			page 3
+
+
+  89:FWLIB/src/stm32f4xx_dma.c ****            are not allowed.
+  90:FWLIB/src/stm32f4xx_dma.c ****     
+  91:FWLIB/src/stm32f4xx_dma.c ****       -@- The FIFO is used mainly to reduce bus usage and to allow data 
+  92:FWLIB/src/stm32f4xx_dma.c ****            packing/unpacking: it is possible to set different Data Sizes for 
+  93:FWLIB/src/stm32f4xx_dma.c ****            the Peripheral and the Memory (ie. you can set Half-Word data size 
+  94:FWLIB/src/stm32f4xx_dma.c ****            for the peripheral to access its data register and set Word data size
+  95:FWLIB/src/stm32f4xx_dma.c ****            for the Memory to gain in access time. Each two Half-words will be 
+  96:FWLIB/src/stm32f4xx_dma.c ****            packed and written in a single access to a Word in the Memory).
+  97:FWLIB/src/stm32f4xx_dma.c ****       
+  98:FWLIB/src/stm32f4xx_dma.c ****       -@- When FIFO is disabled, it is not allowed to configure different 
+  99:FWLIB/src/stm32f4xx_dma.c ****            Data Sizes for Source and Destination. In this case the Peripheral 
+ 100:FWLIB/src/stm32f4xx_dma.c ****            Data Size will be applied to both Source and Destination.               
+ 101:FWLIB/src/stm32f4xx_dma.c ****   
+ 102:FWLIB/src/stm32f4xx_dma.c ****   @endverbatim
+ 103:FWLIB/src/stm32f4xx_dma.c ****   ******************************************************************************
+ 104:FWLIB/src/stm32f4xx_dma.c ****   * @attention
+ 105:FWLIB/src/stm32f4xx_dma.c ****   *
+ 106:FWLIB/src/stm32f4xx_dma.c ****   * <h2><center>&copy; COPYRIGHT 2016 STMicroelectronics</center></h2>
+ 107:FWLIB/src/stm32f4xx_dma.c ****   *
+ 108:FWLIB/src/stm32f4xx_dma.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+ 109:FWLIB/src/stm32f4xx_dma.c ****   * You may not use this file except in compliance with the License.
+ 110:FWLIB/src/stm32f4xx_dma.c ****   * You may obtain a copy of the License at:
+ 111:FWLIB/src/stm32f4xx_dma.c ****   *
+ 112:FWLIB/src/stm32f4xx_dma.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+ 113:FWLIB/src/stm32f4xx_dma.c ****   *
+ 114:FWLIB/src/stm32f4xx_dma.c ****   * Unless required by applicable law or agreed to in writing, software 
+ 115:FWLIB/src/stm32f4xx_dma.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+ 116:FWLIB/src/stm32f4xx_dma.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ 117:FWLIB/src/stm32f4xx_dma.c ****   * See the License for the specific language governing permissions and
+ 118:FWLIB/src/stm32f4xx_dma.c ****   * limitations under the License.
+ 119:FWLIB/src/stm32f4xx_dma.c ****   *
+ 120:FWLIB/src/stm32f4xx_dma.c ****   ******************************************************************************  
+ 121:FWLIB/src/stm32f4xx_dma.c ****   */ 
+ 122:FWLIB/src/stm32f4xx_dma.c **** 
+ 123:FWLIB/src/stm32f4xx_dma.c **** /* Includes ------------------------------------------------------------------*/
+ 124:FWLIB/src/stm32f4xx_dma.c **** #include "stm32f4xx_dma.h"
+ 125:FWLIB/src/stm32f4xx_dma.c **** #include "stm32f4xx_rcc.h"
+ 126:FWLIB/src/stm32f4xx_dma.c **** 
+ 127:FWLIB/src/stm32f4xx_dma.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+ 128:FWLIB/src/stm32f4xx_dma.c ****   * @{
+ 129:FWLIB/src/stm32f4xx_dma.c ****   */
+ 130:FWLIB/src/stm32f4xx_dma.c **** 
+ 131:FWLIB/src/stm32f4xx_dma.c **** /** @defgroup DMA 
+ 132:FWLIB/src/stm32f4xx_dma.c ****   * @brief DMA driver modules
+ 133:FWLIB/src/stm32f4xx_dma.c ****   * @{
+ 134:FWLIB/src/stm32f4xx_dma.c ****   */ 
+ 135:FWLIB/src/stm32f4xx_dma.c **** 
+ 136:FWLIB/src/stm32f4xx_dma.c **** /* Private typedef -----------------------------------------------------------*/
+ 137:FWLIB/src/stm32f4xx_dma.c **** /* Private define ------------------------------------------------------------*/
+ 138:FWLIB/src/stm32f4xx_dma.c **** 
+ 139:FWLIB/src/stm32f4xx_dma.c **** /* Masks Definition */
+ 140:FWLIB/src/stm32f4xx_dma.c **** #define TRANSFER_IT_ENABLE_MASK (uint32_t)(DMA_SxCR_TCIE | DMA_SxCR_HTIE | \
+ 141:FWLIB/src/stm32f4xx_dma.c ****                                            DMA_SxCR_TEIE | DMA_SxCR_DMEIE)
+ 142:FWLIB/src/stm32f4xx_dma.c **** 
+ 143:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream0_IT_MASK     (uint32_t)(DMA_LISR_FEIF0 | DMA_LISR_DMEIF0 | \
+ 144:FWLIB/src/stm32f4xx_dma.c ****                                            DMA_LISR_TEIF0 | DMA_LISR_HTIF0 | \
+ 145:FWLIB/src/stm32f4xx_dma.c ****                                            DMA_LISR_TCIF0)
+ARM GAS  /tmp/cckthDNs.s 			page 4
+
+
+ 146:FWLIB/src/stm32f4xx_dma.c **** 
+ 147:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream1_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK << 6)
+ 148:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream2_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK << 16)
+ 149:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream3_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK << 22)
+ 150:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream4_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK | (uint32_t)0x20000000)
+ 151:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream5_IT_MASK     (uint32_t)(DMA_Stream1_IT_MASK | (uint32_t)0x20000000)
+ 152:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream6_IT_MASK     (uint32_t)(DMA_Stream2_IT_MASK | (uint32_t)0x20000000)
+ 153:FWLIB/src/stm32f4xx_dma.c **** #define DMA_Stream7_IT_MASK     (uint32_t)(DMA_Stream3_IT_MASK | (uint32_t)0x20000000)
+ 154:FWLIB/src/stm32f4xx_dma.c **** #define TRANSFER_IT_MASK        (uint32_t)0x0F3C0F3C
+ 155:FWLIB/src/stm32f4xx_dma.c **** #define HIGH_ISR_MASK           (uint32_t)0x20000000
+ 156:FWLIB/src/stm32f4xx_dma.c **** #define RESERVED_MASK           (uint32_t)0x0F7D0F7D  
+ 157:FWLIB/src/stm32f4xx_dma.c **** 
+ 158:FWLIB/src/stm32f4xx_dma.c **** /* Private macro -------------------------------------------------------------*/
+ 159:FWLIB/src/stm32f4xx_dma.c **** /* Private variables ---------------------------------------------------------*/
+ 160:FWLIB/src/stm32f4xx_dma.c **** /* Private function prototypes -----------------------------------------------*/
+ 161:FWLIB/src/stm32f4xx_dma.c **** /* Private functions ---------------------------------------------------------*/
+ 162:FWLIB/src/stm32f4xx_dma.c **** 
+ 163:FWLIB/src/stm32f4xx_dma.c **** 
+ 164:FWLIB/src/stm32f4xx_dma.c **** /** @defgroup DMA_Private_Functions
+ 165:FWLIB/src/stm32f4xx_dma.c ****   * @{
+ 166:FWLIB/src/stm32f4xx_dma.c ****   */
+ 167:FWLIB/src/stm32f4xx_dma.c **** 
+ 168:FWLIB/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group1 Initialization and Configuration functions
+ 169:FWLIB/src/stm32f4xx_dma.c ****  *  @brief   Initialization and Configuration functions
+ 170:FWLIB/src/stm32f4xx_dma.c ****  *
+ 171:FWLIB/src/stm32f4xx_dma.c **** @verbatim   
+ 172:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================
+ 173:FWLIB/src/stm32f4xx_dma.c ****                 ##### Initialization and Configuration functions #####
+ 174:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 175:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 176:FWLIB/src/stm32f4xx_dma.c ****     This subsection provides functions allowing to initialize the DMA Stream source
+ 177:FWLIB/src/stm32f4xx_dma.c ****     and destination addresses, incrementation and data sizes, transfer direction, 
+ 178:FWLIB/src/stm32f4xx_dma.c ****     buffer size, circular/normal mode selection, memory-to-memory mode selection 
+ 179:FWLIB/src/stm32f4xx_dma.c ****     and Stream priority value.
+ 180:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 181:FWLIB/src/stm32f4xx_dma.c ****     The DMA_Init() function follows the DMA configuration procedures as described in
+ 182:FWLIB/src/stm32f4xx_dma.c ****     reference manual (RM0090) except the first point: waiting on EN bit to be reset.
+ 183:FWLIB/src/stm32f4xx_dma.c ****     This condition should be checked by user application using the function DMA_GetCmdStatus()
+ 184:FWLIB/src/stm32f4xx_dma.c ****     before calling the DMA_Init() function.
+ 185:FWLIB/src/stm32f4xx_dma.c **** 
+ 186:FWLIB/src/stm32f4xx_dma.c **** @endverbatim
+ 187:FWLIB/src/stm32f4xx_dma.c ****   * @{
+ 188:FWLIB/src/stm32f4xx_dma.c ****   */
+ 189:FWLIB/src/stm32f4xx_dma.c **** 
+ 190:FWLIB/src/stm32f4xx_dma.c **** /**
+ 191:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Deinitialize the DMAy Streamx registers to their default reset values.
+ 192:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 193:FWLIB/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 194:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 195:FWLIB/src/stm32f4xx_dma.c ****   */
+ 196:FWLIB/src/stm32f4xx_dma.c **** void DMA_DeInit(DMA_Stream_TypeDef* DMAy_Streamx)
+ 197:FWLIB/src/stm32f4xx_dma.c **** {
+  28              		.loc 1 197 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ARM GAS  /tmp/cckthDNs.s 			page 5
+
+
+  33              	.LVL0:
+ 198:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 199:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 200:FWLIB/src/stm32f4xx_dma.c **** 
+ 201:FWLIB/src/stm32f4xx_dma.c ****   /* Disable the selected DMAy Streamx */
+ 202:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->CR &= ~((uint32_t)DMA_SxCR_EN);
+  34              		.loc 1 202 0
+  35 0000 0368     		ldr	r3, [r0]
+  36 0002 23F00103 		bic	r3, r3, #1
+  37 0006 0360     		str	r3, [r0]
+ 203:FWLIB/src/stm32f4xx_dma.c **** 
+ 204:FWLIB/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx control register */
+ 205:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->CR  = 0;
+  38              		.loc 1 205 0
+  39 0008 0023     		movs	r3, #0
+  40 000a 0360     		str	r3, [r0]
+ 206:FWLIB/src/stm32f4xx_dma.c ****   
+ 207:FWLIB/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx Number of Data to Transfer register */
+ 208:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->NDTR = 0;
+  41              		.loc 1 208 0
+  42 000c 4360     		str	r3, [r0, #4]
+ 209:FWLIB/src/stm32f4xx_dma.c ****   
+ 210:FWLIB/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx peripheral address register */
+ 211:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->PAR  = 0;
+  43              		.loc 1 211 0
+  44 000e 8360     		str	r3, [r0, #8]
+ 212:FWLIB/src/stm32f4xx_dma.c ****   
+ 213:FWLIB/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx memory 0 address register */
+ 214:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->M0AR = 0;
+  45              		.loc 1 214 0
+  46 0010 C360     		str	r3, [r0, #12]
+ 215:FWLIB/src/stm32f4xx_dma.c **** 
+ 216:FWLIB/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx memory 1 address register */
+ 217:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->M1AR = 0;
+  47              		.loc 1 217 0
+  48 0012 0361     		str	r3, [r0, #16]
+ 218:FWLIB/src/stm32f4xx_dma.c **** 
+ 219:FWLIB/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx FIFO control register */
+ 220:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->FCR = (uint32_t)0x00000021; 
+  49              		.loc 1 220 0
+  50 0014 2123     		movs	r3, #33
+  51 0016 4361     		str	r3, [r0, #20]
+ 221:FWLIB/src/stm32f4xx_dma.c **** 
+ 222:FWLIB/src/stm32f4xx_dma.c ****   /* Reset interrupt pending bits for the selected stream */
+ 223:FWLIB/src/stm32f4xx_dma.c ****   if (DMAy_Streamx == DMA1_Stream0)
+  52              		.loc 1 223 0
+  53 0018 3C4B     		ldr	r3, .L34
+  54 001a 9842     		cmp	r0, r3
+  55 001c 2DD0     		beq	.L18
+ 224:FWLIB/src/stm32f4xx_dma.c ****   {
+ 225:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream0 */
+ 226:FWLIB/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream0_IT_MASK;
+ 227:FWLIB/src/stm32f4xx_dma.c ****   }
+ 228:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream1)
+  56              		.loc 1 228 0
+  57 001e 3C4B     		ldr	r3, .L34+4
+  58 0020 9842     		cmp	r0, r3
+ARM GAS  /tmp/cckthDNs.s 			page 6
+
+
+  59 0022 2ED0     		beq	.L19
+ 229:FWLIB/src/stm32f4xx_dma.c ****   {
+ 230:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream1 */
+ 231:FWLIB/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream1_IT_MASK;
+ 232:FWLIB/src/stm32f4xx_dma.c ****   }
+ 233:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream2)
+  60              		.loc 1 233 0
+  61 0024 3B4B     		ldr	r3, .L34+8
+  62 0026 9842     		cmp	r0, r3
+  63 0028 30D0     		beq	.L20
+ 234:FWLIB/src/stm32f4xx_dma.c ****   {
+ 235:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream2 */
+ 236:FWLIB/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream2_IT_MASK;
+ 237:FWLIB/src/stm32f4xx_dma.c ****   }
+ 238:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream3)
+  64              		.loc 1 238 0
+  65 002a 3B4B     		ldr	r3, .L34+12
+  66 002c 9842     		cmp	r0, r3
+  67 002e 32D0     		beq	.L21
+ 239:FWLIB/src/stm32f4xx_dma.c ****   {
+ 240:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream3 */
+ 241:FWLIB/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream3_IT_MASK;
+ 242:FWLIB/src/stm32f4xx_dma.c ****   }
+ 243:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream4)
+  68              		.loc 1 243 0
+  69 0030 3A4B     		ldr	r3, .L34+16
+  70 0032 9842     		cmp	r0, r3
+  71 0034 34D0     		beq	.L22
+ 244:FWLIB/src/stm32f4xx_dma.c ****   {
+ 245:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream4 */
+ 246:FWLIB/src/stm32f4xx_dma.c ****     DMA1->HIFCR = DMA_Stream4_IT_MASK;
+ 247:FWLIB/src/stm32f4xx_dma.c ****   }
+ 248:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream5)
+  72              		.loc 1 248 0
+  73 0036 3A4B     		ldr	r3, .L34+20
+  74 0038 9842     		cmp	r0, r3
+  75 003a 35D0     		beq	.L23
+ 249:FWLIB/src/stm32f4xx_dma.c ****   {
+ 250:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream5 */
+ 251:FWLIB/src/stm32f4xx_dma.c ****     DMA1->HIFCR = DMA_Stream5_IT_MASK;
+ 252:FWLIB/src/stm32f4xx_dma.c ****   }
+ 253:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream6)
+  76              		.loc 1 253 0
+  77 003c 394B     		ldr	r3, .L34+24
+  78 003e 9842     		cmp	r0, r3
+  79 0040 36D0     		beq	.L24
+ 254:FWLIB/src/stm32f4xx_dma.c ****   {
+ 255:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream6 */
+ 256:FWLIB/src/stm32f4xx_dma.c ****     DMA1->HIFCR = (uint32_t)DMA_Stream6_IT_MASK;
+ 257:FWLIB/src/stm32f4xx_dma.c ****   }
+ 258:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream7)
+  80              		.loc 1 258 0
+  81 0042 394B     		ldr	r3, .L34+28
+  82 0044 9842     		cmp	r0, r3
+  83 0046 37D0     		beq	.L25
+ 259:FWLIB/src/stm32f4xx_dma.c ****   {
+ 260:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream7 */
+ARM GAS  /tmp/cckthDNs.s 			page 7
+
+
+ 261:FWLIB/src/stm32f4xx_dma.c ****     DMA1->HIFCR = DMA_Stream7_IT_MASK;
+ 262:FWLIB/src/stm32f4xx_dma.c ****   }
+ 263:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream0)
+  84              		.loc 1 263 0
+  85 0048 384B     		ldr	r3, .L34+32
+  86 004a 9842     		cmp	r0, r3
+  87 004c 39D0     		beq	.L26
+ 264:FWLIB/src/stm32f4xx_dma.c ****   {
+ 265:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream0 */
+ 266:FWLIB/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream0_IT_MASK;
+ 267:FWLIB/src/stm32f4xx_dma.c ****   }
+ 268:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream1)
+  88              		.loc 1 268 0
+  89 004e 384B     		ldr	r3, .L34+36
+  90 0050 9842     		cmp	r0, r3
+  91 0052 3AD0     		beq	.L27
+ 269:FWLIB/src/stm32f4xx_dma.c ****   {
+ 270:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream1 */
+ 271:FWLIB/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream1_IT_MASK;
+ 272:FWLIB/src/stm32f4xx_dma.c ****   }
+ 273:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream2)
+  92              		.loc 1 273 0
+  93 0054 374B     		ldr	r3, .L34+40
+  94 0056 9842     		cmp	r0, r3
+  95 0058 3CD0     		beq	.L28
+ 274:FWLIB/src/stm32f4xx_dma.c ****   {
+ 275:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream2 */
+ 276:FWLIB/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream2_IT_MASK;
+ 277:FWLIB/src/stm32f4xx_dma.c ****   }
+ 278:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream3)
+  96              		.loc 1 278 0
+  97 005a 374B     		ldr	r3, .L34+44
+  98 005c 9842     		cmp	r0, r3
+  99 005e 3ED0     		beq	.L29
+ 279:FWLIB/src/stm32f4xx_dma.c ****   {
+ 280:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream3 */
+ 281:FWLIB/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream3_IT_MASK;
+ 282:FWLIB/src/stm32f4xx_dma.c ****   }
+ 283:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream4)
+ 100              		.loc 1 283 0
+ 101 0060 364B     		ldr	r3, .L34+48
+ 102 0062 9842     		cmp	r0, r3
+ 103 0064 40D0     		beq	.L30
+ 284:FWLIB/src/stm32f4xx_dma.c ****   {
+ 285:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream4 */
+ 286:FWLIB/src/stm32f4xx_dma.c ****     DMA2->HIFCR = DMA_Stream4_IT_MASK;
+ 287:FWLIB/src/stm32f4xx_dma.c ****   }
+ 288:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream5)
+ 104              		.loc 1 288 0
+ 105 0066 364B     		ldr	r3, .L34+52
+ 106 0068 9842     		cmp	r0, r3
+ 107 006a 41D0     		beq	.L31
+ 289:FWLIB/src/stm32f4xx_dma.c ****   {
+ 290:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream5 */
+ 291:FWLIB/src/stm32f4xx_dma.c ****     DMA2->HIFCR = DMA_Stream5_IT_MASK;
+ 292:FWLIB/src/stm32f4xx_dma.c ****   }
+ 293:FWLIB/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream6)
+ARM GAS  /tmp/cckthDNs.s 			page 8
+
+
+ 108              		.loc 1 293 0
+ 109 006c 354B     		ldr	r3, .L34+56
+ 110 006e 9842     		cmp	r0, r3
+ 111 0070 42D0     		beq	.L32
+ 294:FWLIB/src/stm32f4xx_dma.c ****   {
+ 295:FWLIB/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream6 */
+ 296:FWLIB/src/stm32f4xx_dma.c ****     DMA2->HIFCR = DMA_Stream6_IT_MASK;
+ 297:FWLIB/src/stm32f4xx_dma.c ****   }
+ 298:FWLIB/src/stm32f4xx_dma.c ****   else 
+ 299:FWLIB/src/stm32f4xx_dma.c ****   {
+ 300:FWLIB/src/stm32f4xx_dma.c ****     if (DMAy_Streamx == DMA2_Stream7)
+ 112              		.loc 1 300 0
+ 113 0072 354B     		ldr	r3, .L34+60
+ 114 0074 9842     		cmp	r0, r3
+ 115 0076 43D0     		beq	.L33
+ 116              	.L1:
+ 117 0078 7047     		bx	lr
+ 118              	.L18:
+ 226:FWLIB/src/stm32f4xx_dma.c ****   }
+ 119              		.loc 1 226 0
+ 120 007a 3D22     		movs	r2, #61
+ 121 007c 103B     		subs	r3, r3, #16
+ 122 007e 9A60     		str	r2, [r3, #8]
+ 123 0080 7047     		bx	lr
+ 124              	.L19:
+ 231:FWLIB/src/stm32f4xx_dma.c ****   }
+ 125              		.loc 1 231 0
+ 126 0082 4FF47462 		mov	r2, #3904
+ 127 0086 283B     		subs	r3, r3, #40
+ 128 0088 9A60     		str	r2, [r3, #8]
+ 129 008a 7047     		bx	lr
+ 130              	.L20:
+ 236:FWLIB/src/stm32f4xx_dma.c ****   }
+ 131              		.loc 1 236 0
+ 132 008c 4FF47412 		mov	r2, #3997696
+ 133 0090 403B     		subs	r3, r3, #64
+ 134 0092 9A60     		str	r2, [r3, #8]
+ 135 0094 7047     		bx	lr
+ 136              	.L21:
+ 241:FWLIB/src/stm32f4xx_dma.c ****   }
+ 137              		.loc 1 241 0
+ 138 0096 4FF07462 		mov	r2, #255852544
+ 139 009a 583B     		subs	r3, r3, #88
+ 140 009c 9A60     		str	r2, [r3, #8]
+ 141 009e 7047     		bx	lr
+ 142              	.L22:
+ 246:FWLIB/src/stm32f4xx_dma.c ****   }
+ 143              		.loc 1 246 0
+ 144 00a0 2A4A     		ldr	r2, .L34+64
+ 145 00a2 703B     		subs	r3, r3, #112
+ 146 00a4 DA60     		str	r2, [r3, #12]
+ 147 00a6 7047     		bx	lr
+ 148              	.L23:
+ 251:FWLIB/src/stm32f4xx_dma.c ****   }
+ 149              		.loc 1 251 0
+ 150 00a8 294A     		ldr	r2, .L34+68
+ 151 00aa 883B     		subs	r3, r3, #136
+ARM GAS  /tmp/cckthDNs.s 			page 9
+
+
+ 152 00ac DA60     		str	r2, [r3, #12]
+ 153 00ae 7047     		bx	lr
+ 154              	.L24:
+ 256:FWLIB/src/stm32f4xx_dma.c ****   }
+ 155              		.loc 1 256 0
+ 156 00b0 284A     		ldr	r2, .L34+72
+ 157 00b2 A03B     		subs	r3, r3, #160
+ 158 00b4 DA60     		str	r2, [r3, #12]
+ 159 00b6 7047     		bx	lr
+ 160              	.L25:
+ 261:FWLIB/src/stm32f4xx_dma.c ****   }
+ 161              		.loc 1 261 0
+ 162 00b8 4FF03D52 		mov	r2, #792723456
+ 163 00bc B83B     		subs	r3, r3, #184
+ 164 00be DA60     		str	r2, [r3, #12]
+ 165 00c0 7047     		bx	lr
+ 166              	.L26:
+ 266:FWLIB/src/stm32f4xx_dma.c ****   }
+ 167              		.loc 1 266 0
+ 168 00c2 3D22     		movs	r2, #61
+ 169 00c4 103B     		subs	r3, r3, #16
+ 170 00c6 9A60     		str	r2, [r3, #8]
+ 171 00c8 7047     		bx	lr
+ 172              	.L27:
+ 271:FWLIB/src/stm32f4xx_dma.c ****   }
+ 173              		.loc 1 271 0
+ 174 00ca 4FF47462 		mov	r2, #3904
+ 175 00ce 283B     		subs	r3, r3, #40
+ 176 00d0 9A60     		str	r2, [r3, #8]
+ 177 00d2 7047     		bx	lr
+ 178              	.L28:
+ 276:FWLIB/src/stm32f4xx_dma.c ****   }
+ 179              		.loc 1 276 0
+ 180 00d4 4FF47412 		mov	r2, #3997696
+ 181 00d8 403B     		subs	r3, r3, #64
+ 182 00da 9A60     		str	r2, [r3, #8]
+ 183 00dc 7047     		bx	lr
+ 184              	.L29:
+ 281:FWLIB/src/stm32f4xx_dma.c ****   }
+ 185              		.loc 1 281 0
+ 186 00de 4FF07462 		mov	r2, #255852544
+ 187 00e2 583B     		subs	r3, r3, #88
+ 188 00e4 9A60     		str	r2, [r3, #8]
+ 189 00e6 7047     		bx	lr
+ 190              	.L30:
+ 286:FWLIB/src/stm32f4xx_dma.c ****   }
+ 191              		.loc 1 286 0
+ 192 00e8 184A     		ldr	r2, .L34+64
+ 193 00ea 703B     		subs	r3, r3, #112
+ 194 00ec DA60     		str	r2, [r3, #12]
+ 195 00ee 7047     		bx	lr
+ 196              	.L31:
+ 291:FWLIB/src/stm32f4xx_dma.c ****   }
+ 197              		.loc 1 291 0
+ 198 00f0 174A     		ldr	r2, .L34+68
+ 199 00f2 883B     		subs	r3, r3, #136
+ 200 00f4 DA60     		str	r2, [r3, #12]
+ARM GAS  /tmp/cckthDNs.s 			page 10
+
+
+ 201 00f6 7047     		bx	lr
+ 202              	.L32:
+ 296:FWLIB/src/stm32f4xx_dma.c ****   }
+ 203              		.loc 1 296 0
+ 204 00f8 164A     		ldr	r2, .L34+72
+ 205 00fa A03B     		subs	r3, r3, #160
+ 206 00fc DA60     		str	r2, [r3, #12]
+ 207 00fe 7047     		bx	lr
+ 208              	.L33:
+ 301:FWLIB/src/stm32f4xx_dma.c ****     {
+ 302:FWLIB/src/stm32f4xx_dma.c ****       /* Reset interrupt pending bits for DMA2 Stream7 */
+ 303:FWLIB/src/stm32f4xx_dma.c ****       DMA2->HIFCR = DMA_Stream7_IT_MASK;
+ 209              		.loc 1 303 0
+ 210 0100 4FF03D52 		mov	r2, #792723456
+ 211 0104 B83B     		subs	r3, r3, #184
+ 212 0106 DA60     		str	r2, [r3, #12]
+ 304:FWLIB/src/stm32f4xx_dma.c ****     }
+ 305:FWLIB/src/stm32f4xx_dma.c ****   }
+ 306:FWLIB/src/stm32f4xx_dma.c **** }
+ 213              		.loc 1 306 0
+ 214 0108 B6E7     		b	.L1
+ 215              	.L35:
+ 216 010a 00BF     		.align	2
+ 217              	.L34:
+ 218 010c 10600240 		.word	1073897488
+ 219 0110 28600240 		.word	1073897512
+ 220 0114 40600240 		.word	1073897536
+ 221 0118 58600240 		.word	1073897560
+ 222 011c 70600240 		.word	1073897584
+ 223 0120 88600240 		.word	1073897608
+ 224 0124 A0600240 		.word	1073897632
+ 225 0128 B8600240 		.word	1073897656
+ 226 012c 10640240 		.word	1073898512
+ 227 0130 28640240 		.word	1073898536
+ 228 0134 40640240 		.word	1073898560
+ 229 0138 58640240 		.word	1073898584
+ 230 013c 70640240 		.word	1073898608
+ 231 0140 88640240 		.word	1073898632
+ 232 0144 A0640240 		.word	1073898656
+ 233 0148 B8640240 		.word	1073898680
+ 234 014c 3D000020 		.word	536870973
+ 235 0150 400F0020 		.word	536874816
+ 236 0154 00003D20 		.word	540868608
+ 237              		.cfi_endproc
+ 238              	.LFE123:
+ 240              		.section	.text.DMA_Init,"ax",%progbits
+ 241              		.align	1
+ 242              		.global	DMA_Init
+ 243              		.syntax unified
+ 244              		.thumb
+ 245              		.thumb_func
+ 246              		.fpu fpv4-sp-d16
+ 248              	DMA_Init:
+ 249              	.LFB124:
+ 307:FWLIB/src/stm32f4xx_dma.c **** 
+ 308:FWLIB/src/stm32f4xx_dma.c **** /**
+ 309:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Initializes the DMAy Streamx according to the specified parameters in 
+ARM GAS  /tmp/cckthDNs.s 			page 11
+
+
+ 310:FWLIB/src/stm32f4xx_dma.c ****   *         the DMA_InitStruct structure.
+ 311:FWLIB/src/stm32f4xx_dma.c ****   * @note   Before calling this function, it is recommended to check that the Stream 
+ 312:FWLIB/src/stm32f4xx_dma.c ****   *         is actually disabled using the function DMA_GetCmdStatus().  
+ 313:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 314:FWLIB/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 315:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_InitStruct: pointer to a DMA_InitTypeDef structure that contains
+ 316:FWLIB/src/stm32f4xx_dma.c ****   *         the configuration information for the specified DMA Stream.  
+ 317:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 318:FWLIB/src/stm32f4xx_dma.c ****   */
+ 319:FWLIB/src/stm32f4xx_dma.c **** void DMA_Init(DMA_Stream_TypeDef* DMAy_Streamx, DMA_InitTypeDef* DMA_InitStruct)
+ 320:FWLIB/src/stm32f4xx_dma.c **** {
+ 250              		.loc 1 320 0
+ 251              		.cfi_startproc
+ 252              		@ args = 0, pretend = 0, frame = 0
+ 253              		@ frame_needed = 0, uses_anonymous_args = 0
+ 254              		@ link register save eliminated.
+ 255              	.LVL1:
+ 256 0000 10B4     		push	{r4}
+ 257              	.LCFI0:
+ 258              		.cfi_def_cfa_offset 4
+ 259              		.cfi_offset 4, -4
+ 260              	.LVL2:
+ 321:FWLIB/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0;
+ 322:FWLIB/src/stm32f4xx_dma.c **** 
+ 323:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 324:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 325:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CHANNEL(DMA_InitStruct->DMA_Channel));
+ 326:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_DIRECTION(DMA_InitStruct->DMA_DIR));
+ 327:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_BUFFER_SIZE(DMA_InitStruct->DMA_BufferSize));
+ 328:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PERIPHERAL_INC_STATE(DMA_InitStruct->DMA_PeripheralInc));
+ 329:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MEMORY_INC_STATE(DMA_InitStruct->DMA_MemoryInc));
+ 330:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PERIPHERAL_DATA_SIZE(DMA_InitStruct->DMA_PeripheralDataSize));
+ 331:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MEMORY_DATA_SIZE(DMA_InitStruct->DMA_MemoryDataSize));
+ 332:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MODE(DMA_InitStruct->DMA_Mode));
+ 333:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PRIORITY(DMA_InitStruct->DMA_Priority));
+ 334:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_FIFO_MODE_STATE(DMA_InitStruct->DMA_FIFOMode));
+ 335:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_FIFO_THRESHOLD(DMA_InitStruct->DMA_FIFOThreshold));
+ 336:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MEMORY_BURST(DMA_InitStruct->DMA_MemoryBurst));
+ 337:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PERIPHERAL_BURST(DMA_InitStruct->DMA_PeripheralBurst));
+ 338:FWLIB/src/stm32f4xx_dma.c **** 
+ 339:FWLIB/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx CR Configuration ------------------*/
+ 340:FWLIB/src/stm32f4xx_dma.c ****   /* Get the DMAy_Streamx CR value */
+ 341:FWLIB/src/stm32f4xx_dma.c ****   tmpreg = DMAy_Streamx->CR;
+ 261              		.loc 1 341 0
+ 262 0002 0368     		ldr	r3, [r0]
+ 263              	.LVL3:
+ 342:FWLIB/src/stm32f4xx_dma.c **** 
+ 343:FWLIB/src/stm32f4xx_dma.c ****   /* Clear CHSEL, MBURST, PBURST, PL, MSIZE, PSIZE, MINC, PINC, CIRC and DIR bits */
+ 344:FWLIB/src/stm32f4xx_dma.c ****   tmpreg &= ((uint32_t)~(DMA_SxCR_CHSEL | DMA_SxCR_MBURST | DMA_SxCR_PBURST | \
+ 264              		.loc 1 344 0
+ 265 0004 134A     		ldr	r2, .L38
+ 266 0006 1A40     		ands	r2, r2, r3
+ 267              	.LVL4:
+ 345:FWLIB/src/stm32f4xx_dma.c ****                          DMA_SxCR_PL | DMA_SxCR_MSIZE | DMA_SxCR_PSIZE | \
+ 346:FWLIB/src/stm32f4xx_dma.c ****                          DMA_SxCR_MINC | DMA_SxCR_PINC | DMA_SxCR_CIRC | \
+ 347:FWLIB/src/stm32f4xx_dma.c ****                          DMA_SxCR_DIR));
+ 348:FWLIB/src/stm32f4xx_dma.c **** 
+ARM GAS  /tmp/cckthDNs.s 			page 12
+
+
+ 349:FWLIB/src/stm32f4xx_dma.c ****   /* Configure DMAy Streamx: */
+ 350:FWLIB/src/stm32f4xx_dma.c ****   /* Set CHSEL bits according to DMA_CHSEL value */
+ 351:FWLIB/src/stm32f4xx_dma.c ****   /* Set DIR bits according to DMA_DIR value */
+ 352:FWLIB/src/stm32f4xx_dma.c ****   /* Set PINC bit according to DMA_PeripheralInc value */
+ 353:FWLIB/src/stm32f4xx_dma.c ****   /* Set MINC bit according to DMA_MemoryInc value */
+ 354:FWLIB/src/stm32f4xx_dma.c ****   /* Set PSIZE bits according to DMA_PeripheralDataSize value */
+ 355:FWLIB/src/stm32f4xx_dma.c ****   /* Set MSIZE bits according to DMA_MemoryDataSize value */
+ 356:FWLIB/src/stm32f4xx_dma.c ****   /* Set CIRC bit according to DMA_Mode value */
+ 357:FWLIB/src/stm32f4xx_dma.c ****   /* Set PL bits according to DMA_Priority value */
+ 358:FWLIB/src/stm32f4xx_dma.c ****   /* Set MBURST bits according to DMA_MemoryBurst value */
+ 359:FWLIB/src/stm32f4xx_dma.c ****   /* Set PBURST bits according to DMA_PeripheralBurst value */
+ 360:FWLIB/src/stm32f4xx_dma.c ****   tmpreg |= DMA_InitStruct->DMA_Channel | DMA_InitStruct->DMA_DIR |
+ 268              		.loc 1 360 0
+ 269 0008 0B68     		ldr	r3, [r1]
+ 270 000a CC68     		ldr	r4, [r1, #12]
+ 271 000c 2343     		orrs	r3, r3, r4
+ 361:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralInc | DMA_InitStruct->DMA_MemoryInc |
+ 272              		.loc 1 361 0
+ 273 000e 4C69     		ldr	r4, [r1, #20]
+ 360:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralInc | DMA_InitStruct->DMA_MemoryInc |
+ 274              		.loc 1 360 0
+ 275 0010 2343     		orrs	r3, r3, r4
+ 276              		.loc 1 361 0
+ 277 0012 8C69     		ldr	r4, [r1, #24]
+ 278 0014 2343     		orrs	r3, r3, r4
+ 362:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralDataSize | DMA_InitStruct->DMA_MemoryDataSize |
+ 279              		.loc 1 362 0
+ 280 0016 CC69     		ldr	r4, [r1, #28]
+ 361:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralInc | DMA_InitStruct->DMA_MemoryInc |
+ 281              		.loc 1 361 0
+ 282 0018 2343     		orrs	r3, r3, r4
+ 283              		.loc 1 362 0
+ 284 001a 0C6A     		ldr	r4, [r1, #32]
+ 285 001c 2343     		orrs	r3, r3, r4
+ 363:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_Mode | DMA_InitStruct->DMA_Priority |
+ 286              		.loc 1 363 0
+ 287 001e 4C6A     		ldr	r4, [r1, #36]
+ 362:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralDataSize | DMA_InitStruct->DMA_MemoryDataSize |
+ 288              		.loc 1 362 0
+ 289 0020 2343     		orrs	r3, r3, r4
+ 290              		.loc 1 363 0
+ 291 0022 8C6A     		ldr	r4, [r1, #40]
+ 292 0024 2343     		orrs	r3, r3, r4
+ 364:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_MemoryBurst | DMA_InitStruct->DMA_PeripheralBurst;
+ 293              		.loc 1 364 0
+ 294 0026 4C6B     		ldr	r4, [r1, #52]
+ 363:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_Mode | DMA_InitStruct->DMA_Priority |
+ 295              		.loc 1 363 0
+ 296 0028 2343     		orrs	r3, r3, r4
+ 297              		.loc 1 364 0
+ 298 002a 8C6B     		ldr	r4, [r1, #56]
+ 299 002c 2343     		orrs	r3, r3, r4
+ 360:FWLIB/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralInc | DMA_InitStruct->DMA_MemoryInc |
+ 300              		.loc 1 360 0
+ 301 002e 1343     		orrs	r3, r3, r2
+ 302              	.LVL5:
+ 365:FWLIB/src/stm32f4xx_dma.c **** 
+ARM GAS  /tmp/cckthDNs.s 			page 13
+
+
+ 366:FWLIB/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx CR register */
+ 367:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->CR = tmpreg;
+ 303              		.loc 1 367 0
+ 304 0030 0360     		str	r3, [r0]
+ 368:FWLIB/src/stm32f4xx_dma.c **** 
+ 369:FWLIB/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx FCR Configuration -----------------*/
+ 370:FWLIB/src/stm32f4xx_dma.c ****   /* Get the DMAy_Streamx FCR value */
+ 371:FWLIB/src/stm32f4xx_dma.c ****   tmpreg = DMAy_Streamx->FCR;
+ 305              		.loc 1 371 0
+ 306 0032 4369     		ldr	r3, [r0, #20]
+ 307              	.LVL6:
+ 372:FWLIB/src/stm32f4xx_dma.c **** 
+ 373:FWLIB/src/stm32f4xx_dma.c ****   /* Clear DMDIS and FTH bits */
+ 374:FWLIB/src/stm32f4xx_dma.c ****   tmpreg &= (uint32_t)~(DMA_SxFCR_DMDIS | DMA_SxFCR_FTH);
+ 308              		.loc 1 374 0
+ 309 0034 23F00703 		bic	r3, r3, #7
+ 310              	.LVL7:
+ 375:FWLIB/src/stm32f4xx_dma.c **** 
+ 376:FWLIB/src/stm32f4xx_dma.c ****   /* Configure DMAy Streamx FIFO: 
+ 377:FWLIB/src/stm32f4xx_dma.c ****     Set DMDIS bits according to DMA_FIFOMode value 
+ 378:FWLIB/src/stm32f4xx_dma.c ****     Set FTH bits according to DMA_FIFOThreshold value */
+ 379:FWLIB/src/stm32f4xx_dma.c ****   tmpreg |= DMA_InitStruct->DMA_FIFOMode | DMA_InitStruct->DMA_FIFOThreshold;
+ 311              		.loc 1 379 0
+ 312 0038 CA6A     		ldr	r2, [r1, #44]
+ 313 003a 0C6B     		ldr	r4, [r1, #48]
+ 314 003c 2243     		orrs	r2, r2, r4
+ 315 003e 1343     		orrs	r3, r3, r2
+ 316              	.LVL8:
+ 380:FWLIB/src/stm32f4xx_dma.c **** 
+ 381:FWLIB/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx CR */
+ 382:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->FCR = tmpreg;
+ 317              		.loc 1 382 0
+ 318 0040 4361     		str	r3, [r0, #20]
+ 383:FWLIB/src/stm32f4xx_dma.c **** 
+ 384:FWLIB/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx NDTR Configuration ----------------*/
+ 385:FWLIB/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx NDTR register */
+ 386:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->NDTR = DMA_InitStruct->DMA_BufferSize;
+ 319              		.loc 1 386 0
+ 320 0042 0B69     		ldr	r3, [r1, #16]
+ 321              	.LVL9:
+ 322 0044 4360     		str	r3, [r0, #4]
+ 323              	.LVL10:
+ 387:FWLIB/src/stm32f4xx_dma.c **** 
+ 388:FWLIB/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx PAR Configuration -----------------*/
+ 389:FWLIB/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx PAR */
+ 390:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->PAR = DMA_InitStruct->DMA_PeripheralBaseAddr;
+ 324              		.loc 1 390 0
+ 325 0046 4B68     		ldr	r3, [r1, #4]
+ 326 0048 8360     		str	r3, [r0, #8]
+ 391:FWLIB/src/stm32f4xx_dma.c **** 
+ 392:FWLIB/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx M0AR Configuration ----------------*/
+ 393:FWLIB/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx M0AR */
+ 394:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->M0AR = DMA_InitStruct->DMA_Memory0BaseAddr;
+ 327              		.loc 1 394 0
+ 328 004a 8B68     		ldr	r3, [r1, #8]
+ 329 004c C360     		str	r3, [r0, #12]
+ 395:FWLIB/src/stm32f4xx_dma.c **** }
+ARM GAS  /tmp/cckthDNs.s 			page 14
+
+
+ 330              		.loc 1 395 0
+ 331 004e 5DF8044B 		ldr	r4, [sp], #4
+ 332              	.LCFI1:
+ 333              		.cfi_restore 4
+ 334              		.cfi_def_cfa_offset 0
+ 335 0052 7047     		bx	lr
+ 336              	.L39:
+ 337              		.align	2
+ 338              	.L38:
+ 339 0054 3F801CF0 		.word	-266567617
+ 340              		.cfi_endproc
+ 341              	.LFE124:
+ 343              		.section	.text.DMA_StructInit,"ax",%progbits
+ 344              		.align	1
+ 345              		.global	DMA_StructInit
+ 346              		.syntax unified
+ 347              		.thumb
+ 348              		.thumb_func
+ 349              		.fpu fpv4-sp-d16
+ 351              	DMA_StructInit:
+ 352              	.LFB125:
+ 396:FWLIB/src/stm32f4xx_dma.c **** 
+ 397:FWLIB/src/stm32f4xx_dma.c **** /**
+ 398:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Fills each DMA_InitStruct member with its default value.
+ 399:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_InitStruct : pointer to a DMA_InitTypeDef structure which will 
+ 400:FWLIB/src/stm32f4xx_dma.c ****   *         be initialized.
+ 401:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 402:FWLIB/src/stm32f4xx_dma.c ****   */
+ 403:FWLIB/src/stm32f4xx_dma.c **** void DMA_StructInit(DMA_InitTypeDef* DMA_InitStruct)
+ 404:FWLIB/src/stm32f4xx_dma.c **** {
+ 353              		.loc 1 404 0
+ 354              		.cfi_startproc
+ 355              		@ args = 0, pretend = 0, frame = 0
+ 356              		@ frame_needed = 0, uses_anonymous_args = 0
+ 357              		@ link register save eliminated.
+ 358              	.LVL11:
+ 405:FWLIB/src/stm32f4xx_dma.c ****   /*-------------- Reset DMA init structure parameters values ----------------*/
+ 406:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Channel member */
+ 407:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Channel = 0;
+ 359              		.loc 1 407 0
+ 360 0000 0023     		movs	r3, #0
+ 361 0002 0360     		str	r3, [r0]
+ 408:FWLIB/src/stm32f4xx_dma.c **** 
+ 409:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralBaseAddr member */
+ 410:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralBaseAddr = 0;
+ 362              		.loc 1 410 0
+ 363 0004 4360     		str	r3, [r0, #4]
+ 411:FWLIB/src/stm32f4xx_dma.c **** 
+ 412:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Memory0BaseAddr member */
+ 413:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Memory0BaseAddr = 0;
+ 364              		.loc 1 413 0
+ 365 0006 8360     		str	r3, [r0, #8]
+ 414:FWLIB/src/stm32f4xx_dma.c **** 
+ 415:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_DIR member */
+ 416:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_DIR = DMA_DIR_PeripheralToMemory;
+ 366              		.loc 1 416 0
+ 367 0008 C360     		str	r3, [r0, #12]
+ARM GAS  /tmp/cckthDNs.s 			page 15
+
+
+ 417:FWLIB/src/stm32f4xx_dma.c **** 
+ 418:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_BufferSize member */
+ 419:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_BufferSize = 0;
+ 368              		.loc 1 419 0
+ 369 000a 0361     		str	r3, [r0, #16]
+ 420:FWLIB/src/stm32f4xx_dma.c **** 
+ 421:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralInc member */
+ 422:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ 370              		.loc 1 422 0
+ 371 000c 4361     		str	r3, [r0, #20]
+ 423:FWLIB/src/stm32f4xx_dma.c **** 
+ 424:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_MemoryInc member */
+ 425:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_MemoryInc = DMA_MemoryInc_Disable;
+ 372              		.loc 1 425 0
+ 373 000e 8361     		str	r3, [r0, #24]
+ 426:FWLIB/src/stm32f4xx_dma.c **** 
+ 427:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralDataSize member */
+ 428:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+ 374              		.loc 1 428 0
+ 375 0010 C361     		str	r3, [r0, #28]
+ 429:FWLIB/src/stm32f4xx_dma.c **** 
+ 430:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_MemoryDataSize member */
+ 431:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+ 376              		.loc 1 431 0
+ 377 0012 0362     		str	r3, [r0, #32]
+ 432:FWLIB/src/stm32f4xx_dma.c **** 
+ 433:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Mode member */
+ 434:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Mode = DMA_Mode_Normal;
+ 378              		.loc 1 434 0
+ 379 0014 4362     		str	r3, [r0, #36]
+ 435:FWLIB/src/stm32f4xx_dma.c **** 
+ 436:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Priority member */
+ 437:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Priority = DMA_Priority_Low;
+ 380              		.loc 1 437 0
+ 381 0016 8362     		str	r3, [r0, #40]
+ 438:FWLIB/src/stm32f4xx_dma.c **** 
+ 439:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_FIFOMode member */
+ 440:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_FIFOMode = DMA_FIFOMode_Disable;
+ 382              		.loc 1 440 0
+ 383 0018 C362     		str	r3, [r0, #44]
+ 441:FWLIB/src/stm32f4xx_dma.c **** 
+ 442:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_FIFOThreshold member */
+ 443:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_FIFOThreshold = DMA_FIFOThreshold_1QuarterFull;
+ 384              		.loc 1 443 0
+ 385 001a 0363     		str	r3, [r0, #48]
+ 444:FWLIB/src/stm32f4xx_dma.c **** 
+ 445:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_MemoryBurst member */
+ 446:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_MemoryBurst = DMA_MemoryBurst_Single;
+ 386              		.loc 1 446 0
+ 387 001c 4363     		str	r3, [r0, #52]
+ 447:FWLIB/src/stm32f4xx_dma.c **** 
+ 448:FWLIB/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralBurst member */
+ 449:FWLIB/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+ 388              		.loc 1 449 0
+ 389 001e 8363     		str	r3, [r0, #56]
+ 390 0020 7047     		bx	lr
+ 391              		.cfi_endproc
+ARM GAS  /tmp/cckthDNs.s 			page 16
+
+
+ 392              	.LFE125:
+ 394              		.section	.text.DMA_Cmd,"ax",%progbits
+ 395              		.align	1
+ 396              		.global	DMA_Cmd
+ 397              		.syntax unified
+ 398              		.thumb
+ 399              		.thumb_func
+ 400              		.fpu fpv4-sp-d16
+ 402              	DMA_Cmd:
+ 403              	.LFB126:
+ 450:FWLIB/src/stm32f4xx_dma.c **** }
+ 451:FWLIB/src/stm32f4xx_dma.c **** 
+ 452:FWLIB/src/stm32f4xx_dma.c **** /**
+ 453:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Enables or disables the specified DMAy Streamx.
+ 454:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 455:FWLIB/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 456:FWLIB/src/stm32f4xx_dma.c ****   * @param  NewState: new state of the DMAy Streamx. 
+ 457:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be: ENABLE or DISABLE.
+ 458:FWLIB/src/stm32f4xx_dma.c ****   *
+ 459:FWLIB/src/stm32f4xx_dma.c ****   * @note  This function may be used to perform Pause-Resume operation. When a
+ 460:FWLIB/src/stm32f4xx_dma.c ****   *        transfer is ongoing, calling this function to disable the Stream will
+ 461:FWLIB/src/stm32f4xx_dma.c ****   *        cause the transfer to be paused. All configuration registers and the
+ 462:FWLIB/src/stm32f4xx_dma.c ****   *        number of remaining data will be preserved. When calling again this
+ 463:FWLIB/src/stm32f4xx_dma.c ****   *        function to re-enable the Stream, the transfer will be resumed from
+ 464:FWLIB/src/stm32f4xx_dma.c ****   *        the point where it was paused.          
+ 465:FWLIB/src/stm32f4xx_dma.c ****   *    
+ 466:FWLIB/src/stm32f4xx_dma.c ****   * @note  After configuring the DMA Stream (DMA_Init() function) and enabling the
+ 467:FWLIB/src/stm32f4xx_dma.c ****   *        stream, it is recommended to check (or wait until) the DMA Stream is
+ 468:FWLIB/src/stm32f4xx_dma.c ****   *        effectively enabled. A Stream may remain disabled if a configuration 
+ 469:FWLIB/src/stm32f4xx_dma.c ****   *        parameter is wrong.
+ 470:FWLIB/src/stm32f4xx_dma.c ****   *        After disabling a DMA Stream, it is also recommended to check (or wait
+ 471:FWLIB/src/stm32f4xx_dma.c ****   *        until) the DMA Stream is effectively disabled. If a Stream is disabled 
+ 472:FWLIB/src/stm32f4xx_dma.c ****   *        while a data transfer is ongoing, the current data will be transferred
+ 473:FWLIB/src/stm32f4xx_dma.c ****   *        and the Stream will be effectively disabled only after the transfer of
+ 474:FWLIB/src/stm32f4xx_dma.c ****   *        this single data is finished.            
+ 475:FWLIB/src/stm32f4xx_dma.c ****   *    
+ 476:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 477:FWLIB/src/stm32f4xx_dma.c ****   */
+ 478:FWLIB/src/stm32f4xx_dma.c **** void DMA_Cmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState)
+ 479:FWLIB/src/stm32f4xx_dma.c **** {
+ 404              		.loc 1 479 0
+ 405              		.cfi_startproc
+ 406              		@ args = 0, pretend = 0, frame = 0
+ 407              		@ frame_needed = 0, uses_anonymous_args = 0
+ 408              		@ link register save eliminated.
+ 409              	.LVL12:
+ 480:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 481:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 482:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 483:FWLIB/src/stm32f4xx_dma.c **** 
+ 484:FWLIB/src/stm32f4xx_dma.c ****   if (NewState != DISABLE)
+ 410              		.loc 1 484 0
+ 411 0000 21B9     		cbnz	r1, .L44
+ 485:FWLIB/src/stm32f4xx_dma.c ****   {
+ 486:FWLIB/src/stm32f4xx_dma.c ****     /* Enable the selected DMAy Streamx by setting EN bit */
+ 487:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_EN;
+ 488:FWLIB/src/stm32f4xx_dma.c ****   }
+ARM GAS  /tmp/cckthDNs.s 			page 17
+
+
+ 489:FWLIB/src/stm32f4xx_dma.c ****   else
+ 490:FWLIB/src/stm32f4xx_dma.c ****   {
+ 491:FWLIB/src/stm32f4xx_dma.c ****     /* Disable the selected DMAy Streamx by clearing EN bit */
+ 492:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_EN;
+ 412              		.loc 1 492 0
+ 413 0002 0368     		ldr	r3, [r0]
+ 414 0004 23F00103 		bic	r3, r3, #1
+ 415 0008 0360     		str	r3, [r0]
+ 416 000a 7047     		bx	lr
+ 417              	.L44:
+ 487:FWLIB/src/stm32f4xx_dma.c ****   }
+ 418              		.loc 1 487 0
+ 419 000c 0368     		ldr	r3, [r0]
+ 420 000e 43F00103 		orr	r3, r3, #1
+ 421 0012 0360     		str	r3, [r0]
+ 422 0014 7047     		bx	lr
+ 423              		.cfi_endproc
+ 424              	.LFE126:
+ 426              		.section	.text.DMA_PeriphIncOffsetSizeConfig,"ax",%progbits
+ 427              		.align	1
+ 428              		.global	DMA_PeriphIncOffsetSizeConfig
+ 429              		.syntax unified
+ 430              		.thumb
+ 431              		.thumb_func
+ 432              		.fpu fpv4-sp-d16
+ 434              	DMA_PeriphIncOffsetSizeConfig:
+ 435              	.LFB127:
+ 493:FWLIB/src/stm32f4xx_dma.c ****   }
+ 494:FWLIB/src/stm32f4xx_dma.c **** }
+ 495:FWLIB/src/stm32f4xx_dma.c **** 
+ 496:FWLIB/src/stm32f4xx_dma.c **** /**
+ 497:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Configures, when the PINC (Peripheral Increment address mode) bit is
+ 498:FWLIB/src/stm32f4xx_dma.c ****   *         set, if the peripheral address should be incremented with the data 
+ 499:FWLIB/src/stm32f4xx_dma.c ****   *         size (configured with PSIZE bits) or by a fixed offset equal to 4
+ 500:FWLIB/src/stm32f4xx_dma.c ****   *         (32-bit aligned addresses).
+ 501:FWLIB/src/stm32f4xx_dma.c ****   *   
+ 502:FWLIB/src/stm32f4xx_dma.c ****   * @note   This function has no effect if the Peripheral Increment mode is disabled.
+ 503:FWLIB/src/stm32f4xx_dma.c ****   *     
+ 504:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 505:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 506:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_Pincos: specifies the Peripheral increment offset size.
+ 507:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 508:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_PINCOS_Psize: Peripheral address increment is done  
+ 509:FWLIB/src/stm32f4xx_dma.c ****   *                                   accordingly to PSIZE parameter.
+ 510:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_PINCOS_WordAligned: Peripheral address increment offset is 
+ 511:FWLIB/src/stm32f4xx_dma.c ****   *                                         fixed to 4 (32-bit aligned addresses). 
+ 512:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 513:FWLIB/src/stm32f4xx_dma.c ****   */
+ 514:FWLIB/src/stm32f4xx_dma.c **** void DMA_PeriphIncOffsetSizeConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_Pincos)
+ 515:FWLIB/src/stm32f4xx_dma.c **** {
+ 436              		.loc 1 515 0
+ 437              		.cfi_startproc
+ 438              		@ args = 0, pretend = 0, frame = 0
+ 439              		@ frame_needed = 0, uses_anonymous_args = 0
+ 440              		@ link register save eliminated.
+ 441              	.LVL13:
+ 516:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ARM GAS  /tmp/cckthDNs.s 			page 18
+
+
+ 517:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 518:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PINCOS_SIZE(DMA_Pincos));
+ 519:FWLIB/src/stm32f4xx_dma.c **** 
+ 520:FWLIB/src/stm32f4xx_dma.c ****   /* Check the needed Peripheral increment offset */
+ 521:FWLIB/src/stm32f4xx_dma.c ****   if(DMA_Pincos != DMA_PINCOS_Psize)
+ 442              		.loc 1 521 0
+ 443 0000 21B9     		cbnz	r1, .L48
+ 522:FWLIB/src/stm32f4xx_dma.c ****   {
+ 523:FWLIB/src/stm32f4xx_dma.c ****     /* Configure DMA_SxCR_PINCOS bit with the input parameter */
+ 524:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_PINCOS;     
+ 525:FWLIB/src/stm32f4xx_dma.c ****   }
+ 526:FWLIB/src/stm32f4xx_dma.c ****   else
+ 527:FWLIB/src/stm32f4xx_dma.c ****   {
+ 528:FWLIB/src/stm32f4xx_dma.c ****     /* Clear the PINCOS bit: Peripheral address incremented according to PSIZE */
+ 529:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_PINCOS;    
+ 444              		.loc 1 529 0
+ 445 0002 0368     		ldr	r3, [r0]
+ 446 0004 23F40043 		bic	r3, r3, #32768
+ 447 0008 0360     		str	r3, [r0]
+ 448 000a 7047     		bx	lr
+ 449              	.L48:
+ 524:FWLIB/src/stm32f4xx_dma.c ****   }
+ 450              		.loc 1 524 0
+ 451 000c 0368     		ldr	r3, [r0]
+ 452 000e 43F40043 		orr	r3, r3, #32768
+ 453 0012 0360     		str	r3, [r0]
+ 454 0014 7047     		bx	lr
+ 455              		.cfi_endproc
+ 456              	.LFE127:
+ 458              		.section	.text.DMA_FlowControllerConfig,"ax",%progbits
+ 459              		.align	1
+ 460              		.global	DMA_FlowControllerConfig
+ 461              		.syntax unified
+ 462              		.thumb
+ 463              		.thumb_func
+ 464              		.fpu fpv4-sp-d16
+ 466              	DMA_FlowControllerConfig:
+ 467              	.LFB128:
+ 530:FWLIB/src/stm32f4xx_dma.c ****   }
+ 531:FWLIB/src/stm32f4xx_dma.c **** }
+ 532:FWLIB/src/stm32f4xx_dma.c **** 
+ 533:FWLIB/src/stm32f4xx_dma.c **** /**
+ 534:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Configures, when the DMAy Streamx is disabled, the flow controller for
+ 535:FWLIB/src/stm32f4xx_dma.c ****   *         the next transactions (Peripheral or Memory).
+ 536:FWLIB/src/stm32f4xx_dma.c ****   *       
+ 537:FWLIB/src/stm32f4xx_dma.c ****   * @note   Before enabling this feature, check if the used peripheral supports 
+ 538:FWLIB/src/stm32f4xx_dma.c ****   *         the Flow Controller mode or not.    
+ 539:FWLIB/src/stm32f4xx_dma.c ****   *  
+ 540:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 541:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 542:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_FlowCtrl: specifies the DMA flow controller.
+ 543:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 544:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FlowCtrl_Memory: DMAy_Streamx transactions flow controller is 
+ 545:FWLIB/src/stm32f4xx_dma.c ****   *                                      the DMA controller.
+ 546:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FlowCtrl_Peripheral: DMAy_Streamx transactions flow controller 
+ 547:FWLIB/src/stm32f4xx_dma.c ****   *                                          is the peripheral.    
+ 548:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ARM GAS  /tmp/cckthDNs.s 			page 19
+
+
+ 549:FWLIB/src/stm32f4xx_dma.c ****   */
+ 550:FWLIB/src/stm32f4xx_dma.c **** void DMA_FlowControllerConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FlowCtrl)
+ 551:FWLIB/src/stm32f4xx_dma.c **** {
+ 468              		.loc 1 551 0
+ 469              		.cfi_startproc
+ 470              		@ args = 0, pretend = 0, frame = 0
+ 471              		@ frame_needed = 0, uses_anonymous_args = 0
+ 472              		@ link register save eliminated.
+ 473              	.LVL14:
+ 552:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 553:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 554:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_FLOW_CTRL(DMA_FlowCtrl));
+ 555:FWLIB/src/stm32f4xx_dma.c **** 
+ 556:FWLIB/src/stm32f4xx_dma.c ****   /* Check the needed flow controller  */
+ 557:FWLIB/src/stm32f4xx_dma.c ****   if(DMA_FlowCtrl != DMA_FlowCtrl_Memory)
+ 474              		.loc 1 557 0
+ 475 0000 21B9     		cbnz	r1, .L52
+ 558:FWLIB/src/stm32f4xx_dma.c ****   {
+ 559:FWLIB/src/stm32f4xx_dma.c ****     /* Configure DMA_SxCR_PFCTRL bit with the input parameter */
+ 560:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_PFCTRL;   
+ 561:FWLIB/src/stm32f4xx_dma.c ****   }
+ 562:FWLIB/src/stm32f4xx_dma.c ****   else
+ 563:FWLIB/src/stm32f4xx_dma.c ****   {
+ 564:FWLIB/src/stm32f4xx_dma.c ****     /* Clear the PFCTRL bit: Memory is the flow controller */
+ 565:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_PFCTRL;    
+ 476              		.loc 1 565 0
+ 477 0002 0368     		ldr	r3, [r0]
+ 478 0004 23F02003 		bic	r3, r3, #32
+ 479 0008 0360     		str	r3, [r0]
+ 480 000a 7047     		bx	lr
+ 481              	.L52:
+ 560:FWLIB/src/stm32f4xx_dma.c ****   }
+ 482              		.loc 1 560 0
+ 483 000c 0368     		ldr	r3, [r0]
+ 484 000e 43F02003 		orr	r3, r3, #32
+ 485 0012 0360     		str	r3, [r0]
+ 486 0014 7047     		bx	lr
+ 487              		.cfi_endproc
+ 488              	.LFE128:
+ 490              		.section	.text.DMA_SetCurrDataCounter,"ax",%progbits
+ 491              		.align	1
+ 492              		.global	DMA_SetCurrDataCounter
+ 493              		.syntax unified
+ 494              		.thumb
+ 495              		.thumb_func
+ 496              		.fpu fpv4-sp-d16
+ 498              	DMA_SetCurrDataCounter:
+ 499              	.LFB129:
+ 566:FWLIB/src/stm32f4xx_dma.c ****   }
+ 567:FWLIB/src/stm32f4xx_dma.c **** }
+ 568:FWLIB/src/stm32f4xx_dma.c **** /**
+ 569:FWLIB/src/stm32f4xx_dma.c ****   * @}
+ 570:FWLIB/src/stm32f4xx_dma.c ****   */
+ 571:FWLIB/src/stm32f4xx_dma.c **** 
+ 572:FWLIB/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group2 Data Counter functions
+ 573:FWLIB/src/stm32f4xx_dma.c ****  *  @brief   Data Counter functions 
+ 574:FWLIB/src/stm32f4xx_dma.c ****  *
+ARM GAS  /tmp/cckthDNs.s 			page 20
+
+
+ 575:FWLIB/src/stm32f4xx_dma.c **** @verbatim   
+ 576:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================
+ 577:FWLIB/src/stm32f4xx_dma.c ****                       ##### Data Counter functions #####
+ 578:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 579:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 580:FWLIB/src/stm32f4xx_dma.c ****     This subsection provides function allowing to configure and read the buffer size
+ 581:FWLIB/src/stm32f4xx_dma.c ****     (number of data to be transferred). 
+ 582:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 583:FWLIB/src/stm32f4xx_dma.c ****     The DMA data counter can be written only when the DMA Stream is disabled 
+ 584:FWLIB/src/stm32f4xx_dma.c ****     (ie. after transfer complete event).
+ 585:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 586:FWLIB/src/stm32f4xx_dma.c ****     The following function can be used to write the Stream data counter value:
+ 587:FWLIB/src/stm32f4xx_dma.c ****       (+) void DMA_SetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx, uint16_t Counter);
+ 588:FWLIB/src/stm32f4xx_dma.c ****       -@- It is advised to use this function rather than DMA_Init() in situations 
+ 589:FWLIB/src/stm32f4xx_dma.c ****           where only the Data buffer needs to be reloaded.
+ 590:FWLIB/src/stm32f4xx_dma.c ****       -@- If the Source and Destination Data Sizes are different, then the value 
+ 591:FWLIB/src/stm32f4xx_dma.c ****           written in data counter, expressing the number of transfers, is relative 
+ 592:FWLIB/src/stm32f4xx_dma.c ****           to the number of transfers from the Peripheral point of view.
+ 593:FWLIB/src/stm32f4xx_dma.c ****           ie. If Memory data size is Word, Peripheral data size is Half-Words, 
+ 594:FWLIB/src/stm32f4xx_dma.c ****           then the value to be configured in the data counter is the number 
+ 595:FWLIB/src/stm32f4xx_dma.c ****           of Half-Words to be transferred from/to the peripheral.
+ 596:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 597:FWLIB/src/stm32f4xx_dma.c ****     The DMA data counter can be read to indicate the number of remaining transfers for
+ 598:FWLIB/src/stm32f4xx_dma.c ****     the relative DMA Stream. This counter is decremented at the end of each data 
+ 599:FWLIB/src/stm32f4xx_dma.c ****     transfer and when the transfer is complete: 
+ 600:FWLIB/src/stm32f4xx_dma.c ****       (+) If Normal mode is selected: the counter is set to 0.
+ 601:FWLIB/src/stm32f4xx_dma.c ****       (+) If Circular mode is selected: the counter is reloaded with the initial value
+ 602:FWLIB/src/stm32f4xx_dma.c ****           (configured before enabling the DMA Stream)
+ 603:FWLIB/src/stm32f4xx_dma.c ****      [..]
+ 604:FWLIB/src/stm32f4xx_dma.c ****      The following function can be used to read the Stream data counter value:
+ 605:FWLIB/src/stm32f4xx_dma.c ****        (+) uint16_t DMA_GetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx);
+ 606:FWLIB/src/stm32f4xx_dma.c **** 
+ 607:FWLIB/src/stm32f4xx_dma.c **** @endverbatim
+ 608:FWLIB/src/stm32f4xx_dma.c ****   * @{
+ 609:FWLIB/src/stm32f4xx_dma.c ****   */
+ 610:FWLIB/src/stm32f4xx_dma.c **** 
+ 611:FWLIB/src/stm32f4xx_dma.c **** /**
+ 612:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Writes the number of data units to be transferred on the DMAy Streamx.
+ 613:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 614:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 615:FWLIB/src/stm32f4xx_dma.c ****   * @param  Counter: Number of data units to be transferred (from 0 to 65535) 
+ 616:FWLIB/src/stm32f4xx_dma.c ****   *          Number of data items depends only on the Peripheral data format.
+ 617:FWLIB/src/stm32f4xx_dma.c ****   *            
+ 618:FWLIB/src/stm32f4xx_dma.c ****   * @note   If Peripheral data format is Bytes: number of data units is equal 
+ 619:FWLIB/src/stm32f4xx_dma.c ****   *         to total number of bytes to be transferred.
+ 620:FWLIB/src/stm32f4xx_dma.c ****   *           
+ 621:FWLIB/src/stm32f4xx_dma.c ****   * @note   If Peripheral data format is Half-Word: number of data units is  
+ 622:FWLIB/src/stm32f4xx_dma.c ****   *         equal to total number of bytes to be transferred / 2.
+ 623:FWLIB/src/stm32f4xx_dma.c ****   *           
+ 624:FWLIB/src/stm32f4xx_dma.c ****   * @note   If Peripheral data format is Word: number of data units is equal 
+ 625:FWLIB/src/stm32f4xx_dma.c ****   *         to total  number of bytes to be transferred / 4.
+ 626:FWLIB/src/stm32f4xx_dma.c ****   *      
+ 627:FWLIB/src/stm32f4xx_dma.c ****   * @note   In Memory-to-Memory transfer mode, the memory buffer pointed by 
+ 628:FWLIB/src/stm32f4xx_dma.c ****   *         DMAy_SxPAR register is considered as Peripheral.
+ 629:FWLIB/src/stm32f4xx_dma.c ****   *      
+ 630:FWLIB/src/stm32f4xx_dma.c ****   * @retval The number of remaining data units in the current DMAy Streamx transfer.
+ 631:FWLIB/src/stm32f4xx_dma.c ****   */
+ARM GAS  /tmp/cckthDNs.s 			page 21
+
+
+ 632:FWLIB/src/stm32f4xx_dma.c **** void DMA_SetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx, uint16_t Counter)
+ 633:FWLIB/src/stm32f4xx_dma.c **** {
+ 500              		.loc 1 633 0
+ 501              		.cfi_startproc
+ 502              		@ args = 0, pretend = 0, frame = 0
+ 503              		@ frame_needed = 0, uses_anonymous_args = 0
+ 504              		@ link register save eliminated.
+ 505              	.LVL15:
+ 634:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 635:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 636:FWLIB/src/stm32f4xx_dma.c **** 
+ 637:FWLIB/src/stm32f4xx_dma.c ****   /* Write the number of data units to be transferred */
+ 638:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->NDTR = (uint16_t)Counter;
+ 506              		.loc 1 638 0
+ 507 0000 4160     		str	r1, [r0, #4]
+ 508 0002 7047     		bx	lr
+ 509              		.cfi_endproc
+ 510              	.LFE129:
+ 512              		.section	.text.DMA_GetCurrDataCounter,"ax",%progbits
+ 513              		.align	1
+ 514              		.global	DMA_GetCurrDataCounter
+ 515              		.syntax unified
+ 516              		.thumb
+ 517              		.thumb_func
+ 518              		.fpu fpv4-sp-d16
+ 520              	DMA_GetCurrDataCounter:
+ 521              	.LFB130:
+ 639:FWLIB/src/stm32f4xx_dma.c **** }
+ 640:FWLIB/src/stm32f4xx_dma.c **** 
+ 641:FWLIB/src/stm32f4xx_dma.c **** /**
+ 642:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Returns the number of remaining data units in the current DMAy Streamx transfer.
+ 643:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 644:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 645:FWLIB/src/stm32f4xx_dma.c ****   * @retval The number of remaining data units in the current DMAy Streamx transfer.
+ 646:FWLIB/src/stm32f4xx_dma.c ****   */
+ 647:FWLIB/src/stm32f4xx_dma.c **** uint16_t DMA_GetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx)
+ 648:FWLIB/src/stm32f4xx_dma.c **** {
+ 522              		.loc 1 648 0
+ 523              		.cfi_startproc
+ 524              		@ args = 0, pretend = 0, frame = 0
+ 525              		@ frame_needed = 0, uses_anonymous_args = 0
+ 526              		@ link register save eliminated.
+ 527              	.LVL16:
+ 649:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 650:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 651:FWLIB/src/stm32f4xx_dma.c **** 
+ 652:FWLIB/src/stm32f4xx_dma.c ****   /* Return the number of remaining data units for DMAy Streamx */
+ 653:FWLIB/src/stm32f4xx_dma.c ****   return ((uint16_t)(DMAy_Streamx->NDTR));
+ 528              		.loc 1 653 0
+ 529 0000 4068     		ldr	r0, [r0, #4]
+ 530              	.LVL17:
+ 654:FWLIB/src/stm32f4xx_dma.c **** }
+ 531              		.loc 1 654 0
+ 532 0002 80B2     		uxth	r0, r0
+ 533 0004 7047     		bx	lr
+ 534              		.cfi_endproc
+ 535              	.LFE130:
+ARM GAS  /tmp/cckthDNs.s 			page 22
+
+
+ 537              		.section	.text.DMA_DoubleBufferModeConfig,"ax",%progbits
+ 538              		.align	1
+ 539              		.global	DMA_DoubleBufferModeConfig
+ 540              		.syntax unified
+ 541              		.thumb
+ 542              		.thumb_func
+ 543              		.fpu fpv4-sp-d16
+ 545              	DMA_DoubleBufferModeConfig:
+ 546              	.LFB131:
+ 655:FWLIB/src/stm32f4xx_dma.c **** /**
+ 656:FWLIB/src/stm32f4xx_dma.c ****   * @}
+ 657:FWLIB/src/stm32f4xx_dma.c ****   */
+ 658:FWLIB/src/stm32f4xx_dma.c **** 
+ 659:FWLIB/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group3 Double Buffer mode functions
+ 660:FWLIB/src/stm32f4xx_dma.c ****  *  @brief   Double Buffer mode functions 
+ 661:FWLIB/src/stm32f4xx_dma.c ****  *
+ 662:FWLIB/src/stm32f4xx_dma.c **** @verbatim   
+ 663:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================
+ 664:FWLIB/src/stm32f4xx_dma.c ****                     ##### Double Buffer mode functions #####
+ 665:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 666:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 667:FWLIB/src/stm32f4xx_dma.c ****     This subsection provides function allowing to configure and control the double 
+ 668:FWLIB/src/stm32f4xx_dma.c ****     buffer mode parameters.
+ 669:FWLIB/src/stm32f4xx_dma.c ****     
+ 670:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 671:FWLIB/src/stm32f4xx_dma.c ****     The Double Buffer mode can be used only when Circular mode is enabled.
+ 672:FWLIB/src/stm32f4xx_dma.c ****     The Double Buffer mode cannot be used when transferring data from Memory to Memory.
+ 673:FWLIB/src/stm32f4xx_dma.c ****     
+ 674:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 675:FWLIB/src/stm32f4xx_dma.c ****     The Double Buffer mode allows to set two different Memory addresses from/to which
+ 676:FWLIB/src/stm32f4xx_dma.c ****     the DMA controller will access alternatively (after completing transfer to/from 
+ 677:FWLIB/src/stm32f4xx_dma.c ****     target memory 0, it will start transfer to/from target memory 1).
+ 678:FWLIB/src/stm32f4xx_dma.c ****     This allows to reduce software overhead for double buffering and reduce the CPU
+ 679:FWLIB/src/stm32f4xx_dma.c ****     access time.
+ 680:FWLIB/src/stm32f4xx_dma.c ****     
+ 681:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 682:FWLIB/src/stm32f4xx_dma.c ****     Two functions must be called before calling the DMA_Init() function:
+ 683:FWLIB/src/stm32f4xx_dma.c ****       (+) void DMA_DoubleBufferModeConfig(DMA_Stream_TypeDef* DMAy_Streamx, 
+ 684:FWLIB/src/stm32f4xx_dma.c ****           uint32_t Memory1BaseAddr, uint32_t DMA_CurrentMemory);
+ 685:FWLIB/src/stm32f4xx_dma.c ****       (+) void DMA_DoubleBufferModeCmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState);
+ 686:FWLIB/src/stm32f4xx_dma.c ****       
+ 687:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 688:FWLIB/src/stm32f4xx_dma.c ****     DMA_DoubleBufferModeConfig() is called to configure the Memory 1 base address 
+ 689:FWLIB/src/stm32f4xx_dma.c ****     and the first Memory target from/to which the transfer will start after 
+ 690:FWLIB/src/stm32f4xx_dma.c ****     enabling the DMA Stream. Then DMA_DoubleBufferModeCmd() must be called 
+ 691:FWLIB/src/stm32f4xx_dma.c ****     to enable the Double Buffer mode (or disable it when it should not be used).
+ 692:FWLIB/src/stm32f4xx_dma.c ****   
+ 693:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 694:FWLIB/src/stm32f4xx_dma.c ****     Two functions can be called dynamically when the transfer is ongoing (or when the DMA Stream is
+ 695:FWLIB/src/stm32f4xx_dma.c ****     stopped) to modify on of the target Memories addresses or to check which Memory target is curre
+ 696:FWLIB/src/stm32f4xx_dma.c ****     used:
+ 697:FWLIB/src/stm32f4xx_dma.c ****       (+) void DMA_MemoryTargetConfig(DMA_Stream_TypeDef* DMAy_Streamx, 
+ 698:FWLIB/src/stm32f4xx_dma.c ****                 uint32_t MemoryBaseAddr, uint32_t DMA_MemoryTarget);
+ 699:FWLIB/src/stm32f4xx_dma.c ****       (+) uint32_t DMA_GetCurrentMemoryTarget(DMA_Stream_TypeDef* DMAy_Streamx);
+ 700:FWLIB/src/stm32f4xx_dma.c ****       
+ 701:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 702:FWLIB/src/stm32f4xx_dma.c ****     DMA_MemoryTargetConfig() can be called to modify the base address of one of 
+ARM GAS  /tmp/cckthDNs.s 			page 23
+
+
+ 703:FWLIB/src/stm32f4xx_dma.c ****     the two target Memories.
+ 704:FWLIB/src/stm32f4xx_dma.c ****     The Memory of which the base address will be modified must not be currently 
+ 705:FWLIB/src/stm32f4xx_dma.c ****     be used by the DMA Stream (ie. if the DMA Stream is currently transferring 
+ 706:FWLIB/src/stm32f4xx_dma.c ****     from Memory 1 then you can only modify base address of target Memory 0 and vice versa).
+ 707:FWLIB/src/stm32f4xx_dma.c ****     To check this condition, it is recommended to use the function DMA_GetCurrentMemoryTarget() whi
+ 708:FWLIB/src/stm32f4xx_dma.c ****     returns the index of the Memory target currently in use by the DMA Stream.
+ 709:FWLIB/src/stm32f4xx_dma.c **** 
+ 710:FWLIB/src/stm32f4xx_dma.c **** @endverbatim
+ 711:FWLIB/src/stm32f4xx_dma.c ****   * @{
+ 712:FWLIB/src/stm32f4xx_dma.c ****   */
+ 713:FWLIB/src/stm32f4xx_dma.c ****   
+ 714:FWLIB/src/stm32f4xx_dma.c **** /**
+ 715:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Configures, when the DMAy Streamx is disabled, the double buffer mode 
+ 716:FWLIB/src/stm32f4xx_dma.c ****   *         and the current memory target.
+ 717:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 718:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 719:FWLIB/src/stm32f4xx_dma.c ****   * @param  Memory1BaseAddr: the base address of the second buffer (Memory 1)  
+ 720:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_CurrentMemory: specifies which memory will be first buffer for
+ 721:FWLIB/src/stm32f4xx_dma.c ****   *         the transactions when the Stream will be enabled. 
+ 722:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 723:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_0: Memory 0 is the current buffer.
+ 724:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_1: Memory 1 is the current buffer.  
+ 725:FWLIB/src/stm32f4xx_dma.c ****   *       
+ 726:FWLIB/src/stm32f4xx_dma.c ****   * @note   Memory0BaseAddr is set by the DMA structure configuration in DMA_Init().
+ 727:FWLIB/src/stm32f4xx_dma.c ****   *   
+ 728:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 729:FWLIB/src/stm32f4xx_dma.c ****   */
+ 730:FWLIB/src/stm32f4xx_dma.c **** void DMA_DoubleBufferModeConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t Memory1BaseAddr,
+ 731:FWLIB/src/stm32f4xx_dma.c ****                                 uint32_t DMA_CurrentMemory)
+ 732:FWLIB/src/stm32f4xx_dma.c **** {  
+ 547              		.loc 1 732 0
+ 548              		.cfi_startproc
+ 549              		@ args = 0, pretend = 0, frame = 0
+ 550              		@ frame_needed = 0, uses_anonymous_args = 0
+ 551              		@ link register save eliminated.
+ 552              	.LVL18:
+ 733:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 734:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 735:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CURRENT_MEM(DMA_CurrentMemory));
+ 736:FWLIB/src/stm32f4xx_dma.c **** 
+ 737:FWLIB/src/stm32f4xx_dma.c ****   if (DMA_CurrentMemory != DMA_Memory_0)
+ 553              		.loc 1 737 0
+ 554 0000 2AB9     		cbnz	r2, .L58
+ 738:FWLIB/src/stm32f4xx_dma.c ****   {
+ 739:FWLIB/src/stm32f4xx_dma.c ****     /* Set Memory 1 as current memory address */
+ 740:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)(DMA_SxCR_CT);    
+ 741:FWLIB/src/stm32f4xx_dma.c ****   }
+ 742:FWLIB/src/stm32f4xx_dma.c ****   else
+ 743:FWLIB/src/stm32f4xx_dma.c ****   {
+ 744:FWLIB/src/stm32f4xx_dma.c ****     /* Set Memory 0 as current memory address */
+ 745:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)(DMA_SxCR_CT);    
+ 555              		.loc 1 745 0
+ 556 0002 0368     		ldr	r3, [r0]
+ 557 0004 23F40023 		bic	r3, r3, #524288
+ 558 0008 0360     		str	r3, [r0]
+ 559              	.L57:
+ 746:FWLIB/src/stm32f4xx_dma.c ****   }
+ARM GAS  /tmp/cckthDNs.s 			page 24
+
+
+ 747:FWLIB/src/stm32f4xx_dma.c **** 
+ 748:FWLIB/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx M1AR */
+ 749:FWLIB/src/stm32f4xx_dma.c ****   DMAy_Streamx->M1AR = Memory1BaseAddr;
+ 560              		.loc 1 749 0
+ 561 000a 0161     		str	r1, [r0, #16]
+ 562 000c 7047     		bx	lr
+ 563              	.L58:
+ 740:FWLIB/src/stm32f4xx_dma.c ****   }
+ 564              		.loc 1 740 0
+ 565 000e 0368     		ldr	r3, [r0]
+ 566 0010 43F40023 		orr	r3, r3, #524288
+ 567 0014 0360     		str	r3, [r0]
+ 568 0016 F8E7     		b	.L57
+ 569              		.cfi_endproc
+ 570              	.LFE131:
+ 572              		.section	.text.DMA_DoubleBufferModeCmd,"ax",%progbits
+ 573              		.align	1
+ 574              		.global	DMA_DoubleBufferModeCmd
+ 575              		.syntax unified
+ 576              		.thumb
+ 577              		.thumb_func
+ 578              		.fpu fpv4-sp-d16
+ 580              	DMA_DoubleBufferModeCmd:
+ 581              	.LFB132:
+ 750:FWLIB/src/stm32f4xx_dma.c **** }
+ 751:FWLIB/src/stm32f4xx_dma.c **** 
+ 752:FWLIB/src/stm32f4xx_dma.c **** /**
+ 753:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Enables or disables the double buffer mode for the selected DMA stream.
+ 754:FWLIB/src/stm32f4xx_dma.c ****   * @note   This function can be called only when the DMA Stream is disabled.  
+ 755:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 756:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 757:FWLIB/src/stm32f4xx_dma.c ****   * @param  NewState: new state of the DMAy Streamx double buffer mode. 
+ 758:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be: ENABLE or DISABLE.
+ 759:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 760:FWLIB/src/stm32f4xx_dma.c ****   */
+ 761:FWLIB/src/stm32f4xx_dma.c **** void DMA_DoubleBufferModeCmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState)
+ 762:FWLIB/src/stm32f4xx_dma.c **** {  
+ 582              		.loc 1 762 0
+ 583              		.cfi_startproc
+ 584              		@ args = 0, pretend = 0, frame = 0
+ 585              		@ frame_needed = 0, uses_anonymous_args = 0
+ 586              		@ link register save eliminated.
+ 587              	.LVL19:
+ 763:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 764:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 765:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 766:FWLIB/src/stm32f4xx_dma.c **** 
+ 767:FWLIB/src/stm32f4xx_dma.c ****   /* Configure the Double Buffer mode */
+ 768:FWLIB/src/stm32f4xx_dma.c ****   if (NewState != DISABLE)
+ 588              		.loc 1 768 0
+ 589 0000 21B9     		cbnz	r1, .L62
+ 769:FWLIB/src/stm32f4xx_dma.c ****   {
+ 770:FWLIB/src/stm32f4xx_dma.c ****     /* Enable the Double buffer mode */
+ 771:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_DBM;
+ 772:FWLIB/src/stm32f4xx_dma.c ****   }
+ 773:FWLIB/src/stm32f4xx_dma.c ****   else
+ 774:FWLIB/src/stm32f4xx_dma.c ****   {
+ARM GAS  /tmp/cckthDNs.s 			page 25
+
+
+ 775:FWLIB/src/stm32f4xx_dma.c ****     /* Disable the Double buffer mode */
+ 776:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_DBM;
+ 590              		.loc 1 776 0
+ 591 0002 0368     		ldr	r3, [r0]
+ 592 0004 23F48023 		bic	r3, r3, #262144
+ 593 0008 0360     		str	r3, [r0]
+ 594 000a 7047     		bx	lr
+ 595              	.L62:
+ 771:FWLIB/src/stm32f4xx_dma.c ****   }
+ 596              		.loc 1 771 0
+ 597 000c 0368     		ldr	r3, [r0]
+ 598 000e 43F48023 		orr	r3, r3, #262144
+ 599 0012 0360     		str	r3, [r0]
+ 600 0014 7047     		bx	lr
+ 601              		.cfi_endproc
+ 602              	.LFE132:
+ 604              		.section	.text.DMA_MemoryTargetConfig,"ax",%progbits
+ 605              		.align	1
+ 606              		.global	DMA_MemoryTargetConfig
+ 607              		.syntax unified
+ 608              		.thumb
+ 609              		.thumb_func
+ 610              		.fpu fpv4-sp-d16
+ 612              	DMA_MemoryTargetConfig:
+ 613              	.LFB133:
+ 777:FWLIB/src/stm32f4xx_dma.c ****   }
+ 778:FWLIB/src/stm32f4xx_dma.c **** }
+ 779:FWLIB/src/stm32f4xx_dma.c **** 
+ 780:FWLIB/src/stm32f4xx_dma.c **** /**
+ 781:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Configures the Memory address for the next buffer transfer in double
+ 782:FWLIB/src/stm32f4xx_dma.c ****   *         buffer mode (for dynamic use). This function can be called when the
+ 783:FWLIB/src/stm32f4xx_dma.c ****   *         DMA Stream is enabled and when the transfer is ongoing.  
+ 784:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 785:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 786:FWLIB/src/stm32f4xx_dma.c ****   * @param  MemoryBaseAddr: The base address of the target memory buffer
+ 787:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_MemoryTarget: Next memory target to be used. 
+ 788:FWLIB/src/stm32f4xx_dma.c ****   *         This parameter can be one of the following values:
+ 789:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_0: To use the memory address 0
+ 790:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_1: To use the memory address 1
+ 791:FWLIB/src/stm32f4xx_dma.c ****   * 
+ 792:FWLIB/src/stm32f4xx_dma.c ****   * @note    It is not allowed to modify the Base Address of a target Memory when
+ 793:FWLIB/src/stm32f4xx_dma.c ****   *          this target is involved in the current transfer. ie. If the DMA Stream
+ 794:FWLIB/src/stm32f4xx_dma.c ****   *          is currently transferring to/from Memory 1, then it not possible to
+ 795:FWLIB/src/stm32f4xx_dma.c ****   *          modify Base address of Memory 1, but it is possible to modify Base
+ 796:FWLIB/src/stm32f4xx_dma.c ****   *          address of Memory 0.
+ 797:FWLIB/src/stm32f4xx_dma.c ****   *          To know which Memory is currently used, you can use the function
+ 798:FWLIB/src/stm32f4xx_dma.c ****   *          DMA_GetCurrentMemoryTarget().             
+ 799:FWLIB/src/stm32f4xx_dma.c ****   *  
+ 800:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+ 801:FWLIB/src/stm32f4xx_dma.c ****   */
+ 802:FWLIB/src/stm32f4xx_dma.c **** void DMA_MemoryTargetConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t MemoryBaseAddr,
+ 803:FWLIB/src/stm32f4xx_dma.c ****                            uint32_t DMA_MemoryTarget)
+ 804:FWLIB/src/stm32f4xx_dma.c **** {
+ 614              		.loc 1 804 0
+ 615              		.cfi_startproc
+ 616              		@ args = 0, pretend = 0, frame = 0
+ 617              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/cckthDNs.s 			page 26
+
+
+ 618              		@ link register save eliminated.
+ 619              	.LVL20:
+ 805:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 806:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 807:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CURRENT_MEM(DMA_MemoryTarget));
+ 808:FWLIB/src/stm32f4xx_dma.c ****     
+ 809:FWLIB/src/stm32f4xx_dma.c ****   /* Check the Memory target to be configured */
+ 810:FWLIB/src/stm32f4xx_dma.c ****   if (DMA_MemoryTarget != DMA_Memory_0)
+ 620              		.loc 1 810 0
+ 621 0000 0AB9     		cbnz	r2, .L66
+ 811:FWLIB/src/stm32f4xx_dma.c ****   {
+ 812:FWLIB/src/stm32f4xx_dma.c ****     /* Write to DMAy Streamx M1AR */
+ 813:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->M1AR = MemoryBaseAddr;    
+ 814:FWLIB/src/stm32f4xx_dma.c ****   }  
+ 815:FWLIB/src/stm32f4xx_dma.c ****   else
+ 816:FWLIB/src/stm32f4xx_dma.c ****   {
+ 817:FWLIB/src/stm32f4xx_dma.c ****     /* Write to DMAy Streamx M0AR */
+ 818:FWLIB/src/stm32f4xx_dma.c ****     DMAy_Streamx->M0AR = MemoryBaseAddr;  
+ 622              		.loc 1 818 0
+ 623 0002 C160     		str	r1, [r0, #12]
+ 624 0004 7047     		bx	lr
+ 625              	.L66:
+ 813:FWLIB/src/stm32f4xx_dma.c ****   }  
+ 626              		.loc 1 813 0
+ 627 0006 0161     		str	r1, [r0, #16]
+ 628 0008 7047     		bx	lr
+ 629              		.cfi_endproc
+ 630              	.LFE133:
+ 632              		.section	.text.DMA_GetCurrentMemoryTarget,"ax",%progbits
+ 633              		.align	1
+ 634              		.global	DMA_GetCurrentMemoryTarget
+ 635              		.syntax unified
+ 636              		.thumb
+ 637              		.thumb_func
+ 638              		.fpu fpv4-sp-d16
+ 640              	DMA_GetCurrentMemoryTarget:
+ 641              	.LFB134:
+ 819:FWLIB/src/stm32f4xx_dma.c ****   }
+ 820:FWLIB/src/stm32f4xx_dma.c **** }
+ 821:FWLIB/src/stm32f4xx_dma.c **** 
+ 822:FWLIB/src/stm32f4xx_dma.c **** /**
+ 823:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Returns the current memory target used by double buffer transfer.
+ 824:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 825:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 826:FWLIB/src/stm32f4xx_dma.c ****   * @retval The memory target number: 0 for Memory0 or 1 for Memory1. 
+ 827:FWLIB/src/stm32f4xx_dma.c ****   */
+ 828:FWLIB/src/stm32f4xx_dma.c **** uint32_t DMA_GetCurrentMemoryTarget(DMA_Stream_TypeDef* DMAy_Streamx)
+ 829:FWLIB/src/stm32f4xx_dma.c **** {
+ 642              		.loc 1 829 0
+ 643              		.cfi_startproc
+ 644              		@ args = 0, pretend = 0, frame = 0
+ 645              		@ frame_needed = 0, uses_anonymous_args = 0
+ 646              		@ link register save eliminated.
+ 647              	.LVL21:
+ 830:FWLIB/src/stm32f4xx_dma.c ****   uint32_t tmp = 0;
+ 831:FWLIB/src/stm32f4xx_dma.c ****   
+ 832:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ARM GAS  /tmp/cckthDNs.s 			page 27
+
+
+ 833:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 834:FWLIB/src/stm32f4xx_dma.c **** 
+ 835:FWLIB/src/stm32f4xx_dma.c ****   /* Get the current memory target */
+ 836:FWLIB/src/stm32f4xx_dma.c ****   if ((DMAy_Streamx->CR & DMA_SxCR_CT) != 0)
+ 648              		.loc 1 836 0
+ 649 0000 0368     		ldr	r3, [r0]
+ 650 0002 13F4002F 		tst	r3, #524288
+ 651 0006 01D1     		bne	.L70
+ 837:FWLIB/src/stm32f4xx_dma.c ****   {
+ 838:FWLIB/src/stm32f4xx_dma.c ****     /* Current memory buffer used is Memory 1 */
+ 839:FWLIB/src/stm32f4xx_dma.c ****     tmp = 1;
+ 840:FWLIB/src/stm32f4xx_dma.c ****   }  
+ 841:FWLIB/src/stm32f4xx_dma.c ****   else
+ 842:FWLIB/src/stm32f4xx_dma.c ****   {
+ 843:FWLIB/src/stm32f4xx_dma.c ****     /* Current memory buffer used is Memory 0 */
+ 844:FWLIB/src/stm32f4xx_dma.c ****     tmp = 0;    
+ 652              		.loc 1 844 0
+ 653 0008 0020     		movs	r0, #0
+ 654              	.LVL22:
+ 845:FWLIB/src/stm32f4xx_dma.c ****   }
+ 846:FWLIB/src/stm32f4xx_dma.c ****   return tmp;
+ 847:FWLIB/src/stm32f4xx_dma.c **** }
+ 655              		.loc 1 847 0
+ 656 000a 7047     		bx	lr
+ 657              	.LVL23:
+ 658              	.L70:
+ 839:FWLIB/src/stm32f4xx_dma.c ****   }  
+ 659              		.loc 1 839 0
+ 660 000c 0120     		movs	r0, #1
+ 661              	.LVL24:
+ 662 000e 7047     		bx	lr
+ 663              		.cfi_endproc
+ 664              	.LFE134:
+ 666              		.section	.text.DMA_GetCmdStatus,"ax",%progbits
+ 667              		.align	1
+ 668              		.global	DMA_GetCmdStatus
+ 669              		.syntax unified
+ 670              		.thumb
+ 671              		.thumb_func
+ 672              		.fpu fpv4-sp-d16
+ 674              	DMA_GetCmdStatus:
+ 675              	.LFB135:
+ 848:FWLIB/src/stm32f4xx_dma.c **** /**
+ 849:FWLIB/src/stm32f4xx_dma.c ****   * @}
+ 850:FWLIB/src/stm32f4xx_dma.c ****   */
+ 851:FWLIB/src/stm32f4xx_dma.c **** 
+ 852:FWLIB/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group4 Interrupts and flags management functions
+ 853:FWLIB/src/stm32f4xx_dma.c ****  *  @brief   Interrupts and flags management functions 
+ 854:FWLIB/src/stm32f4xx_dma.c ****  *
+ 855:FWLIB/src/stm32f4xx_dma.c **** @verbatim   
+ 856:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================
+ 857:FWLIB/src/stm32f4xx_dma.c ****               ##### Interrupts and flags management functions #####
+ 858:FWLIB/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 859:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 860:FWLIB/src/stm32f4xx_dma.c ****     This subsection provides functions allowing to
+ 861:FWLIB/src/stm32f4xx_dma.c ****       (+) Check the DMA enable status
+ 862:FWLIB/src/stm32f4xx_dma.c ****       (+) Check the FIFO status 
+ARM GAS  /tmp/cckthDNs.s 			page 28
+
+
+ 863:FWLIB/src/stm32f4xx_dma.c ****       (+) Configure the DMA Interrupts sources and check or clear the flags or 
+ 864:FWLIB/src/stm32f4xx_dma.c ****           pending bits status.  
+ 865:FWLIB/src/stm32f4xx_dma.c ****            
+ 866:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 867:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA Enable status:
+ 868:FWLIB/src/stm32f4xx_dma.c ****           After configuring the DMA Stream (DMA_Init() function) and enabling 
+ 869:FWLIB/src/stm32f4xx_dma.c ****           the stream, it is recommended to check (or wait until) the DMA Stream 
+ 870:FWLIB/src/stm32f4xx_dma.c ****           is effectively enabled. A Stream may remain disabled if a configuration 
+ 871:FWLIB/src/stm32f4xx_dma.c ****           parameter is wrong. After disabling a DMA Stream, it is also recommended 
+ 872:FWLIB/src/stm32f4xx_dma.c ****           to check (or wait until) the DMA Stream is effectively disabled. 
+ 873:FWLIB/src/stm32f4xx_dma.c ****           If a Stream is disabled while a data transfer is ongoing, the current 
+ 874:FWLIB/src/stm32f4xx_dma.c ****           data will be transferred and the Stream will be effectively disabled 
+ 875:FWLIB/src/stm32f4xx_dma.c ****           only after this data transfer completion.
+ 876:FWLIB/src/stm32f4xx_dma.c ****           To monitor this state it is possible to use the following function:
+ 877:FWLIB/src/stm32f4xx_dma.c ****         (++) FunctionalState DMA_GetCmdStatus(DMA_Stream_TypeDef* DMAy_Streamx); 
+ 878:FWLIB/src/stm32f4xx_dma.c ****  
+ 879:FWLIB/src/stm32f4xx_dma.c ****       (#) FIFO Status:
+ 880:FWLIB/src/stm32f4xx_dma.c ****           It is possible to monitor the FIFO status when a transfer is ongoing 
+ 881:FWLIB/src/stm32f4xx_dma.c ****           using the following function:
+ 882:FWLIB/src/stm32f4xx_dma.c ****         (++) uint32_t DMA_GetFIFOStatus(DMA_Stream_TypeDef* DMAy_Streamx); 
+ 883:FWLIB/src/stm32f4xx_dma.c ****  
+ 884:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA Interrupts and Flags:
+ 885:FWLIB/src/stm32f4xx_dma.c ****           The user should identify which mode will be used in his application 
+ 886:FWLIB/src/stm32f4xx_dma.c ****           to manage the DMA controller events: Polling mode or Interrupt mode. 
+ 887:FWLIB/src/stm32f4xx_dma.c ****     
+ 888:FWLIB/src/stm32f4xx_dma.c ****     *** Polling Mode ***
+ 889:FWLIB/src/stm32f4xx_dma.c ****     ====================
+ 890:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 891:FWLIB/src/stm32f4xx_dma.c ****     Each DMA stream can be managed through 4 event Flags:
+ 892:FWLIB/src/stm32f4xx_dma.c ****     (x : DMA Stream number )
+ 893:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_FLAG_FEIFx  : to indicate that a FIFO Mode Transfer Error event occurred.
+ 894:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_FLAG_DMEIFx : to indicate that a Direct Mode Transfer Error event occurred.
+ 895:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_FLAG_TEIFx  : to indicate that a Transfer Error event occurred.
+ 896:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_FLAG_HTIFx  : to indicate that a Half-Transfer Complete event occurred.
+ 897:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_FLAG_TCIFx  : to indicate that a Transfer Complete event occurred .       
+ 898:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 899:FWLIB/src/stm32f4xx_dma.c ****     In this Mode it is advised to use the following functions:
+ 900:FWLIB/src/stm32f4xx_dma.c ****       (+) FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG);
+ 901:FWLIB/src/stm32f4xx_dma.c ****       (+) void DMA_ClearFlag(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG);
+ 902:FWLIB/src/stm32f4xx_dma.c **** 
+ 903:FWLIB/src/stm32f4xx_dma.c ****     *** Interrupt Mode ***
+ 904:FWLIB/src/stm32f4xx_dma.c ****     ======================
+ 905:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 906:FWLIB/src/stm32f4xx_dma.c ****     Each DMA Stream can be managed through 4 Interrupts:
+ 907:FWLIB/src/stm32f4xx_dma.c **** 
+ 908:FWLIB/src/stm32f4xx_dma.c ****     *** Interrupt Source ***
+ 909:FWLIB/src/stm32f4xx_dma.c ****     ========================
+ 910:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 911:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_IT_FEIFx  : specifies the interrupt source for the  FIFO Mode Transfer Error event.
+ 912:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_IT_DMEIFx : specifies the interrupt source for the Direct Mode Transfer Error event.
+ 913:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_IT_TEIFx  : specifies the interrupt source for the Transfer Error event.
+ 914:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_IT_HTIFx  : specifies the interrupt source for the Half-Transfer Complete event.
+ 915:FWLIB/src/stm32f4xx_dma.c ****       (#) DMA_IT_TCIFx  : specifies the interrupt source for the a Transfer Complete event. 
+ 916:FWLIB/src/stm32f4xx_dma.c ****     [..]
+ 917:FWLIB/src/stm32f4xx_dma.c ****     In this Mode it is advised to use the following functions:
+ 918:FWLIB/src/stm32f4xx_dma.c ****       (+) void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewS
+ 919:FWLIB/src/stm32f4xx_dma.c ****       (+) ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT);
+ARM GAS  /tmp/cckthDNs.s 			page 29
+
+
+ 920:FWLIB/src/stm32f4xx_dma.c ****       (+) void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT);
+ 921:FWLIB/src/stm32f4xx_dma.c **** 
+ 922:FWLIB/src/stm32f4xx_dma.c **** @endverbatim
+ 923:FWLIB/src/stm32f4xx_dma.c ****   * @{
+ 924:FWLIB/src/stm32f4xx_dma.c ****   */
+ 925:FWLIB/src/stm32f4xx_dma.c **** 
+ 926:FWLIB/src/stm32f4xx_dma.c **** /**
+ 927:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Returns the status of EN bit for the specified DMAy Streamx.
+ 928:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 929:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 930:FWLIB/src/stm32f4xx_dma.c ****   *   
+ 931:FWLIB/src/stm32f4xx_dma.c ****   * @note    After configuring the DMA Stream (DMA_Init() function) and enabling
+ 932:FWLIB/src/stm32f4xx_dma.c ****   *          the stream, it is recommended to check (or wait until) the DMA Stream
+ 933:FWLIB/src/stm32f4xx_dma.c ****   *          is effectively enabled. A Stream may remain disabled if a configuration
+ 934:FWLIB/src/stm32f4xx_dma.c ****   *          parameter is wrong.
+ 935:FWLIB/src/stm32f4xx_dma.c ****   *          After disabling a DMA Stream, it is also recommended to check (or wait 
+ 936:FWLIB/src/stm32f4xx_dma.c ****   *          until) the DMA Stream is effectively disabled. If a Stream is disabled
+ 937:FWLIB/src/stm32f4xx_dma.c ****   *          while a data transfer is ongoing, the current data will be transferred
+ 938:FWLIB/src/stm32f4xx_dma.c ****   *          and the Stream will be effectively disabled only after the transfer
+ 939:FWLIB/src/stm32f4xx_dma.c ****   *          of this single data is finished.  
+ 940:FWLIB/src/stm32f4xx_dma.c ****   *      
+ 941:FWLIB/src/stm32f4xx_dma.c ****   * @retval Current state of the DMAy Streamx (ENABLE or DISABLE).
+ 942:FWLIB/src/stm32f4xx_dma.c ****   */
+ 943:FWLIB/src/stm32f4xx_dma.c **** FunctionalState DMA_GetCmdStatus(DMA_Stream_TypeDef* DMAy_Streamx)
+ 944:FWLIB/src/stm32f4xx_dma.c **** {
+ 676              		.loc 1 944 0
+ 677              		.cfi_startproc
+ 678              		@ args = 0, pretend = 0, frame = 0
+ 679              		@ frame_needed = 0, uses_anonymous_args = 0
+ 680              		@ link register save eliminated.
+ 681              	.LVL25:
+ 945:FWLIB/src/stm32f4xx_dma.c ****   FunctionalState state = DISABLE;
+ 946:FWLIB/src/stm32f4xx_dma.c **** 
+ 947:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 948:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 949:FWLIB/src/stm32f4xx_dma.c **** 
+ 950:FWLIB/src/stm32f4xx_dma.c ****   if ((DMAy_Streamx->CR & (uint32_t)DMA_SxCR_EN) != 0)
+ 682              		.loc 1 950 0
+ 683 0000 0368     		ldr	r3, [r0]
+ 684 0002 13F0010F 		tst	r3, #1
+ 685 0006 01D1     		bne	.L74
+ 951:FWLIB/src/stm32f4xx_dma.c ****   {
+ 952:FWLIB/src/stm32f4xx_dma.c ****     /* The selected DMAy Streamx EN bit is set (DMA is still transferring) */
+ 953:FWLIB/src/stm32f4xx_dma.c ****     state = ENABLE;
+ 954:FWLIB/src/stm32f4xx_dma.c ****   }
+ 955:FWLIB/src/stm32f4xx_dma.c ****   else
+ 956:FWLIB/src/stm32f4xx_dma.c ****   {
+ 957:FWLIB/src/stm32f4xx_dma.c ****     /* The selected DMAy Streamx EN bit is cleared (DMA is disabled and 
+ 958:FWLIB/src/stm32f4xx_dma.c ****         all transfers are complete) */
+ 959:FWLIB/src/stm32f4xx_dma.c ****     state = DISABLE;
+ 686              		.loc 1 959 0
+ 687 0008 0020     		movs	r0, #0
+ 688              	.LVL26:
+ 960:FWLIB/src/stm32f4xx_dma.c ****   }
+ 961:FWLIB/src/stm32f4xx_dma.c ****   return state;
+ 962:FWLIB/src/stm32f4xx_dma.c **** }
+ 689              		.loc 1 962 0
+ARM GAS  /tmp/cckthDNs.s 			page 30
+
+
+ 690 000a 7047     		bx	lr
+ 691              	.LVL27:
+ 692              	.L74:
+ 953:FWLIB/src/stm32f4xx_dma.c ****   }
+ 693              		.loc 1 953 0
+ 694 000c 0120     		movs	r0, #1
+ 695              	.LVL28:
+ 696 000e 7047     		bx	lr
+ 697              		.cfi_endproc
+ 698              	.LFE135:
+ 700              		.section	.text.DMA_GetFIFOStatus,"ax",%progbits
+ 701              		.align	1
+ 702              		.global	DMA_GetFIFOStatus
+ 703              		.syntax unified
+ 704              		.thumb
+ 705              		.thumb_func
+ 706              		.fpu fpv4-sp-d16
+ 708              	DMA_GetFIFOStatus:
+ 709              	.LFB136:
+ 963:FWLIB/src/stm32f4xx_dma.c **** 
+ 964:FWLIB/src/stm32f4xx_dma.c **** /**
+ 965:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Returns the current DMAy Streamx FIFO filled level.
+ 966:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0 
+ 967:FWLIB/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 968:FWLIB/src/stm32f4xx_dma.c ****   * @retval The FIFO filling state.
+ 969:FWLIB/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_Less1QuarterFull: when FIFO is less than 1 quarter-full 
+ 970:FWLIB/src/stm32f4xx_dma.c ****   *                                               and not empty.
+ 971:FWLIB/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_1QuarterFull: if more than 1 quarter-full.
+ 972:FWLIB/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_HalfFull: if more than 1 half-full.
+ 973:FWLIB/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_3QuartersFull: if more than 3 quarters-full.
+ 974:FWLIB/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_Empty: when FIFO is empty
+ 975:FWLIB/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_Full: when FIFO is full
+ 976:FWLIB/src/stm32f4xx_dma.c ****   */
+ 977:FWLIB/src/stm32f4xx_dma.c **** uint32_t DMA_GetFIFOStatus(DMA_Stream_TypeDef* DMAy_Streamx)
+ 978:FWLIB/src/stm32f4xx_dma.c **** {
+ 710              		.loc 1 978 0
+ 711              		.cfi_startproc
+ 712              		@ args = 0, pretend = 0, frame = 0
+ 713              		@ frame_needed = 0, uses_anonymous_args = 0
+ 714              		@ link register save eliminated.
+ 715              	.LVL29:
+ 979:FWLIB/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0;
+ 980:FWLIB/src/stm32f4xx_dma.c ****  
+ 981:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 982:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 983:FWLIB/src/stm32f4xx_dma.c ****   
+ 984:FWLIB/src/stm32f4xx_dma.c ****   /* Get the FIFO level bits */
+ 985:FWLIB/src/stm32f4xx_dma.c ****   tmpreg = (uint32_t)((DMAy_Streamx->FCR & DMA_SxFCR_FS));
+ 716              		.loc 1 985 0
+ 717 0000 4069     		ldr	r0, [r0, #20]
+ 718              	.LVL30:
+ 986:FWLIB/src/stm32f4xx_dma.c ****   
+ 987:FWLIB/src/stm32f4xx_dma.c ****   return tmpreg;
+ 988:FWLIB/src/stm32f4xx_dma.c **** }
+ 719              		.loc 1 988 0
+ 720 0002 00F03800 		and	r0, r0, #56
+ 721              	.LVL31:
+ARM GAS  /tmp/cckthDNs.s 			page 31
+
+
+ 722 0006 7047     		bx	lr
+ 723              		.cfi_endproc
+ 724              	.LFE136:
+ 726              		.section	.text.DMA_GetFlagStatus,"ax",%progbits
+ 727              		.align	1
+ 728              		.global	DMA_GetFlagStatus
+ 729              		.syntax unified
+ 730              		.thumb
+ 731              		.thumb_func
+ 732              		.fpu fpv4-sp-d16
+ 734              	DMA_GetFlagStatus:
+ 735              	.LFB137:
+ 989:FWLIB/src/stm32f4xx_dma.c **** 
+ 990:FWLIB/src/stm32f4xx_dma.c **** /**
+ 991:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Checks whether the specified DMAy Streamx flag is set or not.
+ 992:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 993:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 994:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_FLAG: specifies the flag to check.
+ 995:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 996:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TCIFx:  Streamx transfer complete flag
+ 997:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_HTIFx:  Streamx half transfer complete flag
+ 998:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TEIFx:  Streamx transfer error flag
+ 999:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_DMEIFx: Streamx direct mode error flag
+1000:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_FEIFx:  Streamx FIFO error flag
+1001:FWLIB/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.
+1002:FWLIB/src/stm32f4xx_dma.c ****   * @retval The new state of DMA_FLAG (SET or RESET).
+1003:FWLIB/src/stm32f4xx_dma.c ****   */
+1004:FWLIB/src/stm32f4xx_dma.c **** FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG)
+1005:FWLIB/src/stm32f4xx_dma.c **** {
+ 736              		.loc 1 1005 0
+ 737              		.cfi_startproc
+ 738              		@ args = 0, pretend = 0, frame = 0
+ 739              		@ frame_needed = 0, uses_anonymous_args = 0
+ 740              		@ link register save eliminated.
+ 741              	.LVL32:
+1006:FWLIB/src/stm32f4xx_dma.c ****   FlagStatus bitstatus = RESET;
+1007:FWLIB/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+1008:FWLIB/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0;
+1009:FWLIB/src/stm32f4xx_dma.c **** 
+1010:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1011:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1012:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_GET_FLAG(DMA_FLAG));
+1013:FWLIB/src/stm32f4xx_dma.c **** 
+1014:FWLIB/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+1015:FWLIB/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 742              		.loc 1 1015 0
+ 743 0000 0B4B     		ldr	r3, .L84
+ 744 0002 9842     		cmp	r0, r3
+ 745 0004 0DD8     		bhi	.L81
+1016:FWLIB/src/stm32f4xx_dma.c ****   {
+1017:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1018:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 746              		.loc 1 1018 0
+ 747 0006 A3F20F43 		subw	r3, r3, #1039
+ 748              	.L77:
+ 749              	.LVL33:
+1019:FWLIB/src/stm32f4xx_dma.c ****   } 
+ARM GAS  /tmp/cckthDNs.s 			page 32
+
+
+1020:FWLIB/src/stm32f4xx_dma.c ****   else 
+1021:FWLIB/src/stm32f4xx_dma.c ****   {
+1022:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1023:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+1024:FWLIB/src/stm32f4xx_dma.c ****   }
+1025:FWLIB/src/stm32f4xx_dma.c **** 
+1026:FWLIB/src/stm32f4xx_dma.c ****   /* Check if the flag is in HISR or LISR */
+1027:FWLIB/src/stm32f4xx_dma.c ****   if ((DMA_FLAG & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 750              		.loc 1 1027 0
+ 751 000a 11F0005F 		tst	r1, #536870912
+ 752 000e 0AD0     		beq	.L78
+1028:FWLIB/src/stm32f4xx_dma.c ****   {
+1029:FWLIB/src/stm32f4xx_dma.c ****     /* Get DMAy HISR register value */
+1030:FWLIB/src/stm32f4xx_dma.c ****     tmpreg = DMAy->HISR;
+ 753              		.loc 1 1030 0
+ 754 0010 5B68     		ldr	r3, [r3, #4]
+ 755              	.LVL34:
+ 756              	.L79:
+1031:FWLIB/src/stm32f4xx_dma.c ****   }
+1032:FWLIB/src/stm32f4xx_dma.c ****   else
+1033:FWLIB/src/stm32f4xx_dma.c ****   {
+1034:FWLIB/src/stm32f4xx_dma.c ****     /* Get DMAy LISR register value */
+1035:FWLIB/src/stm32f4xx_dma.c ****     tmpreg = DMAy->LISR;
+1036:FWLIB/src/stm32f4xx_dma.c ****   }   
+1037:FWLIB/src/stm32f4xx_dma.c ****  
+1038:FWLIB/src/stm32f4xx_dma.c ****   /* Mask the reserved bits */
+1039:FWLIB/src/stm32f4xx_dma.c ****   tmpreg &= (uint32_t)RESERVED_MASK;
+ 757              		.loc 1 1039 0
+ 758 0012 23F0F023 		bic	r3, r3, #-268374016
+ 759              	.LVL35:
+ 760 0016 23F08213 		bic	r3, r3, #8519810
+ 761              	.LVL36:
+1040:FWLIB/src/stm32f4xx_dma.c **** 
+1041:FWLIB/src/stm32f4xx_dma.c ****   /* Check the status of the specified DMA flag */
+1042:FWLIB/src/stm32f4xx_dma.c ****   if ((tmpreg & DMA_FLAG) != (uint32_t)RESET)
+ 762              		.loc 1 1042 0
+ 763 001a 1942     		tst	r1, r3
+ 764 001c 05D1     		bne	.L83
+1043:FWLIB/src/stm32f4xx_dma.c ****   {
+1044:FWLIB/src/stm32f4xx_dma.c ****     /* DMA_FLAG is set */
+1045:FWLIB/src/stm32f4xx_dma.c ****     bitstatus = SET;
+1046:FWLIB/src/stm32f4xx_dma.c ****   }
+1047:FWLIB/src/stm32f4xx_dma.c ****   else
+1048:FWLIB/src/stm32f4xx_dma.c ****   {
+1049:FWLIB/src/stm32f4xx_dma.c ****     /* DMA_FLAG is reset */
+1050:FWLIB/src/stm32f4xx_dma.c ****     bitstatus = RESET;
+ 765              		.loc 1 1050 0
+ 766 001e 0020     		movs	r0, #0
+ 767              	.LVL37:
+1051:FWLIB/src/stm32f4xx_dma.c ****   }
+1052:FWLIB/src/stm32f4xx_dma.c **** 
+1053:FWLIB/src/stm32f4xx_dma.c ****   /* Return the DMA_FLAG status */
+1054:FWLIB/src/stm32f4xx_dma.c ****   return  bitstatus;
+1055:FWLIB/src/stm32f4xx_dma.c **** }
+ 768              		.loc 1 1055 0
+ 769 0020 7047     		bx	lr
+ 770              	.LVL38:
+ARM GAS  /tmp/cckthDNs.s 			page 33
+
+
+ 771              	.L81:
+1023:FWLIB/src/stm32f4xx_dma.c ****   }
+ 772              		.loc 1 1023 0
+ 773 0022 044B     		ldr	r3, .L84+4
+ 774 0024 F1E7     		b	.L77
+ 775              	.LVL39:
+ 776              	.L78:
+1035:FWLIB/src/stm32f4xx_dma.c ****   }   
+ 777              		.loc 1 1035 0
+ 778 0026 1B68     		ldr	r3, [r3]
+ 779              	.LVL40:
+ 780 0028 F3E7     		b	.L79
+ 781              	.L83:
+1045:FWLIB/src/stm32f4xx_dma.c ****   }
+ 782              		.loc 1 1045 0
+ 783 002a 0120     		movs	r0, #1
+ 784              	.LVL41:
+ 785 002c 7047     		bx	lr
+ 786              	.L85:
+ 787 002e 00BF     		.align	2
+ 788              	.L84:
+ 789 0030 0F640240 		.word	1073898511
+ 790 0034 00640240 		.word	1073898496
+ 791              		.cfi_endproc
+ 792              	.LFE137:
+ 794              		.section	.text.DMA_ClearFlag,"ax",%progbits
+ 795              		.align	1
+ 796              		.global	DMA_ClearFlag
+ 797              		.syntax unified
+ 798              		.thumb
+ 799              		.thumb_func
+ 800              		.fpu fpv4-sp-d16
+ 802              	DMA_ClearFlag:
+ 803              	.LFB138:
+1056:FWLIB/src/stm32f4xx_dma.c **** 
+1057:FWLIB/src/stm32f4xx_dma.c **** /**
+1058:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Clears the DMAy Streamx's pending flags.
+1059:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1060:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1061:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_FLAG: specifies the flag to clear.
+1062:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be any combination of the following values:
+1063:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TCIFx:  Streamx transfer complete flag
+1064:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_HTIFx:  Streamx half transfer complete flag
+1065:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TEIFx:  Streamx transfer error flag
+1066:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_DMEIFx: Streamx direct mode error flag
+1067:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_FEIFx:  Streamx FIFO error flag
+1068:FWLIB/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.   
+1069:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+1070:FWLIB/src/stm32f4xx_dma.c ****   */
+1071:FWLIB/src/stm32f4xx_dma.c **** void DMA_ClearFlag(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG)
+1072:FWLIB/src/stm32f4xx_dma.c **** {
+ 804              		.loc 1 1072 0
+ 805              		.cfi_startproc
+ 806              		@ args = 0, pretend = 0, frame = 0
+ 807              		@ frame_needed = 0, uses_anonymous_args = 0
+ 808              		@ link register save eliminated.
+ 809              	.LVL42:
+ARM GAS  /tmp/cckthDNs.s 			page 34
+
+
+1073:FWLIB/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+1074:FWLIB/src/stm32f4xx_dma.c **** 
+1075:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1076:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1077:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CLEAR_FLAG(DMA_FLAG));
+1078:FWLIB/src/stm32f4xx_dma.c **** 
+1079:FWLIB/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+1080:FWLIB/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 810              		.loc 1 1080 0
+ 811 0000 0A4B     		ldr	r3, .L92
+ 812 0002 9842     		cmp	r0, r3
+ 813 0004 0AD8     		bhi	.L90
+1081:FWLIB/src/stm32f4xx_dma.c ****   {
+1082:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1083:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 814              		.loc 1 1083 0
+ 815 0006 A3F20F43 		subw	r3, r3, #1039
+ 816              	.L87:
+ 817              	.LVL43:
+1084:FWLIB/src/stm32f4xx_dma.c ****   } 
+1085:FWLIB/src/stm32f4xx_dma.c ****   else 
+1086:FWLIB/src/stm32f4xx_dma.c ****   {
+1087:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1088:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+1089:FWLIB/src/stm32f4xx_dma.c ****   }
+1090:FWLIB/src/stm32f4xx_dma.c **** 
+1091:FWLIB/src/stm32f4xx_dma.c ****   /* Check if LIFCR or HIFCR register is targeted */
+1092:FWLIB/src/stm32f4xx_dma.c ****   if ((DMA_FLAG & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 818              		.loc 1 1092 0
+ 819 000a 11F0005F 		tst	r1, #536870912
+ 820 000e 07D1     		bne	.L91
+1093:FWLIB/src/stm32f4xx_dma.c ****   {
+1094:FWLIB/src/stm32f4xx_dma.c ****     /* Set DMAy HIFCR register clear flag bits */
+1095:FWLIB/src/stm32f4xx_dma.c ****     DMAy->HIFCR = (uint32_t)(DMA_FLAG & RESERVED_MASK);
+1096:FWLIB/src/stm32f4xx_dma.c ****   }
+1097:FWLIB/src/stm32f4xx_dma.c ****   else 
+1098:FWLIB/src/stm32f4xx_dma.c ****   {
+1099:FWLIB/src/stm32f4xx_dma.c ****     /* Set DMAy LIFCR register clear flag bits */
+1100:FWLIB/src/stm32f4xx_dma.c ****     DMAy->LIFCR = (uint32_t)(DMA_FLAG & RESERVED_MASK);
+ 821              		.loc 1 1100 0
+ 822 0010 21F0F021 		bic	r1, r1, #-268374016
+ 823              	.LVL44:
+ 824 0014 21F08211 		bic	r1, r1, #8519810
+ 825 0018 9960     		str	r1, [r3, #8]
+ 826 001a 7047     		bx	lr
+ 827              	.LVL45:
+ 828              	.L90:
+1088:FWLIB/src/stm32f4xx_dma.c ****   }
+ 829              		.loc 1 1088 0
+ 830 001c 044B     		ldr	r3, .L92+4
+ 831 001e F4E7     		b	.L87
+ 832              	.LVL46:
+ 833              	.L91:
+1095:FWLIB/src/stm32f4xx_dma.c ****   }
+ 834              		.loc 1 1095 0
+ 835 0020 21F0F021 		bic	r1, r1, #-268374016
+ 836              	.LVL47:
+ARM GAS  /tmp/cckthDNs.s 			page 35
+
+
+ 837 0024 21F08211 		bic	r1, r1, #8519810
+ 838 0028 D960     		str	r1, [r3, #12]
+ 839 002a 7047     		bx	lr
+ 840              	.L93:
+ 841              		.align	2
+ 842              	.L92:
+ 843 002c 0F640240 		.word	1073898511
+ 844 0030 00640240 		.word	1073898496
+ 845              		.cfi_endproc
+ 846              	.LFE138:
+ 848              		.section	.text.DMA_ITConfig,"ax",%progbits
+ 849              		.align	1
+ 850              		.global	DMA_ITConfig
+ 851              		.syntax unified
+ 852              		.thumb
+ 853              		.thumb_func
+ 854              		.fpu fpv4-sp-d16
+ 856              	DMA_ITConfig:
+ 857              	.LFB139:
+1101:FWLIB/src/stm32f4xx_dma.c ****   }    
+1102:FWLIB/src/stm32f4xx_dma.c **** }
+1103:FWLIB/src/stm32f4xx_dma.c **** 
+1104:FWLIB/src/stm32f4xx_dma.c **** /**
+1105:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Enables or disables the specified DMAy Streamx interrupts.
+1106:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1107:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1108:FWLIB/src/stm32f4xx_dma.c ****   * @param DMA_IT: specifies the DMA interrupt sources to be enabled or disabled. 
+1109:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be any combination of the following values:
+1110:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TC:  Transfer complete interrupt mask
+1111:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_HT:  Half transfer complete interrupt mask
+1112:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TE:  Transfer error interrupt mask
+1113:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_FE:  FIFO error interrupt mask
+1114:FWLIB/src/stm32f4xx_dma.c ****   * @param  NewState: new state of the specified DMA interrupts.
+1115:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be: ENABLE or DISABLE.
+1116:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+1117:FWLIB/src/stm32f4xx_dma.c ****   */
+1118:FWLIB/src/stm32f4xx_dma.c **** void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewState)
+1119:FWLIB/src/stm32f4xx_dma.c **** {
+ 858              		.loc 1 1119 0
+ 859              		.cfi_startproc
+ 860              		@ args = 0, pretend = 0, frame = 0
+ 861              		@ frame_needed = 0, uses_anonymous_args = 0
+ 862              		@ link register save eliminated.
+ 863              	.LVL48:
+1120:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1121:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1122:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CONFIG_IT(DMA_IT));
+1123:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+1124:FWLIB/src/stm32f4xx_dma.c **** 
+1125:FWLIB/src/stm32f4xx_dma.c ****   /* Check if the DMA_IT parameter contains a FIFO interrupt */
+1126:FWLIB/src/stm32f4xx_dma.c ****   if ((DMA_IT & DMA_IT_FE) != 0)
+ 864              		.loc 1 1126 0
+ 865 0000 11F0800F 		tst	r1, #128
+ 866 0004 04D0     		beq	.L95
+1127:FWLIB/src/stm32f4xx_dma.c ****   {
+1128:FWLIB/src/stm32f4xx_dma.c ****     if (NewState != DISABLE)
+ 867              		.loc 1 1128 0
+ARM GAS  /tmp/cckthDNs.s 			page 36
+
+
+ 868 0006 6AB1     		cbz	r2, .L96
+1129:FWLIB/src/stm32f4xx_dma.c ****     {
+1130:FWLIB/src/stm32f4xx_dma.c ****       /* Enable the selected DMA FIFO interrupts */
+1131:FWLIB/src/stm32f4xx_dma.c ****       DMAy_Streamx->FCR |= (uint32_t)DMA_IT_FE;
+ 869              		.loc 1 1131 0
+ 870 0008 4369     		ldr	r3, [r0, #20]
+ 871 000a 43F08003 		orr	r3, r3, #128
+ 872 000e 4361     		str	r3, [r0, #20]
+ 873              	.L95:
+1132:FWLIB/src/stm32f4xx_dma.c ****     }    
+1133:FWLIB/src/stm32f4xx_dma.c ****     else 
+1134:FWLIB/src/stm32f4xx_dma.c ****     {
+1135:FWLIB/src/stm32f4xx_dma.c ****       /* Disable the selected DMA FIFO interrupts */
+1136:FWLIB/src/stm32f4xx_dma.c ****       DMAy_Streamx->FCR &= ~(uint32_t)DMA_IT_FE;  
+1137:FWLIB/src/stm32f4xx_dma.c ****     }
+1138:FWLIB/src/stm32f4xx_dma.c ****   }
+1139:FWLIB/src/stm32f4xx_dma.c **** 
+1140:FWLIB/src/stm32f4xx_dma.c ****   /* Check if the DMA_IT parameter contains a Transfer interrupt */
+1141:FWLIB/src/stm32f4xx_dma.c ****   if (DMA_IT != DMA_IT_FE)
+ 874              		.loc 1 1141 0
+ 875 0010 8029     		cmp	r1, #128
+ 876 0012 06D0     		beq	.L94
+1142:FWLIB/src/stm32f4xx_dma.c ****   {
+1143:FWLIB/src/stm32f4xx_dma.c ****     if (NewState != DISABLE)
+ 877              		.loc 1 1143 0
+ 878 0014 5AB9     		cbnz	r2, .L99
+1144:FWLIB/src/stm32f4xx_dma.c ****     {
+1145:FWLIB/src/stm32f4xx_dma.c ****       /* Enable the selected DMA transfer interrupts */
+1146:FWLIB/src/stm32f4xx_dma.c ****       DMAy_Streamx->CR |= (uint32_t)(DMA_IT  & TRANSFER_IT_ENABLE_MASK);
+1147:FWLIB/src/stm32f4xx_dma.c ****     }
+1148:FWLIB/src/stm32f4xx_dma.c ****     else
+1149:FWLIB/src/stm32f4xx_dma.c ****     {
+1150:FWLIB/src/stm32f4xx_dma.c ****       /* Disable the selected DMA transfer interrupts */
+1151:FWLIB/src/stm32f4xx_dma.c ****       DMAy_Streamx->CR &= ~(uint32_t)(DMA_IT & TRANSFER_IT_ENABLE_MASK);
+ 879              		.loc 1 1151 0
+ 880 0016 0368     		ldr	r3, [r0]
+ 881 0018 01F01E01 		and	r1, r1, #30
+ 882              	.LVL49:
+ 883 001c 23EA0101 		bic	r1, r3, r1
+ 884 0020 0160     		str	r1, [r0]
+ 885              	.L94:
+ 886 0022 7047     		bx	lr
+ 887              	.LVL50:
+ 888              	.L96:
+1136:FWLIB/src/stm32f4xx_dma.c ****     }
+ 889              		.loc 1 1136 0
+ 890 0024 4369     		ldr	r3, [r0, #20]
+ 891 0026 23F08003 		bic	r3, r3, #128
+ 892 002a 4361     		str	r3, [r0, #20]
+ 893 002c F0E7     		b	.L95
+ 894              	.L99:
+1146:FWLIB/src/stm32f4xx_dma.c ****     }
+ 895              		.loc 1 1146 0
+ 896 002e 0368     		ldr	r3, [r0]
+ 897 0030 01F01E01 		and	r1, r1, #30
+ 898              	.LVL51:
+ 899 0034 1943     		orrs	r1, r1, r3
+ARM GAS  /tmp/cckthDNs.s 			page 37
+
+
+ 900 0036 0160     		str	r1, [r0]
+ 901 0038 7047     		bx	lr
+ 902              		.cfi_endproc
+ 903              	.LFE139:
+ 905              		.section	.text.DMA_GetITStatus,"ax",%progbits
+ 906              		.align	1
+ 907              		.global	DMA_GetITStatus
+ 908              		.syntax unified
+ 909              		.thumb
+ 910              		.thumb_func
+ 911              		.fpu fpv4-sp-d16
+ 913              	DMA_GetITStatus:
+ 914              	.LFB140:
+1152:FWLIB/src/stm32f4xx_dma.c ****     }    
+1153:FWLIB/src/stm32f4xx_dma.c ****   }
+1154:FWLIB/src/stm32f4xx_dma.c **** }
+1155:FWLIB/src/stm32f4xx_dma.c **** 
+1156:FWLIB/src/stm32f4xx_dma.c **** /**
+1157:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Checks whether the specified DMAy Streamx interrupt has occurred or not.
+1158:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1159:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1160:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_IT: specifies the DMA interrupt source to check.
+1161:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+1162:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TCIFx:  Streamx transfer complete interrupt
+1163:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_HTIFx:  Streamx half transfer complete interrupt
+1164:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TEIFx:  Streamx transfer error interrupt
+1165:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_DMEIFx: Streamx direct mode error interrupt
+1166:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_FEIFx:  Streamx FIFO error interrupt
+1167:FWLIB/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.
+1168:FWLIB/src/stm32f4xx_dma.c ****   * @retval The new state of DMA_IT (SET or RESET).
+1169:FWLIB/src/stm32f4xx_dma.c ****   */
+1170:FWLIB/src/stm32f4xx_dma.c **** ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT)
+1171:FWLIB/src/stm32f4xx_dma.c **** {
+ 915              		.loc 1 1171 0
+ 916              		.cfi_startproc
+ 917              		@ args = 0, pretend = 0, frame = 0
+ 918              		@ frame_needed = 0, uses_anonymous_args = 0
+ 919              		@ link register save eliminated.
+ 920              	.LVL52:
+ 921 0000 10B4     		push	{r4}
+ 922              	.LCFI2:
+ 923              		.cfi_def_cfa_offset 4
+ 924              		.cfi_offset 4, -4
+ 925              	.LVL53:
+1172:FWLIB/src/stm32f4xx_dma.c ****   ITStatus bitstatus = RESET;
+1173:FWLIB/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+1174:FWLIB/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0, enablestatus = 0;
+1175:FWLIB/src/stm32f4xx_dma.c **** 
+1176:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1177:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1178:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_GET_IT(DMA_IT));
+1179:FWLIB/src/stm32f4xx_dma.c ****  
+1180:FWLIB/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+1181:FWLIB/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 926              		.loc 1 1181 0
+ 927 0002 144B     		ldr	r3, .L111
+ 928 0004 9842     		cmp	r0, r3
+ARM GAS  /tmp/cckthDNs.s 			page 38
+
+
+ 929 0006 17D8     		bhi	.L107
+1182:FWLIB/src/stm32f4xx_dma.c ****   {
+1183:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1184:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 930              		.loc 1 1184 0
+ 931 0008 134C     		ldr	r4, .L111+4
+ 932              	.L101:
+ 933              	.LVL54:
+1185:FWLIB/src/stm32f4xx_dma.c ****   } 
+1186:FWLIB/src/stm32f4xx_dma.c ****   else 
+1187:FWLIB/src/stm32f4xx_dma.c ****   {
+1188:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1189:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+1190:FWLIB/src/stm32f4xx_dma.c ****   }
+1191:FWLIB/src/stm32f4xx_dma.c **** 
+1192:FWLIB/src/stm32f4xx_dma.c ****   /* Check if the interrupt enable bit is in the CR or FCR register */
+1193:FWLIB/src/stm32f4xx_dma.c ****   if ((DMA_IT & TRANSFER_IT_MASK) != (uint32_t)RESET)
+ 934              		.loc 1 1193 0
+ 935 000a 21F0F023 		bic	r3, r1, #-268374016
+ 936 000e 23F0C313 		bic	r3, r3, #12779715
+ 937 0012 9BB1     		cbz	r3, .L102
+1194:FWLIB/src/stm32f4xx_dma.c ****   {
+1195:FWLIB/src/stm32f4xx_dma.c ****     /* Get the interrupt enable position mask in CR register */
+1196:FWLIB/src/stm32f4xx_dma.c ****     tmpreg = (uint32_t)((DMA_IT >> 11) & TRANSFER_IT_ENABLE_MASK);   
+ 938              		.loc 1 1196 0
+ 939 0014 CA0A     		lsrs	r2, r1, #11
+ 940 0016 02F01E02 		and	r2, r2, #30
+ 941              	.LVL55:
+1197:FWLIB/src/stm32f4xx_dma.c ****     
+1198:FWLIB/src/stm32f4xx_dma.c ****     /* Check the enable bit in CR register */
+1199:FWLIB/src/stm32f4xx_dma.c ****     enablestatus = (uint32_t)(DMAy_Streamx->CR & tmpreg);
+ 942              		.loc 1 1199 0
+ 943 001a 0368     		ldr	r3, [r0]
+ 944 001c 1A40     		ands	r2, r2, r3
+ 945              	.LVL56:
+ 946              	.L103:
+1200:FWLIB/src/stm32f4xx_dma.c ****   }
+1201:FWLIB/src/stm32f4xx_dma.c ****   else 
+1202:FWLIB/src/stm32f4xx_dma.c ****   {
+1203:FWLIB/src/stm32f4xx_dma.c ****     /* Check the enable bit in FCR register */
+1204:FWLIB/src/stm32f4xx_dma.c ****     enablestatus = (uint32_t)(DMAy_Streamx->FCR & DMA_IT_FE); 
+1205:FWLIB/src/stm32f4xx_dma.c ****   }
+1206:FWLIB/src/stm32f4xx_dma.c ****  
+1207:FWLIB/src/stm32f4xx_dma.c ****   /* Check if the interrupt pending flag is in LISR or HISR */
+1208:FWLIB/src/stm32f4xx_dma.c ****   if ((DMA_IT & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 947              		.loc 1 1208 0
+ 948 001e 11F0005F 		tst	r1, #536870912
+ 949 0022 0FD0     		beq	.L104
+1209:FWLIB/src/stm32f4xx_dma.c ****   {
+1210:FWLIB/src/stm32f4xx_dma.c ****     /* Get DMAy HISR register value */
+1211:FWLIB/src/stm32f4xx_dma.c ****     tmpreg = DMAy->HISR ;
+ 950              		.loc 1 1211 0
+ 951 0024 6368     		ldr	r3, [r4, #4]
+ 952              	.LVL57:
+ 953              	.L105:
+1212:FWLIB/src/stm32f4xx_dma.c ****   }
+1213:FWLIB/src/stm32f4xx_dma.c ****   else
+ARM GAS  /tmp/cckthDNs.s 			page 39
+
+
+1214:FWLIB/src/stm32f4xx_dma.c ****   {
+1215:FWLIB/src/stm32f4xx_dma.c ****     /* Get DMAy LISR register value */
+1216:FWLIB/src/stm32f4xx_dma.c ****     tmpreg = DMAy->LISR ;
+1217:FWLIB/src/stm32f4xx_dma.c ****   } 
+1218:FWLIB/src/stm32f4xx_dma.c **** 
+1219:FWLIB/src/stm32f4xx_dma.c ****   /* mask all reserved bits */
+1220:FWLIB/src/stm32f4xx_dma.c ****   tmpreg &= (uint32_t)RESERVED_MASK;
+ 954              		.loc 1 1220 0
+ 955 0026 23F0F023 		bic	r3, r3, #-268374016
+ 956              	.LVL58:
+ 957 002a 23F08213 		bic	r3, r3, #8519810
+ 958              	.LVL59:
+1221:FWLIB/src/stm32f4xx_dma.c **** 
+1222:FWLIB/src/stm32f4xx_dma.c ****   /* Check the status of the specified DMA interrupt */
+1223:FWLIB/src/stm32f4xx_dma.c ****   if (((tmpreg & DMA_IT) != (uint32_t)RESET) && (enablestatus != (uint32_t)RESET))
+ 959              		.loc 1 1223 0
+ 960 002e 1942     		tst	r1, r3
+ 961 0030 0AD0     		beq	.L108
+ 962              		.loc 1 1223 0 is_stmt 0 discriminator 1
+ 963 0032 6AB9     		cbnz	r2, .L109
+1224:FWLIB/src/stm32f4xx_dma.c ****   {
+1225:FWLIB/src/stm32f4xx_dma.c ****     /* DMA_IT is set */
+1226:FWLIB/src/stm32f4xx_dma.c ****     bitstatus = SET;
+1227:FWLIB/src/stm32f4xx_dma.c ****   }
+1228:FWLIB/src/stm32f4xx_dma.c ****   else
+1229:FWLIB/src/stm32f4xx_dma.c ****   {
+1230:FWLIB/src/stm32f4xx_dma.c ****     /* DMA_IT is reset */
+1231:FWLIB/src/stm32f4xx_dma.c ****     bitstatus = RESET;
+ 964              		.loc 1 1231 0 is_stmt 1
+ 965 0034 0020     		movs	r0, #0
+ 966              	.LVL60:
+ 967 0036 08E0     		b	.L106
+ 968              	.LVL61:
+ 969              	.L107:
+1189:FWLIB/src/stm32f4xx_dma.c ****   }
+ 970              		.loc 1 1189 0
+ 971 0038 084C     		ldr	r4, .L111+8
+ 972 003a E6E7     		b	.L101
+ 973              	.LVL62:
+ 974              	.L102:
+1204:FWLIB/src/stm32f4xx_dma.c ****   }
+ 975              		.loc 1 1204 0
+ 976 003c 4269     		ldr	r2, [r0, #20]
+ 977 003e 02F08002 		and	r2, r2, #128
+ 978              	.LVL63:
+ 979 0042 ECE7     		b	.L103
+ 980              	.LVL64:
+ 981              	.L104:
+1216:FWLIB/src/stm32f4xx_dma.c ****   } 
+ 982              		.loc 1 1216 0
+ 983 0044 2368     		ldr	r3, [r4]
+ 984              	.LVL65:
+ 985 0046 EEE7     		b	.L105
+ 986              	.L108:
+ 987              		.loc 1 1231 0
+ 988 0048 0020     		movs	r0, #0
+ 989              	.LVL66:
+ARM GAS  /tmp/cckthDNs.s 			page 40
+
+
+ 990              	.L106:
+1232:FWLIB/src/stm32f4xx_dma.c ****   }
+1233:FWLIB/src/stm32f4xx_dma.c **** 
+1234:FWLIB/src/stm32f4xx_dma.c ****   /* Return the DMA_IT status */
+1235:FWLIB/src/stm32f4xx_dma.c ****   return  bitstatus;
+1236:FWLIB/src/stm32f4xx_dma.c **** }
+ 991              		.loc 1 1236 0
+ 992 004a 5DF8044B 		ldr	r4, [sp], #4
+ 993              	.LCFI3:
+ 994              		.cfi_remember_state
+ 995              		.cfi_restore 4
+ 996              		.cfi_def_cfa_offset 0
+ 997              	.LVL67:
+ 998 004e 7047     		bx	lr
+ 999              	.LVL68:
+ 1000              	.L109:
+ 1001              	.LCFI4:
+ 1002              		.cfi_restore_state
+1226:FWLIB/src/stm32f4xx_dma.c ****   }
+ 1003              		.loc 1 1226 0
+ 1004 0050 0120     		movs	r0, #1
+ 1005              	.LVL69:
+ 1006 0052 FAE7     		b	.L106
+ 1007              	.L112:
+ 1008              		.align	2
+ 1009              	.L111:
+ 1010 0054 0F640240 		.word	1073898511
+ 1011 0058 00600240 		.word	1073897472
+ 1012 005c 00640240 		.word	1073898496
+ 1013              		.cfi_endproc
+ 1014              	.LFE140:
+ 1016              		.section	.text.DMA_ClearITPendingBit,"ax",%progbits
+ 1017              		.align	1
+ 1018              		.global	DMA_ClearITPendingBit
+ 1019              		.syntax unified
+ 1020              		.thumb
+ 1021              		.thumb_func
+ 1022              		.fpu fpv4-sp-d16
+ 1024              	DMA_ClearITPendingBit:
+ 1025              	.LFB141:
+1237:FWLIB/src/stm32f4xx_dma.c **** 
+1238:FWLIB/src/stm32f4xx_dma.c **** /**
+1239:FWLIB/src/stm32f4xx_dma.c ****   * @brief  Clears the DMAy Streamx's interrupt pending bits.
+1240:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1241:FWLIB/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1242:FWLIB/src/stm32f4xx_dma.c ****   * @param  DMA_IT: specifies the DMA interrupt pending bit to clear.
+1243:FWLIB/src/stm32f4xx_dma.c ****   *          This parameter can be any combination of the following values:
+1244:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TCIFx:  Streamx transfer complete interrupt
+1245:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_HTIFx:  Streamx half transfer complete interrupt
+1246:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TEIFx:  Streamx transfer error interrupt
+1247:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_DMEIFx: Streamx direct mode error interrupt
+1248:FWLIB/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_FEIFx:  Streamx FIFO error interrupt
+1249:FWLIB/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.
+1250:FWLIB/src/stm32f4xx_dma.c ****   * @retval None
+1251:FWLIB/src/stm32f4xx_dma.c ****   */
+1252:FWLIB/src/stm32f4xx_dma.c **** void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT)
+1253:FWLIB/src/stm32f4xx_dma.c **** {
+ARM GAS  /tmp/cckthDNs.s 			page 41
+
+
+ 1026              		.loc 1 1253 0
+ 1027              		.cfi_startproc
+ 1028              		@ args = 0, pretend = 0, frame = 0
+ 1029              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1030              		@ link register save eliminated.
+ 1031              	.LVL70:
+1254:FWLIB/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+1255:FWLIB/src/stm32f4xx_dma.c **** 
+1256:FWLIB/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1257:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1258:FWLIB/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CLEAR_IT(DMA_IT));
+1259:FWLIB/src/stm32f4xx_dma.c **** 
+1260:FWLIB/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+1261:FWLIB/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 1032              		.loc 1 1261 0
+ 1033 0000 0A4B     		ldr	r3, .L119
+ 1034 0002 9842     		cmp	r0, r3
+ 1035 0004 0AD8     		bhi	.L117
+1262:FWLIB/src/stm32f4xx_dma.c ****   {
+1263:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1264:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 1036              		.loc 1 1264 0
+ 1037 0006 A3F20F43 		subw	r3, r3, #1039
+ 1038              	.L114:
+ 1039              	.LVL71:
+1265:FWLIB/src/stm32f4xx_dma.c ****   } 
+1266:FWLIB/src/stm32f4xx_dma.c ****   else 
+1267:FWLIB/src/stm32f4xx_dma.c ****   {
+1268:FWLIB/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1269:FWLIB/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+1270:FWLIB/src/stm32f4xx_dma.c ****   }
+1271:FWLIB/src/stm32f4xx_dma.c **** 
+1272:FWLIB/src/stm32f4xx_dma.c ****   /* Check if LIFCR or HIFCR register is targeted */
+1273:FWLIB/src/stm32f4xx_dma.c ****   if ((DMA_IT & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 1040              		.loc 1 1273 0
+ 1041 000a 11F0005F 		tst	r1, #536870912
+ 1042 000e 07D1     		bne	.L118
+1274:FWLIB/src/stm32f4xx_dma.c ****   {
+1275:FWLIB/src/stm32f4xx_dma.c ****     /* Set DMAy HIFCR register clear interrupt bits */
+1276:FWLIB/src/stm32f4xx_dma.c ****     DMAy->HIFCR = (uint32_t)(DMA_IT & RESERVED_MASK);
+1277:FWLIB/src/stm32f4xx_dma.c ****   }
+1278:FWLIB/src/stm32f4xx_dma.c ****   else 
+1279:FWLIB/src/stm32f4xx_dma.c ****   {
+1280:FWLIB/src/stm32f4xx_dma.c ****     /* Set DMAy LIFCR register clear interrupt bits */
+1281:FWLIB/src/stm32f4xx_dma.c ****     DMAy->LIFCR = (uint32_t)(DMA_IT & RESERVED_MASK);
+ 1043              		.loc 1 1281 0
+ 1044 0010 21F0F021 		bic	r1, r1, #-268374016
+ 1045              	.LVL72:
+ 1046 0014 21F08211 		bic	r1, r1, #8519810
+ 1047 0018 9960     		str	r1, [r3, #8]
+ 1048 001a 7047     		bx	lr
+ 1049              	.LVL73:
+ 1050              	.L117:
+1269:FWLIB/src/stm32f4xx_dma.c ****   }
+ 1051              		.loc 1 1269 0
+ 1052 001c 044B     		ldr	r3, .L119+4
+ 1053 001e F4E7     		b	.L114
+ARM GAS  /tmp/cckthDNs.s 			page 42
+
+
+ 1054              	.LVL74:
+ 1055              	.L118:
+1276:FWLIB/src/stm32f4xx_dma.c ****   }
+ 1056              		.loc 1 1276 0
+ 1057 0020 21F0F021 		bic	r1, r1, #-268374016
+ 1058              	.LVL75:
+ 1059 0024 21F08211 		bic	r1, r1, #8519810
+ 1060 0028 D960     		str	r1, [r3, #12]
+ 1061 002a 7047     		bx	lr
+ 1062              	.L120:
+ 1063              		.align	2
+ 1064              	.L119:
+ 1065 002c 0F640240 		.word	1073898511
+ 1066 0030 00640240 		.word	1073898496
+ 1067              		.cfi_endproc
+ 1068              	.LFE141:
+ 1070              		.text
+ 1071              	.Letext0:
+ 1072              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 1073              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 1074              		.file 4 "F4_CORE/core_cm4.h"
+ 1075              		.file 5 "USER/system_stm32f4xx.h"
+ 1076              		.file 6 "USER/stm32f4xx.h"
+ 1077              		.file 7 "FWLIB/inc/stm32f4xx_dma.h"
+ARM GAS  /tmp/cckthDNs.s 			page 43
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f4xx_dma.c
+     /tmp/cckthDNs.s:18     .text.DMA_DeInit:0000000000000000 $t
+     /tmp/cckthDNs.s:25     .text.DMA_DeInit:0000000000000000 DMA_DeInit
+     /tmp/cckthDNs.s:218    .text.DMA_DeInit:000000000000010c $d
+     /tmp/cckthDNs.s:241    .text.DMA_Init:0000000000000000 $t
+     /tmp/cckthDNs.s:248    .text.DMA_Init:0000000000000000 DMA_Init
+     /tmp/cckthDNs.s:339    .text.DMA_Init:0000000000000054 $d
+     /tmp/cckthDNs.s:344    .text.DMA_StructInit:0000000000000000 $t
+     /tmp/cckthDNs.s:351    .text.DMA_StructInit:0000000000000000 DMA_StructInit
+     /tmp/cckthDNs.s:395    .text.DMA_Cmd:0000000000000000 $t
+     /tmp/cckthDNs.s:402    .text.DMA_Cmd:0000000000000000 DMA_Cmd
+     /tmp/cckthDNs.s:427    .text.DMA_PeriphIncOffsetSizeConfig:0000000000000000 $t
+     /tmp/cckthDNs.s:434    .text.DMA_PeriphIncOffsetSizeConfig:0000000000000000 DMA_PeriphIncOffsetSizeConfig
+     /tmp/cckthDNs.s:459    .text.DMA_FlowControllerConfig:0000000000000000 $t
+     /tmp/cckthDNs.s:466    .text.DMA_FlowControllerConfig:0000000000000000 DMA_FlowControllerConfig
+     /tmp/cckthDNs.s:491    .text.DMA_SetCurrDataCounter:0000000000000000 $t
+     /tmp/cckthDNs.s:498    .text.DMA_SetCurrDataCounter:0000000000000000 DMA_SetCurrDataCounter
+     /tmp/cckthDNs.s:513    .text.DMA_GetCurrDataCounter:0000000000000000 $t
+     /tmp/cckthDNs.s:520    .text.DMA_GetCurrDataCounter:0000000000000000 DMA_GetCurrDataCounter
+     /tmp/cckthDNs.s:538    .text.DMA_DoubleBufferModeConfig:0000000000000000 $t
+     /tmp/cckthDNs.s:545    .text.DMA_DoubleBufferModeConfig:0000000000000000 DMA_DoubleBufferModeConfig
+     /tmp/cckthDNs.s:573    .text.DMA_DoubleBufferModeCmd:0000000000000000 $t
+     /tmp/cckthDNs.s:580    .text.DMA_DoubleBufferModeCmd:0000000000000000 DMA_DoubleBufferModeCmd
+     /tmp/cckthDNs.s:605    .text.DMA_MemoryTargetConfig:0000000000000000 $t
+     /tmp/cckthDNs.s:612    .text.DMA_MemoryTargetConfig:0000000000000000 DMA_MemoryTargetConfig
+     /tmp/cckthDNs.s:633    .text.DMA_GetCurrentMemoryTarget:0000000000000000 $t
+     /tmp/cckthDNs.s:640    .text.DMA_GetCurrentMemoryTarget:0000000000000000 DMA_GetCurrentMemoryTarget
+     /tmp/cckthDNs.s:667    .text.DMA_GetCmdStatus:0000000000000000 $t
+     /tmp/cckthDNs.s:674    .text.DMA_GetCmdStatus:0000000000000000 DMA_GetCmdStatus
+     /tmp/cckthDNs.s:701    .text.DMA_GetFIFOStatus:0000000000000000 $t
+     /tmp/cckthDNs.s:708    .text.DMA_GetFIFOStatus:0000000000000000 DMA_GetFIFOStatus
+     /tmp/cckthDNs.s:727    .text.DMA_GetFlagStatus:0000000000000000 $t
+     /tmp/cckthDNs.s:734    .text.DMA_GetFlagStatus:0000000000000000 DMA_GetFlagStatus
+     /tmp/cckthDNs.s:789    .text.DMA_GetFlagStatus:0000000000000030 $d
+     /tmp/cckthDNs.s:795    .text.DMA_ClearFlag:0000000000000000 $t
+     /tmp/cckthDNs.s:802    .text.DMA_ClearFlag:0000000000000000 DMA_ClearFlag
+     /tmp/cckthDNs.s:843    .text.DMA_ClearFlag:000000000000002c $d
+     /tmp/cckthDNs.s:849    .text.DMA_ITConfig:0000000000000000 $t
+     /tmp/cckthDNs.s:856    .text.DMA_ITConfig:0000000000000000 DMA_ITConfig
+     /tmp/cckthDNs.s:906    .text.DMA_GetITStatus:0000000000000000 $t
+     /tmp/cckthDNs.s:913    .text.DMA_GetITStatus:0000000000000000 DMA_GetITStatus
+     /tmp/cckthDNs.s:1010   .text.DMA_GetITStatus:0000000000000054 $d
+     /tmp/cckthDNs.s:1017   .text.DMA_ClearITPendingBit:0000000000000000 $t
+     /tmp/cckthDNs.s:1024   .text.DMA_ClearITPendingBit:0000000000000000 DMA_ClearITPendingBit
+     /tmp/cckthDNs.s:1065   .text.DMA_ClearITPendingBit:000000000000002c $d
+                     .debug_frame:0000000000000010 $d
+
+NO UNDEFINED SYMBOLS

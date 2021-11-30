@@ -1,0 +1,625 @@
+ARM GAS  /tmp/ccXIb9Sw.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"usbd_cdc_vcp.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.VCP_Init,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	VCP_Init:
+  25              	.LFB124:
+  26              		.file 1 "USB/core/usbd_cdc_vcp.c"
+   1:USB/core/usbd_cdc_vcp.c **** /**
+   2:USB/core/usbd_cdc_vcp.c ****   ******************************************************************************
+   3:USB/core/usbd_cdc_vcp.c ****   * @file    usbd_cdc_vcp.c
+   4:USB/core/usbd_cdc_vcp.c ****   * @author  MCD Application Team
+   5:USB/core/usbd_cdc_vcp.c ****   * @version V1.1.0
+   6:USB/core/usbd_cdc_vcp.c ****   * @date    19-March-2012
+   7:USB/core/usbd_cdc_vcp.c ****   * @brief   Generic media access Layer.
+   8:USB/core/usbd_cdc_vcp.c ****   ******************************************************************************
+   9:USB/core/usbd_cdc_vcp.c ****   * @attention
+  10:USB/core/usbd_cdc_vcp.c ****   *
+  11:USB/core/usbd_cdc_vcp.c ****   * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  12:USB/core/usbd_cdc_vcp.c ****   *
+  13:USB/core/usbd_cdc_vcp.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  14:USB/core/usbd_cdc_vcp.c ****   * You may not use this file except in compliance with the License.
+  15:USB/core/usbd_cdc_vcp.c ****   * You may obtain a copy of the License at:
+  16:USB/core/usbd_cdc_vcp.c ****   *
+  17:USB/core/usbd_cdc_vcp.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  18:USB/core/usbd_cdc_vcp.c ****   *
+  19:USB/core/usbd_cdc_vcp.c ****   * Unless required by applicable law or agreed to in writing, software 
+  20:USB/core/usbd_cdc_vcp.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  21:USB/core/usbd_cdc_vcp.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  22:USB/core/usbd_cdc_vcp.c ****   * See the License for the specific language governing permissions and
+  23:USB/core/usbd_cdc_vcp.c ****   * limitations under the License.
+  24:USB/core/usbd_cdc_vcp.c ****   *
+  25:USB/core/usbd_cdc_vcp.c ****   ******************************************************************************
+  26:USB/core/usbd_cdc_vcp.c ****   */ 
+  27:USB/core/usbd_cdc_vcp.c **** 
+  28:USB/core/usbd_cdc_vcp.c **** /* Includes ------------------------------------------------------------------*/
+  29:USB/core/usbd_cdc_vcp.c **** #include "usbd_cdc_vcp.h"
+  30:USB/core/usbd_cdc_vcp.c **** #include "usb_conf.h"
+  31:USB/core/usbd_cdc_vcp.c **** 
+  32:USB/core/usbd_cdc_vcp.c **** #include "usb_core.h"
+ARM GAS  /tmp/ccXIb9Sw.s 			page 2
+
+
+  33:USB/core/usbd_cdc_vcp.c **** #include "usbd_core.h"
+  34:USB/core/usbd_cdc_vcp.c **** 
+  35:USB/core/usbd_cdc_vcp.c **** #include "usbd_cdc_core.h"
+  36:USB/core/usbd_cdc_vcp.c **** 
+  37:USB/core/usbd_cdc_vcp.c **** #include "tm_stm32f4_usb_vcp.h"
+  38:USB/core/usbd_cdc_vcp.c **** 
+  39:USB/core/usbd_cdc_vcp.c **** /* Private typedef -----------------------------------------------------------*/
+  40:USB/core/usbd_cdc_vcp.c **** /* Private define ------------------------------------------------------------*/
+  41:USB/core/usbd_cdc_vcp.c **** /* Private macro -------------------------------------------------------------*/
+  42:USB/core/usbd_cdc_vcp.c **** /* Private variables ---------------------------------------------------------*/
+  43:USB/core/usbd_cdc_vcp.c **** /* Private function prototypes -----------------------------------------------*/
+  44:USB/core/usbd_cdc_vcp.c **** extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
+  45:USB/core/usbd_cdc_vcp.c **** 
+  46:USB/core/usbd_cdc_vcp.c **** /* Private typedef -----------------------------------------------------------*/
+  47:USB/core/usbd_cdc_vcp.c **** /* Private define ------------------------------------------------------------*/
+  48:USB/core/usbd_cdc_vcp.c **** /* Private macro -------------------------------------------------------------*/
+  49:USB/core/usbd_cdc_vcp.c **** /* Private variables ---------------------------------------------------------*/
+  50:USB/core/usbd_cdc_vcp.c **** LINE_CODING linecoding = {
+  51:USB/core/usbd_cdc_vcp.c **** 	115200, /* baud rate */
+  52:USB/core/usbd_cdc_vcp.c **** 	0x00,   /* stop bits-1 */
+  53:USB/core/usbd_cdc_vcp.c **** 	0x00,   /* parity - none */
+  54:USB/core/usbd_cdc_vcp.c **** 	0x08,   /* nb. of bits 8 */
+  55:USB/core/usbd_cdc_vcp.c **** 	1		/* Changed flag */
+  56:USB/core/usbd_cdc_vcp.c **** };
+  57:USB/core/usbd_cdc_vcp.c **** 
+  58:USB/core/usbd_cdc_vcp.c **** /* These are external variables imported from CDC core to be used for IN 
+  59:USB/core/usbd_cdc_vcp.c ****    transfer management. */
+  60:USB/core/usbd_cdc_vcp.c **** extern uint8_t  APP_Rx_Buffer []; /* Write CDC received data in this buffer.
+  61:USB/core/usbd_cdc_vcp.c ****                                      These data will be sent over USB IN endpoint
+  62:USB/core/usbd_cdc_vcp.c ****                                      in the CDC core functions. */
+  63:USB/core/usbd_cdc_vcp.c **** extern uint32_t APP_Rx_ptr_in;    /* Increment this pointer or roll it back to
+  64:USB/core/usbd_cdc_vcp.c ****                                      start address when writing received data
+  65:USB/core/usbd_cdc_vcp.c ****                                      in the buffer APP_Rx_Buffer. */
+  66:USB/core/usbd_cdc_vcp.c **** 
+  67:USB/core/usbd_cdc_vcp.c **** /* Private function prototypes -----------------------------------------------*/
+  68:USB/core/usbd_cdc_vcp.c **** static uint16_t VCP_Init     (void);
+  69:USB/core/usbd_cdc_vcp.c **** static uint16_t VCP_DeInit   (void);
+  70:USB/core/usbd_cdc_vcp.c **** static uint16_t VCP_Ctrl     (uint32_t Cmd, uint8_t* Buf, uint32_t Len);
+  71:USB/core/usbd_cdc_vcp.c **** //static uint16_t VCP_COMConfig(uint8_t Conf);
+  72:USB/core/usbd_cdc_vcp.c **** 
+  73:USB/core/usbd_cdc_vcp.c **** CDC_IF_Prop_TypeDef VCP_fops = 
+  74:USB/core/usbd_cdc_vcp.c **** {
+  75:USB/core/usbd_cdc_vcp.c ****   VCP_Init,
+  76:USB/core/usbd_cdc_vcp.c ****   VCP_DeInit,
+  77:USB/core/usbd_cdc_vcp.c ****   VCP_Ctrl,
+  78:USB/core/usbd_cdc_vcp.c ****   VCP_DataTx,
+  79:USB/core/usbd_cdc_vcp.c ****   VCP_DataRx
+  80:USB/core/usbd_cdc_vcp.c **** };
+  81:USB/core/usbd_cdc_vcp.c **** 
+  82:USB/core/usbd_cdc_vcp.c **** /* Private functions ---------------------------------------------------------*/
+  83:USB/core/usbd_cdc_vcp.c **** /**
+  84:USB/core/usbd_cdc_vcp.c ****   * @brief  VCP_Init
+  85:USB/core/usbd_cdc_vcp.c ****   *         Initializes the Media on the STM32
+  86:USB/core/usbd_cdc_vcp.c ****   * @param  None
+  87:USB/core/usbd_cdc_vcp.c ****   * @retval Result of the opeartion (USBD_OK in all cases)
+  88:USB/core/usbd_cdc_vcp.c ****   */
+  89:USB/core/usbd_cdc_vcp.c **** static uint16_t VCP_Init(void) {
+ARM GAS  /tmp/ccXIb9Sw.s 			page 3
+
+
+  27              		.loc 1 89 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  90:USB/core/usbd_cdc_vcp.c ****   return USBD_OK;
+  91:USB/core/usbd_cdc_vcp.c **** }
+  32              		.loc 1 91 0
+  33 0000 0020     		movs	r0, #0
+  34 0002 7047     		bx	lr
+  35              		.cfi_endproc
+  36              	.LFE124:
+  38              		.section	.text.VCP_DeInit,"ax",%progbits
+  39              		.align	1
+  40              		.syntax unified
+  41              		.thumb
+  42              		.thumb_func
+  43              		.fpu fpv4-sp-d16
+  45              	VCP_DeInit:
+  46              	.LFB125:
+  92:USB/core/usbd_cdc_vcp.c **** 
+  93:USB/core/usbd_cdc_vcp.c **** /**
+  94:USB/core/usbd_cdc_vcp.c ****   * @brief  VCP_DeInit
+  95:USB/core/usbd_cdc_vcp.c ****   *         DeInitializes the Media on the STM32
+  96:USB/core/usbd_cdc_vcp.c ****   * @param  None
+  97:USB/core/usbd_cdc_vcp.c ****   * @retval Result of the opeartion (USBD_OK in all cases)
+  98:USB/core/usbd_cdc_vcp.c ****   */
+  99:USB/core/usbd_cdc_vcp.c **** static uint16_t VCP_DeInit(void) {
+  47              		.loc 1 99 0
+  48              		.cfi_startproc
+  49              		@ args = 0, pretend = 0, frame = 0
+  50              		@ frame_needed = 0, uses_anonymous_args = 0
+  51              		@ link register save eliminated.
+ 100:USB/core/usbd_cdc_vcp.c ****   return USBD_OK;
+ 101:USB/core/usbd_cdc_vcp.c **** }
+  52              		.loc 1 101 0
+  53 0000 0020     		movs	r0, #0
+  54 0002 7047     		bx	lr
+  55              		.cfi_endproc
+  56              	.LFE125:
+  58              		.section	.text.VCP_Ctrl,"ax",%progbits
+  59              		.align	1
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  63              		.fpu fpv4-sp-d16
+  65              	VCP_Ctrl:
+  66              	.LFB126:
+ 102:USB/core/usbd_cdc_vcp.c **** 
+ 103:USB/core/usbd_cdc_vcp.c **** 
+ 104:USB/core/usbd_cdc_vcp.c **** /**
+ 105:USB/core/usbd_cdc_vcp.c ****   * @brief  VCP_Ctrl
+ 106:USB/core/usbd_cdc_vcp.c ****   *         Manage the CDC class requests
+ 107:USB/core/usbd_cdc_vcp.c ****   * @param  Cmd: Command code            
+ 108:USB/core/usbd_cdc_vcp.c ****   * @param  Buf: Buffer containing command data (request parameters)
+ 109:USB/core/usbd_cdc_vcp.c ****   * @param  Len: Number of data to be sent (in bytes)
+ 110:USB/core/usbd_cdc_vcp.c ****   * @retval Result of the opeartion (USBD_OK in all cases)
+ARM GAS  /tmp/ccXIb9Sw.s 			page 4
+
+
+ 111:USB/core/usbd_cdc_vcp.c ****   */
+ 112:USB/core/usbd_cdc_vcp.c **** static uint16_t VCP_Ctrl (uint32_t Cmd, uint8_t* Buf, uint32_t Len)
+ 113:USB/core/usbd_cdc_vcp.c **** { /*
+  67              		.loc 1 113 0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71              		@ link register save eliminated.
+  72              	.LVL0:
+ 114:USB/core/usbd_cdc_vcp.c **** 	int i;
+ 115:USB/core/usbd_cdc_vcp.c **** 	printf("Command: 0x%02X: ", Cmd);
+ 116:USB/core/usbd_cdc_vcp.c **** 	for (i = 0; i < Len; i++) {
+ 117:USB/core/usbd_cdc_vcp.c **** 		printf("0x%02X ", Buf[i]);
+ 118:USB/core/usbd_cdc_vcp.c **** 	}
+ 119:USB/core/usbd_cdc_vcp.c **** 	printf("\n");
+ 120:USB/core/usbd_cdc_vcp.c **** 	*/
+ 121:USB/core/usbd_cdc_vcp.c ****   switch (Cmd)
+  73              		.loc 1 121 0
+  74 0000 2028     		cmp	r0, #32
+  75 0002 03D0     		beq	.L5
+  76 0004 2128     		cmp	r0, #33
+  77 0006 16D0     		beq	.L6
+  78              	.LVL1:
+  79              	.L4:
+ 122:USB/core/usbd_cdc_vcp.c ****   {
+ 123:USB/core/usbd_cdc_vcp.c ****   case SEND_ENCAPSULATED_COMMAND:
+ 124:USB/core/usbd_cdc_vcp.c ****     /* Not  needed for this driver */
+ 125:USB/core/usbd_cdc_vcp.c ****     break;
+ 126:USB/core/usbd_cdc_vcp.c **** 
+ 127:USB/core/usbd_cdc_vcp.c ****   case GET_ENCAPSULATED_RESPONSE:
+ 128:USB/core/usbd_cdc_vcp.c ****     /* Not  needed for this driver */
+ 129:USB/core/usbd_cdc_vcp.c ****     break;
+ 130:USB/core/usbd_cdc_vcp.c **** 
+ 131:USB/core/usbd_cdc_vcp.c ****   case SET_COMM_FEATURE:
+ 132:USB/core/usbd_cdc_vcp.c ****     /* Not  needed for this driver */
+ 133:USB/core/usbd_cdc_vcp.c ****     break;
+ 134:USB/core/usbd_cdc_vcp.c **** 
+ 135:USB/core/usbd_cdc_vcp.c ****   case GET_COMM_FEATURE:
+ 136:USB/core/usbd_cdc_vcp.c ****     /* Not  needed for this driver */
+ 137:USB/core/usbd_cdc_vcp.c ****     break;
+ 138:USB/core/usbd_cdc_vcp.c **** 
+ 139:USB/core/usbd_cdc_vcp.c ****   case CLEAR_COMM_FEATURE:
+ 140:USB/core/usbd_cdc_vcp.c ****     /* Not  needed for this driver */
+ 141:USB/core/usbd_cdc_vcp.c ****     break;
+ 142:USB/core/usbd_cdc_vcp.c **** 
+ 143:USB/core/usbd_cdc_vcp.c ****   case SET_LINE_CODING:
+ 144:USB/core/usbd_cdc_vcp.c ****     linecoding.bitrate = (uint32_t)(Buf[0] | (Buf[1] << 8) | (Buf[2] << 16) | (Buf[3] << 24));
+ 145:USB/core/usbd_cdc_vcp.c ****     linecoding.format = Buf[4];
+ 146:USB/core/usbd_cdc_vcp.c ****     linecoding.paritytype = Buf[5];
+ 147:USB/core/usbd_cdc_vcp.c ****     linecoding.datatype = Buf[6];
+ 148:USB/core/usbd_cdc_vcp.c **** 	linecoding.changed = 1;
+ 149:USB/core/usbd_cdc_vcp.c ****   
+ 150:USB/core/usbd_cdc_vcp.c ****     //VCP_COMConfig(OTHER_CONFIG);
+ 151:USB/core/usbd_cdc_vcp.c ****     break;
+ 152:USB/core/usbd_cdc_vcp.c **** 
+ 153:USB/core/usbd_cdc_vcp.c ****   case GET_LINE_CODING:
+ 154:USB/core/usbd_cdc_vcp.c ****     Buf[0] = (uint8_t)(linecoding.bitrate);
+ARM GAS  /tmp/ccXIb9Sw.s 			page 5
+
+
+ 155:USB/core/usbd_cdc_vcp.c ****     Buf[1] = (uint8_t)(linecoding.bitrate >> 8);
+ 156:USB/core/usbd_cdc_vcp.c ****     Buf[2] = (uint8_t)(linecoding.bitrate >> 16);
+ 157:USB/core/usbd_cdc_vcp.c ****     Buf[3] = (uint8_t)(linecoding.bitrate >> 24);
+ 158:USB/core/usbd_cdc_vcp.c ****     Buf[4] = linecoding.format;
+ 159:USB/core/usbd_cdc_vcp.c ****     Buf[5] = linecoding.paritytype;
+ 160:USB/core/usbd_cdc_vcp.c ****     Buf[6] = linecoding.datatype; 
+ 161:USB/core/usbd_cdc_vcp.c ****     break;
+ 162:USB/core/usbd_cdc_vcp.c **** 
+ 163:USB/core/usbd_cdc_vcp.c ****   case SET_CONTROL_LINE_STATE:
+ 164:USB/core/usbd_cdc_vcp.c **** 	//printf("Set control line state\n");
+ 165:USB/core/usbd_cdc_vcp.c ****     /* Not  needed for this driver */
+ 166:USB/core/usbd_cdc_vcp.c ****     break;
+ 167:USB/core/usbd_cdc_vcp.c **** 
+ 168:USB/core/usbd_cdc_vcp.c ****   case SEND_BREAK:
+ 169:USB/core/usbd_cdc_vcp.c ****     /* Not  needed for this driver */
+ 170:USB/core/usbd_cdc_vcp.c ****     break;    
+ 171:USB/core/usbd_cdc_vcp.c ****     
+ 172:USB/core/usbd_cdc_vcp.c ****   default:
+ 173:USB/core/usbd_cdc_vcp.c ****     break;
+ 174:USB/core/usbd_cdc_vcp.c ****   }
+ 175:USB/core/usbd_cdc_vcp.c **** 
+ 176:USB/core/usbd_cdc_vcp.c ****   return USBD_OK;
+ 177:USB/core/usbd_cdc_vcp.c **** }
+  80              		.loc 1 177 0
+  81 0008 0020     		movs	r0, #0
+  82              	.LVL2:
+  83 000a 7047     		bx	lr
+  84              	.LVL3:
+  85              	.L5:
+ 144:USB/core/usbd_cdc_vcp.c ****     linecoding.format = Buf[4];
+  86              		.loc 1 144 0
+  87 000c 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  88 000e 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+  89              	.LVL4:
+  90 0010 43EA0223 		orr	r3, r3, r2, lsl #8
+  91 0014 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
+  92 0016 43EA0243 		orr	r3, r3, r2, lsl #16
+  93 001a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+  94 001c 43EA0263 		orr	r3, r3, r2, lsl #24
+  95 0020 0D4A     		ldr	r2, .L7
+  96 0022 1360     		str	r3, [r2]
+ 145:USB/core/usbd_cdc_vcp.c ****     linecoding.paritytype = Buf[5];
+  97              		.loc 1 145 0
+  98 0024 0B79     		ldrb	r3, [r1, #4]	@ zero_extendqisi2
+  99 0026 1371     		strb	r3, [r2, #4]
+ 146:USB/core/usbd_cdc_vcp.c ****     linecoding.datatype = Buf[6];
+ 100              		.loc 1 146 0
+ 101 0028 4B79     		ldrb	r3, [r1, #5]	@ zero_extendqisi2
+ 102 002a 5371     		strb	r3, [r2, #5]
+ 147:USB/core/usbd_cdc_vcp.c **** 	linecoding.changed = 1;
+ 103              		.loc 1 147 0
+ 104 002c 8B79     		ldrb	r3, [r1, #6]	@ zero_extendqisi2
+ 105 002e 9371     		strb	r3, [r2, #6]
+ 148:USB/core/usbd_cdc_vcp.c ****   
+ 106              		.loc 1 148 0
+ 107 0030 0123     		movs	r3, #1
+ 108 0032 D371     		strb	r3, [r2, #7]
+ARM GAS  /tmp/ccXIb9Sw.s 			page 6
+
+
+ 151:USB/core/usbd_cdc_vcp.c **** 
+ 109              		.loc 1 151 0
+ 110 0034 E8E7     		b	.L4
+ 111              	.LVL5:
+ 112              	.L6:
+ 154:USB/core/usbd_cdc_vcp.c ****     Buf[1] = (uint8_t)(linecoding.bitrate >> 8);
+ 113              		.loc 1 154 0
+ 114 0036 084B     		ldr	r3, .L7
+ 115 0038 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 116              	.LVL6:
+ 117 003a 0A70     		strb	r2, [r1]
+ 155:USB/core/usbd_cdc_vcp.c ****     Buf[2] = (uint8_t)(linecoding.bitrate >> 16);
+ 118              		.loc 1 155 0
+ 119 003c 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 120 003e 4A70     		strb	r2, [r1, #1]
+ 156:USB/core/usbd_cdc_vcp.c ****     Buf[3] = (uint8_t)(linecoding.bitrate >> 24);
+ 121              		.loc 1 156 0
+ 122 0040 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 123 0042 8A70     		strb	r2, [r1, #2]
+ 157:USB/core/usbd_cdc_vcp.c ****     Buf[4] = linecoding.format;
+ 124              		.loc 1 157 0
+ 125 0044 DA78     		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+ 126 0046 CA70     		strb	r2, [r1, #3]
+ 158:USB/core/usbd_cdc_vcp.c ****     Buf[5] = linecoding.paritytype;
+ 127              		.loc 1 158 0
+ 128 0048 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 129 004a 0A71     		strb	r2, [r1, #4]
+ 159:USB/core/usbd_cdc_vcp.c ****     Buf[6] = linecoding.datatype; 
+ 130              		.loc 1 159 0
+ 131 004c 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 132 004e 4A71     		strb	r2, [r1, #5]
+ 160:USB/core/usbd_cdc_vcp.c ****     break;
+ 133              		.loc 1 160 0
+ 134 0050 9B79     		ldrb	r3, [r3, #6]	@ zero_extendqisi2
+ 135 0052 8B71     		strb	r3, [r1, #6]
+ 161:USB/core/usbd_cdc_vcp.c **** 
+ 136              		.loc 1 161 0
+ 137 0054 D8E7     		b	.L4
+ 138              	.L8:
+ 139 0056 00BF     		.align	2
+ 140              	.L7:
+ 141 0058 00000000 		.word	.LANCHOR0
+ 142              		.cfi_endproc
+ 143              	.LFE126:
+ 145              		.section	.text.VCP_DataTx,"ax",%progbits
+ 146              		.align	1
+ 147              		.global	VCP_DataTx
+ 148              		.syntax unified
+ 149              		.thumb
+ 150              		.thumb_func
+ 151              		.fpu fpv4-sp-d16
+ 153              	VCP_DataTx:
+ 154              	.LFB127:
+ 178:USB/core/usbd_cdc_vcp.c **** 
+ 179:USB/core/usbd_cdc_vcp.c **** /**
+ 180:USB/core/usbd_cdc_vcp.c ****   * @brief  VCP_DataTx
+ 181:USB/core/usbd_cdc_vcp.c ****   *         CDC received data to be send over USB IN endpoint are managed in 
+ARM GAS  /tmp/ccXIb9Sw.s 			page 7
+
+
+ 182:USB/core/usbd_cdc_vcp.c ****   *         this function.
+ 183:USB/core/usbd_cdc_vcp.c ****   * @param  Buf: Buffer of data to be sent
+ 184:USB/core/usbd_cdc_vcp.c ****   * @param  Len: Number of data to be sent (in bytes)
+ 185:USB/core/usbd_cdc_vcp.c ****   * @retval Result of the opeartion: USBD_OK if all operations are OK else VCP_FAIL
+ 186:USB/core/usbd_cdc_vcp.c ****   */
+ 187:USB/core/usbd_cdc_vcp.c **** uint16_t VCP_DataTx (uint8_t* Buf, uint32_t Len) {
+ 155              		.loc 1 187 0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 0
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              		@ link register save eliminated.
+ 160              	.LVL7:
+ 188:USB/core/usbd_cdc_vcp.c **** 	uint32_t tx_counter = 0;
+ 161              		.loc 1 188 0
+ 162 0000 0022     		movs	r2, #0
+ 163              	.LVL8:
+ 189:USB/core/usbd_cdc_vcp.c **** 	
+ 190:USB/core/usbd_cdc_vcp.c **** 	while (tx_counter < Len) {
+ 164              		.loc 1 190 0
+ 165 0002 8A42     		cmp	r2, r1
+ 166 0004 15D2     		bcs	.L17
+ 187:USB/core/usbd_cdc_vcp.c **** 	uint32_t tx_counter = 0;
+ 167              		.loc 1 187 0
+ 168 0006 70B4     		push	{r4, r5, r6}
+ 169              	.LCFI0:
+ 170              		.cfi_def_cfa_offset 12
+ 171              		.cfi_offset 4, -12
+ 172              		.cfi_offset 5, -8
+ 173              		.cfi_offset 6, -4
+ 174 0008 02E0     		b	.L12
+ 175              	.L11:
+ 191:USB/core/usbd_cdc_vcp.c **** 		APP_Rx_Buffer[APP_Rx_ptr_in] = *(Buf+tx_counter);
+ 192:USB/core/usbd_cdc_vcp.c **** 		
+ 193:USB/core/usbd_cdc_vcp.c **** 		APP_Rx_ptr_in++;
+ 194:USB/core/usbd_cdc_vcp.c **** 		
+ 195:USB/core/usbd_cdc_vcp.c **** 		/* To avoid buffer overflow */
+ 196:USB/core/usbd_cdc_vcp.c **** 		if (APP_Rx_ptr_in >= APP_RX_DATA_SIZE) {
+ 197:USB/core/usbd_cdc_vcp.c **** 			APP_Rx_ptr_in = 0;
+ 198:USB/core/usbd_cdc_vcp.c **** 		}
+ 199:USB/core/usbd_cdc_vcp.c **** 		
+ 200:USB/core/usbd_cdc_vcp.c **** 		tx_counter++;
+ 176              		.loc 1 200 0
+ 177 000a 0132     		adds	r2, r2, #1
+ 178              	.LVL9:
+ 190:USB/core/usbd_cdc_vcp.c **** 		APP_Rx_Buffer[APP_Rx_ptr_in] = *(Buf+tx_counter);
+ 179              		.loc 1 190 0
+ 180 000c 8A42     		cmp	r2, r1
+ 181 000e 0DD2     		bcs	.L18
+ 182              	.L12:
+ 191:USB/core/usbd_cdc_vcp.c **** 		APP_Rx_Buffer[APP_Rx_ptr_in] = *(Buf+tx_counter);
+ 183              		.loc 1 191 0
+ 184 0010 094C     		ldr	r4, .L19
+ 185 0012 2368     		ldr	r3, [r4]
+ 186 0014 865C     		ldrb	r6, [r0, r2]	@ zero_extendqisi2
+ 187 0016 094D     		ldr	r5, .L19+4
+ 188 0018 EE54     		strb	r6, [r5, r3]
+ 193:USB/core/usbd_cdc_vcp.c **** 		
+ARM GAS  /tmp/ccXIb9Sw.s 			page 8
+
+
+ 189              		.loc 1 193 0
+ 190 001a 0133     		adds	r3, r3, #1
+ 191 001c 2360     		str	r3, [r4]
+ 196:USB/core/usbd_cdc_vcp.c **** 			APP_Rx_ptr_in = 0;
+ 192              		.loc 1 196 0
+ 193 001e B3F5006F 		cmp	r3, #2048
+ 194 0022 F2D3     		bcc	.L11
+ 197:USB/core/usbd_cdc_vcp.c **** 		}
+ 195              		.loc 1 197 0
+ 196 0024 0024     		movs	r4, #0
+ 197 0026 044B     		ldr	r3, .L19
+ 198 0028 1C60     		str	r4, [r3]
+ 199 002a EEE7     		b	.L11
+ 200              	.L18:
+ 201:USB/core/usbd_cdc_vcp.c **** 	}
+ 202:USB/core/usbd_cdc_vcp.c **** 	
+ 203:USB/core/usbd_cdc_vcp.c **** 	return USBD_OK;
+ 204:USB/core/usbd_cdc_vcp.c **** }
+ 201              		.loc 1 204 0
+ 202 002c 0020     		movs	r0, #0
+ 203              	.LVL10:
+ 204 002e 70BC     		pop	{r4, r5, r6}
+ 205              	.LCFI1:
+ 206              		.cfi_restore 6
+ 207              		.cfi_restore 5
+ 208              		.cfi_restore 4
+ 209              		.cfi_def_cfa_offset 0
+ 210 0030 7047     		bx	lr
+ 211              	.LVL11:
+ 212              	.L17:
+ 213 0032 0020     		movs	r0, #0
+ 214              	.LVL12:
+ 215 0034 7047     		bx	lr
+ 216              	.L20:
+ 217 0036 00BF     		.align	2
+ 218              	.L19:
+ 219 0038 00000000 		.word	APP_Rx_ptr_in
+ 220 003c 00000000 		.word	APP_Rx_Buffer
+ 221              		.cfi_endproc
+ 222              	.LFE127:
+ 224              		.section	.text.VCP_DataRx,"ax",%progbits
+ 225              		.align	1
+ 226              		.global	VCP_DataRx
+ 227              		.syntax unified
+ 228              		.thumb
+ 229              		.thumb_func
+ 230              		.fpu fpv4-sp-d16
+ 232              	VCP_DataRx:
+ 233              	.LFB128:
+ 205:USB/core/usbd_cdc_vcp.c **** 
+ 206:USB/core/usbd_cdc_vcp.c **** /**
+ 207:USB/core/usbd_cdc_vcp.c ****   * @brief  VCP_DataRx
+ 208:USB/core/usbd_cdc_vcp.c ****   *         Data received over USB OUT endpoint are sent over CDC interface 
+ 209:USB/core/usbd_cdc_vcp.c ****   *         through this function.
+ 210:USB/core/usbd_cdc_vcp.c ****   *           
+ 211:USB/core/usbd_cdc_vcp.c ****   *         @note
+ 212:USB/core/usbd_cdc_vcp.c ****   *         This function will block any OUT packet reception on USB endpoint 
+ARM GAS  /tmp/ccXIb9Sw.s 			page 9
+
+
+ 213:USB/core/usbd_cdc_vcp.c ****   *         untill exiting this function. If you exit this function before transfer
+ 214:USB/core/usbd_cdc_vcp.c ****   *         is complete on CDC interface (ie. using DMA controller) it will result 
+ 215:USB/core/usbd_cdc_vcp.c ****   *         in receiving more data while previous ones are still not sent.
+ 216:USB/core/usbd_cdc_vcp.c ****   *                 
+ 217:USB/core/usbd_cdc_vcp.c ****   * @param  Buf: Buffer of data to be received
+ 218:USB/core/usbd_cdc_vcp.c ****   * @param  Len: Number of data received (in bytes)
+ 219:USB/core/usbd_cdc_vcp.c ****   * @retval Result of the opeartion: USBD_OK if all operations are OK else VCP_FAIL
+ 220:USB/core/usbd_cdc_vcp.c ****   */
+ 221:USB/core/usbd_cdc_vcp.c **** uint16_t VCP_DataRx (uint8_t* Buf, uint32_t Len) {
+ 234              		.loc 1 221 0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 0
+ 237              		@ frame_needed = 0, uses_anonymous_args = 0
+ 238              	.LVL13:
+ 239 0000 70B5     		push	{r4, r5, r6, lr}
+ 240              	.LCFI2:
+ 241              		.cfi_def_cfa_offset 16
+ 242              		.cfi_offset 4, -16
+ 243              		.cfi_offset 5, -12
+ 244              		.cfi_offset 6, -8
+ 245              		.cfi_offset 14, -4
+ 246 0002 0646     		mov	r6, r0
+ 247 0004 0D46     		mov	r5, r1
+ 248              	.LVL14:
+ 222:USB/core/usbd_cdc_vcp.c **** 	uint32_t i;
+ 223:USB/core/usbd_cdc_vcp.c **** 	for (i = 0; i < Len; i++) {
+ 249              		.loc 1 223 0
+ 250 0006 0024     		movs	r4, #0
+ 251 0008 03E0     		b	.L22
+ 252              	.LVL15:
+ 253              	.L23:
+ 224:USB/core/usbd_cdc_vcp.c **** 		/* Add data to internal buffer */
+ 225:USB/core/usbd_cdc_vcp.c **** 		TM_INT_USB_VCP_AddReceived(*(Buf + i));
+ 254              		.loc 1 225 0 discriminator 3
+ 255 000a 305D     		ldrb	r0, [r6, r4]	@ zero_extendqisi2
+ 256 000c FFF7FEFF 		bl	TM_INT_USB_VCP_AddReceived
+ 257              	.LVL16:
+ 223:USB/core/usbd_cdc_vcp.c **** 		/* Add data to internal buffer */
+ 258              		.loc 1 223 0 discriminator 3
+ 259 0010 0134     		adds	r4, r4, #1
+ 260              	.LVL17:
+ 261              	.L22:
+ 223:USB/core/usbd_cdc_vcp.c **** 		/* Add data to internal buffer */
+ 262              		.loc 1 223 0 is_stmt 0 discriminator 1
+ 263 0012 AC42     		cmp	r4, r5
+ 264 0014 F9D3     		bcc	.L23
+ 226:USB/core/usbd_cdc_vcp.c **** 	}
+ 227:USB/core/usbd_cdc_vcp.c **** 	
+ 228:USB/core/usbd_cdc_vcp.c **** 	if(TM_USB_VCP_Get_IRQState() == TM_USB_VCP_IRQ_RESET)
+ 265              		.loc 1 228 0 is_stmt 1
+ 266 0016 FFF7FEFF 		bl	TM_USB_VCP_Get_IRQState
+ 267              	.LVL18:
+ 268 001a 08B1     		cbz	r0, .L26
+ 269              	.L24:
+ 229:USB/core/usbd_cdc_vcp.c **** 	{
+ 230:USB/core/usbd_cdc_vcp.c **** 		TM_USB_VCP_Set_IRQ(Buf, Len);
+ 231:USB/core/usbd_cdc_vcp.c **** 	}
+ARM GAS  /tmp/ccXIb9Sw.s 			page 10
+
+
+ 232:USB/core/usbd_cdc_vcp.c **** 	
+ 233:USB/core/usbd_cdc_vcp.c **** 	return USBD_OK;
+ 234:USB/core/usbd_cdc_vcp.c **** }
+ 270              		.loc 1 234 0
+ 271 001c 0020     		movs	r0, #0
+ 272 001e 70BD     		pop	{r4, r5, r6, pc}
+ 273              	.LVL19:
+ 274              	.L26:
+ 230:USB/core/usbd_cdc_vcp.c **** 	}
+ 275              		.loc 1 230 0
+ 276 0020 A9B2     		uxth	r1, r5
+ 277 0022 3046     		mov	r0, r6
+ 278 0024 FFF7FEFF 		bl	TM_USB_VCP_Set_IRQ
+ 279              	.LVL20:
+ 280 0028 F8E7     		b	.L24
+ 281              		.cfi_endproc
+ 282              	.LFE128:
+ 284              		.global	VCP_fops
+ 285              		.global	linecoding
+ 286              		.section	.data.VCP_fops,"aw",%progbits
+ 287              		.align	2
+ 290              	VCP_fops:
+ 291 0000 00000000 		.word	VCP_Init
+ 292 0004 00000000 		.word	VCP_DeInit
+ 293 0008 00000000 		.word	VCP_Ctrl
+ 294 000c 00000000 		.word	VCP_DataTx
+ 295 0010 00000000 		.word	VCP_DataRx
+ 296              		.section	.data.linecoding,"aw",%progbits
+ 297              		.align	2
+ 298              		.set	.LANCHOR0,. + 0
+ 301              	linecoding:
+ 302 0000 00C20100 		.word	115200
+ 303 0004 00       		.byte	0
+ 304 0005 00       		.byte	0
+ 305 0006 08       		.byte	8
+ 306 0007 01       		.byte	1
+ 307              		.text
+ 308              	.Letext0:
+ 309              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 310              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 311              		.file 4 "F4_CORE/core_cm4.h"
+ 312              		.file 5 "USER/system_stm32f4xx.h"
+ 313              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 314              		.file 7 "/usr/include/newlib/sys/_types.h"
+ 315              		.file 8 "/usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h"
+ 316              		.file 9 "/usr/include/newlib/sys/reent.h"
+ 317              		.file 10 "USB/core/usb_regs.h"
+ 318              		.file 11 "USB/core/usb_core.h"
+ 319              		.file 12 "USB/core/usbd_cdc_core.h"
+ 320              		.file 13 "USB/core/usbd_cdc_vcp.h"
+ 321              		.file 14 "USB/core/usbd_desc.h"
+ 322              		.file 15 "USB/core/usbd_core.h"
+ 323              		.file 16 "USB/config/tm_stm32f4_usb_vcp.h"
+ARM GAS  /tmp/ccXIb9Sw.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbd_cdc_vcp.c
+     /tmp/ccXIb9Sw.s:18     .text.VCP_Init:0000000000000000 $t
+     /tmp/ccXIb9Sw.s:24     .text.VCP_Init:0000000000000000 VCP_Init
+     /tmp/ccXIb9Sw.s:39     .text.VCP_DeInit:0000000000000000 $t
+     /tmp/ccXIb9Sw.s:45     .text.VCP_DeInit:0000000000000000 VCP_DeInit
+     /tmp/ccXIb9Sw.s:59     .text.VCP_Ctrl:0000000000000000 $t
+     /tmp/ccXIb9Sw.s:65     .text.VCP_Ctrl:0000000000000000 VCP_Ctrl
+     /tmp/ccXIb9Sw.s:141    .text.VCP_Ctrl:0000000000000058 $d
+     /tmp/ccXIb9Sw.s:146    .text.VCP_DataTx:0000000000000000 $t
+     /tmp/ccXIb9Sw.s:153    .text.VCP_DataTx:0000000000000000 VCP_DataTx
+     /tmp/ccXIb9Sw.s:219    .text.VCP_DataTx:0000000000000038 $d
+     /tmp/ccXIb9Sw.s:225    .text.VCP_DataRx:0000000000000000 $t
+     /tmp/ccXIb9Sw.s:232    .text.VCP_DataRx:0000000000000000 VCP_DataRx
+     /tmp/ccXIb9Sw.s:290    .data.VCP_fops:0000000000000000 VCP_fops
+     /tmp/ccXIb9Sw.s:301    .data.linecoding:0000000000000000 linecoding
+     /tmp/ccXIb9Sw.s:287    .data.VCP_fops:0000000000000000 $d
+     /tmp/ccXIb9Sw.s:297    .data.linecoding:0000000000000000 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+APP_Rx_ptr_in
+APP_Rx_Buffer
+TM_INT_USB_VCP_AddReceived
+TM_USB_VCP_Get_IRQState
+TM_USB_VCP_Set_IRQ

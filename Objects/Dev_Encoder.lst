@@ -1,0 +1,499 @@
+ARM GAS  /tmp/cchh429r.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Dev_Encoder.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DevEncoder_GetNum,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	DevEncoder_GetNum:
+  25              	.LFB123:
+  26              		.file 1 "Dev/Dev_Encoder.c"
+   1:Dev/Dev_Encoder.c **** #include "Dev_Encoder.h"
+   2:Dev/Dev_Encoder.c **** #include "drv_gpio.h"
+   3:Dev/Dev_Encoder.c **** #include "drv_timer.h"
+   4:Dev/Dev_Encoder.c **** #include <string.h>
+   5:Dev/Dev_Encoder.c **** 
+   6:Dev/Dev_Encoder.c **** /* internal variable */
+   7:Dev/Dev_Encoder.c **** static uint8_t encoder_sum = 0;
+   8:Dev/Dev_Encoder.c **** 
+   9:Dev/Dev_Encoder.c **** /* internal function */
+  10:Dev/Dev_Encoder.c **** 
+  11:Dev/Dev_Encoder.c **** /* external funtion */
+  12:Dev/Dev_Encoder.c **** static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enabl
+  13:Dev/Dev_Encoder.c **** static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
+  14:Dev/Dev_Encoder.c **** static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
+  15:Dev/Dev_Encoder.c **** static uint8_t DevEncoder_GetNum(void);
+  16:Dev/Dev_Encoder.c **** 
+  17:Dev/Dev_Encoder.c **** /* external variable */
+  18:Dev/Dev_Encoder.c **** DevEncoder_TypeDef DevEncoder = {
+  19:Dev/Dev_Encoder.c ****     .get = DevEncoder_Get,
+  20:Dev/Dev_Encoder.c ****     .invert = DevEncoder_Invert,
+  21:Dev/Dev_Encoder.c ****     .open = DevEncoder_Open,
+  22:Dev/Dev_Encoder.c ****     .num = DevEncoder_GetNum,
+  23:Dev/Dev_Encoder.c **** };
+  24:Dev/Dev_Encoder.c **** 
+  25:Dev/Dev_Encoder.c **** static uint8_t DevEncoder_GetNum(void)
+  26:Dev/Dev_Encoder.c **** {
+  27              		.loc 1 26 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  27:Dev/Dev_Encoder.c ****     return encoder_sum;
+ARM GAS  /tmp/cchh429r.s 			page 2
+
+
+  28:Dev/Dev_Encoder.c **** }
+  32              		.loc 1 28 0
+  33 0000 014B     		ldr	r3, .L2
+  34 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  35 0004 7047     		bx	lr
+  36              	.L3:
+  37 0006 00BF     		.align	2
+  38              	.L2:
+  39 0008 00000000 		.word	.LANCHOR0
+  40              		.cfi_endproc
+  41              	.LFE123:
+  43              		.section	.text.DevEncoder_Open,"ax",%progbits
+  44              		.align	1
+  45              		.syntax unified
+  46              		.thumb
+  47              		.thumb_func
+  48              		.fpu fpv4-sp-d16
+  50              	DevEncoder_Open:
+  51              	.LFB124:
+  29:Dev/Dev_Encoder.c **** 
+  30:Dev/Dev_Encoder.c **** static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enabl
+  31:Dev/Dev_Encoder.c **** {
+  52              		.loc 1 31 0
+  53              		.cfi_startproc
+  54              		@ args = 8, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              	.LVL0:
+  57 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  58              	.LCFI0:
+  59              		.cfi_def_cfa_offset 24
+  60              		.cfi_offset 3, -24
+  61              		.cfi_offset 4, -20
+  62              		.cfi_offset 5, -16
+  63              		.cfi_offset 6, -12
+  64              		.cfi_offset 7, -8
+  65              		.cfi_offset 14, -4
+  32:Dev/Dev_Encoder.c ****     if ((obj == NULL) || (io == NULL))
+  66              		.loc 1 32 0
+  67 0002 0446     		mov	r4, r0
+  68 0004 0028     		cmp	r0, #0
+  69 0006 31D0     		beq	.L5
+  70              		.loc 1 32 0 is_stmt 0 discriminator 1
+  71 0008 0029     		cmp	r1, #0
+  72 000a 2FD0     		beq	.L5
+  73 000c 1F46     		mov	r7, r3
+  74 000e 0D46     		mov	r5, r1
+  33:Dev/Dev_Encoder.c ****     {
+  34:Dev/Dev_Encoder.c ****         obj->init_state = false;
+  35:Dev/Dev_Encoder.c ****         return false;
+  36:Dev/Dev_Encoder.c ****     }
+  37:Dev/Dev_Encoder.c **** 
+  38:Dev/Dev_Encoder.c ****     obj->btn_en = btn_enable;
+  75              		.loc 1 38 0 is_stmt 1
+  76 0010 002A     		cmp	r2, #0
+  77 0012 14BF     		ite	ne
+  78 0014 0123     		movne	r3, #1
+  79              	.LVL1:
+ARM GAS  /tmp/cchh429r.s 			page 3
+
+
+  80 0016 0023     		moveq	r3, #0
+  81 0018 8376     		strb	r3, [r0, #26]
+  39:Dev/Dev_Encoder.c ****     obj->invert_reg = Encoder_None_Invert;
+  82              		.loc 1 39 0
+  83 001a 4FF00003 		mov	r3, #0
+  84 001e 4376     		strb	r3, [r0, #25]
+  40:Dev/Dev_Encoder.c **** 
+  41:Dev/Dev_Encoder.c ****     if (btn_enable)
+  85              		.loc 1 41 0
+  86 0020 27D1     		bne	.L12
+  87              	.LVL2:
+  88              	.L8:
+  42:Dev/Dev_Encoder.c ****     {
+  43:Dev/Dev_Encoder.c ****         DrvGPIO.open(&io[Encoder_IO_Btn], GPIO_Input, NULL);
+  44:Dev/Dev_Encoder.c ****     }
+  45:Dev/Dev_Encoder.c **** 
+  46:Dev/Dev_Encoder.c ****     DrvGPIO.open(&io[Encoder_IO_A], GPIO_Encoder, NULL);
+  89              		.loc 1 46 0
+  90 0022 194E     		ldr	r6, .L13
+  91 0024 3368     		ldr	r3, [r6]
+  92 0026 0022     		movs	r2, #0
+  93 0028 0221     		movs	r1, #2
+  94 002a 2846     		mov	r0, r5
+  95 002c 9847     		blx	r3
+  96              	.LVL3:
+  47:Dev/Dev_Encoder.c ****     DrvGPIO.open(&io[Encoder_IO_B], GPIO_Encoder, NULL);
+  97              		.loc 1 47 0
+  98 002e 3368     		ldr	r3, [r6]
+  99 0030 0022     		movs	r2, #0
+ 100 0032 0221     		movs	r1, #2
+ 101 0034 05F11000 		add	r0, r5, #16
+ 102 0038 9847     		blx	r3
+ 103              	.LVL4:
+  48:Dev/Dev_Encoder.c **** 
+  49:Dev/Dev_Encoder.c ****     DrvTimer.obj_clear(&obj->TimerObj);
+ 104              		.loc 1 49 0
+ 105 003a 144D     		ldr	r5, .L13+4
+ 106              	.LVL5:
+ 107 003c 2B68     		ldr	r3, [r5]
+ 108 003e 2046     		mov	r0, r4
+ 109 0040 9847     		blx	r3
+ 110              	.LVL6:
+  50:Dev/Dev_Encoder.c **** 
+  51:Dev/Dev_Encoder.c ****     obj->TimerObj.timerx = timerx;
+ 111              		.loc 1 51 0
+ 112 0042 6770     		strb	r7, [r4, #1]
+  52:Dev/Dev_Encoder.c ****     obj->TimerObj.enc_ch_a = ch_a;
+ 113              		.loc 1 52 0
+ 114 0044 BDF81830 		ldrh	r3, [sp, #24]
+ 115 0048 2382     		strh	r3, [r4, #16]	@ movhi
+  53:Dev/Dev_Encoder.c ****     obj->TimerObj.enc_ch_b = ch_b;
+ 116              		.loc 1 53 0
+ 117 004a BDF81C30 		ldrh	r3, [sp, #28]
+ 118 004e 6382     		strh	r3, [r4, #18]	@ movhi
+  54:Dev/Dev_Encoder.c **** 
+  55:Dev/Dev_Encoder.c ****     if (DrvTimer.ctl(DrvTimer_Encoder_Mode, (uint32_t)&obj->TimerObj, sizeof(obj->TimerObj)))
+ 119              		.loc 1 55 0
+ARM GAS  /tmp/cchh429r.s 			page 4
+
+
+ 120 0050 6B68     		ldr	r3, [r5, #4]
+ 121 0052 1822     		movs	r2, #24
+ 122 0054 2146     		mov	r1, r4
+ 123 0056 0320     		movs	r0, #3
+ 124 0058 9847     		blx	r3
+ 125              	.LVL7:
+ 126 005a 90B1     		cbz	r0, .L9
+  56:Dev/Dev_Encoder.c ****     {
+  57:Dev/Dev_Encoder.c ****         obj->init_state = true;
+ 127              		.loc 1 57 0
+ 128 005c 0123     		movs	r3, #1
+ 129 005e 2376     		strb	r3, [r4, #24]
+  58:Dev/Dev_Encoder.c ****         encoder_sum++;
+ 130              		.loc 1 58 0
+ 131 0060 0B4A     		ldr	r2, .L13+8
+ 132 0062 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 133 0064 0133     		adds	r3, r3, #1
+ 134 0066 1370     		strb	r3, [r2]
+ 135              	.L10:
+  59:Dev/Dev_Encoder.c ****     }
+  60:Dev/Dev_Encoder.c ****     else
+  61:Dev/Dev_Encoder.c ****     {
+  62:Dev/Dev_Encoder.c ****         obj->init_state = false;
+  63:Dev/Dev_Encoder.c ****     }
+  64:Dev/Dev_Encoder.c **** 
+  65:Dev/Dev_Encoder.c ****     return obj->init_state;
+ 136              		.loc 1 65 0
+ 137 0068 207E     		ldrb	r0, [r4, #24]	@ zero_extendqisi2
+  66:Dev/Dev_Encoder.c **** }
+ 138              		.loc 1 66 0
+ 139 006a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 140              	.LVL8:
+ 141              	.L5:
+  34:Dev/Dev_Encoder.c ****         return false;
+ 142              		.loc 1 34 0
+ 143 006c 0020     		movs	r0, #0
+ 144              	.LVL9:
+ 145 006e 2076     		strb	r0, [r4, #24]
+  35:Dev/Dev_Encoder.c ****     }
+ 146              		.loc 1 35 0
+ 147 0070 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 148              	.LVL10:
+ 149              	.L12:
+  43:Dev/Dev_Encoder.c ****     }
+ 150              		.loc 1 43 0
+ 151 0072 054B     		ldr	r3, .L13
+ 152 0074 1B68     		ldr	r3, [r3]
+ 153 0076 0022     		movs	r2, #0
+ 154              	.LVL11:
+ 155 0078 0121     		movs	r1, #1
+ 156              	.LVL12:
+ 157 007a 05F12000 		add	r0, r5, #32
+ 158              	.LVL13:
+ 159 007e 9847     		blx	r3
+ 160              	.LVL14:
+ 161 0080 CFE7     		b	.L8
+ 162              	.LVL15:
+ARM GAS  /tmp/cchh429r.s 			page 5
+
+
+ 163              	.L9:
+  62:Dev/Dev_Encoder.c ****     }
+ 164              		.loc 1 62 0
+ 165 0082 0023     		movs	r3, #0
+ 166 0084 2376     		strb	r3, [r4, #24]
+ 167 0086 EFE7     		b	.L10
+ 168              	.L14:
+ 169              		.align	2
+ 170              	.L13:
+ 171 0088 00000000 		.word	DrvGPIO
+ 172 008c 00000000 		.word	DrvTimer
+ 173 0090 00000000 		.word	.LANCHOR0
+ 174              		.cfi_endproc
+ 175              	.LFE124:
+ 177              		.section	.text.DevEncoder_Invert,"ax",%progbits
+ 178              		.align	1
+ 179              		.syntax unified
+ 180              		.thumb
+ 181              		.thumb_func
+ 182              		.fpu fpv4-sp-d16
+ 184              	DevEncoder_Invert:
+ 185              	.LFB125:
+  67:Dev/Dev_Encoder.c **** 
+  68:Dev/Dev_Encoder.c **** static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val)
+  69:Dev/Dev_Encoder.c **** {
+ 186              		.loc 1 69 0
+ 187              		.cfi_startproc
+ 188              		@ args = 0, pretend = 0, frame = 0
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190              		@ link register save eliminated.
+ 191              	.LVL16:
+  70:Dev/Dev_Encoder.c ****     if ((obj == NULL) || (!obj->init_state) || (invert_val > 0x03))
+ 192              		.loc 1 70 0
+ 193 0000 0346     		mov	r3, r0
+ 194 0002 28B1     		cbz	r0, .L17
+ 195              		.loc 1 70 0 is_stmt 0 discriminator 1
+ 196 0004 007E     		ldrb	r0, [r0, #24]	@ zero_extendqisi2
+ 197              	.LVL17:
+ 198 0006 30B1     		cbz	r0, .L16
+ 199              		.loc 1 70 0 discriminator 2
+ 200 0008 0329     		cmp	r1, #3
+ 201 000a 03D8     		bhi	.L18
+  71:Dev/Dev_Encoder.c ****         return false;
+  72:Dev/Dev_Encoder.c **** 
+  73:Dev/Dev_Encoder.c ****     obj->invert_reg = invert_val;
+ 202              		.loc 1 73 0 is_stmt 1
+ 203 000c 5976     		strb	r1, [r3, #25]
+  74:Dev/Dev_Encoder.c **** 
+  75:Dev/Dev_Encoder.c ****     return true;
+ 204              		.loc 1 75 0
+ 205 000e 7047     		bx	lr
+ 206              	.LVL18:
+ 207              	.L17:
+  71:Dev/Dev_Encoder.c ****         return false;
+ 208              		.loc 1 71 0
+ 209 0010 0020     		movs	r0, #0
+ 210              	.LVL19:
+ARM GAS  /tmp/cchh429r.s 			page 6
+
+
+ 211 0012 7047     		bx	lr
+ 212              	.L18:
+ 213 0014 0020     		movs	r0, #0
+ 214              	.L16:
+  76:Dev/Dev_Encoder.c **** }
+ 215              		.loc 1 76 0
+ 216 0016 7047     		bx	lr
+ 217              		.cfi_endproc
+ 218              	.LFE125:
+ 220              		.section	.text.DevEncoder_Get,"ax",%progbits
+ 221              		.align	1
+ 222              		.syntax unified
+ 223              		.thumb
+ 224              		.thumb_func
+ 225              		.fpu fpv4-sp-d16
+ 227              	DevEncoder_Get:
+ 228              	.LFB126:
+  77:Dev/Dev_Encoder.c **** 
+  78:Dev/Dev_Encoder.c **** static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj)
+  79:Dev/Dev_Encoder.c **** {
+ 229              		.loc 1 79 0
+ 230              		.cfi_startproc
+ 231              		@ args = 0, pretend = 0, frame = 0
+ 232              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233              	.LVL20:
+ 234 0000 38B5     		push	{r3, r4, r5, lr}
+ 235              	.LCFI1:
+ 236              		.cfi_def_cfa_offset 16
+ 237              		.cfi_offset 3, -16
+ 238              		.cfi_offset 4, -12
+ 239              		.cfi_offset 5, -8
+ 240              		.cfi_offset 14, -4
+ 241 0002 0446     		mov	r4, r0
+  80:Dev/Dev_Encoder.c ****     Encoder_Data_TypeDef data_tmp;
+  81:Dev/Dev_Encoder.c **** 
+  82:Dev/Dev_Encoder.c ****     data_tmp.state = Encoder_Normal;
+ 242              		.loc 1 82 0
+ 243 0004 0023     		movs	r3, #0
+ 244 0006 0370     		strb	r3, [r0]
+  83:Dev/Dev_Encoder.c ****     data_tmp.val = 0;
+ 245              		.loc 1 83 0
+ 246 0008 4380     		strh	r3, [r0, #2]	@ movhi
+  84:Dev/Dev_Encoder.c **** 
+  85:Dev/Dev_Encoder.c ****     if ((obj == NULL) || (!obj->init_state))
+ 247              		.loc 1 85 0
+ 248 000a A9B1     		cbz	r1, .L20
+ 249 000c 0D46     		mov	r5, r1
+ 250              		.loc 1 85 0 is_stmt 0 discriminator 1
+ 251 000e 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
+ 252 0010 93B1     		cbz	r3, .L20
+  86:Dev/Dev_Encoder.c ****     {
+  87:Dev/Dev_Encoder.c ****         data_tmp.state = Encoder_Error;
+  88:Dev/Dev_Encoder.c ****         return data_tmp;
+  89:Dev/Dev_Encoder.c ****     }
+  90:Dev/Dev_Encoder.c **** 
+  91:Dev/Dev_Encoder.c ****     /* check encoder button */
+  92:Dev/Dev_Encoder.c ****     if (obj->btn_en)
+ARM GAS  /tmp/cchh429r.s 			page 7
+
+
+ 253              		.loc 1 92 0 is_stmt 1
+ 254 0012 8B7E     		ldrb	r3, [r1, #26]	@ zero_extendqisi2
+ 255 0014 A3B9     		cbnz	r3, .L27
+ 256              	.LVL21:
+ 257              	.L23:
+  93:Dev/Dev_Encoder.c ****     {
+  94:Dev/Dev_Encoder.c ****         data_tmp.btn = DrvGPIO.get(&obj->IO[Encoder_IO_Btn]);
+  95:Dev/Dev_Encoder.c ****     }
+  96:Dev/Dev_Encoder.c **** 
+  97:Dev/Dev_Encoder.c ****     data_tmp.val += DrvTimer.get(&obj->TimerObj);
+ 258              		.loc 1 97 0
+ 259 0016 0F4B     		ldr	r3, .L28
+ 260 0018 9B68     		ldr	r3, [r3, #8]
+ 261 001a 2846     		mov	r0, r5
+ 262 001c 9847     		blx	r3
+ 263              	.LVL22:
+ 264 001e 80B2     		uxth	r0, r0
+ 265 0020 6080     		strh	r0, [r4, #2]	@ movhi
+  98:Dev/Dev_Encoder.c **** 
+  99:Dev/Dev_Encoder.c ****     if (obj->init_state & Encoder_Dir_Invert)
+ 266              		.loc 1 99 0
+ 267 0022 2B7E     		ldrb	r3, [r5, #24]	@ zero_extendqisi2
+ 268 0024 0BB1     		cbz	r3, .L24
+ 100:Dev/Dev_Encoder.c ****     {
+ 101:Dev/Dev_Encoder.c ****         data_tmp.val *= -1;
+ 269              		.loc 1 101 0
+ 270 0026 4042     		negs	r0, r0
+ 271 0028 6080     		strh	r0, [r4, #2]	@ movhi
+ 272              	.L24:
+ 102:Dev/Dev_Encoder.c ****     }
+ 103:Dev/Dev_Encoder.c **** 
+ 104:Dev/Dev_Encoder.c ****     if (obj->invert_reg & Encoder_Btn_Invert)
+ 273              		.loc 1 104 0
+ 274 002a 6B7E     		ldrb	r3, [r5, #25]	@ zero_extendqisi2
+ 275 002c 13F0020F 		tst	r3, #2
+ 276 0030 04D0     		beq	.L19
+ 105:Dev/Dev_Encoder.c ****     {
+ 106:Dev/Dev_Encoder.c ****         data_tmp.btn = ~data_tmp.btn;
+ 277              		.loc 1 106 0
+ 278 0032 0123     		movs	r3, #1
+ 279 0034 2371     		strb	r3, [r4, #4]
+ 107:Dev/Dev_Encoder.c ****     }
+ 108:Dev/Dev_Encoder.c **** 
+ 109:Dev/Dev_Encoder.c ****     return data_tmp;
+ 280              		.loc 1 109 0
+ 281 0036 01E0     		b	.L19
+ 282              	.LVL23:
+ 283              	.L20:
+  87:Dev/Dev_Encoder.c ****         return data_tmp;
+ 284              		.loc 1 87 0
+ 285 0038 0123     		movs	r3, #1
+ 286 003a 2370     		strb	r3, [r4]
+ 287              	.LVL24:
+ 288              	.L19:
+ 110:Dev/Dev_Encoder.c **** }
+ 289              		.loc 1 110 0
+ 290 003c 2046     		mov	r0, r4
+ARM GAS  /tmp/cchh429r.s 			page 8
+
+
+ 291 003e 38BD     		pop	{r3, r4, r5, pc}
+ 292              	.LVL25:
+ 293              	.L27:
+  94:Dev/Dev_Encoder.c ****     }
+ 294              		.loc 1 94 0
+ 295 0040 054B     		ldr	r3, .L28+4
+ 296 0042 DB68     		ldr	r3, [r3, #12]
+ 297 0044 01F13C00 		add	r0, r1, #60
+ 298              	.LVL26:
+ 299 0048 9847     		blx	r3
+ 300              	.LVL27:
+ 301 004a 0030     		adds	r0, r0, #0
+ 302 004c 18BF     		it	ne
+ 303 004e 0120     		movne	r0, #1
+ 304 0050 2071     		strb	r0, [r4, #4]
+ 305 0052 E0E7     		b	.L23
+ 306              	.L29:
+ 307              		.align	2
+ 308              	.L28:
+ 309 0054 00000000 		.word	DrvTimer
+ 310 0058 00000000 		.word	DrvGPIO
+ 311              		.cfi_endproc
+ 312              	.LFE126:
+ 314              		.global	DevEncoder
+ 315              		.section	.bss.encoder_sum,"aw",%nobits
+ 316              		.set	.LANCHOR0,. + 0
+ 319              	encoder_sum:
+ 320 0000 00       		.space	1
+ 321              		.section	.data.DevEncoder,"aw",%progbits
+ 322              		.align	2
+ 325              	DevEncoder:
+ 326 0000 00000000 		.word	DevEncoder_Open
+ 327 0004 00000000 		.word	DevEncoder_Invert
+ 328 0008 00000000 		.word	DevEncoder_GetNum
+ 329 000c 00000000 		.word	DevEncoder_Get
+ 330              		.text
+ 331              	.Letext0:
+ 332              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 333              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 334              		.file 4 "F4_CORE/core_cm4.h"
+ 335              		.file 5 "USER/system_stm32f4xx.h"
+ 336              		.file 6 "USER/stm32f4xx.h"
+ 337              		.file 7 "Bsp/periph_gpio.h"
+ 338              		.file 8 "Drv/drv_gpio.h"
+ 339              		.file 9 "/usr/include/newlib/sys/lock.h"
+ 340              		.file 10 "/usr/include/newlib/sys/_types.h"
+ 341              		.file 11 "/usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h"
+ 342              		.file 12 "/usr/include/newlib/sys/reent.h"
+ 343              		.file 13 "Bsp/periph_timer.h"
+ 344              		.file 14 "Drv/drv_timer.h"
+ 345              		.file 15 "Dev/Dev_Encoder.h"
+ARM GAS  /tmp/cchh429r.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Dev_Encoder.c
+     /tmp/cchh429r.s:18     .text.DevEncoder_GetNum:0000000000000000 $t
+     /tmp/cchh429r.s:24     .text.DevEncoder_GetNum:0000000000000000 DevEncoder_GetNum
+     /tmp/cchh429r.s:39     .text.DevEncoder_GetNum:0000000000000008 $d
+     /tmp/cchh429r.s:44     .text.DevEncoder_Open:0000000000000000 $t
+     /tmp/cchh429r.s:50     .text.DevEncoder_Open:0000000000000000 DevEncoder_Open
+     /tmp/cchh429r.s:171    .text.DevEncoder_Open:0000000000000088 $d
+     /tmp/cchh429r.s:178    .text.DevEncoder_Invert:0000000000000000 $t
+     /tmp/cchh429r.s:184    .text.DevEncoder_Invert:0000000000000000 DevEncoder_Invert
+     /tmp/cchh429r.s:221    .text.DevEncoder_Get:0000000000000000 $t
+     /tmp/cchh429r.s:227    .text.DevEncoder_Get:0000000000000000 DevEncoder_Get
+     /tmp/cchh429r.s:309    .text.DevEncoder_Get:0000000000000054 $d
+     /tmp/cchh429r.s:325    .data.DevEncoder:0000000000000000 DevEncoder
+     /tmp/cchh429r.s:319    .bss.encoder_sum:0000000000000000 encoder_sum
+     /tmp/cchh429r.s:320    .bss.encoder_sum:0000000000000000 $d
+     /tmp/cchh429r.s:322    .data.DevEncoder:0000000000000000 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+DrvGPIO
+DrvTimer
