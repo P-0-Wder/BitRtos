@@ -1027,7 +1027,9 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     return UI_ShowSelector((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data));
 }
 
-static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
+static void;
+
+static int8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
 {
     switch ((uint8_t)item->type)
     {
@@ -1061,10 +1063,10 @@ static uint8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
 static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_Item_TypeDef *item_prv, const WidgetUI_Item_TypeDef *item_nxt)
 {
     /* this 4 var down below can be optmized*/
-    uint8_t item_prv_y = 0;
-    uint8_t item_nxt_y = 0;
-    uint8_t item_prv_x = 0;
-    uint8_t item_nxt_x = 0;
+    int8_t item_prv_y = 0;
+    int8_t item_nxt_y = 0;
+    int8_t item_prv_x = 0;
+    int8_t item_nxt_x = 0;
 
     if ((item_prv == NULL) && (item_nxt == NULL))
         return NULL;

@@ -325,17 +325,6 @@ static bool UI_CheckBox_SetCallback(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrig
     return true;
 }
 
-static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
-{
-    if ((UI_DspInterface.fill_rectangle == NULL) ||
-        (UI_DspInterface.draw_rectangle == NULL))
-        return false;
-
-    Obj->checked = state;
-
-    return true;
-}
-
 static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y)
 {
     if (Obj == NULL)
@@ -353,6 +342,17 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
 
     if (Obj->callback)
         Obj->callback(Obj->checked);
+
+    return true;
+}
+
+static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
+{
+    if ((UI_DspInterface.fill_rectangle == NULL) ||
+        (UI_DspInterface.draw_rectangle == NULL))
+        return false;
+
+    Obj->checked = state;
 
     return true;
 }
