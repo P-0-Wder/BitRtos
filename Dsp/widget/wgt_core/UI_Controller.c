@@ -368,6 +368,10 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 
     UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
 
+    // UI_DspInterface.draw_rectangle();
+    // if (Obj->checked)
+    //     UI_DspInterface.fill_rectangle();
+
     return true;
 }
 
