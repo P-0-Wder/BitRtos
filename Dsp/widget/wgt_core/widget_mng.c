@@ -110,6 +110,13 @@ static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y)
 static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
 
+/* Widfet UI CheckBox Mathod */
+static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16_t y, bool state);
+static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl);
+static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int16_t x, int16_t y);
+static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl);
+static bool WidgetUI_CheckBox_SetCallBack(UI_CheckBox_Handle checkbox_hdl, UI_CheckBoxTrigger_Callback callback);
+
 /* Wisget Button Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .create = WidgetUI_Creat_Button,
@@ -1258,6 +1265,16 @@ static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16
     return ((UI_CheckBox_Handle)checkbox);
 }
 
+static bool WidgetUI_CheckBox_SetCallBack(UI_CheckBox_Handle checkbox_hdl, UI_CheckBoxTrigger_Callback callback)
+{
+    if (checkbox_hdl == 0)
+        return false;
+
+    UI_CheckBox.Set_Callback((UI_ButtonObj_TypeDef *)checkbox_hdl, callback);
+
+    return true;
+}
+
 static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl)
 {
     if (checkbox_hdl == 0)
@@ -1268,7 +1285,7 @@ static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl)
     return true;
 }
 
-static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int x, int y)
+static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int16_t x, int16_t y)
 {
     if (checkbox_hdl == 0)
         return false;
