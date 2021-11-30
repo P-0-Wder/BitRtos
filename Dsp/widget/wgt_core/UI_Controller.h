@@ -61,6 +61,7 @@ typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 typedef enum
 {
     UI_Type_Button = 0,
+    UI_Type_CheckBox,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;

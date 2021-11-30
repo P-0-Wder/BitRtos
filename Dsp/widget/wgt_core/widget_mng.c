@@ -1129,32 +1129,21 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
         return item_prv;
 }
 
-/************************************** widget Button interface ******************************************/
-
-static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void)
+static bool WidgetUI_InsertItem(UI_GenCTL_Handle hdl, WidgetUI_Type_List type)
 {
-    return &WidgetUI_Button;
-}
-
-static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
-{
-    UI_ButtonObj_TypeDef *btn = NULL;
     WidgetUI_Item_TypeDef *UI_ItemData_tmp = NULL;
     item_obj *UI_Item = NULL;
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
-    btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
     UI_ItemData_tmp = (WidgetUI_Item_TypeDef *)MMU_Malloc(sizeof(WidgetUI_Item_TypeDef));
     UI_Item = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
-    if ((btn == NULL) ||
-        (UI_ItemData_tmp == NULL) ||
-        (UI_Item == NULL) ||
-        (!UI_Button.init(btn, label, x, y, width, height, type, state)))
-        return NULL;
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
-    UI_ItemData_tmp->Handler = (UI_Button_Handle)btn;
-    UI_ItemData_tmp->type = UI_Type_Button;
+    if ((hdl == 0) || (UI_Item == NULL) || (UI_ItemData_tmp == NULL) || (tmp == NULL))
+        return false;
+
+    UI_ItemData_tmp->Handler = hdl;
+    UI_ItemData_tmp->type = type;
 
     List_ItemInit(UI_Item, UI_ItemData_tmp);
 
@@ -1172,6 +1161,27 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, u
 
     /* insert list item */
     tmp->ui_ctl_num++;
+
+    return true;
+}
+
+/************************************** widget Button interface ******************************************/
+
+static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void)
+{
+    return &WidgetUI_Button;
+}
+
+static UI_Button_Handle WidgetUI_Creat_Button(char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
+{
+    UI_ButtonObj_TypeDef *btn = NULL;
+
+    btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
+
+    if ((btn == NULL) ||
+        (!WidgetUI_InsertItem(btn, UI_Type_Button)) ||
+        (!UI_Button.init(btn, label, x, y, width, height, type, state)))
+        return NULL;
 
     return (UI_Button_Handle)btn;
 }
@@ -1237,17 +1247,11 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
 static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int8_t x, int8_t y, bool state)
 {
     UI_CheckBoxObj_TypeDef *checkbox = NULL;
-    WidgetUI_Item_TypeDef *UI_ItemData_tmp = NULL;
-    item_obj *UI_Item = NULL;
-    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 
     checkbox = (UI_CheckBoxObj_TypeDef *)MMU_Malloc(sizeof(UI_CheckBoxObj_TypeDef));
-    UI_ItemData_tmp = (WidgetUI_Item_TypeDef *)MMU_Malloc(sizeof(WidgetUI_Item_TypeDef));
-    UI_Item = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
-    if ((checkbox) ||
-        (UI_ItemData_tmp) ||
-        (UI_Item) ||
+    if ((checkbox == NULL) ||
+        (!WidgetUI_InsertItem(checkbox, UI_Type_CheckBox)) ||
         (!UI_CheckBox.init(checkbox, label, x, y, state)))
         return NULL;
 
