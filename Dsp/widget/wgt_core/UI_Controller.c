@@ -80,14 +80,14 @@ void UI_Set_DspInterface(UI_DrawPoint point,
 bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 {
     /* button selector coordinate */
-    int8_t Btn_Slct_LftUp_X = 0;
-    int8_t Btn_Slct_LftUp_Y = 0;
-    int8_t Btn_Slct_LftDwn_X = 0;
-    int8_t Btn_Slct_LftDwn_Y = 0;
-    int8_t Btn_Slct_RgtUp_X = 0;
-    int8_t Btn_Slct_RgtUp_Y = 0;
-    int8_t Btn_Slct_RgtDwn_X = 0;
-    int8_t Btn_Slct_RgtDwn_Y = 0;
+    int16_t Btn_Slct_LftUp_X = 0;
+    int16_t Btn_Slct_LftUp_Y = 0;
+    int16_t Btn_Slct_LftDwn_X = 0;
+    int16_t Btn_Slct_LftDwn_Y = 0;
+    int16_t Btn_Slct_RgtUp_X = 0;
+    int16_t Btn_Slct_RgtUp_Y = 0;
+    int16_t Btn_Slct_RgtDwn_X = 0;
+    int16_t Btn_Slct_RgtDwn_Y = 0;
 
     if ((item == NULL) ||
         (UI_DspInterface.fill_circle_section == NULL))
