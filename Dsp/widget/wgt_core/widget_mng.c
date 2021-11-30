@@ -140,7 +140,6 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Fresh = WidgetUI_Fresh,
     .Button = WidgetUI_GetButton_Instance,
     .CheckBox = WidgetUI_GetCheckBox_Interface,
-    // .UI_CheckBox = NULL,
     // .UI_ComboBox = NULL,
     // .UI_DigInput = NULL,
     // .UI_StrInput = NULL,
@@ -1059,6 +1058,9 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
     {
     case UI_Type_Button:
         return WidgetUI_Fresh_Button(UI_Data->Handler);
+
+    case UI_Type_CheckBox:
+        return WidgetUI_Fresh_CheckBox(UI_Data->Handler);
 
     default:
         return false;
