@@ -157,7 +157,7 @@ typedef struct
 typedef struct
 {
     bool (*init)(UI_CheckBoxObj_TypeDef *Obj, char *label, int8_t x, int8_t y, bool state);
-    /* data */
+    bool (*Set_Callback)(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrigger_Callback callback);
 } UI_CheckBox_Interface_TypeDef;
 
 typedef enum
