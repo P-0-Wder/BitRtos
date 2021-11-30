@@ -362,7 +362,7 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
 
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 {
-    uint16_t StrDsp_Len = strlen(Obj->Gen_Data.label) * Default_Font;
+    uint16_t StrDsp_x = strlen(Obj->Gen_Data.label) * Default_Font;
 
     if ((Obj != NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
@@ -372,9 +372,12 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 
     UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
 
-    // UI_DspInterface.draw_rectangle();
-    // if (Obj->checked)
-    //     UI_DspInterface.fill_rectangle();
+    StrDsp_x += DEFAULT_CHECKBOX_OFFSET;
+
+    UI_DspInterface.draw_rectangle(StrDsp_x, Obj->Gen_Data.y, DEFAULT_CHECKBOX_FRAME_SIZE, DEFAULT_CHECKBOX_FRAME_SIZE, 1, true);
+
+    if (Obj->checked)
+        UI_DspInterface.fill_rectangle(StrDsp_x + 2, Obj->Gen_Data.y + 2, DEFAULT_CHECKBOX_FILLFRAME, DEFAULT_CHECKBOX_FILLFRAME, true);
 
     return true;
 }
