@@ -1036,11 +1036,16 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
     if ((UI_item == NULL) || (UI_item->data == NULL))
         return false;
 
-    if ((((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
-        ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y < 0)
-        return false;
-
     UI_Data = UI_item->data;
+
+    switch ((uint8_t)(UI_Data->type))
+    {
+    case UI_Type_Button:
+        return WidgetUI_Fresh_Button(UI_Data->Handler);
+
+    default:
+        return false;
+    }
 
     return false;
 }
@@ -1200,8 +1205,11 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
         return false;
 
     ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-    UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
+    if ((((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+        ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y < 0)
+        return false;
 
+    UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
     return true;
 }
 
