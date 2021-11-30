@@ -344,13 +344,15 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj, bool state)
+static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 {
-    if ((UI_DspInterface.fill_rectangle == NULL) ||
+    if ((Obj != NULL) ||
+        (UI_DspInterface.draw_str == NULL) ||
+        (UI_DspInterface.fill_rectangle == NULL) ||
         (UI_DspInterface.draw_rectangle == NULL))
         return false;
 
-    Obj->checked = state;
+    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
 
     return true;
 }
