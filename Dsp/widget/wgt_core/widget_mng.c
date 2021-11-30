@@ -1230,4 +1230,19 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
     }
 }
 
+static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int8_t x, int8_t y, bool state)
+{
+    UI_CheckBoxObj_TypeDef *checkbox = NULL;
+    WidgetUI_Item_TypeDef *UI_ItemData_tmp = NULL;
+    item_obj *UI_Item = NULL;
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    checkbox = (UI_CheckBoxObj_TypeDef *)MMU_Malloc(sizeof(UI_CheckBoxObj_TypeDef));
+    UI_ItemData_tmp = (WidgetUI_Item_TypeDef *)MMU_Malloc(sizeof(WidgetUI_Item_TypeDef));
+    UI_Item = (item_obj *)MMU_Malloc(sizeof(item_obj));
+
+    if ((checkbox) || (UI_ItemData_tmp) || (UI_Item))
+        return NULL;
+}
+
 /************************************** widget UI interface ******************************************/

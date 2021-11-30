@@ -118,6 +118,7 @@ typedef enum
     UI_Btn_PushDwn = 1,
 } UI_Button_State_List;
 
+#pragma pack(1)
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
@@ -140,6 +141,7 @@ typedef struct
     UI_CheckBoxTrigger_Callback callback;
     bool checked;
 } UI_CheckBoxObj_TypeDef;
+#pragma pack()
 
 typedef struct
 {
