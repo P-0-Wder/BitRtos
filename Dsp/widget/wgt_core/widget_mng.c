@@ -1031,8 +1031,16 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
 
 static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
 {
+    WidgetUI_Item_TypeDef *UI_Data = NULL;
+
     if ((UI_item == NULL) || (UI_item->data == NULL))
         return false;
+
+    if ((((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+        ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y < 0)
+        return false;
+
+    UI_Data = UI_item->data;
 
     return false;
 }
@@ -1192,11 +1200,6 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
         return false;
 
     ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-
-    if ((((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
-        ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y < 0)
-        return false;
-
     UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
 
     return true;
