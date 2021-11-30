@@ -205,7 +205,7 @@ void List_Insert_Item(list_obj *list, item_obj *item)
     }
 }
 
-list_error_code List_traverse_ByCondition(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial, int condition)
+list_error_code List_traverse_HaltByCondition(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial, int condition)
 {
     if (list != NULL)
     {

@@ -58,6 +58,7 @@ void List_InsertByCondition(list_obj *list, item_obj *item);
 void List_Insert_Item(list_obj *list, item_obj *item);
 
 list_error_code List_traverse(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial);
+list_error_code List_traverse_HaltByCondition(list_obj *list, list_traverse_callback callback, void *arg, listtrv_callback_serial cb_serial, int condition);
 list_error_code List_ItemClear(item_obj *item);
 list_error_code List_Delete_Item(item_obj *item, item_datareset_callback callback);
 list_error_code List_DecBelowID(item_obj *obj);
