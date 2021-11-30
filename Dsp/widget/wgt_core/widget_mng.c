@@ -95,6 +95,7 @@ static void Widget_FillRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint
 
 /* Widget UI Get Button Interface */
 static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
+static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Interface(void);
 
 /* general UI Mathod */
 static void WidgetUI_Init(void);
@@ -117,7 +118,7 @@ static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int16_t x, i
 static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl);
 static bool WidgetUI_CheckBox_SetCallBack(UI_CheckBox_Handle checkbox_hdl, UI_CheckBoxTrigger_Callback callback);
 
-/* Wisget Button Interface */
+/* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .create = WidgetUI_Creat_Button,
     .Set_OprLabel = WidgetUI_SetButton_OprLabel,
@@ -126,11 +127,19 @@ WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .Operate = WidgetUI_Button_Operate,
 };
 
+WidgetUI_CheckBox_Interface_TypeDef WidgetUI_CheckBox = {
+    .create = WidgetUI_Create_CheckBox,
+    .Move = WidgetUI_CheckBox_Move,
+    .Set_CallBack = WidgetUI_CheckBox_SetCallBack,
+    .Trigger = WidgetUI_CheckBox_Trigger,
+};
+
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
     .Fresh = WidgetUI_Fresh,
     .Button = WidgetUI_GetButton_Instance,
+    .CheckBox = WidgetUI_GetCheckBox_Interface,
     // .UI_CheckBox = NULL,
     // .UI_ComboBox = NULL,
     // .UI_DigInput = NULL,
@@ -1251,6 +1260,11 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
 /************************************** widget Button interface ******************************************/
 
 /************************************** widget CheckBox interface ******************************************/
+static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Interface(void)
+{
+    return &WidgetUI_CheckBox;
+}
+
 static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16_t y, bool state)
 {
     UI_CheckBoxObj_TypeDef *checkbox = NULL;
