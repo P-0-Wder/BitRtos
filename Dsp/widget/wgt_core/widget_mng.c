@@ -1236,8 +1236,7 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
         return false;
 
     ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-    if ((((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
-        ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y < 0)
+    if ((((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
         return false;
 
     UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
@@ -1315,8 +1314,7 @@ static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
         return false;
 
     ((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-    if ((((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
-        ((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y < 0)
+    if ((((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
         return false;
 
     UI_CheckBox.ctl((UI_CheckBoxObj_TypeDef *)checkbox_hdl);
