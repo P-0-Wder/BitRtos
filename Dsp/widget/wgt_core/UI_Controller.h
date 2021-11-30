@@ -159,6 +159,7 @@ typedef struct
     bool (*init)(UI_CheckBoxObj_TypeDef *Obj, char *label, int8_t x, int8_t y, bool state);
     bool (*Set_Callback)(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrigger_Callback callback);
     bool (*Move)(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y);
+    bool (*Trigger)(UI_CheckBoxObj_TypeDef *Obj);
 } UI_CheckBox_Interface_TypeDef;
 
 typedef enum
