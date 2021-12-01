@@ -1138,10 +1138,10 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
     {
         if (item_prv_x >= item_nxt_x)
         {
-            return item_nxt;
+            return item_prv;
         }
         else
-            return item_prv;
+            return item_nxt;
     }
     else
         return item_prv;

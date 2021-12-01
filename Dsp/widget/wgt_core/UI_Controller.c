@@ -89,6 +89,10 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     int16_t Btn_Slct_RgtDwn_X = 0;
     int16_t Btn_Slct_RgtDwn_Y = 0;
 
+    /* selector block coordinate */
+    int16_t block_x;
+    int16_t block_y;
+
     if ((item == NULL) ||
         (UI_DspInterface.fill_circle_section == NULL))
         return false;
@@ -114,6 +118,13 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Up, BUTTON_SELECTOR_LINE_SIZE, true);
         UI_DspInterface.draw_circle_section(Btn_Slct_RgtUp_X, Btn_Slct_RgtUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Down, BUTTON_SELECTOR_LINE_SIZE, true);
         UI_DspInterface.draw_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Up, BUTTON_SELECTOR_LINE_SIZE, true);
+        break;
+
+    case UI_Type_CheckBox:
+        block_x = ((UI_CheckBoxObj_TypeDef *)(item->Handler))->Gen_Data.x + 3;
+        block_y = ((UI_CheckBoxObj_TypeDef *)(item->Handler))->Gen_Data.y + 1;
+
+        UI_DspInterface.fill_rectangle(block_x, block_y, 128 - 6, Default_Font - 1, true);
         break;
 
     default:
@@ -258,8 +269,6 @@ static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y)
 
 static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 {
-    SYSTEM_RunTime Cur_Rt = Get_CurrentRunningMs();
-
     if (Obj == NULL)
         return false;
 
@@ -363,7 +372,7 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 {
     uint16_t StrDsp_x = strlen(Obj->Gen_Data.label) * FONT_WIDTH;
-    int16_t frame_y = Obj->Gen_Data.y + 4;
+    int16_t frame_y = Obj->Gen_Data.y + 3;
 
     if ((Obj == NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
@@ -371,7 +380,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
         (UI_DspInterface.draw_rectangle == NULL))
         return false;
 
-    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
 
     StrDsp_x += DEFAULT_CHECKBOX_OFFSET;
 

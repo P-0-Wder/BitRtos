@@ -8,6 +8,9 @@
 #include "runtime.h"
 #include "linked_list.h"
 
+typedef uint8_t UI_GetWidget_Width(void);
+typedef uint8_t UI_GetWidget_Height(void);
+
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;

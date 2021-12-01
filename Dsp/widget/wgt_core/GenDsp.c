@@ -305,11 +305,40 @@ static void GenDsp_DrawRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t wi
     int16_t x_tmp = x + width - 1;
     int16_t y_tmp = y + height - 1;
 
-    GenDsp_DrawLen(map, x, y, x_tmp, y, line_size, col_inv);
-    GenDsp_DrawLen(map, x, y, x, y_tmp, line_size, col_inv);
+    // GenDsp_DrawLen(map, x, y, x_tmp, y, line_size, col_inv);
+    // GenDsp_DrawLen(map, x, y, x, y_tmp, line_size, col_inv);
 
-    GenDsp_DrawLen(map, x_tmp, y, x_tmp, y_tmp, line_size, col_inv);
-    GenDsp_DrawLen(map, x, y_tmp, x_tmp, y_tmp, line_size, col_inv);
+    // GenDsp_DrawLen(map, x_tmp, y, x_tmp, y_tmp, line_size, col_inv);
+    // GenDsp_DrawLen(map, x, y_tmp, x_tmp, y_tmp, line_size, col_inv);
+
+    for (uint8_t width_tmp = x; width_tmp < x_tmp + 1; width_tmp++)
+    {
+        if (col_inv)
+        {
+            GenDsp_DrawPoint(map, width_tmp, y, col_inv ^ map[y][width_tmp]);
+            GenDsp_DrawPoint(map, width_tmp, y_tmp, col_inv ^ map[y_tmp][width_tmp]);
+        }
+        else
+        {
+            GenDsp_DrawPoint(map, width_tmp, y, !col_inv ^ map[y][width_tmp]);
+            GenDsp_DrawPoint(map, width_tmp, y_tmp, !col_inv ^ map[y_tmp][width_tmp]);
+        }
+    }
+
+    for (uint8_t height_tmp = y + 1; height_tmp < y_tmp; height_tmp++)
+    {
+        if (col_inv)
+        {
+
+            GenDsp_DrawPoint(map, x, height_tmp, col_inv ^ map[height_tmp][x]);
+            GenDsp_DrawPoint(map, x_tmp, height_tmp, col_inv ^ map[height_tmp][x_tmp]);
+        }
+        else
+        {
+            GenDsp_DrawPoint(map, x + 1, height_tmp, !col_inv ^ map[height_tmp][x]);
+            GenDsp_DrawPoint(map, x_tmp, height_tmp, !col_inv ^ map[height_tmp][x_tmp]);
+        }
+    }
 }
 
 /* bug in this function */
@@ -410,7 +439,7 @@ static void GenDsp_FillRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t wi
     {
         for (int16_t y_tmp = y; y_tmp < y + height; y_tmp++)
         {
-            GenDsp_DrawPoint(map, x_tmp, y_tmp, col_inv);
+            GenDsp_DrawPoint(map, x_tmp, y_tmp, col_inv ^ map[y_tmp][x_tmp]);
         }
     }
 }
@@ -418,7 +447,7 @@ static void GenDsp_FillRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t wi
 static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv)
 {
     GenDsp_FillRectangle(map, x + radius, y, width - 2 * radius, height, col_inv);
-    GenDsp_FillRectangle(map, x, y + radius, radius + 1, height - 2 * radius - 1, col_inv);
+    GenDsp_FillRectangle(map, x, y + radius, radius, height - 2 * radius - 1, col_inv);
     GenDsp_FillRectangle(map, x + width - radius, y + radius, radius + 1, height - 2 * radius, col_inv);
 
     GenDsp_FillCircle(map, x + radius, y + radius, radius, DRAW_UPPER_LEFT, col_inv);
