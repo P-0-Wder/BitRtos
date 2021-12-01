@@ -16,6 +16,7 @@ Task_Handler TaskWidget_Hdl = 0;
 
 static UI_Button_Handle test_btn_1 = 0;
 static UI_Button_Handle test_btn_2 = 0;
+static UI_CheckBox_Handle test_checkbox_1 = 0;
 
 /* internal function definition */
 
@@ -30,6 +31,8 @@ static void TaskWidget_Init(void)
 
     test_btn_1 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_1", 90, 5, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Reset_Btn, DEFAULT_BUTTON_STATE);
     test_btn_2 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_2", 90, 10 + DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Lock_Btn, DEFAULT_BUTTON_STATE);
+
+    test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 50, true);
 }
 
 static void TestWidget_Dynamic_Dsp(void)
@@ -51,6 +54,7 @@ static void TestWidget_Dynamic_Dsp(void)
 
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_PushDwn);
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_PushDwn);
+            Widget_Mng.Control(test4)->UI()->CheckBox()->Trigger(test_checkbox_1);
             change = true;
         }
     }
@@ -74,9 +78,9 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (dis > 20)
         {
-            Widget_Mng.Control(test1)->Clear();
-            Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
-            Widget_Mng.Control(test1)->Show();
+            // Widget_Mng.Control(test1)->Clear();
+            // Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
+            // Widget_Mng.Control(test1)->Show();
             move = true;
         }
     }
@@ -86,7 +90,7 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (dis <= 2)
         {
-            Widget_Mng.Control(test1)->Hide();
+            // Widget_Mng.Control(test1)->Hide();
             move = false;
         }
     }
@@ -98,14 +102,14 @@ static void TestWidget_Dynamic_Dsp(void)
     Widget_Mng.Control(test4)->UI()->Fresh();
     Widget_Mng.Control(test4)->Show();
 
-    Widget_Mng.Control(test3)->Clear();
-    Widget_Mng.Control(test3)->Move(15 /* + dis*/, 15);
-    Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad, true);
-    Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad - 2, false);
+    // Widget_Mng.Control(test3)->Clear();
+    // Widget_Mng.Control(test3)->Move(15 /* + dis*/, 15);
+    // Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad, true);
+    // Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad - 2, false);
 
-    Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "8_B!T0", 15, 22, true);
-    Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
-    Widget_Mng.Control(test3)->Show();
+    // Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "8_B!T0", 15, 22, true);
+    // Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
+    // Widget_Mng.Control(test3)->Show();
 
     //Widget_Mng.Control(test2)->Clear();
     //Widget_Mng.Control(test2)->Move(50, 5 + dis);
