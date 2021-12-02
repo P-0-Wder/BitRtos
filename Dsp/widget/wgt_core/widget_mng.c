@@ -1108,6 +1108,20 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         }
         break;
 
+    case UI_Type_SliderBar:
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return ((UI_SliderBarObj_TypeDef *)item)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return ((UI_SliderBarObj_TypeDef *)item)->Gen_Data.y;
+
+        default:
+            return 0;
+        }
+        break;
+
     default:
         return 0;
     }
