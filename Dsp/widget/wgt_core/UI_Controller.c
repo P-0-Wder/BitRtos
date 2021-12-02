@@ -392,6 +392,25 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
     return true;
 }
 
+static bool UI_SliderBar_Init(UI_SliderBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len)
+{
+    if ((Obj == NULL) || (limit_max <= limit_min) || (mode > SliderBar_Vertical_Mode))
+        return false;
+
+    Obj->mode = mode;
+
+    UI_GenData_Init(&(Obj->Gen_Data), label, x, y);
+
+    Obj->limit_max = limit_max;
+    Obj->limit_min = limit_min;
+
+    Obj->step_len = step_len;
+    Obj->scale = (limit_max - limit_min) / step_len;
+    Obj->cur_val = start_val;
+
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)

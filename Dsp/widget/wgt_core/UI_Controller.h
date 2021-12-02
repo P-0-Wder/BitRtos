@@ -67,9 +67,17 @@ typedef enum
 {
     UI_Type_Button = 0,
     UI_Type_CheckBox,
+    UI_Type_SliderBar,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;
+
+typedef enum
+{
+    SliderBar_Horizon_Mode = 0,
+    SilderBar_Default_Mode = SliderBar_Horizon_Mode,
+    SliderBar_Vertical_Mode,
+} UI_SliderBar_Mode_List;
 
 /*
 * use linked list to distinguish which item in created ui item list.
@@ -147,6 +155,20 @@ typedef struct
     UI_CheckBoxTrigger_Callback callback;
     bool checked;
 } UI_CheckBoxObj_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
+    UI_SliderBar_Mode_List mode;
+
+    int16_t limit_min;
+    int16_t limit_max;
+    int16_t scale;
+    int16_t step_len;
+    int16_t cur_val;
+
+    /* need callback function */
+} UI_SliderBarObj_TypeDef;
 #pragma pack()
 
 typedef struct
