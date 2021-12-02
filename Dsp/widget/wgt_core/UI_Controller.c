@@ -7,18 +7,18 @@ static UI_DrawInterface_TypeDef UI_DspInterface;
 
 /* external function */
 /* UI button section */
-static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label);
 static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback);
 static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj);
 static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj);
-static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y);
+static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint16_t x, uint16_t y);
 static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj);
 
 /* UI check box section */
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, int8_t x, int8_t y, bool state);
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, int16_t x, int16_t y, bool state);
 static bool UI_CheckBox_SetCallback(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrigger_Callback callback);
-static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y);
+static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int16_t x, int16_t y);
 static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj);
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj);
 
@@ -26,7 +26,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj);
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
 static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
-static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y);
+static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int16_t dst_x, int16_t dst_y);
 
 /* external Object var */
 UI_Button_Interface_TypeDef UI_Button = {
@@ -143,7 +143,7 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_
     GenData->operatable = false;
 }
 
-static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst_y)
+static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int16_t dst_x, int16_t dst_y)
 {
     if (GenUI_Info == NULL)
         return false;
@@ -160,7 +160,7 @@ static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int8_t dst_x, int8_t dst
 *  exti irq or input signal triiger first then out of the trigger code 
 *  check signal value doing process
 */
-static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
+static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     if (Obj == NULL)
         return false;
@@ -259,7 +259,7 @@ static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint8_t x, uint8_t y)
+static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint16_t x, uint16_t y)
 {
     if (Obj == NULL)
         return false;
@@ -325,7 +325,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, int8_t x, int8_t y, bool state)
+static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, int16_t x, int16_t y, bool state)
 {
     if (Obj == NULL)
         return false;
@@ -348,7 +348,7 @@ static bool UI_CheckBox_SetCallback(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrig
     return true;
 }
 
-static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y)
+static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int16_t x, int16_t y)
 {
     if (Obj == NULL)
         return false;
@@ -409,6 +409,14 @@ static bool UI_SliderBar_Init(UI_SliderBarObj_TypeDef *Obj, UI_SliderBar_Mode_Li
     Obj->cur_val = start_val;
 
     return true;
+}
+
+static bool UI_SliderBar_Move(UI_SliderBarObj_TypeDef *Obj, int16_t x, int16_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
 /***************************************************************** still developing down below **********************************************************************/

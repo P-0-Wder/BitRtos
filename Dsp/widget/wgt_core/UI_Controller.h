@@ -173,20 +173,20 @@ typedef struct
 
 typedef struct
 {
-    bool (*init)(UI_ButtonObj_TypeDef *Obj, char *label, int8_t x, int8_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
+    bool (*init)(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
     bool (*set_trogger_callback)(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback);
     bool (*set_label)(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *Rls_Lbl);
     bool (*push)(UI_ButtonObj_TypeDef *obj);
     bool (*release)(UI_ButtonObj_TypeDef *obj);
     bool (*ctl)(UI_ButtonObj_TypeDef *obj);
-    bool (*move)(UI_ButtonObj_TypeDef *obj, int8_t x, int8_t y);
+    bool (*move)(UI_ButtonObj_TypeDef *obj, int16_t x, int16_t y);
 } UI_Button_Interface_TypeDef;
 
 typedef struct
 {
-    bool (*init)(UI_CheckBoxObj_TypeDef *Obj, char *label, int8_t x, int8_t y, bool state);
+    bool (*init)(UI_CheckBoxObj_TypeDef *Obj, char *label, int16_t x, int16_t y, bool state);
     bool (*Set_Callback)(UI_CheckBoxObj_TypeDef *Obj, UI_CheckBoxTrigger_Callback callback);
-    bool (*Move)(UI_CheckBoxObj_TypeDef *Obj, int8_t x, int8_t y);
+    bool (*Move)(UI_CheckBoxObj_TypeDef *Obj, int16_t x, int16_t y);
     bool (*Trigger)(UI_CheckBoxObj_TypeDef *Obj);
     bool (*ctl)(UI_CheckBoxObj_TypeDef *Obj);
 } UI_CheckBox_Interface_TypeDef;

@@ -26,6 +26,7 @@ void Gpio_Flip(void)
 /* the code up top is only for the test currently */
 int main(void)
 {
+	/* test pin */
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_0, GPIOB);
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_1, GPIOB);
 	GPIO_IO_Output_Init(RCC_AHB1Periph_GPIOB, GPIO_Pin_2, GPIOB);
@@ -39,6 +40,7 @@ int main(void)
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_3, LO);
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_4, LO);
 	GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
+	/* test pin */
 
 	SystemInit();
 
