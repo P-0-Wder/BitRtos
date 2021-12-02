@@ -42,7 +42,9 @@ static void TestWidget_Dynamic_Dsp(void)
 
     static int8_t dis = 0;
     static bool move = false;
-    static int8_t selector = 1;
+    static int8_t selector = 0;
+    static int8_t selector_cnt = 0;
+    static bool selector_switch = false;
 
     if (!change)
     {
@@ -50,8 +52,6 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (rad >= 32)
         {
-            //selector = 0;
-
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_PushDwn);
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_PushDwn);
             Widget_Mng.Control(test4)->UI()->CheckBox()->Trigger(test_checkbox_1);
@@ -64,11 +64,34 @@ static void TestWidget_Dynamic_Dsp(void)
 
         if (rad <= 2)
         {
-            // selector--;
-
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_RlsUp);
             Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_RlsUp);
             change = false;
+        }
+    }
+
+    if (!selector_switch)
+    {
+        selector_cnt++;
+
+        if ((selector_cnt % 10) == 0)
+            selector = 1;
+
+        if (selector_cnt >= 30)
+        {
+            selector_switch = !selector_switch;
+        }
+    }
+    else
+    {
+        selector_cnt--;
+
+        if ((selector_cnt % 10) == 0)
+            selector = -1;
+
+        if (selector_cnt <= 0)
+        {
+            selector_switch = !selector_switch;
         }
     }
 

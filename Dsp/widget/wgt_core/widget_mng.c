@@ -1014,18 +1014,18 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     volatile item_obj *UIItem_tmp = tmp->CurSelected_CTL;
 
     if ((UIItem_tmp == NULL) ||
-        (*search_offset > tmp->ui_ctl_num) ||
         (tmp->CurSelected_CTL == NULL))
         return false;
+
+    if (*search_offset > tmp->ui_ctl_num)
+        *search_offset = tmp->ui_ctl_num;
 
     if (*search_offset > 0)
     {
         for (; *search_offset > 0; UIItem_tmp = UIItem_tmp->nxt, (*search_offset)--)
         {
             if (UIItem_tmp->nxt == NULL)
-            {
-                return false;
-            }
+                break;
         }
     }
     else if (*search_offset < 0)
@@ -1033,9 +1033,7 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
         for (; *search_offset < 0; UIItem_tmp = UIItem_tmp->prv, (*search_offset)++)
         {
             if (UIItem_tmp->prv == NULL)
-            {
-                return false;
-            }
+                break;
         }
     }
 
@@ -1076,7 +1074,7 @@ static void WidgetUI_Fresh(void)
     List_traverse_HaltByCondition(tmp->UICtl_List, WidgetUI_Fresh_CallBack, NULL, pre_callback, false);
 }
 
-static int8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
+static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetGeneralInfo_List option)
 {
     switch ((uint8_t)item->type)
     {
@@ -1090,16 +1088,24 @@ static int8_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_GetG
         case WidgetUI_get_y:
             return ((UI_ButtonObj_TypeDef *)item)->Gen_Data.y;
 
-        case WidgetUI_get_width:
-            return ((UI_ButtonObj_TypeDef *)item)->width;
-
-        case WidgetUI_get_height:
-            return ((UI_ButtonObj_TypeDef *)item)->height;
-
         default:
             return 0;
         }
 
+        break;
+
+    case UI_Type_CheckBox:
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return ((UI_CheckBoxObj_TypeDef *)item)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return ((UI_CheckBoxObj_TypeDef *)item)->Gen_Data.y;
+
+        default:
+            return 0;
+        }
         break;
 
     default:
@@ -1132,19 +1138,19 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
 
     if (item_prv_y > item_nxt_y)
     {
-        return item_nxt;
+        return item_prv;
     }
     else if (item_prv_y == item_nxt_y)
     {
         if (item_prv_x >= item_nxt_x)
         {
-            return item_prv;
+            return item_nxt;
         }
         else
-            return item_nxt;
+            return item_prv;
     }
     else
-        return item_prv;
+        return item_nxt;
 }
 
 static bool WidgetUIList_InsertItem(UI_GenCTL_Handle hdl, WidgetUI_Type_List type)
@@ -1273,8 +1279,8 @@ static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16
     checkbox = (UI_CheckBoxObj_TypeDef *)MMU_Malloc(sizeof(UI_CheckBoxObj_TypeDef));
 
     if ((checkbox == NULL) ||
-        (!WidgetUIList_InsertItem(checkbox, UI_Type_CheckBox)) ||
-        (!UI_CheckBox.init(checkbox, label, x, y, state)))
+        (!UI_CheckBox.init(checkbox, label, x, y, state)) ||
+        (!WidgetUIList_InsertItem(checkbox, UI_Type_CheckBox)))
         return NULL;
 
     return ((UI_CheckBox_Handle)checkbox);

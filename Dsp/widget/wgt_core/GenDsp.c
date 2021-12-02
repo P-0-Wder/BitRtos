@@ -305,12 +305,6 @@ static void GenDsp_DrawRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t wi
     int16_t x_tmp = x + width - 1;
     int16_t y_tmp = y + height - 1;
 
-    // GenDsp_DrawLen(map, x, y, x_tmp, y, line_size, col_inv);
-    // GenDsp_DrawLen(map, x, y, x, y_tmp, line_size, col_inv);
-
-    // GenDsp_DrawLen(map, x_tmp, y, x_tmp, y_tmp, line_size, col_inv);
-    // GenDsp_DrawLen(map, x, y_tmp, x_tmp, y_tmp, line_size, col_inv);
-
     for (uint8_t width_tmp = x; width_tmp < x_tmp + 1; width_tmp++)
     {
         if (col_inv)
