@@ -133,7 +133,7 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     return true;
 }
 
-static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, uint8_t x, uint8_t y)
+static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, int16_t x, int16_t y)
 {
     GenData->label = label;
 
@@ -441,7 +441,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8
     return true;
 }
 
-static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
+static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {
     if (Obj == NULL)
         return false;

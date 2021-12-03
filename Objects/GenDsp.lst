@@ -1,0 +1,3283 @@
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"GenDsp.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.GenDsp_SetRange,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	GenDsp_SetRange:
+  26              	.LVL0:
+  27              	.LFB3:
+  28              		.file 1 "Dsp/widget/wgt_core/GenDsp.c"
+   1:Dsp/widget/wgt_core/GenDsp.c **** #include "GenDsp.h"
+   2:Dsp/widget/wgt_core/GenDsp.c **** #include "oledfont.h"
+   3:Dsp/widget/wgt_core/GenDsp.c **** #include <math.h>
+   4:Dsp/widget/wgt_core/GenDsp.c **** 
+   5:Dsp/widget/wgt_core/GenDsp.c **** #define DegToRad(x) x / (180 / M_PI)
+   6:Dsp/widget/wgt_core/GenDsp.c **** 
+   7:Dsp/widget/wgt_core/GenDsp.c **** /* internal variable */
+   8:Dsp/widget/wgt_core/GenDsp.c **** GenDsp_DspArea_Limit_Range DspRange = {
+   9:Dsp/widget/wgt_core/GenDsp.c ****     .width = 0,
+  10:Dsp/widget/wgt_core/GenDsp.c ****     .heigh = 0,
+  11:Dsp/widget/wgt_core/GenDsp.c ****     .x = 0,
+  12:Dsp/widget/wgt_core/GenDsp.c ****     .y = 0,
+  13:Dsp/widget/wgt_core/GenDsp.c **** };
+  14:Dsp/widget/wgt_core/GenDsp.c **** 
+  15:Dsp/widget/wgt_core/GenDsp.c **** /* internal function definition */
+  16:Dsp/widget/wgt_core/GenDsp.c **** 
+  17:Dsp/widget/wgt_core/GenDsp.c **** /* external draw funtion definition */
+  18:Dsp/widget/wgt_core/GenDsp.c **** static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str);
+  19:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawPoint(uint8_t **map, int16_t x, int16_t y, bool set);
+  20:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_SetRange(int16_t x, int16_t y, uint8_t width, uint8_t height);
+  21:Dsp/widget/wgt_core/GenDsp.c **** static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x, int16_t y, bool co
+  22:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int16_t x, int16_t y, bool 
+  23:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int16_t x, int16_t y, bo
+  24:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawCircle(uint8_t **map, int16_t center_x, int16_t center_y, uint8_t radius, ui
+  25:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height
+  26:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawLen(uint8_t **map, int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_
+  27:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawRad(uint8_t **map, int8_t center_x, int8_t center_y, uint8_t radius, uint8_t
+  28:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t
+  29:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillCircle(uint8_t **map, int16_t x, int16_t y, uint8_t radius, uint8_t option, 
+  30:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 2
+
+
+  31:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t
+  32:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_HLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width,
+  33:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_VLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width,
+  34:Dsp/widget/wgt_core/GenDsp.c **** 
+  35:Dsp/widget/wgt_core/GenDsp.c **** GeneralDispalyProc_TypeDef GenDsp_Interface = {
+  36:Dsp/widget/wgt_core/GenDsp.c ****     .draw_img = NULL,
+  37:Dsp/widget/wgt_core/GenDsp.c ****     .draw_str = GenDsp_DrawStr,
+  38:Dsp/widget/wgt_core/GenDsp.c ****     .draw_num = GenDsp_DrawNum,
+  39:Dsp/widget/wgt_core/GenDsp.c ****     .draw_line = GenDsp_DrawLen,
+  40:Dsp/widget/wgt_core/GenDsp.c ****     .draw_vertical_line = GenDsp_Draw_VLine,
+  41:Dsp/widget/wgt_core/GenDsp.c ****     .draw_horizon_line = GenDsp_Draw_HLine,
+  42:Dsp/widget/wgt_core/GenDsp.c ****     .str_len = GenDsp_GetStrLen,
+  43:Dsp/widget/wgt_core/GenDsp.c ****     .draw_char = GenDsp_DrawChar,
+  44:Dsp/widget/wgt_core/GenDsp.c ****     .set_range = GenDsp_SetRange,
+  45:Dsp/widget/wgt_core/GenDsp.c ****     .draw_point = GenDsp_DrawPoint,
+  46:Dsp/widget/wgt_core/GenDsp.c ****     .draw_circle = GenDsp_DrawCircle,
+  47:Dsp/widget/wgt_core/GenDsp.c ****     .draw_rectangle = GenDsp_DrawRectangle,
+  48:Dsp/widget/wgt_core/GenDsp.c ****     .draw_radius_rectangle = GenDsp_Draw_RadiusRectangle,
+  49:Dsp/widget/wgt_core/GenDsp.c ****     .fill_circle = GenDsp_FillCircle,
+  50:Dsp/widget/wgt_core/GenDsp.c ****     .fill_rectangle = GenDsp_FillRectangle,
+  51:Dsp/widget/wgt_core/GenDsp.c ****     .fill_radius_rectangle = GenDsp_Fill_RadiusRectangle,
+  52:Dsp/widget/wgt_core/GenDsp.c **** };
+  53:Dsp/widget/wgt_core/GenDsp.c **** 
+  54:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_SetRange(int16_t x, int16_t y, uint8_t width, uint8_t height)
+  55:Dsp/widget/wgt_core/GenDsp.c **** {
+  29              		.loc 1 55 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              		.loc 1 55 1 is_stmt 0 view .LVU1
+  35 0000 10B4     		push	{r4}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 4
+  38              		.cfi_offset 4, -4
+  56:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.heigh = height;
+  39              		.loc 1 56 5 is_stmt 1 view .LVU2
+  40              		.loc 1 56 20 is_stmt 0 view .LVU3
+  41 0002 044C     		ldr	r4, .L3
+  42 0004 6371     		strb	r3, [r4, #5]
+  57:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.width = width;
+  43              		.loc 1 57 5 is_stmt 1 view .LVU4
+  44              		.loc 1 57 20 is_stmt 0 view .LVU5
+  45 0006 2271     		strb	r2, [r4, #4]
+  58:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.x = x;
+  46              		.loc 1 58 5 is_stmt 1 view .LVU6
+  47              		.loc 1 58 16 is_stmt 0 view .LVU7
+  48 0008 2080     		strh	r0, [r4]	@ movhi
+  59:Dsp/widget/wgt_core/GenDsp.c ****     DspRange.y = y;
+  49              		.loc 1 59 5 is_stmt 1 view .LVU8
+  50              		.loc 1 59 16 is_stmt 0 view .LVU9
+  51 000a 6180     		strh	r1, [r4, #2]	@ movhi
+  60:Dsp/widget/wgt_core/GenDsp.c **** }
+  52              		.loc 1 60 1 view .LVU10
+  53 000c 5DF8044B 		ldr	r4, [sp], #4
+  54              	.LCFI1:
+  55              		.cfi_restore 4
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 3
+
+
+  56              		.cfi_def_cfa_offset 0
+  57 0010 7047     		bx	lr
+  58              	.L4:
+  59 0012 00BF     		.align	2
+  60              	.L3:
+  61 0014 00000000 		.word	.LANCHOR0
+  62              		.cfi_endproc
+  63              	.LFE3:
+  65              		.section	.text.GenDsp_DrawPoint,"ax",%progbits
+  66              		.align	1
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  70              		.fpu fpv4-sp-d16
+  72              	GenDsp_DrawPoint:
+  73              	.LVL1:
+  74              	.LFB4:
+  61:Dsp/widget/wgt_core/GenDsp.c **** 
+  62:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawPoint(uint8_t **map, int16_t x, int16_t y, bool set)
+  63:Dsp/widget/wgt_core/GenDsp.c **** {
+  75              		.loc 1 63 1 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		@ link register save eliminated.
+  80              		.loc 1 63 1 is_stmt 0 view .LVU12
+  81 0000 10B4     		push	{r4}
+  82              	.LCFI2:
+  83              		.cfi_def_cfa_offset 4
+  84              		.cfi_offset 4, -4
+  64:Dsp/widget/wgt_core/GenDsp.c ****     if ((x >= DspRange.width) || (y >= DspRange.heigh) || (x < 0) || (y < 0))
+  85              		.loc 1 64 5 is_stmt 1 view .LVU13
+  86              		.loc 1 64 23 is_stmt 0 view .LVU14
+  87 0002 0C4C     		ldr	r4, .L9
+  88 0004 94F804C0 		ldrb	ip, [r4, #4]	@ zero_extendqisi2
+  89              		.loc 1 64 8 view .LVU15
+  90 0008 6145     		cmp	r1, ip
+  91 000a 0BDA     		bge	.L5
+  92              		.loc 1 64 48 discriminator 1 view .LVU16
+  93 000c 6479     		ldrb	r4, [r4, #5]	@ zero_extendqisi2
+  94              		.loc 1 64 31 discriminator 1 view .LVU17
+  95 000e A242     		cmp	r2, r4
+  96 0010 08DA     		bge	.L5
+  97              		.loc 1 64 56 discriminator 2 view .LVU18
+  98 0012 0029     		cmp	r1, #0
+  99 0014 06DB     		blt	.L5
+ 100              		.loc 1 64 67 discriminator 3 view .LVU19
+ 101 0016 002A     		cmp	r2, #0
+ 102 0018 04DB     		blt	.L5
+  65:Dsp/widget/wgt_core/GenDsp.c ****         return;
+  66:Dsp/widget/wgt_core/GenDsp.c **** 
+  67:Dsp/widget/wgt_core/GenDsp.c ****     if (set)
+ 103              		.loc 1 67 5 is_stmt 1 view .LVU20
+ 104              		.loc 1 67 8 is_stmt 0 view .LVU21
+ 105 001a 33B1     		cbz	r3, .L7
+  68:Dsp/widget/wgt_core/GenDsp.c ****     {
+  69:Dsp/widget/wgt_core/GenDsp.c ****         map[y][x] = 1;
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 4
+
+
+ 106              		.loc 1 69 9 is_stmt 1 view .LVU22
+ 107              		.loc 1 69 12 is_stmt 0 view .LVU23
+ 108 001c 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 109              	.LVL2:
+ 110              		.loc 1 69 19 view .LVU24
+ 111 0020 0122     		movs	r2, #1
+ 112              	.LVL3:
+ 113              		.loc 1 69 19 view .LVU25
+ 114 0022 5A54     		strb	r2, [r3, r1]
+ 115              	.L5:
+  70:Dsp/widget/wgt_core/GenDsp.c ****     }
+  71:Dsp/widget/wgt_core/GenDsp.c ****     else
+  72:Dsp/widget/wgt_core/GenDsp.c ****         map[y][x] = 0;
+  73:Dsp/widget/wgt_core/GenDsp.c **** }
+ 116              		.loc 1 73 1 view .LVU26
+ 117 0024 5DF8044B 		ldr	r4, [sp], #4
+ 118              	.LCFI3:
+ 119              		.cfi_remember_state
+ 120              		.cfi_restore 4
+ 121              		.cfi_def_cfa_offset 0
+ 122 0028 7047     		bx	lr
+ 123              	.LVL4:
+ 124              	.L7:
+ 125              	.LCFI4:
+ 126              		.cfi_restore_state
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 127              		.loc 1 72 9 is_stmt 1 view .LVU27
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 128              		.loc 1 72 12 is_stmt 0 view .LVU28
+ 129 002a 50F82230 		ldr	r3, [r0, r2, lsl #2]
+ 130              	.LVL5:
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 131              		.loc 1 72 19 view .LVU29
+ 132 002e 0022     		movs	r2, #0
+ 133              	.LVL6:
+  72:Dsp/widget/wgt_core/GenDsp.c **** }
+ 134              		.loc 1 72 19 view .LVU30
+ 135 0030 5A54     		strb	r2, [r3, r1]
+ 136 0032 F7E7     		b	.L5
+ 137              	.L10:
+ 138              		.align	2
+ 139              	.L9:
+ 140 0034 00000000 		.word	.LANCHOR0
+ 141              		.cfi_endproc
+ 142              	.LFE4:
+ 144              		.section	.text.GenDsp_DrawChar,"ax",%progbits
+ 145              		.align	1
+ 146              		.syntax unified
+ 147              		.thumb
+ 148              		.thumb_func
+ 149              		.fpu fpv4-sp-d16
+ 151              	GenDsp_DrawChar:
+ 152              	.LVL7:
+ 153              	.LFB5:
+  74:Dsp/widget/wgt_core/GenDsp.c **** 
+  75:Dsp/widget/wgt_core/GenDsp.c **** static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x, int16_t y, bool co
+  76:Dsp/widget/wgt_core/GenDsp.c **** {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 5
+
+
+ 154              		.loc 1 76 1 is_stmt 1 view -0
+ 155              		.cfi_startproc
+ 156              		@ args = 8, pretend = 0, frame = 8
+ 157              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158              		.loc 1 76 1 is_stmt 0 view .LVU32
+ 159 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 160              	.LCFI5:
+ 161              		.cfi_def_cfa_offset 36
+ 162              		.cfi_offset 4, -36
+ 163              		.cfi_offset 5, -32
+ 164              		.cfi_offset 6, -28
+ 165              		.cfi_offset 7, -24
+ 166              		.cfi_offset 8, -20
+ 167              		.cfi_offset 9, -16
+ 168              		.cfi_offset 10, -12
+ 169              		.cfi_offset 11, -8
+ 170              		.cfi_offset 14, -4
+ 171 0004 83B0     		sub	sp, sp, #12
+ 172              	.LCFI6:
+ 173              		.cfi_def_cfa_offset 48
+ 174 0006 1F46     		mov	r7, r3
+ 175 0008 BDF930A0 		ldrsh	r10, [sp, #48]
+ 176 000c 9DF834B0 		ldrb	fp, [sp, #52]	@ zero_extendqisi2
+  77:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t temp;
+ 177              		.loc 1 77 5 is_stmt 1 view .LVU33
+  78:Dsp/widget/wgt_core/GenDsp.c ****     int16_t y0 = y;
+ 178              		.loc 1 78 5 view .LVU34
+ 179              	.LVL8:
+  79:Dsp/widget/wgt_core/GenDsp.c ****     c -= ' ';
+ 180              		.loc 1 79 5 view .LVU35
+ 181              		.loc 1 79 7 is_stmt 0 view .LVU36
+ 182 0010 203A     		subs	r2, r2, #32
+ 183              	.LVL9:
+ 184              		.loc 1 79 7 view .LVU37
+ 185 0012 D3B2     		uxtb	r3, r2
+ 186              	.LVL10:
+ 187              		.loc 1 79 7 view .LVU38
+ 188 0014 0193     		str	r3, [sp, #4]
+ 189              	.LVL11:
+  80:Dsp/widget/wgt_core/GenDsp.c **** 
+  81:Dsp/widget/wgt_core/GenDsp.c ****     if (DspRange.width <= x)
+ 190              		.loc 1 81 5 is_stmt 1 view .LVU39
+ 191              		.loc 1 81 17 is_stmt 0 view .LVU40
+ 192 0016 304B     		ldr	r3, .L29
+ 193 0018 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 194              		.loc 1 81 8 view .LVU41
+ 195 001a BB42     		cmp	r3, r7
+ 196 001c 55DD     		ble	.L23
+ 197 001e 8146     		mov	r9, r0
+ 198 0020 8846     		mov	r8, r1
+ 199 0022 5446     		mov	r4, r10
+ 200              	.LBB2:
+  82:Dsp/widget/wgt_core/GenDsp.c ****         return false;
+  83:Dsp/widget/wgt_core/GenDsp.c **** 
+  84:Dsp/widget/wgt_core/GenDsp.c ****     for (uint8_t t = 0; t < font; t++)
+ 201              		.loc 1 84 18 view .LVU42
+ 202 0024 0023     		movs	r3, #0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 6
+
+
+ 203 0026 0093     		str	r3, [sp]
+ 204 0028 3FE0     		b	.L13
+ 205              	.LVL12:
+ 206              	.L28:
+  85:Dsp/widget/wgt_core/GenDsp.c ****     {
+  86:Dsp/widget/wgt_core/GenDsp.c ****         if (font == Font_12)
+  87:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1206[c][t];
+ 207              		.loc 1 87 13 is_stmt 1 view .LVU43
+ 208              		.loc 1 87 18 is_stmt 0 view .LVU44
+ 209 002a 019B     		ldr	r3, [sp, #4]
+ 210 002c 03EB4303 		add	r3, r3, r3, lsl #1
+ 211 0030 2A4A     		ldr	r2, .L29+4
+ 212 0032 02EB8303 		add	r3, r2, r3, lsl #2
+ 213 0036 009A     		ldr	r2, [sp]
+ 214 0038 9E5C     		ldrb	r6, [r3, r2]	@ zero_extendqisi2
+ 215              	.LVL13:
+ 216              		.loc 1 87 18 view .LVU45
+ 217 003a 42E0     		b	.L15
+ 218              	.LVL14:
+ 219              	.L16:
+ 220              	.LBB3:
+  88:Dsp/widget/wgt_core/GenDsp.c ****         else
+  89:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1608[c][t];
+  90:Dsp/widget/wgt_core/GenDsp.c **** 
+  91:Dsp/widget/wgt_core/GenDsp.c ****         for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
+  92:Dsp/widget/wgt_core/GenDsp.c ****         {
+  93:Dsp/widget/wgt_core/GenDsp.c ****             if ((DspRange.x + DspRange.width) <= x)
+  94:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+  95:Dsp/widget/wgt_core/GenDsp.c **** 
+  96:Dsp/widget/wgt_core/GenDsp.c ****             if (temp & 0x80)
+  97:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, col_inv ^ map[y][x]);
+  98:Dsp/widget/wgt_core/GenDsp.c ****             else
+  99:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, !col_inv ^ map[y][x]);
+ 221              		.loc 1 99 17 is_stmt 1 view .LVU46
+ 222              		.loc 1 99 45 is_stmt 0 view .LVU47
+ 223 003c 8BF00103 		eor	r3, fp, #1
+ 224              		.loc 1 99 59 view .LVU48
+ 225 0040 58F82420 		ldr	r2, [r8, r4, lsl #2]
+ 226              		.loc 1 99 62 view .LVU49
+ 227 0044 D25D     		ldrb	r2, [r2, r7]	@ zero_extendqisi2
+ 228              		.loc 1 99 17 view .LVU50
+ 229 0046 9B1A     		subs	r3, r3, r2
+ 230 0048 18BF     		it	ne
+ 231 004a 0123     		movne	r3, #1
+ 232 004c 2246     		mov	r2, r4
+ 233 004e 3946     		mov	r1, r7
+ 234 0050 4046     		mov	r0, r8
+ 235 0052 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 236              	.LVL15:
+ 237              	.L17:
+ 100:Dsp/widget/wgt_core/GenDsp.c **** 
+ 101:Dsp/widget/wgt_core/GenDsp.c ****             temp <<= 1;
+ 238              		.loc 1 101 13 is_stmt 1 view .LVU51
+ 239              		.loc 1 101 18 is_stmt 0 view .LVU52
+ 240 0056 7600     		lsls	r6, r6, #1
+ 241              	.LVL16:
+ 242              		.loc 1 101 18 view .LVU53
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 7
+
+
+ 243 0058 F6B2     		uxtb	r6, r6
+ 244              	.LVL17:
+ 102:Dsp/widget/wgt_core/GenDsp.c **** 
+ 103:Dsp/widget/wgt_core/GenDsp.c ****             y++;
+ 245              		.loc 1 103 13 is_stmt 1 view .LVU54
+ 246              		.loc 1 103 14 is_stmt 0 view .LVU55
+ 247 005a 0134     		adds	r4, r4, #1
+ 248              	.LVL18:
+ 249              		.loc 1 103 14 view .LVU56
+ 250 005c 24B2     		sxth	r4, r4
+ 251              	.LVL19:
+ 104:Dsp/widget/wgt_core/GenDsp.c ****             if ((y - y0) >= font)
+ 252              		.loc 1 104 13 is_stmt 1 view .LVU57
+ 253              		.loc 1 104 20 is_stmt 0 view .LVU58
+ 254 005e A4EB0A03 		sub	r3, r4, r10
+ 255              		.loc 1 104 16 view .LVU59
+ 256 0062 4B45     		cmp	r3, r9
+ 257 0064 1ADA     		bge	.L26
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 258              		.loc 1 91 61 is_stmt 1 discriminator 2 view .LVU60
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 259              		.loc 1 91 70 is_stmt 0 discriminator 2 view .LVU61
+ 260 0066 0135     		adds	r5, r5, #1
+ 261              	.LVL20:
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 262              		.loc 1 91 70 discriminator 2 view .LVU62
+ 263 0068 EDB2     		uxtb	r5, r5
+ 264              	.LVL21:
+ 265              	.L20:
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 266              		.loc 1 91 37 is_stmt 1 discriminator 1 view .LVU63
+  91:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 267              		.loc 1 91 9 is_stmt 0 discriminator 1 view .LVU64
+ 268 006a 072D     		cmp	r5, #7
+ 269 006c 19D8     		bhi	.L19
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 270              		.loc 1 93 13 is_stmt 1 view .LVU65
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 271              		.loc 1 93 26 is_stmt 0 view .LVU66
+ 272 006e 1A4A     		ldr	r2, .L29
+ 273 0070 B2F90030 		ldrsh	r3, [r2]
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 274              		.loc 1 93 39 view .LVU67
+ 275 0074 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 276              		.loc 1 93 29 view .LVU68
+ 277 0076 1344     		add	r3, r3, r2
+  93:Dsp/widget/wgt_core/GenDsp.c ****                 return false;
+ 278              		.loc 1 93 16 view .LVU69
+ 279 0078 BB42     		cmp	r3, r7
+ 280 007a 28DD     		ble	.L24
+  96:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, col_inv ^ map[y][x]);
+ 281              		.loc 1 96 13 is_stmt 1 view .LVU70
+  96:Dsp/widget/wgt_core/GenDsp.c ****                 GenDsp_DrawPoint(map, x, y, col_inv ^ map[y][x]);
+ 282              		.loc 1 96 16 is_stmt 0 view .LVU71
+ 283 007c 16F0800F 		tst	r6, #128
+ 284 0080 DCD0     		beq	.L16
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 8
+
+
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 285              		.loc 1 97 17 is_stmt 1 view .LVU72
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 286              		.loc 1 97 58 is_stmt 0 view .LVU73
+ 287 0082 58F82430 		ldr	r3, [r8, r4, lsl #2]
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 288              		.loc 1 97 61 view .LVU74
+ 289 0086 DB5D     		ldrb	r3, [r3, r7]	@ zero_extendqisi2
+  97:Dsp/widget/wgt_core/GenDsp.c ****             else
+ 290              		.loc 1 97 17 view .LVU75
+ 291 0088 BBEB0303 		subs	r3, fp, r3
+ 292 008c 18BF     		it	ne
+ 293 008e 0123     		movne	r3, #1
+ 294 0090 2246     		mov	r2, r4
+ 295 0092 3946     		mov	r1, r7
+ 296 0094 4046     		mov	r0, r8
+ 297 0096 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 298              	.LVL22:
+ 299 009a DCE7     		b	.L17
+ 300              	.L26:
+ 105:Dsp/widget/wgt_core/GenDsp.c ****             {
+ 106:Dsp/widget/wgt_core/GenDsp.c ****                 y = y0;
+ 301              		.loc 1 106 17 is_stmt 1 view .LVU76
+ 302              	.LVL23:
+ 107:Dsp/widget/wgt_core/GenDsp.c ****                 x++;
+ 303              		.loc 1 107 17 view .LVU77
+ 304              		.loc 1 107 18 is_stmt 0 view .LVU78
+ 305 009c 0137     		adds	r7, r7, #1
+ 306              	.LVL24:
+ 307              		.loc 1 107 18 view .LVU79
+ 308 009e 3FB2     		sxth	r7, r7
+ 309              	.LVL25:
+ 108:Dsp/widget/wgt_core/GenDsp.c **** 
+ 109:Dsp/widget/wgt_core/GenDsp.c ****                 break;
+ 310              		.loc 1 109 17 is_stmt 1 view .LVU80
+ 106:Dsp/widget/wgt_core/GenDsp.c ****                 x++;
+ 311              		.loc 1 106 19 is_stmt 0 view .LVU81
+ 312 00a0 5446     		mov	r4, r10
+ 313              	.LVL26:
+ 314              	.L19:
+ 106:Dsp/widget/wgt_core/GenDsp.c ****                 x++;
+ 315              		.loc 1 106 19 view .LVU82
+ 316              	.LBE3:
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 317              		.loc 1 84 35 is_stmt 1 discriminator 2 view .LVU83
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 318              		.loc 1 84 36 is_stmt 0 discriminator 2 view .LVU84
+ 319 00a2 009B     		ldr	r3, [sp]
+ 320 00a4 0133     		adds	r3, r3, #1
+ 321 00a6 DBB2     		uxtb	r3, r3
+ 322 00a8 0093     		str	r3, [sp]
+ 323              	.LVL27:
+ 324              	.L13:
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 325              		.loc 1 84 25 is_stmt 1 discriminator 1 view .LVU85
+  84:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 326              		.loc 1 84 5 is_stmt 0 discriminator 1 view .LVU86
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 9
+
+
+ 327 00aa 009B     		ldr	r3, [sp]
+ 328 00ac 4B45     		cmp	r3, r9
+ 329 00ae 0AD2     		bcs	.L27
+  86:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1206[c][t];
+ 330              		.loc 1 86 9 is_stmt 1 view .LVU87
+  86:Dsp/widget/wgt_core/GenDsp.c ****             temp = oled_asc2_1206[c][t];
+ 331              		.loc 1 86 12 is_stmt 0 view .LVU88
+ 332 00b0 B9F10C0F 		cmp	r9, #12
+ 333 00b4 B9D0     		beq	.L28
+  89:Dsp/widget/wgt_core/GenDsp.c **** 
+ 334              		.loc 1 89 13 is_stmt 1 view .LVU89
+  89:Dsp/widget/wgt_core/GenDsp.c **** 
+ 335              		.loc 1 89 18 is_stmt 0 view .LVU90
+ 336 00b6 0A4B     		ldr	r3, .L29+8
+ 337 00b8 019A     		ldr	r2, [sp, #4]
+ 338 00ba 03EB0213 		add	r3, r3, r2, lsl #4
+ 339 00be 009A     		ldr	r2, [sp]
+ 340 00c0 9E5C     		ldrb	r6, [r3, r2]	@ zero_extendqisi2
+ 341              	.LVL28:
+ 342              	.L15:
+  89:Dsp/widget/wgt_core/GenDsp.c **** 
+ 343              		.loc 1 89 18 view .LVU91
+ 344              	.LBE2:
+  76:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t temp;
+ 345              		.loc 1 76 1 discriminator 1 view .LVU92
+ 346 00c2 0025     		movs	r5, #0
+ 347 00c4 D1E7     		b	.L20
+ 348              	.LVL29:
+ 349              	.L27:
+ 110:Dsp/widget/wgt_core/GenDsp.c ****             }
+ 111:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 112:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 113:Dsp/widget/wgt_core/GenDsp.c **** 
+ 114:Dsp/widget/wgt_core/GenDsp.c ****     return true;
+ 350              		.loc 1 114 12 view .LVU93
+ 351 00c6 0120     		movs	r0, #1
+ 352              	.LBB5:
+ 353 00c8 02E0     		b	.L12
+ 354              	.LVL30:
+ 355              	.L23:
+ 356              		.loc 1 114 12 view .LVU94
+ 357              	.LBE5:
+  82:Dsp/widget/wgt_core/GenDsp.c **** 
+ 358              		.loc 1 82 16 view .LVU95
+ 359 00ca 0020     		movs	r0, #0
+ 360              	.LVL31:
+  82:Dsp/widget/wgt_core/GenDsp.c **** 
+ 361              		.loc 1 82 16 view .LVU96
+ 362 00cc 00E0     		b	.L12
+ 363              	.LVL32:
+ 364              	.L24:
+ 365              	.LBB6:
+ 366              	.LBB4:
+  94:Dsp/widget/wgt_core/GenDsp.c **** 
+ 367              		.loc 1 94 24 view .LVU97
+ 368 00ce 0020     		movs	r0, #0
+ 369              	.LVL33:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 10
+
+
+ 370              	.L12:
+  94:Dsp/widget/wgt_core/GenDsp.c **** 
+ 371              		.loc 1 94 24 view .LVU98
+ 372              	.LBE4:
+ 373              	.LBE6:
+ 115:Dsp/widget/wgt_core/GenDsp.c **** }
+ 374              		.loc 1 115 1 view .LVU99
+ 375 00d0 03B0     		add	sp, sp, #12
+ 376              	.LCFI7:
+ 377              		.cfi_def_cfa_offset 36
+ 378              		@ sp needed
+ 379 00d2 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 380              	.LVL34:
+ 381              	.L30:
+ 382              		.loc 1 115 1 view .LVU100
+ 383 00d6 00BF     		.align	2
+ 384              	.L29:
+ 385 00d8 00000000 		.word	.LANCHOR0
+ 386 00dc 00000000 		.word	oled_asc2_1206
+ 387 00e0 00000000 		.word	oled_asc2_1608
+ 388              		.cfi_endproc
+ 389              	.LFE5:
+ 391              		.section	.text.GenDsp_DrawStr,"ax",%progbits
+ 392              		.align	1
+ 393              		.syntax unified
+ 394              		.thumb
+ 395              		.thumb_func
+ 396              		.fpu fpv4-sp-d16
+ 398              	GenDsp_DrawStr:
+ 399              	.LVL35:
+ 400              	.LFB6:
+ 116:Dsp/widget/wgt_core/GenDsp.c **** 
+ 117:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int16_t x, int16_t y, bool 
+ 118:Dsp/widget/wgt_core/GenDsp.c **** {
+ 401              		.loc 1 118 1 is_stmt 1 view -0
+ 402              		.cfi_startproc
+ 403              		@ args = 8, pretend = 0, frame = 0
+ 404              		@ frame_needed = 0, uses_anonymous_args = 0
+ 405              		.loc 1 118 1 is_stmt 0 view .LVU102
+ 406 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 407              	.LCFI8:
+ 408              		.cfi_def_cfa_offset 28
+ 409              		.cfi_offset 4, -28
+ 410              		.cfi_offset 5, -24
+ 411              		.cfi_offset 6, -20
+ 412              		.cfi_offset 7, -16
+ 413              		.cfi_offset 8, -12
+ 414              		.cfi_offset 9, -8
+ 415              		.cfi_offset 14, -4
+ 416 0004 83B0     		sub	sp, sp, #12
+ 417              	.LCFI9:
+ 418              		.cfi_def_cfa_offset 40
+ 419 0006 0746     		mov	r7, r0
+ 420 0008 0E46     		mov	r6, r1
+ 421 000a 1546     		mov	r5, r2
+ 422 000c 1C46     		mov	r4, r3
+ 423 000e BDF92890 		ldrsh	r9, [sp, #40]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 11
+
+
+ 424 0012 9DF82C80 		ldrb	r8, [sp, #44]	@ zero_extendqisi2
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 425              		.loc 1 119 5 is_stmt 1 view .LVU103
+ 426              		.loc 1 119 11 is_stmt 0 view .LVU104
+ 427 0016 02E0     		b	.L32
+ 428              	.LVL36:
+ 429              	.L36:
+ 120:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         if (GenDsp_DrawChar(font, map, *str, x, y, col_inv))
+ 122:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 123:Dsp/widget/wgt_core/GenDsp.c ****             x += FONT_WIDTH;
+ 430              		.loc 1 123 13 is_stmt 1 view .LVU105
+ 431              		.loc 1 123 15 is_stmt 0 view .LVU106
+ 432 0018 0834     		adds	r4, r4, #8
+ 433              	.LVL37:
+ 434              		.loc 1 123 15 view .LVU107
+ 435 001a 24B2     		sxth	r4, r4
+ 436              	.LVL38:
+ 124:Dsp/widget/wgt_core/GenDsp.c ****             str++;
+ 437              		.loc 1 124 13 is_stmt 1 view .LVU108
+ 438              		.loc 1 124 16 is_stmt 0 view .LVU109
+ 439 001c 0135     		adds	r5, r5, #1
+ 440              	.LVL39:
+ 441              	.L32:
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 442              		.loc 1 119 11 is_stmt 1 view .LVU110
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 443              		.loc 1 119 12 is_stmt 0 view .LVU111
+ 444 001e 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 119:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 445              		.loc 1 119 11 view .LVU112
+ 446 0020 52B1     		cbz	r2, .L31
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 447              		.loc 1 121 9 is_stmt 1 view .LVU113
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 448              		.loc 1 121 13 is_stmt 0 view .LVU114
+ 449 0022 CDF80480 		str	r8, [sp, #4]
+ 450 0026 CDF80090 		str	r9, [sp]
+ 451 002a 2346     		mov	r3, r4
+ 452 002c 3146     		mov	r1, r6
+ 453 002e 3846     		mov	r0, r7
+ 454 0030 FFF7FEFF 		bl	GenDsp_DrawChar
+ 455              	.LVL40:
+ 121:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 456              		.loc 1 121 12 view .LVU115
+ 457 0034 0028     		cmp	r0, #0
+ 458 0036 EFD1     		bne	.L36
+ 459              	.L31:
+ 125:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 126:Dsp/widget/wgt_core/GenDsp.c ****         else
+ 127:Dsp/widget/wgt_core/GenDsp.c ****             break;
+ 128:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 129:Dsp/widget/wgt_core/GenDsp.c **** }
+ 460              		.loc 1 129 1 view .LVU116
+ 461 0038 03B0     		add	sp, sp, #12
+ 462              	.LCFI10:
+ 463              		.cfi_def_cfa_offset 28
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 12
+
+
+ 464              		@ sp needed
+ 465 003a BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 466              		.loc 1 129 1 view .LVU117
+ 467              		.cfi_endproc
+ 468              	.LFE6:
+ 470              		.section	.text.GenDsp_GetStrLen,"ax",%progbits
+ 471              		.align	1
+ 472              		.syntax unified
+ 473              		.thumb
+ 474              		.thumb_func
+ 475              		.fpu fpv4-sp-d16
+ 477              	GenDsp_GetStrLen:
+ 478              	.LVL41:
+ 479              	.LFB8:
+ 130:Dsp/widget/wgt_core/GenDsp.c **** 
+ 131:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawNum(GenFont_List font, uint8_t **map, uint32_t num, int16_t x, int16_t y, bo
+ 132:Dsp/widget/wgt_core/GenDsp.c **** {
+ 133:Dsp/widget/wgt_core/GenDsp.c ****     char num_buff[MAX_DSP_NUM_LEN];
+ 134:Dsp/widget/wgt_core/GenDsp.c **** 
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     sprintf(num_buff, "%d", num);
+ 136:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ 137:Dsp/widget/wgt_core/GenDsp.c **** }
+ 138:Dsp/widget/wgt_core/GenDsp.c **** 
+ 139:Dsp/widget/wgt_core/GenDsp.c **** static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str)
+ 140:Dsp/widget/wgt_core/GenDsp.c **** {
+ 480              		.loc 1 140 1 is_stmt 1 view -0
+ 481              		.cfi_startproc
+ 482              		@ args = 0, pretend = 0, frame = 0
+ 483              		@ frame_needed = 0, uses_anonymous_args = 0
+ 484              		@ link register save eliminated.
+ 141:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t len = 0;
+ 485              		.loc 1 141 5 view .LVU119
+ 142:Dsp/widget/wgt_core/GenDsp.c **** 
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     while (*str != '\0')
+ 486              		.loc 1 143 5 view .LVU120
+ 141:Dsp/widget/wgt_core/GenDsp.c ****     uint8_t len = 0;
+ 487              		.loc 1 141 13 is_stmt 0 view .LVU121
+ 488 0000 0020     		movs	r0, #0
+ 489              	.LVL42:
+ 490              		.loc 1 143 11 view .LVU122
+ 491 0002 02E0     		b	.L38
+ 492              	.LVL43:
+ 493              	.L39:
+ 144:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 145:Dsp/widget/wgt_core/GenDsp.c ****         len += FONT_WIDTH;
+ 494              		.loc 1 145 9 is_stmt 1 view .LVU123
+ 495              		.loc 1 145 13 is_stmt 0 view .LVU124
+ 496 0004 0830     		adds	r0, r0, #8
+ 497              	.LVL44:
+ 498              		.loc 1 145 13 view .LVU125
+ 499 0006 C0B2     		uxtb	r0, r0
+ 500              	.LVL45:
+ 146:Dsp/widget/wgt_core/GenDsp.c ****         str++;
+ 501              		.loc 1 146 9 is_stmt 1 view .LVU126
+ 502              		.loc 1 146 12 is_stmt 0 view .LVU127
+ 503 0008 0131     		adds	r1, r1, #1
+ 504              	.LVL46:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 13
+
+
+ 505              	.L38:
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 506              		.loc 1 143 11 is_stmt 1 view .LVU128
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 507              		.loc 1 143 12 is_stmt 0 view .LVU129
+ 508 000a 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 143:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 509              		.loc 1 143 11 view .LVU130
+ 510 000c 002B     		cmp	r3, #0
+ 511 000e F9D1     		bne	.L39
+ 147:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 148:Dsp/widget/wgt_core/GenDsp.c **** 
+ 149:Dsp/widget/wgt_core/GenDsp.c ****     return len;
+ 512              		.loc 1 149 5 is_stmt 1 view .LVU131
+ 150:Dsp/widget/wgt_core/GenDsp.c **** }
+ 513              		.loc 1 150 1 is_stmt 0 view .LVU132
+ 514 0010 7047     		bx	lr
+ 515              		.cfi_endproc
+ 516              	.LFE8:
+ 518              		.section	.text.GenDsp_DrawLen,"ax",%progbits
+ 519              		.align	1
+ 520              		.syntax unified
+ 521              		.thumb
+ 522              		.thumb_func
+ 523              		.fpu fpv4-sp-d16
+ 525              	GenDsp_DrawLen:
+ 526              	.LVL47:
+ 527              	.LFB9:
+ 151:Dsp/widget/wgt_core/GenDsp.c **** 
+ 152:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawLen(uint8_t **map, int8_t start_x, int8_t start_y, int8_t end_x, int8_t end_
+ 153:Dsp/widget/wgt_core/GenDsp.c **** {
+ 528              		.loc 1 153 1 is_stmt 1 view -0
+ 529              		.cfi_startproc
+ 530              		@ args = 12, pretend = 0, frame = 16
+ 531              		@ frame_needed = 0, uses_anonymous_args = 0
+ 532              		.loc 1 153 1 is_stmt 0 view .LVU134
+ 533 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 534              	.LCFI11:
+ 535              		.cfi_def_cfa_offset 36
+ 536              		.cfi_offset 4, -36
+ 537              		.cfi_offset 5, -32
+ 538              		.cfi_offset 6, -28
+ 539              		.cfi_offset 7, -24
+ 540              		.cfi_offset 8, -20
+ 541              		.cfi_offset 9, -16
+ 542              		.cfi_offset 10, -12
+ 543              		.cfi_offset 11, -8
+ 544              		.cfi_offset 14, -4
+ 545 0004 85B0     		sub	sp, sp, #20
+ 546              	.LCFI12:
+ 547              		.cfi_def_cfa_offset 56
+ 548 0006 0090     		str	r0, [sp]
+ 549 0008 8846     		mov	r8, r1
+ 550 000a 9146     		mov	r9, r2
+ 551 000c 9DF84020 		ldrb	r2, [sp, #64]	@ zero_extendqisi2
+ 552              	.LVL48:
+ 553              		.loc 1 153 1 view .LVU135
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 14
+
+
+ 554 0010 0192     		str	r2, [sp, #4]
+ 154:Dsp/widget/wgt_core/GenDsp.c ****     int16_t xerr = 0;
+ 555              		.loc 1 154 5 is_stmt 1 view .LVU136
+ 556              	.LVL49:
+ 155:Dsp/widget/wgt_core/GenDsp.c ****     int16_t yerr = 0;
+ 557              		.loc 1 155 5 view .LVU137
+ 156:Dsp/widget/wgt_core/GenDsp.c ****     int8_t delta_x = end_x - start_x;
+ 558              		.loc 1 156 5 view .LVU138
+ 559              		.loc 1 156 28 is_stmt 0 view .LVU139
+ 560 0012 DBB2     		uxtb	r3, r3
+ 561              		.loc 1 156 28 view .LVU140
+ 562 0014 C9B2     		uxtb	r1, r1
+ 563              		.loc 1 156 28 view .LVU141
+ 564 0016 A3EB010A 		sub	r10, r3, r1
+ 565              		.loc 1 156 12 view .LVU142
+ 566 001a 4FFA8AFA 		sxtb	r10, r10
+ 567              	.LVL50:
+ 157:Dsp/widget/wgt_core/GenDsp.c ****     int8_t delta_y = end_y - start_y;
+ 568              		.loc 1 157 5 is_stmt 1 view .LVU143
+ 569              		.loc 1 157 28 is_stmt 0 view .LVU144
+ 570 001e 9DF83800 		ldrb	r0, [sp, #56]	@ zero_extendqisi2
+ 571              	.LVL51:
+ 572              		.loc 1 157 28 view .LVU145
+ 573 0022 5FFA89F2 		uxtb	r2, r9
+ 574 0026 A0EB020B 		sub	fp, r0, r2
+ 575              		.loc 1 157 12 view .LVU146
+ 576 002a 4FFA8BFB 		sxtb	fp, fp
+ 577              	.LVL52:
+ 158:Dsp/widget/wgt_core/GenDsp.c ****     int16_t distance;
+ 578              		.loc 1 158 5 is_stmt 1 view .LVU147
+ 159:Dsp/widget/wgt_core/GenDsp.c ****     int8_t uRow = start_x;
+ 579              		.loc 1 159 5 view .LVU148
+ 160:Dsp/widget/wgt_core/GenDsp.c ****     int8_t uCol = start_y;
+ 580              		.loc 1 160 5 view .LVU149
+ 161:Dsp/widget/wgt_core/GenDsp.c **** 
+ 162:Dsp/widget/wgt_core/GenDsp.c ****     int8_t incx, incy;
+ 581              		.loc 1 162 5 view .LVU150
+ 163:Dsp/widget/wgt_core/GenDsp.c **** 
+ 164:Dsp/widget/wgt_core/GenDsp.c ****     if (delta_x > 0)
+ 582              		.loc 1 164 5 view .LVU151
+ 583              		.loc 1 164 8 is_stmt 0 view .LVU152
+ 584 002e BAF1000F 		cmp	r10, #0
+ 585 0032 0EDD     		ble	.L54
+ 165:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 166:Dsp/widget/wgt_core/GenDsp.c ****         incx = 1;
+ 586              		.loc 1 166 14 view .LVU153
+ 587 0034 0123     		movs	r3, #1
+ 588              	.LVL53:
+ 589              		.loc 1 166 14 view .LVU154
+ 590 0036 0293     		str	r3, [sp, #8]
+ 591              	.L41:
+ 592              	.LVL54:
+ 167:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 168:Dsp/widget/wgt_core/GenDsp.c ****     else if (delta_x == 0)
+ 169:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 170:Dsp/widget/wgt_core/GenDsp.c ****         incx = 0;
+ 171:Dsp/widget/wgt_core/GenDsp.c ****     }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 15
+
+
+ 172:Dsp/widget/wgt_core/GenDsp.c ****     else
+ 173:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 174:Dsp/widget/wgt_core/GenDsp.c ****         incx = -1;
+ 175:Dsp/widget/wgt_core/GenDsp.c ****         delta_x = -delta_x;
+ 176:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 177:Dsp/widget/wgt_core/GenDsp.c **** 
+ 178:Dsp/widget/wgt_core/GenDsp.c ****     if (delta_y > 0)
+ 593              		.loc 1 178 5 is_stmt 1 view .LVU155
+ 594              		.loc 1 178 8 is_stmt 0 view .LVU156
+ 595 0038 BBF1000F 		cmp	fp, #0
+ 596 003c 16DD     		ble	.L55
+ 179:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 180:Dsp/widget/wgt_core/GenDsp.c ****         incy = 1;
+ 597              		.loc 1 180 14 view .LVU157
+ 598 003e 0123     		movs	r3, #1
+ 599 0040 0393     		str	r3, [sp, #12]
+ 600              	.L42:
+ 601              	.LVL55:
+ 181:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 182:Dsp/widget/wgt_core/GenDsp.c ****     else if (delta_y == 0)
+ 183:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 184:Dsp/widget/wgt_core/GenDsp.c ****         incy = 0;
+ 185:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 186:Dsp/widget/wgt_core/GenDsp.c ****     else
+ 187:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 188:Dsp/widget/wgt_core/GenDsp.c ****         incy = -1;
+ 189:Dsp/widget/wgt_core/GenDsp.c ****         delta_y = -delta_y;
+ 190:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 191:Dsp/widget/wgt_core/GenDsp.c **** 
+ 192:Dsp/widget/wgt_core/GenDsp.c ****     if (delta_x > delta_y)
+ 602              		.loc 1 192 5 is_stmt 1 view .LVU158
+ 603              		.loc 1 192 8 is_stmt 0 view .LVU159
+ 604 0042 DA45     		cmp	r10, fp
+ 605 0044 1FDD     		ble	.L43
+ 193:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 194:Dsp/widget/wgt_core/GenDsp.c ****         distance = delta_x;
+ 606              		.loc 1 194 9 is_stmt 1 view .LVU160
+ 607              		.loc 1 194 18 is_stmt 0 view .LVU161
+ 608 0046 0FFA8AF7 		sxth	r7, r10
+ 609              	.LVL56:
+ 610              	.L44:
+ 195:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 196:Dsp/widget/wgt_core/GenDsp.c ****     else
+ 197:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 198:Dsp/widget/wgt_core/GenDsp.c ****         distance = delta_y;
+ 199:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 200:Dsp/widget/wgt_core/GenDsp.c **** 
+ 201:Dsp/widget/wgt_core/GenDsp.c ****     for (uint8_t t = 0; t < distance + 1; t++)
+ 611              		.loc 1 201 5 is_stmt 1 view .LVU162
+ 612              	.LBB7:
+ 613              		.loc 1 201 10 view .LVU163
+ 614              		.loc 1 201 18 is_stmt 0 view .LVU164
+ 615 004a 0026     		movs	r6, #0
+ 616              	.LBE7:
+ 155:Dsp/widget/wgt_core/GenDsp.c ****     int8_t delta_x = end_x - start_x;
+ 617              		.loc 1 155 13 view .LVU165
+ 618 004c 3546     		mov	r5, r6
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 16
+
+
+ 154:Dsp/widget/wgt_core/GenDsp.c ****     int16_t yerr = 0;
+ 619              		.loc 1 154 13 view .LVU166
+ 620 004e 3446     		mov	r4, r6
+ 621              	.LBB8:
+ 622              		.loc 1 201 5 view .LVU167
+ 623 0050 1EE0     		b	.L45
+ 624              	.LVL57:
+ 625              	.L54:
+ 626              		.loc 1 201 5 view .LVU168
+ 627              	.LBE8:
+ 168:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 628              		.loc 1 168 10 is_stmt 1 view .LVU169
+ 168:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 629              		.loc 1 168 13 is_stmt 0 view .LVU170
+ 630 0052 BAF1000F 		cmp	r10, #0
+ 631 0056 06D0     		beq	.L50
+ 174:Dsp/widget/wgt_core/GenDsp.c ****         delta_x = -delta_x;
+ 632              		.loc 1 174 9 is_stmt 1 view .LVU171
+ 633              	.LVL58:
+ 175:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 634              		.loc 1 175 9 view .LVU172
+ 175:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 635              		.loc 1 175 17 is_stmt 0 view .LVU173
+ 636 0058 CB1A     		subs	r3, r1, r3
+ 637 005a 4FFA83FA 		sxtb	r10, r3
+ 638              	.LVL59:
+ 174:Dsp/widget/wgt_core/GenDsp.c ****         delta_x = -delta_x;
+ 639              		.loc 1 174 14 view .LVU174
+ 640 005e 4FF0FF33 		mov	r3, #-1
+ 641 0062 0293     		str	r3, [sp, #8]
+ 642 0064 E8E7     		b	.L41
+ 643              	.LVL60:
+ 644              	.L50:
+ 170:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 645              		.loc 1 170 14 view .LVU175
+ 646 0066 CDF808A0 		str	r10, [sp, #8]
+ 647 006a E5E7     		b	.L41
+ 648              	.LVL61:
+ 649              	.L55:
+ 182:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 650              		.loc 1 182 10 is_stmt 1 view .LVU176
+ 182:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 651              		.loc 1 182 13 is_stmt 0 view .LVU177
+ 652 006c BBF1000F 		cmp	fp, #0
+ 653 0070 06D0     		beq	.L52
+ 188:Dsp/widget/wgt_core/GenDsp.c ****         delta_y = -delta_y;
+ 654              		.loc 1 188 9 is_stmt 1 view .LVU178
+ 655              	.LVL62:
+ 189:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 656              		.loc 1 189 9 view .LVU179
+ 189:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 657              		.loc 1 189 17 is_stmt 0 view .LVU180
+ 658 0072 121A     		subs	r2, r2, r0
+ 659 0074 4FFA82FB 		sxtb	fp, r2
+ 660              	.LVL63:
+ 188:Dsp/widget/wgt_core/GenDsp.c ****         delta_y = -delta_y;
+ 661              		.loc 1 188 14 view .LVU181
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 17
+
+
+ 662 0078 4FF0FF33 		mov	r3, #-1
+ 663 007c 0393     		str	r3, [sp, #12]
+ 664 007e E0E7     		b	.L42
+ 665              	.LVL64:
+ 666              	.L52:
+ 184:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 667              		.loc 1 184 14 view .LVU182
+ 668 0080 CDF80CB0 		str	fp, [sp, #12]
+ 669 0084 DDE7     		b	.L42
+ 670              	.LVL65:
+ 671              	.L43:
+ 198:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 672              		.loc 1 198 9 is_stmt 1 view .LVU183
+ 198:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 673              		.loc 1 198 18 is_stmt 0 view .LVU184
+ 674 0086 0FFA8BF7 		sxth	r7, fp
+ 675              	.LVL66:
+ 198:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 676              		.loc 1 198 18 view .LVU185
+ 677 008a DEE7     		b	.L44
+ 678              	.LVL67:
+ 679              	.L47:
+ 680              	.LBB9:
+ 681              		.loc 1 201 43 is_stmt 1 discriminator 2 view .LVU186
+ 682              		.loc 1 201 44 is_stmt 0 discriminator 2 view .LVU187
+ 683 008c 0136     		adds	r6, r6, #1
+ 684              	.LVL68:
+ 685              		.loc 1 201 44 discriminator 2 view .LVU188
+ 686 008e F6B2     		uxtb	r6, r6
+ 687              	.LVL69:
+ 688              	.L45:
+ 689              		.loc 1 201 25 is_stmt 1 discriminator 1 view .LVU189
+ 690              		.loc 1 201 5 is_stmt 0 discriminator 1 view .LVU190
+ 691 0090 B742     		cmp	r7, r6
+ 692 0092 1CDB     		blt	.L56
+ 202:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 203:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, uRow, uCol, col_inv);
+ 693              		.loc 1 203 9 is_stmt 1 view .LVU191
+ 694 0094 019B     		ldr	r3, [sp, #4]
+ 695 0096 4A46     		mov	r2, r9
+ 696 0098 4146     		mov	r1, r8
+ 697 009a 0098     		ldr	r0, [sp]
+ 698 009c FFF7FEFF 		bl	GenDsp_DrawPoint
+ 699              	.LVL70:
+ 204:Dsp/widget/wgt_core/GenDsp.c **** 
+ 205:Dsp/widget/wgt_core/GenDsp.c ****         xerr += delta_x;
+ 700              		.loc 1 205 9 view .LVU192
+ 701              		.loc 1 205 14 is_stmt 0 view .LVU193
+ 702 00a0 5444     		add	r4, r4, r10
+ 703              	.LVL71:
+ 704              		.loc 1 205 14 view .LVU194
+ 705 00a2 A2B2     		uxth	r2, r4
+ 706 00a4 24B2     		sxth	r4, r4
+ 707              	.LVL72:
+ 206:Dsp/widget/wgt_core/GenDsp.c ****         yerr += delta_y;
+ 708              		.loc 1 206 9 is_stmt 1 view .LVU195
+ 709              		.loc 1 206 14 is_stmt 0 view .LVU196
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 18
+
+
+ 710 00a6 5D44     		add	r5, r5, fp
+ 711              	.LVL73:
+ 712              		.loc 1 206 14 view .LVU197
+ 713 00a8 ABB2     		uxth	r3, r5
+ 714 00aa 2DB2     		sxth	r5, r5
+ 715              	.LVL74:
+ 207:Dsp/widget/wgt_core/GenDsp.c **** 
+ 208:Dsp/widget/wgt_core/GenDsp.c ****         if (xerr >= distance)
+ 716              		.loc 1 208 9 is_stmt 1 view .LVU198
+ 717              		.loc 1 208 12 is_stmt 0 view .LVU199
+ 718 00ac A742     		cmp	r7, r4
+ 719 00ae 05DC     		bgt	.L46
+ 209:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 210:Dsp/widget/wgt_core/GenDsp.c ****             xerr -= distance;
+ 720              		.loc 1 210 13 is_stmt 1 view .LVU200
+ 721              		.loc 1 210 18 is_stmt 0 view .LVU201
+ 722 00b0 D21B     		subs	r2, r2, r7
+ 723 00b2 14B2     		sxth	r4, r2
+ 724              	.LVL75:
+ 211:Dsp/widget/wgt_core/GenDsp.c ****             uRow += incx;
+ 725              		.loc 1 211 13 is_stmt 1 view .LVU202
+ 726              		.loc 1 211 18 is_stmt 0 view .LVU203
+ 727 00b4 029A     		ldr	r2, [sp, #8]
+ 728 00b6 9044     		add	r8, r8, r2
+ 729              	.LVL76:
+ 730              		.loc 1 211 18 view .LVU204
+ 731 00b8 4FFA88F8 		sxtb	r8, r8
+ 732              	.LVL77:
+ 733              	.L46:
+ 212:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 213:Dsp/widget/wgt_core/GenDsp.c ****         if (yerr >= distance)
+ 734              		.loc 1 213 9 is_stmt 1 view .LVU205
+ 735              		.loc 1 213 12 is_stmt 0 view .LVU206
+ 736 00bc AF42     		cmp	r7, r5
+ 737 00be E5DC     		bgt	.L47
+ 214:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 215:Dsp/widget/wgt_core/GenDsp.c ****             yerr -= distance;
+ 738              		.loc 1 215 13 is_stmt 1 view .LVU207
+ 739              		.loc 1 215 18 is_stmt 0 view .LVU208
+ 740 00c0 DB1B     		subs	r3, r3, r7
+ 741 00c2 1DB2     		sxth	r5, r3
+ 742              	.LVL78:
+ 216:Dsp/widget/wgt_core/GenDsp.c ****             uCol += incy;
+ 743              		.loc 1 216 13 is_stmt 1 view .LVU209
+ 744              		.loc 1 216 18 is_stmt 0 view .LVU210
+ 745 00c4 039B     		ldr	r3, [sp, #12]
+ 746 00c6 9944     		add	r9, r9, r3
+ 747              	.LVL79:
+ 748              		.loc 1 216 18 view .LVU211
+ 749 00c8 4FFA89F9 		sxtb	r9, r9
+ 750              	.LVL80:
+ 751              		.loc 1 216 18 view .LVU212
+ 752 00cc DEE7     		b	.L47
+ 753              	.L56:
+ 754              		.loc 1 216 18 view .LVU213
+ 755              	.LBE9:
+ 217:Dsp/widget/wgt_core/GenDsp.c ****         }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 19
+
+
+ 218:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 219:Dsp/widget/wgt_core/GenDsp.c **** }
+ 756              		.loc 1 219 1 view .LVU214
+ 757 00ce 05B0     		add	sp, sp, #20
+ 758              	.LCFI13:
+ 759              		.cfi_def_cfa_offset 36
+ 760              	.LVL81:
+ 761              		.loc 1 219 1 view .LVU215
+ 762              		@ sp needed
+ 763 00d0 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 764              		.loc 1 219 1 view .LVU216
+ 765              		.cfi_endproc
+ 766              	.LFE9:
+ 768              		.section	.text.GenDsp_Draw_VLine,"ax",%progbits
+ 769              		.align	1
+ 770              		.syntax unified
+ 771              		.thumb
+ 772              		.thumb_func
+ 773              		.fpu fpv4-sp-d16
+ 775              	GenDsp_Draw_VLine:
+ 776              	.LVL82:
+ 777              	.LFB10:
+ 220:Dsp/widget/wgt_core/GenDsp.c **** 
+ 221:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_VLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width,
+ 222:Dsp/widget/wgt_core/GenDsp.c **** {
+ 778              		.loc 1 222 1 is_stmt 1 view -0
+ 779              		.cfi_startproc
+ 780              		@ args = 8, pretend = 0, frame = 0
+ 781              		@ frame_needed = 0, uses_anonymous_args = 0
+ 782              		.loc 1 222 1 is_stmt 0 view .LVU218
+ 783 0000 10B5     		push	{r4, lr}
+ 784              	.LCFI14:
+ 785              		.cfi_def_cfa_offset 8
+ 786              		.cfi_offset 4, -8
+ 787              		.cfi_offset 14, -4
+ 788 0002 84B0     		sub	sp, sp, #16
+ 789              	.LCFI15:
+ 790              		.cfi_def_cfa_offset 24
+ 223:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y, x, y + len, line_width, col_inv);
+ 791              		.loc 1 223 5 is_stmt 1 view .LVU219
+ 792 0004 49B2     		sxtb	r1, r1
+ 793              	.LVL83:
+ 794              		.loc 1 223 36 is_stmt 0 view .LVU220
+ 795 0006 9C18     		adds	r4, r3, r2
+ 796              		.loc 1 223 5 view .LVU221
+ 797 0008 9DF81C30 		ldrb	r3, [sp, #28]	@ zero_extendqisi2
+ 798              	.LVL84:
+ 799              		.loc 1 223 5 view .LVU222
+ 800 000c 0293     		str	r3, [sp, #8]
+ 801 000e 9DF81830 		ldrb	r3, [sp, #24]	@ zero_extendqisi2
+ 802 0012 0193     		str	r3, [sp, #4]
+ 803 0014 64B2     		sxtb	r4, r4
+ 804 0016 0094     		str	r4, [sp]
+ 805 0018 0B46     		mov	r3, r1
+ 806 001a 52B2     		sxtb	r2, r2
+ 807              	.LVL85:
+ 808              		.loc 1 223 5 view .LVU223
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 20
+
+
+ 809 001c FFF7FEFF 		bl	GenDsp_DrawLen
+ 810              	.LVL86:
+ 224:Dsp/widget/wgt_core/GenDsp.c **** }
+ 811              		.loc 1 224 1 view .LVU224
+ 812 0020 04B0     		add	sp, sp, #16
+ 813              	.LCFI16:
+ 814              		.cfi_def_cfa_offset 8
+ 815              		@ sp needed
+ 816 0022 10BD     		pop	{r4, pc}
+ 817              		.loc 1 224 1 view .LVU225
+ 818              		.cfi_endproc
+ 819              	.LFE10:
+ 821              		.section	.text.GenDsp_Draw_HLine,"ax",%progbits
+ 822              		.align	1
+ 823              		.syntax unified
+ 824              		.thumb
+ 825              		.thumb_func
+ 826              		.fpu fpv4-sp-d16
+ 828              	GenDsp_Draw_HLine:
+ 829              	.LVL87:
+ 830              	.LFB11:
+ 225:Dsp/widget/wgt_core/GenDsp.c **** 
+ 226:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_HLine(uint8_t **map, int16_t x, int16_t y, uint8_t len, uint8_t line_width,
+ 227:Dsp/widget/wgt_core/GenDsp.c **** {
+ 831              		.loc 1 227 1 is_stmt 1 view -0
+ 832              		.cfi_startproc
+ 833              		@ args = 8, pretend = 0, frame = 0
+ 834              		@ frame_needed = 0, uses_anonymous_args = 0
+ 835              		.loc 1 227 1 is_stmt 0 view .LVU227
+ 836 0000 10B5     		push	{r4, lr}
+ 837              	.LCFI17:
+ 838              		.cfi_def_cfa_offset 8
+ 839              		.cfi_offset 4, -8
+ 840              		.cfi_offset 14, -4
+ 841 0002 84B0     		sub	sp, sp, #16
+ 842              	.LCFI18:
+ 843              		.cfi_def_cfa_offset 24
+ 228:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y, x + len, y, line_width, col_inv);
+ 844              		.loc 1 228 5 is_stmt 1 view .LVU228
+ 845 0004 52B2     		sxtb	r2, r2
+ 846              	.LVL88:
+ 847              		.loc 1 228 33 is_stmt 0 view .LVU229
+ 848 0006 0B44     		add	r3, r3, r1
+ 849              	.LVL89:
+ 850              		.loc 1 228 5 view .LVU230
+ 851 0008 9DF81C40 		ldrb	r4, [sp, #28]	@ zero_extendqisi2
+ 852 000c 0294     		str	r4, [sp, #8]
+ 853 000e 9DF81840 		ldrb	r4, [sp, #24]	@ zero_extendqisi2
+ 854 0012 0194     		str	r4, [sp, #4]
+ 855 0014 0092     		str	r2, [sp]
+ 856 0016 5BB2     		sxtb	r3, r3
+ 857 0018 49B2     		sxtb	r1, r1
+ 858              	.LVL90:
+ 859              		.loc 1 228 5 view .LVU231
+ 860 001a FFF7FEFF 		bl	GenDsp_DrawLen
+ 861              	.LVL91:
+ 229:Dsp/widget/wgt_core/GenDsp.c **** }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 21
+
+
+ 862              		.loc 1 229 1 view .LVU232
+ 863 001e 04B0     		add	sp, sp, #16
+ 864              	.LCFI19:
+ 865              		.cfi_def_cfa_offset 8
+ 866              		@ sp needed
+ 867 0020 10BD     		pop	{r4, pc}
+ 868              		.loc 1 229 1 view .LVU233
+ 869              		.cfi_endproc
+ 870              	.LFE11:
+ 872              		.section	.text.GenDsp_Draw_Circle_Section,"ax",%progbits
+ 873              		.align	1
+ 874              		.syntax unified
+ 875              		.thumb
+ 876              		.thumb_func
+ 877              		.fpu fpv4-sp-d16
+ 879              	GenDsp_Draw_Circle_Section:
+ 880              	.LVL92:
+ 881              	.LFB12:
+ 230:Dsp/widget/wgt_core/GenDsp.c **** 
+ 231:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_Circle_Section(uint8_t **map, int16_t x, int16_t y, int16_t x0, int16_t y0,
+ 232:Dsp/widget/wgt_core/GenDsp.c **** {
+ 882              		.loc 1 232 1 is_stmt 1 view -0
+ 883              		.cfi_startproc
+ 884              		@ args = 12, pretend = 0, frame = 16
+ 885              		@ frame_needed = 0, uses_anonymous_args = 0
+ 886              		.loc 1 232 1 is_stmt 0 view .LVU235
+ 887 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 888              	.LCFI20:
+ 889              		.cfi_def_cfa_offset 36
+ 890              		.cfi_offset 4, -36
+ 891              		.cfi_offset 5, -32
+ 892              		.cfi_offset 6, -28
+ 893              		.cfi_offset 7, -24
+ 894              		.cfi_offset 8, -20
+ 895              		.cfi_offset 9, -16
+ 896              		.cfi_offset 10, -12
+ 897              		.cfi_offset 11, -8
+ 898              		.cfi_offset 14, -4
+ 899 0004 85B0     		sub	sp, sp, #20
+ 900              	.LCFI21:
+ 901              		.cfi_def_cfa_offset 56
+ 902 0006 0446     		mov	r4, r0
+ 903 0008 0191     		str	r1, [sp, #4]
+ 904 000a 0292     		str	r2, [sp, #8]
+ 905 000c 0393     		str	r3, [sp, #12]
+ 906 000e BDF93870 		ldrsh	r7, [sp, #56]
+ 907 0012 9DF83C50 		ldrb	r5, [sp, #60]	@ zero_extendqisi2
+ 908 0016 9DF84060 		ldrb	r6, [sp, #64]	@ zero_extendqisi2
+ 233:Dsp/widget/wgt_core/GenDsp.c ****     /* upper right */
+ 234:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_RIGHT)
+ 909              		.loc 1 234 5 is_stmt 1 view .LVU236
+ 910              		.loc 1 234 8 is_stmt 0 view .LVU237
+ 911 001a 15F0010F 		tst	r5, #1
+ 912 001e 0BD1     		bne	.L67
+ 913              	.LVL93:
+ 914              	.L62:
+ 235:Dsp/widget/wgt_core/GenDsp.c ****     {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 22
+
+
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + x, y0 - y, col_inv);
+ 237:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, col_inv);
+ 238:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 239:Dsp/widget/wgt_core/GenDsp.c **** 
+ 240:Dsp/widget/wgt_core/GenDsp.c ****     /* upper left */
+ 241:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_LEFT)
+ 915              		.loc 1 241 5 is_stmt 1 view .LVU238
+ 916              		.loc 1 241 8 is_stmt 0 view .LVU239
+ 917 0020 15F0020F 		tst	r5, #2
+ 918 0024 24D1     		bne	.L68
+ 919              	.L63:
+ 242:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - x, y0 - y, col_inv);
+ 244:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, col_inv);
+ 245:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 246:Dsp/widget/wgt_core/GenDsp.c **** 
+ 247:Dsp/widget/wgt_core/GenDsp.c ****     /* lower right */
+ 248:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_RIGHT)
+ 920              		.loc 1 248 5 is_stmt 1 view .LVU240
+ 921              		.loc 1 248 8 is_stmt 0 view .LVU241
+ 922 0026 15F0080F 		tst	r5, #8
+ 923 002a 3ED1     		bne	.L69
+ 924              	.L64:
+ 249:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + x, y0 + y, col_inv);
+ 251:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, col_inv);
+ 252:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 253:Dsp/widget/wgt_core/GenDsp.c **** 
+ 254:Dsp/widget/wgt_core/GenDsp.c ****     /* lower left */
+ 255:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_LEFT)
+ 925              		.loc 1 255 5 is_stmt 1 view .LVU242
+ 926              		.loc 1 255 8 is_stmt 0 view .LVU243
+ 927 002c 15F0040F 		tst	r5, #4
+ 928 0030 58D1     		bne	.L70
+ 929              	.L61:
+ 256:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - x, y0 + y, col_inv);
+ 258:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, col_inv);
+ 259:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 260:Dsp/widget/wgt_core/GenDsp.c **** }
+ 930              		.loc 1 260 1 view .LVU244
+ 931 0032 05B0     		add	sp, sp, #20
+ 932              	.LCFI22:
+ 933              		.cfi_remember_state
+ 934              		.cfi_def_cfa_offset 36
+ 935              		@ sp needed
+ 936 0034 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 937              	.LVL94:
+ 938              	.L67:
+ 939              	.LCFI23:
+ 940              		.cfi_restore_state
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, col_inv);
+ 941              		.loc 1 236 9 is_stmt 1 view .LVU245
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, col_inv);
+ 942              		.loc 1 236 34 is_stmt 0 view .LVU246
+ 943 0038 BDF80C80 		ldrh	r8, [sp, #12]
+ 944 003c BDF804A0 		ldrh	r10, [sp, #4]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 23
+
+
+ 945 0040 08EB0A01 		add	r1, r8, r10
+ 946              	.LVL95:
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, col_inv);
+ 947              		.loc 1 236 42 view .LVU247
+ 948 0044 1FFA87F9 		uxth	r9, r7
+ 949 0048 BDF808B0 		ldrh	fp, [sp, #8]
+ 950 004c A9EB0B02 		sub	r2, r9, fp
+ 951              	.LVL96:
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, col_inv);
+ 952              		.loc 1 236 9 view .LVU248
+ 953 0050 3346     		mov	r3, r6
+ 954              	.LVL97:
+ 236:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 - x, col_inv);
+ 955              		.loc 1 236 9 view .LVU249
+ 956 0052 12B2     		sxth	r2, r2
+ 957 0054 09B2     		sxth	r1, r1
+ 958 0056 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 959              	.LVL98:
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 960              		.loc 1 237 9 is_stmt 1 view .LVU250
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 961              		.loc 1 237 34 is_stmt 0 view .LVU251
+ 962 005a 08EB0B01 		add	r1, r8, fp
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 963              		.loc 1 237 42 view .LVU252
+ 964 005e A9EB0A02 		sub	r2, r9, r10
+ 237:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 965              		.loc 1 237 9 view .LVU253
+ 966 0062 3346     		mov	r3, r6
+ 967 0064 12B2     		sxth	r2, r2
+ 968 0066 09B2     		sxth	r1, r1
+ 969 0068 2046     		mov	r0, r4
+ 970 006a FFF7FEFF 		bl	GenDsp_DrawPoint
+ 971              	.LVL99:
+ 972 006e D7E7     		b	.L62
+ 973              	.L68:
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, col_inv);
+ 974              		.loc 1 243 9 is_stmt 1 view .LVU254
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, col_inv);
+ 975              		.loc 1 243 34 is_stmt 0 view .LVU255
+ 976 0070 BDF80C80 		ldrh	r8, [sp, #12]
+ 977 0074 BDF804A0 		ldrh	r10, [sp, #4]
+ 978 0078 A8EB0A01 		sub	r1, r8, r10
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, col_inv);
+ 979              		.loc 1 243 42 view .LVU256
+ 980 007c 1FFA87F9 		uxth	r9, r7
+ 981 0080 BDF808B0 		ldrh	fp, [sp, #8]
+ 982 0084 A9EB0B02 		sub	r2, r9, fp
+ 243:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 - x, col_inv);
+ 983              		.loc 1 243 9 view .LVU257
+ 984 0088 3346     		mov	r3, r6
+ 985 008a 12B2     		sxth	r2, r2
+ 986 008c 09B2     		sxth	r1, r1
+ 987 008e 2046     		mov	r0, r4
+ 988 0090 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 989              	.LVL100:
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 24
+
+
+ 990              		.loc 1 244 9 is_stmt 1 view .LVU258
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 991              		.loc 1 244 34 is_stmt 0 view .LVU259
+ 992 0094 A8EB0B01 		sub	r1, r8, fp
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 993              		.loc 1 244 42 view .LVU260
+ 994 0098 A9EB0A02 		sub	r2, r9, r10
+ 244:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 995              		.loc 1 244 9 view .LVU261
+ 996 009c 3346     		mov	r3, r6
+ 997 009e 12B2     		sxth	r2, r2
+ 998 00a0 09B2     		sxth	r1, r1
+ 999 00a2 2046     		mov	r0, r4
+ 1000 00a4 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1001              	.LVL101:
+ 1002 00a8 BDE7     		b	.L63
+ 1003              	.L69:
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, col_inv);
+ 1004              		.loc 1 250 9 is_stmt 1 view .LVU262
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, col_inv);
+ 1005              		.loc 1 250 34 is_stmt 0 view .LVU263
+ 1006 00aa BDF80C80 		ldrh	r8, [sp, #12]
+ 1007 00ae BDF80490 		ldrh	r9, [sp, #4]
+ 1008 00b2 08EB0901 		add	r1, r8, r9
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, col_inv);
+ 1009              		.loc 1 250 42 view .LVU264
+ 1010 00b6 1FFA87FA 		uxth	r10, r7
+ 1011 00ba BDF808B0 		ldrh	fp, [sp, #8]
+ 1012 00be 0AEB0B02 		add	r2, r10, fp
+ 250:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 + y, y0 + x, col_inv);
+ 1013              		.loc 1 250 9 view .LVU265
+ 1014 00c2 3346     		mov	r3, r6
+ 1015 00c4 12B2     		sxth	r2, r2
+ 1016 00c6 09B2     		sxth	r1, r1
+ 1017 00c8 2046     		mov	r0, r4
+ 1018 00ca FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1019              	.LVL102:
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1020              		.loc 1 251 9 is_stmt 1 view .LVU266
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1021              		.loc 1 251 34 is_stmt 0 view .LVU267
+ 1022 00ce 08EB0B01 		add	r1, r8, fp
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1023              		.loc 1 251 42 view .LVU268
+ 1024 00d2 09EB0A02 		add	r2, r9, r10
+ 251:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1025              		.loc 1 251 9 view .LVU269
+ 1026 00d6 3346     		mov	r3, r6
+ 1027 00d8 12B2     		sxth	r2, r2
+ 1028 00da 09B2     		sxth	r1, r1
+ 1029 00dc 2046     		mov	r0, r4
+ 1030 00de FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1031              	.LVL103:
+ 1032 00e2 A3E7     		b	.L64
+ 1033              	.L70:
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, col_inv);
+ 1034              		.loc 1 257 9 is_stmt 1 view .LVU270
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 25
+
+
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, col_inv);
+ 1035              		.loc 1 257 34 is_stmt 0 view .LVU271
+ 1036 00e4 BDF80C80 		ldrh	r8, [sp, #12]
+ 1037 00e8 BDF80490 		ldrh	r9, [sp, #4]
+ 1038 00ec A8EB0901 		sub	r1, r8, r9
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, col_inv);
+ 1039              		.loc 1 257 42 view .LVU272
+ 1040 00f0 BFB2     		uxth	r7, r7
+ 1041 00f2 BDF80850 		ldrh	r5, [sp, #8]
+ 1042 00f6 7A19     		adds	r2, r7, r5
+ 257:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_DrawPoint(map, x0 - y, y0 + x, col_inv);
+ 1043              		.loc 1 257 9 view .LVU273
+ 1044 00f8 3346     		mov	r3, r6
+ 1045 00fa 12B2     		sxth	r2, r2
+ 1046 00fc 09B2     		sxth	r1, r1
+ 1047 00fe 2046     		mov	r0, r4
+ 1048 0100 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1049              	.LVL104:
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1050              		.loc 1 258 9 is_stmt 1 view .LVU274
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1051              		.loc 1 258 34 is_stmt 0 view .LVU275
+ 1052 0104 A8EB0501 		sub	r1, r8, r5
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1053              		.loc 1 258 42 view .LVU276
+ 1054 0108 09EB0702 		add	r2, r9, r7
+ 258:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1055              		.loc 1 258 9 view .LVU277
+ 1056 010c 3346     		mov	r3, r6
+ 1057 010e 12B2     		sxth	r2, r2
+ 1058 0110 09B2     		sxth	r1, r1
+ 1059 0112 2046     		mov	r0, r4
+ 1060 0114 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1061              	.LVL105:
+ 1062              		.loc 1 260 1 view .LVU278
+ 1063 0118 8BE7     		b	.L61
+ 1064              		.cfi_endproc
+ 1065              	.LFE12:
+ 1067              		.section	.text.GenDsp_Draw_Circle,"ax",%progbits
+ 1068              		.align	1
+ 1069              		.syntax unified
+ 1070              		.thumb
+ 1071              		.thumb_func
+ 1072              		.fpu fpv4-sp-d16
+ 1074              	GenDsp_Draw_Circle:
+ 1075              	.LVL106:
+ 1076              	.LFB13:
+ 261:Dsp/widget/wgt_core/GenDsp.c **** 
+ 262:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_Circle(uint8_t **map, int16_t x0, int16_t y0, uint8_t rad, uint8_t option, 
+ 263:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1077              		.loc 1 263 1 is_stmt 1 view -0
+ 1078              		.cfi_startproc
+ 1079              		@ args = 8, pretend = 0, frame = 8
+ 1080              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1081              		.loc 1 263 1 is_stmt 0 view .LVU280
+ 1082 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1083              	.LCFI24:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 26
+
+
+ 1084              		.cfi_def_cfa_offset 36
+ 1085              		.cfi_offset 4, -36
+ 1086              		.cfi_offset 5, -32
+ 1087              		.cfi_offset 6, -28
+ 1088              		.cfi_offset 7, -24
+ 1089              		.cfi_offset 8, -20
+ 1090              		.cfi_offset 9, -16
+ 1091              		.cfi_offset 10, -12
+ 1092              		.cfi_offset 11, -8
+ 1093              		.cfi_offset 14, -4
+ 1094 0004 87B0     		sub	sp, sp, #28
+ 1095              	.LCFI25:
+ 1096              		.cfi_def_cfa_offset 64
+ 1097 0006 0490     		str	r0, [sp, #16]
+ 1098 0008 0591     		str	r1, [sp, #20]
+ 1099 000a 9146     		mov	r9, r2
+ 1100 000c 9DF840A0 		ldrb	r10, [sp, #64]	@ zero_extendqisi2
+ 1101 0010 9DF844B0 		ldrb	fp, [sp, #68]	@ zero_extendqisi2
+ 264:Dsp/widget/wgt_core/GenDsp.c ****     int8_t f;
+ 1102              		.loc 1 264 5 is_stmt 1 view .LVU281
+ 265:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_x;
+ 1103              		.loc 1 265 5 view .LVU282
+ 266:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_y;
+ 1104              		.loc 1 266 5 view .LVU283
+ 267:Dsp/widget/wgt_core/GenDsp.c ****     int16_t x;
+ 1105              		.loc 1 267 5 view .LVU284
+ 268:Dsp/widget/wgt_core/GenDsp.c ****     int16_t y;
+ 1106              		.loc 1 268 5 view .LVU285
+ 269:Dsp/widget/wgt_core/GenDsp.c **** 
+ 270:Dsp/widget/wgt_core/GenDsp.c ****     f = 1;
+ 1107              		.loc 1 270 5 view .LVU286
+ 1108              	.LVL107:
+ 271:Dsp/widget/wgt_core/GenDsp.c ****     f -= rad;
+ 1109              		.loc 1 271 5 view .LVU287
+ 1110              		.loc 1 271 7 is_stmt 0 view .LVU288
+ 1111 0014 C3F10104 		rsb	r4, r3, #1
+ 1112 0018 64B2     		sxtb	r4, r4
+ 1113              	.LVL108:
+ 272:Dsp/widget/wgt_core/GenDsp.c ****     ddF_x = 1;
+ 1114              		.loc 1 272 5 is_stmt 1 view .LVU289
+ 273:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 1115              		.loc 1 273 5 view .LVU290
+ 274:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y -= rad;
+ 1116              		.loc 1 274 5 view .LVU291
+ 275:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y *= 2;
+ 1117              		.loc 1 275 5 view .LVU292
+ 1118              		.loc 1 275 11 is_stmt 0 view .LVU293
+ 1119 001a C3EBC318 		rsb	r8, r3, r3, lsl #7
+ 1120 001e 4FEA4808 		lsl	r8, r8, #1
+ 1121 0022 4FFA88F8 		sxtb	r8, r8
+ 1122              	.LVL109:
+ 276:Dsp/widget/wgt_core/GenDsp.c ****     x = 0;
+ 1123              		.loc 1 276 5 is_stmt 1 view .LVU294
+ 277:Dsp/widget/wgt_core/GenDsp.c ****     y = rad;
+ 1124              		.loc 1 277 5 view .LVU295
+ 1125              		.loc 1 277 7 is_stmt 0 view .LVU296
+ 1126 0026 1EB2     		sxth	r6, r3
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 27
+
+
+ 1127              	.LVL110:
+ 278:Dsp/widget/wgt_core/GenDsp.c **** 
+ 279:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle_Section(map, x, y, x0, y0, option, col_inv);
+ 1128              		.loc 1 279 5 is_stmt 1 view .LVU297
+ 1129 0028 CDF808B0 		str	fp, [sp, #8]
+ 1130 002c CDF804A0 		str	r10, [sp, #4]
+ 1131 0030 0092     		str	r2, [sp]
+ 1132 0032 0B46     		mov	r3, r1
+ 1133              	.LVL111:
+ 1134              		.loc 1 279 5 is_stmt 0 view .LVU298
+ 1135 0034 3246     		mov	r2, r6
+ 1136              	.LVL112:
+ 1137              		.loc 1 279 5 view .LVU299
+ 1138 0036 0021     		movs	r1, #0
+ 1139              	.LVL113:
+ 1140              		.loc 1 279 5 view .LVU300
+ 1141 0038 FFF7FEFF 		bl	GenDsp_Draw_Circle_Section
+ 1142              	.LVL114:
+ 280:Dsp/widget/wgt_core/GenDsp.c **** 
+ 281:Dsp/widget/wgt_core/GenDsp.c ****     while (x < y)
+ 1143              		.loc 1 281 5 is_stmt 1 view .LVU301
+ 276:Dsp/widget/wgt_core/GenDsp.c ****     y = rad;
+ 1144              		.loc 1 276 7 is_stmt 0 view .LVU302
+ 1145 003c 0025     		movs	r5, #0
+ 272:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 1146              		.loc 1 272 11 view .LVU303
+ 1147 003e 0127     		movs	r7, #1
+ 1148              		.loc 1 281 11 view .LVU304
+ 1149 0040 1BE0     		b	.L72
+ 1150              	.LVL115:
+ 1151              	.L77:
+ 282:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 283:Dsp/widget/wgt_core/GenDsp.c ****         if (f >= 0)
+ 284:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 285:Dsp/widget/wgt_core/GenDsp.c ****             y--;
+ 1152              		.loc 1 285 13 is_stmt 1 view .LVU305
+ 1153              		.loc 1 285 14 is_stmt 0 view .LVU306
+ 1154 0042 013E     		subs	r6, r6, #1
+ 1155              	.LVL116:
+ 1156              		.loc 1 285 14 view .LVU307
+ 1157 0044 36B2     		sxth	r6, r6
+ 1158              	.LVL117:
+ 286:Dsp/widget/wgt_core/GenDsp.c ****             ddF_y += 2;
+ 1159              		.loc 1 286 13 is_stmt 1 view .LVU308
+ 1160              		.loc 1 286 19 is_stmt 0 view .LVU309
+ 1161 0046 08F10203 		add	r3, r8, #2
+ 1162 004a 4FFA83F8 		sxtb	r8, r3
+ 1163              	.LVL118:
+ 287:Dsp/widget/wgt_core/GenDsp.c ****             f += ddF_y;
+ 1164              		.loc 1 287 13 is_stmt 1 view .LVU310
+ 1165              		.loc 1 287 15 is_stmt 0 view .LVU311
+ 1166 004e 54FA83F4 		uxtab	r4, r4, r3
+ 1167              	.LVL119:
+ 1168              		.loc 1 287 15 view .LVU312
+ 1169 0052 64B2     		sxtb	r4, r4
+ 1170              	.LVL120:
+ 1171              	.L73:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 28
+
+
+ 288:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 289:Dsp/widget/wgt_core/GenDsp.c ****         x++;
+ 1172              		.loc 1 289 9 is_stmt 1 view .LVU313
+ 1173              		.loc 1 289 10 is_stmt 0 view .LVU314
+ 1174 0054 0135     		adds	r5, r5, #1
+ 1175              	.LVL121:
+ 1176              		.loc 1 289 10 view .LVU315
+ 1177 0056 2DB2     		sxth	r5, r5
+ 1178              	.LVL122:
+ 290:Dsp/widget/wgt_core/GenDsp.c ****         ddF_x += 2;
+ 1179              		.loc 1 290 9 is_stmt 1 view .LVU316
+ 1180              		.loc 1 290 15 is_stmt 0 view .LVU317
+ 1181 0058 BB1C     		adds	r3, r7, #2
+ 1182 005a 5FB2     		sxtb	r7, r3
+ 1183              	.LVL123:
+ 291:Dsp/widget/wgt_core/GenDsp.c ****         f += ddF_x;
+ 1184              		.loc 1 291 9 is_stmt 1 view .LVU318
+ 1185              		.loc 1 291 11 is_stmt 0 view .LVU319
+ 1186 005c 54FA83F4 		uxtab	r4, r4, r3
+ 1187              	.LVL124:
+ 1188              		.loc 1 291 11 view .LVU320
+ 1189 0060 64B2     		sxtb	r4, r4
+ 1190              	.LVL125:
+ 292:Dsp/widget/wgt_core/GenDsp.c **** 
+ 293:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_Circle_Section(map, x, y, x0, y0, option, col_inv);
+ 1191              		.loc 1 293 9 is_stmt 1 view .LVU321
+ 1192 0062 CDF808B0 		str	fp, [sp, #8]
+ 1193 0066 CDF804A0 		str	r10, [sp, #4]
+ 1194 006a CDF80090 		str	r9, [sp]
+ 1195 006e 059B     		ldr	r3, [sp, #20]
+ 1196 0070 3246     		mov	r2, r6
+ 1197 0072 2946     		mov	r1, r5
+ 1198 0074 0498     		ldr	r0, [sp, #16]
+ 1199 0076 FFF7FEFF 		bl	GenDsp_Draw_Circle_Section
+ 1200              	.LVL126:
+ 1201              	.L72:
+ 281:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1202              		.loc 1 281 11 view .LVU322
+ 1203 007a B542     		cmp	r5, r6
+ 1204 007c 02DA     		bge	.L76
+ 283:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1205              		.loc 1 283 9 view .LVU323
+ 283:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1206              		.loc 1 283 12 is_stmt 0 view .LVU324
+ 1207 007e 002C     		cmp	r4, #0
+ 1208 0080 DFDA     		bge	.L77
+ 1209 0082 E7E7     		b	.L73
+ 1210              	.L76:
+ 294:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 295:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1211              		.loc 1 295 1 view .LVU325
+ 1212 0084 07B0     		add	sp, sp, #28
+ 1213              	.LCFI26:
+ 1214              		.cfi_def_cfa_offset 36
+ 1215              		@ sp needed
+ 1216 0086 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1217              		.loc 1 295 1 view .LVU326
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 29
+
+
+ 1218              		.cfi_endproc
+ 1219              	.LFE13:
+ 1221              		.section	.text.GenDsp_DrawCircle,"ax",%progbits
+ 1222              		.align	1
+ 1223              		.syntax unified
+ 1224              		.thumb
+ 1225              		.thumb_func
+ 1226              		.fpu fpv4-sp-d16
+ 1228              	GenDsp_DrawCircle:
+ 1229              	.LVL127:
+ 1230              	.LFB14:
+ 296:Dsp/widget/wgt_core/GenDsp.c **** 
+ 297:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawCircle(uint8_t **map, int16_t x0, int16_t y0, uint8_t rad, uint8_t option, b
+ 298:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1231              		.loc 1 298 1 is_stmt 1 view -0
+ 1232              		.cfi_startproc
+ 1233              		@ args = 8, pretend = 0, frame = 0
+ 1234              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1235              		.loc 1 298 1 is_stmt 0 view .LVU328
+ 1236 0000 10B5     		push	{r4, lr}
+ 1237              	.LCFI27:
+ 1238              		.cfi_def_cfa_offset 8
+ 1239              		.cfi_offset 4, -8
+ 1240              		.cfi_offset 14, -4
+ 1241 0002 82B0     		sub	sp, sp, #8
+ 1242              	.LCFI28:
+ 1243              		.cfi_def_cfa_offset 16
+ 299:Dsp/widget/wgt_core/GenDsp.c ****     /* draw circle */
+ 300:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x0, y0, rad, option, col_inv);
+ 1244              		.loc 1 300 5 is_stmt 1 view .LVU329
+ 1245 0004 9DF81440 		ldrb	r4, [sp, #20]	@ zero_extendqisi2
+ 1246 0008 0194     		str	r4, [sp, #4]
+ 1247 000a 9DF81040 		ldrb	r4, [sp, #16]	@ zero_extendqisi2
+ 1248 000e 0094     		str	r4, [sp]
+ 1249 0010 FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1250              	.LVL128:
+ 301:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1251              		.loc 1 301 1 is_stmt 0 view .LVU330
+ 1252 0014 02B0     		add	sp, sp, #8
+ 1253              	.LCFI29:
+ 1254              		.cfi_def_cfa_offset 8
+ 1255              		@ sp needed
+ 1256 0016 10BD     		pop	{r4, pc}
+ 1257              		.loc 1 301 1 view .LVU331
+ 1258              		.cfi_endproc
+ 1259              	.LFE14:
+ 1261              		.section	.text.GenDsp_DrawRectangle,"ax",%progbits
+ 1262              		.align	1
+ 1263              		.syntax unified
+ 1264              		.thumb
+ 1265              		.thumb_func
+ 1266              		.fpu fpv4-sp-d16
+ 1268              	GenDsp_DrawRectangle:
+ 1269              	.LVL129:
+ 1270              	.LFB15:
+ 302:Dsp/widget/wgt_core/GenDsp.c **** 
+ 303:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_DrawRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 30
+
+
+ 304:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1271              		.loc 1 304 1 is_stmt 1 view -0
+ 1272              		.cfi_startproc
+ 1273              		@ args = 12, pretend = 0, frame = 8
+ 1274              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1275              		.loc 1 304 1 is_stmt 0 view .LVU333
+ 1276 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1277              	.LCFI30:
+ 1278              		.cfi_def_cfa_offset 36
+ 1279              		.cfi_offset 4, -36
+ 1280              		.cfi_offset 5, -32
+ 1281              		.cfi_offset 6, -28
+ 1282              		.cfi_offset 7, -24
+ 1283              		.cfi_offset 8, -20
+ 1284              		.cfi_offset 9, -16
+ 1285              		.cfi_offset 10, -12
+ 1286              		.cfi_offset 11, -8
+ 1287              		.cfi_offset 14, -4
+ 1288 0004 83B0     		sub	sp, sp, #12
+ 1289              	.LCFI31:
+ 1290              		.cfi_def_cfa_offset 48
+ 1291 0006 0546     		mov	r5, r0
+ 1292 0008 0191     		str	r1, [sp, #4]
+ 1293 000a 1446     		mov	r4, r2
+ 1294 000c 9DF83870 		ldrb	r7, [sp, #56]	@ zero_extendqisi2
+ 305:Dsp/widget/wgt_core/GenDsp.c ****     int16_t x_tmp = x + width - 1;
+ 1295              		.loc 1 305 5 is_stmt 1 view .LVU334
+ 1296              		.loc 1 305 23 is_stmt 0 view .LVU335
+ 1297 0010 8AB2     		uxth	r2, r1
+ 1298              	.LVL130:
+ 1299              		.loc 1 305 23 view .LVU336
+ 1300 0012 0092     		str	r2, [sp]
+ 1301 0014 02EB0308 		add	r8, r2, r3
+ 1302 0018 1FFA88F8 		uxth	r8, r8
+ 1303              		.loc 1 305 31 view .LVU337
+ 1304 001c 08F1FF38 		add	r8, r8, #-1
+ 1305              		.loc 1 305 13 view .LVU338
+ 1306 0020 0FFA88F8 		sxth	r8, r8
+ 1307              	.LVL131:
+ 306:Dsp/widget/wgt_core/GenDsp.c ****     int16_t y_tmp = y + height - 1;
+ 1308              		.loc 1 306 5 is_stmt 1 view .LVU339
+ 1309              		.loc 1 306 23 is_stmt 0 view .LVU340
+ 1310 0024 9DF83090 		ldrb	r9, [sp, #48]	@ zero_extendqisi2
+ 1311 0028 A144     		add	r9, r9, r4
+ 1312 002a 1FFA89F9 		uxth	r9, r9
+ 1313              		.loc 1 306 32 view .LVU341
+ 1314 002e 09F1FF39 		add	r9, r9, #-1
+ 1315              		.loc 1 306 13 view .LVU342
+ 1316 0032 0FFA89F9 		sxth	r9, r9
+ 1317              	.LVL132:
+ 307:Dsp/widget/wgt_core/GenDsp.c **** 
+ 308:Dsp/widget/wgt_core/GenDsp.c ****     for (uint8_t width_tmp = x; width_tmp < x_tmp + 1; width_tmp++)
+ 1318              		.loc 1 308 5 is_stmt 1 view .LVU343
+ 1319              	.LBB10:
+ 1320              		.loc 1 308 10 view .LVU344
+ 1321              		.loc 1 308 18 is_stmt 0 view .LVU345
+ 1322 0036 CEB2     		uxtb	r6, r1
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 31
+
+
+ 1323              	.LVL133:
+ 1324              		.loc 1 308 5 view .LVU346
+ 1325 0038 1DE0     		b	.L81
+ 1326              	.LVL134:
+ 1327              	.L82:
+ 309:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 310:Dsp/widget/wgt_core/GenDsp.c ****         if (col_inv)
+ 311:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 312:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y, col_inv ^ map[y][width_tmp]);
+ 313:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y_tmp, col_inv ^ map[y_tmp][width_tmp]);
+ 314:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 315:Dsp/widget/wgt_core/GenDsp.c ****         else
+ 316:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 317:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y, !col_inv ^ map[y][width_tmp]);
+ 1328              		.loc 1 317 13 is_stmt 1 view .LVU347
+ 1329 003a 0FFA86FA 		sxth	r10, r6
+ 1330              		.loc 1 317 49 is_stmt 0 view .LVU348
+ 1331 003e 87F0010B 		eor	fp, r7, #1
+ 1332              		.loc 1 317 63 view .LVU349
+ 1333 0042 55F82430 		ldr	r3, [r5, r4, lsl #2]
+ 1334              		.loc 1 317 66 view .LVU350
+ 1335 0046 9B5D     		ldrb	r3, [r3, r6]	@ zero_extendqisi2
+ 1336              		.loc 1 317 13 view .LVU351
+ 1337 0048 BBEB0303 		subs	r3, fp, r3
+ 1338 004c 18BF     		it	ne
+ 1339 004e 0123     		movne	r3, #1
+ 1340 0050 2246     		mov	r2, r4
+ 1341 0052 5146     		mov	r1, r10
+ 1342 0054 2846     		mov	r0, r5
+ 1343 0056 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1344              	.LVL135:
+ 318:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y_tmp, !col_inv ^ map[y_tmp][width_tmp]);
+ 1345              		.loc 1 318 13 is_stmt 1 view .LVU352
+ 1346              		.loc 1 318 67 is_stmt 0 view .LVU353
+ 1347 005a 55F82930 		ldr	r3, [r5, r9, lsl #2]
+ 1348              		.loc 1 318 74 view .LVU354
+ 1349 005e 9B5D     		ldrb	r3, [r3, r6]	@ zero_extendqisi2
+ 1350              		.loc 1 318 13 view .LVU355
+ 1351 0060 BBEB0303 		subs	r3, fp, r3
+ 1352 0064 18BF     		it	ne
+ 1353 0066 0123     		movne	r3, #1
+ 1354 0068 4A46     		mov	r2, r9
+ 1355 006a 5146     		mov	r1, r10
+ 1356 006c 2846     		mov	r0, r5
+ 1357 006e FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1358              	.LVL136:
+ 1359              	.L83:
+ 308:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1360              		.loc 1 308 56 is_stmt 1 discriminator 2 view .LVU356
+ 308:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1361              		.loc 1 308 65 is_stmt 0 discriminator 2 view .LVU357
+ 1362 0072 0136     		adds	r6, r6, #1
+ 1363              	.LVL137:
+ 308:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1364              		.loc 1 308 65 discriminator 2 view .LVU358
+ 1365 0074 F6B2     		uxtb	r6, r6
+ 1366              	.LVL138:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 32
+
+
+ 1367              	.L81:
+ 308:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1368              		.loc 1 308 33 is_stmt 1 discriminator 1 view .LVU359
+ 308:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1369              		.loc 1 308 5 is_stmt 0 discriminator 1 view .LVU360
+ 1370 0076 B045     		cmp	r8, r6
+ 1371 0078 1ADB     		blt	.L90
+ 310:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1372              		.loc 1 310 9 is_stmt 1 view .LVU361
+ 310:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1373              		.loc 1 310 12 is_stmt 0 view .LVU362
+ 1374 007a 002F     		cmp	r7, #0
+ 1375 007c DDD0     		beq	.L82
+ 312:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y_tmp, col_inv ^ map[y_tmp][width_tmp]);
+ 1376              		.loc 1 312 13 is_stmt 1 view .LVU363
+ 1377 007e 0FFA86FA 		sxth	r10, r6
+ 312:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y_tmp, col_inv ^ map[y_tmp][width_tmp]);
+ 1378              		.loc 1 312 62 is_stmt 0 view .LVU364
+ 1379 0082 55F82430 		ldr	r3, [r5, r4, lsl #2]
+ 312:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y_tmp, col_inv ^ map[y_tmp][width_tmp]);
+ 1380              		.loc 1 312 65 view .LVU365
+ 1381 0086 9B5D     		ldrb	r3, [r3, r6]	@ zero_extendqisi2
+ 312:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, width_tmp, y_tmp, col_inv ^ map[y_tmp][width_tmp]);
+ 1382              		.loc 1 312 13 view .LVU366
+ 1383 0088 FB1A     		subs	r3, r7, r3
+ 1384 008a 18BF     		it	ne
+ 1385 008c 0123     		movne	r3, #1
+ 1386 008e 2246     		mov	r2, r4
+ 1387 0090 5146     		mov	r1, r10
+ 1388 0092 2846     		mov	r0, r5
+ 1389 0094 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1390              	.LVL139:
+ 313:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1391              		.loc 1 313 13 is_stmt 1 view .LVU367
+ 313:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1392              		.loc 1 313 66 is_stmt 0 view .LVU368
+ 1393 0098 55F82930 		ldr	r3, [r5, r9, lsl #2]
+ 313:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1394              		.loc 1 313 73 view .LVU369
+ 1395 009c 9B5D     		ldrb	r3, [r3, r6]	@ zero_extendqisi2
+ 313:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1396              		.loc 1 313 13 view .LVU370
+ 1397 009e FB1A     		subs	r3, r7, r3
+ 1398 00a0 18BF     		it	ne
+ 1399 00a2 0123     		movne	r3, #1
+ 1400 00a4 4A46     		mov	r2, r9
+ 1401 00a6 5146     		mov	r1, r10
+ 1402 00a8 2846     		mov	r0, r5
+ 1403 00aa FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1404              	.LVL140:
+ 1405 00ae E0E7     		b	.L83
+ 1406              	.L90:
+ 313:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1407              		.loc 1 313 13 view .LVU371
+ 1408              	.LBE10:
+ 319:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 320:Dsp/widget/wgt_core/GenDsp.c ****     }
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 33
+
+
+ 321:Dsp/widget/wgt_core/GenDsp.c **** 
+ 322:Dsp/widget/wgt_core/GenDsp.c ****     for (uint8_t height_tmp = y + 1; height_tmp < y_tmp; height_tmp++)
+ 1409              		.loc 1 322 5 is_stmt 1 view .LVU372
+ 1410              	.LBB11:
+ 1411              		.loc 1 322 10 view .LVU373
+ 1412              		.loc 1 322 33 is_stmt 0 view .LVU374
+ 1413 00b0 E4B2     		uxtb	r4, r4
+ 1414              		.loc 1 322 18 view .LVU375
+ 1415 00b2 0134     		adds	r4, r4, #1
+ 1416 00b4 E4B2     		uxtb	r4, r4
+ 1417              	.LVL141:
+ 1418              		.loc 1 322 18 view .LVU376
+ 1419 00b6 DDF804B0 		ldr	fp, [sp, #4]
+ 1420              		.loc 1 322 5 view .LVU377
+ 1421 00ba 20E0     		b	.L85
+ 1422              	.LVL142:
+ 1423              	.L86:
+ 323:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 324:Dsp/widget/wgt_core/GenDsp.c ****         if (col_inv)
+ 325:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 326:Dsp/widget/wgt_core/GenDsp.c **** 
+ 327:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x, height_tmp, col_inv ^ map[height_tmp][x]);
+ 328:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, height_tmp, col_inv ^ map[height_tmp][x_tmp]);
+ 329:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 330:Dsp/widget/wgt_core/GenDsp.c ****         else
+ 331:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 332:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x + 1, height_tmp, !col_inv ^ map[height_tmp][x]);
+ 1424              		.loc 1 332 13 is_stmt 1 view .LVU378
+ 1425              		.loc 1 332 37 is_stmt 0 view .LVU379
+ 1426 00bc 009B     		ldr	r3, [sp]
+ 1427 00be 591C     		adds	r1, r3, #1
+ 1428              		.loc 1 332 13 view .LVU380
+ 1429 00c0 26B2     		sxth	r6, r4
+ 1430              		.loc 1 332 54 view .LVU381
+ 1431 00c2 87F0010A 		eor	r10, r7, #1
+ 1432              		.loc 1 332 68 view .LVU382
+ 1433 00c6 55F82430 		ldr	r3, [r5, r4, lsl #2]
+ 1434              		.loc 1 332 80 view .LVU383
+ 1435 00ca 13F80B30 		ldrb	r3, [r3, fp]	@ zero_extendqisi2
+ 1436              		.loc 1 332 13 view .LVU384
+ 1437 00ce BAEB0303 		subs	r3, r10, r3
+ 1438 00d2 18BF     		it	ne
+ 1439 00d4 0123     		movne	r3, #1
+ 1440 00d6 3246     		mov	r2, r6
+ 1441 00d8 09B2     		sxth	r1, r1
+ 1442 00da 2846     		mov	r0, r5
+ 1443 00dc FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1444              	.LVL143:
+ 333:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, height_tmp, !col_inv ^ map[height_tmp][x_tmp]);
+ 1445              		.loc 1 333 13 is_stmt 1 view .LVU385
+ 1446              		.loc 1 333 68 is_stmt 0 view .LVU386
+ 1447 00e0 55F82430 		ldr	r3, [r5, r4, lsl #2]
+ 1448              		.loc 1 333 80 view .LVU387
+ 1449 00e4 13F80830 		ldrb	r3, [r3, r8]	@ zero_extendqisi2
+ 1450              		.loc 1 333 13 view .LVU388
+ 1451 00e8 BAEB0303 		subs	r3, r10, r3
+ 1452 00ec 18BF     		it	ne
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 34
+
+
+ 1453 00ee 0123     		movne	r3, #1
+ 1454 00f0 3246     		mov	r2, r6
+ 1455 00f2 4146     		mov	r1, r8
+ 1456 00f4 2846     		mov	r0, r5
+ 1457 00f6 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1458              	.LVL144:
+ 1459              	.L87:
+ 322:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1460              		.loc 1 322 58 is_stmt 1 discriminator 2 view .LVU389
+ 322:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1461              		.loc 1 322 68 is_stmt 0 discriminator 2 view .LVU390
+ 1462 00fa 0134     		adds	r4, r4, #1
+ 1463              	.LVL145:
+ 322:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1464              		.loc 1 322 68 discriminator 2 view .LVU391
+ 1465 00fc E4B2     		uxtb	r4, r4
+ 1466              	.LVL146:
+ 1467              	.L85:
+ 322:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1468              		.loc 1 322 38 is_stmt 1 discriminator 1 view .LVU392
+ 322:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 1469              		.loc 1 322 5 is_stmt 0 discriminator 1 view .LVU393
+ 1470 00fe 4C45     		cmp	r4, r9
+ 1471 0100 1BDA     		bge	.L91
+ 324:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1472              		.loc 1 324 9 is_stmt 1 view .LVU394
+ 324:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 1473              		.loc 1 324 12 is_stmt 0 view .LVU395
+ 1474 0102 002F     		cmp	r7, #0
+ 1475 0104 DAD0     		beq	.L86
+ 327:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, height_tmp, col_inv ^ map[height_tmp][x_tmp]);
+ 1476              		.loc 1 327 13 is_stmt 1 view .LVU396
+ 1477 0106 26B2     		sxth	r6, r4
+ 327:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, height_tmp, col_inv ^ map[height_tmp][x_tmp]);
+ 1478              		.loc 1 327 63 is_stmt 0 view .LVU397
+ 1479 0108 55F82430 		ldr	r3, [r5, r4, lsl #2]
+ 327:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, height_tmp, col_inv ^ map[height_tmp][x_tmp]);
+ 1480              		.loc 1 327 75 view .LVU398
+ 1481 010c 13F80B30 		ldrb	r3, [r3, fp]	@ zero_extendqisi2
+ 327:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, height_tmp, col_inv ^ map[height_tmp][x_tmp]);
+ 1482              		.loc 1 327 13 view .LVU399
+ 1483 0110 FB1A     		subs	r3, r7, r3
+ 1484 0112 18BF     		it	ne
+ 1485 0114 0123     		movne	r3, #1
+ 1486 0116 3246     		mov	r2, r6
+ 1487 0118 5946     		mov	r1, fp
+ 1488 011a 2846     		mov	r0, r5
+ 1489 011c FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1490              	.LVL147:
+ 328:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1491              		.loc 1 328 13 is_stmt 1 view .LVU400
+ 328:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1492              		.loc 1 328 67 is_stmt 0 view .LVU401
+ 1493 0120 55F82430 		ldr	r3, [r5, r4, lsl #2]
+ 328:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1494              		.loc 1 328 79 view .LVU402
+ 1495 0124 13F80830 		ldrb	r3, [r3, r8]	@ zero_extendqisi2
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 35
+
+
+ 328:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1496              		.loc 1 328 13 view .LVU403
+ 1497 0128 FB1A     		subs	r3, r7, r3
+ 1498 012a 18BF     		it	ne
+ 1499 012c 0123     		movne	r3, #1
+ 1500 012e 3246     		mov	r2, r6
+ 1501 0130 4146     		mov	r1, r8
+ 1502 0132 2846     		mov	r0, r5
+ 1503 0134 FFF7FEFF 		bl	GenDsp_DrawPoint
+ 1504              	.LVL148:
+ 1505 0138 DFE7     		b	.L87
+ 1506              	.L91:
+ 328:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 1507              		.loc 1 328 13 view .LVU404
+ 1508              	.LBE11:
+ 334:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 335:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 336:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1509              		.loc 1 336 1 view .LVU405
+ 1510 013a 03B0     		add	sp, sp, #12
+ 1511              	.LCFI32:
+ 1512              		.cfi_def_cfa_offset 36
+ 1513              	.LVL149:
+ 1514              		.loc 1 336 1 view .LVU406
+ 1515              		@ sp needed
+ 1516 013c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1517              		.loc 1 336 1 view .LVU407
+ 1518              		.cfi_endproc
+ 1519              	.LFE15:
+ 1521              		.section	.text.GenDsp_Draw_RadiusRectangle,"ax",%progbits
+ 1522              		.align	1
+ 1523              		.syntax unified
+ 1524              		.thumb
+ 1525              		.thumb_func
+ 1526              		.fpu fpv4-sp-d16
+ 1528              	GenDsp_Draw_RadiusRectangle:
+ 1529              	.LVL150:
+ 1530              	.LFB16:
+ 337:Dsp/widget/wgt_core/GenDsp.c **** 
+ 338:Dsp/widget/wgt_core/GenDsp.c **** /* bug in this function */
+ 339:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Draw_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t
+ 340:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1531              		.loc 1 340 1 is_stmt 1 view -0
+ 1532              		.cfi_startproc
+ 1533              		@ args = 16, pretend = 0, frame = 32
+ 1534              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1535              		.loc 1 340 1 is_stmt 0 view .LVU409
+ 1536 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1537              	.LCFI33:
+ 1538              		.cfi_def_cfa_offset 36
+ 1539              		.cfi_offset 4, -36
+ 1540              		.cfi_offset 5, -32
+ 1541              		.cfi_offset 6, -28
+ 1542              		.cfi_offset 7, -24
+ 1543              		.cfi_offset 8, -20
+ 1544              		.cfi_offset 9, -16
+ 1545              		.cfi_offset 10, -12
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 36
+
+
+ 1546              		.cfi_offset 11, -8
+ 1547              		.cfi_offset 14, -4
+ 1548 0004 8DB0     		sub	sp, sp, #52
+ 1549              	.LCFI34:
+ 1550              		.cfi_def_cfa_offset 88
+ 1551 0006 0446     		mov	r4, r0
+ 1552 0008 9446     		mov	ip, r2
+ 1553 000a 9DF85C60 		ldrb	r6, [sp, #92]	@ zero_extendqisi2
+ 1554 000e 9DF86090 		ldrb	r9, [sp, #96]	@ zero_extendqisi2
+ 1555 0012 9DF86450 		ldrb	r5, [sp, #100]	@ zero_extendqisi2
+ 341:Dsp/widget/wgt_core/GenDsp.c ****     int16_t x_start = x + radius;
+ 1556              		.loc 1 341 5 is_stmt 1 view .LVU410
+ 1557              		.loc 1 341 25 is_stmt 0 view .LVU411
+ 1558 0016 0791     		str	r1, [sp, #28]
+ 1559 0018 BDF81C20 		ldrh	r2, [sp, #28]
+ 1560              	.LVL151:
+ 1561              		.loc 1 341 25 view .LVU412
+ 1562 001c B118     		adds	r1, r6, r2
+ 1563              	.LVL152:
+ 1564              		.loc 1 341 25 view .LVU413
+ 1565 001e 8FB2     		uxth	r7, r1
+ 1566 0020 0997     		str	r7, [sp, #36]
+ 1567              		.loc 1 341 13 view .LVU414
+ 1568 0022 09B2     		sxth	r1, r1
+ 1569 0024 0491     		str	r1, [sp, #16]
+ 1570              	.LVL153:
+ 342:Dsp/widget/wgt_core/GenDsp.c ****     int16_t y_start = y + radius;
+ 1571              		.loc 1 342 5 is_stmt 1 view .LVU415
+ 1572              		.loc 1 342 25 is_stmt 0 view .LVU416
+ 1573 0026 CDF820C0 		str	ip, [sp, #32]
+ 1574 002a BDF820B0 		ldrh	fp, [sp, #32]
+ 1575 002e 06EB0B01 		add	r1, r6, fp
+ 1576 0032 8FB2     		uxth	r7, r1
+ 1577              		.loc 1 342 13 view .LVU417
+ 1578 0034 0FFA81FE 		sxth	lr, r1
+ 1579 0038 CDF814E0 		str	lr, [sp, #20]
+ 1580              	.LVL154:
+ 343:Dsp/widget/wgt_core/GenDsp.c **** 
+ 344:Dsp/widget/wgt_core/GenDsp.c ****     int16_t x_tmp = x + width - 1 - radius;
+ 1581              		.loc 1 344 5 is_stmt 1 view .LVU418
+ 1582              		.loc 1 344 23 is_stmt 0 view .LVU419
+ 1583 003c 1344     		add	r3, r3, r2
+ 1584              	.LVL155:
+ 1585              		.loc 1 344 23 view .LVU420
+ 1586 003e 9BB2     		uxth	r3, r3
+ 1587              		.loc 1 344 35 view .LVU421
+ 1588 0040 9A1B     		subs	r2, r3, r6
+ 1589 0042 013A     		subs	r2, r2, #1
+ 1590 0044 1FFA82FE 		uxth	lr, r2
+ 1591 0048 CDF828E0 		str	lr, [sp, #40]
+ 1592              		.loc 1 344 13 view .LVU422
+ 1593 004c 12B2     		sxth	r2, r2
+ 1594 004e 0692     		str	r2, [sp, #24]
+ 1595              	.LVL156:
+ 345:Dsp/widget/wgt_core/GenDsp.c ****     int16_t y_tmp = y + height - 1 - radius;
+ 1596              		.loc 1 345 5 is_stmt 1 view .LVU423
+ 1597              		.loc 1 345 23 is_stmt 0 view .LVU424
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 37
+
+
+ 1598 0050 9DF85820 		ldrb	r2, [sp, #88]	@ zero_extendqisi2
+ 1599 0054 9344     		add	fp, fp, r2
+ 1600 0056 1FFA8BFB 		uxth	fp, fp
+ 1601              		.loc 1 345 36 view .LVU425
+ 1602 005a ABEB060A 		sub	r10, fp, r6
+ 1603 005e 0AF1FF3A 		add	r10, r10, #-1
+ 1604 0062 1FFA8AF8 		uxth	r8, r10
+ 1605              		.loc 1 345 13 view .LVU426
+ 1606 0066 0FFA8AFA 		sxth	r10, r10
+ 1607              	.LVL157:
+ 346:Dsp/widget/wgt_core/GenDsp.c **** 
+ 347:Dsp/widget/wgt_core/GenDsp.c ****     int16_t x_tmp_1 = x + width - 1;
+ 1608              		.loc 1 347 5 is_stmt 1 view .LVU427
+ 1609              		.loc 1 347 33 is_stmt 0 view .LVU428
+ 1610 006a 013B     		subs	r3, r3, #1
+ 1611 006c 9BB2     		uxth	r3, r3
+ 1612 006e 0B93     		str	r3, [sp, #44]
+ 1613              	.LVL158:
+ 348:Dsp/widget/wgt_core/GenDsp.c ****     int16_t y_tmp_1 = y + height - 1;
+ 1614              		.loc 1 348 5 is_stmt 1 view .LVU429
+ 1615              		.loc 1 348 34 is_stmt 0 view .LVU430
+ 1616 0070 0BF1FF3B 		add	fp, fp, #-1
+ 1617 0074 1FFA8BFB 		uxth	fp, fp
+ 1618              	.LVL159:
+ 349:Dsp/widget/wgt_core/GenDsp.c **** 
+ 350:Dsp/widget/wgt_core/GenDsp.c ****     /* fixed */
+ 351:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_start, y_tmp, radius, DRAW_LOWER_LEFT, col_inv);
+ 1619              		.loc 1 351 5 is_stmt 1 view .LVU431
+ 1620 0078 0195     		str	r5, [sp, #4]
+ 1621 007a 0423     		movs	r3, #4
+ 1622 007c 0093     		str	r3, [sp]
+ 1623 007e 3346     		mov	r3, r6
+ 1624 0080 5246     		mov	r2, r10
+ 1625 0082 0499     		ldr	r1, [sp, #16]
+ 1626 0084 FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1627              	.LVL160:
+ 352:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x, y_start, x, y_tmp, line_size, col_inv);
+ 1628              		.loc 1 352 5 view .LVU432
+ 1629 0088 9DF91C10 		ldrsb	r1, [sp, #28]
+ 1630 008c 7FB2     		sxtb	r7, r7
+ 1631 008e 4FFA88F8 		sxtb	r8, r8
+ 1632 0092 0295     		str	r5, [sp, #8]
+ 1633 0094 CDF80490 		str	r9, [sp, #4]
+ 1634 0098 CDF80080 		str	r8, [sp]
+ 1635 009c 0B46     		mov	r3, r1
+ 1636 009e 3A46     		mov	r2, r7
+ 1637 00a0 2046     		mov	r0, r4
+ 1638 00a2 FFF7FEFF 		bl	GenDsp_DrawLen
+ 1639              	.LVL161:
+ 353:Dsp/widget/wgt_core/GenDsp.c **** 
+ 354:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_tmp, y_tmp, radius, DRAW_LOWER_RIGHT, col_inv);
+ 1640              		.loc 1 354 5 view .LVU433
+ 1641 00a6 0195     		str	r5, [sp, #4]
+ 1642 00a8 0823     		movs	r3, #8
+ 1643 00aa 0093     		str	r3, [sp]
+ 1644 00ac 3346     		mov	r3, r6
+ 1645 00ae 5246     		mov	r2, r10
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 38
+
+
+ 1646 00b0 0699     		ldr	r1, [sp, #24]
+ 1647 00b2 2046     		mov	r0, r4
+ 1648 00b4 FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1649              	.LVL162:
+ 355:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x_start, y_tmp_1, x_tmp, y_tmp_1, line_size, col_inv);
+ 1650              		.loc 1 355 5 view .LVU434
+ 1651 00b8 9DF924A0 		ldrsb	r10, [sp, #36]
+ 1652              	.LVL163:
+ 1653              		.loc 1 355 5 is_stmt 0 view .LVU435
+ 1654 00bc 4FFA8BF2 		sxtb	r2, fp
+ 1655 00c0 9DF928B0 		ldrsb	fp, [sp, #40]
+ 1656              	.LVL164:
+ 1657              		.loc 1 355 5 view .LVU436
+ 1658 00c4 0295     		str	r5, [sp, #8]
+ 1659 00c6 CDF80490 		str	r9, [sp, #4]
+ 1660 00ca 0092     		str	r2, [sp]
+ 1661 00cc 5B46     		mov	r3, fp
+ 1662 00ce 5146     		mov	r1, r10
+ 1663 00d0 2046     		mov	r0, r4
+ 1664 00d2 FFF7FEFF 		bl	GenDsp_DrawLen
+ 1665              	.LVL165:
+ 356:Dsp/widget/wgt_core/GenDsp.c **** 
+ 357:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_start, y_start, radius, DRAW_UPPER_LEFT, col_inv);
+ 1666              		.loc 1 357 5 is_stmt 1 view .LVU437
+ 1667 00d6 0195     		str	r5, [sp, #4]
+ 1668 00d8 0223     		movs	r3, #2
+ 1669 00da 0093     		str	r3, [sp]
+ 1670 00dc 3346     		mov	r3, r6
+ 1671 00de 059A     		ldr	r2, [sp, #20]
+ 1672 00e0 0499     		ldr	r1, [sp, #16]
+ 1673 00e2 2046     		mov	r0, r4
+ 1674 00e4 FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1675              	.LVL166:
+ 358:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x_start, y, x_tmp, y, line_size, col_inv);
+ 1676              		.loc 1 358 5 view .LVU438
+ 1677 00e8 9DF92020 		ldrsb	r2, [sp, #32]
+ 1678 00ec 0295     		str	r5, [sp, #8]
+ 1679 00ee CDF80490 		str	r9, [sp, #4]
+ 1680 00f2 0092     		str	r2, [sp]
+ 1681 00f4 5B46     		mov	r3, fp
+ 1682 00f6 5146     		mov	r1, r10
+ 1683 00f8 2046     		mov	r0, r4
+ 1684 00fa FFF7FEFF 		bl	GenDsp_DrawLen
+ 1685              	.LVL167:
+ 359:Dsp/widget/wgt_core/GenDsp.c **** 
+ 360:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Draw_Circle(map, x_tmp, y_start, radius, DRAW_UPPER_RIGHT, col_inv);
+ 1686              		.loc 1 360 5 view .LVU439
+ 1687 00fe 0195     		str	r5, [sp, #4]
+ 1688 0100 0123     		movs	r3, #1
+ 1689 0102 0093     		str	r3, [sp]
+ 1690 0104 3346     		mov	r3, r6
+ 1691 0106 059A     		ldr	r2, [sp, #20]
+ 1692 0108 0699     		ldr	r1, [sp, #24]
+ 1693 010a 2046     		mov	r0, r4
+ 1694 010c FFF7FEFF 		bl	GenDsp_Draw_Circle
+ 1695              	.LVL168:
+ 361:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawLen(map, x_tmp_1, y_start, x_tmp_1, y_tmp, line_size, col_inv);
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 39
+
+
+ 1696              		.loc 1 361 5 view .LVU440
+ 1697 0110 9DF92C10 		ldrsb	r1, [sp, #44]
+ 1698 0114 0295     		str	r5, [sp, #8]
+ 1699 0116 CDF80490 		str	r9, [sp, #4]
+ 1700 011a CDF80080 		str	r8, [sp]
+ 1701 011e 0B46     		mov	r3, r1
+ 1702 0120 3A46     		mov	r2, r7
+ 1703 0122 2046     		mov	r0, r4
+ 1704 0124 FFF7FEFF 		bl	GenDsp_DrawLen
+ 1705              	.LVL169:
+ 362:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1706              		.loc 1 362 1 is_stmt 0 view .LVU441
+ 1707 0128 0DB0     		add	sp, sp, #52
+ 1708              	.LCFI35:
+ 1709              		.cfi_def_cfa_offset 36
+ 1710              		@ sp needed
+ 1711 012a BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1712              		.loc 1 362 1 view .LVU442
+ 1713              		.cfi_endproc
+ 1714              	.LFE16:
+ 1716              		.section	.text.GenDsp_Fill_Circle_Section,"ax",%progbits
+ 1717              		.align	1
+ 1718              		.syntax unified
+ 1719              		.thumb
+ 1720              		.thumb_func
+ 1721              		.fpu fpv4-sp-d16
+ 1723              	GenDsp_Fill_Circle_Section:
+ 1724              	.LVL170:
+ 1725              	.LFB17:
+ 363:Dsp/widget/wgt_core/GenDsp.c **** 
+ 364:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Fill_Circle_Section(uint8_t **map, int16_t x, int16_t y, int16_t x0, int16_t y0,
+ 365:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1726              		.loc 1 365 1 is_stmt 1 view -0
+ 1727              		.cfi_startproc
+ 1728              		@ args = 12, pretend = 0, frame = 16
+ 1729              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1730              		.loc 1 365 1 is_stmt 0 view .LVU444
+ 1731 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1732              	.LCFI36:
+ 1733              		.cfi_def_cfa_offset 36
+ 1734              		.cfi_offset 4, -36
+ 1735              		.cfi_offset 5, -32
+ 1736              		.cfi_offset 6, -28
+ 1737              		.cfi_offset 7, -24
+ 1738              		.cfi_offset 8, -20
+ 1739              		.cfi_offset 9, -16
+ 1740              		.cfi_offset 10, -12
+ 1741              		.cfi_offset 11, -8
+ 1742              		.cfi_offset 14, -4
+ 1743 0004 87B0     		sub	sp, sp, #28
+ 1744              	.LCFI37:
+ 1745              		.cfi_def_cfa_offset 64
+ 1746 0006 0546     		mov	r5, r0
+ 1747 0008 0C46     		mov	r4, r1
+ 1748 000a 1646     		mov	r6, r2
+ 1749 000c 0393     		str	r3, [sp, #12]
+ 1750 000e BDF94090 		ldrsh	r9, [sp, #64]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 40
+
+
+ 1751 0012 9DF84470 		ldrb	r7, [sp, #68]	@ zero_extendqisi2
+ 1752 0016 9DF84880 		ldrb	r8, [sp, #72]	@ zero_extendqisi2
+ 366:Dsp/widget/wgt_core/GenDsp.c ****     /* upper right */
+ 367:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_RIGHT)
+ 1753              		.loc 1 367 5 is_stmt 1 view .LVU445
+ 1754              		.loc 1 367 8 is_stmt 0 view .LVU446
+ 1755 001a 17F0010F 		tst	r7, #1
+ 1756 001e 0BD1     		bne	.L100
+ 1757              	.LVL171:
+ 1758              	.L95:
+ 368:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + x, y0 - y, y + 1, 1, col_inv);
+ 370:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 371:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 372:Dsp/widget/wgt_core/GenDsp.c **** 
+ 373:Dsp/widget/wgt_core/GenDsp.c ****     /* upper left */
+ 374:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_UPPER_LEFT)
+ 1759              		.loc 1 374 5 is_stmt 1 view .LVU447
+ 1760              		.loc 1 374 8 is_stmt 0 view .LVU448
+ 1761 0020 17F0020F 		tst	r7, #2
+ 1762 0024 32D1     		bne	.L101
+ 1763              	.L96:
+ 375:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 376:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - x, y0 - y, y + 1, 1, col_inv);
+ 377:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1, col_inv);
+ 378:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 379:Dsp/widget/wgt_core/GenDsp.c **** 
+ 380:Dsp/widget/wgt_core/GenDsp.c ****     /* lower right */
+ 381:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_RIGHT)
+ 1764              		.loc 1 381 5 is_stmt 1 view .LVU449
+ 1765              		.loc 1 381 8 is_stmt 0 view .LVU450
+ 1766 0026 17F0080F 		tst	r7, #8
+ 1767 002a 5AD1     		bne	.L102
+ 1768              	.L97:
+ 382:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 383:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + x, y0, y + 1, 1, col_inv);
+ 384:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1, col_inv);
+ 385:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 386:Dsp/widget/wgt_core/GenDsp.c **** 
+ 387:Dsp/widget/wgt_core/GenDsp.c ****     /* lower left */
+ 388:Dsp/widget/wgt_core/GenDsp.c ****     if (option & DRAW_LOWER_LEFT)
+ 1769              		.loc 1 388 5 is_stmt 1 view .LVU451
+ 1770              		.loc 1 388 8 is_stmt 0 view .LVU452
+ 1771 002c 17F0040F 		tst	r7, #4
+ 1772 0030 77D1     		bne	.L103
+ 1773              	.L94:
+ 389:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 390:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - x, y0, y + 1, 1, col_inv);
+ 391:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1, col_inv);
+ 392:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 393:Dsp/widget/wgt_core/GenDsp.c **** }
+ 1774              		.loc 1 393 1 view .LVU453
+ 1775 0032 07B0     		add	sp, sp, #28
+ 1776              	.LCFI38:
+ 1777              		.cfi_remember_state
+ 1778              		.cfi_def_cfa_offset 36
+ 1779              		@ sp needed
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 41
+
+
+ 1780 0034 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1781              	.LVL172:
+ 1782              	.L100:
+ 1783              	.LCFI39:
+ 1784              		.cfi_restore_state
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1785              		.loc 1 369 9 is_stmt 1 view .LVU454
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1786              		.loc 1 369 35 is_stmt 0 view .LVU455
+ 1787 0038 BDF80C10 		ldrh	r1, [sp, #12]
+ 1788              	.LVL173:
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1789              		.loc 1 369 35 view .LVU456
+ 1790 003c 1FFA84FA 		uxth	r10, r4
+ 1791 0040 0491     		str	r1, [sp, #16]
+ 1792 0042 5144     		add	r1, r1, r10
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1793              		.loc 1 369 43 view .LVU457
+ 1794 0044 1FFA89F2 		uxth	r2, r9
+ 1795              	.LVL174:
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1796              		.loc 1 369 43 view .LVU458
+ 1797 0048 1FFA86FB 		uxth	fp, r6
+ 1798 004c 0592     		str	r2, [sp, #20]
+ 1799 004e A2EB0B02 		sub	r2, r2, fp
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1800              		.loc 1 369 9 view .LVU459
+ 1801 0052 731C     		adds	r3, r6, #1
+ 1802              	.LVL175:
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1803              		.loc 1 369 9 view .LVU460
+ 1804 0054 CDF80480 		str	r8, [sp, #4]
+ 1805 0058 0120     		movs	r0, #1
+ 1806              	.LVL176:
+ 369:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0 - x, x + 1, 1, col_inv);
+ 1807              		.loc 1 369 9 view .LVU461
+ 1808 005a 0090     		str	r0, [sp]
+ 1809 005c DBB2     		uxtb	r3, r3
+ 1810 005e 12B2     		sxth	r2, r2
+ 1811 0060 09B2     		sxth	r1, r1
+ 1812 0062 2846     		mov	r0, r5
+ 1813 0064 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1814              	.LVL177:
+ 370:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1815              		.loc 1 370 9 is_stmt 1 view .LVU462
+ 370:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1816              		.loc 1 370 35 is_stmt 0 view .LVU463
+ 1817 0068 049B     		ldr	r3, [sp, #16]
+ 1818 006a 03EB0B01 		add	r1, r3, fp
+ 370:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1819              		.loc 1 370 43 view .LVU464
+ 1820 006e 059A     		ldr	r2, [sp, #20]
+ 1821 0070 A2EB0A02 		sub	r2, r2, r10
+ 370:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1822              		.loc 1 370 9 view .LVU465
+ 1823 0074 631C     		adds	r3, r4, #1
+ 1824 0076 CDF80480 		str	r8, [sp, #4]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 42
+
+
+ 1825 007a 0120     		movs	r0, #1
+ 1826 007c 0090     		str	r0, [sp]
+ 1827 007e DBB2     		uxtb	r3, r3
+ 1828 0080 12B2     		sxth	r2, r2
+ 1829 0082 09B2     		sxth	r1, r1
+ 1830 0084 2846     		mov	r0, r5
+ 1831 0086 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1832              	.LVL178:
+ 1833 008a C9E7     		b	.L95
+ 1834              	.L101:
+ 376:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1, col_inv);
+ 1835              		.loc 1 376 9 is_stmt 1 view .LVU466
+ 376:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1, col_inv);
+ 1836              		.loc 1 376 35 is_stmt 0 view .LVU467
+ 1837 008c BDF80C10 		ldrh	r1, [sp, #12]
+ 1838 0090 1FFA84FA 		uxth	r10, r4
+ 1839 0094 0491     		str	r1, [sp, #16]
+ 1840 0096 A1EB0A01 		sub	r1, r1, r10
+ 376:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1, col_inv);
+ 1841              		.loc 1 376 43 view .LVU468
+ 1842 009a 1FFA89F2 		uxth	r2, r9
+ 1843 009e 1FFA86FB 		uxth	fp, r6
+ 1844 00a2 0592     		str	r2, [sp, #20]
+ 1845 00a4 A2EB0B02 		sub	r2, r2, fp
+ 376:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0 - x, x + 1, 1, col_inv);
+ 1846              		.loc 1 376 9 view .LVU469
+ 1847 00a8 731C     		adds	r3, r6, #1
+ 1848 00aa CDF80480 		str	r8, [sp, #4]
+ 1849 00ae 0120     		movs	r0, #1
+ 1850 00b0 0090     		str	r0, [sp]
+ 1851 00b2 DBB2     		uxtb	r3, r3
+ 1852 00b4 12B2     		sxth	r2, r2
+ 1853 00b6 09B2     		sxth	r1, r1
+ 1854 00b8 2846     		mov	r0, r5
+ 1855 00ba FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1856              	.LVL179:
+ 377:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1857              		.loc 1 377 9 is_stmt 1 view .LVU470
+ 377:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1858              		.loc 1 377 35 is_stmt 0 view .LVU471
+ 1859 00be 049B     		ldr	r3, [sp, #16]
+ 1860 00c0 A3EB0B01 		sub	r1, r3, fp
+ 377:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1861              		.loc 1 377 43 view .LVU472
+ 1862 00c4 059A     		ldr	r2, [sp, #20]
+ 1863 00c6 A2EB0A02 		sub	r2, r2, r10
+ 377:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1864              		.loc 1 377 9 view .LVU473
+ 1865 00ca 631C     		adds	r3, r4, #1
+ 1866 00cc CDF80480 		str	r8, [sp, #4]
+ 1867 00d0 0120     		movs	r0, #1
+ 1868 00d2 0090     		str	r0, [sp]
+ 1869 00d4 DBB2     		uxtb	r3, r3
+ 1870 00d6 12B2     		sxth	r2, r2
+ 1871 00d8 09B2     		sxth	r1, r1
+ 1872 00da 2846     		mov	r0, r5
+ 1873 00dc FFF7FEFF 		bl	GenDsp_Draw_VLine
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 43
+
+
+ 1874              	.LVL180:
+ 1875 00e0 A1E7     		b	.L96
+ 1876              	.L102:
+ 383:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1, col_inv);
+ 1877              		.loc 1 383 9 is_stmt 1 view .LVU474
+ 383:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1, col_inv);
+ 1878              		.loc 1 383 35 is_stmt 0 view .LVU475
+ 1879 00e2 BDF80CA0 		ldrh	r10, [sp, #12]
+ 1880 00e6 0AEB0401 		add	r1, r10, r4
+ 383:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 + y, y0, x + 1, 1, col_inv);
+ 1881              		.loc 1 383 9 view .LVU476
+ 1882 00ea 731C     		adds	r3, r6, #1
+ 1883 00ec CDF80480 		str	r8, [sp, #4]
+ 1884 00f0 4FF0010B 		mov	fp, #1
+ 1885 00f4 CDF800B0 		str	fp, [sp]
+ 1886 00f8 DBB2     		uxtb	r3, r3
+ 1887 00fa 4A46     		mov	r2, r9
+ 1888 00fc 09B2     		sxth	r1, r1
+ 1889 00fe 2846     		mov	r0, r5
+ 1890 0100 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1891              	.LVL181:
+ 384:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1892              		.loc 1 384 9 is_stmt 1 view .LVU477
+ 384:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1893              		.loc 1 384 35 is_stmt 0 view .LVU478
+ 1894 0104 0AEB0601 		add	r1, r10, r6
+ 384:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1895              		.loc 1 384 9 view .LVU479
+ 1896 0108 04EB0B03 		add	r3, r4, fp
+ 1897 010c CDF80480 		str	r8, [sp, #4]
+ 1898 0110 CDF800B0 		str	fp, [sp]
+ 1899 0114 DBB2     		uxtb	r3, r3
+ 1900 0116 4A46     		mov	r2, r9
+ 1901 0118 09B2     		sxth	r1, r1
+ 1902 011a 2846     		mov	r0, r5
+ 1903 011c FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1904              	.LVL182:
+ 1905 0120 84E7     		b	.L97
+ 1906              	.L103:
+ 390:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1, col_inv);
+ 1907              		.loc 1 390 9 is_stmt 1 view .LVU480
+ 390:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1, col_inv);
+ 1908              		.loc 1 390 35 is_stmt 0 view .LVU481
+ 1909 0122 BDF80C70 		ldrh	r7, [sp, #12]
+ 1910 0126 391B     		subs	r1, r7, r4
+ 390:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Draw_VLine(map, x0 - y, y0, x + 1, 1, col_inv);
+ 1911              		.loc 1 390 9 view .LVU482
+ 1912 0128 731C     		adds	r3, r6, #1
+ 1913 012a CDF80480 		str	r8, [sp, #4]
+ 1914 012e 4FF0010A 		mov	r10, #1
+ 1915 0132 CDF800A0 		str	r10, [sp]
+ 1916 0136 DBB2     		uxtb	r3, r3
+ 1917 0138 4A46     		mov	r2, r9
+ 1918 013a 09B2     		sxth	r1, r1
+ 1919 013c 2846     		mov	r0, r5
+ 1920 013e FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1921              	.LVL183:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 44
+
+
+ 391:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1922              		.loc 1 391 9 is_stmt 1 view .LVU483
+ 391:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1923              		.loc 1 391 35 is_stmt 0 view .LVU484
+ 1924 0142 B91B     		subs	r1, r7, r6
+ 391:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 1925              		.loc 1 391 9 view .LVU485
+ 1926 0144 04EB0A03 		add	r3, r4, r10
+ 1927 0148 CDF80480 		str	r8, [sp, #4]
+ 1928 014c CDF800A0 		str	r10, [sp]
+ 1929 0150 DBB2     		uxtb	r3, r3
+ 1930 0152 4A46     		mov	r2, r9
+ 1931 0154 09B2     		sxth	r1, r1
+ 1932 0156 2846     		mov	r0, r5
+ 1933 0158 FFF7FEFF 		bl	GenDsp_Draw_VLine
+ 1934              	.LVL184:
+ 1935              		.loc 1 393 1 view .LVU486
+ 1936 015c 69E7     		b	.L94
+ 1937              		.cfi_endproc
+ 1938              	.LFE17:
+ 1940              		.section	.text.GenDsp_FillCircle,"ax",%progbits
+ 1941              		.align	1
+ 1942              		.syntax unified
+ 1943              		.thumb
+ 1944              		.thumb_func
+ 1945              		.fpu fpv4-sp-d16
+ 1947              	GenDsp_FillCircle:
+ 1948              	.LVL185:
+ 1949              	.LFB18:
+ 394:Dsp/widget/wgt_core/GenDsp.c **** 
+ 395:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillCircle(uint8_t **map, int16_t x0, int16_t y0, uint8_t radius, uint8_t option
+ 396:Dsp/widget/wgt_core/GenDsp.c **** {
+ 1950              		.loc 1 396 1 is_stmt 1 view -0
+ 1951              		.cfi_startproc
+ 1952              		@ args = 8, pretend = 0, frame = 8
+ 1953              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1954              		.loc 1 396 1 is_stmt 0 view .LVU488
+ 1955 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1956              	.LCFI40:
+ 1957              		.cfi_def_cfa_offset 36
+ 1958              		.cfi_offset 4, -36
+ 1959              		.cfi_offset 5, -32
+ 1960              		.cfi_offset 6, -28
+ 1961              		.cfi_offset 7, -24
+ 1962              		.cfi_offset 8, -20
+ 1963              		.cfi_offset 9, -16
+ 1964              		.cfi_offset 10, -12
+ 1965              		.cfi_offset 11, -8
+ 1966              		.cfi_offset 14, -4
+ 1967 0004 87B0     		sub	sp, sp, #28
+ 1968              	.LCFI41:
+ 1969              		.cfi_def_cfa_offset 64
+ 1970 0006 0490     		str	r0, [sp, #16]
+ 1971 0008 0591     		str	r1, [sp, #20]
+ 1972 000a 9146     		mov	r9, r2
+ 1973 000c 9DF840A0 		ldrb	r10, [sp, #64]	@ zero_extendqisi2
+ 1974 0010 9DF844B0 		ldrb	fp, [sp, #68]	@ zero_extendqisi2
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 45
+
+
+ 397:Dsp/widget/wgt_core/GenDsp.c ****     int8_t f;
+ 1975              		.loc 1 397 5 is_stmt 1 view .LVU489
+ 398:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_x;
+ 1976              		.loc 1 398 5 view .LVU490
+ 399:Dsp/widget/wgt_core/GenDsp.c ****     int8_t ddF_y;
+ 1977              		.loc 1 399 5 view .LVU491
+ 400:Dsp/widget/wgt_core/GenDsp.c ****     int16_t x;
+ 1978              		.loc 1 400 5 view .LVU492
+ 401:Dsp/widget/wgt_core/GenDsp.c ****     int16_t y;
+ 1979              		.loc 1 401 5 view .LVU493
+ 402:Dsp/widget/wgt_core/GenDsp.c **** 
+ 403:Dsp/widget/wgt_core/GenDsp.c ****     f = 1;
+ 1980              		.loc 1 403 5 view .LVU494
+ 1981              	.LVL186:
+ 404:Dsp/widget/wgt_core/GenDsp.c ****     f -= radius;
+ 1982              		.loc 1 404 5 view .LVU495
+ 1983              		.loc 1 404 7 is_stmt 0 view .LVU496
+ 1984 0014 C3F10104 		rsb	r4, r3, #1
+ 1985 0018 64B2     		sxtb	r4, r4
+ 1986              	.LVL187:
+ 405:Dsp/widget/wgt_core/GenDsp.c ****     ddF_x = 1;
+ 1987              		.loc 1 405 5 is_stmt 1 view .LVU497
+ 406:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 1988              		.loc 1 406 5 view .LVU498
+ 407:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y -= radius;
+ 1989              		.loc 1 407 5 view .LVU499
+ 408:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y *= 2;
+ 1990              		.loc 1 408 5 view .LVU500
+ 1991              		.loc 1 408 11 is_stmt 0 view .LVU501
+ 1992 001a C3EBC318 		rsb	r8, r3, r3, lsl #7
+ 1993 001e 4FEA4808 		lsl	r8, r8, #1
+ 1994 0022 4FFA88F8 		sxtb	r8, r8
+ 1995              	.LVL188:
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     x = 0;
+ 1996              		.loc 1 409 5 is_stmt 1 view .LVU502
+ 410:Dsp/widget/wgt_core/GenDsp.c ****     y = radius;
+ 1997              		.loc 1 410 5 view .LVU503
+ 1998              		.loc 1 410 7 is_stmt 0 view .LVU504
+ 1999 0026 1EB2     		sxth	r6, r3
+ 2000              	.LVL189:
+ 411:Dsp/widget/wgt_core/GenDsp.c **** 
+ 412:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_Fill_Circle_Section(map, x, y, x0, y0, option, col_inv);
+ 2001              		.loc 1 412 5 is_stmt 1 view .LVU505
+ 2002 0028 CDF808B0 		str	fp, [sp, #8]
+ 2003 002c CDF804A0 		str	r10, [sp, #4]
+ 2004 0030 0092     		str	r2, [sp]
+ 2005 0032 0B46     		mov	r3, r1
+ 2006              	.LVL190:
+ 2007              		.loc 1 412 5 is_stmt 0 view .LVU506
+ 2008 0034 3246     		mov	r2, r6
+ 2009              	.LVL191:
+ 2010              		.loc 1 412 5 view .LVU507
+ 2011 0036 0021     		movs	r1, #0
+ 2012              	.LVL192:
+ 2013              		.loc 1 412 5 view .LVU508
+ 2014 0038 FFF7FEFF 		bl	GenDsp_Fill_Circle_Section
+ 2015              	.LVL193:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 46
+
+
+ 413:Dsp/widget/wgt_core/GenDsp.c **** 
+ 414:Dsp/widget/wgt_core/GenDsp.c ****     while (x < y)
+ 2016              		.loc 1 414 5 is_stmt 1 view .LVU509
+ 409:Dsp/widget/wgt_core/GenDsp.c ****     y = radius;
+ 2017              		.loc 1 409 7 is_stmt 0 view .LVU510
+ 2018 003c 0025     		movs	r5, #0
+ 405:Dsp/widget/wgt_core/GenDsp.c ****     ddF_y = 0;
+ 2019              		.loc 1 405 11 view .LVU511
+ 2020 003e 0127     		movs	r7, #1
+ 2021              		.loc 1 414 11 view .LVU512
+ 2022 0040 1BE0     		b	.L105
+ 2023              	.LVL194:
+ 2024              	.L110:
+ 415:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 416:Dsp/widget/wgt_core/GenDsp.c ****         if (f >= 0)
+ 417:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 418:Dsp/widget/wgt_core/GenDsp.c ****             y--;
+ 2025              		.loc 1 418 13 is_stmt 1 view .LVU513
+ 2026              		.loc 1 418 14 is_stmt 0 view .LVU514
+ 2027 0042 013E     		subs	r6, r6, #1
+ 2028              	.LVL195:
+ 2029              		.loc 1 418 14 view .LVU515
+ 2030 0044 36B2     		sxth	r6, r6
+ 2031              	.LVL196:
+ 419:Dsp/widget/wgt_core/GenDsp.c ****             ddF_y += 2;
+ 2032              		.loc 1 419 13 is_stmt 1 view .LVU516
+ 2033              		.loc 1 419 19 is_stmt 0 view .LVU517
+ 2034 0046 08F10203 		add	r3, r8, #2
+ 2035 004a 4FFA83F8 		sxtb	r8, r3
+ 2036              	.LVL197:
+ 420:Dsp/widget/wgt_core/GenDsp.c ****             f += ddF_y;
+ 2037              		.loc 1 420 13 is_stmt 1 view .LVU518
+ 2038              		.loc 1 420 15 is_stmt 0 view .LVU519
+ 2039 004e 54FA83F4 		uxtab	r4, r4, r3
+ 2040              	.LVL198:
+ 2041              		.loc 1 420 15 view .LVU520
+ 2042 0052 64B2     		sxtb	r4, r4
+ 2043              	.LVL199:
+ 2044              	.L106:
+ 421:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 422:Dsp/widget/wgt_core/GenDsp.c ****         x++;
+ 2045              		.loc 1 422 9 is_stmt 1 view .LVU521
+ 2046              		.loc 1 422 10 is_stmt 0 view .LVU522
+ 2047 0054 0135     		adds	r5, r5, #1
+ 2048              	.LVL200:
+ 2049              		.loc 1 422 10 view .LVU523
+ 2050 0056 2DB2     		sxth	r5, r5
+ 2051              	.LVL201:
+ 423:Dsp/widget/wgt_core/GenDsp.c ****         ddF_x += 2;
+ 2052              		.loc 1 423 9 is_stmt 1 view .LVU524
+ 2053              		.loc 1 423 15 is_stmt 0 view .LVU525
+ 2054 0058 BB1C     		adds	r3, r7, #2
+ 2055 005a 5FB2     		sxtb	r7, r3
+ 2056              	.LVL202:
+ 424:Dsp/widget/wgt_core/GenDsp.c ****         f += ddF_x;
+ 2057              		.loc 1 424 9 is_stmt 1 view .LVU526
+ 2058              		.loc 1 424 11 is_stmt 0 view .LVU527
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 47
+
+
+ 2059 005c 54FA83F4 		uxtab	r4, r4, r3
+ 2060              	.LVL203:
+ 2061              		.loc 1 424 11 view .LVU528
+ 2062 0060 64B2     		sxtb	r4, r4
+ 2063              	.LVL204:
+ 425:Dsp/widget/wgt_core/GenDsp.c **** 
+ 426:Dsp/widget/wgt_core/GenDsp.c ****         GenDsp_Fill_Circle_Section(map, x, y, x0, y0, option, col_inv);
+ 2064              		.loc 1 426 9 is_stmt 1 view .LVU529
+ 2065 0062 CDF808B0 		str	fp, [sp, #8]
+ 2066 0066 CDF804A0 		str	r10, [sp, #4]
+ 2067 006a CDF80090 		str	r9, [sp]
+ 2068 006e 059B     		ldr	r3, [sp, #20]
+ 2069 0070 3246     		mov	r2, r6
+ 2070 0072 2946     		mov	r1, r5
+ 2071 0074 0498     		ldr	r0, [sp, #16]
+ 2072 0076 FFF7FEFF 		bl	GenDsp_Fill_Circle_Section
+ 2073              	.LVL205:
+ 2074              	.L105:
+ 414:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 2075              		.loc 1 414 11 view .LVU530
+ 2076 007a B542     		cmp	r5, r6
+ 2077 007c 02DA     		bge	.L109
+ 416:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2078              		.loc 1 416 9 view .LVU531
+ 416:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2079              		.loc 1 416 12 is_stmt 0 view .LVU532
+ 2080 007e 002C     		cmp	r4, #0
+ 2081 0080 DFDA     		bge	.L110
+ 2082 0082 E7E7     		b	.L106
+ 2083              	.L109:
+ 427:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 428:Dsp/widget/wgt_core/GenDsp.c **** }
+ 2084              		.loc 1 428 1 view .LVU533
+ 2085 0084 07B0     		add	sp, sp, #28
+ 2086              	.LCFI42:
+ 2087              		.cfi_def_cfa_offset 36
+ 2088              		@ sp needed
+ 2089 0086 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 2090              		.loc 1 428 1 view .LVU534
+ 2091              		.cfi_endproc
+ 2092              	.LFE18:
+ 2094              		.section	.text.GenDsp_FillRectangle,"ax",%progbits
+ 2095              		.align	1
+ 2096              		.syntax unified
+ 2097              		.thumb
+ 2098              		.thumb_func
+ 2099              		.fpu fpv4-sp-d16
+ 2101              	GenDsp_FillRectangle:
+ 2102              	.LVL206:
+ 2103              	.LFB19:
+ 429:Dsp/widget/wgt_core/GenDsp.c **** 
+ 430:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_FillRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t height
+ 431:Dsp/widget/wgt_core/GenDsp.c **** {
+ 2104              		.loc 1 431 1 is_stmt 1 view -0
+ 2105              		.cfi_startproc
+ 2106              		@ args = 8, pretend = 0, frame = 0
+ 2107              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 48
+
+
+ 2108              		.loc 1 431 1 is_stmt 0 view .LVU536
+ 2109 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 2110              	.LCFI43:
+ 2111              		.cfi_def_cfa_offset 40
+ 2112              		.cfi_offset 3, -40
+ 2113              		.cfi_offset 4, -36
+ 2114              		.cfi_offset 5, -32
+ 2115              		.cfi_offset 6, -28
+ 2116              		.cfi_offset 7, -24
+ 2117              		.cfi_offset 8, -20
+ 2118              		.cfi_offset 9, -16
+ 2119              		.cfi_offset 10, -12
+ 2120              		.cfi_offset 11, -8
+ 2121              		.cfi_offset 14, -4
+ 2122 0004 0646     		mov	r6, r0
+ 2123 0006 8A46     		mov	r10, r1
+ 2124 0008 1746     		mov	r7, r2
+ 2125 000a 9B46     		mov	fp, r3
+ 2126 000c 9DF82880 		ldrb	r8, [sp, #40]	@ zero_extendqisi2
+ 2127 0010 9DF82C90 		ldrb	r9, [sp, #44]	@ zero_extendqisi2
+ 432:Dsp/widget/wgt_core/GenDsp.c ****     for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 2128              		.loc 1 432 5 is_stmt 1 view .LVU537
+ 2129              	.LBB12:
+ 2130              		.loc 1 432 10 view .LVU538
+ 2131              	.LVL207:
+ 2132              		.loc 1 432 18 is_stmt 0 view .LVU539
+ 2133 0014 0D46     		mov	r5, r1
+ 2134              		.loc 1 432 5 view .LVU540
+ 2135 0016 13E0     		b	.L112
+ 2136              	.LVL208:
+ 2137              	.L113:
+ 2138              	.LBB13:
+ 433:Dsp/widget/wgt_core/GenDsp.c ****     {
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         for (int16_t y_tmp = y; y_tmp < y + height; y_tmp++)
+ 435:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 436:Dsp/widget/wgt_core/GenDsp.c ****             GenDsp_DrawPoint(map, x_tmp, y_tmp, col_inv ^ map[y_tmp][x_tmp]);
+ 2139              		.loc 1 436 13 is_stmt 1 discriminator 3 view .LVU541
+ 2140              		.loc 1 436 62 is_stmt 0 discriminator 3 view .LVU542
+ 2141 0018 56F82430 		ldr	r3, [r6, r4, lsl #2]
+ 2142              		.loc 1 436 69 discriminator 3 view .LVU543
+ 2143 001c 5B5D     		ldrb	r3, [r3, r5]	@ zero_extendqisi2
+ 2144              		.loc 1 436 13 discriminator 3 view .LVU544
+ 2145 001e B9EB0303 		subs	r3, r9, r3
+ 2146 0022 18BF     		it	ne
+ 2147 0024 0123     		movne	r3, #1
+ 2148 0026 2246     		mov	r2, r4
+ 2149 0028 2946     		mov	r1, r5
+ 2150 002a 3046     		mov	r0, r6
+ 2151 002c FFF7FEFF 		bl	GenDsp_DrawPoint
+ 2152              	.LVL209:
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2153              		.loc 1 434 53 is_stmt 1 discriminator 3 view .LVU545
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2154              		.loc 1 434 58 is_stmt 0 discriminator 3 view .LVU546
+ 2155 0030 0134     		adds	r4, r4, #1
+ 2156              	.LVL210:
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         {
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 49
+
+
+ 2157              		.loc 1 434 58 discriminator 3 view .LVU547
+ 2158 0032 24B2     		sxth	r4, r4
+ 2159              	.LVL211:
+ 2160              	.L114:
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2161              		.loc 1 434 33 is_stmt 1 discriminator 1 view .LVU548
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2162              		.loc 1 434 43 is_stmt 0 discriminator 1 view .LVU549
+ 2163 0034 07EB0803 		add	r3, r7, r8
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2164              		.loc 1 434 9 discriminator 1 view .LVU550
+ 2165 0038 9C42     		cmp	r4, r3
+ 2166 003a EDDB     		blt	.L113
+ 2167              	.LBE13:
+ 432:Dsp/widget/wgt_core/GenDsp.c ****     for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 2168              		.loc 1 432 48 is_stmt 1 discriminator 2 view .LVU551
+ 432:Dsp/widget/wgt_core/GenDsp.c ****     for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 2169              		.loc 1 432 53 is_stmt 0 discriminator 2 view .LVU552
+ 2170 003c 0135     		adds	r5, r5, #1
+ 2171              	.LVL212:
+ 432:Dsp/widget/wgt_core/GenDsp.c ****     for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 2172              		.loc 1 432 53 discriminator 2 view .LVU553
+ 2173 003e 2DB2     		sxth	r5, r5
+ 2174              	.LVL213:
+ 2175              	.L112:
+ 432:Dsp/widget/wgt_core/GenDsp.c ****     for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 2176              		.loc 1 432 29 is_stmt 1 discriminator 1 view .LVU554
+ 432:Dsp/widget/wgt_core/GenDsp.c ****     for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 2177              		.loc 1 432 39 is_stmt 0 discriminator 1 view .LVU555
+ 2178 0040 0AEB0B03 		add	r3, r10, fp
+ 432:Dsp/widget/wgt_core/GenDsp.c ****     for (int16_t x_tmp = x; x_tmp < x + width; x_tmp++)
+ 2179              		.loc 1 432 5 discriminator 1 view .LVU556
+ 2180 0044 9D42     		cmp	r5, r3
+ 2181 0046 01DA     		bge	.L117
+ 2182              	.LBB14:
+ 434:Dsp/widget/wgt_core/GenDsp.c ****         {
+ 2183              		.loc 1 434 22 view .LVU557
+ 2184 0048 3C46     		mov	r4, r7
+ 2185 004a F3E7     		b	.L114
+ 2186              	.L117:
+ 2187              	.LBE14:
+ 2188              	.LBE12:
+ 437:Dsp/widget/wgt_core/GenDsp.c ****         }
+ 438:Dsp/widget/wgt_core/GenDsp.c ****     }
+ 439:Dsp/widget/wgt_core/GenDsp.c **** }
+ 2189              		.loc 1 439 1 view .LVU558
+ 2190 004c BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 2191              		.loc 1 439 1 view .LVU559
+ 2192              		.cfi_endproc
+ 2193              	.LFE19:
+ 2195              		.section	.text.GenDsp_Fill_RadiusRectangle,"ax",%progbits
+ 2196              		.align	1
+ 2197              		.syntax unified
+ 2198              		.thumb
+ 2199              		.thumb_func
+ 2200              		.fpu fpv4-sp-d16
+ 2202              	GenDsp_Fill_RadiusRectangle:
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 50
+
+
+ 2203              	.LVL214:
+ 2204              	.LFB20:
+ 440:Dsp/widget/wgt_core/GenDsp.c **** 
+ 441:Dsp/widget/wgt_core/GenDsp.c **** static void GenDsp_Fill_RadiusRectangle(uint8_t **map, int16_t x, int16_t y, uint8_t width, uint8_t
+ 442:Dsp/widget/wgt_core/GenDsp.c **** {
+ 2205              		.loc 1 442 1 is_stmt 1 view -0
+ 2206              		.cfi_startproc
+ 2207              		@ args = 12, pretend = 0, frame = 16
+ 2208              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2209              		.loc 1 442 1 is_stmt 0 view .LVU561
+ 2210 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 2211              	.LCFI44:
+ 2212              		.cfi_def_cfa_offset 36
+ 2213              		.cfi_offset 4, -36
+ 2214              		.cfi_offset 5, -32
+ 2215              		.cfi_offset 6, -28
+ 2216              		.cfi_offset 7, -24
+ 2217              		.cfi_offset 8, -20
+ 2218              		.cfi_offset 9, -16
+ 2219              		.cfi_offset 10, -12
+ 2220              		.cfi_offset 11, -8
+ 2221              		.cfi_offset 14, -4
+ 2222 0004 87B0     		sub	sp, sp, #28
+ 2223              	.LCFI45:
+ 2224              		.cfi_def_cfa_offset 64
+ 2225 0006 8046     		mov	r8, r0
+ 2226 0008 9246     		mov	r10, r2
+ 2227 000a 9DF84040 		ldrb	r4, [sp, #64]	@ zero_extendqisi2
+ 2228 000e 9DF84460 		ldrb	r6, [sp, #68]	@ zero_extendqisi2
+ 2229 0012 9DF84890 		ldrb	r9, [sp, #72]	@ zero_extendqisi2
+ 443:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillRectangle(map, x + radius, y, width - 2 * radius, height, col_inv);
+ 2230              		.loc 1 443 5 is_stmt 1 view .LVU562
+ 2231              		.loc 1 443 33 is_stmt 0 view .LVU563
+ 2232 0016 B5B2     		uxth	r5, r6
+ 2233 0018 0295     		str	r5, [sp, #8]
+ 2234 001a 0391     		str	r1, [sp, #12]
+ 2235 001c BDF80C50 		ldrh	r5, [sp, #12]
+ 2236 0020 06EB050B 		add	fp, r6, r5
+ 2237              		.loc 1 443 5 view .LVU564
+ 2238 0024 0FFA8BFB 		sxth	fp, fp
+ 2239 0028 7700     		lsls	r7, r6, #1
+ 2240 002a FFB2     		uxtb	r7, r7
+ 2241 002c 0593     		str	r3, [sp, #20]
+ 2242 002e DB1B     		subs	r3, r3, r7
+ 2243              	.LVL215:
+ 2244              		.loc 1 443 5 view .LVU565
+ 2245 0030 CDF80490 		str	r9, [sp, #4]
+ 2246 0034 0094     		str	r4, [sp]
+ 2247 0036 DBB2     		uxtb	r3, r3
+ 2248 0038 5946     		mov	r1, fp
+ 2249              	.LVL216:
+ 2250              		.loc 1 443 5 view .LVU566
+ 2251 003a FFF7FEFF 		bl	GenDsp_FillRectangle
+ 2252              	.LVL217:
+ 444:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillRectangle(map, x, y + radius, radius, height - 2 * radius - 1, col_inv);
+ 2253              		.loc 1 444 5 is_stmt 1 view .LVU567
+ 2254              		.loc 1 444 36 is_stmt 0 view .LVU568
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 51
+
+
+ 2255 003e 1FFA8AF0 		uxth	r0, r10
+ 2256 0042 029B     		ldr	r3, [sp, #8]
+ 2257 0044 0490     		str	r0, [sp, #16]
+ 2258 0046 03EB000A 		add	r10, r3, r0
+ 2259              		.loc 1 444 5 view .LVU569
+ 2260 004a 0FFA8AFA 		sxth	r10, r10
+ 2261              		.loc 1 444 61 view .LVU570
+ 2262 004e E71B     		subs	r7, r4, r7
+ 2263 0050 FFB2     		uxtb	r7, r7
+ 2264              		.loc 1 444 5 view .LVU571
+ 2265 0052 CDF80490 		str	r9, [sp, #4]
+ 2266 0056 7B1E     		subs	r3, r7, #1
+ 2267 0058 DBB2     		uxtb	r3, r3
+ 2268 005a 0093     		str	r3, [sp]
+ 2269 005c 3346     		mov	r3, r6
+ 2270 005e 5246     		mov	r2, r10
+ 2271 0060 0399     		ldr	r1, [sp, #12]
+ 2272 0062 4046     		mov	r0, r8
+ 2273 0064 FFF7FEFF 		bl	GenDsp_FillRectangle
+ 2274              	.LVL218:
+ 445:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillRectangle(map, x + width - radius, y + radius, radius + 1, height - 2 * radius, col_
+ 2275              		.loc 1 445 5 is_stmt 1 view .LVU572
+ 2276              		.loc 1 445 33 is_stmt 0 view .LVU573
+ 2277 0068 059A     		ldr	r2, [sp, #20]
+ 2278 006a 1544     		add	r5, r5, r2
+ 2279 006c ADB2     		uxth	r5, r5
+ 2280              		.loc 1 445 41 view .LVU574
+ 2281 006e 029B     		ldr	r3, [sp, #8]
+ 2282 0070 ED1A     		subs	r5, r5, r3
+ 2283              		.loc 1 445 5 view .LVU575
+ 2284 0072 2DB2     		sxth	r5, r5
+ 2285 0074 731C     		adds	r3, r6, #1
+ 2286 0076 CDF80490 		str	r9, [sp, #4]
+ 2287 007a 0097     		str	r7, [sp]
+ 2288 007c DBB2     		uxtb	r3, r3
+ 2289 007e 5246     		mov	r2, r10
+ 2290 0080 2946     		mov	r1, r5
+ 2291 0082 4046     		mov	r0, r8
+ 2292 0084 FFF7FEFF 		bl	GenDsp_FillRectangle
+ 2293              	.LVL219:
+ 446:Dsp/widget/wgt_core/GenDsp.c **** 
+ 447:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + radius, y + radius, radius, DRAW_UPPER_LEFT, col_inv);
+ 2294              		.loc 1 447 5 is_stmt 1 view .LVU576
+ 2295 0088 CDF80490 		str	r9, [sp, #4]
+ 2296 008c 0223     		movs	r3, #2
+ 2297 008e 0093     		str	r3, [sp]
+ 2298 0090 3346     		mov	r3, r6
+ 2299 0092 5246     		mov	r2, r10
+ 2300 0094 5946     		mov	r1, fp
+ 2301 0096 4046     		mov	r0, r8
+ 2302 0098 FFF7FEFF 		bl	GenDsp_FillCircle
+ 2303              	.LVL220:
+ 448:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + width - radius, y + radius, radius, DRAW_UPPER_RIGHT, col_inv);
+ 2304              		.loc 1 448 5 view .LVU577
+ 2305 009c CDF80490 		str	r9, [sp, #4]
+ 2306 00a0 0123     		movs	r3, #1
+ 2307 00a2 0093     		str	r3, [sp]
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 52
+
+
+ 2308 00a4 3346     		mov	r3, r6
+ 2309 00a6 5246     		mov	r2, r10
+ 2310 00a8 2946     		mov	r1, r5
+ 2311 00aa 4046     		mov	r0, r8
+ 2312 00ac FFF7FEFF 		bl	GenDsp_FillCircle
+ 2313              	.LVL221:
+ 449:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + radius, y + height - radius - 2, radius, DRAW_LOWER_LEFT, col_inv);
+ 2314              		.loc 1 449 5 view .LVU578
+ 2315              		.loc 1 449 42 is_stmt 0 view .LVU579
+ 2316 00b0 0498     		ldr	r0, [sp, #16]
+ 2317 00b2 0444     		add	r4, r4, r0
+ 2318 00b4 A4B2     		uxth	r4, r4
+ 2319              		.loc 1 449 51 view .LVU580
+ 2320 00b6 029B     		ldr	r3, [sp, #8]
+ 2321 00b8 E41A     		subs	r4, r4, r3
+ 2322 00ba A4B2     		uxth	r4, r4
+ 2323              		.loc 1 449 60 view .LVU581
+ 2324 00bc 023C     		subs	r4, r4, #2
+ 2325              		.loc 1 449 5 view .LVU582
+ 2326 00be 24B2     		sxth	r4, r4
+ 2327 00c0 CDF80490 		str	r9, [sp, #4]
+ 2328 00c4 0423     		movs	r3, #4
+ 2329 00c6 0093     		str	r3, [sp]
+ 2330 00c8 3346     		mov	r3, r6
+ 2331 00ca 2246     		mov	r2, r4
+ 2332 00cc 5946     		mov	r1, fp
+ 2333 00ce 4046     		mov	r0, r8
+ 2334 00d0 FFF7FEFF 		bl	GenDsp_FillCircle
+ 2335              	.LVL222:
+ 450:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_FillCircle(map, x + width - radius, y + height - radius - 2, radius, DRAW_LOWER_RIGHT, c
+ 2336              		.loc 1 450 5 is_stmt 1 view .LVU583
+ 2337 00d4 CDF80490 		str	r9, [sp, #4]
+ 2338 00d8 0823     		movs	r3, #8
+ 2339 00da 0093     		str	r3, [sp]
+ 2340 00dc 3346     		mov	r3, r6
+ 2341 00de 2246     		mov	r2, r4
+ 2342 00e0 2946     		mov	r1, r5
+ 2343 00e2 4046     		mov	r0, r8
+ 2344 00e4 FFF7FEFF 		bl	GenDsp_FillCircle
+ 2345              	.LVL223:
+ 451:Dsp/widget/wgt_core/GenDsp.c **** }
+ 2346              		.loc 1 451 1 is_stmt 0 view .LVU584
+ 2347 00e8 07B0     		add	sp, sp, #28
+ 2348              	.LCFI46:
+ 2349              		.cfi_def_cfa_offset 36
+ 2350              		@ sp needed
+ 2351 00ea BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 2352              		.loc 1 451 1 view .LVU585
+ 2353              		.cfi_endproc
+ 2354              	.LFE20:
+ 2356              		.section	.rodata.GenDsp_DrawNum.str1.4,"aMS",%progbits,1
+ 2357              		.align	2
+ 2358              	.LC0:
+ 2359 0000 256400   		.ascii	"%d\000"
+ 2360              		.section	.text.GenDsp_DrawNum,"ax",%progbits
+ 2361              		.align	1
+ 2362              		.syntax unified
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 53
+
+
+ 2363              		.thumb
+ 2364              		.thumb_func
+ 2365              		.fpu fpv4-sp-d16
+ 2367              	GenDsp_DrawNum:
+ 2368              	.LVL224:
+ 2369              	.LFB7:
+ 132:Dsp/widget/wgt_core/GenDsp.c ****     char num_buff[MAX_DSP_NUM_LEN];
+ 2370              		.loc 1 132 1 is_stmt 1 view -0
+ 2371              		.cfi_startproc
+ 2372              		@ args = 8, pretend = 0, frame = 16
+ 2373              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132:Dsp/widget/wgt_core/GenDsp.c ****     char num_buff[MAX_DSP_NUM_LEN];
+ 2374              		.loc 1 132 1 is_stmt 0 view .LVU587
+ 2375 0000 70B5     		push	{r4, r5, r6, lr}
+ 2376              	.LCFI47:
+ 2377              		.cfi_def_cfa_offset 16
+ 2378              		.cfi_offset 4, -16
+ 2379              		.cfi_offset 5, -12
+ 2380              		.cfi_offset 6, -8
+ 2381              		.cfi_offset 14, -4
+ 2382 0002 86B0     		sub	sp, sp, #24
+ 2383              	.LCFI48:
+ 2384              		.cfi_def_cfa_offset 40
+ 2385 0004 0446     		mov	r4, r0
+ 2386 0006 0D46     		mov	r5, r1
+ 2387 0008 1E46     		mov	r6, r3
+ 133:Dsp/widget/wgt_core/GenDsp.c **** 
+ 2388              		.loc 1 133 5 is_stmt 1 view .LVU588
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ 2389              		.loc 1 135 5 view .LVU589
+ 2390 000a 0949     		ldr	r1, .L122
+ 2391              	.LVL225:
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ 2392              		.loc 1 135 5 is_stmt 0 view .LVU590
+ 2393 000c 03A8     		add	r0, sp, #12
+ 2394              	.LVL226:
+ 135:Dsp/widget/wgt_core/GenDsp.c ****     GenDsp_DrawStr(font, map, num_buff, x, y, col_inv);
+ 2395              		.loc 1 135 5 view .LVU591
+ 2396 000e FFF7FEFF 		bl	sprintf
+ 2397              	.LVL227:
+ 136:Dsp/widget/wgt_core/GenDsp.c **** }
+ 2398              		.loc 1 136 5 is_stmt 1 view .LVU592
+ 2399 0012 9DF82C30 		ldrb	r3, [sp, #44]	@ zero_extendqisi2
+ 2400 0016 0193     		str	r3, [sp, #4]
+ 2401 0018 BDF92830 		ldrsh	r3, [sp, #40]
+ 2402 001c 0093     		str	r3, [sp]
+ 2403 001e 3346     		mov	r3, r6
+ 2404 0020 03AA     		add	r2, sp, #12
+ 2405 0022 2946     		mov	r1, r5
+ 2406 0024 2046     		mov	r0, r4
+ 2407 0026 FFF7FEFF 		bl	GenDsp_DrawStr
+ 2408              	.LVL228:
+ 137:Dsp/widget/wgt_core/GenDsp.c **** 
+ 2409              		.loc 1 137 1 is_stmt 0 view .LVU593
+ 2410 002a 06B0     		add	sp, sp, #24
+ 2411              	.LCFI49:
+ 2412              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 54
+
+
+ 2413              		@ sp needed
+ 2414 002c 70BD     		pop	{r4, r5, r6, pc}
+ 2415              	.LVL229:
+ 2416              	.L123:
+ 137:Dsp/widget/wgt_core/GenDsp.c **** 
+ 2417              		.loc 1 137 1 view .LVU594
+ 2418 002e 00BF     		.align	2
+ 2419              	.L122:
+ 2420 0030 00000000 		.word	.LC0
+ 2421              		.cfi_endproc
+ 2422              	.LFE7:
+ 2424              		.global	GenDsp_Interface
+ 2425              		.global	DspRange
+ 2426              		.section	.bss.DspRange,"aw",%nobits
+ 2427              		.align	2
+ 2428              		.set	.LANCHOR0,. + 0
+ 2431              	DspRange:
+ 2432 0000 00000000 		.space	6
+ 2432      0000
+ 2433              		.section	.data.GenDsp_Interface,"aw"
+ 2434              		.align	2
+ 2437              	GenDsp_Interface:
+ 2438 0000 00000000 		.word	GenDsp_SetRange
+ 2439 0004 00000000 		.word	GenDsp_DrawPoint
+ 2440 0008 00000000 		.word	GenDsp_DrawCircle
+ 2441 000c 00000000 		.word	GenDsp_DrawChar
+ 2442 0010 00000000 		.word	GenDsp_DrawStr
+ 2443 0014 00000000 		.word	GenDsp_DrawNum
+ 2444 0018 00000000 		.word	GenDsp_DrawRectangle
+ 2445 001c 00000000 		.word	GenDsp_Draw_RadiusRectangle
+ 2446 0020 00000000 		.word	GenDsp_DrawLen
+ 2447 0024 00000000 		.word	GenDsp_Draw_VLine
+ 2448 0028 00000000 		.word	GenDsp_Draw_HLine
+ 2449 002c 00000000 		.word	0
+ 2450 0030 00000000 		.word	GenDsp_FillCircle
+ 2451 0034 00000000 		.word	GenDsp_FillRectangle
+ 2452 0038 00000000 		.word	GenDsp_Fill_RadiusRectangle
+ 2453 003c 00000000 		.word	GenDsp_GetStrLen
+ 2454              		.text
+ 2455              	.Letext0:
+ 2456              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 2457              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ 2458              		.file 4 "Dsp/screen/font/oledfont.h"
+ 2459              		.file 5 "Dsp/widget/wgt_core/GenDsp.h"
+ 2460              		.file 6 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2020-q4-major\\arm-none-eabi\\inc
+ARM GAS  C:\Users\huav\AppData\Local\Temp\cck5QYje.s 			page 55
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 GenDsp.c
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:18     .text.GenDsp_SetRange:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:25     .text.GenDsp_SetRange:00000000 GenDsp_SetRange
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:61     .text.GenDsp_SetRange:00000014 $d
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:66     .text.GenDsp_DrawPoint:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:72     .text.GenDsp_DrawPoint:00000000 GenDsp_DrawPoint
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:140    .text.GenDsp_DrawPoint:00000034 $d
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:145    .text.GenDsp_DrawChar:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:151    .text.GenDsp_DrawChar:00000000 GenDsp_DrawChar
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:385    .text.GenDsp_DrawChar:000000d8 $d
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:392    .text.GenDsp_DrawStr:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:398    .text.GenDsp_DrawStr:00000000 GenDsp_DrawStr
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:471    .text.GenDsp_GetStrLen:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:477    .text.GenDsp_GetStrLen:00000000 GenDsp_GetStrLen
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:519    .text.GenDsp_DrawLen:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:525    .text.GenDsp_DrawLen:00000000 GenDsp_DrawLen
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:769    .text.GenDsp_Draw_VLine:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:775    .text.GenDsp_Draw_VLine:00000000 GenDsp_Draw_VLine
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:822    .text.GenDsp_Draw_HLine:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:828    .text.GenDsp_Draw_HLine:00000000 GenDsp_Draw_HLine
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:873    .text.GenDsp_Draw_Circle_Section:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:879    .text.GenDsp_Draw_Circle_Section:00000000 GenDsp_Draw_Circle_Section
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1068   .text.GenDsp_Draw_Circle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1074   .text.GenDsp_Draw_Circle:00000000 GenDsp_Draw_Circle
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1222   .text.GenDsp_DrawCircle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1228   .text.GenDsp_DrawCircle:00000000 GenDsp_DrawCircle
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1262   .text.GenDsp_DrawRectangle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1268   .text.GenDsp_DrawRectangle:00000000 GenDsp_DrawRectangle
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1522   .text.GenDsp_Draw_RadiusRectangle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1528   .text.GenDsp_Draw_RadiusRectangle:00000000 GenDsp_Draw_RadiusRectangle
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1717   .text.GenDsp_Fill_Circle_Section:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1723   .text.GenDsp_Fill_Circle_Section:00000000 GenDsp_Fill_Circle_Section
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1941   .text.GenDsp_FillCircle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:1947   .text.GenDsp_FillCircle:00000000 GenDsp_FillCircle
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2095   .text.GenDsp_FillRectangle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2101   .text.GenDsp_FillRectangle:00000000 GenDsp_FillRectangle
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2196   .text.GenDsp_Fill_RadiusRectangle:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2202   .text.GenDsp_Fill_RadiusRectangle:00000000 GenDsp_Fill_RadiusRectangle
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2357   .rodata.GenDsp_DrawNum.str1.4:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2361   .text.GenDsp_DrawNum:00000000 $t
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2367   .text.GenDsp_DrawNum:00000000 GenDsp_DrawNum
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2420   .text.GenDsp_DrawNum:00000030 $d
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2437   .data.GenDsp_Interface:00000000 GenDsp_Interface
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2431   .bss.DspRange:00000000 DspRange
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2427   .bss.DspRange:00000000 $d
+C:\Users\huav\AppData\Local\Temp\cck5QYje.s:2434   .data.GenDsp_Interface:00000000 $d
+
+UNDEFINED SYMBOLS
+oled_asc2_1206
+oled_asc2_1608
+sprintf
