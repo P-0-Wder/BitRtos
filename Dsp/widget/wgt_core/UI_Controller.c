@@ -419,6 +419,30 @@ static bool UI_SliderBar_Move(UI_SliderBarObj_TypeDef *Obj, int16_t x, int16_t y
     return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
+static bool UI_SliderBar_SetCallBack(UI_SliderBarObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    return true;
+}
+
+static bool UI_SliderBar_Input(UI_SliderBarObj_TypeDef *Obj, int16_t step)
+{
+    if (Obj == NULL)
+        return false;
+
+    return true;
+}
+
+static bool UI_SliderBar_Trigger(UI_SliderBarObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
