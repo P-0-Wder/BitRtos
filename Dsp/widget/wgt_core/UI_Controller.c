@@ -412,6 +412,8 @@ static bool UI_SliderBar_Init(UI_SliderBarObj_TypeDef *Obj, UI_SliderBar_Mode_Li
     Obj->scale = (limit_max - limit_min) / step_len;
     Obj->cur_val = start_val;
 
+    Obj->cur_pos = ((float)Obj->cur_val) / (Obj->limit_max - Obj->limit_min) * DEFAULT_SLIDERBAR_LEN;
+
     return true;
 }
 
@@ -452,6 +454,8 @@ static bool UI_SliderBar_Input(UI_SliderBarObj_TypeDef *Obj, int16_t step)
     }
     else
         Obj->cur_val = val_tmp;
+
+    Obj->cur_pos = ((float)Obj->cur_val) / (Obj->limit_max - Obj->limit_min) * DEFAULT_SLIDERBAR_LEN;
 
     return true;
 }
