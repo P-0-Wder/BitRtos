@@ -465,6 +465,9 @@ static bool UI_SliderBar_Trigger(UI_SliderBarObj_TypeDef *Obj)
     if (Obj == NULL)
         return false;
 
+    if (Obj->callback != NULL)
+        Obj->callback(Obj->cur_val);
+
     return true;
 }
 
