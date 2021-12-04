@@ -22,6 +22,14 @@ static bool UI_CheckBox_Move(UI_CheckBoxObj_TypeDef *Obj, int16_t x, int16_t y);
 static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj);
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj);
 
+/* UI slider bar section */
+static bool UI_SliderBar_Init(UI_SliderBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
+static bool UI_SliderBar_Move(UI_SliderBarObj_TypeDef *Obj, int16_t x, int16_t y);
+static bool UI_SliderBar_SetCallBack(UI_SliderBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
+static bool UI_SliderBar_Input(UI_SliderBarObj_TypeDef *Obj, int16_t step);
+static bool UI_SliderBar_Trigger(UI_SliderBarObj_TypeDef *Obj);
+static bool UI_SliderBar_CTL(UI_SliderBarObj_TypeDef *Obj);
+
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
@@ -48,11 +56,12 @@ UI_CheckBox_Interface_TypeDef UI_CheckBox = {
 };
 
 UI_SliderBar_Interface_TypeDef UI_SliderBar = {
-    .init = NULL,
-    .Move = NULL,
-    .Set_Callbak = NULL,
-    .Trigger = NULL,
-    .ctl = NULL,
+    .init = UI_SliderBar_Init,
+    .Move = UI_SliderBar_Move,
+    .Set_Callbak = UI_SliderBar_SetCallBack,
+    .Input = UI_SliderBar_Input,
+    .Trigger = UI_SliderBar_Trigger,
+    .ctl = UI_SliderBar_CTL,
 };
 
 /******************************* general function *********************************/

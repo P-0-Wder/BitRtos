@@ -202,6 +202,7 @@ typedef struct
     bool (*init)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
     bool (*Set_Callbak)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
     bool (*Move)(UI_SliderBarObj_TypeDef *Obj, int16_t x, int16_t y);
+    bool (*Input)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
     bool (*Trigger)(UI_SliderBarObj_TypeDef *Obj);
     bool (*ctl)(UI_SliderBarObj_TypeDef *Obj);
 } UI_SliderBar_Interface_TypeDef;
