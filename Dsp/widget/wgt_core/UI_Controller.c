@@ -131,6 +131,10 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_SliderBar:
+        block_x = ((UI_SliderBarObj_TypeDef *)(item->Handler))->Gen_Data.x + 3;
+        block_y = ((UI_SliderBarObj_TypeDef *)(item->Handler))->Gen_Data.y + 1;
+
+        UI_DspInterface.fill_rectangle(block_x, block_y, 128 - 6, Default_Font - 1, true);
         break;
 
     default:
