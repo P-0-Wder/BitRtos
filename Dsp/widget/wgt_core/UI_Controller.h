@@ -39,6 +39,8 @@ typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 #define BUTTON_SELECTOR_RADIUS 2
 
 #define DEFAULT_SLIDERBAR_LEN 50
+#define DEFAULT_SLIDERBAR_LINESIZE 2
+#define DEFAULT_SLIDERBAR_BLOCK_HIGH 5
 
 typedef enum
 {
