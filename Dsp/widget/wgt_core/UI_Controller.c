@@ -485,7 +485,16 @@ static bool UI_SliderBar_CTL(UI_SliderBarObj_TypeDef *Obj)
         return false;
 
     UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
-    UI_DspInterface.fill_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, DEFAULT_SLIDERBAR_LEN, DEFAULT_SLIDERBAR_BLOCK_HIGH, true);
+
+    if (Obj->mode == SliderBar_Horizon_Mode)
+    {
+        UI_DspInterface.fill_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, DEFAULT_SLIDERBAR_LEN, DEFAULT_SLIDERBAR_BLOCK_HIGH, true);
+    }
+    else if (Obj->mode == SliderBar_Vertical_Mode)
+    {
+    }
+    else
+        return false;
 
     return true;
 }

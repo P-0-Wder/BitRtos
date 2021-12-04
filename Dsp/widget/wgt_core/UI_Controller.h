@@ -38,7 +38,7 @@ typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 #define BUTTON_SELECTOR_LINE_SIZE 1
 #define BUTTON_SELECTOR_RADIUS 2
 
-#define DEFAULT_SLIDERBAR_LEN 50
+#define DEFAULT_SLIDERBAR_LEN 30
 #define DEFAULT_SLIDERBAR_LINESIZE 2
 #define DEFAULT_SLIDERBAR_BLOCK_HIGH 5
 
@@ -196,6 +196,15 @@ typedef struct
     bool (*Trigger)(UI_CheckBoxObj_TypeDef *Obj);
     bool (*ctl)(UI_CheckBoxObj_TypeDef *Obj);
 } UI_CheckBox_Interface_TypeDef;
+
+typedef struct
+{
+    bool (*init)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
+    bool (*Set_Callbak)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
+    bool (*Move)(UI_SliderBarObj_TypeDef *Obj, int16_t x, int16_t y);
+    bool (*Trigger)(UI_SliderBarObj_TypeDef *Obj);
+    bool (*ctl)(UI_SliderBarObj_TypeDef *Obj);
+} UI_SliderBar_Interface_TypeDef;
 
 typedef enum
 {
