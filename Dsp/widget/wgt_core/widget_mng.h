@@ -29,6 +29,8 @@
 typedef GenFont_List Widget_Font;
 typedef uint32_t Widget_Handle;
 
+#define HandleToWidgetObj(x) (WidgetObj_TypeDef *)x
+
 typedef enum
 {
     WidgetUI_get_x = 0,

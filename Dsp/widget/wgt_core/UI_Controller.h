@@ -15,6 +15,9 @@ typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 
+#define HandleToButtonObj(x) (UI_ButtonObj_TypeDef *)x
+#define HandleToCheckBoxObj(x) (UI_CheckBoxObj_TypeDef *)x
+
 #define UI_DEFAULT_WIDTH 0
 #define UI_DEFAULT_HEIGHT 0
 
@@ -62,6 +65,7 @@ typedef void (*UI_FillRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_
 
 typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
+typedef int (*UI_SliderBarTrigger_Callback)(int16_t data);
 
 typedef enum
 {
@@ -160,6 +164,7 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
     UI_SliderBar_Mode_List mode;
+    UI_SliderBarTrigger_Callback callback;
 
     int16_t limit_min;
     int16_t limit_max;

@@ -419,10 +419,12 @@ static bool UI_SliderBar_Move(UI_SliderBarObj_TypeDef *Obj, int16_t x, int16_t y
     return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
-static bool UI_SliderBar_SetCallBack(UI_SliderBarObj_TypeDef *Obj)
+static bool UI_SliderBar_SetCallBack(UI_SliderBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback)
 {
     if (Obj == NULL)
         return false;
+
+    Obj->callback = callback;
 
     return true;
 }
