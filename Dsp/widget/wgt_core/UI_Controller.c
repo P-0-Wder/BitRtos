@@ -471,6 +471,16 @@ static bool UI_SliderBar_Trigger(UI_SliderBarObj_TypeDef *Obj)
     return true;
 }
 
+static bool UI_SliderBar_CTL(UI_SliderBarObj_TypeDef *Obj)
+{
+    if ((Obj == NULL) ||
+        (UI_DspInterface.draw_str == NULL) ||
+        (UI_DspInterface.fill_rectangle == NULL))
+        return false;
+
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
