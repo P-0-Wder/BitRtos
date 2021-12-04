@@ -47,6 +47,14 @@ UI_CheckBox_Interface_TypeDef UI_CheckBox = {
     .Trigger = UI_CheckBox_Trigger,
 };
 
+UI_SliderBar_Interface_TypeDef UI_SliderBar = {
+    .init = NULL,
+    .Move = NULL,
+    .Set_Callbak = NULL,
+    .Trigger = NULL,
+    .ctl = NULL,
+};
+
 /******************************* general function *********************************/
 
 void UI_Set_DspInterface(UI_DrawPoint point,

@@ -332,4 +332,5 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item);
 
 extern UI_Button_Interface_TypeDef UI_Button;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
+extern UI_SliderBar_Interface_TypeDef UI_SliderBar;
 #endif
