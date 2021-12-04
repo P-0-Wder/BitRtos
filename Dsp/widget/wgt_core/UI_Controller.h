@@ -16,10 +16,6 @@ typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 
 #define HandleToButtonObj(x) (UI_ButtonObj_TypeDef *)x
-#define HandleToCheckBoxObj(x) (UI_CheckBoxObj_TypeDef *)x
-
-#define UI_DEFAULT_WIDTH 0
-#define UI_DEFAULT_HEIGHT 0
 
 #define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
@@ -41,6 +37,8 @@ typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 
 #define BUTTON_SELECTOR_LINE_SIZE 1
 #define BUTTON_SELECTOR_RADIUS 2
+
+#define DEFAULT_SLIDERBAR_LEN 50
 
 typedef enum
 {
@@ -171,6 +169,7 @@ typedef struct
     int16_t scale;
     int16_t step_len;
     int16_t cur_val;
+    int16_t cur_pos;
 
     /* need callback function */
 } UI_SliderBarObj_TypeDef;
