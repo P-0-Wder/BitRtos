@@ -93,13 +93,16 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     int16_t block_x;
     int16_t block_y;
 
-    if ((item == NULL) ||
-        (UI_DspInterface.fill_circle_section == NULL))
+    if (item == NULL)
         return false;
 
     switch ((uint8_t)(item->type))
     {
     case UI_Type_Button:
+
+        if (UI_DspInterface.fill_circle_section == NULL)
+            return false;
+
         /* comput button selector coordinate first */
         Btn_Slct_LftUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x;
         Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_TypeDef *)(item->Handler))->height - 1;
@@ -125,6 +128,9 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         block_y = ((UI_CheckBoxObj_TypeDef *)(item->Handler))->Gen_Data.y + 1;
 
         UI_DspInterface.fill_rectangle(block_x, block_y, 128 - 6, Default_Font - 1, true);
+        break;
+
+    case UI_Type_SliderBar:
         break;
 
     default:
