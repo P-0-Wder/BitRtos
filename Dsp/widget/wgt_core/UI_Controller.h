@@ -14,6 +14,7 @@ typedef uint8_t UI_GetWidget_Height(void);
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
+typedef UI_GenCTL_Handle UI_SlideBar_Handle;
 
 #define HandleToButtonObj(x) ((UI_ButtonObj_TypeDef *)x)
 #define HandleToCheckBoxObj(x) ((UI_CheckBoxObj_TypeDef *)x)

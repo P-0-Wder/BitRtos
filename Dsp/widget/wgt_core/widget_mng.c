@@ -1344,4 +1344,47 @@ static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
 
 /************************************** widget CheckBox interface ******************************************/
 
+/************************************** widget SlideBar interface ******************************************/
+
+static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16_t y, UI_SliderBar_Mode_List mode, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len)
+{
+}
+
+static bool WidgetUI_SlideBar_Move(UI_SlideBar_Handle hdl, int16_t x, int16_t y)
+{
+    if (hdl == 0)
+        return false;
+
+    UI_SliderBar.Move(hdl, x, y);
+
+    return true;
+}
+
+static bool WidgetUI_SlideBar_SetCallBack(UI_SlideBar_Handle hdl, UI_SliderBarTrigger_Callback callback)
+{
+    if (hdl == 0)
+        return false;
+
+    UI_SliderBar.Set_Callbak(HandleToSliderBarObj(hdl), callback);
+
+    return true;
+}
+
+static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl)
+{
+    int16_t CurBarVal;
+
+    if (hdl == 0)
+        return false;
+
+    CurBarVal = HandleToSliderBarObj(hdl)->cur_val;
+
+    if (HandleToSliderBarObj(hdl)->callback)
+        HandleToSliderBarObj(hdl)->callback(CurBarVal);
+
+    return true;
+}
+
+/************************************** widget SlideBar interface ******************************************/
+
 /************************************** widget UI interface ******************************************/
