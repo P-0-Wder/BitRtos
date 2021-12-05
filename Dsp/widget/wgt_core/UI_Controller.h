@@ -15,7 +15,9 @@ typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 
-#define HandleToButtonObj(x) (UI_ButtonObj_TypeDef *)x
+#define HandleToButtonObj(x) ((UI_ButtonObj_TypeDef *)x)
+#define HandleToCheckBoxObj(x) ((UI_CheckBoxObj_TypeDef *)x)
+#define HandleToSliderBarObj(x) ((UI_SliderBarObj_TypeDef *)x)
 
 #define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
