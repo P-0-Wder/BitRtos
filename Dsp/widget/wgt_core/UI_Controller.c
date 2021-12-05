@@ -398,8 +398,8 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
 
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 {
-    uint16_t StrDsp_x = strlen(Obj->Gen_Data.label) * FONT_WIDTH;
-    int16_t frame_y = Obj->Gen_Data.y + 3;
+    uint16_t StrDsp_x = 0;
+    int16_t frame_y = 0;
 
     if ((Obj == NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
@@ -407,10 +407,11 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
         (UI_DspInterface.draw_rectangle == NULL))
         return false;
 
-    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
-
+    StrDsp_x = strlen(Obj->Gen_Data.label) * FONT_WIDTH;
+    frame_y = Obj->Gen_Data.y + 3;
     StrDsp_x += DEFAULT_CHECKBOX_OFFSET;
 
+    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
     UI_DspInterface.draw_rectangle(StrDsp_x, frame_y, DEFAULT_CHECKBOX_FRAME_SIZE, DEFAULT_CHECKBOX_FRAME_SIZE, 1, true);
 
     if (Obj->checked)
@@ -500,6 +501,10 @@ static bool UI_SliderBar_Trigger(UI_SliderBarObj_TypeDef *Obj)
 
 static bool UI_SliderBar_CTL(UI_SliderBarObj_TypeDef *Obj)
 {
+    int16_t Bar_CoordX = 0;
+    int16_t Block_CoordX = 0;
+    int16_t Block_CoordY = 0;
+
     if ((Obj == NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
         (UI_DspInterface.fill_rectangle == NULL))
@@ -509,7 +514,12 @@ static bool UI_SliderBar_CTL(UI_SliderBarObj_TypeDef *Obj)
 
     if (Obj->mode == SliderBar_Horizon_Mode)
     {
-        UI_DspInterface.fill_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, DEFAULT_SLIDERBAR_LEN, DEFAULT_SLIDERBAR_BLOCK_HIGH, true);
+        Block_CoordX = Bar_CoordX = Obj->Gen_Data.x + trlen(Obj->Gen_Data.label) * FONT_WIDTH + DEFAULT_SLIDERBAR_OFFSET;
+        Block_CoordX += (Obj->cur_val - Obj->limit_min) / ((float)(Obj->limit_max - Obj->limit_min)) * DEFAULT_SLIDERBAR_LEN;
+        Block_CoordX = Obj->Gen_Data.y - (DEFAULT_SLIDERBAR_BLOCK_HIGH / 3);
+
+        UI_DspInterface.fill_rectangle(Bar_CoordX, Obj->Gen_Data.y, DEFAULT_SLIDERBAR_LEN, DEFAULT_SLIDERBAR_LINESIZE, true);
+        UI_DspInterface.fill_rectangle(Block_CoordX, Block_CoordY, DEFAULT_SLIDERBAR_LINESIZE, DEFAULT_SLIDERBAR_BLOCK_HIGH, true);
     }
     else if (Obj->mode == SliderBar_Vertical_Mode)
     {

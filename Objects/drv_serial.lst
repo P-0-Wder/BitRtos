@@ -1,0 +1,682 @@
+ARM GAS  /tmp/ccEwfGQI.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"drv_serial.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DrvSerial_Write,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DrvSerial_Write:
+  26              	.LVL0:
+  27              	.LFB127:
+  28              		.file 1 "Drv/drv_serial.c"
+   1:Drv/drv_serial.c **** #include "drv_serial.h"
+   2:Drv/drv_serial.c **** #include "vcp.h"
+   3:Drv/drv_serial.c **** 
+   4:Drv/drv_serial.c **** #define Serial_Default_Baudrate Serial_115200
+   5:Drv/drv_serial.c **** 
+   6:Drv/drv_serial.c **** extern uint8_t Serial_TX_Buff[Serial_Port_Sum][SERIAL_MAX_RECLEN];
+   7:Drv/drv_serial.c **** extern uint8_t Serial_RX_Buff[Serial_Port_Sum][SERIAL_MAX_RECLEN];
+   8:Drv/drv_serial.c **** 
+   9:Drv/drv_serial.c **** /* internal virable */
+  10:Drv/drv_serial.c **** static DrvSerial_SrcInfo_TypeDef DrvSerial_SrcInfo[DrvSerial_Sum] = {
+  11:Drv/drv_serial.c ****     {.inuse = false},
+  12:Drv/drv_serial.c ****     {.inuse = false},
+  13:Drv/drv_serial.c ****     {.inuse = false},
+  14:Drv/drv_serial.c ****     {.inuse = false},
+  15:Drv/drv_serial.c **** };
+  16:Drv/drv_serial.c **** 
+  17:Drv/drv_serial.c **** /* internal function */
+  18:Drv/drv_serial.c **** 
+  19:Drv/drv_serial.c **** /* external function */
+  20:Drv/drv_serial.c **** static bool
+  21:Drv/drv_serial.c **** DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t len);
+  22:Drv/drv_serial.c **** static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len);
+  23:Drv/drv_serial.c **** 
+  24:Drv/drv_serial.c **** /* external virable */
+  25:Drv/drv_serial.c **** DrvSerial_GenProcFunc_TypeDef DrvSerial = {
+  26:Drv/drv_serial.c ****     .ctl = DrvSerial_Ctl,
+  27:Drv/drv_serial.c ****     .read = NULL,
+  28:Drv/drv_serial.c ****     .write = DrvSerial_Write,
+  29:Drv/drv_serial.c **** };
+  30:Drv/drv_serial.c **** 
+ARM GAS  /tmp/ccEwfGQI.s 			page 2
+
+
+  31:Drv/drv_serial.c **** static bool DrvSerial_Ctl(DrvSerial_Port_List portx, DrvSerial_CMD_List cmd, uint32_t data, uint8_t
+  32:Drv/drv_serial.c **** {
+  33:Drv/drv_serial.c ****     switch ((uint8_t)cmd)
+  34:Drv/drv_serial.c ****     {
+  35:Drv/drv_serial.c ****     case DrvSerial_Open:
+  36:Drv/drv_serial.c ****         if ((len != sizeof(DrvSerial_Config_Typedef)) || (DrvSerial_SrcInfo[portx].inuse))
+  37:Drv/drv_serial.c ****             return;
+  38:Drv/drv_serial.c **** 
+  39:Drv/drv_serial.c ****         if (portx != DrvSerial_Vcp)
+  40:Drv/drv_serial.c ****         {
+  41:Drv/drv_serial.c ****             switch ((uint8_t)(((DrvSerial_Config_Typedef *)data)->mode))
+  42:Drv/drv_serial.c ****             {
+  43:Drv/drv_serial.c ****             case DrvSerial_MODE_Normal:
+  44:Drv/drv_serial.c ****                 Serial_IRQ_RX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate,
+  45:Drv/drv_serial.c ****                                    ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+  46:Drv/drv_serial.c ****                                    ((DrvSerial_Config_Typedef *)data)->SubPriority, Serial_Normal);
+  47:Drv/drv_serial.c **** 
+  48:Drv/drv_serial.c ****                 Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
+  49:Drv/drv_serial.c ****                 break;
+  50:Drv/drv_serial.c **** 
+  51:Drv/drv_serial.c ****             case DrvSerial_MODE_DMA_Rx:
+  52:Drv/drv_serial.c ****                 Serial_DMA_RX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate, ((DrvSerial
+  53:Drv/drv_serial.c ****                                    ((DrvSerial_Config_Typedef *)data)->SubPriority,
+  54:Drv/drv_serial.c ****                                    (uint32_t)Serial_RX_Buff[portx],
+  55:Drv/drv_serial.c ****                                    SERIAL_MAX_RECLEN, Serial_Normal);
+  56:Drv/drv_serial.c ****                 Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
+  57:Drv/drv_serial.c ****                 break;
+  58:Drv/drv_serial.c **** 
+  59:Drv/drv_serial.c ****             case DrvSerial_MODE_DMA_TxRx:
+  60:Drv/drv_serial.c ****                 Serial_DMA_RXTX_Init(portx, ((DrvSerial_Config_Typedef *)data)->baudrate,
+  61:Drv/drv_serial.c ****                                      ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+  62:Drv/drv_serial.c ****                                      ((DrvSerial_Config_Typedef *)data)->SubPriority,
+  63:Drv/drv_serial.c ****                                      (uint32_t)Serial_RX_Buff[portx],
+  64:Drv/drv_serial.c ****                                      (uint32_t)Serial_TX_Buff[portx],
+  65:Drv/drv_serial.c ****                                      SERIAL_MAX_RECLEN, Serial_Normal);
+  66:Drv/drv_serial.c ****                 Serial_Set_IRQ_Callback(portx, ((DrvSerial_Config_Typedef *)data)->Irq_Callback);
+  67:Drv/drv_serial.c ****                 break;
+  68:Drv/drv_serial.c **** 
+  69:Drv/drv_serial.c ****             default:
+  70:Drv/drv_serial.c ****                 return false;
+  71:Drv/drv_serial.c ****             }
+  72:Drv/drv_serial.c ****         }
+  73:Drv/drv_serial.c ****         else
+  74:Drv/drv_serial.c ****         {
+  75:Drv/drv_serial.c ****             VCP_Init();
+  76:Drv/drv_serial.c ****         }
+  77:Drv/drv_serial.c **** 
+  78:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].inuse = true;
+  79:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
+  80:Drv/drv_serial.c ****         break;
+  81:Drv/drv_serial.c **** 
+  82:Drv/drv_serial.c ****     case DrvSerial_Close:
+  83:Drv/drv_serial.c ****         Serial_Deinit(portx);
+  84:Drv/drv_serial.c ****         Serial_Set_IRQ_Callback(portx, NULL);
+  85:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->mode = DrvSerial_MODE_None;
+  86:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->PreemptionPriority = 0;
+  87:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->SubPriority = 0;
+ARM GAS  /tmp/ccEwfGQI.s 			page 3
+
+
+  88:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->baudrate = 0;
+  89:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->Irq_Callback = NULL;
+  90:Drv/drv_serial.c **** 
+  91:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].inuse = false;
+  92:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
+  93:Drv/drv_serial.c ****         break;
+  94:Drv/drv_serial.c **** 
+  95:Drv/drv_serial.c ****     case DrvSerial_Set_RxIRQCallback:
+  96:Drv/drv_serial.c ****         Serial_Set_IRQ_Callback(portx, (Serial_IRQ_Callback)data);
+  97:Drv/drv_serial.c ****         break;
+  98:Drv/drv_serial.c **** 
+  99:Drv/drv_serial.c ****     default:
+ 100:Drv/drv_serial.c ****         return false;
+ 101:Drv/drv_serial.c ****     }
+ 102:Drv/drv_serial.c **** 
+ 103:Drv/drv_serial.c ****     return true;
+ 104:Drv/drv_serial.c **** }
+ 105:Drv/drv_serial.c **** 
+ 106:Drv/drv_serial.c **** static void DrvSerial_Write(DrvSerial_Port_List portx, uint8_t *data, uint16_t len)
+ 107:Drv/drv_serial.c **** {
+  29              		.loc 1 107 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 107 1 is_stmt 0 view .LVU1
+  34 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 24
+  37              		.cfi_offset 3, -24
+  38              		.cfi_offset 4, -20
+  39              		.cfi_offset 5, -16
+  40              		.cfi_offset 6, -12
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+ 108:Drv/drv_serial.c ****     if (!DrvSerial_SrcInfo[portx].inuse)
+  43              		.loc 1 108 5 is_stmt 1 view .LVU2
+  44              		.loc 1 108 34 is_stmt 0 view .LVU3
+  45 0002 00EB8004 		add	r4, r0, r0, lsl #2
+  46 0006 A300     		lsls	r3, r4, #2
+  47 0008 194C     		ldr	r4, .L8
+  48 000a E35C     		ldrb	r3, [r4, r3]	@ zero_extendqisi2
+  49              		.loc 1 108 8 view .LVU4
+  50 000c 03B9     		cbnz	r3, .L6
+  51              	.LVL1:
+  52              	.L1:
+ 109:Drv/drv_serial.c ****         return;
+ 110:Drv/drv_serial.c **** 
+ 111:Drv/drv_serial.c ****     memset(Serial_TX_Buff[portx], NULL, len);
+ 112:Drv/drv_serial.c ****     memcpy(Serial_TX_Buff[portx], data, len);
+ 113:Drv/drv_serial.c **** 
+ 114:Drv/drv_serial.c ****     if ((DrvSerial_SrcInfo[portx].cfg.mode == DrvSerial_MODE_Normal) || (DrvSerial_SrcInfo[portx].c
+ 115:Drv/drv_serial.c ****     {
+ 116:Drv/drv_serial.c ****         Serial_SendBuff(portx, data, len);
+ 117:Drv/drv_serial.c ****     }
+ 118:Drv/drv_serial.c ****     else if (DrvSerial_SrcInfo[portx].cfg.mode == DrvSerial_MODE_DMA_TxRx)
+ 119:Drv/drv_serial.c ****     {
+ 120:Drv/drv_serial.c ****         Serial_DMA_SendBuff(portx, len);
+ARM GAS  /tmp/ccEwfGQI.s 			page 4
+
+
+ 121:Drv/drv_serial.c ****     }
+ 122:Drv/drv_serial.c ****     else
+ 123:Drv/drv_serial.c ****         return;
+ 124:Drv/drv_serial.c **** 
+ 125:Drv/drv_serial.c ****     if (DrvSerial_Send_Async == DrvSerial_SrcInfo[portx].cfg.send_mode)
+ 126:Drv/drv_serial.c ****     {
+ 127:Drv/drv_serial.c ****         Serial_DMA_WaitFinish(portx);
+ 128:Drv/drv_serial.c ****     }
+ 129:Drv/drv_serial.c **** }
+  53              		.loc 1 129 1 view .LVU5
+  54 000e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+  55              	.LVL2:
+  56              	.L6:
+  57              		.loc 1 129 1 view .LVU6
+  58 0010 1546     		mov	r5, r2
+  59 0012 0F46     		mov	r7, r1
+  60 0014 0446     		mov	r4, r0
+ 111:Drv/drv_serial.c ****     memcpy(Serial_TX_Buff[portx], data, len);
+  61              		.loc 1 111 5 is_stmt 1 view .LVU7
+ 111:Drv/drv_serial.c ****     memcpy(Serial_TX_Buff[portx], data, len);
+  62              		.loc 1 111 26 is_stmt 0 view .LVU8
+  63 0016 174E     		ldr	r6, .L8+4
+  64 0018 06EB4026 		add	r6, r6, r0, lsl #9
+ 111:Drv/drv_serial.c ****     memcpy(Serial_TX_Buff[portx], data, len);
+  65              		.loc 1 111 5 view .LVU9
+  66 001c 0021     		movs	r1, #0
+  67              	.LVL3:
+ 111:Drv/drv_serial.c ****     memcpy(Serial_TX_Buff[portx], data, len);
+  68              		.loc 1 111 5 view .LVU10
+  69 001e 3046     		mov	r0, r6
+  70              	.LVL4:
+ 111:Drv/drv_serial.c ****     memcpy(Serial_TX_Buff[portx], data, len);
+  71              		.loc 1 111 5 view .LVU11
+  72 0020 FFF7FEFF 		bl	memset
+  73              	.LVL5:
+ 112:Drv/drv_serial.c **** 
+  74              		.loc 1 112 5 is_stmt 1 view .LVU12
+  75 0024 2A46     		mov	r2, r5
+  76 0026 3946     		mov	r1, r7
+  77 0028 3046     		mov	r0, r6
+  78 002a FFF7FEFF 		bl	memcpy
+  79              	.LVL6:
+ 114:Drv/drv_serial.c ****     {
+  80              		.loc 1 114 5 view .LVU13
+ 114:Drv/drv_serial.c ****     {
+  81              		.loc 1 114 38 is_stmt 0 view .LVU14
+  82 002e 04EB8403 		add	r3, r4, r4, lsl #2
+  83 0032 9A00     		lsls	r2, r3, #2
+  84 0034 0E4B     		ldr	r3, .L8
+  85 0036 1344     		add	r3, r3, r2
+  86 0038 9B7A     		ldrb	r3, [r3, #10]	@ zero_extendqisi2
+ 114:Drv/drv_serial.c ****     {
+  87              		.loc 1 114 8 view .LVU15
+  88 003a 012B     		cmp	r3, #1
+  89 003c 06D9     		bls	.L7
+ 118:Drv/drv_serial.c ****     {
+  90              		.loc 1 118 10 is_stmt 1 view .LVU16
+ARM GAS  /tmp/ccEwfGQI.s 			page 5
+
+
+ 118:Drv/drv_serial.c ****     {
+  91              		.loc 1 118 13 is_stmt 0 view .LVU17
+  92 003e 022B     		cmp	r3, #2
+  93 0040 E5D1     		bne	.L1
+ 120:Drv/drv_serial.c ****     }
+  94              		.loc 1 120 9 is_stmt 1 view .LVU18
+  95 0042 2946     		mov	r1, r5
+  96 0044 2046     		mov	r0, r4
+  97 0046 FFF7FEFF 		bl	Serial_DMA_SendBuff
+  98              	.LVL7:
+  99 004a 04E0     		b	.L4
+ 100              	.L7:
+ 116:Drv/drv_serial.c ****     }
+ 101              		.loc 1 116 9 view .LVU19
+ 102 004c 2A46     		mov	r2, r5
+ 103 004e 3946     		mov	r1, r7
+ 104 0050 2046     		mov	r0, r4
+ 105 0052 FFF7FEFF 		bl	Serial_SendBuff
+ 106              	.LVL8:
+ 107              	.L4:
+ 125:Drv/drv_serial.c ****     {
+ 108              		.loc 1 125 5 view .LVU20
+ 125:Drv/drv_serial.c ****     {
+ 109              		.loc 1 125 61 is_stmt 0 view .LVU21
+ 110 0056 04EB8403 		add	r3, r4, r4, lsl #2
+ 111 005a 9A00     		lsls	r2, r3, #2
+ 112 005c 044B     		ldr	r3, .L8
+ 113 005e 1344     		add	r3, r3, r2
+ 114 0060 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 125:Drv/drv_serial.c ****     {
+ 115              		.loc 1 125 8 view .LVU22
+ 116 0062 002B     		cmp	r3, #0
+ 117 0064 D3D1     		bne	.L1
+ 127:Drv/drv_serial.c ****     }
+ 118              		.loc 1 127 9 is_stmt 1 view .LVU23
+ 119 0066 2046     		mov	r0, r4
+ 120 0068 FFF7FEFF 		bl	Serial_DMA_WaitFinish
+ 121              	.LVL9:
+ 122 006c CFE7     		b	.L1
+ 123              	.L9:
+ 124 006e 00BF     		.align	2
+ 125              	.L8:
+ 126 0070 00000000 		.word	.LANCHOR0
+ 127 0074 00000000 		.word	Serial_TX_Buff
+ 128              		.cfi_endproc
+ 129              	.LFE127:
+ 131              		.section	.text.DrvSerial_Ctl,"ax",%progbits
+ 132              		.align	1
+ 133              		.syntax unified
+ 134              		.thumb
+ 135              		.thumb_func
+ 136              		.fpu fpv4-sp-d16
+ 138              	DrvSerial_Ctl:
+ 139              	.LVL10:
+ 140              	.LFB126:
+  32:Drv/drv_serial.c ****     switch ((uint8_t)cmd)
+ 141              		.loc 1 32 1 view -0
+ARM GAS  /tmp/ccEwfGQI.s 			page 6
+
+
+ 142              		.cfi_startproc
+ 143              		@ args = 0, pretend = 0, frame = 0
+ 144              		@ frame_needed = 0, uses_anonymous_args = 0
+  32:Drv/drv_serial.c ****     switch ((uint8_t)cmd)
+ 145              		.loc 1 32 1 is_stmt 0 view .LVU25
+ 146 0000 70B5     		push	{r4, r5, r6, lr}
+ 147              	.LCFI1:
+ 148              		.cfi_def_cfa_offset 16
+ 149              		.cfi_offset 4, -16
+ 150              		.cfi_offset 5, -12
+ 151              		.cfi_offset 6, -8
+ 152              		.cfi_offset 14, -4
+ 153 0002 84B0     		sub	sp, sp, #16
+ 154              	.LCFI2:
+ 155              		.cfi_def_cfa_offset 32
+ 156 0004 0546     		mov	r5, r0
+ 157 0006 1446     		mov	r4, r2
+  33:Drv/drv_serial.c ****     {
+ 158              		.loc 1 33 5 is_stmt 1 view .LVU26
+ 159 0008 0129     		cmp	r1, #1
+ 160 000a 60D0     		beq	.L11
+ 161 000c 4AB2     		sxtb	r2, r1
+ 162              	.LVL11:
+  33:Drv/drv_serial.c ****     {
+ 163              		.loc 1 33 5 is_stmt 0 view .LVU27
+ 164 000e 22B1     		cbz	r2, .L12
+ 165 0010 0229     		cmp	r1, #2
+ 166 0012 76D0     		beq	.L13
+ 100:Drv/drv_serial.c ****     }
+ 167              		.loc 1 100 16 view .LVU28
+ 168 0014 0020     		movs	r0, #0
+ 169              	.LVL12:
+ 170              	.L10:
+ 104:Drv/drv_serial.c **** 
+ 171              		.loc 1 104 1 view .LVU29
+ 172 0016 04B0     		add	sp, sp, #16
+ 173              	.LCFI3:
+ 174              		.cfi_remember_state
+ 175              		.cfi_def_cfa_offset 16
+ 176              		@ sp needed
+ 177 0018 70BD     		pop	{r4, r5, r6, pc}
+ 178              	.LVL13:
+ 179              	.L12:
+ 180              	.LCFI4:
+ 181              		.cfi_restore_state
+  36:Drv/drv_serial.c ****             return;
+ 182              		.loc 1 36 9 is_stmt 1 view .LVU30
+  36:Drv/drv_serial.c ****             return;
+ 183              		.loc 1 36 12 is_stmt 0 view .LVU31
+ 184 001a 102B     		cmp	r3, #16
+ 185 001c FBD1     		bne	.L10
+  36:Drv/drv_serial.c ****             return;
+ 186              		.loc 1 36 83 discriminator 1 view .LVU32
+ 187 001e 00EB8002 		add	r2, r0, r0, lsl #2
+ 188 0022 9300     		lsls	r3, r2, #2
+ 189              	.LVL14:
+  36:Drv/drv_serial.c ****             return;
+ARM GAS  /tmp/ccEwfGQI.s 			page 7
+
+
+ 190              		.loc 1 36 83 discriminator 1 view .LVU33
+ 191 0024 394A     		ldr	r2, .L23
+ 192 0026 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 193              	.LVL15:
+  36:Drv/drv_serial.c ****             return;
+ 194              		.loc 1 36 55 discriminator 1 view .LVU34
+ 195 0028 0028     		cmp	r0, #0
+ 196 002a F4D1     		bne	.L10
+  39:Drv/drv_serial.c ****         {
+ 197              		.loc 1 39 9 is_stmt 1 view .LVU35
+  39:Drv/drv_serial.c ****         {
+ 198              		.loc 1 39 12 is_stmt 0 view .LVU36
+ 199 002c 042D     		cmp	r5, #4
+ 200 002e 3ED0     		beq	.L17
+  41:Drv/drv_serial.c ****             {
+ 201              		.loc 1 41 13 is_stmt 1 view .LVU37
+  41:Drv/drv_serial.c ****             {
+ 202              		.loc 1 41 65 is_stmt 0 view .LVU38
+ 203 0030 A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 204 0032 012B     		cmp	r3, #1
+ 205 0034 27D0     		beq	.L18
+ 206 0036 5AB2     		sxtb	r2, r3
+ 207 0038 C2B1     		cbz	r2, .L19
+ 208 003a 022B     		cmp	r3, #2
+ 209 003c EBD1     		bne	.L10
+  60:Drv/drv_serial.c ****                                      ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+ 210              		.loc 1 60 17 is_stmt 1 view .LVU39
+  63:Drv/drv_serial.c ****                                      (uint32_t)Serial_TX_Buff[portx],
+ 211              		.loc 1 63 48 is_stmt 0 view .LVU40
+ 212 003e 6B02     		lsls	r3, r5, #9
+ 213 0040 3348     		ldr	r0, .L23+4
+ 214 0042 1844     		add	r0, r0, r3
+  64:Drv/drv_serial.c ****                                      SERIAL_MAX_RECLEN, Serial_Normal);
+ 215              		.loc 1 64 48 view .LVU41
+ 216 0044 3349     		ldr	r1, .L23+8
+ 217              	.LVL16:
+  64:Drv/drv_serial.c ****                                      SERIAL_MAX_RECLEN, Serial_Normal);
+ 218              		.loc 1 64 48 view .LVU42
+ 219 0046 1944     		add	r1, r1, r3
+  60:Drv/drv_serial.c ****                                      ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+ 220              		.loc 1 60 17 view .LVU43
+ 221 0048 6379     		ldrb	r3, [r4, #5]	@ zero_extendqisi2
+ 222 004a 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 223 004c 0026     		movs	r6, #0
+ 224 004e 0396     		str	r6, [sp, #12]
+ 225 0050 4FF40076 		mov	r6, #512
+ 226 0054 0296     		str	r6, [sp, #8]
+ 227 0056 0191     		str	r1, [sp, #4]
+ 228 0058 0090     		str	r0, [sp]
+ 229 005a 2168     		ldr	r1, [r4]
+ 230 005c 2846     		mov	r0, r5
+ 231 005e FFF7FEFF 		bl	Serial_DMA_RXTX_Init
+ 232              	.LVL17:
+  66:Drv/drv_serial.c ****                 break;
+ 233              		.loc 1 66 17 is_stmt 1 view .LVU44
+ 234 0062 A168     		ldr	r1, [r4, #8]
+ 235 0064 2846     		mov	r0, r5
+ARM GAS  /tmp/ccEwfGQI.s 			page 8
+
+
+ 236 0066 FFF7FEFF 		bl	Serial_Set_IRQ_Callback
+ 237              	.LVL18:
+  67:Drv/drv_serial.c **** 
+ 238              		.loc 1 67 17 view .LVU45
+ 239 006a 22E0     		b	.L21
+ 240              	.LVL19:
+ 241              	.L19:
+  44:Drv/drv_serial.c ****                                    ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+ 242              		.loc 1 44 17 view .LVU46
+ 243 006c 6379     		ldrb	r3, [r4, #5]	@ zero_extendqisi2
+ 244 006e 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 245 0070 0021     		movs	r1, #0
+ 246              	.LVL20:
+  44:Drv/drv_serial.c ****                                    ((DrvSerial_Config_Typedef *)data)->PreemptionPriority,
+ 247              		.loc 1 44 17 is_stmt 0 view .LVU47
+ 248 0072 0091     		str	r1, [sp]
+ 249 0074 2168     		ldr	r1, [r4]
+ 250 0076 2846     		mov	r0, r5
+ 251 0078 FFF7FEFF 		bl	Serial_IRQ_RX_Init
+ 252              	.LVL21:
+  48:Drv/drv_serial.c ****                 break;
+ 253              		.loc 1 48 17 is_stmt 1 view .LVU48
+ 254 007c A168     		ldr	r1, [r4, #8]
+ 255 007e 2846     		mov	r0, r5
+ 256 0080 FFF7FEFF 		bl	Serial_Set_IRQ_Callback
+ 257              	.LVL22:
+  49:Drv/drv_serial.c **** 
+ 258              		.loc 1 49 17 view .LVU49
+ 259 0084 15E0     		b	.L21
+ 260              	.LVL23:
+ 261              	.L18:
+  52:Drv/drv_serial.c ****                                    ((DrvSerial_Config_Typedef *)data)->SubPriority,
+ 262              		.loc 1 52 17 view .LVU50
+  54:Drv/drv_serial.c ****                                    SERIAL_MAX_RECLEN, Serial_Normal);
+ 263              		.loc 1 54 46 is_stmt 0 view .LVU51
+ 264 0086 2249     		ldr	r1, .L23+4
+ 265              	.LVL24:
+  54:Drv/drv_serial.c ****                                    SERIAL_MAX_RECLEN, Serial_Normal);
+ 266              		.loc 1 54 46 view .LVU52
+ 267 0088 01EB4521 		add	r1, r1, r5, lsl #9
+  52:Drv/drv_serial.c ****                                    ((DrvSerial_Config_Typedef *)data)->SubPriority,
+ 268              		.loc 1 52 17 view .LVU53
+ 269 008c 6379     		ldrb	r3, [r4, #5]	@ zero_extendqisi2
+ 270 008e 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 271 0090 0020     		movs	r0, #0
+ 272 0092 0290     		str	r0, [sp, #8]
+ 273 0094 4FF40070 		mov	r0, #512
+ 274 0098 0190     		str	r0, [sp, #4]
+ 275 009a 0091     		str	r1, [sp]
+ 276 009c 2168     		ldr	r1, [r4]
+ 277 009e 2846     		mov	r0, r5
+ 278 00a0 FFF7FEFF 		bl	Serial_DMA_RX_Init
+ 279              	.LVL25:
+  56:Drv/drv_serial.c ****                 break;
+ 280              		.loc 1 56 17 is_stmt 1 view .LVU54
+ 281 00a4 A168     		ldr	r1, [r4, #8]
+ 282 00a6 2846     		mov	r0, r5
+ARM GAS  /tmp/ccEwfGQI.s 			page 9
+
+
+ 283 00a8 FFF7FEFF 		bl	Serial_Set_IRQ_Callback
+ 284              	.LVL26:
+  57:Drv/drv_serial.c **** 
+ 285              		.loc 1 57 17 view .LVU55
+ 286 00ac 01E0     		b	.L21
+ 287              	.LVL27:
+ 288              	.L17:
+  75:Drv/drv_serial.c ****         }
+ 289              		.loc 1 75 13 view .LVU56
+ 290 00ae FFF7FEFF 		bl	VCP_Init
+ 291              	.LVL28:
+ 292              	.L21:
+  78:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
+ 293              		.loc 1 78 9 view .LVU57
+  78:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
+ 294              		.loc 1 78 40 is_stmt 0 view .LVU58
+ 295 00b2 164B     		ldr	r3, .L23
+ 296 00b4 AA00     		lsls	r2, r5, #2
+ 297 00b6 5019     		adds	r0, r2, r5
+ 298 00b8 8100     		lsls	r1, r0, #2
+ 299 00ba 0126     		movs	r6, #1
+ 300 00bc 5E54     		strb	r6, [r3, r1]
+  79:Drv/drv_serial.c ****         break;
+ 301              		.loc 1 79 9 is_stmt 1 view .LVU59
+  79:Drv/drv_serial.c ****         break;
+ 302              		.loc 1 79 38 is_stmt 0 view .LVU60
+ 303 00be 5D18     		adds	r5, r3, r1
+ 304 00c0 0435     		adds	r5, r5, #4
+ 305 00c2 94E80F00 		ldm	r4, {r0, r1, r2, r3}
+ 306 00c6 85E80F00 		stm	r5, {r0, r1, r2, r3}
+  80:Drv/drv_serial.c **** 
+ 307              		.loc 1 80 9 is_stmt 1 view .LVU61
+ 103:Drv/drv_serial.c **** }
+ 308              		.loc 1 103 12 is_stmt 0 view .LVU62
+ 309 00ca 3046     		mov	r0, r6
+  80:Drv/drv_serial.c **** 
+ 310              		.loc 1 80 9 view .LVU63
+ 311 00cc A3E7     		b	.L10
+ 312              	.LVL29:
+ 313              	.L11:
+  83:Drv/drv_serial.c ****         Serial_Set_IRQ_Callback(portx, NULL);
+ 314              		.loc 1 83 9 is_stmt 1 view .LVU64
+ 315 00ce FFF7FEFF 		bl	Serial_Deinit
+ 316              	.LVL30:
+  84:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->mode = DrvSerial_MODE_None;
+ 317              		.loc 1 84 9 view .LVU65
+ 318 00d2 0021     		movs	r1, #0
+ 319 00d4 2846     		mov	r0, r5
+ 320 00d6 FFF7FEFF 		bl	Serial_Set_IRQ_Callback
+ 321              	.LVL31:
+  85:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->PreemptionPriority = 0;
+ 322              		.loc 1 85 9 view .LVU66
+  85:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->PreemptionPriority = 0;
+ 323              		.loc 1 85 50 is_stmt 0 view .LVU67
+ 324 00da 0323     		movs	r3, #3
+ 325 00dc A371     		strb	r3, [r4, #6]
+  86:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->SubPriority = 0;
+ARM GAS  /tmp/ccEwfGQI.s 			page 10
+
+
+ 326              		.loc 1 86 9 is_stmt 1 view .LVU68
+  86:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->SubPriority = 0;
+ 327              		.loc 1 86 64 is_stmt 0 view .LVU69
+ 328 00de 0021     		movs	r1, #0
+ 329 00e0 2171     		strb	r1, [r4, #4]
+  87:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->baudrate = 0;
+ 330              		.loc 1 87 9 is_stmt 1 view .LVU70
+  87:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->baudrate = 0;
+ 331              		.loc 1 87 57 is_stmt 0 view .LVU71
+ 332 00e2 6171     		strb	r1, [r4, #5]
+  88:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->Irq_Callback = NULL;
+ 333              		.loc 1 88 9 is_stmt 1 view .LVU72
+  88:Drv/drv_serial.c ****         ((DrvSerial_Config_Typedef *)data)->Irq_Callback = NULL;
+ 334              		.loc 1 88 54 is_stmt 0 view .LVU73
+ 335 00e4 2160     		str	r1, [r4]
+  89:Drv/drv_serial.c **** 
+ 336              		.loc 1 89 9 is_stmt 1 view .LVU74
+  89:Drv/drv_serial.c **** 
+ 337              		.loc 1 89 58 is_stmt 0 view .LVU75
+ 338 00e6 A160     		str	r1, [r4, #8]
+  91:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
+ 339              		.loc 1 91 9 is_stmt 1 view .LVU76
+  91:Drv/drv_serial.c ****         DrvSerial_SrcInfo[portx].cfg = *((DrvSerial_Config_Typedef *)data);
+ 340              		.loc 1 91 40 is_stmt 0 view .LVU77
+ 341 00e8 084B     		ldr	r3, .L23
+ 342 00ea AA00     		lsls	r2, r5, #2
+ 343 00ec 5619     		adds	r6, r2, r5
+ 344 00ee B000     		lsls	r0, r6, #2
+ 345 00f0 1954     		strb	r1, [r3, r0]
+  92:Drv/drv_serial.c ****         break;
+ 346              		.loc 1 92 9 is_stmt 1 view .LVU78
+  92:Drv/drv_serial.c ****         break;
+ 347              		.loc 1 92 38 is_stmt 0 view .LVU79
+ 348 00f2 1D18     		adds	r5, r3, r0
+ 349 00f4 0435     		adds	r5, r5, #4
+ 350 00f6 94E80F00 		ldm	r4, {r0, r1, r2, r3}
+ 351 00fa 85E80F00 		stm	r5, {r0, r1, r2, r3}
+  93:Drv/drv_serial.c **** 
+ 352              		.loc 1 93 9 is_stmt 1 view .LVU80
+ 103:Drv/drv_serial.c **** }
+ 353              		.loc 1 103 12 is_stmt 0 view .LVU81
+ 354 00fe 0120     		movs	r0, #1
+  93:Drv/drv_serial.c **** 
+ 355              		.loc 1 93 9 view .LVU82
+ 356 0100 89E7     		b	.L10
+ 357              	.LVL32:
+ 358              	.L13:
+  96:Drv/drv_serial.c ****         break;
+ 359              		.loc 1 96 9 is_stmt 1 view .LVU83
+ 360 0102 2146     		mov	r1, r4
+ 361              	.LVL33:
+  96:Drv/drv_serial.c ****         break;
+ 362              		.loc 1 96 9 is_stmt 0 view .LVU84
+ 363 0104 FFF7FEFF 		bl	Serial_Set_IRQ_Callback
+ 364              	.LVL34:
+  97:Drv/drv_serial.c **** 
+ 365              		.loc 1 97 9 is_stmt 1 view .LVU85
+ARM GAS  /tmp/ccEwfGQI.s 			page 11
+
+
+ 103:Drv/drv_serial.c **** }
+ 366              		.loc 1 103 12 is_stmt 0 view .LVU86
+ 367 0108 0120     		movs	r0, #1
+  97:Drv/drv_serial.c **** 
+ 368              		.loc 1 97 9 view .LVU87
+ 369 010a 84E7     		b	.L10
+ 370              	.L24:
+ 371              		.align	2
+ 372              	.L23:
+ 373 010c 00000000 		.word	.LANCHOR0
+ 374 0110 00000000 		.word	Serial_RX_Buff
+ 375 0114 00000000 		.word	Serial_TX_Buff
+ 376              		.cfi_endproc
+ 377              	.LFE126:
+ 379              		.global	DrvSerial
+ 380              		.section	.bss.DrvSerial_SrcInfo,"aw",%nobits
+ 381              		.align	2
+ 382              		.set	.LANCHOR0,. + 0
+ 385              	DrvSerial_SrcInfo:
+ 386 0000 00000000 		.space	100
+ 386      00000000 
+ 386      00000000 
+ 386      00000000 
+ 386      00000000 
+ 387              		.section	.data.DrvSerial,"aw"
+ 388              		.align	2
+ 391              	DrvSerial:
+ 392 0000 00000000 		.word	DrvSerial_Ctl
+ 393 0004 00000000 		.word	0
+ 394 0008 00000000 		.word	DrvSerial_Write
+ 395              		.text
+ 396              	.Letext0:
+ 397              		.file 2 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 398              		.file 3 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 399              		.file 4 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 400              		.file 5 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 401              		.file 6 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 402              		.file 7 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 403              		.file 8 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 404              		.file 9 "F4_CORE/core_cm4.h"
+ 405              		.file 10 "USER/system_stm32f4xx.h"
+ 406              		.file 11 "Bsp/periph_serial.h"
+ 407              		.file 12 "Drv/drv_serial.h"
+ 408              		.file 13 "USB/core/usb_core.h"
+ 409              		.file 14 "USB/core/usbd_cdc_core.h"
+ 410              		.file 15 "USB/core/usbd_desc.h"
+ 411              		.file 16 "USB/config/tm_stm32f4_usb_vcp.h"
+ 412              		.file 17 "<built-in>"
+ 413              		.file 18 "USB/config/vcp.h"
+ARM GAS  /tmp/ccEwfGQI.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 drv_serial.c
+     /tmp/ccEwfGQI.s:18     .text.DrvSerial_Write:0000000000000000 $t
+     /tmp/ccEwfGQI.s:25     .text.DrvSerial_Write:0000000000000000 DrvSerial_Write
+     /tmp/ccEwfGQI.s:126    .text.DrvSerial_Write:0000000000000070 $d
+     /tmp/ccEwfGQI.s:132    .text.DrvSerial_Ctl:0000000000000000 $t
+     /tmp/ccEwfGQI.s:138    .text.DrvSerial_Ctl:0000000000000000 DrvSerial_Ctl
+     /tmp/ccEwfGQI.s:373    .text.DrvSerial_Ctl:000000000000010c $d
+     /tmp/ccEwfGQI.s:391    .data.DrvSerial:0000000000000000 DrvSerial
+     /tmp/ccEwfGQI.s:381    .bss.DrvSerial_SrcInfo:0000000000000000 $d
+     /tmp/ccEwfGQI.s:385    .bss.DrvSerial_SrcInfo:0000000000000000 DrvSerial_SrcInfo
+     /tmp/ccEwfGQI.s:388    .data.DrvSerial:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+memset
+memcpy
+Serial_DMA_SendBuff
+Serial_SendBuff
+Serial_DMA_WaitFinish
+Serial_TX_Buff
+Serial_DMA_RXTX_Init
+Serial_Set_IRQ_Callback
+Serial_IRQ_RX_Init
+Serial_DMA_RX_Init
+VCP_Init
+Serial_Deinit
+Serial_RX_Buff
