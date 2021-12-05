@@ -1406,6 +1406,21 @@ static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl)
     return true;
 }
 
+static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+
+    HandleToSlideBarObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+    if ((HandleToSlideBarObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+        (HandleToSlideBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
+        return false;
+
+    UI_CheckBox.ctl(HandleToSlideBarObj(hdl));
+
+    return true;
+}
+
 /************************************** widget SlideBar interface ******************************************/
 
 /************************************** widget UI interface ******************************************/
