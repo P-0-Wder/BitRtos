@@ -140,6 +140,14 @@ typedef struct
 
 typedef struct
 {
+    UI_SlideBar_Handle (*create)();
+    bool (*Move)();
+    bool (*Trigger)();
+    bool (*Set_CallBack)();
+} WidgetUI_SlideBar_Interface_TypeDef;
+
+typedef struct
+{
     /* general UI function mathod */
     bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
@@ -148,6 +156,7 @@ typedef struct
     /* ui control interface section */
     WidgetUI_Button_Interface_TypeDef *(*Button)(void);
     WidgetUI_CheckBox_Interface_TypeDef *(*CheckBox)(void);
+    WidgetUI_SlideBar_Interface_TypeDef *(*SlideBar)(void);
     // void (*UI_ComboBox)();
     // void (*UI_DigInput)();
     // void (*UI_StrInput)();

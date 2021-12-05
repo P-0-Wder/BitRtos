@@ -134,6 +134,13 @@ WidgetUI_CheckBox_Interface_TypeDef WidgetUI_CheckBox = {
     .Trigger = WidgetUI_CheckBox_Trigger,
 };
 
+WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
+    .create = NULL,
+    .Move = NULL,
+    .Trigger = NULL,
+    .Set_CallBack = NULL,
+};
+
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
@@ -1083,10 +1090,10 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         switch ((uint8_t)option)
         {
         case WidgetUI_get_x:
-            return ((UI_ButtonObj_TypeDef *)item)->Gen_Data.x;
+            return HandleToButtonObj(item->Handler)->Gen_Data.x;
 
         case WidgetUI_get_y:
-            return ((UI_ButtonObj_TypeDef *)item)->Gen_Data.y;
+            return HandleToButtonObj(item->Handler)->Gen_Data.y;
 
         default:
             return 0;
@@ -1098,10 +1105,10 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         switch ((uint8_t)option)
         {
         case WidgetUI_get_x:
-            return ((UI_CheckBoxObj_TypeDef *)item)->Gen_Data.x;
+            return HandleToCheckBoxObj(item->Handler)->Gen_Data.x;
 
         case WidgetUI_get_y:
-            return ((UI_CheckBoxObj_TypeDef *)item)->Gen_Data.y;
+            return HandleToCheckBoxObj(item->Handler)->Gen_Data.y;
 
         default:
             return 0;
@@ -1112,10 +1119,10 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         switch ((uint8_t)option)
         {
         case WidgetUI_get_x:
-            return ((UI_SliderBarObj_TypeDef *)item)->Gen_Data.x;
+            return HandleToSlideBarObj(item->Handler)->Gen_Data.x;
 
         case WidgetUI_get_y:
-            return ((UI_SliderBarObj_TypeDef *)item)->Gen_Data.y;
+            return HandleToSlideBarObj(item->Handler)->Gen_Data.y;
 
         default:
             return 0;
@@ -1345,9 +1352,23 @@ static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
 /************************************** widget CheckBox interface ******************************************/
 
 /************************************** widget SlideBar interface ******************************************/
-
-static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16_t y, UI_SliderBar_Mode_List mode, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len)
+static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void)
 {
+    return &WidgetUI_SlideBar;
+}
+
+static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16_t y, UI_SliderBar_Mode_List mode, int16_t max, int16_t min, int16_t start_val, int16_t step_len)
+{
+    UI_SlideBarObj_TypeDef *slidebar = NULL;
+
+    slidebar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
+
+    if ((slidebar == NULL) ||
+        (!UI_SlideBar.init(slidebar, mode, label, x, y, max, min, start_val, step_len)) ||
+        (!WidgetUIList_InsertItem(slidebar, UI_Type_SliderBar)))
+        return NULL;
+
+    return ((UI_SlideBar_Handle)slidebar);
 }
 
 static bool WidgetUI_SlideBar_Move(UI_SlideBar_Handle hdl, int16_t x, int16_t y)
@@ -1355,7 +1376,7 @@ static bool WidgetUI_SlideBar_Move(UI_SlideBar_Handle hdl, int16_t x, int16_t y)
     if (hdl == 0)
         return false;
 
-    UI_SliderBar.Move(hdl, x, y);
+    UI_SlideBar.Move(HandleToSliderBarObj(hdl), x, y);
 
     return true;
 }
@@ -1365,7 +1386,7 @@ static bool WidgetUI_SlideBar_SetCallBack(UI_SlideBar_Handle hdl, UI_SliderBarTr
     if (hdl == 0)
         return false;
 
-    UI_SliderBar.Set_Callbak(HandleToSliderBarObj(hdl), callback);
+    UI_SlideBar.Set_Callbak(HandleToSliderBarObj(hdl), callback);
 
     return true;
 }
@@ -1377,10 +1398,10 @@ static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl)
     if (hdl == 0)
         return false;
 
-    CurBarVal = HandleToSliderBarObj(hdl)->cur_val;
+    CurBarVal = HandleToSlideBarObj(hdl)->cur_val;
 
-    if (HandleToSliderBarObj(hdl)->callback)
-        HandleToSliderBarObj(hdl)->callback(CurBarVal);
+    if (HandleToSlideBarObj(hdl)->callback)
+        HandleToSlideBarObj(hdl)->callback(CurBarVal);
 
     return true;
 }

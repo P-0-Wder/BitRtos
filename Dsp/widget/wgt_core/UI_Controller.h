@@ -18,7 +18,7 @@ typedef UI_GenCTL_Handle UI_SlideBar_Handle;
 
 #define HandleToButtonObj(x) ((UI_ButtonObj_TypeDef *)x)
 #define HandleToCheckBoxObj(x) ((UI_CheckBoxObj_TypeDef *)x)
-#define HandleToSliderBarObj(x) ((UI_SliderBarObj_TypeDef *)x)
+#define HandleToSlideBarObj(x) ((UI_SlideBarObj_TypeDef *)x)
 
 #define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
@@ -178,7 +178,7 @@ typedef struct
     int16_t cur_pos;
 
     /* need callback function */
-} UI_SliderBarObj_TypeDef;
+} UI_SlideBarObj_TypeDef;
 #pragma pack()
 
 typedef struct
@@ -203,12 +203,12 @@ typedef struct
 
 typedef struct
 {
-    bool (*init)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
-    bool (*Set_Callbak)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
-    bool (*Move)(UI_SliderBarObj_TypeDef *Obj, int16_t x, int16_t y);
-    bool (*Input)(UI_SliderBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
-    bool (*Trigger)(UI_SliderBarObj_TypeDef *Obj);
-    bool (*ctl)(UI_SliderBarObj_TypeDef *Obj);
+    bool (*init)(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
+    bool (*Set_Callbak)(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
+    bool (*Move)(UI_SlideBarObj_TypeDef *Obj, int16_t x, int16_t y);
+    bool (*Input)(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
+    bool (*Trigger)(UI_SlideBarObj_TypeDef *Obj);
+    bool (*ctl)(UI_SlideBarObj_TypeDef *Obj);
 } UI_SliderBar_Interface_TypeDef;
 
 typedef enum
@@ -337,5 +337,5 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item);
 
 extern UI_Button_Interface_TypeDef UI_Button;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
-extern UI_SliderBar_Interface_TypeDef UI_SliderBar;
+extern UI_SliderBar_Interface_TypeDef UI_SlideBar;
 #endif
