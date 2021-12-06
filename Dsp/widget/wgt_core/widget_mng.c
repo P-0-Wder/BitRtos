@@ -996,10 +996,12 @@ static void Widget_FillRectangle(int16_t x, int16_t y, uint8_t width, uint8_t he
 /************************************** widget UI interface ******************************************/
 static uint8_t WidgetUI_GetWidgetWidth(void)
 {
-    WidgetObj_TypeDef *widget_tmp = NULL;
+    WidgetObj_TypeDef *widget_tmp = GetCur_Active_Widget();
 
     if (widget_tmp != NULL)
         return widget_tmp->width;
+
+    return 0;
 }
 
 static void WidgetUI_Init(void)
