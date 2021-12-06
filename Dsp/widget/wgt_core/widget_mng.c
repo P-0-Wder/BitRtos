@@ -95,7 +95,7 @@ static void Widget_FillRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint
 
 /* Widget UI Get Button Interface */
 static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
-static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Interface(void);
+static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Instance(void);
 static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
 
 /* general UI Mathod */
@@ -155,8 +155,8 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
     .Fresh = WidgetUI_Fresh,
     .Button = WidgetUI_GetButton_Instance,
-    .CheckBox = WidgetUI_GetCheckBox_Interface,
-    // .UI_ComboBox = NULL,
+    .CheckBox = WidgetUI_GetCheckBox_Instance,
+    .SlideBar = WidgetUI_GetSlideBar_Instance,
     // .UI_DigInput = NULL,
     // .UI_StrInput = NULL,
     // .UI_ProcBar = NULL,
@@ -1310,7 +1310,7 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
 /************************************** widget Button interface ******************************************/
 
 /************************************** widget CheckBox interface ******************************************/
-static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Interface(void)
+static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Instance(void)
 {
     return &WidgetUI_CheckBox;
 }
@@ -1398,7 +1398,7 @@ static bool WidgetUI_SlideBar_Move(UI_SlideBar_Handle hdl, int16_t x, int16_t y)
     if (hdl == 0)
         return false;
 
-    UI_SlideBar.Move(HandleToSliderBarObj(hdl), x, y);
+    UI_SlideBar.Move(HandleToSlideBarObj(hdl), x, y);
 
     return true;
 }
@@ -1408,7 +1408,7 @@ static bool WidgetUI_SlideBar_SetCallBack(UI_SlideBar_Handle hdl, UI_SliderBarTr
     if (hdl == 0)
         return false;
 
-    UI_SlideBar.Set_Callbak(HandleToSliderBarObj(hdl), callback);
+    UI_SlideBar.Set_Callbak(HandleToSlideBarObj(hdl), callback);
 
     return true;
 }
