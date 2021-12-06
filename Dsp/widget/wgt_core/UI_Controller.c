@@ -27,12 +27,12 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj);
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj);
 
 /* UI slider bar section */
-static bool UI_SliderBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
-static bool UI_SliderBar_Move(UI_SlideBarObj_TypeDef *Obj, int16_t x, int16_t y);
-static bool UI_SliderBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
-static bool UI_SliderBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step);
-static bool UI_SliderBar_Trigger(UI_SlideBarObj_TypeDef *Obj);
-static bool UI_SliderBar_CTL(UI_SlideBarObj_TypeDef *Obj);
+static bool UI_SlideBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
+static bool UI_SlideBar_Move(UI_SlideBarObj_TypeDef *Obj, int16_t x, int16_t y);
+static bool UI_SlideBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
+static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step);
+static bool UI_SlideBar_Trigger(UI_SlideBarObj_TypeDef *Obj);
+static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -60,12 +60,12 @@ UI_CheckBox_Interface_TypeDef UI_CheckBox = {
 };
 
 UI_SliderBar_Interface_TypeDef UI_SlideBar = {
-    .init = UI_SliderBar_Init,
-    .Move = UI_SliderBar_Move,
-    .Set_Callbak = UI_SliderBar_SetCallBack,
-    .Input = UI_SliderBar_Input,
-    .Trigger = UI_SliderBar_Trigger,
-    .ctl = UI_SliderBar_CTL,
+    .init = UI_SlideBar_Init,
+    .Move = UI_SlideBar_Move,
+    .Set_Callbak = UI_SlideBar_SetCallBack,
+    .Input = UI_SlideBar_Input,
+    .Trigger = UI_SlideBar_Trigger,
+    .ctl = UI_SlideBar_CTL,
 };
 
 /******************************* general function *********************************/
@@ -439,7 +439,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_SliderBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len)
+static bool UI_SlideBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len)
 {
     if ((Obj == NULL) ||
         (limit_max <= limit_min) ||
@@ -464,7 +464,7 @@ static bool UI_SliderBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_Lis
     return true;
 }
 
-static bool UI_SliderBar_Move(UI_SlideBarObj_TypeDef *Obj, int16_t x, int16_t y)
+static bool UI_SlideBar_Move(UI_SlideBarObj_TypeDef *Obj, int16_t x, int16_t y)
 {
     if (Obj == NULL)
         return false;
@@ -472,7 +472,7 @@ static bool UI_SliderBar_Move(UI_SlideBarObj_TypeDef *Obj, int16_t x, int16_t y)
     return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
-static bool UI_SliderBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback)
+static bool UI_SlideBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback)
 {
     if (Obj == NULL)
         return false;
@@ -482,7 +482,7 @@ static bool UI_SliderBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTr
     return true;
 }
 
-static bool UI_SliderBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step)
+static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step)
 {
     int16_t val_tmp = 0;
 
@@ -507,7 +507,7 @@ static bool UI_SliderBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step)
     return true;
 }
 
-static bool UI_SliderBar_Trigger(UI_SlideBarObj_TypeDef *Obj)
+static bool UI_SlideBar_Trigger(UI_SlideBarObj_TypeDef *Obj)
 {
     if (Obj == NULL)
         return false;
@@ -518,7 +518,7 @@ static bool UI_SliderBar_Trigger(UI_SlideBarObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_SliderBar_CTL(UI_SlideBarObj_TypeDef *Obj)
+static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
 {
     int16_t Bar_CoordX = 0;
     int16_t Block_CoordX = 0;
