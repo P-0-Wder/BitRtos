@@ -1391,6 +1391,14 @@ static bool WidgetUI_SlideBar_SetCallBack(UI_SlideBar_Handle hdl, UI_SliderBarTr
     return true;
 }
 
+static bool WidgetUI_SlideBar_Input(UI_SlideBar_Handle hdl, int16_t step)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_SlideBar.Input(HandleToSlideBarObj(hdl), step);
+}
+
 static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl)
 {
     int16_t CurBarVal;
