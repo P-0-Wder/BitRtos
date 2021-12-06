@@ -985,6 +985,14 @@ static void Widget_FillRectangle(int16_t x, int16_t y, uint8_t width, uint8_t he
 /************************************** widget draw interface ******************************************/
 
 /************************************** widget UI interface ******************************************/
+static uint8_t WidgetUI_GetWidgetWidth(void)
+{
+    WidgetObj_TypeDef *widget_tmp = NULL;
+
+    if (widget_tmp != NULL)
+        return widget_tmp->width;
+}
+
 static void WidgetUI_Init(void)
 {
     UI_Set_DspInterface(WidgetDraw_Interface.draw_point,
@@ -998,6 +1006,8 @@ static void WidgetUI_Init(void)
                         WidgetDraw_Interface.fill_circle_section,
                         WidgetDraw_Interface.fill_rectangle,
                         WidgetDraw_Interface.fill_radius_rectangle);
+
+    UI_Set_GetWidgetWidthMathod(WidgetUI_GetWidgetWidth);
 }
 
 static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void)

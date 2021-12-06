@@ -122,7 +122,12 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     uint8_t widget_width = 128;
 
     if (UI_Get_WidgetWidth != NULL)
+    {
         widget_width = UI_Get_WidgetWidth();
+
+        if (widget_width == 0)
+            return false;
+    }
 
     if (item == NULL)
         return false;
