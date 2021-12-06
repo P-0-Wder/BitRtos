@@ -140,13 +140,13 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
             return false;
 
         /* comput button selector coordinate first */
-        Btn_Slct_LftUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x;
-        Btn_Slct_LftUp_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y + ((UI_ButtonObj_TypeDef *)(item->Handler))->height - 1;
+        Btn_Slct_LftUp_X = HandleToButtonObj(item->Handler)->Gen_Data.x;
+        Btn_Slct_LftUp_Y = HandleToButtonObj(item->Handler)->Gen_Data.y + HandleToButtonObj(item->Handler)->height - 1;
 
         Btn_Slct_LftDwn_X = Btn_Slct_LftUp_X;
-        Btn_Slct_LftDwn_Y = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.y;
+        Btn_Slct_LftDwn_Y = HandleToButtonObj(item->Handler)->Gen_Data.y;
 
-        Btn_Slct_RgtUp_X = ((UI_ButtonObj_TypeDef *)(item->Handler))->Gen_Data.x + ((UI_ButtonObj_TypeDef *)(item->Handler))->width;
+        Btn_Slct_RgtUp_X = HandleToButtonObj(item->Handler)->Gen_Data.x + HandleToButtonObj(item->Handler)->width;
         Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
 
         Btn_Slct_RgtDwn_X = Btn_Slct_RgtUp_X;
@@ -160,15 +160,15 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_CheckBox:
-        block_x = ((UI_CheckBoxObj_TypeDef *)(item->Handler))->Gen_Data.x + 3;
-        block_y = ((UI_CheckBoxObj_TypeDef *)(item->Handler))->Gen_Data.y + 1;
+        block_x = HandleToCheckBoxObj(item->Handler)->Gen_Data.x + 3;
+        block_y = HandleToCheckBoxObj(item->Handler)->Gen_Data.y + 1;
 
         UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
         break;
 
     case UI_Type_SliderBar:
-        block_x = ((UI_SlideBarObj_TypeDef *)(item->Handler))->Gen_Data.x + 3;
-        block_y = ((UI_SlideBarObj_TypeDef *)(item->Handler))->Gen_Data.y + 1;
+        block_x = HandleToSlideBarObj(item->Handler)->Gen_Data.x + 3;
+        block_y = HandleToSlideBarObj(item->Handler)->Gen_Data.y + 1;
 
         UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
         break;
