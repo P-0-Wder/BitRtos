@@ -322,16 +322,16 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     if ((hdl == NULL) || ((*hdl) == 0))
         return false;
 
-    height = ((WidgetObj_TypeDef *)(*hdl))->height;
-    width = ((WidgetObj_TypeDef *)(*hdl))->width;
+    height = (HandleToWidgetObj(*hdl))->height;
+    width = (HandleToWidgetObj(*hdl))->width;
 
-    MMU_Free(((WidgetObj_TypeDef *)(*hdl))->dsp_item);
+    MMU_Free((HandleToWidgetObj(*hdl))->dsp_item);
 
-    MMU_Free(((WidgetObj_TypeDef *)(*hdl))->pixel_map);
+    MMU_Free((HandleToWidgetObj(*hdl))->pixel_map);
 
     for (uint8_t h = 0; h < height; h++)
     {
-        MMU_Free(((WidgetObj_TypeDef *)(*hdl))->pixel_map[h]);
+        MMU_Free((HandleToWidgetObj(*hdl))->pixel_map[h]);
     }
 
     MonitorDataObj.remain_size += width * height;
@@ -524,7 +524,7 @@ static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl)
 
     CurActive_Widget = hdl;
 
-    return ((WidgetObj_TypeDef *)CurActive_Widget)->Ctl;
+    return HandleToWidgetObj(CurActive_Widget)->Ctl;
 }
 
 static WidgetObj_TypeDef *GetCur_Active_Widget(void)
@@ -532,12 +532,12 @@ static WidgetObj_TypeDef *GetCur_Active_Widget(void)
     if (CurActive_Widget == 0)
         return 0;
 
-    return (WidgetObj_TypeDef *)CurActive_Widget;
+    return HandleToWidgetObj(CurActive_Widget);
 }
 
 static Widget_DrawFunc_TypeDef *Widget_Draw(Widget_Handle hdl)
 {
-    WidgetObj_TypeDef *widget_tmp = (WidgetObj_TypeDef *)hdl;
+    WidgetObj_TypeDef *widget_tmp = HandleToWidgetObj(hdl);
     CurActive_Widget = hdl;
 
     return widget_tmp->Dsp;
