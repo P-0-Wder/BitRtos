@@ -30,7 +30,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj);
 static bool UI_SlideBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
 static bool UI_SlideBar_Move(UI_SlideBarObj_TypeDef *Obj, int16_t x, int16_t y);
 static bool UI_SlideBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTrigger_Callback callback);
-static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step);
+static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t *step);
 static bool UI_SlideBar_Trigger(UI_SlideBarObj_TypeDef *Obj);
 static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj);
 
@@ -482,14 +482,14 @@ static bool UI_SlideBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTri
     return true;
 }
 
-static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step)
+static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t *step)
 {
     int16_t val_tmp = 0;
 
-    if (Obj == NULL)
+    if ((Obj == NULL) || (step == NULL))
         return false;
 
-    val_tmp = Obj->cur_val + (step * Obj->scale);
+    val_tmp = Obj->cur_val + (*step * Obj->scale);
 
     if (val_tmp >= Obj->limit_max)
     {
@@ -503,6 +503,7 @@ static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t step)
         Obj->cur_val = val_tmp;
 
     Obj->cur_pos = ((float)Obj->cur_val) / (Obj->limit_max - Obj->limit_min) * DEFAULT_SLIDERBAR_LEN;
+    *step = 0;
 
     return true;
 }
