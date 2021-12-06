@@ -96,6 +96,7 @@ static void Widget_FillRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint
 /* Widget UI Get Button Interface */
 static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Interface(void);
+static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
 
 /* general UI Mathod */
 static void WidgetUI_Init(void);
@@ -111,12 +112,20 @@ static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y)
 static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
 
-/* Widfet UI CheckBox Mathod */
+/* Widget UI CheckBox Mathod */
 static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16_t y, bool state);
 static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl);
 static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int16_t x, int16_t y);
 static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl);
 static bool WidgetUI_CheckBox_SetCallBack(UI_CheckBox_Handle checkbox_hdl, UI_CheckBoxTrigger_Callback callback);
+
+/* Widget UI SlideBar Mathod */
+static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16_t y, UI_SliderBar_Mode_List mode, int16_t max, int16_t min, int16_t start_val, int16_t step_len);
+static bool WidgetUI_SlideBar_Move(UI_SlideBar_Handle hdl, int16_t x, int16_t y);
+static bool WidgetUI_SlideBar_SetCallBack(UI_SlideBar_Handle hdl, UI_SliderBarTrigger_Callback callback);
+static bool WidgetUI_SlideBar_Input(UI_SlideBar_Handle hdl, int16_t step);
+static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl);
+static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl);
 
 /* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
@@ -135,10 +144,10 @@ WidgetUI_CheckBox_Interface_TypeDef WidgetUI_CheckBox = {
 };
 
 WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
-    .create = NULL,
-    .Move = NULL,
-    .Trigger = NULL,
-    .Set_CallBack = NULL,
+    .create = WidgetUI_Create_SlideBar,
+    .Move = WidgetUI_SlideBar_Move,
+    .Trigger = WidgetUI_SlideBar_Trigger,
+    .Set_CallBack = WidgetUI_SlideBar_SetCallBack,
 };
 
 /* for temp we init each var as null */
@@ -1076,6 +1085,9 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
 
     case UI_Type_CheckBox:
         return WidgetUI_Fresh_CheckBox(UI_Data->Handler);
+
+    case UI_Type_SliderBar:
+        return WidgetUI_Fresh_SlideBar(UI_Data->Handler);
 
     default:
         return false;
