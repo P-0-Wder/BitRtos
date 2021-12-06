@@ -8,9 +8,6 @@
 #include "runtime.h"
 #include "linked_list.h"
 
-typedef uint8_t UI_GetWidget_Width(void);
-typedef uint8_t UI_GetWidget_Height(void);
-
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
@@ -53,6 +50,9 @@ typedef enum
     UICircle_Right_Up = 0x01,
     UICircle_Right_Down = 0x08,
 } UICircle_Section_List;
+
+typedef uint8_t (*UI_GetWidget_Width)(void);
+typedef uint8_t (*UI_GetWidget_Height)(void);
 
 typedef void (*UI_DrawPoint)(int8_t x, int8_t y, bool state);
 typedef void (*UI_DrawLine)(int8_t x, int8_t y, uint8_t len, uint8_t line_width, bool col_inv);
@@ -334,6 +334,8 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_FillRadiusRectangle fill_radius_rectangle);
 
 bool UI_ShowSelector(WidgetUI_Item_TypeDef *item);
+
+void UI_Set_GetWidgetWidthMathod(UI_GetWidget_Width mathod);
 
 extern UI_Button_Interface_TypeDef UI_Button;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;

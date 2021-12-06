@@ -1424,7 +1424,7 @@ static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
         (HandleToSlideBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
         return false;
 
-    UI_CheckBox.ctl(HandleToSlideBarObj(hdl));
+    UI_SlideBar.ctl(HandleToSlideBarObj(hdl));
 
     return true;
 }

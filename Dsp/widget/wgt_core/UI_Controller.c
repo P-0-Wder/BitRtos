@@ -6,6 +6,10 @@
 static UI_DrawInterface_TypeDef UI_DspInterface;
 
 /* external function */
+/* UI Get General Get Mathod */
+UI_GetWidget_Width UI_Get_WidgetWidth = NULL;
+// UI_GetWidget_Height UI_Get_WidgetHeight = NULL;
+
 /* UI button section */
 static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label);
@@ -92,6 +96,11 @@ void UI_Set_DspInterface(UI_DrawPoint point,
     UI_DspInterface.fill_rectangle = fill_rectangle;
 }
 
+void UI_Set_GetWidgetWidthMathod(UI_GetWidget_Width mathod)
+{
+    UI_Get_WidgetWidth = mathod;
+}
+
 /* still in developing about this selector */
 /* FYI different UI Item Got different selector */
 bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
@@ -109,6 +118,11 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     /* selector block coordinate */
     int16_t block_x;
     int16_t block_y;
+
+    uint8_t widget_width = 128;
+
+    if (UI_Get_WidgetWidth != NULL)
+        widget_width = UI_Get_WidgetWidth();
 
     if (item == NULL)
         return false;
@@ -144,14 +158,14 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         block_x = ((UI_CheckBoxObj_TypeDef *)(item->Handler))->Gen_Data.x + 3;
         block_y = ((UI_CheckBoxObj_TypeDef *)(item->Handler))->Gen_Data.y + 1;
 
-        UI_DspInterface.fill_rectangle(block_x, block_y, 128 - 6, Default_Font - 1, true);
+        UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
         break;
 
     case UI_Type_SliderBar:
         block_x = ((UI_SlideBarObj_TypeDef *)(item->Handler))->Gen_Data.x + 3;
         block_y = ((UI_SlideBarObj_TypeDef *)(item->Handler))->Gen_Data.y + 1;
 
-        UI_DspInterface.fill_rectangle(block_x, block_y, 128 - 6, Default_Font - 1, true);
+        UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
         break;
 
     default:
