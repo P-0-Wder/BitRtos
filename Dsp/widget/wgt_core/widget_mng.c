@@ -1256,8 +1256,8 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y,
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl)
 {
     if (Btn_Hdl == 0 ||
-        !UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_PushDwn, psh_lbl) ||
-        !UI_Button.set_label((UI_ButtonObj_TypeDef *)Btn_Hdl, UI_Btn_RlsUp, rls_lbl))
+        !UI_Button.set_label(HandleToButtonObj(Btn_Hdl), UI_Btn_PushDwn, psh_lbl) ||
+        !UI_Button.set_label(HandleToButtonObj(Btn_Hdl), UI_Btn_RlsUp, rls_lbl))
         return false;
 
     return true;
@@ -1268,7 +1268,7 @@ static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Butt
     if (Btn_Hdl == 0)
         return false;
 
-    return UI_Button.set_trogger_callback((UI_ButtonObj_TypeDef *)Btn_Hdl, type, Callback);
+    return UI_Button.set_trogger_callback(HandleToButtonObj(Btn_Hdl), type, Callback);
 }
 
 static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y)
@@ -1284,11 +1284,11 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
     if (Btn_Hdl == 0)
         return false;
 
-    ((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-    if ((((UI_ButtonObj_TypeDef *)Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
+    HandleToButtonObj(Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+    if ((HandleToButtonObj(Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
         return false;
 
-    UI_Button.ctl((UI_ButtonObj_TypeDef *)Btn_Hdl);
+    UI_Button.ctl(HandleToButtonObj(Btn_Hdl));
     return true;
 }
 
@@ -1300,11 +1300,11 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
 
     if (type == Push_Trigger)
     {
-        UI_Button.push((UI_ButtonObj_TypeDef *)Btn_Hdl);
+        UI_Button.push(HandleToButtonObj(Btn_Hdl));
     }
     else
     {
-        UI_Button.release((UI_ButtonObj_TypeDef *)Btn_Hdl);
+        UI_Button.release(HandleToButtonObj(Btn_Hdl));
     }
 }
 /************************************** widget Button interface ******************************************/
@@ -1334,7 +1334,7 @@ static bool WidgetUI_CheckBox_SetCallBack(UI_CheckBox_Handle checkbox_hdl, UI_Ch
     if (checkbox_hdl == 0)
         return false;
 
-    UI_CheckBox.Set_Callback((UI_ButtonObj_TypeDef *)checkbox_hdl, callback);
+    UI_CheckBox.Set_Callback(HandleToCheckBoxObj(checkbox_hdl), callback);
 
     return true;
 }
@@ -1344,7 +1344,7 @@ static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl)
     if (checkbox_hdl == 0)
         return false;
 
-    UI_CheckBox.Trigger((UI_ButtonObj_TypeDef *)checkbox_hdl);
+    UI_CheckBox.Trigger(HandleToCheckBoxObj(checkbox_hdl));
 
     return true;
 }
@@ -1354,7 +1354,7 @@ static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int16_t x, i
     if (checkbox_hdl == 0)
         return false;
 
-    return UI_CheckBox.Move((UI_CheckBoxObj_TypeDef *)checkbox_hdl, x, y);
+    return UI_CheckBox.Move(HandleToCheckBoxObj(checkbox_hdl), x, y);
 }
 
 static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
@@ -1362,11 +1362,11 @@ static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
     if (checkbox_hdl == 0)
         return false;
 
-    ((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-    if ((((UI_CheckBoxObj_TypeDef *)checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
+    HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+    if ((HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
         return false;
 
-    UI_CheckBox.ctl((UI_CheckBoxObj_TypeDef *)checkbox_hdl);
+    UI_CheckBox.ctl(HandleToCheckBoxObj(checkbox_hdl));
 
     return true;
 }
