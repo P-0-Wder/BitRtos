@@ -140,7 +140,7 @@ typedef struct
 
 typedef struct
 {
-    UI_SlideBar_Handle (*create)(UI_SliderBar_Mode_List mode, char *label, int16_t x, int16_t y, int16_t limit_max, int16_t limit_min, int16_t start_val, int16_t step_len);
+    UI_SlideBar_Handle (*create)(char *label, int16_t x, int16_t y, UI_SliderBar_Mode_List mode, int16_t max, int16_t min, int16_t start_val, int16_t step_len);
     bool (*Set_CallBack)(UI_SlideBar_Handle hdl, UI_SliderBarTrigger_Callback callback);
     bool (*Input)(UI_SlideBar_Handle hdl, int16_t *step);
     bool (*Move)(UI_SlideBar_Handle hdl, int16_t x, int16_t y);

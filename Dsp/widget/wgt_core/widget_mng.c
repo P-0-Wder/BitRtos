@@ -148,6 +148,7 @@ WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
     .Move = WidgetUI_SlideBar_Move,
     .Trigger = WidgetUI_SlideBar_Trigger,
     .Set_CallBack = WidgetUI_SlideBar_SetCallBack,
+    .Input = WidgetUI_SlideBar_Input,
 };
 
 /* for temp we init each var as null */
@@ -1088,7 +1089,7 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
     case UI_Type_CheckBox:
         return WidgetUI_Fresh_CheckBox(UI_Data->Handler);
 
-    case UI_Type_SliderBar:
+    case UI_Type_SlideBar:
         return WidgetUI_Fresh_SlideBar(UI_Data->Handler);
 
     default:
@@ -1139,7 +1140,7 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         }
         break;
 
-    case UI_Type_SliderBar:
+    case UI_Type_SlideBar:
         switch ((uint8_t)option)
         {
         case WidgetUI_get_x:
@@ -1389,7 +1390,7 @@ static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16
 
     if ((slidebar == NULL) ||
         (!UI_SlideBar.init(slidebar, mode, label, x, y, max, min, start_val, step_len)) ||
-        (!WidgetUIList_InsertItem(slidebar, UI_Type_SliderBar)))
+        (!WidgetUIList_InsertItem(slidebar, UI_Type_SlideBar)))
         return NULL;
 
     return ((UI_SlideBar_Handle)slidebar);

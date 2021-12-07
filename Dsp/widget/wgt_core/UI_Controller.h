@@ -38,8 +38,9 @@ typedef UI_GenCTL_Handle UI_SlideBar_Handle;
 #define BUTTON_SELECTOR_LINE_SIZE 1
 #define BUTTON_SELECTOR_RADIUS 2
 
-#define DEFAULT_SLIDERBAR_LEN 30
+#define DEFAULT_SLIDERBAR_LEN 40
 #define DEFAULT_SLIDERBAR_LINESIZE 2
+#define DEFAULT_SLIDERBAR_BLOCK_WIDTH 3
 #define DEFAULT_SLIDERBAR_BLOCK_HIGH 6
 #define DEFAULT_SLIDERBAR_OFFSET 5
 
@@ -75,7 +76,7 @@ typedef enum
 {
     UI_Type_Button = 0,
     UI_Type_CheckBox,
-    UI_Type_SliderBar,
+    UI_Type_SlideBar,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;
@@ -170,12 +171,11 @@ typedef struct
     UI_SliderBar_Mode_List mode;
     UI_SliderBarTrigger_Callback callback;
 
-    int16_t limit_min;
-    int16_t limit_max;
-    int16_t scale;
+    float limit_min;
+    float limit_max;
+    float scale;
     int16_t step_len;
-    int16_t cur_val;
-    int16_t cur_pos;
+    float cur_val;
 
     /* need callback function */
 } UI_SlideBarObj_TypeDef;
