@@ -533,7 +533,7 @@ static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
     Block_CoordY = Obj->Gen_Data.y;
     Block_CoordY += 5;
 
-    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
 
     if (Obj->mode == SliderBar_Horizon_Mode)
     {
