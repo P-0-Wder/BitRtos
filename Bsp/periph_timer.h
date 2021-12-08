@@ -4,7 +4,7 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_tim.h"
 
-#define Timer_Port_Sum 3
+#define Timer_Port_Sum 4
 
 #define TimerCounter_1us_Period 1
 #define TimerCounter_1ms_Period 1000
@@ -53,6 +53,7 @@ typedef enum
 	Timer_2 = 0,
 	Timer_3,
 	Timer_4,
+	Timer_8,
 	Timer_None,
 } Timer_list;
 

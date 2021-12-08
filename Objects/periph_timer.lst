@@ -1,0 +1,1658 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"periph_timer.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.periph_Timer_IO_Init,"ax",%progbits
+  22              		.align	2
+  23              		.thumb
+  24              		.thumb_func
+  26              	periph_Timer_IO_Init:
+  27              	.LFB123:
+  28              		.file 1 "Bsp/periph_timer.c"
+   1:Bsp/periph_timer.c **** #include "stm32f4xx_tim.h"
+   2:Bsp/periph_timer.c **** #include "periph_timer.h"
+   3:Bsp/periph_timer.c **** #include "periph_gpio.h"
+   4:Bsp/periph_timer.c **** #include "periph_dma.h"
+   5:Bsp/periph_timer.c **** #include "misc.h"
+   6:Bsp/periph_timer.c **** #include <stdbool.h>
+   7:Bsp/periph_timer.c **** 
+   8:Bsp/periph_timer.c **** TIM_TypeDef *Timer_Port[Timer_Port_Sum] = {TIM2,
+   9:Bsp/periph_timer.c **** 										   TIM3,
+  10:Bsp/periph_timer.c **** 										   TIM4,
+  11:Bsp/periph_timer.c **** 										   TIM8};
+  12:Bsp/periph_timer.c **** 
+  13:Bsp/periph_timer.c **** static uint32_t Timer_CLK[Timer_Port_Sum] = {RCC_APB1Periph_TIM2,
+  14:Bsp/periph_timer.c **** 											 RCC_APB1Periph_TIM3,
+  15:Bsp/periph_timer.c **** 											 RCC_APB1Periph_TIM4,
+  16:Bsp/periph_timer.c **** 											 RCC_APB2Periph_TIM8};
+  17:Bsp/periph_timer.c **** 
+  18:Bsp/periph_timer.c **** static uint8_t Timer_IRQ_Channel[Timer_Port_Sum] = {TIM2_IRQn,
+  19:Bsp/periph_timer.c **** 													TIM3_IRQn,
+  20:Bsp/periph_timer.c **** 													TIM4_IRQn};
+  21:Bsp/periph_timer.c **** 
+  22:Bsp/periph_timer.c **** static void (*PWM_Set_Value[PWM_SUM])(TIM_TypeDef *TIMx, uint32_t Compare1) = {TIM_SetCompare1,
+  23:Bsp/periph_timer.c **** 																			   TIM_SetCompare2,
+  24:Bsp/periph_timer.c **** 																			   TIM_SetCompare3,
+  25:Bsp/periph_timer.c **** 																			   TIM_SetCompare4};
+  26:Bsp/periph_timer.c **** 
+  27:Bsp/periph_timer.c **** static void periph_Timer_IO_Init(Timer_list timerx, Timer_PWM_Channel_State CH1_State, Timer_PWM_Ch
+  28:Bsp/periph_timer.c **** {
+  29              		.loc 1 28 0
+  30              		.cfi_startproc
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 2
+
+
+  31              		@ args = 4, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              	.LVL0:
+  34 0000 70B5     		push	{r4, r5, r6, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 16
+  37              		.cfi_offset 4, -16
+  38              		.cfi_offset 5, -12
+  39              		.cfi_offset 6, -8
+  40              		.cfi_offset 14, -4
+  41 0002 0446     		mov	r4, r0
+  42 0004 1646     		mov	r6, r2
+  43 0006 1D46     		mov	r5, r3
+  29:Bsp/periph_timer.c **** 	if (CH1_State == PWM_CH1_Enable)
+  44              		.loc 1 29 0
+  45 0008 0129     		cmp	r1, #1
+  46 000a 0DD1     		bne	.L2
+  30:Bsp/periph_timer.c **** 	{
+  31:Bsp/periph_timer.c **** 		switch ((uint8_t)timerx)
+  47              		.loc 1 31 0
+  48 000c 0128     		cmp	r0, #1
+  49 000e 06D0     		beq	.L3
+  50 0010 10B1     		cbz	r0, .L4
+  51 0012 0228     		cmp	r0, #2
+  52 0014 06D0     		beq	.L5
+  53 0016 07E0     		b	.L2
+  54              	.L4:
+  32:Bsp/periph_timer.c **** 		{
+  33:Bsp/periph_timer.c **** 		case Timer_2:
+  34:Bsp/periph_timer.c **** 			GPIO_TIM2_PWMCH1_IO_Init();
+  55              		.loc 1 34 0
+  56 0018 FFF7FEFF 		bl	GPIO_TIM2_PWMCH1_IO_Init
+  57              	.LVL1:
+  35:Bsp/periph_timer.c **** 			break;
+  58              		.loc 1 35 0
+  59 001c 04E0     		b	.L2
+  60              	.LVL2:
+  61              	.L3:
+  36:Bsp/periph_timer.c **** 		case Timer_3:
+  37:Bsp/periph_timer.c **** 			GPIO_TIM3_PWMCH1_IO_Init();
+  62              		.loc 1 37 0
+  63 001e FFF7FEFF 		bl	GPIO_TIM3_PWMCH1_IO_Init
+  64              	.LVL3:
+  38:Bsp/periph_timer.c **** 			break;
+  65              		.loc 1 38 0
+  66 0022 01E0     		b	.L2
+  67              	.LVL4:
+  68              	.L5:
+  39:Bsp/periph_timer.c **** 		case Timer_4:
+  40:Bsp/periph_timer.c **** 			GPIO_TIM4_PWMCH1_IO_Init();
+  69              		.loc 1 40 0
+  70 0024 FFF7FEFF 		bl	GPIO_TIM4_PWMCH1_IO_Init
+  71              	.LVL5:
+  72              	.L2:
+  41:Bsp/periph_timer.c **** 			break;
+  42:Bsp/periph_timer.c **** 		default:
+  43:Bsp/periph_timer.c **** 			break;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 3
+
+
+  44:Bsp/periph_timer.c **** 		}
+  45:Bsp/periph_timer.c **** 	}
+  46:Bsp/periph_timer.c **** 
+  47:Bsp/periph_timer.c **** 	if (CH2_State == PWM_CH2_Enable)
+  73              		.loc 1 47 0
+  74 0028 012E     		cmp	r6, #1
+  75 002a 0DD1     		bne	.L6
+  48:Bsp/periph_timer.c **** 	{
+  49:Bsp/periph_timer.c **** 		switch ((uint8_t)timerx)
+  76              		.loc 1 49 0
+  77 002c 012C     		cmp	r4, #1
+  78 002e 06D0     		beq	.L7
+  79 0030 14B1     		cbz	r4, .L8
+  80 0032 022C     		cmp	r4, #2
+  81 0034 06D0     		beq	.L9
+  82 0036 07E0     		b	.L6
+  83              	.L8:
+  50:Bsp/periph_timer.c **** 		{
+  51:Bsp/periph_timer.c **** 		case Timer_2:
+  52:Bsp/periph_timer.c **** 			GPIO_TIM2_PWMCH2_IO_Init();
+  84              		.loc 1 52 0
+  85 0038 FFF7FEFF 		bl	GPIO_TIM2_PWMCH2_IO_Init
+  86              	.LVL6:
+  53:Bsp/periph_timer.c **** 			break;
+  87              		.loc 1 53 0
+  88 003c 04E0     		b	.L6
+  89              	.L7:
+  54:Bsp/periph_timer.c **** 		case Timer_3:
+  55:Bsp/periph_timer.c **** 			GPIO_TIM3_PWMCH2_IO_Init();
+  90              		.loc 1 55 0
+  91 003e FFF7FEFF 		bl	GPIO_TIM3_PWMCH2_IO_Init
+  92              	.LVL7:
+  56:Bsp/periph_timer.c **** 			break;
+  93              		.loc 1 56 0
+  94 0042 01E0     		b	.L6
+  95              	.L9:
+  57:Bsp/periph_timer.c **** 		case Timer_4:
+  58:Bsp/periph_timer.c **** 			GPIO_TIM4_PWMCH2_IO_Init();
+  96              		.loc 1 58 0
+  97 0044 FFF7FEFF 		bl	GPIO_TIM4_PWMCH2_IO_Init
+  98              	.LVL8:
+  99              	.L6:
+  59:Bsp/periph_timer.c **** 			break;
+  60:Bsp/periph_timer.c **** 		default:
+  61:Bsp/periph_timer.c **** 			break;
+  62:Bsp/periph_timer.c **** 		}
+  63:Bsp/periph_timer.c **** 	}
+  64:Bsp/periph_timer.c **** 
+  65:Bsp/periph_timer.c **** 	if (CH3_State == PWM_CH3_Enable)
+ 100              		.loc 1 65 0
+ 101 0048 012D     		cmp	r5, #1
+ 102 004a 0DD1     		bne	.L10
+  66:Bsp/periph_timer.c **** 	{
+  67:Bsp/periph_timer.c **** 		switch ((uint8_t)timerx)
+ 103              		.loc 1 67 0
+ 104 004c 012C     		cmp	r4, #1
+ 105 004e 06D0     		beq	.L11
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 4
+
+
+ 106 0050 14B1     		cbz	r4, .L12
+ 107 0052 022C     		cmp	r4, #2
+ 108 0054 06D0     		beq	.L13
+ 109 0056 07E0     		b	.L10
+ 110              	.L12:
+  68:Bsp/periph_timer.c **** 		{
+  69:Bsp/periph_timer.c **** 		case Timer_2:
+  70:Bsp/periph_timer.c **** 			GPIO_TIM2_PWMCH3_IO_Init();
+ 111              		.loc 1 70 0
+ 112 0058 FFF7FEFF 		bl	GPIO_TIM2_PWMCH3_IO_Init
+ 113              	.LVL9:
+  71:Bsp/periph_timer.c **** 			break;
+ 114              		.loc 1 71 0
+ 115 005c 04E0     		b	.L10
+ 116              	.L11:
+  72:Bsp/periph_timer.c **** 		case Timer_3:
+  73:Bsp/periph_timer.c **** 			GPIO_TIM3_PWMCH3_IO_Init();
+ 117              		.loc 1 73 0
+ 118 005e FFF7FEFF 		bl	GPIO_TIM3_PWMCH3_IO_Init
+ 119              	.LVL10:
+  74:Bsp/periph_timer.c **** 			break;
+ 120              		.loc 1 74 0
+ 121 0062 01E0     		b	.L10
+ 122              	.L13:
+  75:Bsp/periph_timer.c **** 		case Timer_4:
+  76:Bsp/periph_timer.c **** 			GPIO_TIM4_PWMCH3_IO_Init();
+ 123              		.loc 1 76 0
+ 124 0064 FFF7FEFF 		bl	GPIO_TIM4_PWMCH3_IO_Init
+ 125              	.LVL11:
+ 126              	.L10:
+  77:Bsp/periph_timer.c **** 			break;
+  78:Bsp/periph_timer.c **** 		default:
+  79:Bsp/periph_timer.c **** 			break;
+  80:Bsp/periph_timer.c **** 		}
+  81:Bsp/periph_timer.c **** 	}
+  82:Bsp/periph_timer.c **** 
+  83:Bsp/periph_timer.c **** 	if (CH4_State == PWM_CH4_Enable)
+ 127              		.loc 1 83 0
+ 128 0068 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
+ 129 006c 012B     		cmp	r3, #1
+ 130 006e 0DD1     		bne	.L1
+  84:Bsp/periph_timer.c **** 	{
+  85:Bsp/periph_timer.c **** 		switch ((uint8_t)timerx)
+ 131              		.loc 1 85 0
+ 132 0070 012C     		cmp	r4, #1
+ 133 0072 06D0     		beq	.L15
+ 134 0074 14B1     		cbz	r4, .L16
+ 135 0076 022C     		cmp	r4, #2
+ 136 0078 06D0     		beq	.L17
+ 137 007a 70BD     		pop	{r4, r5, r6, pc}
+ 138              	.LVL12:
+ 139              	.L16:
+  86:Bsp/periph_timer.c **** 		{
+  87:Bsp/periph_timer.c **** 		case Timer_2:
+  88:Bsp/periph_timer.c **** 			GPIO_TIM2_PWMCH4_IO_Init();
+ 140              		.loc 1 88 0
+ 141 007c FFF7FEFF 		bl	GPIO_TIM2_PWMCH4_IO_Init
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 5
+
+
+ 142              	.LVL13:
+  89:Bsp/periph_timer.c **** 			break;
+ 143              		.loc 1 89 0
+ 144 0080 70BD     		pop	{r4, r5, r6, pc}
+ 145              	.LVL14:
+ 146              	.L15:
+  90:Bsp/periph_timer.c **** 		case Timer_3:
+  91:Bsp/periph_timer.c **** 			GPIO_TIM3_PWMCH4_IO_Init();
+ 147              		.loc 1 91 0
+ 148 0082 FFF7FEFF 		bl	GPIO_TIM3_PWMCH4_IO_Init
+ 149              	.LVL15:
+  92:Bsp/periph_timer.c **** 			break;
+ 150              		.loc 1 92 0
+ 151 0086 70BD     		pop	{r4, r5, r6, pc}
+ 152              	.LVL16:
+ 153              	.L17:
+  93:Bsp/periph_timer.c **** 		case Timer_4:
+  94:Bsp/periph_timer.c **** 			GPIO_TIM4_PWMCH4_IO_Init();
+ 154              		.loc 1 94 0
+ 155 0088 FFF7FEFF 		bl	GPIO_TIM4_PWMCH4_IO_Init
+ 156              	.LVL17:
+ 157              	.L1:
+ 158 008c 70BD     		pop	{r4, r5, r6, pc}
+ 159              		.cfi_endproc
+ 160              	.LFE123:
+ 162 008e 00BF     		.section	.text.periph_Timer_CounterMode_Init,"ax",%progbits
+ 163              		.align	2
+ 164              		.global	periph_Timer_CounterMode_Init
+ 165              		.thumb
+ 166              		.thumb_func
+ 168              	periph_Timer_CounterMode_Init:
+ 169              	.LFB124:
+  95:Bsp/periph_timer.c **** 			break;
+  96:Bsp/periph_timer.c **** 		default:
+  97:Bsp/periph_timer.c **** 			break;
+  98:Bsp/periph_timer.c **** 		}
+  99:Bsp/periph_timer.c **** 	}
+ 100:Bsp/periph_timer.c **** }
+ 101:Bsp/periph_timer.c **** 
+ 102:Bsp/periph_timer.c **** void periph_Timer_CounterMode_Init(Timer_list timerx, uint32_t Period, uint32_t Prescaler, uint8_t 
+ 103:Bsp/periph_timer.c **** {
+ 170              		.loc 1 103 0
+ 171              		.cfi_startproc
+ 172              		@ args = 4, pretend = 0, frame = 16
+ 173              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174              	.LVL18:
+ 175 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 176              	.LCFI1:
+ 177              		.cfi_def_cfa_offset 20
+ 178              		.cfi_offset 4, -20
+ 179              		.cfi_offset 5, -16
+ 180              		.cfi_offset 6, -12
+ 181              		.cfi_offset 7, -8
+ 182              		.cfi_offset 14, -4
+ 183 0002 85B0     		sub	sp, sp, #20
+ 184              	.LCFI2:
+ 185              		.cfi_def_cfa_offset 40
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 6
+
+
+ 186 0004 0446     		mov	r4, r0
+ 187 0006 0F46     		mov	r7, r1
+ 188 0008 1546     		mov	r5, r2
+ 189 000a 1E46     		mov	r6, r3
+ 104:Bsp/periph_timer.c **** 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+ 105:Bsp/periph_timer.c **** 	NVIC_InitTypeDef NVIC_InitStructure;
+ 106:Bsp/periph_timer.c **** 
+ 107:Bsp/periph_timer.c **** 	RCC_APB1PeriphClockCmd(Timer_CLK[timerx], ENABLE);
+ 190              		.loc 1 107 0
+ 191 000c 0121     		movs	r1, #1
+ 192              	.LVL19:
+ 193 000e 194B     		ldr	r3, .L21
+ 194              	.LVL20:
+ 195 0010 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 196              	.LVL21:
+ 197 0014 FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 198              	.LVL22:
+ 108:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_Period = Period;		 //1000
+ 199              		.loc 1 108 0
+ 200 0018 0297     		str	r7, [sp, #8]
+ 109:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_Prescaler = Prescaler; //83
+ 201              		.loc 1 109 0
+ 202 001a ADF80450 		strh	r5, [sp, #4]	@ movhi
+ 110:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+ 203              		.loc 1 110 0
+ 204 001e 0023     		movs	r3, #0
+ 205 0020 ADF80C30 		strh	r3, [sp, #12]	@ movhi
+ 111:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+ 206              		.loc 1 111 0
+ 207 0024 ADF80630 		strh	r3, [sp, #6]	@ movhi
+ 112:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+ 208              		.loc 1 112 0
+ 209 0028 8DF80E30 		strb	r3, [sp, #14]
+ 113:Bsp/periph_timer.c **** 	TIM_TimeBaseInit(Timer_Port[timerx], &TIM_TimeBaseStructure);
+ 210              		.loc 1 113 0
+ 211 002c 124D     		ldr	r5, .L21+4
+ 212              	.LVL23:
+ 213 002e 01A9     		add	r1, sp, #4
+ 214 0030 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 215 0034 FFF7FEFF 		bl	TIM_TimeBaseInit
+ 216              	.LVL24:
+ 114:Bsp/periph_timer.c **** 
+ 115:Bsp/periph_timer.c **** 	TIM_ITConfig(Timer_Port[timerx], TIM_IT_Update, ENABLE);
+ 217              		.loc 1 115 0
+ 218 0038 0122     		movs	r2, #1
+ 219 003a 1146     		mov	r1, r2
+ 220 003c 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 221 0040 FFF7FEFF 		bl	TIM_ITConfig
+ 222              	.LVL25:
+ 116:Bsp/periph_timer.c **** 	TIM_Cmd(Timer_Port[timerx], ENABLE);
+ 223              		.loc 1 116 0
+ 224 0044 0121     		movs	r1, #1
+ 225 0046 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 226 004a FFF7FEFF 		bl	TIM_Cmd
+ 227              	.LVL26:
+ 117:Bsp/periph_timer.c **** 
+ 118:Bsp/periph_timer.c **** 	NVIC_InitStructure.NVIC_IRQChannel = Timer_IRQ_Channel[timerx];
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 7
+
+
+ 228              		.loc 1 118 0
+ 229 004e 0B4B     		ldr	r3, .L21+8
+ 230 0050 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 231 0052 8DF80030 		strb	r3, [sp]
+ 119:Bsp/periph_timer.c **** 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 232              		.loc 1 119 0
+ 233 0056 0123     		movs	r3, #1
+ 234 0058 8DF80330 		strb	r3, [sp, #3]
+ 120:Bsp/periph_timer.c **** 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = PreemptionPriority;
+ 235              		.loc 1 120 0
+ 236 005c 8DF80160 		strb	r6, [sp, #1]
+ 121:Bsp/periph_timer.c **** 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = SubPriority;
+ 237              		.loc 1 121 0
+ 238 0060 9DF82830 		ldrb	r3, [sp, #40]	@ zero_extendqisi2
+ 239 0064 8DF80230 		strb	r3, [sp, #2]
+ 122:Bsp/periph_timer.c **** 	NVIC_Init(&NVIC_InitStructure);
+ 240              		.loc 1 122 0
+ 241 0068 6846     		mov	r0, sp
+ 242 006a FFF7FEFF 		bl	NVIC_Init
+ 243              	.LVL27:
+ 123:Bsp/periph_timer.c **** }
+ 244              		.loc 1 123 0
+ 245 006e 05B0     		add	sp, sp, #20
+ 246              	.LCFI3:
+ 247              		.cfi_def_cfa_offset 20
+ 248              		@ sp needed
+ 249 0070 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 250              	.LVL28:
+ 251              	.L22:
+ 252 0072 00BF     		.align	2
+ 253              	.L21:
+ 254 0074 00000000 		.word	.LANCHOR0
+ 255 0078 00000000 		.word	.LANCHOR1
+ 256 007c 00000000 		.word	.LANCHOR2
+ 257              		.cfi_endproc
+ 258              	.LFE124:
+ 260              		.section	.text.periph_Timer_Encoder_Mode_Init,"ax",%progbits
+ 261              		.align	2
+ 262              		.global	periph_Timer_Encoder_Mode_Init
+ 263              		.thumb
+ 264              		.thumb_func
+ 266              	periph_Timer_Encoder_Mode_Init:
+ 267              	.LFB125:
+ 124:Bsp/periph_timer.c **** 
+ 125:Bsp/periph_timer.c **** /* need modify */
+ 126:Bsp/periph_timer.c **** void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint16_t channel_a, uint16_t channel_b)
+ 127:Bsp/periph_timer.c **** {
+ 268              		.loc 1 127 0
+ 269              		.cfi_startproc
+ 270              		@ args = 0, pretend = 0, frame = 24
+ 271              		@ frame_needed = 0, uses_anonymous_args = 0
+ 272              	.LVL29:
+ 273 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 274              	.LCFI4:
+ 275              		.cfi_def_cfa_offset 32
+ 276              		.cfi_offset 4, -32
+ 277              		.cfi_offset 5, -28
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 8
+
+
+ 278              		.cfi_offset 6, -24
+ 279              		.cfi_offset 7, -20
+ 280              		.cfi_offset 8, -16
+ 281              		.cfi_offset 9, -12
+ 282              		.cfi_offset 10, -8
+ 283              		.cfi_offset 14, -4
+ 284 0004 86B0     		sub	sp, sp, #24
+ 285              	.LCFI5:
+ 286              		.cfi_def_cfa_offset 56
+ 287 0006 0446     		mov	r4, r0
+ 288 0008 8A46     		mov	r10, r1
+ 289 000a 9146     		mov	r9, r2
+ 128:Bsp/periph_timer.c **** 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+ 129:Bsp/periph_timer.c **** 	TIM_ICInitTypeDef TIM_ICInitStructure;
+ 130:Bsp/periph_timer.c **** 
+ 131:Bsp/periph_timer.c **** 	RCC_APB2PeriphClockCmd(Timer_CLK[timerx], ENABLE);
+ 290              		.loc 1 131 0
+ 291 000c 0121     		movs	r1, #1
+ 292              	.LVL30:
+ 293 000e 1E4B     		ldr	r3, .L25
+ 294 0010 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 295              	.LVL31:
+ 296 0014 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 297              	.LVL32:
+ 132:Bsp/periph_timer.c **** 
+ 133:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
+ 298              		.loc 1 133 0
+ 299 0018 4FF6FF73 		movw	r3, #65535
+ 300 001c 0493     		str	r3, [sp, #16]
+ 134:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+ 301              		.loc 1 134 0
+ 302 001e 0027     		movs	r7, #0
+ 303 0020 06A9     		add	r1, sp, #24
+ 304 0022 21F80C7D 		strh	r7, [r1, #-12]!	@ movhi
+ 135:Bsp/periph_timer.c **** 	TIM_TimeBaseInit(Timer_Port[timerx], &TIM_TimeBaseStructure);
+ 305              		.loc 1 135 0
+ 306 0026 194D     		ldr	r5, .L25+4
+ 307 0028 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 308 002c FFF7FEFF 		bl	TIM_TimeBaseInit
+ 309              	.LVL33:
+ 136:Bsp/periph_timer.c **** 
+ 137:Bsp/periph_timer.c **** 	TIM_ICInitStructure.TIM_ICFilter = 6;
+ 310              		.loc 1 137 0
+ 311 0030 0623     		movs	r3, #6
+ 312 0032 ADF80830 		strh	r3, [sp, #8]	@ movhi
+ 138:Bsp/periph_timer.c **** 	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+ 313              		.loc 1 138 0
+ 314 0036 4FF00108 		mov	r8, #1
+ 315 003a ADF80480 		strh	r8, [sp, #4]	@ movhi
+ 139:Bsp/periph_timer.c **** 	TIM_ICInitStructure.TIM_Channel = channel_a; //TIM_Channel_1
+ 316              		.loc 1 139 0
+ 317 003e 06AE     		add	r6, sp, #24
+ 318 0040 26F818AD 		strh	r10, [r6, #-24]!	@ movhi
+ 140:Bsp/periph_timer.c **** 	TIM_ICInit(Timer_Port[timerx], &TIM_ICInitStructure);
+ 319              		.loc 1 140 0
+ 320 0044 3146     		mov	r1, r6
+ 321 0046 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 9
+
+
+ 322 004a FFF7FEFF 		bl	TIM_ICInit
+ 323              	.LVL34:
+ 141:Bsp/periph_timer.c **** 
+ 142:Bsp/periph_timer.c **** 	TIM_ICInitStructure.TIM_Channel = channel_b; //TIM_Channel_2
+ 324              		.loc 1 142 0
+ 325 004e ADF80090 		strh	r9, [sp]	@ movhi
+ 143:Bsp/periph_timer.c **** 	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+ 326              		.loc 1 143 0
+ 327 0052 ADF80480 		strh	r8, [sp, #4]	@ movhi
+ 144:Bsp/periph_timer.c **** 	TIM_ICInit(Timer_Port[timerx], &TIM_ICInitStructure);
+ 328              		.loc 1 144 0
+ 329 0056 3146     		mov	r1, r6
+ 330 0058 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 331 005c FFF7FEFF 		bl	TIM_ICInit
+ 332              	.LVL35:
+ 145:Bsp/periph_timer.c **** 	TIM_EncoderInterfaceConfig(Timer_Port[timerx], TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_IC
+ 333              		.loc 1 145 0
+ 334 0060 3B46     		mov	r3, r7
+ 335 0062 3A46     		mov	r2, r7
+ 336 0064 0321     		movs	r1, #3
+ 337 0066 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 338 006a FFF7FEFF 		bl	TIM_EncoderInterfaceConfig
+ 339              	.LVL36:
+ 146:Bsp/periph_timer.c **** 	TIM_ICStructInit(&TIM_ICInitStructure);
+ 340              		.loc 1 146 0
+ 341 006e 3046     		mov	r0, r6
+ 342 0070 FFF7FEFF 		bl	TIM_ICStructInit
+ 343              	.LVL37:
+ 147:Bsp/periph_timer.c **** 
+ 148:Bsp/periph_timer.c **** 	Timer_Port[timerx]->CNT = 0;
+ 344              		.loc 1 148 0
+ 345 0074 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 346 0078 4762     		str	r7, [r0, #36]
+ 149:Bsp/periph_timer.c **** 	TIM_Cmd(Timer_Port[timerx], ENABLE);
+ 347              		.loc 1 149 0
+ 348 007a 4146     		mov	r1, r8
+ 349 007c FFF7FEFF 		bl	TIM_Cmd
+ 350              	.LVL38:
+ 150:Bsp/periph_timer.c **** }
+ 351              		.loc 1 150 0
+ 352 0080 06B0     		add	sp, sp, #24
+ 353              	.LCFI6:
+ 354              		.cfi_def_cfa_offset 32
+ 355              		@ sp needed
+ 356 0082 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 357              	.L26:
+ 358 0086 00BF     		.align	2
+ 359              	.L25:
+ 360 0088 00000000 		.word	.LANCHOR0
+ 361 008c 00000000 		.word	.LANCHOR1
+ 362              		.cfi_endproc
+ 363              	.LFE125:
+ 365              		.section	.text.periph_Timer_GetEncoder_Input,"ax",%progbits
+ 366              		.align	2
+ 367              		.global	periph_Timer_GetEncoder_Input
+ 368              		.thumb
+ 369              		.thumb_func
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 10
+
+
+ 371              	periph_Timer_GetEncoder_Input:
+ 372              	.LFB126:
+ 151:Bsp/periph_timer.c **** 
+ 152:Bsp/periph_timer.c **** int8_t periph_Timer_GetEncoder_Input(Timer_list timerx)
+ 153:Bsp/periph_timer.c **** {
+ 373              		.loc 1 153 0
+ 374              		.cfi_startproc
+ 375              		@ args = 0, pretend = 0, frame = 0
+ 376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 377              		@ link register save eliminated.
+ 378              	.LVL39:
+ 154:Bsp/periph_timer.c **** 	return (int8_t)Timer_Port[timerx]->CNT;
+ 379              		.loc 1 154 0
+ 380 0000 024B     		ldr	r3, .L28
+ 381 0002 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 382 0006 586A     		ldr	r0, [r3, #36]
+ 383              	.LVL40:
+ 155:Bsp/periph_timer.c **** }
+ 384              		.loc 1 155 0
+ 385 0008 40B2     		sxtb	r0, r0
+ 386 000a 7047     		bx	lr
+ 387              	.L29:
+ 388              		.align	2
+ 389              	.L28:
+ 390 000c 00000000 		.word	.LANCHOR1
+ 391              		.cfi_endproc
+ 392              	.LFE126:
+ 394              		.section	.text.periph_Timer_PWMOutPut_Mode_Init,"ax",%progbits
+ 395              		.align	2
+ 396              		.global	periph_Timer_PWMOutPut_Mode_Init
+ 397              		.thumb
+ 398              		.thumb_func
+ 400              	periph_Timer_PWMOutPut_Mode_Init:
+ 401              	.LFB127:
+ 156:Bsp/periph_timer.c **** 
+ 157:Bsp/periph_timer.c **** void periph_Timer_PWMOutPut_Mode_Init(Timer_list timerx, PWM_Hz hz, Timer_PWM_Channel_State CH1_Sta
+ 158:Bsp/periph_timer.c **** {
+ 402              		.loc 1 158 0
+ 403              		.cfi_startproc
+ 404              		@ args = 8, pretend = 0, frame = 32
+ 405              		@ frame_needed = 0, uses_anonymous_args = 0
+ 406              	.LVL41:
+ 407 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 408              	.LCFI7:
+ 409              		.cfi_def_cfa_offset 28
+ 410              		.cfi_offset 4, -28
+ 411              		.cfi_offset 5, -24
+ 412              		.cfi_offset 6, -20
+ 413              		.cfi_offset 7, -16
+ 414              		.cfi_offset 8, -12
+ 415              		.cfi_offset 9, -8
+ 416              		.cfi_offset 14, -4
+ 417 0004 8BB0     		sub	sp, sp, #44
+ 418              	.LCFI8:
+ 419              		.cfi_def_cfa_offset 72
+ 420 0006 0446     		mov	r4, r0
+ 421 0008 0D46     		mov	r5, r1
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 11
+
+
+ 422 000a 9146     		mov	r9, r2
+ 423 000c 9846     		mov	r8, r3
+ 424 000e 9DF84870 		ldrb	r7, [sp, #72]	@ zero_extendqisi2
+ 425 0012 9DF84C60 		ldrb	r6, [sp, #76]	@ zero_extendqisi2
+ 159:Bsp/periph_timer.c **** 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+ 160:Bsp/periph_timer.c **** 	TIM_OCInitTypeDef TIM_OCInitStructure;
+ 161:Bsp/periph_timer.c **** 
+ 162:Bsp/periph_timer.c **** 	periph_Timer_IO_Init(timerx, CH1_State, CH2_State, CH3_State, CH4_State);
+ 426              		.loc 1 162 0
+ 427 0016 0096     		str	r6, [sp]
+ 428 0018 3B46     		mov	r3, r7
+ 429              	.LVL42:
+ 430 001a 4246     		mov	r2, r8
+ 431              	.LVL43:
+ 432 001c 4946     		mov	r1, r9
+ 433              	.LVL44:
+ 434 001e FFF7FEFF 		bl	periph_Timer_IO_Init
+ 435              	.LVL45:
+ 163:Bsp/periph_timer.c **** 
+ 164:Bsp/periph_timer.c **** 	RCC_APB1PeriphClockCmd(Timer_CLK[timerx], ENABLE);
+ 436              		.loc 1 164 0
+ 437 0022 0121     		movs	r1, #1
+ 438 0024 3E4B     		ldr	r3, .L38
+ 439 0026 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 440 002a FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 441              	.LVL46:
+ 165:Bsp/periph_timer.c **** 	TIM_DeInit(Timer_Port[timerx]);
+ 442              		.loc 1 165 0
+ 443 002e 3D4B     		ldr	r3, .L38+4
+ 444 0030 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 445 0034 FFF7FEFF 		bl	TIM_DeInit
+ 446              	.LVL47:
+ 166:Bsp/periph_timer.c **** 
+ 167:Bsp/periph_timer.c **** 	if (hz == PWM_50hz)
+ 447              		.loc 1 167 0
+ 448 0038 35B9     		cbnz	r5, .L31
+ 168:Bsp/periph_timer.c **** 	{
+ 169:Bsp/periph_timer.c **** 		TIM_TimeBaseStructure.TIM_Period = TimerPWM_50Hz_Period;
+ 449              		.loc 1 169 0
+ 450 003a 44F62063 		movw	r3, #20000
+ 451 003e 0893     		str	r3, [sp, #32]
+ 170:Bsp/periph_timer.c **** 		TIM_TimeBaseStructure.TIM_Prescaler = TimerPWM_50Hz_Prescaler;
+ 452              		.loc 1 170 0
+ 453 0040 5323     		movs	r3, #83
+ 454 0042 ADF81C30 		strh	r3, [sp, #28]	@ movhi
+ 455 0046 07E0     		b	.L32
+ 456              	.L31:
+ 171:Bsp/periph_timer.c **** 	}
+ 172:Bsp/periph_timer.c **** 	else if (hz == PWM_38Khz)
+ 457              		.loc 1 172 0
+ 458 0048 012D     		cmp	r5, #1
+ 459 004a 05D1     		bne	.L32
+ 173:Bsp/periph_timer.c **** 	{
+ 174:Bsp/periph_timer.c **** 		TIM_TimeBaseStructure.TIM_Period = TimerPWM_38KHz_Period;
+ 460              		.loc 1 174 0
+ 461 004c 40F6A303 		movw	r3, #2211
+ 462 0050 0893     		str	r3, [sp, #32]
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 12
+
+
+ 175:Bsp/periph_timer.c **** 		TIM_TimeBaseStructure.TIM_Prescaler = TimerPWM_38KHz_Prescaler;
+ 463              		.loc 1 175 0
+ 464 0052 0023     		movs	r3, #0
+ 465 0054 ADF81C30 		strh	r3, [sp, #28]	@ movhi
+ 466              	.L32:
+ 176:Bsp/periph_timer.c **** 	}
+ 177:Bsp/periph_timer.c **** 
+ 178:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+ 467              		.loc 1 178 0
+ 468 0058 0025     		movs	r5, #0
+ 469 005a ADF82450 		strh	r5, [sp, #36]	@ movhi
+ 179:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+ 470              		.loc 1 179 0
+ 471 005e ADF81E50 		strh	r5, [sp, #30]	@ movhi
+ 180:Bsp/periph_timer.c **** 	TIM_TimeBaseInit(Timer_Port[timerx], &TIM_TimeBaseStructure);
+ 472              		.loc 1 180 0
+ 473 0062 07A9     		add	r1, sp, #28
+ 474 0064 2F4B     		ldr	r3, .L38+4
+ 475 0066 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 476 006a FFF7FEFF 		bl	TIM_TimeBaseInit
+ 477              	.LVL48:
+ 181:Bsp/periph_timer.c **** 
+ 182:Bsp/periph_timer.c **** 	TIM_OCStructInit(&TIM_OCInitStructure);
+ 478              		.loc 1 182 0
+ 479 006e 02A8     		add	r0, sp, #8
+ 480 0070 FFF7FEFF 		bl	TIM_OCStructInit
+ 481              	.LVL49:
+ 183:Bsp/periph_timer.c **** 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+ 482              		.loc 1 183 0
+ 483 0074 6023     		movs	r3, #96
+ 484 0076 ADF80830 		strh	r3, [sp, #8]	@ movhi
+ 184:Bsp/periph_timer.c **** 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+ 485              		.loc 1 184 0
+ 486 007a 0123     		movs	r3, #1
+ 487 007c ADF80A30 		strh	r3, [sp, #10]	@ movhi
+ 185:Bsp/periph_timer.c **** 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+ 488              		.loc 1 185 0
+ 489 0080 ADF81450 		strh	r5, [sp, #20]	@ movhi
+ 186:Bsp/periph_timer.c **** 
+ 187:Bsp/periph_timer.c **** 	if (CH1_State == PWM_CH1_Enable)
+ 490              		.loc 1 187 0
+ 491 0084 9945     		cmp	r9, r3
+ 492 0086 0AD1     		bne	.L33
+ 188:Bsp/periph_timer.c **** 	{
+ 189:Bsp/periph_timer.c **** 		TIM_OC1Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 493              		.loc 1 189 0
+ 494 0088 264D     		ldr	r5, .L38+4
+ 495 008a 02A9     		add	r1, sp, #8
+ 496 008c 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 497 0090 FFF7FEFF 		bl	TIM_OC1Init
+ 498              	.LVL50:
+ 190:Bsp/periph_timer.c **** 		TIM_OC1PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 499              		.loc 1 190 0
+ 500 0094 0821     		movs	r1, #8
+ 501 0096 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 502 009a FFF7FEFF 		bl	TIM_OC1PreloadConfig
+ 503              	.LVL51:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 13
+
+
+ 504              	.L33:
+ 191:Bsp/periph_timer.c **** 	}
+ 192:Bsp/periph_timer.c **** 
+ 193:Bsp/periph_timer.c **** 	if (CH2_State == PWM_CH2_Enable)
+ 505              		.loc 1 193 0
+ 506 009e B8F1010F 		cmp	r8, #1
+ 507 00a2 0AD1     		bne	.L34
+ 194:Bsp/periph_timer.c **** 	{
+ 195:Bsp/periph_timer.c **** 		TIM_OC2Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 508              		.loc 1 195 0
+ 509 00a4 1F4D     		ldr	r5, .L38+4
+ 510 00a6 02A9     		add	r1, sp, #8
+ 511 00a8 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 512 00ac FFF7FEFF 		bl	TIM_OC2Init
+ 513              	.LVL52:
+ 196:Bsp/periph_timer.c **** 		TIM_OC2PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 514              		.loc 1 196 0
+ 515 00b0 0821     		movs	r1, #8
+ 516 00b2 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 517 00b6 FFF7FEFF 		bl	TIM_OC2PreloadConfig
+ 518              	.LVL53:
+ 519              	.L34:
+ 197:Bsp/periph_timer.c **** 	}
+ 198:Bsp/periph_timer.c **** 
+ 199:Bsp/periph_timer.c **** 	if (CH3_State == PWM_CH3_Enable)
+ 520              		.loc 1 199 0
+ 521 00ba 012F     		cmp	r7, #1
+ 522 00bc 0AD1     		bne	.L35
+ 200:Bsp/periph_timer.c **** 	{
+ 201:Bsp/periph_timer.c **** 		TIM_OC3Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 523              		.loc 1 201 0
+ 524 00be 194D     		ldr	r5, .L38+4
+ 525 00c0 02A9     		add	r1, sp, #8
+ 526 00c2 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 527 00c6 FFF7FEFF 		bl	TIM_OC3Init
+ 528              	.LVL54:
+ 202:Bsp/periph_timer.c **** 		TIM_OC3PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 529              		.loc 1 202 0
+ 530 00ca 0821     		movs	r1, #8
+ 531 00cc 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 532 00d0 FFF7FEFF 		bl	TIM_OC3PreloadConfig
+ 533              	.LVL55:
+ 534              	.L35:
+ 203:Bsp/periph_timer.c **** 	}
+ 204:Bsp/periph_timer.c **** 
+ 205:Bsp/periph_timer.c **** 	if (CH4_State == PWM_CH4_Enable)
+ 535              		.loc 1 205 0
+ 536 00d4 012E     		cmp	r6, #1
+ 537 00d6 0AD1     		bne	.L36
+ 206:Bsp/periph_timer.c **** 	{
+ 207:Bsp/periph_timer.c **** 		TIM_OC4Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 538              		.loc 1 207 0
+ 539 00d8 124D     		ldr	r5, .L38+4
+ 540 00da 02A9     		add	r1, sp, #8
+ 541 00dc 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 542 00e0 FFF7FEFF 		bl	TIM_OC4Init
+ 543              	.LVL56:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 14
+
+
+ 208:Bsp/periph_timer.c **** 		TIM_OC4PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 544              		.loc 1 208 0
+ 545 00e4 0821     		movs	r1, #8
+ 546 00e6 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 547 00ea FFF7FEFF 		bl	TIM_OC4PreloadConfig
+ 548              	.LVL57:
+ 549              	.L36:
+ 209:Bsp/periph_timer.c **** 	}
+ 210:Bsp/periph_timer.c **** 
+ 211:Bsp/periph_timer.c **** 	TIM_ARRPreloadConfig(Timer_Port[timerx], ENABLE);
+ 550              		.loc 1 211 0
+ 551 00ee 0D4D     		ldr	r5, .L38+4
+ 552 00f0 0121     		movs	r1, #1
+ 553 00f2 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 554 00f6 FFF7FEFF 		bl	TIM_ARRPreloadConfig
+ 555              	.LVL58:
+ 212:Bsp/periph_timer.c **** 	TIM_ClearFlag(Timer_Port[timerx], TIM_FLAG_Update);
+ 556              		.loc 1 212 0
+ 557 00fa 0121     		movs	r1, #1
+ 558 00fc 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 559 0100 FFF7FEFF 		bl	TIM_ClearFlag
+ 560              	.LVL59:
+ 213:Bsp/periph_timer.c **** 	TIM_ITConfig(Timer_Port[timerx], TIM_IT_Update, ENABLE);
+ 561              		.loc 1 213 0
+ 562 0104 0122     		movs	r2, #1
+ 563 0106 1146     		mov	r1, r2
+ 564 0108 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 565 010c FFF7FEFF 		bl	TIM_ITConfig
+ 566              	.LVL60:
+ 214:Bsp/periph_timer.c **** 	TIM_Cmd(Timer_Port[timerx], ENABLE);
+ 567              		.loc 1 214 0
+ 568 0110 0121     		movs	r1, #1
+ 569 0112 55F82400 		ldr	r0, [r5, r4, lsl #2]
+ 570 0116 FFF7FEFF 		bl	TIM_Cmd
+ 571              	.LVL61:
+ 215:Bsp/periph_timer.c **** }
+ 572              		.loc 1 215 0
+ 573 011a 0BB0     		add	sp, sp, #44
+ 574              	.LCFI9:
+ 575              		.cfi_def_cfa_offset 28
+ 576              		@ sp needed
+ 577 011c BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 578              	.LVL62:
+ 579              	.L39:
+ 580              		.align	2
+ 581              	.L38:
+ 582 0120 00000000 		.word	.LANCHOR0
+ 583 0124 00000000 		.word	.LANCHOR1
+ 584              		.cfi_endproc
+ 585              	.LFE127:
+ 587              		.section	.text.periph_Timer_PWM_SetEnable,"ax",%progbits
+ 588              		.align	2
+ 589              		.global	periph_Timer_PWM_SetEnable
+ 590              		.thumb
+ 591              		.thumb_func
+ 593              	periph_Timer_PWM_SetEnable:
+ 594              	.LFB128:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 15
+
+
+ 216:Bsp/periph_timer.c **** 
+ 217:Bsp/periph_timer.c **** void periph_Timer_PWM_SetEnable(Timer_list timerx, uint8_t state)
+ 218:Bsp/periph_timer.c **** {
+ 595              		.loc 1 218 0
+ 596              		.cfi_startproc
+ 597              		@ args = 0, pretend = 0, frame = 0
+ 598              		@ frame_needed = 0, uses_anonymous_args = 0
+ 599              	.LVL63:
+ 600 0000 08B5     		push	{r3, lr}
+ 601              	.LCFI10:
+ 602              		.cfi_def_cfa_offset 8
+ 603              		.cfi_offset 3, -8
+ 604              		.cfi_offset 14, -4
+ 219:Bsp/periph_timer.c **** 	if (state)
+ 605              		.loc 1 219 0
+ 606 0002 31B1     		cbz	r1, .L41
+ 220:Bsp/periph_timer.c **** 	{
+ 221:Bsp/periph_timer.c **** 		TIM_Cmd(Timer_Port[timerx], ENABLE);
+ 607              		.loc 1 221 0
+ 608 0004 0121     		movs	r1, #1
+ 609              	.LVL64:
+ 610 0006 064B     		ldr	r3, .L44
+ 611 0008 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 612              	.LVL65:
+ 613 000c FFF7FEFF 		bl	TIM_Cmd
+ 614              	.LVL66:
+ 615 0010 08BD     		pop	{r3, pc}
+ 616              	.LVL67:
+ 617              	.L41:
+ 222:Bsp/periph_timer.c **** 	}
+ 223:Bsp/periph_timer.c **** 	else
+ 224:Bsp/periph_timer.c **** 	{
+ 225:Bsp/periph_timer.c **** 		TIM_Cmd(Timer_Port[timerx], DISABLE);
+ 618              		.loc 1 225 0
+ 619 0012 0021     		movs	r1, #0
+ 620              	.LVL68:
+ 621 0014 024B     		ldr	r3, .L44
+ 622 0016 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 623              	.LVL69:
+ 624 001a FFF7FEFF 		bl	TIM_Cmd
+ 625              	.LVL70:
+ 626 001e 08BD     		pop	{r3, pc}
+ 627              	.L45:
+ 628              		.align	2
+ 629              	.L44:
+ 630 0020 00000000 		.word	.LANCHOR1
+ 631              		.cfi_endproc
+ 632              	.LFE128:
+ 634              		.section	.text.periph_Timer_DShotOutPut_Mode_Init,"ax",%progbits
+ 635              		.align	2
+ 636              		.global	periph_Timer_DShotOutPut_Mode_Init
+ 637              		.thumb
+ 638              		.thumb_func
+ 640              	periph_Timer_DShotOutPut_Mode_Init:
+ 641              	.LFB129:
+ 226:Bsp/periph_timer.c **** 	}
+ 227:Bsp/periph_timer.c **** }
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 16
+
+
+ 228:Bsp/periph_timer.c **** 
+ 229:Bsp/periph_timer.c **** void periph_Timer_DShotOutPut_Mode_Init(Timer_list timerx, Timer_PWM_Channel_State CH1_State, Timer
+ 230:Bsp/periph_timer.c **** 										uint32_t Buff_Size, uint32_t CH1_Buff, uint32_t CH2_Buff, uint32_t CH3_Buff, uint32_t CH4
+ 231:Bsp/periph_timer.c **** {
+ 642              		.loc 1 231 0
+ 643              		.cfi_startproc
+ 644              		@ args = 24, pretend = 0, frame = 96
+ 645              		@ frame_needed = 0, uses_anonymous_args = 0
+ 646              	.LVL71:
+ 647 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 648              	.LCFI11:
+ 649              		.cfi_def_cfa_offset 32
+ 650              		.cfi_offset 4, -32
+ 651              		.cfi_offset 5, -28
+ 652              		.cfi_offset 6, -24
+ 653              		.cfi_offset 7, -20
+ 654              		.cfi_offset 8, -16
+ 655              		.cfi_offset 9, -12
+ 656              		.cfi_offset 10, -8
+ 657              		.cfi_offset 14, -4
+ 658 0004 9AB0     		sub	sp, sp, #104
+ 659              	.LCFI12:
+ 660              		.cfi_def_cfa_offset 136
+ 661 0006 0446     		mov	r4, r0
+ 662 0008 8946     		mov	r9, r1
+ 663 000a 9046     		mov	r8, r2
+ 664 000c 1F46     		mov	r7, r3
+ 665 000e 9DF88850 		ldrb	r5, [sp, #136]	@ zero_extendqisi2
+ 232:Bsp/periph_timer.c **** 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+ 233:Bsp/periph_timer.c **** 	TIM_OCInitTypeDef TIM_OCInitStructure;
+ 234:Bsp/periph_timer.c **** 	DMA_InitTypeDef DMA_InitStructure;
+ 235:Bsp/periph_timer.c **** 
+ 236:Bsp/periph_timer.c **** 	periph_Timer_IO_Init(timerx, CH1_State, CH2_State, CH3_State, CH4_State);
+ 666              		.loc 1 236 0
+ 667 0012 0095     		str	r5, [sp]
+ 668 0014 FFF7FEFF 		bl	periph_Timer_IO_Init
+ 669              	.LVL72:
+ 237:Bsp/periph_timer.c **** 
+ 238:Bsp/periph_timer.c **** 	RCC_APB1PeriphClockCmd(Timer_CLK[timerx], ENABLE);
+ 670              		.loc 1 238 0
+ 671 0018 0121     		movs	r1, #1
+ 672 001a 904B     		ldr	r3, .L60
+ 673 001c 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 674 0020 FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 675              	.LVL73:
+ 239:Bsp/periph_timer.c **** 	TIM_DeInit(Timer_Port[timerx]);
+ 676              		.loc 1 239 0
+ 677 0024 DFF838A2 		ldr	r10, .L60+4
+ 678 0028 5AF82400 		ldr	r0, [r10, r4, lsl #2]
+ 679 002c FFF7FEFF 		bl	TIM_DeInit
+ 680              	.LVL74:
+ 240:Bsp/periph_timer.c **** 
+ 241:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_Period = TIM_DShot600_Period;
+ 681              		.loc 1 241 0
+ 682 0030 4523     		movs	r3, #69
+ 683 0032 1893     		str	r3, [sp, #96]
+ 242:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_Prescaler = TIM_DShot600_Prescaler;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 17
+
+
+ 684              		.loc 1 242 0
+ 685 0034 0323     		movs	r3, #3
+ 686 0036 ADF85C30 		strh	r3, [sp, #92]	@ movhi
+ 243:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+ 687              		.loc 1 243 0
+ 688 003a 0026     		movs	r6, #0
+ 689 003c ADF86460 		strh	r6, [sp, #100]	@ movhi
+ 244:Bsp/periph_timer.c **** 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+ 690              		.loc 1 244 0
+ 691 0040 ADF85E60 		strh	r6, [sp, #94]	@ movhi
+ 245:Bsp/periph_timer.c **** 	TIM_TimeBaseInit(Timer_Port[timerx], &TIM_TimeBaseStructure);
+ 692              		.loc 1 245 0
+ 693 0044 17A9     		add	r1, sp, #92
+ 694 0046 5AF82400 		ldr	r0, [r10, r4, lsl #2]
+ 695 004a FFF7FEFF 		bl	TIM_TimeBaseInit
+ 696              	.LVL75:
+ 246:Bsp/periph_timer.c **** 
+ 247:Bsp/periph_timer.c **** 	TIM_OCStructInit(&TIM_OCInitStructure);
+ 697              		.loc 1 247 0
+ 698 004e 12A8     		add	r0, sp, #72
+ 699 0050 FFF7FEFF 		bl	TIM_OCStructInit
+ 700              	.LVL76:
+ 248:Bsp/periph_timer.c **** 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+ 701              		.loc 1 248 0
+ 702 0054 6023     		movs	r3, #96
+ 703 0056 ADF84830 		strh	r3, [sp, #72]	@ movhi
+ 249:Bsp/periph_timer.c **** 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+ 704              		.loc 1 249 0
+ 705 005a 0123     		movs	r3, #1
+ 706 005c ADF84A30 		strh	r3, [sp, #74]	@ movhi
+ 250:Bsp/periph_timer.c **** 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+ 707              		.loc 1 250 0
+ 708 0060 ADF85460 		strh	r6, [sp, #84]	@ movhi
+ 251:Bsp/periph_timer.c **** 
+ 252:Bsp/periph_timer.c **** 	if (CH1_State == PWM_CH1_Enable)
+ 709              		.loc 1 252 0
+ 710 0064 9945     		cmp	r9, r3
+ 711 0066 09D1     		bne	.L47
+ 253:Bsp/periph_timer.c **** 	{
+ 254:Bsp/periph_timer.c **** 		TIM_OC1Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 712              		.loc 1 254 0
+ 713 0068 12A9     		add	r1, sp, #72
+ 714 006a 5AF82400 		ldr	r0, [r10, r4, lsl #2]
+ 715 006e FFF7FEFF 		bl	TIM_OC1Init
+ 716              	.LVL77:
+ 255:Bsp/periph_timer.c **** 		TIM_OC1PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 717              		.loc 1 255 0
+ 718 0072 0821     		movs	r1, #8
+ 719 0074 5AF82400 		ldr	r0, [r10, r4, lsl #2]
+ 720 0078 FFF7FEFF 		bl	TIM_OC1PreloadConfig
+ 721              	.LVL78:
+ 722              	.L47:
+ 256:Bsp/periph_timer.c **** 	}
+ 257:Bsp/periph_timer.c **** 
+ 258:Bsp/periph_timer.c **** 	if (CH2_State == PWM_CH2_Enable)
+ 723              		.loc 1 258 0
+ 724 007c B8F1010F 		cmp	r8, #1
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 18
+
+
+ 725 0080 0AD1     		bne	.L48
+ 259:Bsp/periph_timer.c **** 	{
+ 260:Bsp/periph_timer.c **** 		TIM_OC2Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 726              		.loc 1 260 0
+ 727 0082 774E     		ldr	r6, .L60+4
+ 728 0084 12A9     		add	r1, sp, #72
+ 729 0086 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 730 008a FFF7FEFF 		bl	TIM_OC2Init
+ 731              	.LVL79:
+ 261:Bsp/periph_timer.c **** 		TIM_OC2PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 732              		.loc 1 261 0
+ 733 008e 0821     		movs	r1, #8
+ 734 0090 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 735 0094 FFF7FEFF 		bl	TIM_OC2PreloadConfig
+ 736              	.LVL80:
+ 737              	.L48:
+ 262:Bsp/periph_timer.c **** 	}
+ 263:Bsp/periph_timer.c **** 
+ 264:Bsp/periph_timer.c **** 	if (CH3_State == PWM_CH3_Enable)
+ 738              		.loc 1 264 0
+ 739 0098 012F     		cmp	r7, #1
+ 740 009a 0AD1     		bne	.L49
+ 265:Bsp/periph_timer.c **** 	{
+ 266:Bsp/periph_timer.c **** 		TIM_OC3Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 741              		.loc 1 266 0
+ 742 009c 704E     		ldr	r6, .L60+4
+ 743 009e 12A9     		add	r1, sp, #72
+ 744 00a0 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 745 00a4 FFF7FEFF 		bl	TIM_OC3Init
+ 746              	.LVL81:
+ 267:Bsp/periph_timer.c **** 		TIM_OC3PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 747              		.loc 1 267 0
+ 748 00a8 0821     		movs	r1, #8
+ 749 00aa 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 750 00ae FFF7FEFF 		bl	TIM_OC3PreloadConfig
+ 751              	.LVL82:
+ 752              	.L49:
+ 268:Bsp/periph_timer.c **** 	}
+ 269:Bsp/periph_timer.c **** 
+ 270:Bsp/periph_timer.c **** 	if (CH4_State == PWM_CH4_Enable)
+ 753              		.loc 1 270 0
+ 754 00b2 012D     		cmp	r5, #1
+ 755 00b4 0AD1     		bne	.L50
+ 271:Bsp/periph_timer.c **** 	{
+ 272:Bsp/periph_timer.c **** 		TIM_OC4Init(Timer_Port[timerx], &TIM_OCInitStructure);
+ 756              		.loc 1 272 0
+ 757 00b6 6A4E     		ldr	r6, .L60+4
+ 758 00b8 12A9     		add	r1, sp, #72
+ 759 00ba 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 760 00be FFF7FEFF 		bl	TIM_OC4Init
+ 761              	.LVL83:
+ 273:Bsp/periph_timer.c **** 		TIM_OC4PreloadConfig(Timer_Port[timerx], TIM_OCPreload_Enable);
+ 762              		.loc 1 273 0
+ 763 00c2 0821     		movs	r1, #8
+ 764 00c4 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 765 00c8 FFF7FEFF 		bl	TIM_OC4PreloadConfig
+ 766              	.LVL84:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 19
+
+
+ 767              	.L50:
+ 274:Bsp/periph_timer.c **** 	}
+ 275:Bsp/periph_timer.c **** 
+ 276:Bsp/periph_timer.c **** 	TIM_ARRPreloadConfig(Timer_Port[timerx], ENABLE);
+ 768              		.loc 1 276 0
+ 769 00cc 644E     		ldr	r6, .L60+4
+ 770 00ce 0121     		movs	r1, #1
+ 771 00d0 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 772 00d4 FFF7FEFF 		bl	TIM_ARRPreloadConfig
+ 773              	.LVL85:
+ 277:Bsp/periph_timer.c **** 	TIM_Cmd(Timer_Port[timerx], ENABLE);
+ 774              		.loc 1 277 0
+ 775 00d8 0121     		movs	r1, #1
+ 776 00da 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 777 00de FFF7FEFF 		bl	TIM_Cmd
+ 778              	.LVL86:
+ 278:Bsp/periph_timer.c **** 
+ 279:Bsp/periph_timer.c **** 	if (CH1_State == PWM_CH1_Enable)
+ 779              		.loc 1 279 0
+ 780 00e2 B9F1010F 		cmp	r9, #1
+ 781 00e6 2AD1     		bne	.L51
+ 280:Bsp/periph_timer.c **** 	{
+ 281:Bsp/periph_timer.c **** 		TIM_DMACmd(Timer_Port[timerx], TIM_DMA_CC1, ENABLE);
+ 782              		.loc 1 281 0
+ 783 00e8 0122     		movs	r2, #1
+ 784 00ea 4FF40071 		mov	r1, #512
+ 785 00ee 56F82400 		ldr	r0, [r6, r4, lsl #2]
+ 786 00f2 FFF7FEFF 		bl	TIM_DMACmd
+ 787              	.LVL87:
+ 282:Bsp/periph_timer.c **** 
+ 283:Bsp/periph_timer.c **** 		if (timerx == Timer_2)
+ 788              		.loc 1 283 0
+ 789 00f6 84B9     		cbnz	r4, .L52
+ 790              	.LBB2:
+ 284:Bsp/periph_timer.c **** 		{
+ 285:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM2_CH1_DMA_Channel, (uint32_t) & (TIM2->CCR1), CH1_Buff, Bu
+ 791              		.loc 1 285 0
+ 792 00f8 239B     		ldr	r3, [sp, #140]
+ 793 00fa 0093     		str	r3, [sp]
+ 794 00fc 249B     		ldr	r3, [sp, #144]
+ 795 00fe 594A     		ldr	r2, .L60+8
+ 796 0100 4FF0C061 		mov	r1, #100663296
+ 797 0104 03A8     		add	r0, sp, #12
+ 798 0106 FFF7FEFF 		bl	periph_DMA_TIM
+ 799              	.LVL88:
+ 286:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM2_DMA_CLK, TIM2_CH1_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 800              		.loc 1 286 0
+ 801 010a 0023     		movs	r3, #0
+ 802 010c 03AA     		add	r2, sp, #12
+ 803 010e 5649     		ldr	r1, .L60+12
+ 804 0110 4FF40010 		mov	r0, #2097152
+ 805 0114 FFF7FEFF 		bl	periph_DMA_Init
+ 806              	.LVL89:
+ 807              	.LBE2:
+ 808 0118 11E0     		b	.L51
+ 809              	.L52:
+ 287:Bsp/periph_timer.c **** 		}
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 20
+
+
+ 288:Bsp/periph_timer.c **** 		else if (timerx == Timer_3)
+ 810              		.loc 1 288 0
+ 811 011a 012C     		cmp	r4, #1
+ 812 011c 0FD1     		bne	.L51
+ 813              	.LBB3:
+ 289:Bsp/periph_timer.c **** 		{
+ 290:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM3_CH1_DMA_Channel, (uint32_t) & (TIM3->CCR1), CH1_Buff, Bu
+ 814              		.loc 1 290 0
+ 815 011e 239B     		ldr	r3, [sp, #140]
+ 816 0120 0093     		str	r3, [sp]
+ 817 0122 249B     		ldr	r3, [sp, #144]
+ 818 0124 514A     		ldr	r2, .L60+16
+ 819 0126 4FF02061 		mov	r1, #167772160
+ 820 012a 03A8     		add	r0, sp, #12
+ 821 012c FFF7FEFF 		bl	periph_DMA_TIM
+ 822              	.LVL90:
+ 291:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM3_DMA_CLK, TIM3_CH1_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 823              		.loc 1 291 0
+ 824 0130 0023     		movs	r3, #0
+ 825 0132 03AA     		add	r2, sp, #12
+ 826 0134 4E49     		ldr	r1, .L60+20
+ 827 0136 4FF40010 		mov	r0, #2097152
+ 828 013a FFF7FEFF 		bl	periph_DMA_Init
+ 829              	.LVL91:
+ 830              	.L51:
+ 831              	.LBE3:
+ 292:Bsp/periph_timer.c **** 		}
+ 293:Bsp/periph_timer.c **** 	}
+ 294:Bsp/periph_timer.c **** 
+ 295:Bsp/periph_timer.c **** 	if (CH2_State == PWM_CH2_Enable)
+ 832              		.loc 1 295 0
+ 833 013e B8F1010F 		cmp	r8, #1
+ 834 0142 2BD1     		bne	.L53
+ 296:Bsp/periph_timer.c **** 	{
+ 297:Bsp/periph_timer.c **** 		TIM_DMACmd(Timer_Port[timerx], TIM_DMA_CC2, ENABLE);
+ 835              		.loc 1 297 0
+ 836 0144 0122     		movs	r2, #1
+ 837 0146 4FF48061 		mov	r1, #1024
+ 838 014a 454B     		ldr	r3, .L60+4
+ 839 014c 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 840 0150 FFF7FEFF 		bl	TIM_DMACmd
+ 841              	.LVL92:
+ 298:Bsp/periph_timer.c **** 
+ 299:Bsp/periph_timer.c **** 		if (timerx == Timer_2)
+ 842              		.loc 1 299 0
+ 843 0154 84B9     		cbnz	r4, .L54
+ 844              	.LBB4:
+ 300:Bsp/periph_timer.c **** 		{
+ 301:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM2_CH2_DMA_Channel, (uint32_t) & (TIM2->CCR2), CH2_Buff, Bu
+ 845              		.loc 1 301 0
+ 846 0156 239B     		ldr	r3, [sp, #140]
+ 847 0158 0093     		str	r3, [sp]
+ 848 015a 259B     		ldr	r3, [sp, #148]
+ 849 015c 454A     		ldr	r2, .L60+24
+ 850 015e 4FF0C061 		mov	r1, #100663296
+ 851 0162 03A8     		add	r0, sp, #12
+ 852 0164 FFF7FEFF 		bl	periph_DMA_TIM
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 21
+
+
+ 853              	.LVL93:
+ 302:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM2_DMA_CLK, TIM2_CH2_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 854              		.loc 1 302 0
+ 855 0168 0023     		movs	r3, #0
+ 856 016a 03AA     		add	r2, sp, #12
+ 857 016c 4249     		ldr	r1, .L60+28
+ 858 016e 4FF40010 		mov	r0, #2097152
+ 859 0172 FFF7FEFF 		bl	periph_DMA_Init
+ 860              	.LVL94:
+ 861              	.LBE4:
+ 862 0176 11E0     		b	.L53
+ 863              	.L54:
+ 303:Bsp/periph_timer.c **** 		}
+ 304:Bsp/periph_timer.c **** 		else if (timerx == Timer_3)
+ 864              		.loc 1 304 0
+ 865 0178 012C     		cmp	r4, #1
+ 866 017a 0FD1     		bne	.L53
+ 867              	.LBB5:
+ 305:Bsp/periph_timer.c **** 		{
+ 306:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM3_CH2_DMA_Channel, (uint32_t) & (TIM3->CCR2), CH2_Buff, Bu
+ 868              		.loc 1 306 0
+ 869 017c 239B     		ldr	r3, [sp, #140]
+ 870 017e 0093     		str	r3, [sp]
+ 871 0180 259B     		ldr	r3, [sp, #148]
+ 872 0182 3E4A     		ldr	r2, .L60+32
+ 873 0184 4FF02061 		mov	r1, #167772160
+ 874 0188 03A8     		add	r0, sp, #12
+ 875 018a FFF7FEFF 		bl	periph_DMA_TIM
+ 876              	.LVL95:
+ 307:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM3_DMA_CLK, TIM3_CH2_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 877              		.loc 1 307 0
+ 878 018e 0023     		movs	r3, #0
+ 879 0190 03AA     		add	r2, sp, #12
+ 880 0192 3549     		ldr	r1, .L60+12
+ 881 0194 4FF40010 		mov	r0, #2097152
+ 882 0198 FFF7FEFF 		bl	periph_DMA_Init
+ 883              	.LVL96:
+ 884              	.L53:
+ 885              	.LBE5:
+ 308:Bsp/periph_timer.c **** 		}
+ 309:Bsp/periph_timer.c **** 	}
+ 310:Bsp/periph_timer.c **** 
+ 311:Bsp/periph_timer.c **** 	if (CH3_State == PWM_CH3_Enable)
+ 886              		.loc 1 311 0
+ 887 019c 012F     		cmp	r7, #1
+ 888 019e 2BD1     		bne	.L55
+ 312:Bsp/periph_timer.c **** 	{
+ 313:Bsp/periph_timer.c **** 		TIM_DMACmd(Timer_Port[timerx], TIM_DMA_CC3, ENABLE);
+ 889              		.loc 1 313 0
+ 890 01a0 0122     		movs	r2, #1
+ 891 01a2 4FF40061 		mov	r1, #2048
+ 892 01a6 2E4B     		ldr	r3, .L60+4
+ 893 01a8 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 894 01ac FFF7FEFF 		bl	TIM_DMACmd
+ 895              	.LVL97:
+ 314:Bsp/periph_timer.c **** 
+ 315:Bsp/periph_timer.c **** 		if (timerx == Timer_2)
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 22
+
+
+ 896              		.loc 1 315 0
+ 897 01b0 84B9     		cbnz	r4, .L56
+ 898              	.LBB6:
+ 316:Bsp/periph_timer.c **** 		{
+ 317:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM2_CH3_DMA_Channel, (uint32_t) & (TIM2->CCR3), CH3_Buff, Bu
+ 899              		.loc 1 317 0
+ 900 01b2 239B     		ldr	r3, [sp, #140]
+ 901 01b4 0093     		str	r3, [sp]
+ 902 01b6 269B     		ldr	r3, [sp, #152]
+ 903 01b8 314A     		ldr	r2, .L60+36
+ 904 01ba 4FF0C061 		mov	r1, #100663296
+ 905 01be 03A8     		add	r0, sp, #12
+ 906 01c0 FFF7FEFF 		bl	periph_DMA_TIM
+ 907              	.LVL98:
+ 318:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM2_DMA_CLK, TIM2_CH3_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 908              		.loc 1 318 0
+ 909 01c4 0023     		movs	r3, #0
+ 910 01c6 03AA     		add	r2, sp, #12
+ 911 01c8 2E49     		ldr	r1, .L60+40
+ 912 01ca 4FF40010 		mov	r0, #2097152
+ 913 01ce FFF7FEFF 		bl	periph_DMA_Init
+ 914              	.LVL99:
+ 915              	.LBE6:
+ 916 01d2 11E0     		b	.L55
+ 917              	.L56:
+ 319:Bsp/periph_timer.c **** 		}
+ 320:Bsp/periph_timer.c **** 		else if (timerx == Timer_3)
+ 918              		.loc 1 320 0
+ 919 01d4 012C     		cmp	r4, #1
+ 920 01d6 0FD1     		bne	.L55
+ 921              	.LBB7:
+ 321:Bsp/periph_timer.c **** 		{
+ 322:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM3_CH2_DMA_Channel, (uint32_t) & (TIM3->CCR3), CH3_Buff, Bu
+ 922              		.loc 1 322 0
+ 923 01d8 239B     		ldr	r3, [sp, #140]
+ 924 01da 0093     		str	r3, [sp]
+ 925 01dc 269B     		ldr	r3, [sp, #152]
+ 926 01de 2A4A     		ldr	r2, .L60+44
+ 927 01e0 4FF02061 		mov	r1, #167772160
+ 928 01e4 03A8     		add	r0, sp, #12
+ 929 01e6 FFF7FEFF 		bl	periph_DMA_TIM
+ 930              	.LVL100:
+ 323:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM3_DMA_CLK, TIM3_CH3_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 931              		.loc 1 323 0
+ 932 01ea 0023     		movs	r3, #0
+ 933 01ec 03AA     		add	r2, sp, #12
+ 934 01ee 2749     		ldr	r1, .L60+48
+ 935 01f0 4FF40010 		mov	r0, #2097152
+ 936 01f4 FFF7FEFF 		bl	periph_DMA_Init
+ 937              	.LVL101:
+ 938              	.L55:
+ 939              	.LBE7:
+ 324:Bsp/periph_timer.c **** 		}
+ 325:Bsp/periph_timer.c **** 	}
+ 326:Bsp/periph_timer.c **** 
+ 327:Bsp/periph_timer.c **** 	if (CH4_State == PWM_CH4_Enable)
+ 940              		.loc 1 327 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 23
+
+
+ 941 01f8 012D     		cmp	r5, #1
+ 942 01fa 2BD1     		bne	.L46
+ 328:Bsp/periph_timer.c **** 	{
+ 329:Bsp/periph_timer.c **** 		TIM_DMACmd(Timer_Port[timerx], TIM_DMA_CC4, ENABLE);
+ 943              		.loc 1 329 0
+ 944 01fc 0122     		movs	r2, #1
+ 945 01fe 4FF48051 		mov	r1, #4096
+ 946 0202 174B     		ldr	r3, .L60+4
+ 947 0204 53F82400 		ldr	r0, [r3, r4, lsl #2]
+ 948 0208 FFF7FEFF 		bl	TIM_DMACmd
+ 949              	.LVL102:
+ 330:Bsp/periph_timer.c **** 
+ 331:Bsp/periph_timer.c **** 		if (timerx == Timer_2)
+ 950              		.loc 1 331 0
+ 951 020c 84B9     		cbnz	r4, .L58
+ 952              	.LBB8:
+ 332:Bsp/periph_timer.c **** 		{
+ 333:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM2_CH4_DMA_Channel, (uint32_t) & (TIM2->CCR4), CH4_Buff, Bu
+ 953              		.loc 1 333 0
+ 954 020e 239B     		ldr	r3, [sp, #140]
+ 955 0210 0093     		str	r3, [sp]
+ 956 0212 279B     		ldr	r3, [sp, #156]
+ 957 0214 1E4A     		ldr	r2, .L60+52
+ 958 0216 4FF0C061 		mov	r1, #100663296
+ 959 021a 03A8     		add	r0, sp, #12
+ 960 021c FFF7FEFF 		bl	periph_DMA_TIM
+ 961              	.LVL103:
+ 334:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM2_DMA_CLK, TIM2_CH4_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 962              		.loc 1 334 0
+ 963 0220 0023     		movs	r3, #0
+ 964 0222 03AA     		add	r2, sp, #12
+ 965 0224 1449     		ldr	r1, .L60+28
+ 966 0226 4FF40010 		mov	r0, #2097152
+ 967 022a FFF7FEFF 		bl	periph_DMA_Init
+ 968              	.LVL104:
+ 969              	.LBE8:
+ 970 022e 11E0     		b	.L46
+ 971              	.L58:
+ 335:Bsp/periph_timer.c **** 		}
+ 336:Bsp/periph_timer.c **** 		else if (timerx == Timer_3)
+ 972              		.loc 1 336 0
+ 973 0230 012C     		cmp	r4, #1
+ 974 0232 0FD1     		bne	.L46
+ 975              	.LBB9:
+ 337:Bsp/periph_timer.c **** 		{
+ 338:Bsp/periph_timer.c **** 			periph_DMA_TIM(&DMA_InitStructure, TIM3_CH4_DMA_Channel, (uint32_t) & (TIM3->CCR4), CH4_Buff, Bu
+ 976              		.loc 1 338 0
+ 977 0234 239B     		ldr	r3, [sp, #140]
+ 978 0236 0093     		str	r3, [sp]
+ 979 0238 279B     		ldr	r3, [sp, #156]
+ 980 023a 164A     		ldr	r2, .L60+56
+ 981 023c 4FF02061 		mov	r1, #167772160
+ 982 0240 03A8     		add	r0, sp, #12
+ 983 0242 FFF7FEFF 		bl	periph_DMA_TIM
+ 984              	.LVL105:
+ 339:Bsp/periph_timer.c **** 			periph_DMA_Init(TIM3_DMA_CLK, TIM3_CH4_DMA_Stream, &DMA_InitStructure, DISABLE);
+ 985              		.loc 1 339 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 24
+
+
+ 986 0246 0023     		movs	r3, #0
+ 987 0248 03AA     		add	r2, sp, #12
+ 988 024a 1349     		ldr	r1, .L60+60
+ 989 024c 4FF40010 		mov	r0, #2097152
+ 990 0250 FFF7FEFF 		bl	periph_DMA_Init
+ 991              	.LVL106:
+ 992              	.L46:
+ 993              	.LBE9:
+ 340:Bsp/periph_timer.c **** 		}
+ 341:Bsp/periph_timer.c **** 	}
+ 342:Bsp/periph_timer.c **** }
+ 994              		.loc 1 342 0
+ 995 0254 1AB0     		add	sp, sp, #104
+ 996              	.LCFI13:
+ 997              		.cfi_def_cfa_offset 32
+ 998              		@ sp needed
+ 999 0256 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1000              	.LVL107:
+ 1001              	.L61:
+ 1002 025a 00BF     		.align	2
+ 1003              	.L60:
+ 1004 025c 00000000 		.word	.LANCHOR0
+ 1005 0260 00000000 		.word	.LANCHOR1
+ 1006 0264 34000040 		.word	1073741876
+ 1007 0268 88600240 		.word	1073897608
+ 1008 026c 34040040 		.word	1073742900
+ 1009 0270 70600240 		.word	1073897584
+ 1010 0274 38000040 		.word	1073741880
+ 1011 0278 A0600240 		.word	1073897632
+ 1012 027c 38040040 		.word	1073742904
+ 1013 0280 3C000040 		.word	1073741884
+ 1014 0284 28600240 		.word	1073897512
+ 1015 0288 3C040040 		.word	1073742908
+ 1016 028c B8600240 		.word	1073897656
+ 1017 0290 40000040 		.word	1073741888
+ 1018 0294 40040040 		.word	1073742912
+ 1019 0298 40600240 		.word	1073897536
+ 1020              		.cfi_endproc
+ 1021              	.LFE129:
+ 1023              		.section	.text.periph_Timer_Set_PWMOutPut,"ax",%progbits
+ 1024              		.align	2
+ 1025              		.global	periph_Timer_Set_PWMOutPut
+ 1026              		.thumb
+ 1027              		.thumb_func
+ 1029              	periph_Timer_Set_PWMOutPut:
+ 1030              	.LFB130:
+ 343:Bsp/periph_timer.c **** 
+ 344:Bsp/periph_timer.c **** void periph_Timer_Set_PWMOutPut(Timer_list timerx, PWM_OutPut_Channel Channel, uint32_t value)
+ 345:Bsp/periph_timer.c **** {
+ 1031              		.loc 1 345 0
+ 1032              		.cfi_startproc
+ 1033              		@ args = 0, pretend = 0, frame = 0
+ 1034              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1035              	.LVL108:
+ 1036 0000 08B5     		push	{r3, lr}
+ 1037              	.LCFI14:
+ 1038              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 25
+
+
+ 1039              		.cfi_offset 3, -8
+ 1040              		.cfi_offset 14, -4
+ 346:Bsp/periph_timer.c **** 	PWM_Set_Value[Channel](Timer_Port[timerx], value);
+ 1041              		.loc 1 346 0
+ 1042 0002 044B     		ldr	r3, .L64
+ 1043 0004 53F82130 		ldr	r3, [r3, r1, lsl #2]
+ 1044 0008 1146     		mov	r1, r2
+ 1045              	.LVL109:
+ 1046 000a 034A     		ldr	r2, .L64+4
+ 1047              	.LVL110:
+ 1048 000c 52F82000 		ldr	r0, [r2, r0, lsl #2]
+ 1049              	.LVL111:
+ 1050 0010 9847     		blx	r3
+ 1051              	.LVL112:
+ 1052 0012 08BD     		pop	{r3, pc}
+ 1053              	.L65:
+ 1054              		.align	2
+ 1055              	.L64:
+ 1056 0014 00000000 		.word	.LANCHOR3
+ 1057 0018 00000000 		.word	.LANCHOR1
+ 1058              		.cfi_endproc
+ 1059              	.LFE130:
+ 1061              		.section	.text.periph_Timer_Counter_SetEnable,"ax",%progbits
+ 1062              		.align	2
+ 1063              		.global	periph_Timer_Counter_SetEnable
+ 1064              		.thumb
+ 1065              		.thumb_func
+ 1067              	periph_Timer_Counter_SetEnable:
+ 1068              	.LFB131:
+ 347:Bsp/periph_timer.c **** }
+ 348:Bsp/periph_timer.c **** 
+ 349:Bsp/periph_timer.c **** void periph_Timer_Counter_SetEnable(Timer_list timerx, uint8_t state)
+ 350:Bsp/periph_timer.c **** {
+ 1069              		.loc 1 350 0
+ 1070              		.cfi_startproc
+ 1071              		@ args = 0, pretend = 0, frame = 0
+ 1072              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1073              	.LVL113:
+ 1074 0000 08B5     		push	{r3, lr}
+ 1075              	.LCFI15:
+ 1076              		.cfi_def_cfa_offset 8
+ 1077              		.cfi_offset 3, -8
+ 1078              		.cfi_offset 14, -4
+ 351:Bsp/periph_timer.c **** 	if (state)
+ 1079              		.loc 1 351 0
+ 1080 0002 31B1     		cbz	r1, .L67
+ 352:Bsp/periph_timer.c **** 	{
+ 353:Bsp/periph_timer.c **** 		TIM_Cmd(Timer_Port[timerx], ENABLE);
+ 1081              		.loc 1 353 0
+ 1082 0004 0121     		movs	r1, #1
+ 1083              	.LVL114:
+ 1084 0006 064B     		ldr	r3, .L70
+ 1085 0008 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 1086              	.LVL115:
+ 1087 000c FFF7FEFF 		bl	TIM_Cmd
+ 1088              	.LVL116:
+ 1089 0010 08BD     		pop	{r3, pc}
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 26
+
+
+ 1090              	.LVL117:
+ 1091              	.L67:
+ 354:Bsp/periph_timer.c **** 	}
+ 355:Bsp/periph_timer.c **** 	else
+ 356:Bsp/periph_timer.c **** 	{
+ 357:Bsp/periph_timer.c **** 		TIM_Cmd(Timer_Port[timerx], DISABLE);
+ 1092              		.loc 1 357 0
+ 1093 0012 0021     		movs	r1, #0
+ 1094              	.LVL118:
+ 1095 0014 024B     		ldr	r3, .L70
+ 1096 0016 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 1097              	.LVL119:
+ 1098 001a FFF7FEFF 		bl	TIM_Cmd
+ 1099              	.LVL120:
+ 1100 001e 08BD     		pop	{r3, pc}
+ 1101              	.L71:
+ 1102              		.align	2
+ 1103              	.L70:
+ 1104 0020 00000000 		.word	.LANCHOR1
+ 1105              		.cfi_endproc
+ 1106              	.LFE131:
+ 1108              		.global	Timer_Port
+ 1109              		.section	.rodata.Timer_CLK,"a",%progbits
+ 1110              		.align	2
+ 1111              		.set	.LANCHOR0,. + 0
+ 1114              	Timer_CLK:
+ 1115 0000 01000000 		.word	1
+ 1116 0004 02000000 		.word	2
+ 1117 0008 04000000 		.word	4
+ 1118 000c 02000000 		.word	2
+ 1119              		.section	.data.Timer_Port,"aw",%progbits
+ 1120              		.align	2
+ 1121              		.set	.LANCHOR1,. + 0
+ 1124              	Timer_Port:
+ 1125 0000 00000040 		.word	1073741824
+ 1126 0004 00040040 		.word	1073742848
+ 1127 0008 00080040 		.word	1073743872
+ 1128 000c 00040140 		.word	1073808384
+ 1129              		.section	.rodata.Timer_IRQ_Channel,"a",%progbits
+ 1130              		.align	2
+ 1131              		.set	.LANCHOR2,. + 0
+ 1134              	Timer_IRQ_Channel:
+ 1135 0000 1C       		.byte	28
+ 1136 0001 1D       		.byte	29
+ 1137 0002 1E       		.byte	30
+ 1138 0003 00       		.space	1
+ 1139              		.section	.rodata.PWM_Set_Value,"a",%progbits
+ 1140              		.align	2
+ 1141              		.set	.LANCHOR3,. + 0
+ 1144              	PWM_Set_Value:
+ 1145 0000 00000000 		.word	TIM_SetCompare1
+ 1146 0004 00000000 		.word	TIM_SetCompare2
+ 1147 0008 00000000 		.word	TIM_SetCompare3
+ 1148 000c 00000000 		.word	TIM_SetCompare4
+ 1149              		.text
+ 1150              	.Letext0:
+ 1151              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 27
+
+
+ 1152              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1153              		.file 4 "USER/stm32f4xx.h"
+ 1154              		.file 5 "FWLIB/inc/stm32f4xx_dma.h"
+ 1155              		.file 6 "FWLIB/inc/misc.h"
+ 1156              		.file 7 "FWLIB/inc/stm32f4xx_tim.h"
+ 1157              		.file 8 "Bsp/periph_timer.h"
+ 1158              		.file 9 "F4_CORE/core_cm4.h"
+ 1159              		.file 10 "Bsp/periph_gpio.h"
+ 1160              		.file 11 "FWLIB/inc/stm32f4xx_rcc.h"
+ 1161              		.file 12 "Bsp/periph_dma.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 28
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 periph_timer.c
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:22     .text.periph_Timer_IO_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:26     .text.periph_Timer_IO_Init:00000000 periph_Timer_IO_Init
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:163    .text.periph_Timer_CounterMode_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:168    .text.periph_Timer_CounterMode_Init:00000000 periph_Timer_CounterMode_Init
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:254    .text.periph_Timer_CounterMode_Init:00000074 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:261    .text.periph_Timer_Encoder_Mode_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:266    .text.periph_Timer_Encoder_Mode_Init:00000000 periph_Timer_Encoder_Mode_Init
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:360    .text.periph_Timer_Encoder_Mode_Init:00000088 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:366    .text.periph_Timer_GetEncoder_Input:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:371    .text.periph_Timer_GetEncoder_Input:00000000 periph_Timer_GetEncoder_Input
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:390    .text.periph_Timer_GetEncoder_Input:0000000c $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:395    .text.periph_Timer_PWMOutPut_Mode_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:400    .text.periph_Timer_PWMOutPut_Mode_Init:00000000 periph_Timer_PWMOutPut_Mode_Init
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:582    .text.periph_Timer_PWMOutPut_Mode_Init:00000120 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:588    .text.periph_Timer_PWM_SetEnable:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:593    .text.periph_Timer_PWM_SetEnable:00000000 periph_Timer_PWM_SetEnable
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:630    .text.periph_Timer_PWM_SetEnable:00000020 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:635    .text.periph_Timer_DShotOutPut_Mode_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:640    .text.periph_Timer_DShotOutPut_Mode_Init:00000000 periph_Timer_DShotOutPut_Mode_Init
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1004   .text.periph_Timer_DShotOutPut_Mode_Init:0000025c $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1024   .text.periph_Timer_Set_PWMOutPut:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1029   .text.periph_Timer_Set_PWMOutPut:00000000 periph_Timer_Set_PWMOutPut
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1056   .text.periph_Timer_Set_PWMOutPut:00000014 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1062   .text.periph_Timer_Counter_SetEnable:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1067   .text.periph_Timer_Counter_SetEnable:00000000 periph_Timer_Counter_SetEnable
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1104   .text.periph_Timer_Counter_SetEnable:00000020 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1124   .data.Timer_Port:00000000 Timer_Port
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1110   .rodata.Timer_CLK:00000000 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1114   .rodata.Timer_CLK:00000000 Timer_CLK
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1120   .data.Timer_Port:00000000 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1130   .rodata.Timer_IRQ_Channel:00000000 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1134   .rodata.Timer_IRQ_Channel:00000000 Timer_IRQ_Channel
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1140   .rodata.PWM_Set_Value:00000000 $d
+C:\Users\why\AppData\Local\Temp\ccbVdxW4.s:1144   .rodata.PWM_Set_Value:00000000 PWM_Set_Value
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+GPIO_TIM2_PWMCH1_IO_Init
+GPIO_TIM3_PWMCH1_IO_Init
+GPIO_TIM4_PWMCH1_IO_Init
+GPIO_TIM2_PWMCH2_IO_Init
+GPIO_TIM3_PWMCH2_IO_Init
+GPIO_TIM4_PWMCH2_IO_Init
+GPIO_TIM2_PWMCH3_IO_Init
+GPIO_TIM3_PWMCH3_IO_Init
+GPIO_TIM4_PWMCH3_IO_Init
+GPIO_TIM2_PWMCH4_IO_Init
+GPIO_TIM3_PWMCH4_IO_Init
+GPIO_TIM4_PWMCH4_IO_Init
+RCC_APB1PeriphClockCmd
+TIM_TimeBaseInit
+TIM_ITConfig
+TIM_Cmd
+NVIC_Init
+RCC_APB2PeriphClockCmd
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccbVdxW4.s 			page 29
+
+
+TIM_ICInit
+TIM_EncoderInterfaceConfig
+TIM_ICStructInit
+TIM_DeInit
+TIM_OCStructInit
+TIM_OC1Init
+TIM_OC1PreloadConfig
+TIM_OC2Init
+TIM_OC2PreloadConfig
+TIM_OC3Init
+TIM_OC3PreloadConfig
+TIM_OC4Init
+TIM_OC4PreloadConfig
+TIM_ARRPreloadConfig
+TIM_ClearFlag
+TIM_DMACmd
+periph_DMA_TIM
+periph_DMA_Init
+TIM_SetCompare1
+TIM_SetCompare2
+TIM_SetCompare3
+TIM_SetCompare4

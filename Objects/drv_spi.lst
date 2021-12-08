@@ -1,0 +1,343 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccrJlrnG.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"drv_spi.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.DrvSpi_Transfer,"ax",%progbits
+  22              		.align	2
+  23              		.thumb
+  24              		.thumb_func
+  26              	DrvSpi_Transfer:
+  27              	.LFB128:
+  28              		.file 1 "Drv/drv_spi.c"
+   1:Drv/drv_spi.c **** #include "drv_spi.h"
+   2:Drv/drv_spi.c **** #include "periph_spi.h"
+   3:Drv/drv_spi.c **** 
+   4:Drv/drv_spi.c **** /* external function define */
+   5:Drv/drv_spi.c **** static void DrvSpi_Open(DrvSpi_Obj_TypeDef *Obj);
+   6:Drv/drv_spi.c **** static void DrvSpi_Close(DrvSpi_Obj_TypeDef *Obj);
+   7:Drv/drv_spi.c **** static bool DrvSpi_Transmit(DrvSpi_Obj_TypeDef *Obj, uint8_t data);
+   8:Drv/drv_spi.c **** static bool DrvSpi_Receive(DrvSpi_Obj_TypeDef *Obj, uint8_t *data);
+   9:Drv/drv_spi.c **** static bool DrvSpi_transmit_receive(DrvSpi_Obj_TypeDef *Obj, uint8_t tdata, uint8_t *rdata);
+  10:Drv/drv_spi.c **** static void DrvSpi_SetSpeed(DrvSpi_Obj_TypeDef *Obj, SPIClockSpeed_e speed);
+  11:Drv/drv_spi.c **** static uint16_t DrvSpi_Transfer(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata, uint16_t l
+  12:Drv/drv_spi.c **** 
+  13:Drv/drv_spi.c **** /* internal function define */
+  14:Drv/drv_spi.c **** 
+  15:Drv/drv_spi.c **** DrvSpi_GenProcFunc_TypeDef GenSPI_Drv = {
+  16:Drv/drv_spi.c ****     .open = DrvSpi_Open,
+  17:Drv/drv_spi.c ****     .close = DrvSpi_Close,
+  18:Drv/drv_spi.c ****     .transmit = DrvSpi_Transmit,
+  19:Drv/drv_spi.c ****     .receive = DrvSpi_Receive,
+  20:Drv/drv_spi.c ****     .transmit_receive = DrvSpi_transmit_receive,
+  21:Drv/drv_spi.c ****     .set_speed = DrvSpi_SetSpeed,
+  22:Drv/drv_spi.c ****     .transfer = DrvSpi_Transfer,
+  23:Drv/drv_spi.c **** };
+  24:Drv/drv_spi.c **** 
+  25:Drv/drv_spi.c **** uint8_t periph_SPI_CheckBusy(SPI_List SPIx);
+  26:Drv/drv_spi.c **** 
+  27:Drv/drv_spi.c **** static void DrvSpi_Open(DrvSpi_Obj_TypeDef *Obj)
+  28:Drv/drv_spi.c **** {
+  29:Drv/drv_spi.c ****     periph_SPI_Init(Obj->SPIx, Obj->speed, Obj->CPOL, Obj->CPHA);
+  30:Drv/drv_spi.c **** }
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccrJlrnG.s 			page 2
+
+
+  31:Drv/drv_spi.c **** 
+  32:Drv/drv_spi.c **** static void DrvSpi_Close(DrvSpi_Obj_TypeDef *Obj)
+  33:Drv/drv_spi.c **** {
+  34:Drv/drv_spi.c ****     periph_SPI_DeInit(Obj->SPIx);
+  35:Drv/drv_spi.c **** }
+  36:Drv/drv_spi.c **** 
+  37:Drv/drv_spi.c **** static bool DrvSpi_Transmit(DrvSpi_Obj_TypeDef *Obj, uint8_t data)
+  38:Drv/drv_spi.c **** {
+  39:Drv/drv_spi.c ****     return periph_SPI_WriteByte(Obj->SPIx, data);
+  40:Drv/drv_spi.c **** }
+  41:Drv/drv_spi.c **** 
+  42:Drv/drv_spi.c **** static bool DrvSpi_Receive(DrvSpi_Obj_TypeDef *Obj, uint8_t *data)
+  43:Drv/drv_spi.c **** {
+  44:Drv/drv_spi.c ****     return periph_SPI_ReadByte(Obj->SPIx, data);
+  45:Drv/drv_spi.c **** }
+  46:Drv/drv_spi.c **** 
+  47:Drv/drv_spi.c **** static bool DrvSpi_transmit_receive(DrvSpi_Obj_TypeDef *Obj, uint8_t tdata, uint8_t *rdata)
+  48:Drv/drv_spi.c **** {
+  49:Drv/drv_spi.c ****     return periph_SPI_ReadWriteByte(Obj->SPIx, tdata, rdata);
+  50:Drv/drv_spi.c **** }
+  51:Drv/drv_spi.c **** 
+  52:Drv/drv_spi.c **** static uint16_t DrvSpi_Transfer(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata, uint16_t l
+  53:Drv/drv_spi.c **** {
+  29              		.loc 1 53 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              	.LVL0:
+  34 0000 10B5     		push	{r4, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 4, -8
+  38              		.cfi_offset 14, -4
+  39 0002 1446     		mov	r4, r2
+  54:Drv/drv_spi.c ****     return periph_SPI_Transfer(Obj->SPIx, rdata, tdata, len);
+  40              		.loc 1 54 0
+  41 0004 0A46     		mov	r2, r1
+  42              	.LVL1:
+  43 0006 2146     		mov	r1, r4
+  44              	.LVL2:
+  45 0008 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+  46              	.LVL3:
+  47 000a FFF7FEFF 		bl	periph_SPI_Transfer
+  48              	.LVL4:
+  55:Drv/drv_spi.c **** }
+  49              		.loc 1 55 0
+  50 000e 10BD     		pop	{r4, pc}
+  51              		.cfi_endproc
+  52              	.LFE128:
+  54              		.section	.text.DrvSpi_transmit_receive,"ax",%progbits
+  55              		.align	2
+  56              		.thumb
+  57              		.thumb_func
+  59              	DrvSpi_transmit_receive:
+  60              	.LFB127:
+  48:Drv/drv_spi.c ****     return periph_SPI_ReadWriteByte(Obj->SPIx, tdata, rdata);
+  61              		.loc 1 48 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccrJlrnG.s 			page 3
+
+
+  62              		.cfi_startproc
+  63              		@ args = 0, pretend = 0, frame = 0
+  64              		@ frame_needed = 0, uses_anonymous_args = 0
+  65              	.LVL5:
+  66 0000 08B5     		push	{r3, lr}
+  67              	.LCFI1:
+  68              		.cfi_def_cfa_offset 8
+  69              		.cfi_offset 3, -8
+  70              		.cfi_offset 14, -4
+  49:Drv/drv_spi.c **** }
+  71              		.loc 1 49 0
+  72 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+  73              	.LVL6:
+  74 0004 FFF7FEFF 		bl	periph_SPI_ReadWriteByte
+  75              	.LVL7:
+  50:Drv/drv_spi.c **** 
+  76              		.loc 1 50 0
+  77 0008 08BD     		pop	{r3, pc}
+  78              		.cfi_endproc
+  79              	.LFE127:
+  81 000a 00BF     		.section	.text.DrvSpi_Receive,"ax",%progbits
+  82              		.align	2
+  83              		.thumb
+  84              		.thumb_func
+  86              	DrvSpi_Receive:
+  87              	.LFB126:
+  43:Drv/drv_spi.c ****     return periph_SPI_ReadByte(Obj->SPIx, data);
+  88              		.loc 1 43 0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              	.LVL8:
+  93 0000 08B5     		push	{r3, lr}
+  94              	.LCFI2:
+  95              		.cfi_def_cfa_offset 8
+  96              		.cfi_offset 3, -8
+  97              		.cfi_offset 14, -4
+  44:Drv/drv_spi.c **** }
+  98              		.loc 1 44 0
+  99 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 100              	.LVL9:
+ 101 0004 FFF7FEFF 		bl	periph_SPI_ReadByte
+ 102              	.LVL10:
+  45:Drv/drv_spi.c **** 
+ 103              		.loc 1 45 0
+ 104 0008 08BD     		pop	{r3, pc}
+ 105              		.cfi_endproc
+ 106              	.LFE126:
+ 108 000a 00BF     		.section	.text.DrvSpi_Transmit,"ax",%progbits
+ 109              		.align	2
+ 110              		.thumb
+ 111              		.thumb_func
+ 113              	DrvSpi_Transmit:
+ 114              	.LFB125:
+  38:Drv/drv_spi.c ****     return periph_SPI_WriteByte(Obj->SPIx, data);
+ 115              		.loc 1 38 0
+ 116              		.cfi_startproc
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccrJlrnG.s 			page 4
+
+
+ 117              		@ args = 0, pretend = 0, frame = 0
+ 118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119              	.LVL11:
+ 120 0000 08B5     		push	{r3, lr}
+ 121              	.LCFI3:
+ 122              		.cfi_def_cfa_offset 8
+ 123              		.cfi_offset 3, -8
+ 124              		.cfi_offset 14, -4
+  39:Drv/drv_spi.c **** }
+ 125              		.loc 1 39 0
+ 126 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 127              	.LVL12:
+ 128 0004 FFF7FEFF 		bl	periph_SPI_WriteByte
+ 129              	.LVL13:
+  40:Drv/drv_spi.c **** 
+ 130              		.loc 1 40 0
+ 131 0008 08BD     		pop	{r3, pc}
+ 132              		.cfi_endproc
+ 133              	.LFE125:
+ 135 000a 00BF     		.section	.text.DrvSpi_SetSpeed,"ax",%progbits
+ 136              		.align	2
+ 137              		.thumb
+ 138              		.thumb_func
+ 140              	DrvSpi_SetSpeed:
+ 141              	.LFB129:
+  56:Drv/drv_spi.c **** 
+  57:Drv/drv_spi.c **** static void DrvSpi_SetSpeed(DrvSpi_Obj_TypeDef *Obj, SPIClockSpeed_e speed)
+  58:Drv/drv_spi.c **** {
+ 142              		.loc 1 58 0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146              	.LVL14:
+ 147 0000 08B5     		push	{r3, lr}
+ 148              	.LCFI4:
+ 149              		.cfi_def_cfa_offset 8
+ 150              		.cfi_offset 3, -8
+ 151              		.cfi_offset 14, -4
+  59:Drv/drv_spi.c ****     periph_SPI_SetSpeed(Obj->SPIx, Obj->speed);
+ 152              		.loc 1 59 0
+ 153 0002 4178     		ldrb	r1, [r0, #1]	@ zero_extendqisi2
+ 154              	.LVL15:
+ 155 0004 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 156              	.LVL16:
+ 157 0006 FFF7FEFF 		bl	periph_SPI_SetSpeed
+ 158              	.LVL17:
+ 159 000a 08BD     		pop	{r3, pc}
+ 160              		.cfi_endproc
+ 161              	.LFE129:
+ 163              		.section	.text.DrvSpi_Close,"ax",%progbits
+ 164              		.align	2
+ 165              		.thumb
+ 166              		.thumb_func
+ 168              	DrvSpi_Close:
+ 169              	.LFB124:
+  33:Drv/drv_spi.c ****     periph_SPI_DeInit(Obj->SPIx);
+ 170              		.loc 1 33 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccrJlrnG.s 			page 5
+
+
+ 171              		.cfi_startproc
+ 172              		@ args = 0, pretend = 0, frame = 0
+ 173              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174              	.LVL18:
+ 175 0000 08B5     		push	{r3, lr}
+ 176              	.LCFI5:
+ 177              		.cfi_def_cfa_offset 8
+ 178              		.cfi_offset 3, -8
+ 179              		.cfi_offset 14, -4
+  34:Drv/drv_spi.c **** }
+ 180              		.loc 1 34 0
+ 181 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 182              	.LVL19:
+ 183 0004 FFF7FEFF 		bl	periph_SPI_DeInit
+ 184              	.LVL20:
+ 185 0008 08BD     		pop	{r3, pc}
+ 186              		.cfi_endproc
+ 187              	.LFE124:
+ 189 000a 00BF     		.section	.text.DrvSpi_Open,"ax",%progbits
+ 190              		.align	2
+ 191              		.thumb
+ 192              		.thumb_func
+ 194              	DrvSpi_Open:
+ 195              	.LFB123:
+  28:Drv/drv_spi.c ****     periph_SPI_Init(Obj->SPIx, Obj->speed, Obj->CPOL, Obj->CPHA);
+ 196              		.loc 1 28 0
+ 197              		.cfi_startproc
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200              	.LVL21:
+ 201 0000 08B5     		push	{r3, lr}
+ 202              	.LCFI6:
+ 203              		.cfi_def_cfa_offset 8
+ 204              		.cfi_offset 3, -8
+ 205              		.cfi_offset 14, -4
+  29:Drv/drv_spi.c **** }
+ 206              		.loc 1 29 0
+ 207 0002 8388     		ldrh	r3, [r0, #4]
+ 208 0004 4288     		ldrh	r2, [r0, #2]
+ 209 0006 4178     		ldrb	r1, [r0, #1]	@ zero_extendqisi2
+ 210 0008 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 211              	.LVL22:
+ 212 000a FFF7FEFF 		bl	periph_SPI_Init
+ 213              	.LVL23:
+ 214 000e 08BD     		pop	{r3, pc}
+ 215              		.cfi_endproc
+ 216              	.LFE123:
+ 218              		.global	GenSPI_Drv
+ 219              		.section	.data.GenSPI_Drv,"aw",%progbits
+ 220              		.align	2
+ 223              	GenSPI_Drv:
+ 224 0000 00000000 		.word	DrvSpi_Open
+ 225 0004 00000000 		.word	DrvSpi_Close
+ 226 0008 00000000 		.word	DrvSpi_SetSpeed
+ 227 000c 00000000 		.word	DrvSpi_Transmit
+ 228 0010 00000000 		.word	DrvSpi_Receive
+ 229 0014 00000000 		.word	DrvSpi_transmit_receive
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccrJlrnG.s 			page 6
+
+
+ 230 0018 00000000 		.word	DrvSpi_Transfer
+ 231              		.text
+ 232              	.Letext0:
+ 233              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 234              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 235              		.file 4 "Bsp/periph_spi.h"
+ 236              		.file 5 "SYS/data_structure/queue.h"
+ 237              		.file 6 "Drv/drv_spi.h"
+ 238              		.file 7 "F4_CORE/core_cm4.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccrJlrnG.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 drv_spi.c
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:22     .text.DrvSpi_Transfer:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:26     .text.DrvSpi_Transfer:00000000 DrvSpi_Transfer
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:55     .text.DrvSpi_transmit_receive:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:59     .text.DrvSpi_transmit_receive:00000000 DrvSpi_transmit_receive
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:82     .text.DrvSpi_Receive:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:86     .text.DrvSpi_Receive:00000000 DrvSpi_Receive
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:109    .text.DrvSpi_Transmit:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:113    .text.DrvSpi_Transmit:00000000 DrvSpi_Transmit
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:136    .text.DrvSpi_SetSpeed:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:140    .text.DrvSpi_SetSpeed:00000000 DrvSpi_SetSpeed
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:164    .text.DrvSpi_Close:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:168    .text.DrvSpi_Close:00000000 DrvSpi_Close
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:190    .text.DrvSpi_Open:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:194    .text.DrvSpi_Open:00000000 DrvSpi_Open
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:223    .data.GenSPI_Drv:00000000 GenSPI_Drv
+C:\Users\why\AppData\Local\Temp\ccrJlrnG.s:220    .data.GenSPI_Drv:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+periph_SPI_Transfer
+periph_SPI_ReadWriteByte
+periph_SPI_ReadByte
+periph_SPI_WriteByte
+periph_SPI_SetSpeed
+periph_SPI_DeInit
+periph_SPI_Init

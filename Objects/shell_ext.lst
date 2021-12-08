@@ -1,0 +1,1369 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"shell_ext.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.shellExtNumType,"ax",%progbits
+  22              		.align	2
+  23              		.thumb
+  24              		.thumb_func
+  26              	shellExtNumType:
+  27              	.LFB0:
+  28              		.file 1 "SYS/shell/shell_ext.c"
+   1:SYS/shell/shell_ext.c **** /**
+   2:SYS/shell/shell_ext.c ****  * @file shell_ext.c
+   3:SYS/shell/shell_ext.c ****  * @author Letter (NevermindZZT@gmail.com)
+   4:SYS/shell/shell_ext.c ****  * @brief shell extensions
+   5:SYS/shell/shell_ext.c ****  * @version 3.0.0
+   6:SYS/shell/shell_ext.c ****  * @date 2019-12-31
+   7:SYS/shell/shell_ext.c ****  * 
+   8:SYS/shell/shell_ext.c ****  * @copyright (c) 2019 Letter
+   9:SYS/shell/shell_ext.c ****  * 
+  10:SYS/shell/shell_ext.c ****  */
+  11:SYS/shell/shell_ext.c **** 
+  12:SYS/shell/shell_ext.c **** #include "shell_cfg.h"
+  13:SYS/shell/shell_ext.c **** #include "shell.h"
+  14:SYS/shell/shell_ext.c **** #include "shell_ext.h"
+  15:SYS/shell/shell_ext.c **** 
+  16:SYS/shell/shell_ext.c **** 
+  17:SYS/shell/shell_ext.c **** extern ShellCommand* shellSeekCommand(Shell *shell,
+  18:SYS/shell/shell_ext.c ****                                       const char *cmd,
+  19:SYS/shell/shell_ext.c ****                                       ShellCommand *base,
+  20:SYS/shell/shell_ext.c ****                                       unsigned short compareLength);
+  21:SYS/shell/shell_ext.c **** extern int shellGetVarValue(Shell *shell, ShellCommand *command);
+  22:SYS/shell/shell_ext.c **** 
+  23:SYS/shell/shell_ext.c **** /**
+  24:SYS/shell/shell_ext.c ****  * @brief 判断数字进制
+  25:SYS/shell/shell_ext.c ****  * 
+  26:SYS/shell/shell_ext.c ****  * @param string 参数字符串
+  27:SYS/shell/shell_ext.c ****  * @return ShellNumType 进制
+  28:SYS/shell/shell_ext.c ****  */
+  29:SYS/shell/shell_ext.c **** static ShellNumType shellExtNumType(char *string)
+  30:SYS/shell/shell_ext.c **** {
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 2
+
+
+  29              		.loc 1 30 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.LVL0:
+  35 0000 0346     		mov	r3, r0
+  36              	.LVL1:
+  31:SYS/shell/shell_ext.c ****     char *p = string;
+  32:SYS/shell/shell_ext.c ****     ShellNumType type = NUM_TYPE_DEC;
+  33:SYS/shell/shell_ext.c **** 
+  34:SYS/shell/shell_ext.c ****     if ((*p == '0') && ((*(p + 1) == 'x') || (*(p + 1) == 'X')))
+  37              		.loc 1 34 0
+  38 0002 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+  39 0004 302A     		cmp	r2, #48
+  40 0006 04D1     		bne	.L2
+  41              		.loc 1 34 0 is_stmt 0 discriminator 1
+  42 0008 4178     		ldrb	r1, [r0, #1]	@ zero_extendqisi2
+  43 000a 7829     		cmp	r1, #120
+  44 000c 0CD0     		beq	.L9
+  45              		.loc 1 34 0 discriminator 2
+  46 000e 5829     		cmp	r1, #88
+  47 0010 0CD0     		beq	.L10
+  48              	.L2:
+  35:SYS/shell/shell_ext.c ****     {
+  36:SYS/shell/shell_ext.c ****         type = NUM_TYPE_HEX;
+  37:SYS/shell/shell_ext.c ****     }
+  38:SYS/shell/shell_ext.c ****     else if ((*p == '0') && ((*(p + 1) == 'b') || (*(p + 1) == 'B')))
+  49              		.loc 1 38 0 is_stmt 1
+  50 0012 302A     		cmp	r2, #48
+  51 0014 04D1     		bne	.L4
+  52              		.loc 1 38 0 is_stmt 0 discriminator 1
+  53 0016 5978     		ldrb	r1, [r3, #1]	@ zero_extendqisi2
+  54 0018 6229     		cmp	r1, #98
+  55 001a 09D0     		beq	.L11
+  56              		.loc 1 38 0 discriminator 2
+  57 001c 4229     		cmp	r1, #66
+  58 001e 09D0     		beq	.L12
+  59              	.L4:
+  39:SYS/shell/shell_ext.c ****     {
+  40:SYS/shell/shell_ext.c ****         type = NUM_TYPE_BIN;
+  41:SYS/shell/shell_ext.c ****     }
+  42:SYS/shell/shell_ext.c ****     else if (*p == '0')
+  60              		.loc 1 42 0 is_stmt 1
+  61 0020 302A     		cmp	r2, #48
+  62 0022 09D0     		beq	.L13
+  32:SYS/shell/shell_ext.c **** 
+  63              		.loc 1 32 0
+  64 0024 0020     		movs	r0, #0
+  65              	.LVL2:
+  66 0026 0FE0     		b	.L5
+  67              	.LVL3:
+  68              	.L9:
+  36:SYS/shell/shell_ext.c ****     }
+  69              		.loc 1 36 0
+  70 0028 0320     		movs	r0, #3
+  71              	.LVL4:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 3
+
+
+  72 002a 0DE0     		b	.L5
+  73              	.LVL5:
+  74              	.L10:
+  75 002c 0320     		movs	r0, #3
+  76              	.LVL6:
+  77 002e 0BE0     		b	.L5
+  78              	.LVL7:
+  79              	.L11:
+  40:SYS/shell/shell_ext.c ****     }
+  80              		.loc 1 40 0
+  81 0030 0120     		movs	r0, #1
+  82              	.LVL8:
+  83 0032 09E0     		b	.L5
+  84              	.LVL9:
+  85              	.L12:
+  86 0034 0120     		movs	r0, #1
+  87              	.LVL10:
+  88 0036 07E0     		b	.L5
+  89              	.LVL11:
+  90              	.L13:
+  43:SYS/shell/shell_ext.c ****     {
+  44:SYS/shell/shell_ext.c ****         type = NUM_TYPE_OCT;
+  91              		.loc 1 44 0
+  92 0038 0220     		movs	r0, #2
+  93              	.LVL12:
+  94 003a 05E0     		b	.L5
+  95              	.LVL13:
+  96              	.L8:
+  45:SYS/shell/shell_ext.c ****     }
+  46:SYS/shell/shell_ext.c ****     
+  47:SYS/shell/shell_ext.c ****     while (*p++)
+  48:SYS/shell/shell_ext.c ****     {
+  49:SYS/shell/shell_ext.c ****         if (*p == '.' && *(p + 1) != 0)
+  97              		.loc 1 49 0
+  98 003c 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+  99 003e 2E2A     		cmp	r2, #46
+ 100 0040 01D1     		bne	.L6
+ 101              		.loc 1 49 0 is_stmt 0 discriminator 1
+ 102 0042 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 103 0044 2BB9     		cbnz	r3, .L14
+ 104              	.L6:
+  44:SYS/shell/shell_ext.c ****     }
+ 105              		.loc 1 44 0 is_stmt 1
+ 106 0046 0B46     		mov	r3, r1
+ 107              	.LVL14:
+ 108              	.L5:
+  47:SYS/shell/shell_ext.c ****     {
+ 109              		.loc 1 47 0
+ 110 0048 591C     		adds	r1, r3, #1
+ 111              	.LVL15:
+ 112 004a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 113 004c 002A     		cmp	r2, #0
+ 114 004e F5D1     		bne	.L8
+ 115 0050 7047     		bx	lr
+ 116              	.L14:
+  50:SYS/shell/shell_ext.c ****         {
+  51:SYS/shell/shell_ext.c ****             type = NUM_TYPE_FLOAT;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 4
+
+
+ 117              		.loc 1 51 0
+ 118 0052 0420     		movs	r0, #4
+ 119              	.LVL16:
+  52:SYS/shell/shell_ext.c ****             break;
+  53:SYS/shell/shell_ext.c ****         }
+  54:SYS/shell/shell_ext.c ****     }
+  55:SYS/shell/shell_ext.c **** 
+  56:SYS/shell/shell_ext.c ****     return type;
+  57:SYS/shell/shell_ext.c **** }
+ 120              		.loc 1 57 0
+ 121 0054 7047     		bx	lr
+ 122              		.cfi_endproc
+ 123              	.LFE0:
+ 125 0056 00BF     		.section	.text.shellExtToNum,"ax",%progbits
+ 126              		.align	2
+ 127              		.thumb
+ 128              		.thumb_func
+ 130              	shellExtToNum:
+ 131              	.LFB1:
+  58:SYS/shell/shell_ext.c **** 
+  59:SYS/shell/shell_ext.c **** 
+  60:SYS/shell/shell_ext.c **** /**
+  61:SYS/shell/shell_ext.c ****  * @brief 字符转数字
+  62:SYS/shell/shell_ext.c ****  * 
+  63:SYS/shell/shell_ext.c ****  * @param code 字符
+  64:SYS/shell/shell_ext.c ****  * @return char 数字
+  65:SYS/shell/shell_ext.c ****  */
+  66:SYS/shell/shell_ext.c **** static char shellExtToNum(char code)
+  67:SYS/shell/shell_ext.c **** {
+ 132              		.loc 1 67 0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 0
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136              		@ link register save eliminated.
+ 137              	.LVL17:
+ 138 0000 0246     		mov	r2, r0
+  68:SYS/shell/shell_ext.c ****     if ((code >= '0') && (code <= '9'))
+ 139              		.loc 1 68 0
+ 140 0002 A0F13003 		sub	r3, r0, #48
+ 141 0006 D8B2     		uxtb	r0, r3
+ 142              	.LVL18:
+ 143 0008 0928     		cmp	r0, #9
+ 144 000a 12D9     		bls	.L16
+  69:SYS/shell/shell_ext.c ****     {
+  70:SYS/shell/shell_ext.c ****         return code -'0';
+  71:SYS/shell/shell_ext.c ****     }
+  72:SYS/shell/shell_ext.c ****     else if ((code >= 'a') && (code <= 'f'))
+ 145              		.loc 1 72 0
+ 146 000c A2F16103 		sub	r3, r2, #97
+ 147 0010 DBB2     		uxtb	r3, r3
+ 148 0012 052B     		cmp	r3, #5
+ 149 0014 03D8     		bhi	.L17
+  73:SYS/shell/shell_ext.c ****     {
+  74:SYS/shell/shell_ext.c ****         return code - 'a' + 10;
+ 150              		.loc 1 74 0
+ 151 0016 A2F15700 		sub	r0, r2, #87
+ 152 001a C0B2     		uxtb	r0, r0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 5
+
+
+ 153 001c 7047     		bx	lr
+ 154              	.L17:
+  75:SYS/shell/shell_ext.c ****     }
+  76:SYS/shell/shell_ext.c ****     else if ((code >= 'A') && (code <= 'F'))
+ 155              		.loc 1 76 0
+ 156 001e A2F14103 		sub	r3, r2, #65
+ 157 0022 DBB2     		uxtb	r3, r3
+ 158 0024 052B     		cmp	r3, #5
+ 159 0026 03D8     		bhi	.L18
+  77:SYS/shell/shell_ext.c ****     {
+  78:SYS/shell/shell_ext.c ****         return code - 'A' + 10;
+ 160              		.loc 1 78 0
+ 161 0028 A2F13700 		sub	r0, r2, #55
+ 162 002c C0B2     		uxtb	r0, r0
+ 163 002e 7047     		bx	lr
+ 164              	.L18:
+  79:SYS/shell/shell_ext.c ****     }
+  80:SYS/shell/shell_ext.c ****     else
+  81:SYS/shell/shell_ext.c ****     {
+  82:SYS/shell/shell_ext.c ****         return 0;
+ 165              		.loc 1 82 0
+ 166 0030 0020     		movs	r0, #0
+ 167              	.L16:
+  83:SYS/shell/shell_ext.c ****     }
+  84:SYS/shell/shell_ext.c **** }
+ 168              		.loc 1 84 0
+ 169 0032 7047     		bx	lr
+ 170              		.cfi_endproc
+ 171              	.LFE1:
+ 173              		.section	.text.shellExtParseChar,"ax",%progbits
+ 174              		.align	2
+ 175              		.thumb
+ 176              		.thumb_func
+ 178              	shellExtParseChar:
+ 179              	.LFB2:
+  85:SYS/shell/shell_ext.c **** 
+  86:SYS/shell/shell_ext.c **** 
+  87:SYS/shell/shell_ext.c **** /**
+  88:SYS/shell/shell_ext.c ****  * @brief 解析字符参数
+  89:SYS/shell/shell_ext.c ****  * 
+  90:SYS/shell/shell_ext.c ****  * @param string 字符串参数
+  91:SYS/shell/shell_ext.c ****  * @return char 解析出的字符
+  92:SYS/shell/shell_ext.c ****  */
+  93:SYS/shell/shell_ext.c **** static char shellExtParseChar(char *string)
+  94:SYS/shell/shell_ext.c **** {
+ 180              		.loc 1 94 0
+ 181              		.cfi_startproc
+ 182              		@ args = 0, pretend = 0, frame = 0
+ 183              		@ frame_needed = 0, uses_anonymous_args = 0
+ 184              		@ link register save eliminated.
+ 185              	.LVL19:
+ 186 0000 0346     		mov	r3, r0
+ 187              	.LVL20:
+  95:SYS/shell/shell_ext.c ****     char *p = string + 1;
+  96:SYS/shell/shell_ext.c ****     char value = 0;
+  97:SYS/shell/shell_ext.c **** 
+  98:SYS/shell/shell_ext.c ****     if (*p == '\\')
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 6
+
+
+ 188              		.loc 1 98 0
+ 189 0002 4078     		ldrb	r0, [r0, #1]	@ zero_extendqisi2
+ 190              	.LVL21:
+ 191 0004 5C28     		cmp	r0, #92
+ 192 0006 16D1     		bne	.L20
+  99:SYS/shell/shell_ext.c ****     {
+ 100:SYS/shell/shell_ext.c ****         switch (*(p + 1))
+ 193              		.loc 1 100 0
+ 194 0008 9878     		ldrb	r0, [r3, #2]	@ zero_extendqisi2
+ 195 000a 6E28     		cmp	r0, #110
+ 196 000c 0CD0     		beq	.L22
+ 197 000e 04D8     		bhi	.L23
+ 198 0010 3028     		cmp	r0, #48
+ 199 0012 0DD0     		beq	.L24
+ 200 0014 6228     		cmp	r0, #98
+ 201 0016 05D0     		beq	.L25
+ 202 0018 7047     		bx	lr
+ 203              	.L23:
+ 204 001a 7228     		cmp	r0, #114
+ 205 001c 0AD0     		beq	.L27
+ 206 001e 7428     		cmp	r0, #116
+ 207 0020 04D0     		beq	.L26
+ 208 0022 7047     		bx	lr
+ 209              	.L25:
+ 101:SYS/shell/shell_ext.c ****         {
+ 102:SYS/shell/shell_ext.c ****         case 'b':
+ 103:SYS/shell/shell_ext.c ****             value = '\b';
+ 210              		.loc 1 103 0
+ 211 0024 0820     		movs	r0, #8
+ 212 0026 7047     		bx	lr
+ 213              	.L22:
+ 214              	.LVL22:
+ 104:SYS/shell/shell_ext.c ****             break;
+ 105:SYS/shell/shell_ext.c ****         case 'r':
+ 106:SYS/shell/shell_ext.c ****             value = '\r';
+ 107:SYS/shell/shell_ext.c ****             break;
+ 108:SYS/shell/shell_ext.c ****         case 'n':
+ 109:SYS/shell/shell_ext.c ****             value = '\n';
+ 215              		.loc 1 109 0
+ 216 0028 0A20     		movs	r0, #10
+ 110:SYS/shell/shell_ext.c ****             break;
+ 217              		.loc 1 110 0
+ 218 002a 7047     		bx	lr
+ 219              	.LVL23:
+ 220              	.L26:
+ 111:SYS/shell/shell_ext.c ****         case 't':
+ 112:SYS/shell/shell_ext.c ****             value = '\t';
+ 221              		.loc 1 112 0
+ 222 002c 0920     		movs	r0, #9
+ 113:SYS/shell/shell_ext.c ****             break;
+ 223              		.loc 1 113 0
+ 224 002e 7047     		bx	lr
+ 225              	.LVL24:
+ 226              	.L24:
+ 114:SYS/shell/shell_ext.c ****         case '0':
+ 115:SYS/shell/shell_ext.c ****             value = 0;
+ 227              		.loc 1 115 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 7
+
+
+ 228 0030 0020     		movs	r0, #0
+ 116:SYS/shell/shell_ext.c ****             break;
+ 229              		.loc 1 116 0
+ 230 0032 7047     		bx	lr
+ 231              	.L27:
+ 106:SYS/shell/shell_ext.c ****             break;
+ 232              		.loc 1 106 0
+ 233 0034 0D20     		movs	r0, #13
+ 234              	.L20:
+ 235              	.LVL25:
+ 117:SYS/shell/shell_ext.c ****         default:
+ 118:SYS/shell/shell_ext.c ****             value = *(p + 1);
+ 119:SYS/shell/shell_ext.c ****             break;
+ 120:SYS/shell/shell_ext.c ****         }
+ 121:SYS/shell/shell_ext.c ****     }
+ 122:SYS/shell/shell_ext.c ****     else
+ 123:SYS/shell/shell_ext.c ****     {
+ 124:SYS/shell/shell_ext.c ****         value = *p;
+ 125:SYS/shell/shell_ext.c ****     }
+ 126:SYS/shell/shell_ext.c ****     return value;
+ 127:SYS/shell/shell_ext.c **** }
+ 236              		.loc 1 127 0
+ 237 0036 7047     		bx	lr
+ 238              		.cfi_endproc
+ 239              	.LFE2:
+ 241              		.section	.text.shellExtParseString,"ax",%progbits
+ 242              		.align	2
+ 243              		.thumb
+ 244              		.thumb_func
+ 246              	shellExtParseString:
+ 247              	.LFB3:
+ 128:SYS/shell/shell_ext.c **** 
+ 129:SYS/shell/shell_ext.c **** 
+ 130:SYS/shell/shell_ext.c **** /**
+ 131:SYS/shell/shell_ext.c ****  * @brief 解析字符串参数
+ 132:SYS/shell/shell_ext.c ****  * 
+ 133:SYS/shell/shell_ext.c ****  * @param string 字符串参数
+ 134:SYS/shell/shell_ext.c ****  * @return char* 解析出的字符串
+ 135:SYS/shell/shell_ext.c ****  */
+ 136:SYS/shell/shell_ext.c **** static char* shellExtParseString(char *string)
+ 137:SYS/shell/shell_ext.c **** {
+ 248              		.loc 1 137 0
+ 249              		.cfi_startproc
+ 250              		@ args = 0, pretend = 0, frame = 0
+ 251              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252              	.LVL26:
+ 253 0000 70B5     		push	{r4, r5, r6, lr}
+ 254              	.LCFI0:
+ 255              		.cfi_def_cfa_offset 16
+ 256              		.cfi_offset 4, -16
+ 257              		.cfi_offset 5, -12
+ 258              		.cfi_offset 6, -8
+ 259              		.cfi_offset 14, -4
+ 260 0002 0646     		mov	r6, r0
+ 261              	.LVL27:
+ 138:SYS/shell/shell_ext.c ****     char *p = string;
+ 139:SYS/shell/shell_ext.c ****     unsigned short index = 0;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 8
+
+
+ 140:SYS/shell/shell_ext.c **** 
+ 141:SYS/shell/shell_ext.c ****     if (*string == '\"')
+ 262              		.loc 1 141 0
+ 263 0004 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 264 0006 222B     		cmp	r3, #34
+ 265 0008 02D1     		bne	.L35
+ 142:SYS/shell/shell_ext.c ****     {
+ 143:SYS/shell/shell_ext.c ****         p = ++string;
+ 266              		.loc 1 143 0
+ 267 000a 0136     		adds	r6, r6, #1
+ 268              	.LVL28:
+ 269 000c 3546     		mov	r5, r6
+ 270 000e 00E0     		b	.L29
+ 271              	.LVL29:
+ 272              	.L35:
+ 138:SYS/shell/shell_ext.c ****     char *p = string;
+ 273              		.loc 1 138 0
+ 274 0010 0546     		mov	r5, r0
+ 275              	.LVL30:
+ 276              	.L29:
+ 277 0012 0024     		movs	r4, #0
+ 278 0014 10E0     		b	.L30
+ 279              	.LVL31:
+ 280              	.L34:
+ 144:SYS/shell/shell_ext.c ****     }
+ 145:SYS/shell/shell_ext.c **** 
+ 146:SYS/shell/shell_ext.c ****     while (*p)
+ 147:SYS/shell/shell_ext.c ****     {
+ 148:SYS/shell/shell_ext.c ****         if (*p == '\\')
+ 281              		.loc 1 148 0
+ 282 0016 5C2B     		cmp	r3, #92
+ 283 0018 05D1     		bne	.L31
+ 149:SYS/shell/shell_ext.c ****         {
+ 150:SYS/shell/shell_ext.c ****             *(string + index) = shellExtParseChar(p - 1);
+ 284              		.loc 1 150 0
+ 285 001a 681E     		subs	r0, r5, #1
+ 286 001c FFF7FEFF 		bl	shellExtParseChar
+ 287              	.LVL32:
+ 288 0020 3055     		strb	r0, [r6, r4]
+ 151:SYS/shell/shell_ext.c ****             p++;
+ 289              		.loc 1 151 0
+ 290 0022 0135     		adds	r5, r5, #1
+ 291              	.LVL33:
+ 292 0024 05E0     		b	.L32
+ 293              	.L31:
+ 152:SYS/shell/shell_ext.c ****         }
+ 153:SYS/shell/shell_ext.c ****         else if (*p == '\"')
+ 294              		.loc 1 153 0
+ 295 0026 222B     		cmp	r3, #34
+ 296 0028 02D1     		bne	.L33
+ 154:SYS/shell/shell_ext.c ****         {
+ 155:SYS/shell/shell_ext.c ****             *(string + index) = 0;
+ 297              		.loc 1 155 0
+ 298 002a 0023     		movs	r3, #0
+ 299 002c 3355     		strb	r3, [r6, r4]
+ 300 002e 00E0     		b	.L32
+ 301              	.L33:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 9
+
+
+ 156:SYS/shell/shell_ext.c ****         }
+ 157:SYS/shell/shell_ext.c ****         else
+ 158:SYS/shell/shell_ext.c ****         {
+ 159:SYS/shell/shell_ext.c ****             *(string + index) = *p;
+ 302              		.loc 1 159 0
+ 303 0030 3355     		strb	r3, [r6, r4]
+ 304              	.L32:
+ 160:SYS/shell/shell_ext.c ****         }
+ 161:SYS/shell/shell_ext.c ****         p++;
+ 305              		.loc 1 161 0
+ 306 0032 0135     		adds	r5, r5, #1
+ 307              	.LVL34:
+ 162:SYS/shell/shell_ext.c ****         index ++;
+ 308              		.loc 1 162 0
+ 309 0034 0134     		adds	r4, r4, #1
+ 310              	.LVL35:
+ 311 0036 A4B2     		uxth	r4, r4
+ 312              	.LVL36:
+ 313              	.L30:
+ 146:SYS/shell/shell_ext.c ****     {
+ 314              		.loc 1 146 0
+ 315 0038 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 316 003a 002B     		cmp	r3, #0
+ 317 003c EBD1     		bne	.L34
+ 163:SYS/shell/shell_ext.c ****     }
+ 164:SYS/shell/shell_ext.c ****     *(string + index) = 0;
+ 318              		.loc 1 164 0
+ 319 003e 3355     		strb	r3, [r6, r4]
+ 165:SYS/shell/shell_ext.c ****     return string;
+ 166:SYS/shell/shell_ext.c **** }
+ 320              		.loc 1 166 0
+ 321 0040 3046     		mov	r0, r6
+ 322 0042 70BD     		pop	{r4, r5, r6, pc}
+ 323              		.cfi_endproc
+ 324              	.LFE3:
+ 326              		.section	.text.shellExtParseNumber,"ax",%progbits
+ 327              		.align	2
+ 328              		.thumb
+ 329              		.thumb_func
+ 331              	shellExtParseNumber:
+ 332              	.LFB4:
+ 167:SYS/shell/shell_ext.c **** 
+ 168:SYS/shell/shell_ext.c **** 
+ 169:SYS/shell/shell_ext.c **** /**
+ 170:SYS/shell/shell_ext.c ****  * @brief 解析数字参数
+ 171:SYS/shell/shell_ext.c ****  * 
+ 172:SYS/shell/shell_ext.c ****  * @param string 字符串参数
+ 173:SYS/shell/shell_ext.c ****  * @return unsigned int 解析出的数字
+ 174:SYS/shell/shell_ext.c ****  */
+ 175:SYS/shell/shell_ext.c **** static unsigned int shellExtParseNumber(char *string)
+ 176:SYS/shell/shell_ext.c **** {
+ 333              		.loc 1 176 0
+ 334              		.cfi_startproc
+ 335              		@ args = 0, pretend = 0, frame = 0
+ 336              		@ frame_needed = 0, uses_anonymous_args = 0
+ 337              	.LVL37:
+ 338 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 10
+
+
+ 339              	.LCFI1:
+ 340              		.cfi_def_cfa_offset 32
+ 341              		.cfi_offset 3, -32
+ 342              		.cfi_offset 4, -28
+ 343              		.cfi_offset 5, -24
+ 344              		.cfi_offset 6, -20
+ 345              		.cfi_offset 7, -16
+ 346              		.cfi_offset 8, -12
+ 347              		.cfi_offset 9, -8
+ 348              		.cfi_offset 14, -4
+ 349 0004 0446     		mov	r4, r0
+ 350              	.LVL38:
+ 177:SYS/shell/shell_ext.c ****     ShellNumType type = NUM_TYPE_DEC;
+ 178:SYS/shell/shell_ext.c ****     char radix = 10;
+ 179:SYS/shell/shell_ext.c ****     char *p = string;
+ 180:SYS/shell/shell_ext.c ****     char offset = 0;
+ 181:SYS/shell/shell_ext.c ****     signed char sign = 1;
+ 182:SYS/shell/shell_ext.c ****     unsigned int valueInt = 0;
+ 183:SYS/shell/shell_ext.c ****     float valueFloat = 0.0;
+ 184:SYS/shell/shell_ext.c ****     unsigned int devide = 0;
+ 185:SYS/shell/shell_ext.c **** 
+ 186:SYS/shell/shell_ext.c ****     if (*string == '-')
+ 351              		.loc 1 186 0
+ 352 0006 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 353 0008 2D2B     		cmp	r3, #45
+ 354 000a 01D0     		beq	.L51
+ 181:SYS/shell/shell_ext.c ****     unsigned int valueInt = 0;
+ 355              		.loc 1 181 0
+ 356 000c 0127     		movs	r7, #1
+ 357 000e 01E0     		b	.L38
+ 358              	.L51:
+ 187:SYS/shell/shell_ext.c ****     {
+ 188:SYS/shell/shell_ext.c ****         sign = -1;
+ 359              		.loc 1 188 0
+ 360 0010 4FF0FF37 		mov	r7, #-1
+ 361              	.L38:
+ 362              	.LVL39:
+ 189:SYS/shell/shell_ext.c ****     }
+ 190:SYS/shell/shell_ext.c **** 
+ 191:SYS/shell/shell_ext.c ****     type = shellExtNumType(string + ((sign == -1) ? 1 : 0));
+ 363              		.loc 1 191 0
+ 364 0014 B7F1FF3F 		cmp	r7, #-1
+ 365 0018 01D1     		bne	.L52
+ 366 001a 0120     		movs	r0, #1
+ 367              	.LVL40:
+ 368 001c 00E0     		b	.L39
+ 369              	.LVL41:
+ 370              	.L52:
+ 371 001e 0020     		movs	r0, #0
+ 372              	.LVL42:
+ 373              	.L39:
+ 374              		.loc 1 191 0 is_stmt 0 discriminator 4
+ 375 0020 2044     		add	r0, r0, r4
+ 376 0022 FFF7FEFF 		bl	shellExtNumType
+ 377              	.LVL43:
+ 378 0026 8046     		mov	r8, r0
+ 379              	.LVL44:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 11
+
+
+ 192:SYS/shell/shell_ext.c **** 
+ 193:SYS/shell/shell_ext.c ****     switch ((char)type)
+ 380              		.loc 1 193 0 is_stmt 1 discriminator 4
+ 381 0028 0228     		cmp	r0, #2
+ 382 002a 06D0     		beq	.L41
+ 383 002c 0328     		cmp	r0, #3
+ 384 002e 0AD0     		beq	.L53
+ 385 0030 0128     		cmp	r0, #1
+ 386 0032 05D0     		beq	.L43
+ 180:SYS/shell/shell_ext.c ****     signed char sign = 1;
+ 387              		.loc 1 180 0 discriminator 4
+ 388 0034 0023     		movs	r3, #0
+ 178:SYS/shell/shell_ext.c ****     char *p = string;
+ 389              		.loc 1 178 0 discriminator 4
+ 390 0036 0A26     		movs	r6, #10
+ 391 0038 07E0     		b	.L42
+ 392              	.L41:
+ 393              	.LVL45:
+ 194:SYS/shell/shell_ext.c ****     {
+ 195:SYS/shell/shell_ext.c ****     case NUM_TYPE_HEX:
+ 196:SYS/shell/shell_ext.c ****         radix = 16;
+ 197:SYS/shell/shell_ext.c ****         offset = 2;
+ 198:SYS/shell/shell_ext.c ****         break;
+ 199:SYS/shell/shell_ext.c ****     
+ 200:SYS/shell/shell_ext.c ****     case NUM_TYPE_OCT:
+ 201:SYS/shell/shell_ext.c ****         radix = 8;
+ 202:SYS/shell/shell_ext.c ****         offset = 1;
+ 394              		.loc 1 202 0
+ 395 003a 0123     		movs	r3, #1
+ 201:SYS/shell/shell_ext.c ****         offset = 1;
+ 396              		.loc 1 201 0
+ 397 003c 0826     		movs	r6, #8
+ 203:SYS/shell/shell_ext.c ****         break;
+ 398              		.loc 1 203 0
+ 399 003e 04E0     		b	.L42
+ 400              	.LVL46:
+ 401              	.L43:
+ 204:SYS/shell/shell_ext.c **** 
+ 205:SYS/shell/shell_ext.c ****     case NUM_TYPE_BIN:
+ 206:SYS/shell/shell_ext.c ****         radix = 2;
+ 207:SYS/shell/shell_ext.c ****         offset = 2;
+ 402              		.loc 1 207 0
+ 403 0040 0223     		movs	r3, #2
+ 206:SYS/shell/shell_ext.c ****         offset = 2;
+ 404              		.loc 1 206 0
+ 405 0042 1E46     		mov	r6, r3
+ 208:SYS/shell/shell_ext.c ****         break;
+ 406              		.loc 1 208 0
+ 407 0044 01E0     		b	.L42
+ 408              	.LVL47:
+ 409              	.L53:
+ 197:SYS/shell/shell_ext.c ****         break;
+ 410              		.loc 1 197 0
+ 411 0046 0223     		movs	r3, #2
+ 196:SYS/shell/shell_ext.c ****         offset = 2;
+ 412              		.loc 1 196 0
+ 413 0048 1026     		movs	r6, #16
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 12
+
+
+ 414              	.LVL48:
+ 415              	.L42:
+ 209:SYS/shell/shell_ext.c ****     
+ 210:SYS/shell/shell_ext.c ****     default:
+ 211:SYS/shell/shell_ext.c ****         break;
+ 212:SYS/shell/shell_ext.c ****     }
+ 213:SYS/shell/shell_ext.c **** 
+ 214:SYS/shell/shell_ext.c ****     p = string + offset + ((sign == -1) ? 1 : 0);
+ 416              		.loc 1 214 0
+ 417 004a B7F1FF3F 		cmp	r7, #-1
+ 418 004e 01D1     		bne	.L54
+ 419 0050 0125     		movs	r5, #1
+ 420 0052 00E0     		b	.L44
+ 421              	.L54:
+ 422 0054 0025     		movs	r5, #0
+ 423              	.L44:
+ 424              		.loc 1 214 0 is_stmt 0 discriminator 4
+ 425 0056 2B44     		add	r3, r3, r5
+ 426              	.LVL49:
+ 427 0058 E518     		adds	r5, r4, r3
+ 428              	.LVL50:
+ 184:SYS/shell/shell_ext.c **** 
+ 429              		.loc 1 184 0 is_stmt 1 discriminator 4
+ 430 005a 0024     		movs	r4, #0
+ 431              	.LVL51:
+ 182:SYS/shell/shell_ext.c ****     float valueFloat = 0.0;
+ 432              		.loc 1 182 0 discriminator 4
+ 433 005c 2346     		mov	r3, r4
+ 215:SYS/shell/shell_ext.c **** 
+ 216:SYS/shell/shell_ext.c ****     while (*p)
+ 434              		.loc 1 216 0 discriminator 4
+ 435 005e 0EE0     		b	.L45
+ 436              	.LVL52:
+ 437              	.L48:
+ 217:SYS/shell/shell_ext.c ****     {
+ 218:SYS/shell/shell_ext.c ****         if (*p == '.')
+ 438              		.loc 1 218 0
+ 439 0060 2E28     		cmp	r0, #46
+ 440 0062 02D1     		bne	.L46
+ 441              	.LVL53:
+ 219:SYS/shell/shell_ext.c ****         {
+ 220:SYS/shell/shell_ext.c ****             devide = 1;
+ 221:SYS/shell/shell_ext.c ****             p++;
+ 442              		.loc 1 221 0
+ 443 0064 0135     		adds	r5, r5, #1
+ 444              	.LVL54:
+ 220:SYS/shell/shell_ext.c ****             p++;
+ 445              		.loc 1 220 0
+ 446 0066 0124     		movs	r4, #1
+ 222:SYS/shell/shell_ext.c ****             continue;
+ 447              		.loc 1 222 0
+ 448 0068 09E0     		b	.L45
+ 449              	.LVL55:
+ 450              	.L46:
+ 223:SYS/shell/shell_ext.c ****         }
+ 224:SYS/shell/shell_ext.c ****         valueInt = valueInt * radix + shellExtToNum(*p);
+ 451              		.loc 1 224 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 13
+
+
+ 452 006a 03FB06F9 		mul	r9, r3, r6
+ 453 006e FFF7FEFF 		bl	shellExtToNum
+ 454              	.LVL56:
+ 455 0072 09EB0003 		add	r3, r9, r0
+ 456              	.LVL57:
+ 225:SYS/shell/shell_ext.c ****         devide *= 10;
+ 457              		.loc 1 225 0
+ 458 0076 04EB8402 		add	r2, r4, r4, lsl #2
+ 459 007a 5400     		lsls	r4, r2, #1
+ 460              	.LVL58:
+ 226:SYS/shell/shell_ext.c ****         p++;
+ 461              		.loc 1 226 0
+ 462 007c 0135     		adds	r5, r5, #1
+ 463              	.LVL59:
+ 464              	.L45:
+ 216:SYS/shell/shell_ext.c ****     {
+ 465              		.loc 1 216 0
+ 466 007e 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
+ 467 0080 0028     		cmp	r0, #0
+ 468 0082 EDD1     		bne	.L48
+ 227:SYS/shell/shell_ext.c ****     }
+ 228:SYS/shell/shell_ext.c ****     if (type == NUM_TYPE_FLOAT && devide != 0)
+ 469              		.loc 1 228 0
+ 470 0084 B8F1040F 		cmp	r8, #4
+ 471 0088 14D1     		bne	.L49
+ 472              		.loc 1 228 0 is_stmt 0 discriminator 1
+ 473 008a 9CB1     		cbz	r4, .L49
+ 229:SYS/shell/shell_ext.c ****     {
+ 230:SYS/shell/shell_ext.c ****         valueFloat = (float)valueInt / devide * sign;
+ 474              		.loc 1 230 0 is_stmt 1
+ 475 008c 07EE903A 		vmov	s15, r3	@ int
+ 476 0090 B8EE677A 		vcvt.f32.u32	s14, s15
+ 477 0094 07EE904A 		vmov	s15, r4	@ int
+ 478 0098 F8EE677A 		vcvt.f32.u32	s15, s15
+ 479 009c C7EE276A 		vdiv.f32	s13, s14, s15
+ 480 00a0 07EE907A 		vmov	s15, r7	@ int
+ 481 00a4 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 482              	.LVL60:
+ 231:SYS/shell/shell_ext.c ****         return *(unsigned int *)(&valueFloat);
+ 483              		.loc 1 231 0
+ 484 00a8 67EEA67A 		vmul.f32	s15, s15, s13
+ 485              	.LVL61:
+ 486 00ac 17EE900A 		vmov	r0, s15
+ 487 00b0 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 488              	.LVL62:
+ 489              	.L49:
+ 232:SYS/shell/shell_ext.c ****     }
+ 233:SYS/shell/shell_ext.c ****     else
+ 234:SYS/shell/shell_ext.c ****     {
+ 235:SYS/shell/shell_ext.c ****         return valueInt * sign;
+ 490              		.loc 1 235 0
+ 491 00b4 07FB03F0 		mul	r0, r7, r3
+ 492              	.LVL63:
+ 236:SYS/shell/shell_ext.c ****     }
+ 237:SYS/shell/shell_ext.c **** }
+ 493              		.loc 1 237 0
+ 494 00b8 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 14
+
+
+ 495              		.cfi_endproc
+ 496              	.LFE4:
+ 498              		.section	.text.shellExtParseVar,"ax",%progbits
+ 499              		.align	2
+ 500              		.thumb
+ 501              		.thumb_func
+ 503              	shellExtParseVar:
+ 504              	.LFB5:
+ 238:SYS/shell/shell_ext.c **** 
+ 239:SYS/shell/shell_ext.c **** 
+ 240:SYS/shell/shell_ext.c **** /**
+ 241:SYS/shell/shell_ext.c ****  * @brief 解析变量参数
+ 242:SYS/shell/shell_ext.c ****  * 
+ 243:SYS/shell/shell_ext.c ****  * @param shell shell对象
+ 244:SYS/shell/shell_ext.c ****  * @param var 变量
+ 245:SYS/shell/shell_ext.c ****  * @return unsigned int 变量值
+ 246:SYS/shell/shell_ext.c ****  */
+ 247:SYS/shell/shell_ext.c **** static unsigned int shellExtParseVar(Shell *shell, char *var)
+ 248:SYS/shell/shell_ext.c **** {
+ 505              		.loc 1 248 0
+ 506              		.cfi_startproc
+ 507              		@ args = 0, pretend = 0, frame = 0
+ 508              		@ frame_needed = 0, uses_anonymous_args = 0
+ 509              	.LVL64:
+ 510 0000 10B5     		push	{r4, lr}
+ 511              	.LCFI2:
+ 512              		.cfi_def_cfa_offset 8
+ 513              		.cfi_offset 4, -8
+ 514              		.cfi_offset 14, -4
+ 515 0002 0446     		mov	r4, r0
+ 249:SYS/shell/shell_ext.c ****     ShellCommand *command = shellSeekCommand(shell,
+ 516              		.loc 1 249 0
+ 517 0004 0023     		movs	r3, #0
+ 518 0006 826D     		ldr	r2, [r0, #88]
+ 519 0008 0131     		adds	r1, r1, #1
+ 520              	.LVL65:
+ 521 000a FFF7FEFF 		bl	shellSeekCommand
+ 522              	.LVL66:
+ 250:SYS/shell/shell_ext.c ****                                              var + 1,
+ 251:SYS/shell/shell_ext.c ****                                              shell->commandList.base,
+ 252:SYS/shell/shell_ext.c ****                                              0);
+ 253:SYS/shell/shell_ext.c ****     if (command)
+ 523              		.loc 1 253 0
+ 524 000e 20B1     		cbz	r0, .L58
+ 525 0010 0146     		mov	r1, r0
+ 254:SYS/shell/shell_ext.c ****     {
+ 255:SYS/shell/shell_ext.c ****         return shellGetVarValue(shell, command);
+ 526              		.loc 1 255 0
+ 527 0012 2046     		mov	r0, r4
+ 528              	.LVL67:
+ 529 0014 FFF7FEFF 		bl	shellGetVarValue
+ 530              	.LVL68:
+ 531 0018 10BD     		pop	{r4, pc}
+ 532              	.LVL69:
+ 533              	.L58:
+ 256:SYS/shell/shell_ext.c ****     }
+ 257:SYS/shell/shell_ext.c ****     else
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 15
+
+
+ 258:SYS/shell/shell_ext.c ****     {
+ 259:SYS/shell/shell_ext.c ****         return 0;
+ 534              		.loc 1 259 0
+ 535 001a 0020     		movs	r0, #0
+ 536              	.LVL70:
+ 260:SYS/shell/shell_ext.c ****     }
+ 261:SYS/shell/shell_ext.c **** }
+ 537              		.loc 1 261 0
+ 538 001c 10BD     		pop	{r4, pc}
+ 539              		.cfi_endproc
+ 540              	.LFE5:
+ 542 001e 00BF     		.section	.text.shellExtParsePara,"ax",%progbits
+ 543              		.align	2
+ 544              		.global	shellExtParsePara
+ 545              		.thumb
+ 546              		.thumb_func
+ 548              	shellExtParsePara:
+ 549              	.LFB6:
+ 262:SYS/shell/shell_ext.c **** 
+ 263:SYS/shell/shell_ext.c **** 
+ 264:SYS/shell/shell_ext.c **** /**
+ 265:SYS/shell/shell_ext.c ****  * @brief 解析参数
+ 266:SYS/shell/shell_ext.c ****  * 
+ 267:SYS/shell/shell_ext.c ****  * @param shell shell对象
+ 268:SYS/shell/shell_ext.c ****  * @param string 参数
+ 269:SYS/shell/shell_ext.c ****  * @return unsigned int 解析结果
+ 270:SYS/shell/shell_ext.c ****  */
+ 271:SYS/shell/shell_ext.c **** unsigned int shellExtParsePara(Shell *shell, char *string)
+ 272:SYS/shell/shell_ext.c **** {
+ 550              		.loc 1 272 0
+ 551              		.cfi_startproc
+ 552              		@ args = 0, pretend = 0, frame = 0
+ 553              		@ frame_needed = 0, uses_anonymous_args = 0
+ 554              	.LVL71:
+ 555 0000 08B5     		push	{r3, lr}
+ 556              	.LCFI3:
+ 557              		.cfi_def_cfa_offset 8
+ 558              		.cfi_offset 3, -8
+ 559              		.cfi_offset 14, -4
+ 273:SYS/shell/shell_ext.c ****     if (*string == '\'' && *(string + 1))
+ 560              		.loc 1 273 0
+ 561 0002 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 562 0004 272B     		cmp	r3, #39
+ 563 0006 05D1     		bne	.L61
+ 564              		.loc 1 273 0 is_stmt 0 discriminator 1
+ 565 0008 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 566 000a 1AB1     		cbz	r2, .L61
+ 274:SYS/shell/shell_ext.c ****     {
+ 275:SYS/shell/shell_ext.c ****         return (unsigned int)shellExtParseChar(string);
+ 567              		.loc 1 275 0 is_stmt 1
+ 568 000c 0846     		mov	r0, r1
+ 569              	.LVL72:
+ 570 000e FFF7FEFF 		bl	shellExtParseChar
+ 571              	.LVL73:
+ 572 0012 08BD     		pop	{r3, pc}
+ 573              	.LVL74:
+ 574              	.L61:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 16
+
+
+ 276:SYS/shell/shell_ext.c ****     }
+ 277:SYS/shell/shell_ext.c ****     else if (*string == '-' || (*string >= '0' && *string <= '9'))
+ 575              		.loc 1 277 0
+ 576 0014 2D2B     		cmp	r3, #45
+ 577 0016 04D0     		beq	.L63
+ 578              		.loc 1 277 0 is_stmt 0 discriminator 1
+ 579 0018 A3F13002 		sub	r2, r3, #48
+ 580 001c D2B2     		uxtb	r2, r2
+ 581 001e 092A     		cmp	r2, #9
+ 582 0020 03D8     		bhi	.L64
+ 583              	.L63:
+ 278:SYS/shell/shell_ext.c ****     {
+ 279:SYS/shell/shell_ext.c ****         return (unsigned int)shellExtParseNumber(string);
+ 584              		.loc 1 279 0 is_stmt 1
+ 585 0022 0846     		mov	r0, r1
+ 586              	.LVL75:
+ 587 0024 FFF7FEFF 		bl	shellExtParseNumber
+ 588              	.LVL76:
+ 589 0028 08BD     		pop	{r3, pc}
+ 590              	.LVL77:
+ 591              	.L64:
+ 280:SYS/shell/shell_ext.c ****     }
+ 281:SYS/shell/shell_ext.c ****     else if (*string == '$' && *(string + 1))
+ 592              		.loc 1 281 0
+ 593 002a 242B     		cmp	r3, #36
+ 594 002c 04D1     		bne	.L65
+ 595              		.loc 1 281 0 is_stmt 0 discriminator 1
+ 596 002e 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 597 0030 12B1     		cbz	r2, .L65
+ 282:SYS/shell/shell_ext.c ****     {
+ 283:SYS/shell/shell_ext.c ****         return shellExtParseVar(shell, string);
+ 598              		.loc 1 283 0 is_stmt 1
+ 599 0032 FFF7FEFF 		bl	shellExtParseVar
+ 600              	.LVL78:
+ 601 0036 08BD     		pop	{r3, pc}
+ 602              	.LVL79:
+ 603              	.L65:
+ 284:SYS/shell/shell_ext.c ****     }
+ 285:SYS/shell/shell_ext.c ****     else if (*string)
+ 604              		.loc 1 285 0
+ 605 0038 1BB1     		cbz	r3, .L66
+ 286:SYS/shell/shell_ext.c ****     {
+ 287:SYS/shell/shell_ext.c ****         return (unsigned int)shellExtParseString(string);
+ 606              		.loc 1 287 0
+ 607 003a 0846     		mov	r0, r1
+ 608              	.LVL80:
+ 609 003c FFF7FEFF 		bl	shellExtParseString
+ 610              	.LVL81:
+ 611 0040 08BD     		pop	{r3, pc}
+ 612              	.LVL82:
+ 613              	.L66:
+ 288:SYS/shell/shell_ext.c ****     }
+ 289:SYS/shell/shell_ext.c ****     return 0;
+ 614              		.loc 1 289 0
+ 615 0042 0020     		movs	r0, #0
+ 616              	.LVL83:
+ 290:SYS/shell/shell_ext.c **** }
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 17
+
+
+ 617              		.loc 1 290 0
+ 618 0044 08BD     		pop	{r3, pc}
+ 619              		.cfi_endproc
+ 620              	.LFE6:
+ 622 0046 00BF     		.section	.text.shellExtRun,"ax",%progbits
+ 623              		.align	2
+ 624              		.global	shellExtRun
+ 625              		.thumb
+ 626              		.thumb_func
+ 628              	shellExtRun:
+ 629              	.LFB7:
+ 291:SYS/shell/shell_ext.c **** 
+ 292:SYS/shell/shell_ext.c **** 
+ 293:SYS/shell/shell_ext.c **** /**
+ 294:SYS/shell/shell_ext.c ****  * @brief 执行命令
+ 295:SYS/shell/shell_ext.c ****  * 
+ 296:SYS/shell/shell_ext.c ****  * @param shell shell对象
+ 297:SYS/shell/shell_ext.c ****  * @param command 命令
+ 298:SYS/shell/shell_ext.c ****  * @param argc 参数个数
+ 299:SYS/shell/shell_ext.c ****  * @param argv 参数
+ 300:SYS/shell/shell_ext.c ****  * @return int 返回值
+ 301:SYS/shell/shell_ext.c ****  */
+ 302:SYS/shell/shell_ext.c **** int shellExtRun(Shell *shell, ShellCommand *command, int argc, char *argv[])
+ 303:SYS/shell/shell_ext.c **** {
+ 630              		.loc 1 303 0
+ 631              		.cfi_startproc
+ 632              		@ args = 0, pretend = 0, frame = 32
+ 633              		@ frame_needed = 0, uses_anonymous_args = 0
+ 634              	.LVL84:
+ 635 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 636              	.LCFI4:
+ 637              		.cfi_def_cfa_offset 32
+ 638              		.cfi_offset 4, -32
+ 639              		.cfi_offset 5, -28
+ 640              		.cfi_offset 6, -24
+ 641              		.cfi_offset 7, -20
+ 642              		.cfi_offset 8, -16
+ 643              		.cfi_offset 9, -12
+ 644              		.cfi_offset 10, -8
+ 645              		.cfi_offset 14, -4
+ 646 0004 8CB0     		sub	sp, sp, #48
+ 647              	.LCFI5:
+ 648              		.cfi_def_cfa_offset 80
+ 649 0006 8046     		mov	r8, r0
+ 650 0008 8A46     		mov	r10, r1
+ 651 000a 1646     		mov	r6, r2
+ 652 000c 1F46     		mov	r7, r3
+ 304:SYS/shell/shell_ext.c ****     unsigned int params[SHELL_PARAMETER_MAX_NUMBER] = {0};
+ 653              		.loc 1 304 0
+ 654 000e 2022     		movs	r2, #32
+ 655              	.LVL85:
+ 656 0010 0021     		movs	r1, #0
+ 657              	.LVL86:
+ 658 0012 04A8     		add	r0, sp, #16
+ 659              	.LVL87:
+ 660 0014 FFF7FEFF 		bl	memset
+ 661              	.LVL88:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 18
+
+
+ 305:SYS/shell/shell_ext.c ****     int paramNum = command->attr.attrs.paramNum > (argc - 1) ? 
+ 306:SYS/shell/shell_ext.c ****         command->attr.attrs.paramNum : (argc - 1);
+ 662              		.loc 1 306 0
+ 663 0018 013E     		subs	r6, r6, #1
+ 664              	.LVL89:
+ 665 001a 9AF80290 		ldrb	r9, [r10, #2]	@ zero_extendqisi2
+ 666 001e 09F00F09 		and	r9, r9, #15
+ 305:SYS/shell/shell_ext.c ****     int paramNum = command->attr.attrs.paramNum > (argc - 1) ? 
+ 667              		.loc 1 305 0
+ 668 0022 B145     		cmp	r9, r6
+ 669 0024 B8BF     		it	lt
+ 670 0026 B146     		movlt	r9, r6
+ 671              	.LVL90:
+ 672              	.LBB2:
+ 307:SYS/shell/shell_ext.c ****     for (int i = 0; i < argc - 1; i++)
+ 673              		.loc 1 307 0
+ 674 0028 0024     		movs	r4, #0
+ 675 002a 0BE0     		b	.L69
+ 676              	.LVL91:
+ 677              	.L70:
+ 308:SYS/shell/shell_ext.c ****     {
+ 309:SYS/shell/shell_ext.c ****         params[i] = shellExtParsePara(shell, argv[i + 1]);
+ 678              		.loc 1 309 0 discriminator 3
+ 679 002c 651C     		adds	r5, r4, #1
+ 680 002e 57F82510 		ldr	r1, [r7, r5, lsl #2]
+ 681 0032 4046     		mov	r0, r8
+ 682 0034 FFF7FEFF 		bl	shellExtParsePara
+ 683              	.LVL92:
+ 684 0038 0CAB     		add	r3, sp, #48
+ 685 003a 03EB8404 		add	r4, r3, r4, lsl #2
+ 686              	.LVL93:
+ 687 003e 44F8200C 		str	r0, [r4, #-32]
+ 307:SYS/shell/shell_ext.c ****     for (int i = 0; i < argc - 1; i++)
+ 688              		.loc 1 307 0 discriminator 3
+ 689 0042 2C46     		mov	r4, r5
+ 690              	.LVL94:
+ 691              	.L69:
+ 307:SYS/shell/shell_ext.c ****     for (int i = 0; i < argc - 1; i++)
+ 692              		.loc 1 307 0 is_stmt 0 discriminator 1
+ 693 0044 B442     		cmp	r4, r6
+ 694 0046 F1DB     		blt	.L70
+ 695              	.LBE2:
+ 310:SYS/shell/shell_ext.c ****     }
+ 311:SYS/shell/shell_ext.c ****     switch (paramNum)
+ 696              		.loc 1 311 0 is_stmt 1
+ 697 0048 B9F1070F 		cmp	r9, #7
+ 698 004c 47D8     		bhi	.L81
+ 699 004e DFE809F0 		tbb	[pc, r9]
+ 700              	.L73:
+ 701 0052 04       		.byte	(.L72-.L73)/2
+ 702 0053 08       		.byte	(.L74-.L73)/2
+ 703 0054 0D       		.byte	(.L75-.L73)/2
+ 704 0055 13       		.byte	(.L76-.L73)/2
+ 705 0056 1A       		.byte	(.L77-.L73)/2
+ 706 0057 22       		.byte	(.L78-.L73)/2
+ 707 0058 2C       		.byte	(.L79-.L73)/2
+ 708 0059 38       		.byte	(.L80-.L73)/2
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 19
+
+
+ 709              		.p2align 1
+ 710              	.L72:
+ 312:SYS/shell/shell_ext.c ****     {
+ 313:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 1
+ 314:SYS/shell/shell_ext.c ****     case 0:
+ 315:SYS/shell/shell_ext.c ****         return command->data.cmd.function();
+ 711              		.loc 1 315 0
+ 712 005a DAF80830 		ldr	r3, [r10, #8]
+ 713 005e 9847     		blx	r3
+ 714              	.LVL95:
+ 715 0060 3FE0     		b	.L71
+ 716              	.L74:
+ 316:SYS/shell/shell_ext.c ****         // break;
+ 317:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 1 */
+ 318:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 2
+ 319:SYS/shell/shell_ext.c ****     case 1:
+ 320:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0]);
+ 717              		.loc 1 320 0
+ 718 0062 DAF80830 		ldr	r3, [r10, #8]
+ 719 0066 0498     		ldr	r0, [sp, #16]
+ 720 0068 9847     		blx	r3
+ 721              	.LVL96:
+ 722 006a 3AE0     		b	.L71
+ 723              	.L75:
+ 321:SYS/shell/shell_ext.c ****         // break;
+ 322:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 2 */
+ 323:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 3
+ 324:SYS/shell/shell_ext.c ****     case 2:
+ 325:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1]);
+ 724              		.loc 1 325 0
+ 725 006c DAF80830 		ldr	r3, [r10, #8]
+ 726 0070 0599     		ldr	r1, [sp, #20]
+ 727 0072 0498     		ldr	r0, [sp, #16]
+ 728 0074 9847     		blx	r3
+ 729              	.LVL97:
+ 730 0076 34E0     		b	.L71
+ 731              	.L76:
+ 326:SYS/shell/shell_ext.c ****         // break;
+ 327:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 3 */
+ 328:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 4
+ 329:SYS/shell/shell_ext.c ****     case 3:
+ 330:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 732              		.loc 1 330 0
+ 733 0078 DAF80830 		ldr	r3, [r10, #8]
+ 734 007c 069A     		ldr	r2, [sp, #24]
+ 735 007e 0599     		ldr	r1, [sp, #20]
+ 736 0080 0498     		ldr	r0, [sp, #16]
+ 737 0082 9847     		blx	r3
+ 738              	.LVL98:
+ 739 0084 2DE0     		b	.L71
+ 740              	.L77:
+ 331:SYS/shell/shell_ext.c ****                                           params[2]);
+ 332:SYS/shell/shell_ext.c ****         // break;
+ 333:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 4 */
+ 334:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 5
+ 335:SYS/shell/shell_ext.c ****     case 4:
+ 336:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 20
+
+
+ 741              		.loc 1 336 0
+ 742 0086 DAF80840 		ldr	r4, [r10, #8]
+ 743              	.LVL99:
+ 744 008a 079B     		ldr	r3, [sp, #28]
+ 745 008c 069A     		ldr	r2, [sp, #24]
+ 746 008e 0599     		ldr	r1, [sp, #20]
+ 747 0090 0498     		ldr	r0, [sp, #16]
+ 748 0092 A047     		blx	r4
+ 749              	.LVL100:
+ 750 0094 25E0     		b	.L71
+ 751              	.LVL101:
+ 752              	.L78:
+ 337:SYS/shell/shell_ext.c ****                                           params[2], params[3]);
+ 338:SYS/shell/shell_ext.c ****         // break;
+ 339:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 5 */
+ 340:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 6
+ 341:SYS/shell/shell_ext.c ****     case 5:
+ 342:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 753              		.loc 1 342 0
+ 754 0096 DAF80840 		ldr	r4, [r10, #8]
+ 755              	.LVL102:
+ 756 009a 089B     		ldr	r3, [sp, #32]
+ 757 009c 0093     		str	r3, [sp]
+ 758 009e 079B     		ldr	r3, [sp, #28]
+ 759 00a0 069A     		ldr	r2, [sp, #24]
+ 760 00a2 0599     		ldr	r1, [sp, #20]
+ 761 00a4 0498     		ldr	r0, [sp, #16]
+ 762 00a6 A047     		blx	r4
+ 763              	.LVL103:
+ 764 00a8 1BE0     		b	.L71
+ 765              	.LVL104:
+ 766              	.L79:
+ 343:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 344:SYS/shell/shell_ext.c ****                                           params[4]);
+ 345:SYS/shell/shell_ext.c ****         // break;
+ 346:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 6 */
+ 347:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 7
+ 348:SYS/shell/shell_ext.c ****     case 6:
+ 349:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 767              		.loc 1 349 0
+ 768 00aa DAF80840 		ldr	r4, [r10, #8]
+ 769              	.LVL105:
+ 770 00ae 099B     		ldr	r3, [sp, #36]
+ 771 00b0 0193     		str	r3, [sp, #4]
+ 772 00b2 089B     		ldr	r3, [sp, #32]
+ 773 00b4 0093     		str	r3, [sp]
+ 774 00b6 079B     		ldr	r3, [sp, #28]
+ 775 00b8 069A     		ldr	r2, [sp, #24]
+ 776 00ba 0599     		ldr	r1, [sp, #20]
+ 777 00bc 0498     		ldr	r0, [sp, #16]
+ 778 00be A047     		blx	r4
+ 779              	.LVL106:
+ 780 00c0 0FE0     		b	.L71
+ 781              	.LVL107:
+ 782              	.L80:
+ 350:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 351:SYS/shell/shell_ext.c ****                                           params[4], params[5]);
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 21
+
+
+ 352:SYS/shell/shell_ext.c ****         // break;
+ 353:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 7 */
+ 354:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 8
+ 355:SYS/shell/shell_ext.c ****     case 7:
+ 356:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 783              		.loc 1 356 0
+ 784 00c2 DAF80840 		ldr	r4, [r10, #8]
+ 785              	.LVL108:
+ 786 00c6 0A9B     		ldr	r3, [sp, #40]
+ 787 00c8 0293     		str	r3, [sp, #8]
+ 788 00ca 099B     		ldr	r3, [sp, #36]
+ 789 00cc 0193     		str	r3, [sp, #4]
+ 790 00ce 089B     		ldr	r3, [sp, #32]
+ 791 00d0 0093     		str	r3, [sp]
+ 792 00d2 079B     		ldr	r3, [sp, #28]
+ 793 00d4 069A     		ldr	r2, [sp, #24]
+ 794 00d6 0599     		ldr	r1, [sp, #20]
+ 795 00d8 0498     		ldr	r0, [sp, #16]
+ 796 00da A047     		blx	r4
+ 797              	.LVL109:
+ 798 00dc 01E0     		b	.L71
+ 799              	.LVL110:
+ 800              	.L81:
+ 357:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 358:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 359:SYS/shell/shell_ext.c ****                                           params[6]);
+ 360:SYS/shell/shell_ext.c ****         // break;
+ 361:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 8 */
+ 362:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 9
+ 363:SYS/shell/shell_ext.c ****     case 8:
+ 364:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 365:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 366:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 367:SYS/shell/shell_ext.c ****                                           params[6], params[7]);
+ 368:SYS/shell/shell_ext.c ****         // break;
+ 369:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 9 */
+ 370:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 10
+ 371:SYS/shell/shell_ext.c ****     case 9:
+ 372:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 373:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 374:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 375:SYS/shell/shell_ext.c ****                                           params[6], params[7],
+ 376:SYS/shell/shell_ext.c ****                                           params[8]);
+ 377:SYS/shell/shell_ext.c ****         // break;
+ 378:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 10 */
+ 379:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 11
+ 380:SYS/shell/shell_ext.c ****     case 10:
+ 381:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 382:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 383:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 384:SYS/shell/shell_ext.c ****                                           params[6], params[7],
+ 385:SYS/shell/shell_ext.c ****                                           params[8], params[9]);
+ 386:SYS/shell/shell_ext.c ****         // break;
+ 387:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 11 */
+ 388:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 12
+ 389:SYS/shell/shell_ext.c ****     case 11:
+ 390:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 22
+
+
+ 391:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 392:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 393:SYS/shell/shell_ext.c ****                                           params[6], params[7],
+ 394:SYS/shell/shell_ext.c ****                                           params[8], params[9],
+ 395:SYS/shell/shell_ext.c ****                                           params[10]);
+ 396:SYS/shell/shell_ext.c ****         // break;
+ 397:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 12 */
+ 398:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 13
+ 399:SYS/shell/shell_ext.c ****     case 12:
+ 400:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 401:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 402:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 403:SYS/shell/shell_ext.c ****                                           params[6], params[7],
+ 404:SYS/shell/shell_ext.c ****                                           params[8], params[9],
+ 405:SYS/shell/shell_ext.c ****                                           params[10], params[11]);
+ 406:SYS/shell/shell_ext.c ****         // break;
+ 407:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 13 */
+ 408:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 14
+ 409:SYS/shell/shell_ext.c ****     case 13:
+ 410:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 411:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 412:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 413:SYS/shell/shell_ext.c ****                                           params[6], params[7],
+ 414:SYS/shell/shell_ext.c ****                                           params[8], params[9],
+ 415:SYS/shell/shell_ext.c ****                                           params[10], params[11],
+ 416:SYS/shell/shell_ext.c ****                                           params[12]);
+ 417:SYS/shell/shell_ext.c ****         // break;
+ 418:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 14 */
+ 419:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 15
+ 420:SYS/shell/shell_ext.c ****     case 14:
+ 421:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 422:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 423:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 424:SYS/shell/shell_ext.c ****                                           params[6], params[7],
+ 425:SYS/shell/shell_ext.c ****                                           params[8], params[9],
+ 426:SYS/shell/shell_ext.c ****                                           params[10], params[11],
+ 427:SYS/shell/shell_ext.c ****                                           params[12], params[13]);
+ 428:SYS/shell/shell_ext.c ****         // break;
+ 429:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 15 */
+ 430:SYS/shell/shell_ext.c **** #if SHELL_PARAMETER_MAX_NUMBER >= 16
+ 431:SYS/shell/shell_ext.c ****     case 15:
+ 432:SYS/shell/shell_ext.c ****         return command->data.cmd.function(params[0], params[1],
+ 433:SYS/shell/shell_ext.c ****                                           params[2], params[3],
+ 434:SYS/shell/shell_ext.c ****                                           params[4], params[5],
+ 435:SYS/shell/shell_ext.c ****                                           params[6], params[7],
+ 436:SYS/shell/shell_ext.c ****                                           params[8], params[9],
+ 437:SYS/shell/shell_ext.c ****                                           params[10], params[11],
+ 438:SYS/shell/shell_ext.c ****                                           params[12], params[13],
+ 439:SYS/shell/shell_ext.c ****                                           params[14]);
+ 440:SYS/shell/shell_ext.c ****         // break;
+ 441:SYS/shell/shell_ext.c **** #endif /** SHELL_PARAMETER_MAX_NUMBER >= 16 */
+ 442:SYS/shell/shell_ext.c ****     default:
+ 443:SYS/shell/shell_ext.c ****         return -1;
+ 801              		.loc 1 443 0
+ 802 00de 4FF0FF30 		mov	r0, #-1
+ 803              	.LVL111:
+ 804              	.L71:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 23
+
+
+ 444:SYS/shell/shell_ext.c ****         // break;
+ 445:SYS/shell/shell_ext.c ****     }
+ 446:SYS/shell/shell_ext.c **** }
+ 805              		.loc 1 446 0
+ 806 00e2 0CB0     		add	sp, sp, #48
+ 807              	.LCFI6:
+ 808              		.cfi_def_cfa_offset 32
+ 809              		@ sp needed
+ 810 00e4 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 811              		.cfi_endproc
+ 812              	.LFE7:
+ 814              		.text
+ 815              	.Letext0:
+ 816              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 817              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 818              		.file 4 "SYS/shell/shell.h"
+ 819              		.file 5 "SYS/shell/shell_ext.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccjAGNPm.s 			page 24
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 shell_ext.c
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:22     .text.shellExtNumType:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:26     .text.shellExtNumType:00000000 shellExtNumType
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:126    .text.shellExtToNum:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:130    .text.shellExtToNum:00000000 shellExtToNum
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:174    .text.shellExtParseChar:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:178    .text.shellExtParseChar:00000000 shellExtParseChar
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:242    .text.shellExtParseString:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:246    .text.shellExtParseString:00000000 shellExtParseString
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:327    .text.shellExtParseNumber:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:331    .text.shellExtParseNumber:00000000 shellExtParseNumber
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:499    .text.shellExtParseVar:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:503    .text.shellExtParseVar:00000000 shellExtParseVar
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:543    .text.shellExtParsePara:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:548    .text.shellExtParsePara:00000000 shellExtParsePara
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:623    .text.shellExtRun:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:628    .text.shellExtRun:00000000 shellExtRun
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:701    .text.shellExtRun:00000052 $d
+C:\Users\why\AppData\Local\Temp\ccjAGNPm.s:709    .text.shellExtRun:0000005a $t
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+shellSeekCommand
+shellGetVarValue
+memset

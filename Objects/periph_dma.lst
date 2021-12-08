@@ -1,0 +1,510 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"periph_dma.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.periph_DMA_Serial,"ax",%progbits
+  22              		.align	2
+  23              		.global	periph_DMA_Serial
+  24              		.thumb
+  25              		.thumb_func
+  27              	periph_DMA_Serial:
+  28              	.LFB123:
+  29              		.file 1 "Bsp/periph_dma.c"
+   1:Bsp/periph_dma.c **** #include "periph_dma.h"
+   2:Bsp/periph_dma.c **** #include "stm32f4xx_dma.h"
+   3:Bsp/periph_dma.c **** #include "periph_gpio.h"
+   4:Bsp/periph_dma.c **** #include <string.h>
+   5:Bsp/periph_dma.c **** 
+   6:Bsp/periph_dma.c **** static dma_irq_callback callback_list[DMA_SUM][DMA_STREAM_SUM] = {
+   7:Bsp/periph_dma.c **** 	{NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
+   8:Bsp/periph_dma.c **** 	{NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
+   9:Bsp/periph_dma.c **** };
+  10:Bsp/periph_dma.c **** 
+  11:Bsp/periph_dma.c **** void periph_DMA_Serial(DMA_InitTypeDef *DMA_InitStructure, uint32_t DMA_Channel, uint32_t Periph_AD
+  12:Bsp/periph_dma.c **** {
+  30              		.loc 1 12 0
+  31              		.cfi_startproc
+  32              		@ args = 8, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              	.LVL0:
+  36 0000 10B4     		push	{r4}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 4
+  39              		.cfi_offset 4, -4
+  40 0002 9DF80840 		ldrb	r4, [sp, #8]	@ zero_extendqisi2
+  13:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_Channel = DMA_Channel;
+  41              		.loc 1 13 0
+  42 0006 0160     		str	r1, [r0]
+  14:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralBaseAddr = Periph_ADDR;
+  43              		.loc 1 14 0
+  44 0008 4260     		str	r2, [r0, #4]
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 2
+
+
+  15:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_Memory0BaseAddr = Buff_ADDR;
+  45              		.loc 1 15 0
+  46 000a 8360     		str	r3, [r0, #8]
+  16:Bsp/periph_dma.c **** 
+  17:Bsp/periph_dma.c **** 	if (mode == Serial_DMA_RX)
+  47              		.loc 1 17 0
+  48 000c 022C     		cmp	r4, #2
+  49 000e 05D1     		bne	.L2
+  18:Bsp/periph_dma.c **** 	{
+  19:Bsp/periph_dma.c **** 		DMA_InitStructure->DMA_DIR = DMA_DIR_PeripheralToMemory;
+  50              		.loc 1 19 0
+  51 0010 0023     		movs	r3, #0
+  52              	.LVL1:
+  53 0012 C360     		str	r3, [r0, #12]
+  20:Bsp/periph_dma.c **** 		DMA_InitStructure->DMA_Mode = DMA_Mode_Circular;
+  54              		.loc 1 20 0
+  55 0014 4FF48073 		mov	r3, #256
+  56 0018 4362     		str	r3, [r0, #36]
+  57 001a 05E0     		b	.L3
+  58              	.LVL2:
+  59              	.L2:
+  21:Bsp/periph_dma.c **** 	}
+  22:Bsp/periph_dma.c **** 	else if (mode == Serial_DMA_TX)
+  60              		.loc 1 22 0
+  61 001c 012C     		cmp	r4, #1
+  62 001e 03D1     		bne	.L3
+  23:Bsp/periph_dma.c **** 	{
+  24:Bsp/periph_dma.c **** 		DMA_InitStructure->DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  63              		.loc 1 24 0
+  64 0020 4023     		movs	r3, #64
+  65              	.LVL3:
+  66 0022 C360     		str	r3, [r0, #12]
+  25:Bsp/periph_dma.c **** 		DMA_InitStructure->DMA_Mode = DMA_Mode_Normal;
+  67              		.loc 1 25 0
+  68 0024 0023     		movs	r3, #0
+  69 0026 4362     		str	r3, [r0, #36]
+  70              	.L3:
+  26:Bsp/periph_dma.c **** 	}
+  27:Bsp/periph_dma.c **** 
+  28:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_BufferSize = Buff_Size;
+  71              		.loc 1 28 0
+  72 0028 019B     		ldr	r3, [sp, #4]
+  73 002a 0361     		str	r3, [r0, #16]
+  29:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  74              		.loc 1 29 0
+  75 002c 0023     		movs	r3, #0
+  76 002e 4361     		str	r3, [r0, #20]
+  30:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_MemoryInc = DMA_MemoryInc_Enable;
+  77              		.loc 1 30 0
+  78 0030 4FF48062 		mov	r2, #1024
+  79              	.LVL4:
+  80 0034 8261     		str	r2, [r0, #24]
+  31:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  81              		.loc 1 31 0
+  82 0036 C361     		str	r3, [r0, #28]
+  32:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+  83              		.loc 1 32 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 3
+
+
+  84 0038 0362     		str	r3, [r0, #32]
+  33:Bsp/periph_dma.c **** 
+  34:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_Priority = DMA_Priority_Medium;
+  85              		.loc 1 34 0
+  86 003a 4FF48032 		mov	r2, #65536
+  87 003e 8262     		str	r2, [r0, #40]
+  35:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_FIFOMode = DMA_FIFOMode_Disable;
+  88              		.loc 1 35 0
+  89 0040 C362     		str	r3, [r0, #44]
+  36:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+  90              		.loc 1 36 0
+  91 0042 0322     		movs	r2, #3
+  92 0044 0263     		str	r2, [r0, #48]
+  37:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  93              		.loc 1 37 0
+  94 0046 4363     		str	r3, [r0, #52]
+  38:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  95              		.loc 1 38 0
+  96 0048 8363     		str	r3, [r0, #56]
+  39:Bsp/periph_dma.c **** }
+  97              		.loc 1 39 0
+  98 004a 5DF8044B 		ldr	r4, [sp], #4
+  99              	.LCFI1:
+ 100              		.cfi_restore 4
+ 101              		.cfi_def_cfa_offset 0
+ 102              	.LVL5:
+ 103 004e 7047     		bx	lr
+ 104              		.cfi_endproc
+ 105              	.LFE123:
+ 107              		.section	.text.periph_DMA_TIM,"ax",%progbits
+ 108              		.align	2
+ 109              		.global	periph_DMA_TIM
+ 110              		.thumb
+ 111              		.thumb_func
+ 113              	periph_DMA_TIM:
+ 114              	.LFB124:
+  40:Bsp/periph_dma.c **** 
+  41:Bsp/periph_dma.c **** void periph_DMA_TIM(DMA_InitTypeDef *DMA_InitStructure, uint32_t DMA_Channel, uint32_t Periph_ADDR,
+  42:Bsp/periph_dma.c **** {
+ 115              		.loc 1 42 0
+ 116              		.cfi_startproc
+ 117              		@ args = 4, pretend = 0, frame = 0
+ 118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119              		@ link register save eliminated.
+ 120              	.LVL6:
+  43:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_Channel = DMA_Channel;
+ 121              		.loc 1 43 0
+ 122 0000 0160     		str	r1, [r0]
+  44:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralBaseAddr = Periph_ADDR;
+ 123              		.loc 1 44 0
+ 124 0002 4260     		str	r2, [r0, #4]
+  45:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_Memory0BaseAddr = Buff_ADDR;
+ 125              		.loc 1 45 0
+ 126 0004 8360     		str	r3, [r0, #8]
+  46:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_DIR = DMA_DIR_MemoryToPeripheral;
+ 127              		.loc 1 46 0
+ 128 0006 4023     		movs	r3, #64
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 4
+
+
+ 129              	.LVL7:
+ 130 0008 C360     		str	r3, [r0, #12]
+  47:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_BufferSize = Buff_Size;
+ 131              		.loc 1 47 0
+ 132 000a 009B     		ldr	r3, [sp]
+ 133 000c 0361     		str	r3, [r0, #16]
+  48:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ 134              		.loc 1 48 0
+ 135 000e 0023     		movs	r3, #0
+ 136 0010 4361     		str	r3, [r0, #20]
+  49:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_MemoryInc = DMA_MemoryInc_Enable;
+ 137              		.loc 1 49 0
+ 138 0012 4FF48062 		mov	r2, #1024
+ 139              	.LVL8:
+ 140 0016 8261     		str	r2, [r0, #24]
+  50:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+ 141              		.loc 1 50 0
+ 142 0018 4FF48052 		mov	r2, #4096
+ 143 001c C261     		str	r2, [r0, #28]
+  51:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
+ 144              		.loc 1 51 0
+ 145 001e 0262     		str	r2, [r0, #32]
+  52:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_Mode = DMA_Mode_Normal;
+ 146              		.loc 1 52 0
+ 147 0020 4362     		str	r3, [r0, #36]
+  53:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_Priority = DMA_Priority_Medium;
+ 148              		.loc 1 53 0
+ 149 0022 4FF48032 		mov	r2, #65536
+ 150 0026 8262     		str	r2, [r0, #40]
+  54:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_FIFOMode = DMA_FIFOMode_Disable;
+ 151              		.loc 1 54 0
+ 152 0028 C362     		str	r3, [r0, #44]
+  55:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+ 153              		.loc 1 55 0
+ 154 002a 0322     		movs	r2, #3
+ 155 002c 0263     		str	r2, [r0, #48]
+  56:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_MemoryBurst = DMA_MemoryBurst_Single;
+ 156              		.loc 1 56 0
+ 157 002e 4363     		str	r3, [r0, #52]
+  57:Bsp/periph_dma.c **** 	DMA_InitStructure->DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+ 158              		.loc 1 57 0
+ 159 0030 8363     		str	r3, [r0, #56]
+ 160 0032 7047     		bx	lr
+ 161              		.cfi_endproc
+ 162              	.LFE124:
+ 164              		.section	.text.periph_DMA_WithoutIRQ_Init,"ax",%progbits
+ 165              		.align	2
+ 166              		.global	periph_DMA_WithoutIRQ_Init
+ 167              		.thumb
+ 168              		.thumb_func
+ 170              	periph_DMA_WithoutIRQ_Init:
+ 171              	.LFB125:
+  58:Bsp/periph_dma.c **** }
+  59:Bsp/periph_dma.c **** 
+  60:Bsp/periph_dma.c **** void periph_DMA_WithoutIRQ_Init(uint32_t DMA_CLK, DMA_Stream_TypeDef *DMA_Stream, DMA_InitTypeDef *
+  61:Bsp/periph_dma.c **** {
+ 172              		.loc 1 61 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 5
+
+
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176              	.LVL9:
+ 177 0000 70B5     		push	{r4, r5, r6, lr}
+ 178              	.LCFI2:
+ 179              		.cfi_def_cfa_offset 16
+ 180              		.cfi_offset 4, -16
+ 181              		.cfi_offset 5, -12
+ 182              		.cfi_offset 6, -8
+ 183              		.cfi_offset 14, -4
+ 184 0002 0C46     		mov	r4, r1
+ 185 0004 1646     		mov	r6, r2
+ 186 0006 1D46     		mov	r5, r3
+  62:Bsp/periph_dma.c **** 	RCC_AHB1PeriphClockCmd(DMA_CLK, ENABLE);
+ 187              		.loc 1 62 0
+ 188 0008 0121     		movs	r1, #1
+ 189              	.LVL10:
+ 190 000a FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 191              	.LVL11:
+  63:Bsp/periph_dma.c **** 	DMA_DeInit(DMA_Stream);
+ 192              		.loc 1 63 0
+ 193 000e 2046     		mov	r0, r4
+ 194 0010 FFF7FEFF 		bl	DMA_DeInit
+ 195              	.LVL12:
+ 196              	.L7:
+  64:Bsp/periph_dma.c **** 	while (DMA_GetCmdStatus(DMA_Stream) != DISABLE)
+ 197              		.loc 1 64 0 discriminator 1
+ 198 0014 2046     		mov	r0, r4
+ 199 0016 FFF7FEFF 		bl	DMA_GetCmdStatus
+ 200              	.LVL13:
+ 201 001a 0028     		cmp	r0, #0
+ 202 001c FAD1     		bne	.L7
+  65:Bsp/periph_dma.c **** 		;
+  66:Bsp/periph_dma.c **** 	DMA_Init(DMA_Stream, DMA_InitStructure);
+ 203              		.loc 1 66 0
+ 204 001e 3146     		mov	r1, r6
+ 205 0020 2046     		mov	r0, r4
+ 206 0022 FFF7FEFF 		bl	DMA_Init
+ 207              	.LVL14:
+  67:Bsp/periph_dma.c **** 	DMA_Cmd(DMA_Stream, State);
+ 208              		.loc 1 67 0
+ 209 0026 2946     		mov	r1, r5
+ 210 0028 2046     		mov	r0, r4
+ 211 002a FFF7FEFF 		bl	DMA_Cmd
+ 212              	.LVL15:
+ 213 002e 70BD     		pop	{r4, r5, r6, pc}
+ 214              		.cfi_endproc
+ 215              	.LFE125:
+ 217              		.section	.text.periph_DMA_WithIRQ_Init,"ax",%progbits
+ 218              		.align	2
+ 219              		.global	periph_DMA_WithIRQ_Init
+ 220              		.thumb
+ 221              		.thumb_func
+ 223              	periph_DMA_WithIRQ_Init:
+ 224              	.LFB126:
+  68:Bsp/periph_dma.c **** }
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 6
+
+
+  69:Bsp/periph_dma.c **** 
+  70:Bsp/periph_dma.c **** void periph_DMA_WithIRQ_Init(uint32_t DMA_CLK, DMA_Stream_TypeDef *DMA_Stream, DMA_InitTypeDef *DMA
+  71:Bsp/periph_dma.c **** {
+ 225              		.loc 1 71 0
+ 226              		.cfi_startproc
+ 227              		@ args = 4, pretend = 0, frame = 0
+ 228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 229              	.LVL16:
+ 230 0000 70B5     		push	{r4, r5, r6, lr}
+ 231              	.LCFI3:
+ 232              		.cfi_def_cfa_offset 16
+ 233              		.cfi_offset 4, -16
+ 234              		.cfi_offset 5, -12
+ 235              		.cfi_offset 6, -8
+ 236              		.cfi_offset 14, -4
+ 237 0002 0C46     		mov	r4, r1
+ 238 0004 1646     		mov	r6, r2
+ 239 0006 1D46     		mov	r5, r3
+  72:Bsp/periph_dma.c **** 	RCC_AHB1PeriphClockCmd(DMA_CLK, ENABLE);
+ 240              		.loc 1 72 0
+ 241 0008 0121     		movs	r1, #1
+ 242              	.LVL17:
+ 243 000a FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 244              	.LVL18:
+  73:Bsp/periph_dma.c **** 	DMA_DeInit(DMA_Stream);
+ 245              		.loc 1 73 0
+ 246 000e 2046     		mov	r0, r4
+ 247 0010 FFF7FEFF 		bl	DMA_DeInit
+ 248              	.LVL19:
+ 249              	.L10:
+  74:Bsp/periph_dma.c **** 	while (DMA_GetCmdStatus(DMA_Stream) != DISABLE)
+ 250              		.loc 1 74 0 discriminator 1
+ 251 0014 2046     		mov	r0, r4
+ 252 0016 FFF7FEFF 		bl	DMA_GetCmdStatus
+ 253              	.LVL20:
+ 254 001a 0028     		cmp	r0, #0
+ 255 001c FAD1     		bne	.L10
+  75:Bsp/periph_dma.c **** 		;
+  76:Bsp/periph_dma.c **** 	DMA_Init(DMA_Stream, DMA_InitStructure);
+ 256              		.loc 1 76 0
+ 257 001e 3146     		mov	r1, r6
+ 258 0020 2046     		mov	r0, r4
+ 259 0022 FFF7FEFF 		bl	DMA_Init
+ 260              	.LVL21:
+  77:Bsp/periph_dma.c **** 	DMA_ITConfig(DMA_Stream, DMA_IT, ENABLE);
+ 261              		.loc 1 77 0
+ 262 0026 0122     		movs	r2, #1
+ 263 0028 2946     		mov	r1, r5
+ 264 002a 2046     		mov	r0, r4
+ 265 002c FFF7FEFF 		bl	DMA_ITConfig
+ 266              	.LVL22:
+  78:Bsp/periph_dma.c **** 	DMA_Cmd(DMA_Stream, State);
+ 267              		.loc 1 78 0
+ 268 0030 9DF81010 		ldrb	r1, [sp, #16]	@ zero_extendqisi2
+ 269 0034 2046     		mov	r0, r4
+ 270 0036 FFF7FEFF 		bl	DMA_Cmd
+ 271              	.LVL23:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 7
+
+
+ 272 003a 70BD     		pop	{r4, r5, r6, pc}
+ 273              		.cfi_endproc
+ 274              	.LFE126:
+ 276              		.section	.text.periph_DMA_Set_State,"ax",%progbits
+ 277              		.align	2
+ 278              		.global	periph_DMA_Set_State
+ 279              		.thumb
+ 280              		.thumb_func
+ 282              	periph_DMA_Set_State:
+ 283              	.LFB127:
+  79:Bsp/periph_dma.c **** }
+  80:Bsp/periph_dma.c **** 
+  81:Bsp/periph_dma.c **** void periph_DMA_Set_State(DMA_Stream_TypeDef *DMA_Stream, FunctionalState State)
+  82:Bsp/periph_dma.c **** {
+ 284              		.loc 1 82 0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288              	.LVL24:
+ 289 0000 08B5     		push	{r3, lr}
+ 290              	.LCFI4:
+ 291              		.cfi_def_cfa_offset 8
+ 292              		.cfi_offset 3, -8
+ 293              		.cfi_offset 14, -4
+  83:Bsp/periph_dma.c **** 	DMA_Cmd(DMA_Stream, State);
+ 294              		.loc 1 83 0
+ 295 0002 FFF7FEFF 		bl	DMA_Cmd
+ 296              	.LVL25:
+ 297 0006 08BD     		pop	{r3, pc}
+ 298              		.cfi_endproc
+ 299              	.LFE127:
+ 301              		.section	.text.periph_Set_DMA_IRQCallback,"ax",%progbits
+ 302              		.align	2
+ 303              		.global	periph_Set_DMA_IRQCallback
+ 304              		.thumb
+ 305              		.thumb_func
+ 307              	periph_Set_DMA_IRQCallback:
+ 308              	.LFB128:
+  84:Bsp/periph_dma.c **** }
+  85:Bsp/periph_dma.c **** 
+  86:Bsp/periph_dma.c **** void periph_Set_DMA_IRQCallback(uint8_t DMAx, uint8_t Stream, dma_irq_callback callback)
+  87:Bsp/periph_dma.c **** {
+ 309              		.loc 1 87 0
+ 310              		.cfi_startproc
+ 311              		@ args = 0, pretend = 0, frame = 0
+ 312              		@ frame_needed = 0, uses_anonymous_args = 0
+ 313              		@ link register save eliminated.
+ 314              	.LVL26:
+  88:Bsp/periph_dma.c **** 	callback_list[DMAx][Stream] = callback;
+ 315              		.loc 1 88 0
+ 316 0000 01EBC001 		add	r1, r1, r0, lsl #3
+ 317              	.LVL27:
+ 318 0004 014B     		ldr	r3, .L15
+ 319 0006 43F82120 		str	r2, [r3, r1, lsl #2]
+ 320 000a 7047     		bx	lr
+ 321              	.L16:
+ 322              		.align	2
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 8
+
+
+ 323              	.L15:
+ 324 000c 00000000 		.word	.LANCHOR0
+ 325              		.cfi_endproc
+ 326              	.LFE128:
+ 328              		.section	.text.periph_Get_DMA_IRQCallback,"ax",%progbits
+ 329              		.align	2
+ 330              		.global	periph_Get_DMA_IRQCallback
+ 331              		.thumb
+ 332              		.thumb_func
+ 334              	periph_Get_DMA_IRQCallback:
+ 335              	.LFB129:
+  89:Bsp/periph_dma.c **** }
+  90:Bsp/periph_dma.c **** 
+  91:Bsp/periph_dma.c **** dma_irq_callback periph_Get_DMA_IRQCallback(uint8_t DMAx, uint8_t Stream)
+  92:Bsp/periph_dma.c **** {
+ 336              		.loc 1 92 0
+ 337              		.cfi_startproc
+ 338              		@ args = 0, pretend = 0, frame = 0
+ 339              		@ frame_needed = 0, uses_anonymous_args = 0
+ 340              		@ link register save eliminated.
+ 341              	.LVL28:
+  93:Bsp/periph_dma.c **** 	return callback_list[DMAx][Stream];
+ 342              		.loc 1 93 0
+ 343 0000 01EBC001 		add	r1, r1, r0, lsl #3
+ 344              	.LVL29:
+  94:Bsp/periph_dma.c **** }
+ 345              		.loc 1 94 0
+ 346 0004 014B     		ldr	r3, .L18
+ 347 0006 53F82100 		ldr	r0, [r3, r1, lsl #2]
+ 348              	.LVL30:
+ 349 000a 7047     		bx	lr
+ 350              	.L19:
+ 351              		.align	2
+ 352              	.L18:
+ 353 000c 00000000 		.word	.LANCHOR0
+ 354              		.cfi_endproc
+ 355              	.LFE129:
+ 357              		.section	.bss.callback_list,"aw",%nobits
+ 358              		.align	2
+ 359              		.set	.LANCHOR0,. + 0
+ 362              	callback_list:
+ 363 0000 00000000 		.space	64
+ 363      00000000 
+ 363      00000000 
+ 363      00000000 
+ 363      00000000 
+ 364              		.text
+ 365              	.Letext0:
+ 366              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 367              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 368              		.file 4 "USER/stm32f4xx.h"
+ 369              		.file 5 "FWLIB/inc/stm32f4xx_dma.h"
+ 370              		.file 6 "Bsp/periph_dma.h"
+ 371              		.file 7 "FWLIB/inc/stm32f4xx_rcc.h"
+ 372              		.file 8 "F4_CORE/core_cm4.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5JxGvy.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 periph_dma.c
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:22     .text.periph_DMA_Serial:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:27     .text.periph_DMA_Serial:00000000 periph_DMA_Serial
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:108    .text.periph_DMA_TIM:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:113    .text.periph_DMA_TIM:00000000 periph_DMA_TIM
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:165    .text.periph_DMA_WithoutIRQ_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:170    .text.periph_DMA_WithoutIRQ_Init:00000000 periph_DMA_WithoutIRQ_Init
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:218    .text.periph_DMA_WithIRQ_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:223    .text.periph_DMA_WithIRQ_Init:00000000 periph_DMA_WithIRQ_Init
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:277    .text.periph_DMA_Set_State:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:282    .text.periph_DMA_Set_State:00000000 periph_DMA_Set_State
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:302    .text.periph_Set_DMA_IRQCallback:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:307    .text.periph_Set_DMA_IRQCallback:00000000 periph_Set_DMA_IRQCallback
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:324    .text.periph_Set_DMA_IRQCallback:0000000c $d
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:329    .text.periph_Get_DMA_IRQCallback:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:334    .text.periph_Get_DMA_IRQCallback:00000000 periph_Get_DMA_IRQCallback
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:353    .text.periph_Get_DMA_IRQCallback:0000000c $d
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:358    .bss.callback_list:00000000 $d
+C:\Users\why\AppData\Local\Temp\cc5JxGvy.s:362    .bss.callback_list:00000000 callback_list
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_AHB1PeriphClockCmd
+DMA_DeInit
+DMA_GetCmdStatus
+DMA_Init
+DMA_Cmd
+DMA_ITConfig

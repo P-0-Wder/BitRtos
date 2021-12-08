@@ -1,0 +1,1832 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"binary_tree.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.Tree_RotateLeft,"ax",%progbits
+  22              		.align	2
+  23              		.thumb
+  24              		.thumb_func
+  26              	Tree_RotateLeft:
+  27              	.LFB15:
+  28              		.file 1 "SYS/data_structure/binary_tree.c"
+   1:SYS/data_structure/binary_tree.c **** /*
+   2:SYS/data_structure/binary_tree.c **** coder: 8_B!T0
+   3:SYS/data_structure/binary_tree.c **** bref: 
+   4:SYS/data_structure/binary_tree.c **** to make search and sort function more effcient. so i create this file
+   5:SYS/data_structure/binary_tree.c **** in order to make doubly linked list can be mutual converted with binary tree
+   6:SYS/data_structure/binary_tree.c **** and make some search function effcient.
+   7:SYS/data_structure/binary_tree.c **** */
+   8:SYS/data_structure/binary_tree.c **** #include "binary_tree.h"
+   9:SYS/data_structure/binary_tree.c **** #include <string.h>
+  10:SYS/data_structure/binary_tree.c **** 
+  11:SYS/data_structure/binary_tree.c **** static bool Tree_DynamicTrim(node_template *relative_root);
+  12:SYS/data_structure/binary_tree.c **** static void Tree_RotateLeft(node_template *root, node_template *a);
+  13:SYS/data_structure/binary_tree.c **** static void Tree_RotateRight(node_template *root, node_template *a);
+  14:SYS/data_structure/binary_tree.c **** 
+  15:SYS/data_structure/binary_tree.c **** void Tree_Node_Init(node_template *node, char *node_name, void *data)
+  16:SYS/data_structure/binary_tree.c **** {
+  17:SYS/data_structure/binary_tree.c ****     if (node == NULL)
+  18:SYS/data_structure/binary_tree.c ****         return;
+  19:SYS/data_structure/binary_tree.c **** 
+  20:SYS/data_structure/binary_tree.c ****     node->data_ptr = data;
+  21:SYS/data_structure/binary_tree.c **** 
+  22:SYS/data_structure/binary_tree.c ****     node->F_Node = NULL;
+  23:SYS/data_structure/binary_tree.c ****     node->L_Node = NULL;
+  24:SYS/data_structure/binary_tree.c ****     node->R_Node = NULL;
+  25:SYS/data_structure/binary_tree.c **** 
+  26:SYS/data_structure/binary_tree.c ****     node->name = node_name;
+  27:SYS/data_structure/binary_tree.c **** }
+  28:SYS/data_structure/binary_tree.c **** 
+  29:SYS/data_structure/binary_tree.c **** node_template *Tree_ReSetRoot(node_template *tree)
+  30:SYS/data_structure/binary_tree.c **** {
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 2
+
+
+  31:SYS/data_structure/binary_tree.c ****     if (tree == NULL)
+  32:SYS/data_structure/binary_tree.c ****         return NULL;
+  33:SYS/data_structure/binary_tree.c **** 
+  34:SYS/data_structure/binary_tree.c ****     if (tree->F_Node == NULL)
+  35:SYS/data_structure/binary_tree.c ****     {
+  36:SYS/data_structure/binary_tree.c ****         return tree;
+  37:SYS/data_structure/binary_tree.c ****     }
+  38:SYS/data_structure/binary_tree.c ****     else
+  39:SYS/data_structure/binary_tree.c ****     {
+  40:SYS/data_structure/binary_tree.c ****         Tree_ReSetRoot(tree->F_Node);
+  41:SYS/data_structure/binary_tree.c ****     }
+  42:SYS/data_structure/binary_tree.c **** }
+  43:SYS/data_structure/binary_tree.c **** 
+  44:SYS/data_structure/binary_tree.c **** void Tree_InsertNode(node_template *relative_root, node_template *node, compare_callback callback)
+  45:SYS/data_structure/binary_tree.c **** {
+  46:SYS/data_structure/binary_tree.c ****     uint32_t cmp_out = 0;
+  47:SYS/data_structure/binary_tree.c **** 
+  48:SYS/data_structure/binary_tree.c ****     if ((node == NULL) || (callback == NULL) || (relative_root == node))
+  49:SYS/data_structure/binary_tree.c ****         return;
+  50:SYS/data_structure/binary_tree.c **** 
+  51:SYS/data_structure/binary_tree.c ****     //need traverse process compare all node in current root
+  52:SYS/data_structure/binary_tree.c ****     cmp_out = callback(relative_root->data_ptr, node->data_ptr);
+  53:SYS/data_structure/binary_tree.c **** 
+  54:SYS/data_structure/binary_tree.c ****     if (cmp_out != NULL)
+  55:SYS/data_structure/binary_tree.c ****     {
+  56:SYS/data_structure/binary_tree.c ****         //relative root data is bigger then node data
+  57:SYS/data_structure/binary_tree.c ****         if (cmp_out == (uint32_t)relative_root->data_ptr)
+  58:SYS/data_structure/binary_tree.c ****         {
+  59:SYS/data_structure/binary_tree.c ****             if (relative_root->L_Node != NULL)
+  60:SYS/data_structure/binary_tree.c ****             {
+  61:SYS/data_structure/binary_tree.c ****                 Tree_InsertNode(relative_root->L_Node, node, callback);
+  62:SYS/data_structure/binary_tree.c ****             }
+  63:SYS/data_structure/binary_tree.c ****             else
+  64:SYS/data_structure/binary_tree.c ****             {
+  65:SYS/data_structure/binary_tree.c ****                 if (relative_root == node)
+  66:SYS/data_structure/binary_tree.c ****                     return;
+  67:SYS/data_structure/binary_tree.c **** 
+  68:SYS/data_structure/binary_tree.c ****                 node->F_Node = relative_root;
+  69:SYS/data_structure/binary_tree.c ****                 relative_root->L_Node = node;
+  70:SYS/data_structure/binary_tree.c ****             }
+  71:SYS/data_structure/binary_tree.c ****         }
+  72:SYS/data_structure/binary_tree.c ****         else if (cmp_out == (uint32_t)node->data_ptr)
+  73:SYS/data_structure/binary_tree.c ****         {
+  74:SYS/data_structure/binary_tree.c ****             if (relative_root->R_Node != NULL)
+  75:SYS/data_structure/binary_tree.c ****             {
+  76:SYS/data_structure/binary_tree.c ****                 Tree_InsertNode(relative_root->R_Node, node, callback);
+  77:SYS/data_structure/binary_tree.c ****             }
+  78:SYS/data_structure/binary_tree.c ****             else
+  79:SYS/data_structure/binary_tree.c ****             {
+  80:SYS/data_structure/binary_tree.c ****                 if (relative_root == node)
+  81:SYS/data_structure/binary_tree.c ****                     return;
+  82:SYS/data_structure/binary_tree.c **** 
+  83:SYS/data_structure/binary_tree.c ****                 node->F_Node = relative_root;
+  84:SYS/data_structure/binary_tree.c ****                 relative_root->R_Node = node;
+  85:SYS/data_structure/binary_tree.c ****             }
+  86:SYS/data_structure/binary_tree.c ****         }
+  87:SYS/data_structure/binary_tree.c **** 
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 3
+
+
+  88:SYS/data_structure/binary_tree.c ****         Tree_DynamicTrim(relative_root);
+  89:SYS/data_structure/binary_tree.c ****     }
+  90:SYS/data_structure/binary_tree.c **** }
+  91:SYS/data_structure/binary_tree.c **** 
+  92:SYS/data_structure/binary_tree.c **** bool Tree_DeleteNode(node_template *node)
+  93:SYS/data_structure/binary_tree.c **** {
+  94:SYS/data_structure/binary_tree.c ****     if ((node->F_Node != NULL) || (node != NULL))
+  95:SYS/data_structure/binary_tree.c ****     {
+  96:SYS/data_structure/binary_tree.c ****         if (node->F_Node->L_Node == node)
+  97:SYS/data_structure/binary_tree.c ****         {
+  98:SYS/data_structure/binary_tree.c ****             node->F_Node->L_Node = NULL;
+  99:SYS/data_structure/binary_tree.c ****         }
+ 100:SYS/data_structure/binary_tree.c ****         else if (node->F_Node->R_Node == node)
+ 101:SYS/data_structure/binary_tree.c ****         {
+ 102:SYS/data_structure/binary_tree.c ****             node->F_Node->R_Node = NULL;
+ 103:SYS/data_structure/binary_tree.c ****         }
+ 104:SYS/data_structure/binary_tree.c **** 
+ 105:SYS/data_structure/binary_tree.c ****         node->F_Node = NULL;
+ 106:SYS/data_structure/binary_tree.c ****         return true;
+ 107:SYS/data_structure/binary_tree.c ****     }
+ 108:SYS/data_structure/binary_tree.c **** 
+ 109:SYS/data_structure/binary_tree.c ****     return false;
+ 110:SYS/data_structure/binary_tree.c **** }
+ 111:SYS/data_structure/binary_tree.c **** 
+ 112:SYS/data_structure/binary_tree.c **** void Tree_Printf_NodeName(node_template *node)
+ 113:SYS/data_structure/binary_tree.c **** {
+ 114:SYS/data_structure/binary_tree.c ****     if (node->name != NULL)
+ 115:SYS/data_structure/binary_tree.c ****     {
+ 116:SYS/data_structure/binary_tree.c ****         printf("%s\n", node->name);
+ 117:SYS/data_structure/binary_tree.c ****     }
+ 118:SYS/data_structure/binary_tree.c **** }
+ 119:SYS/data_structure/binary_tree.c **** 
+ 120:SYS/data_structure/binary_tree.c **** //traverse rule : root left right
+ 121:SYS/data_structure/binary_tree.c **** void Tree_Pre_Traverse(node_template *relative_node, tree_traverse_callback callback)
+ 122:SYS/data_structure/binary_tree.c **** {
+ 123:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 124:SYS/data_structure/binary_tree.c ****     {
+ 125:SYS/data_structure/binary_tree.c ****         //process root node
+ 126:SYS/data_structure/binary_tree.c ****         if (callback != NULL)
+ 127:SYS/data_structure/binary_tree.c ****         {
+ 128:SYS/data_structure/binary_tree.c ****             callback(relative_node);
+ 129:SYS/data_structure/binary_tree.c ****         }
+ 130:SYS/data_structure/binary_tree.c **** 
+ 131:SYS/data_structure/binary_tree.c ****         //traverse left node
+ 132:SYS/data_structure/binary_tree.c ****         Tree_Pre_Traverse(relative_node->L_Node, callback);
+ 133:SYS/data_structure/binary_tree.c ****         //traverse right node
+ 134:SYS/data_structure/binary_tree.c ****         Tree_Pre_Traverse(relative_node->R_Node, callback);
+ 135:SYS/data_structure/binary_tree.c ****     }
+ 136:SYS/data_structure/binary_tree.c **** }
+ 137:SYS/data_structure/binary_tree.c **** 
+ 138:SYS/data_structure/binary_tree.c **** //traverse rule : left root right
+ 139:SYS/data_structure/binary_tree.c **** void Tree_Mid_Traverse(node_template *relative_node, tree_traverse_callback callback)
+ 140:SYS/data_structure/binary_tree.c **** {
+ 141:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 142:SYS/data_structure/binary_tree.c ****     {
+ 143:SYS/data_structure/binary_tree.c ****         //traverse left node
+ 144:SYS/data_structure/binary_tree.c ****         Tree_Mid_Traverse(relative_node->L_Node, callback);
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 4
+
+
+ 145:SYS/data_structure/binary_tree.c **** 
+ 146:SYS/data_structure/binary_tree.c ****         //process root node
+ 147:SYS/data_structure/binary_tree.c ****         if (callback != NULL)
+ 148:SYS/data_structure/binary_tree.c ****         {
+ 149:SYS/data_structure/binary_tree.c ****             callback(relative_node);
+ 150:SYS/data_structure/binary_tree.c ****         }
+ 151:SYS/data_structure/binary_tree.c **** 
+ 152:SYS/data_structure/binary_tree.c ****         //traverse right node
+ 153:SYS/data_structure/binary_tree.c ****         Tree_Mid_Traverse(relative_node->R_Node, callback);
+ 154:SYS/data_structure/binary_tree.c ****     }
+ 155:SYS/data_structure/binary_tree.c **** }
+ 156:SYS/data_structure/binary_tree.c **** 
+ 157:SYS/data_structure/binary_tree.c **** //traverse rule : left right root
+ 158:SYS/data_structure/binary_tree.c **** void Tree_Bck_Traverse(node_template *relative_node, tree_traverse_callback callback)
+ 159:SYS/data_structure/binary_tree.c **** {
+ 160:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 161:SYS/data_structure/binary_tree.c ****     {
+ 162:SYS/data_structure/binary_tree.c ****         //traverse left node
+ 163:SYS/data_structure/binary_tree.c ****         Tree_Bck_Traverse(relative_node->L_Node, callback);
+ 164:SYS/data_structure/binary_tree.c ****         //traverse right node
+ 165:SYS/data_structure/binary_tree.c ****         Tree_Bck_Traverse(relative_node->R_Node, callback);
+ 166:SYS/data_structure/binary_tree.c **** 
+ 167:SYS/data_structure/binary_tree.c ****         //precess root node
+ 168:SYS/data_structure/binary_tree.c ****         if (callback != NULL)
+ 169:SYS/data_structure/binary_tree.c ****         {
+ 170:SYS/data_structure/binary_tree.c ****             callback(relative_node);
+ 171:SYS/data_structure/binary_tree.c ****         }
+ 172:SYS/data_structure/binary_tree.c ****     }
+ 173:SYS/data_structure/binary_tree.c **** }
+ 174:SYS/data_structure/binary_tree.c **** 
+ 175:SYS/data_structure/binary_tree.c **** void Tree_Structure_Dsp(node_template *relative_root, display_callback dsp_func, traverse_type type
+ 176:SYS/data_structure/binary_tree.c **** {
+ 177:SYS/data_structure/binary_tree.c ****     switch (type)
+ 178:SYS/data_structure/binary_tree.c ****     {
+ 179:SYS/data_structure/binary_tree.c ****     case pre_trv:
+ 180:SYS/data_structure/binary_tree.c ****         printf("\r\npre traverse\r\n");
+ 181:SYS/data_structure/binary_tree.c ****         Tree_Pre_Traverse(relative_root, dsp_func);
+ 182:SYS/data_structure/binary_tree.c ****         break;
+ 183:SYS/data_structure/binary_tree.c **** 
+ 184:SYS/data_structure/binary_tree.c ****     case mid_trv:
+ 185:SYS/data_structure/binary_tree.c ****         printf("\r\nmid traverse\r\n");
+ 186:SYS/data_structure/binary_tree.c ****         Tree_Mid_Traverse(relative_root, dsp_func);
+ 187:SYS/data_structure/binary_tree.c ****         break;
+ 188:SYS/data_structure/binary_tree.c **** 
+ 189:SYS/data_structure/binary_tree.c ****     case bck_trv:
+ 190:SYS/data_structure/binary_tree.c ****         printf("\r\nbck traverse\r\n");
+ 191:SYS/data_structure/binary_tree.c ****         Tree_Bck_Traverse(relative_root, dsp_func);
+ 192:SYS/data_structure/binary_tree.c ****         break;
+ 193:SYS/data_structure/binary_tree.c **** 
+ 194:SYS/data_structure/binary_tree.c ****     default:
+ 195:SYS/data_structure/binary_tree.c ****         break;
+ 196:SYS/data_structure/binary_tree.c ****     }
+ 197:SYS/data_structure/binary_tree.c **** }
+ 198:SYS/data_structure/binary_tree.c **** 
+ 199:SYS/data_structure/binary_tree.c **** uint8_t Tree_GetDepth(node_template *relative_root)
+ 200:SYS/data_structure/binary_tree.c **** {
+ 201:SYS/data_structure/binary_tree.c ****     uint8_t left_depth_tmp = 0;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 5
+
+
+ 202:SYS/data_structure/binary_tree.c ****     uint8_t right_depth_tmp = 0;
+ 203:SYS/data_structure/binary_tree.c **** 
+ 204:SYS/data_structure/binary_tree.c ****     if (relative_root == NULL)
+ 205:SYS/data_structure/binary_tree.c ****     {
+ 206:SYS/data_structure/binary_tree.c ****         return 0;
+ 207:SYS/data_structure/binary_tree.c ****     }
+ 208:SYS/data_structure/binary_tree.c **** 
+ 209:SYS/data_structure/binary_tree.c ****     left_depth_tmp = Tree_GetDepth(relative_root->L_Node) + 1;
+ 210:SYS/data_structure/binary_tree.c ****     right_depth_tmp = Tree_GetDepth(relative_root->R_Node) + 1;
+ 211:SYS/data_structure/binary_tree.c **** 
+ 212:SYS/data_structure/binary_tree.c ****     return (left_depth_tmp > right_depth_tmp) ? left_depth_tmp : right_depth_tmp;
+ 213:SYS/data_structure/binary_tree.c **** }
+ 214:SYS/data_structure/binary_tree.c **** 
+ 215:SYS/data_structure/binary_tree.c **** void Tree_SwapLR(node_template *relative_root)
+ 216:SYS/data_structure/binary_tree.c **** {
+ 217:SYS/data_structure/binary_tree.c ****     node_template *node_tmp = NULL;
+ 218:SYS/data_structure/binary_tree.c **** 
+ 219:SYS/data_structure/binary_tree.c ****     if (relative_root != NULL)
+ 220:SYS/data_structure/binary_tree.c ****     {
+ 221:SYS/data_structure/binary_tree.c ****         node_tmp = relative_root->L_Node;
+ 222:SYS/data_structure/binary_tree.c **** 
+ 223:SYS/data_structure/binary_tree.c ****         relative_root->L_Node = relative_root->R_Node;
+ 224:SYS/data_structure/binary_tree.c ****         relative_root->R_Node = node_tmp;
+ 225:SYS/data_structure/binary_tree.c **** 
+ 226:SYS/data_structure/binary_tree.c ****         Tree_SwapLR(relative_root->L_Node);
+ 227:SYS/data_structure/binary_tree.c ****         Tree_SwapLR(relative_root->R_Node);
+ 228:SYS/data_structure/binary_tree.c ****     }
+ 229:SYS/data_structure/binary_tree.c **** }
+ 230:SYS/data_structure/binary_tree.c **** 
+ 231:SYS/data_structure/binary_tree.c **** balance_check_ouput_s Tree_Balance_Checker(node_template *relative_root, int8_t *depth, unbalance_c
+ 232:SYS/data_structure/binary_tree.c **** {
+ 233:SYS/data_structure/binary_tree.c ****     balance_check_ouput_s output_tmp;
+ 234:SYS/data_structure/binary_tree.c ****     int8_t left_depth = 0;
+ 235:SYS/data_structure/binary_tree.c ****     int8_t right_depth = 0;
+ 236:SYS/data_structure/binary_tree.c ****     int8_t bias_bwt_LR = 0;
+ 237:SYS/data_structure/binary_tree.c **** 
+ 238:SYS/data_structure/binary_tree.c ****     output_tmp.isBalance = false;
+ 239:SYS/data_structure/binary_tree.c ****     output_tmp.layer = 0;
+ 240:SYS/data_structure/binary_tree.c ****     output_tmp.hi_bias = 0;
+ 241:SYS/data_structure/binary_tree.c ****     output_tmp.occur_dir = dir_none;
+ 242:SYS/data_structure/binary_tree.c ****     output_tmp.occur_node_ptr = NULL;
+ 243:SYS/data_structure/binary_tree.c **** 
+ 244:SYS/data_structure/binary_tree.c ****     //remember the empty tree is balance
+ 245:SYS/data_structure/binary_tree.c ****     if (relative_root == NULL)
+ 246:SYS/data_structure/binary_tree.c ****     {
+ 247:SYS/data_structure/binary_tree.c ****         *depth = 0;
+ 248:SYS/data_structure/binary_tree.c ****         output_tmp.isBalance = true;
+ 249:SYS/data_structure/binary_tree.c ****         return output_tmp;
+ 250:SYS/data_structure/binary_tree.c ****     }
+ 251:SYS/data_structure/binary_tree.c ****     else
+ 252:SYS/data_structure/binary_tree.c ****     {
+ 253:SYS/data_structure/binary_tree.c ****         if (Tree_Balance_Checker(relative_root->L_Node, &left_depth, cb_func).isBalance)
+ 254:SYS/data_structure/binary_tree.c ****         {
+ 255:SYS/data_structure/binary_tree.c ****             if (Tree_Balance_Checker(relative_root->R_Node, &right_depth, cb_func).isBalance)
+ 256:SYS/data_structure/binary_tree.c ****             {
+ 257:SYS/data_structure/binary_tree.c ****                 *depth = left_depth > right_depth ? (left_depth + 1) : (right_depth + 1);
+ 258:SYS/data_structure/binary_tree.c **** 
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 6
+
+
+ 259:SYS/data_structure/binary_tree.c ****                 //if left sub tree and right sub tree both in balance
+ 260:SYS/data_structure/binary_tree.c ****                 bias_bwt_LR = abs(left_depth - right_depth);
+ 261:SYS/data_structure/binary_tree.c **** 
+ 262:SYS/data_structure/binary_tree.c ****                 if (bias_bwt_LR <= 1)
+ 263:SYS/data_structure/binary_tree.c ****                 {
+ 264:SYS/data_structure/binary_tree.c ****                     output_tmp.isBalance = true;
+ 265:SYS/data_structure/binary_tree.c ****                     output_tmp.hi_bias = bias_bwt_LR;
+ 266:SYS/data_structure/binary_tree.c ****                     output_tmp.layer = *depth;
+ 267:SYS/data_structure/binary_tree.c ****                     return output_tmp;
+ 268:SYS/data_structure/binary_tree.c ****                 }
+ 269:SYS/data_structure/binary_tree.c ****                 else
+ 270:SYS/data_structure/binary_tree.c ****                 {
+ 271:SYS/data_structure/binary_tree.c ****                     output_tmp.isBalance = false;
+ 272:SYS/data_structure/binary_tree.c ****                     output_tmp.hi_bias = bias_bwt_LR;
+ 273:SYS/data_structure/binary_tree.c ****                     output_tmp.layer = *depth;
+ 274:SYS/data_structure/binary_tree.c ****                     return output_tmp;
+ 275:SYS/data_structure/binary_tree.c ****                 }
+ 276:SYS/data_structure/binary_tree.c ****             }
+ 277:SYS/data_structure/binary_tree.c ****             else
+ 278:SYS/data_structure/binary_tree.c ****             {
+ 279:SYS/data_structure/binary_tree.c ****                 output_tmp.isBalance = false;
+ 280:SYS/data_structure/binary_tree.c ****                 output_tmp.layer = *depth;
+ 281:SYS/data_structure/binary_tree.c ****                 output_tmp.occur_dir = dir_right;
+ 282:SYS/data_structure/binary_tree.c ****                 output_tmp.occur_node_ptr = relative_root->R_Node;
+ 283:SYS/data_structure/binary_tree.c **** 
+ 284:SYS/data_structure/binary_tree.c ****                 if (cb_func != NULL)
+ 285:SYS/data_structure/binary_tree.c ****                 {
+ 286:SYS/data_structure/binary_tree.c ****                     cb_func(relative_root->R_Node);
+ 287:SYS/data_structure/binary_tree.c ****                 }
+ 288:SYS/data_structure/binary_tree.c **** 
+ 289:SYS/data_structure/binary_tree.c ****                 return output_tmp;
+ 290:SYS/data_structure/binary_tree.c ****             }
+ 291:SYS/data_structure/binary_tree.c ****         }
+ 292:SYS/data_structure/binary_tree.c ****         else
+ 293:SYS/data_structure/binary_tree.c ****         {
+ 294:SYS/data_structure/binary_tree.c ****             output_tmp.isBalance = false;
+ 295:SYS/data_structure/binary_tree.c ****             output_tmp.layer = *depth;
+ 296:SYS/data_structure/binary_tree.c ****             output_tmp.occur_dir = dir_left;
+ 297:SYS/data_structure/binary_tree.c ****             output_tmp.occur_node_ptr = relative_root->L_Node;
+ 298:SYS/data_structure/binary_tree.c **** 
+ 299:SYS/data_structure/binary_tree.c ****             if (cb_func != NULL)
+ 300:SYS/data_structure/binary_tree.c ****             {
+ 301:SYS/data_structure/binary_tree.c ****                 cb_func(relative_root->L_Node);
+ 302:SYS/data_structure/binary_tree.c ****             }
+ 303:SYS/data_structure/binary_tree.c **** 
+ 304:SYS/data_structure/binary_tree.c ****             return output_tmp;
+ 305:SYS/data_structure/binary_tree.c ****         }
+ 306:SYS/data_structure/binary_tree.c ****     }
+ 307:SYS/data_structure/binary_tree.c **** }
+ 308:SYS/data_structure/binary_tree.c **** 
+ 309:SYS/data_structure/binary_tree.c **** static int8_t Tree_GetBalance_Gain(node_template *relative_node)
+ 310:SYS/data_structure/binary_tree.c **** {
+ 311:SYS/data_structure/binary_tree.c ****     if (relative_node == NULL)
+ 312:SYS/data_structure/binary_tree.c ****         return 0;
+ 313:SYS/data_structure/binary_tree.c **** 
+ 314:SYS/data_structure/binary_tree.c ****     return Tree_GetDepth(relative_node->L_Node) - Tree_GetDepth(relative_node->R_Node);
+ 315:SYS/data_structure/binary_tree.c **** }
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 7
+
+
+ 316:SYS/data_structure/binary_tree.c **** 
+ 317:SYS/data_structure/binary_tree.c **** static bool Tree_DynamicTrim(node_template *relative_root)
+ 318:SYS/data_structure/binary_tree.c **** {
+ 319:SYS/data_structure/binary_tree.c ****     node_template *node_tmp;
+ 320:SYS/data_structure/binary_tree.c ****     trim_style_list trim_type;
+ 321:SYS/data_structure/binary_tree.c ****     int8_t DepthDif = 0;
+ 322:SYS/data_structure/binary_tree.c **** 
+ 323:SYS/data_structure/binary_tree.c ****     if (relative_root == NULL)
+ 324:SYS/data_structure/binary_tree.c ****         return false;
+ 325:SYS/data_structure/binary_tree.c **** 
+ 326:SYS/data_structure/binary_tree.c ****     while (relative_root != NULL)
+ 327:SYS/data_structure/binary_tree.c ****     {
+ 328:SYS/data_structure/binary_tree.c ****         DepthDif = Tree_GetBalance_Gain(relative_root);
+ 329:SYS/data_structure/binary_tree.c **** 
+ 330:SYS/data_structure/binary_tree.c ****         if ((DepthDif > 2) || (DepthDif < -2))
+ 331:SYS/data_structure/binary_tree.c ****             return false;
+ 332:SYS/data_structure/binary_tree.c **** 
+ 333:SYS/data_structure/binary_tree.c ****         if (DepthDif == 2)
+ 334:SYS/data_structure/binary_tree.c ****         {
+ 335:SYS/data_structure/binary_tree.c ****             if (relative_root->L_Node->R_Node != NULL)
+ 336:SYS/data_structure/binary_tree.c ****             {
+ 337:SYS/data_structure/binary_tree.c ****                 Tree_RotateLeft(relative_root->F_Node, relative_root->L_Node);
+ 338:SYS/data_structure/binary_tree.c ****             }
+ 339:SYS/data_structure/binary_tree.c **** 
+ 340:SYS/data_structure/binary_tree.c ****             Tree_RotateRight(relative_root->F_Node, relative_root);
+ 341:SYS/data_structure/binary_tree.c ****         }
+ 342:SYS/data_structure/binary_tree.c ****         else if (DepthDif == -2)
+ 343:SYS/data_structure/binary_tree.c ****         {
+ 344:SYS/data_structure/binary_tree.c ****             if (relative_root->R_Node->L_Node != NULL)
+ 345:SYS/data_structure/binary_tree.c ****             {
+ 346:SYS/data_structure/binary_tree.c ****                 Tree_RotateRight(relative_root->F_Node, relative_root->R_Node);
+ 347:SYS/data_structure/binary_tree.c ****             }
+ 348:SYS/data_structure/binary_tree.c **** 
+ 349:SYS/data_structure/binary_tree.c ****             Tree_RotateLeft(relative_root->F_Node, relative_root);
+ 350:SYS/data_structure/binary_tree.c ****         }
+ 351:SYS/data_structure/binary_tree.c **** 
+ 352:SYS/data_structure/binary_tree.c ****         relative_root = relative_root->F_Node;
+ 353:SYS/data_structure/binary_tree.c ****     }
+ 354:SYS/data_structure/binary_tree.c **** 
+ 355:SYS/data_structure/binary_tree.c ****     return true;
+ 356:SYS/data_structure/binary_tree.c **** }
+ 357:SYS/data_structure/binary_tree.c **** 
+ 358:SYS/data_structure/binary_tree.c **** static void Tree_RotateLeft(node_template *root, node_template *a)
+ 359:SYS/data_structure/binary_tree.c **** {
+  29              		.loc 1 359 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.LVL0:
+ 360:SYS/data_structure/binary_tree.c ****     if (a == NULL)
+  35              		.loc 1 360 0
+  36 0000 0B46     		mov	r3, r1
+  37 0002 79B1     		cbz	r1, .L1
+ 361:SYS/data_structure/binary_tree.c ****         return;
+ 362:SYS/data_structure/binary_tree.c **** 
+ 363:SYS/data_structure/binary_tree.c ****     node_template *b = a->R_Node;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 8
+
+
+  38              		.loc 1 363 0
+  39 0004 8A68     		ldr	r2, [r1, #8]
+  40              	.LVL1:
+ 364:SYS/data_structure/binary_tree.c ****     node_template *d = b->L_Node;
+  41              		.loc 1 364 0
+  42 0006 5168     		ldr	r1, [r2, #4]
+  43              	.LVL2:
+ 365:SYS/data_structure/binary_tree.c **** 
+ 366:SYS/data_structure/binary_tree.c ****     a->R_Node = d;
+  44              		.loc 1 366 0
+  45 0008 9960     		str	r1, [r3, #8]
+ 367:SYS/data_structure/binary_tree.c ****     if (d != NULL)
+  46              		.loc 1 367 0
+  47 000a 01B1     		cbz	r1, .L3
+ 368:SYS/data_structure/binary_tree.c ****     {
+ 369:SYS/data_structure/binary_tree.c ****         d->F_Node = a;
+  48              		.loc 1 369 0
+  49 000c 0B60     		str	r3, [r1]
+  50              	.L3:
+ 370:SYS/data_structure/binary_tree.c ****     }
+ 371:SYS/data_structure/binary_tree.c **** 
+ 372:SYS/data_structure/binary_tree.c ****     b->F_Node = a->F_Node;
+  51              		.loc 1 372 0
+  52 000e 1968     		ldr	r1, [r3]
+  53              	.LVL3:
+  54 0010 1160     		str	r1, [r2]
+ 373:SYS/data_structure/binary_tree.c **** 
+ 374:SYS/data_structure/binary_tree.c ****     if (b->F_Node != NULL)
+  55              		.loc 1 374 0
+  56 0012 29B1     		cbz	r1, .L4
+ 375:SYS/data_structure/binary_tree.c ****     {
+ 376:SYS/data_structure/binary_tree.c ****         if (b->F_Node->L_Node == a)
+  57              		.loc 1 376 0
+  58 0014 4868     		ldr	r0, [r1, #4]
+  59              	.LVL4:
+  60 0016 8342     		cmp	r3, r0
+  61 0018 01D1     		bne	.L5
+ 377:SYS/data_structure/binary_tree.c ****         {
+ 378:SYS/data_structure/binary_tree.c ****             b->F_Node->L_Node = b;
+  62              		.loc 1 378 0
+  63 001a 4A60     		str	r2, [r1, #4]
+  64 001c 00E0     		b	.L4
+  65              	.L5:
+ 379:SYS/data_structure/binary_tree.c ****         }
+ 380:SYS/data_structure/binary_tree.c ****         else
+ 381:SYS/data_structure/binary_tree.c ****         {
+ 382:SYS/data_structure/binary_tree.c ****             b->F_Node->R_Node = b;
+  66              		.loc 1 382 0
+  67 001e 8A60     		str	r2, [r1, #8]
+  68              	.L4:
+ 383:SYS/data_structure/binary_tree.c ****         }
+ 384:SYS/data_structure/binary_tree.c ****     }
+ 385:SYS/data_structure/binary_tree.c ****     else
+ 386:SYS/data_structure/binary_tree.c ****     {
+ 387:SYS/data_structure/binary_tree.c ****         //b node is root
+ 388:SYS/data_structure/binary_tree.c ****         root = b;
+ 389:SYS/data_structure/binary_tree.c ****     }
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 9
+
+
+ 390:SYS/data_structure/binary_tree.c **** 
+ 391:SYS/data_structure/binary_tree.c ****     a->F_Node = b;
+  69              		.loc 1 391 0
+  70 0020 1A60     		str	r2, [r3]
+ 392:SYS/data_structure/binary_tree.c ****     b->L_Node = a;
+  71              		.loc 1 392 0
+  72 0022 5360     		str	r3, [r2, #4]
+  73              	.LVL5:
+  74              	.L1:
+  75 0024 7047     		bx	lr
+  76              		.cfi_endproc
+  77              	.LFE15:
+  79 0026 00BF     		.section	.text.Tree_RotateRight,"ax",%progbits
+  80              		.align	2
+  81              		.thumb
+  82              		.thumb_func
+  84              	Tree_RotateRight:
+  85              	.LFB16:
+ 393:SYS/data_structure/binary_tree.c **** }
+ 394:SYS/data_structure/binary_tree.c **** 
+ 395:SYS/data_structure/binary_tree.c **** static void Tree_RotateRight(node_template *root, node_template *a)
+ 396:SYS/data_structure/binary_tree.c **** {
+  86              		.loc 1 396 0
+  87              		.cfi_startproc
+  88              		@ args = 0, pretend = 0, frame = 0
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  90              		@ link register save eliminated.
+  91              	.LVL6:
+ 397:SYS/data_structure/binary_tree.c ****     if (a == NULL)
+  92              		.loc 1 397 0
+  93 0000 0B46     		mov	r3, r1
+  94 0002 79B1     		cbz	r1, .L6
+ 398:SYS/data_structure/binary_tree.c ****         return;
+ 399:SYS/data_structure/binary_tree.c **** 
+ 400:SYS/data_structure/binary_tree.c ****     node_template *b = a->L_Node;
+  95              		.loc 1 400 0
+  96 0004 4A68     		ldr	r2, [r1, #4]
+  97              	.LVL7:
+ 401:SYS/data_structure/binary_tree.c ****     node_template *d = b->R_Node;
+  98              		.loc 1 401 0
+  99 0006 9168     		ldr	r1, [r2, #8]
+ 100              	.LVL8:
+ 402:SYS/data_structure/binary_tree.c **** 
+ 403:SYS/data_structure/binary_tree.c ****     a->L_Node = d; //this step make left node equle to right node
+ 101              		.loc 1 403 0
+ 102 0008 5960     		str	r1, [r3, #4]
+ 404:SYS/data_structure/binary_tree.c ****     if (d != NULL)
+ 103              		.loc 1 404 0
+ 104 000a 01B1     		cbz	r1, .L8
+ 405:SYS/data_structure/binary_tree.c ****     {
+ 406:SYS/data_structure/binary_tree.c ****         d->F_Node = a;
+ 105              		.loc 1 406 0
+ 106 000c 0B60     		str	r3, [r1]
+ 107              	.L8:
+ 407:SYS/data_structure/binary_tree.c ****     }
+ 408:SYS/data_structure/binary_tree.c **** 
+ 409:SYS/data_structure/binary_tree.c ****     b->F_Node = a->F_Node;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 10
+
+
+ 108              		.loc 1 409 0
+ 109 000e 1968     		ldr	r1, [r3]
+ 110              	.LVL9:
+ 111 0010 1160     		str	r1, [r2]
+ 410:SYS/data_structure/binary_tree.c **** 
+ 411:SYS/data_structure/binary_tree.c ****     if (b->F_Node != NULL)
+ 112              		.loc 1 411 0
+ 113 0012 29B1     		cbz	r1, .L9
+ 412:SYS/data_structure/binary_tree.c ****     {
+ 413:SYS/data_structure/binary_tree.c ****         if (b->F_Node->L_Node == a)
+ 114              		.loc 1 413 0
+ 115 0014 4868     		ldr	r0, [r1, #4]
+ 116              	.LVL10:
+ 117 0016 8342     		cmp	r3, r0
+ 118 0018 01D1     		bne	.L10
+ 414:SYS/data_structure/binary_tree.c ****         {
+ 415:SYS/data_structure/binary_tree.c ****             b->F_Node->L_Node = b;
+ 119              		.loc 1 415 0
+ 120 001a 4A60     		str	r2, [r1, #4]
+ 121 001c 00E0     		b	.L9
+ 122              	.L10:
+ 416:SYS/data_structure/binary_tree.c ****         }
+ 417:SYS/data_structure/binary_tree.c ****         else
+ 418:SYS/data_structure/binary_tree.c ****         {
+ 419:SYS/data_structure/binary_tree.c ****             b->F_Node->R_Node = b;
+ 123              		.loc 1 419 0
+ 124 001e 8A60     		str	r2, [r1, #8]
+ 125              	.L9:
+ 420:SYS/data_structure/binary_tree.c ****         }
+ 421:SYS/data_structure/binary_tree.c ****     }
+ 422:SYS/data_structure/binary_tree.c ****     else
+ 423:SYS/data_structure/binary_tree.c ****     {
+ 424:SYS/data_structure/binary_tree.c ****         //b node is root
+ 425:SYS/data_structure/binary_tree.c ****         root = b;
+ 426:SYS/data_structure/binary_tree.c ****     }
+ 427:SYS/data_structure/binary_tree.c **** 
+ 428:SYS/data_structure/binary_tree.c ****     a->F_Node = b;
+ 126              		.loc 1 428 0
+ 127 0020 1A60     		str	r2, [r3]
+ 429:SYS/data_structure/binary_tree.c ****     b->R_Node = a;
+ 128              		.loc 1 429 0
+ 129 0022 9360     		str	r3, [r2, #8]
+ 130              	.LVL11:
+ 131              	.L6:
+ 132 0024 7047     		bx	lr
+ 133              		.cfi_endproc
+ 134              	.LFE16:
+ 136 0026 00BF     		.section	.text.Tree_Node_Init,"ax",%progbits
+ 137              		.align	2
+ 138              		.global	Tree_Node_Init
+ 139              		.thumb
+ 140              		.thumb_func
+ 142              	Tree_Node_Init:
+ 143              	.LFB1:
+  16:SYS/data_structure/binary_tree.c ****     if (node == NULL)
+ 144              		.loc 1 16 0
+ 145              		.cfi_startproc
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 11
+
+
+ 146              		@ args = 0, pretend = 0, frame = 0
+ 147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 148              		@ link register save eliminated.
+ 149              	.LVL12:
+  17:SYS/data_structure/binary_tree.c ****         return;
+ 150              		.loc 1 17 0
+ 151 0000 28B1     		cbz	r0, .L11
+  20:SYS/data_structure/binary_tree.c **** 
+ 152              		.loc 1 20 0
+ 153 0002 0261     		str	r2, [r0, #16]
+  22:SYS/data_structure/binary_tree.c ****     node->L_Node = NULL;
+ 154              		.loc 1 22 0
+ 155 0004 0022     		movs	r2, #0
+ 156              	.LVL13:
+ 157 0006 0260     		str	r2, [r0]
+  23:SYS/data_structure/binary_tree.c ****     node->R_Node = NULL;
+ 158              		.loc 1 23 0
+ 159 0008 4260     		str	r2, [r0, #4]
+  24:SYS/data_structure/binary_tree.c **** 
+ 160              		.loc 1 24 0
+ 161 000a 8260     		str	r2, [r0, #8]
+  26:SYS/data_structure/binary_tree.c **** }
+ 162              		.loc 1 26 0
+ 163 000c C160     		str	r1, [r0, #12]
+ 164              	.LVL14:
+ 165              	.L11:
+ 166 000e 7047     		bx	lr
+ 167              		.cfi_endproc
+ 168              	.LFE1:
+ 170              		.section	.text.Tree_ReSetRoot,"ax",%progbits
+ 171              		.align	2
+ 172              		.global	Tree_ReSetRoot
+ 173              		.thumb
+ 174              		.thumb_func
+ 176              	Tree_ReSetRoot:
+ 177              	.LFB2:
+  30:SYS/data_structure/binary_tree.c ****     if (tree == NULL)
+ 178              		.loc 1 30 0
+ 179              		.cfi_startproc
+ 180              		@ args = 0, pretend = 0, frame = 0
+ 181              		@ frame_needed = 0, uses_anonymous_args = 0
+ 182              	.LVL15:
+  31:SYS/data_structure/binary_tree.c ****         return NULL;
+ 183              		.loc 1 31 0
+ 184 0000 30B1     		cbz	r0, .L15
+  30:SYS/data_structure/binary_tree.c ****     if (tree == NULL)
+ 185              		.loc 1 30 0
+ 186 0002 08B5     		push	{r3, lr}
+ 187              	.LCFI0:
+ 188              		.cfi_def_cfa_offset 8
+ 189              		.cfi_offset 3, -8
+ 190              		.cfi_offset 14, -4
+ 191 0004 0346     		mov	r3, r0
+  34:SYS/data_structure/binary_tree.c ****     {
+ 192              		.loc 1 34 0
+ 193 0006 0068     		ldr	r0, [r0]
+ 194              	.LVL16:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 12
+
+
+ 195 0008 20B1     		cbz	r0, .L16
+  40:SYS/data_structure/binary_tree.c ****     }
+ 196              		.loc 1 40 0
+ 197 000a FFF7FEFF 		bl	Tree_ReSetRoot
+ 198              	.LVL17:
+  42:SYS/data_structure/binary_tree.c **** 
+ 199              		.loc 1 42 0
+ 200 000e 08BD     		pop	{r3, pc}
+ 201              	.LVL18:
+ 202              	.L15:
+ 203              	.LCFI1:
+ 204              		.cfi_def_cfa_offset 0
+ 205              		.cfi_restore 3
+ 206              		.cfi_restore 14
+  32:SYS/data_structure/binary_tree.c **** 
+ 207              		.loc 1 32 0
+ 208 0010 0020     		movs	r0, #0
+ 209              	.LVL19:
+  42:SYS/data_structure/binary_tree.c **** 
+ 210              		.loc 1 42 0
+ 211 0012 7047     		bx	lr
+ 212              	.LVL20:
+ 213              	.L16:
+ 214              	.LCFI2:
+ 215              		.cfi_def_cfa_offset 8
+ 216              		.cfi_offset 3, -8
+ 217              		.cfi_offset 14, -4
+  36:SYS/data_structure/binary_tree.c ****     }
+ 218              		.loc 1 36 0
+ 219 0014 1846     		mov	r0, r3
+  42:SYS/data_structure/binary_tree.c **** 
+ 220              		.loc 1 42 0
+ 221 0016 08BD     		pop	{r3, pc}
+ 222              		.cfi_endproc
+ 223              	.LFE2:
+ 225              		.section	.text.Tree_DeleteNode,"ax",%progbits
+ 226              		.align	2
+ 227              		.global	Tree_DeleteNode
+ 228              		.thumb
+ 229              		.thumb_func
+ 231              	Tree_DeleteNode:
+ 232              	.LFB4:
+  93:SYS/data_structure/binary_tree.c ****     if ((node->F_Node != NULL) || (node != NULL))
+ 233              		.loc 1 93 0
+ 234              		.cfi_startproc
+ 235              		@ args = 0, pretend = 0, frame = 0
+ 236              		@ frame_needed = 0, uses_anonymous_args = 0
+ 237              		@ link register save eliminated.
+ 238              	.LVL21:
+  94:SYS/data_structure/binary_tree.c ****     {
+ 239              		.loc 1 94 0
+ 240 0000 0368     		ldr	r3, [r0]
+ 241 0002 03B9     		cbnz	r3, .L19
+  94:SYS/data_structure/binary_tree.c ****     {
+ 242              		.loc 1 94 0 is_stmt 0 discriminator 1
+ 243 0004 70B1     		cbz	r0, .L23
+ 244              	.L19:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 13
+
+
+  96:SYS/data_structure/binary_tree.c ****         {
+ 245              		.loc 1 96 0 is_stmt 1
+ 246 0006 5A68     		ldr	r2, [r3, #4]
+ 247 0008 9042     		cmp	r0, r2
+ 248 000a 02D1     		bne	.L21
+  98:SYS/data_structure/binary_tree.c ****         }
+ 249              		.loc 1 98 0
+ 250 000c 0022     		movs	r2, #0
+ 251 000e 5A60     		str	r2, [r3, #4]
+ 252 0010 04E0     		b	.L22
+ 253              	.L21:
+ 100:SYS/data_structure/binary_tree.c ****         {
+ 254              		.loc 1 100 0
+ 255 0012 9A68     		ldr	r2, [r3, #8]
+ 256 0014 9042     		cmp	r0, r2
+ 257 0016 01D1     		bne	.L22
+ 102:SYS/data_structure/binary_tree.c ****         }
+ 258              		.loc 1 102 0
+ 259 0018 0022     		movs	r2, #0
+ 260 001a 9A60     		str	r2, [r3, #8]
+ 261              	.L22:
+ 105:SYS/data_structure/binary_tree.c ****         return true;
+ 262              		.loc 1 105 0
+ 263 001c 0023     		movs	r3, #0
+ 264 001e 0360     		str	r3, [r0]
+ 106:SYS/data_structure/binary_tree.c ****     }
+ 265              		.loc 1 106 0
+ 266 0020 0120     		movs	r0, #1
+ 267              	.LVL22:
+ 268 0022 7047     		bx	lr
+ 269              	.LVL23:
+ 270              	.L23:
+ 109:SYS/data_structure/binary_tree.c **** }
+ 271              		.loc 1 109 0
+ 272 0024 0020     		movs	r0, #0
+ 273              	.LVL24:
+ 110:SYS/data_structure/binary_tree.c **** 
+ 274              		.loc 1 110 0
+ 275 0026 7047     		bx	lr
+ 276              		.cfi_endproc
+ 277              	.LFE4:
+ 279              		.section	.text.Tree_Printf_NodeName,"ax",%progbits
+ 280              		.align	2
+ 281              		.global	Tree_Printf_NodeName
+ 282              		.thumb
+ 283              		.thumb_func
+ 285              	Tree_Printf_NodeName:
+ 286              	.LFB5:
+ 113:SYS/data_structure/binary_tree.c ****     if (node->name != NULL)
+ 287              		.loc 1 113 0
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 0
+ 290              		@ frame_needed = 0, uses_anonymous_args = 0
+ 291              	.LVL25:
+ 114:SYS/data_structure/binary_tree.c ****     {
+ 292              		.loc 1 114 0
+ 293 0000 C068     		ldr	r0, [r0, #12]
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 14
+
+
+ 294              	.LVL26:
+ 295 0002 18B1     		cbz	r0, .L27
+ 113:SYS/data_structure/binary_tree.c ****     if (node->name != NULL)
+ 296              		.loc 1 113 0
+ 297 0004 08B5     		push	{r3, lr}
+ 298              	.LCFI3:
+ 299              		.cfi_def_cfa_offset 8
+ 300              		.cfi_offset 3, -8
+ 301              		.cfi_offset 14, -4
+ 116:SYS/data_structure/binary_tree.c ****     }
+ 302              		.loc 1 116 0
+ 303 0006 FFF7FEFF 		bl	puts
+ 304              	.LVL27:
+ 305 000a 08BD     		pop	{r3, pc}
+ 306              	.L27:
+ 307              	.LCFI4:
+ 308              		.cfi_def_cfa_offset 0
+ 309              		.cfi_restore 3
+ 310              		.cfi_restore 14
+ 311 000c 7047     		bx	lr
+ 312              		.cfi_endproc
+ 313              	.LFE5:
+ 315 000e 00BF     		.section	.text.Tree_Pre_Traverse,"ax",%progbits
+ 316              		.align	2
+ 317              		.global	Tree_Pre_Traverse
+ 318              		.thumb
+ 319              		.thumb_func
+ 321              	Tree_Pre_Traverse:
+ 322              	.LFB6:
+ 122:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 323              		.loc 1 122 0
+ 324              		.cfi_startproc
+ 325              		@ args = 0, pretend = 0, frame = 0
+ 326              		@ frame_needed = 0, uses_anonymous_args = 0
+ 327              	.LVL28:
+ 123:SYS/data_structure/binary_tree.c ****     {
+ 328              		.loc 1 123 0
+ 329 0000 68B1     		cbz	r0, .L32
+ 122:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 330              		.loc 1 122 0
+ 331 0002 38B5     		push	{r3, r4, r5, lr}
+ 332              	.LCFI5:
+ 333              		.cfi_def_cfa_offset 16
+ 334              		.cfi_offset 3, -16
+ 335              		.cfi_offset 4, -12
+ 336              		.cfi_offset 5, -8
+ 337              		.cfi_offset 14, -4
+ 338 0004 0546     		mov	r5, r0
+ 339 0006 0C46     		mov	r4, r1
+ 126:SYS/data_structure/binary_tree.c ****         {
+ 340              		.loc 1 126 0
+ 341 0008 01B1     		cbz	r1, .L30
+ 128:SYS/data_structure/binary_tree.c ****         }
+ 342              		.loc 1 128 0
+ 343 000a 8847     		blx	r1
+ 344              	.LVL29:
+ 345              	.L30:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 15
+
+
+ 132:SYS/data_structure/binary_tree.c ****         //traverse right node
+ 346              		.loc 1 132 0
+ 347 000c 2146     		mov	r1, r4
+ 348 000e 6868     		ldr	r0, [r5, #4]
+ 349 0010 FFF7FEFF 		bl	Tree_Pre_Traverse
+ 350              	.LVL30:
+ 134:SYS/data_structure/binary_tree.c ****     }
+ 351              		.loc 1 134 0
+ 352 0014 2146     		mov	r1, r4
+ 353 0016 A868     		ldr	r0, [r5, #8]
+ 354 0018 FFF7FEFF 		bl	Tree_Pre_Traverse
+ 355              	.LVL31:
+ 356 001c 38BD     		pop	{r3, r4, r5, pc}
+ 357              	.LVL32:
+ 358              	.L32:
+ 359              	.LCFI6:
+ 360              		.cfi_def_cfa_offset 0
+ 361              		.cfi_restore 3
+ 362              		.cfi_restore 4
+ 363              		.cfi_restore 5
+ 364              		.cfi_restore 14
+ 365 001e 7047     		bx	lr
+ 366              		.cfi_endproc
+ 367              	.LFE6:
+ 369              		.section	.text.Tree_Mid_Traverse,"ax",%progbits
+ 370              		.align	2
+ 371              		.global	Tree_Mid_Traverse
+ 372              		.thumb
+ 373              		.thumb_func
+ 375              	Tree_Mid_Traverse:
+ 376              	.LFB7:
+ 140:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 377              		.loc 1 140 0
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 0
+ 380              		@ frame_needed = 0, uses_anonymous_args = 0
+ 381              	.LVL33:
+ 141:SYS/data_structure/binary_tree.c ****     {
+ 382              		.loc 1 141 0
+ 383 0000 68B1     		cbz	r0, .L37
+ 140:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 384              		.loc 1 140 0
+ 385 0002 38B5     		push	{r3, r4, r5, lr}
+ 386              	.LCFI7:
+ 387              		.cfi_def_cfa_offset 16
+ 388              		.cfi_offset 3, -16
+ 389              		.cfi_offset 4, -12
+ 390              		.cfi_offset 5, -8
+ 391              		.cfi_offset 14, -4
+ 392 0004 0546     		mov	r5, r0
+ 393 0006 0C46     		mov	r4, r1
+ 144:SYS/data_structure/binary_tree.c **** 
+ 394              		.loc 1 144 0
+ 395 0008 4068     		ldr	r0, [r0, #4]
+ 396              	.LVL34:
+ 397 000a FFF7FEFF 		bl	Tree_Mid_Traverse
+ 398              	.LVL35:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 16
+
+
+ 147:SYS/data_structure/binary_tree.c ****         {
+ 399              		.loc 1 147 0
+ 400 000e 0CB1     		cbz	r4, .L35
+ 149:SYS/data_structure/binary_tree.c ****         }
+ 401              		.loc 1 149 0
+ 402 0010 2846     		mov	r0, r5
+ 403 0012 A047     		blx	r4
+ 404              	.LVL36:
+ 405              	.L35:
+ 153:SYS/data_structure/binary_tree.c ****     }
+ 406              		.loc 1 153 0
+ 407 0014 2146     		mov	r1, r4
+ 408 0016 A868     		ldr	r0, [r5, #8]
+ 409 0018 FFF7FEFF 		bl	Tree_Mid_Traverse
+ 410              	.LVL37:
+ 411 001c 38BD     		pop	{r3, r4, r5, pc}
+ 412              	.LVL38:
+ 413              	.L37:
+ 414              	.LCFI8:
+ 415              		.cfi_def_cfa_offset 0
+ 416              		.cfi_restore 3
+ 417              		.cfi_restore 4
+ 418              		.cfi_restore 5
+ 419              		.cfi_restore 14
+ 420 001e 7047     		bx	lr
+ 421              		.cfi_endproc
+ 422              	.LFE7:
+ 424              		.section	.text.Tree_Bck_Traverse,"ax",%progbits
+ 425              		.align	2
+ 426              		.global	Tree_Bck_Traverse
+ 427              		.thumb
+ 428              		.thumb_func
+ 430              	Tree_Bck_Traverse:
+ 431              	.LFB8:
+ 159:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 432              		.loc 1 159 0
+ 433              		.cfi_startproc
+ 434              		@ args = 0, pretend = 0, frame = 0
+ 435              		@ frame_needed = 0, uses_anonymous_args = 0
+ 436              	.LVL39:
+ 160:SYS/data_structure/binary_tree.c ****     {
+ 437              		.loc 1 160 0
+ 438 0000 68B1     		cbz	r0, .L41
+ 159:SYS/data_structure/binary_tree.c ****     if (relative_node != NULL)
+ 439              		.loc 1 159 0
+ 440 0002 38B5     		push	{r3, r4, r5, lr}
+ 441              	.LCFI9:
+ 442              		.cfi_def_cfa_offset 16
+ 443              		.cfi_offset 3, -16
+ 444              		.cfi_offset 4, -12
+ 445              		.cfi_offset 5, -8
+ 446              		.cfi_offset 14, -4
+ 447 0004 0546     		mov	r5, r0
+ 448 0006 0C46     		mov	r4, r1
+ 163:SYS/data_structure/binary_tree.c ****         //traverse right node
+ 449              		.loc 1 163 0
+ 450 0008 4068     		ldr	r0, [r0, #4]
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 17
+
+
+ 451              	.LVL40:
+ 452 000a FFF7FEFF 		bl	Tree_Bck_Traverse
+ 453              	.LVL41:
+ 165:SYS/data_structure/binary_tree.c **** 
+ 454              		.loc 1 165 0
+ 455 000e 2146     		mov	r1, r4
+ 456 0010 A868     		ldr	r0, [r5, #8]
+ 457 0012 FFF7FEFF 		bl	Tree_Bck_Traverse
+ 458              	.LVL42:
+ 168:SYS/data_structure/binary_tree.c ****         {
+ 459              		.loc 1 168 0
+ 460 0016 0CB1     		cbz	r4, .L38
+ 170:SYS/data_structure/binary_tree.c ****         }
+ 461              		.loc 1 170 0
+ 462 0018 2846     		mov	r0, r5
+ 463 001a A047     		blx	r4
+ 464              	.LVL43:
+ 465              	.L38:
+ 466 001c 38BD     		pop	{r3, r4, r5, pc}
+ 467              	.LVL44:
+ 468              	.L41:
+ 469              	.LCFI10:
+ 470              		.cfi_def_cfa_offset 0
+ 471              		.cfi_restore 3
+ 472              		.cfi_restore 4
+ 473              		.cfi_restore 5
+ 474              		.cfi_restore 14
+ 475 001e 7047     		bx	lr
+ 476              		.cfi_endproc
+ 477              	.LFE8:
+ 479              		.section	.text.Tree_Structure_Dsp,"ax",%progbits
+ 480              		.align	2
+ 481              		.global	Tree_Structure_Dsp
+ 482              		.thumb
+ 483              		.thumb_func
+ 485              	Tree_Structure_Dsp:
+ 486              	.LFB9:
+ 176:SYS/data_structure/binary_tree.c ****     switch (type)
+ 487              		.loc 1 176 0
+ 488              		.cfi_startproc
+ 489              		@ args = 0, pretend = 0, frame = 0
+ 490              		@ frame_needed = 0, uses_anonymous_args = 0
+ 491              	.LVL45:
+ 492 0000 38B5     		push	{r3, r4, r5, lr}
+ 493              	.LCFI11:
+ 494              		.cfi_def_cfa_offset 16
+ 495              		.cfi_offset 3, -16
+ 496              		.cfi_offset 4, -12
+ 497              		.cfi_offset 5, -8
+ 498              		.cfi_offset 14, -4
+ 499 0002 0446     		mov	r4, r0
+ 500 0004 0D46     		mov	r5, r1
+ 177:SYS/data_structure/binary_tree.c ****     {
+ 501              		.loc 1 177 0
+ 502 0006 022A     		cmp	r2, #2
+ 503 0008 0BD0     		beq	.L44
+ 504 000a 032A     		cmp	r2, #3
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 18
+
+
+ 505 000c 11D0     		beq	.L45
+ 506 000e 012A     		cmp	r2, #1
+ 507 0010 16D1     		bne	.L42
+ 180:SYS/data_structure/binary_tree.c ****         Tree_Pre_Traverse(relative_root, dsp_func);
+ 508              		.loc 1 180 0
+ 509 0012 0C48     		ldr	r0, .L48
+ 510              	.LVL46:
+ 511 0014 FFF7FEFF 		bl	puts
+ 512              	.LVL47:
+ 181:SYS/data_structure/binary_tree.c ****         break;
+ 513              		.loc 1 181 0
+ 514 0018 2946     		mov	r1, r5
+ 515 001a 2046     		mov	r0, r4
+ 516 001c FFF7FEFF 		bl	Tree_Pre_Traverse
+ 517              	.LVL48:
+ 182:SYS/data_structure/binary_tree.c **** 
+ 518              		.loc 1 182 0
+ 519 0020 38BD     		pop	{r3, r4, r5, pc}
+ 520              	.LVL49:
+ 521              	.L44:
+ 185:SYS/data_structure/binary_tree.c ****         Tree_Mid_Traverse(relative_root, dsp_func);
+ 522              		.loc 1 185 0
+ 523 0022 0948     		ldr	r0, .L48+4
+ 524              	.LVL50:
+ 525 0024 FFF7FEFF 		bl	puts
+ 526              	.LVL51:
+ 186:SYS/data_structure/binary_tree.c ****         break;
+ 527              		.loc 1 186 0
+ 528 0028 2946     		mov	r1, r5
+ 529 002a 2046     		mov	r0, r4
+ 530 002c FFF7FEFF 		bl	Tree_Mid_Traverse
+ 531              	.LVL52:
+ 187:SYS/data_structure/binary_tree.c **** 
+ 532              		.loc 1 187 0
+ 533 0030 38BD     		pop	{r3, r4, r5, pc}
+ 534              	.LVL53:
+ 535              	.L45:
+ 190:SYS/data_structure/binary_tree.c ****         Tree_Bck_Traverse(relative_root, dsp_func);
+ 536              		.loc 1 190 0
+ 537 0032 0648     		ldr	r0, .L48+8
+ 538              	.LVL54:
+ 539 0034 FFF7FEFF 		bl	puts
+ 540              	.LVL55:
+ 191:SYS/data_structure/binary_tree.c ****         break;
+ 541              		.loc 1 191 0
+ 542 0038 2946     		mov	r1, r5
+ 543 003a 2046     		mov	r0, r4
+ 544 003c FFF7FEFF 		bl	Tree_Bck_Traverse
+ 545              	.LVL56:
+ 546              	.L42:
+ 547 0040 38BD     		pop	{r3, r4, r5, pc}
+ 548              	.LVL57:
+ 549              	.L49:
+ 550 0042 00BF     		.align	2
+ 551              	.L48:
+ 552 0044 00000000 		.word	.LC0
+ 553 0048 10000000 		.word	.LC1
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 19
+
+
+ 554 004c 20000000 		.word	.LC2
+ 555              		.cfi_endproc
+ 556              	.LFE9:
+ 558              		.section	.text.Tree_GetDepth,"ax",%progbits
+ 559              		.align	2
+ 560              		.global	Tree_GetDepth
+ 561              		.thumb
+ 562              		.thumb_func
+ 564              	Tree_GetDepth:
+ 565              	.LFB10:
+ 200:SYS/data_structure/binary_tree.c ****     uint8_t left_depth_tmp = 0;
+ 566              		.loc 1 200 0
+ 567              		.cfi_startproc
+ 568              		@ args = 0, pretend = 0, frame = 0
+ 569              		@ frame_needed = 0, uses_anonymous_args = 0
+ 570              	.LVL58:
+ 204:SYS/data_structure/binary_tree.c ****     {
+ 571              		.loc 1 204 0
+ 572 0000 78B1     		cbz	r0, .L52
+ 200:SYS/data_structure/binary_tree.c ****     uint8_t left_depth_tmp = 0;
+ 573              		.loc 1 200 0
+ 574 0002 38B5     		push	{r3, r4, r5, lr}
+ 575              	.LCFI12:
+ 576              		.cfi_def_cfa_offset 16
+ 577              		.cfi_offset 3, -16
+ 578              		.cfi_offset 4, -12
+ 579              		.cfi_offset 5, -8
+ 580              		.cfi_offset 14, -4
+ 581 0004 0446     		mov	r4, r0
+ 209:SYS/data_structure/binary_tree.c ****     right_depth_tmp = Tree_GetDepth(relative_root->R_Node) + 1;
+ 582              		.loc 1 209 0
+ 583 0006 4068     		ldr	r0, [r0, #4]
+ 584              	.LVL59:
+ 585 0008 FFF7FEFF 		bl	Tree_GetDepth
+ 586              	.LVL60:
+ 587 000c 0130     		adds	r0, r0, #1
+ 588 000e C5B2     		uxtb	r5, r0
+ 589              	.LVL61:
+ 210:SYS/data_structure/binary_tree.c **** 
+ 590              		.loc 1 210 0
+ 591 0010 A068     		ldr	r0, [r4, #8]
+ 592 0012 FFF7FEFF 		bl	Tree_GetDepth
+ 593              	.LVL62:
+ 594 0016 0130     		adds	r0, r0, #1
+ 595 0018 C0B2     		uxtb	r0, r0
+ 596              	.LVL63:
+ 212:SYS/data_structure/binary_tree.c **** }
+ 597              		.loc 1 212 0
+ 598 001a A842     		cmp	r0, r5
+ 599 001c 38BF     		it	cc
+ 600 001e 2846     		movcc	r0, r5
+ 601              	.LVL64:
+ 602 0020 38BD     		pop	{r3, r4, r5, pc}
+ 603              	.LVL65:
+ 604              	.L52:
+ 605              	.LCFI13:
+ 606              		.cfi_def_cfa_offset 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 20
+
+
+ 607              		.cfi_restore 3
+ 608              		.cfi_restore 4
+ 609              		.cfi_restore 5
+ 610              		.cfi_restore 14
+ 206:SYS/data_structure/binary_tree.c ****     }
+ 611              		.loc 1 206 0
+ 612 0022 0020     		movs	r0, #0
+ 613              	.LVL66:
+ 614 0024 7047     		bx	lr
+ 615              		.cfi_endproc
+ 616              	.LFE10:
+ 618 0026 00BF     		.section	.text.Tree_GetBalance_Gain,"ax",%progbits
+ 619              		.align	2
+ 620              		.thumb
+ 621              		.thumb_func
+ 623              	Tree_GetBalance_Gain:
+ 624              	.LFB13:
+ 310:SYS/data_structure/binary_tree.c ****     if (relative_node == NULL)
+ 625              		.loc 1 310 0
+ 626              		.cfi_startproc
+ 627              		@ args = 0, pretend = 0, frame = 0
+ 628              		@ frame_needed = 0, uses_anonymous_args = 0
+ 629              	.LVL67:
+ 311:SYS/data_structure/binary_tree.c ****         return 0;
+ 630              		.loc 1 311 0
+ 631 0000 58B1     		cbz	r0, .L57
+ 310:SYS/data_structure/binary_tree.c ****     if (relative_node == NULL)
+ 632              		.loc 1 310 0
+ 633 0002 38B5     		push	{r3, r4, r5, lr}
+ 634              	.LCFI14:
+ 635              		.cfi_def_cfa_offset 16
+ 636              		.cfi_offset 3, -16
+ 637              		.cfi_offset 4, -12
+ 638              		.cfi_offset 5, -8
+ 639              		.cfi_offset 14, -4
+ 640 0004 0546     		mov	r5, r0
+ 314:SYS/data_structure/binary_tree.c **** }
+ 641              		.loc 1 314 0
+ 642 0006 4068     		ldr	r0, [r0, #4]
+ 643              	.LVL68:
+ 644 0008 FFF7FEFF 		bl	Tree_GetDepth
+ 645              	.LVL69:
+ 646 000c 0446     		mov	r4, r0
+ 647 000e A868     		ldr	r0, [r5, #8]
+ 648 0010 FFF7FEFF 		bl	Tree_GetDepth
+ 649              	.LVL70:
+ 650 0014 201A     		subs	r0, r4, r0
+ 651 0016 40B2     		sxtb	r0, r0
+ 652 0018 38BD     		pop	{r3, r4, r5, pc}
+ 653              	.LVL71:
+ 654              	.L57:
+ 655              	.LCFI15:
+ 656              		.cfi_def_cfa_offset 0
+ 657              		.cfi_restore 3
+ 658              		.cfi_restore 4
+ 659              		.cfi_restore 5
+ 660              		.cfi_restore 14
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 21
+
+
+ 312:SYS/data_structure/binary_tree.c **** 
+ 661              		.loc 1 312 0
+ 662 001a 0020     		movs	r0, #0
+ 663              	.LVL72:
+ 664 001c 7047     		bx	lr
+ 665              		.cfi_endproc
+ 666              	.LFE13:
+ 668 001e 00BF     		.section	.text.Tree_DynamicTrim,"ax",%progbits
+ 669              		.align	2
+ 670              		.thumb
+ 671              		.thumb_func
+ 673              	Tree_DynamicTrim:
+ 674              	.LFB14:
+ 318:SYS/data_structure/binary_tree.c ****     node_template *node_tmp;
+ 675              		.loc 1 318 0
+ 676              		.cfi_startproc
+ 677              		@ args = 0, pretend = 0, frame = 0
+ 678              		@ frame_needed = 0, uses_anonymous_args = 0
+ 679              	.LVL73:
+ 680 0000 10B5     		push	{r4, lr}
+ 681              	.LCFI16:
+ 682              		.cfi_def_cfa_offset 8
+ 683              		.cfi_offset 4, -8
+ 684              		.cfi_offset 14, -4
+ 685              	.LVL74:
+ 323:SYS/data_structure/binary_tree.c ****         return false;
+ 686              		.loc 1 323 0
+ 687 0002 0446     		mov	r4, r0
+ 688 0004 10BB     		cbnz	r0, .L62
+ 689 0006 25E0     		b	.L68
+ 690              	.LVL75:
+ 691              	.L67:
+ 328:SYS/data_structure/binary_tree.c **** 
+ 692              		.loc 1 328 0
+ 693 0008 2046     		mov	r0, r4
+ 694 000a FFF7FEFF 		bl	Tree_GetBalance_Gain
+ 695              	.LVL76:
+ 330:SYS/data_structure/binary_tree.c ****             return false;
+ 696              		.loc 1 330 0
+ 697 000e 831C     		adds	r3, r0, #2
+ 698 0010 DBB2     		uxtb	r3, r3
+ 699 0012 042B     		cmp	r3, #4
+ 700 0014 20D8     		bhi	.L69
+ 333:SYS/data_structure/binary_tree.c ****         {
+ 701              		.loc 1 333 0
+ 702 0016 0228     		cmp	r0, #2
+ 703 0018 0AD1     		bne	.L63
+ 335:SYS/data_structure/binary_tree.c ****             {
+ 704              		.loc 1 335 0
+ 705 001a 6168     		ldr	r1, [r4, #4]
+ 706 001c 8B68     		ldr	r3, [r1, #8]
+ 707 001e 13B1     		cbz	r3, .L64
+ 337:SYS/data_structure/binary_tree.c ****             }
+ 708              		.loc 1 337 0
+ 709 0020 2068     		ldr	r0, [r4]
+ 710              	.LVL77:
+ 711 0022 FFF7FEFF 		bl	Tree_RotateLeft
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 22
+
+
+ 712              	.LVL78:
+ 713              	.L64:
+ 340:SYS/data_structure/binary_tree.c ****         }
+ 714              		.loc 1 340 0
+ 715 0026 2146     		mov	r1, r4
+ 716 0028 2068     		ldr	r0, [r4]
+ 717 002a FFF7FEFF 		bl	Tree_RotateRight
+ 718              	.LVL79:
+ 719 002e 0CE0     		b	.L65
+ 720              	.LVL80:
+ 721              	.L63:
+ 342:SYS/data_structure/binary_tree.c ****         {
+ 722              		.loc 1 342 0
+ 723 0030 10F1020F 		cmn	r0, #2
+ 724 0034 09D1     		bne	.L65
+ 344:SYS/data_structure/binary_tree.c ****             {
+ 725              		.loc 1 344 0
+ 726 0036 A168     		ldr	r1, [r4, #8]
+ 727 0038 4B68     		ldr	r3, [r1, #4]
+ 728 003a 13B1     		cbz	r3, .L66
+ 346:SYS/data_structure/binary_tree.c ****             }
+ 729              		.loc 1 346 0
+ 730 003c 2068     		ldr	r0, [r4]
+ 731              	.LVL81:
+ 732 003e FFF7FEFF 		bl	Tree_RotateRight
+ 733              	.LVL82:
+ 734              	.L66:
+ 349:SYS/data_structure/binary_tree.c ****         }
+ 735              		.loc 1 349 0
+ 736 0042 2146     		mov	r1, r4
+ 737 0044 2068     		ldr	r0, [r4]
+ 738 0046 FFF7FEFF 		bl	Tree_RotateLeft
+ 739              	.LVL83:
+ 740              	.L65:
+ 352:SYS/data_structure/binary_tree.c ****     }
+ 741              		.loc 1 352 0
+ 742 004a 2468     		ldr	r4, [r4]
+ 743              	.LVL84:
+ 744              	.L62:
+ 326:SYS/data_structure/binary_tree.c ****     {
+ 745              		.loc 1 326 0
+ 746 004c 002C     		cmp	r4, #0
+ 747 004e DBD1     		bne	.L67
+ 355:SYS/data_structure/binary_tree.c **** }
+ 748              		.loc 1 355 0
+ 749 0050 0120     		movs	r0, #1
+ 750 0052 10BD     		pop	{r4, pc}
+ 751              	.LVL85:
+ 752              	.L68:
+ 324:SYS/data_structure/binary_tree.c **** 
+ 753              		.loc 1 324 0
+ 754 0054 0020     		movs	r0, #0
+ 755              	.LVL86:
+ 756 0056 10BD     		pop	{r4, pc}
+ 757              	.LVL87:
+ 758              	.L69:
+ 331:SYS/data_structure/binary_tree.c **** 
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 23
+
+
+ 759              		.loc 1 331 0
+ 760 0058 0020     		movs	r0, #0
+ 761              	.LVL88:
+ 356:SYS/data_structure/binary_tree.c **** 
+ 762              		.loc 1 356 0
+ 763 005a 10BD     		pop	{r4, pc}
+ 764              		.cfi_endproc
+ 765              	.LFE14:
+ 767              		.section	.text.Tree_InsertNode,"ax",%progbits
+ 768              		.align	2
+ 769              		.global	Tree_InsertNode
+ 770              		.thumb
+ 771              		.thumb_func
+ 773              	Tree_InsertNode:
+ 774              	.LFB3:
+  45:SYS/data_structure/binary_tree.c ****     uint32_t cmp_out = 0;
+ 775              		.loc 1 45 0
+ 776              		.cfi_startproc
+ 777              		@ args = 0, pretend = 0, frame = 0
+ 778              		@ frame_needed = 0, uses_anonymous_args = 0
+ 779              	.LVL89:
+  48:SYS/data_structure/binary_tree.c ****         return;
+ 780              		.loc 1 48 0
+ 781 0000 59B3     		cbz	r1, .L78
+  48:SYS/data_structure/binary_tree.c ****         return;
+ 782              		.loc 1 48 0 is_stmt 0 discriminator 1
+ 783 0002 52B3     		cbz	r2, .L78
+  48:SYS/data_structure/binary_tree.c ****         return;
+ 784              		.loc 1 48 0 discriminator 2
+ 785 0004 8142     		cmp	r1, r0
+ 786 0006 28D0     		beq	.L78
+  45:SYS/data_structure/binary_tree.c ****     uint32_t cmp_out = 0;
+ 787              		.loc 1 45 0 is_stmt 1
+ 788 0008 70B5     		push	{r4, r5, r6, lr}
+ 789              	.LCFI17:
+ 790              		.cfi_def_cfa_offset 16
+ 791              		.cfi_offset 4, -16
+ 792              		.cfi_offset 5, -12
+ 793              		.cfi_offset 6, -8
+ 794              		.cfi_offset 14, -4
+ 795 000a 0E46     		mov	r6, r1
+ 796 000c 1546     		mov	r5, r2
+ 797 000e 0446     		mov	r4, r0
+  52:SYS/data_structure/binary_tree.c **** 
+ 798              		.loc 1 52 0
+ 799 0010 0969     		ldr	r1, [r1, #16]
+ 800              	.LVL90:
+ 801 0012 0069     		ldr	r0, [r0, #16]
+ 802              	.LVL91:
+ 803 0014 9047     		blx	r2
+ 804              	.LVL92:
+  54:SYS/data_structure/binary_tree.c ****     {
+ 805              		.loc 1 54 0
+ 806 0016 F8B1     		cbz	r0, .L71
+  57:SYS/data_structure/binary_tree.c ****         {
+ 807              		.loc 1 57 0
+ 808 0018 2269     		ldr	r2, [r4, #16]
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 24
+
+
+ 809 001a 9042     		cmp	r0, r2
+ 810 001c 0BD1     		bne	.L73
+  59:SYS/data_structure/binary_tree.c ****             {
+ 811              		.loc 1 59 0
+ 812 001e 6068     		ldr	r0, [r4, #4]
+ 813              	.LVL93:
+ 814 0020 20B1     		cbz	r0, .L74
+  61:SYS/data_structure/binary_tree.c ****             }
+ 815              		.loc 1 61 0
+ 816 0022 2A46     		mov	r2, r5
+ 817 0024 3146     		mov	r1, r6
+ 818 0026 FFF7FEFF 		bl	Tree_InsertNode
+ 819              	.LVL94:
+ 820 002a 12E0     		b	.L75
+ 821              	.L74:
+  65:SYS/data_structure/binary_tree.c ****                     return;
+ 822              		.loc 1 65 0
+ 823 002c A642     		cmp	r6, r4
+ 824 002e 13D0     		beq	.L71
+  68:SYS/data_structure/binary_tree.c ****                 relative_root->L_Node = node;
+ 825              		.loc 1 68 0
+ 826 0030 3460     		str	r4, [r6]
+  69:SYS/data_structure/binary_tree.c ****             }
+ 827              		.loc 1 69 0
+ 828 0032 6660     		str	r6, [r4, #4]
+ 829 0034 0DE0     		b	.L75
+ 830              	.LVL95:
+ 831              	.L73:
+  72:SYS/data_structure/binary_tree.c ****         {
+ 832              		.loc 1 72 0
+ 833 0036 3269     		ldr	r2, [r6, #16]
+ 834 0038 9042     		cmp	r0, r2
+ 835 003a 0AD1     		bne	.L75
+  74:SYS/data_structure/binary_tree.c ****             {
+ 836              		.loc 1 74 0
+ 837 003c A068     		ldr	r0, [r4, #8]
+ 838              	.LVL96:
+ 839 003e 20B1     		cbz	r0, .L76
+  76:SYS/data_structure/binary_tree.c ****             }
+ 840              		.loc 1 76 0
+ 841 0040 2A46     		mov	r2, r5
+ 842 0042 3146     		mov	r1, r6
+ 843 0044 FFF7FEFF 		bl	Tree_InsertNode
+ 844              	.LVL97:
+ 845 0048 03E0     		b	.L75
+ 846              	.L76:
+  80:SYS/data_structure/binary_tree.c ****                     return;
+ 847              		.loc 1 80 0
+ 848 004a A642     		cmp	r6, r4
+ 849 004c 04D0     		beq	.L71
+  83:SYS/data_structure/binary_tree.c ****                 relative_root->R_Node = node;
+ 850              		.loc 1 83 0
+ 851 004e 3460     		str	r4, [r6]
+  84:SYS/data_structure/binary_tree.c ****             }
+ 852              		.loc 1 84 0
+ 853 0050 A660     		str	r6, [r4, #8]
+ 854              	.L75:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 25
+
+
+  88:SYS/data_structure/binary_tree.c ****     }
+ 855              		.loc 1 88 0
+ 856 0052 2046     		mov	r0, r4
+ 857 0054 FFF7FEFF 		bl	Tree_DynamicTrim
+ 858              	.LVL98:
+ 859              	.L71:
+ 860 0058 70BD     		pop	{r4, r5, r6, pc}
+ 861              	.LVL99:
+ 862              	.L78:
+ 863              	.LCFI18:
+ 864              		.cfi_def_cfa_offset 0
+ 865              		.cfi_restore 4
+ 866              		.cfi_restore 5
+ 867              		.cfi_restore 6
+ 868              		.cfi_restore 14
+ 869 005a 7047     		bx	lr
+ 870              		.cfi_endproc
+ 871              	.LFE3:
+ 873              		.section	.text.Tree_SwapLR,"ax",%progbits
+ 874              		.align	2
+ 875              		.global	Tree_SwapLR
+ 876              		.thumb
+ 877              		.thumb_func
+ 879              	Tree_SwapLR:
+ 880              	.LFB11:
+ 216:SYS/data_structure/binary_tree.c ****     node_template *node_tmp = NULL;
+ 881              		.loc 1 216 0
+ 882              		.cfi_startproc
+ 883              		@ args = 0, pretend = 0, frame = 0
+ 884              		@ frame_needed = 0, uses_anonymous_args = 0
+ 885              	.LVL100:
+ 219:SYS/data_structure/binary_tree.c ****     {
+ 886              		.loc 1 219 0
+ 887 0000 58B1     		cbz	r0, .L82
+ 216:SYS/data_structure/binary_tree.c ****     node_template *node_tmp = NULL;
+ 888              		.loc 1 216 0
+ 889 0002 10B5     		push	{r4, lr}
+ 890              	.LCFI19:
+ 891              		.cfi_def_cfa_offset 8
+ 892              		.cfi_offset 4, -8
+ 893              		.cfi_offset 14, -4
+ 894 0004 0446     		mov	r4, r0
+ 221:SYS/data_structure/binary_tree.c **** 
+ 895              		.loc 1 221 0
+ 896 0006 4368     		ldr	r3, [r0, #4]
+ 897              	.LVL101:
+ 223:SYS/data_structure/binary_tree.c ****         relative_root->R_Node = node_tmp;
+ 898              		.loc 1 223 0
+ 899 0008 8068     		ldr	r0, [r0, #8]
+ 900              	.LVL102:
+ 901 000a 6060     		str	r0, [r4, #4]
+ 224:SYS/data_structure/binary_tree.c **** 
+ 902              		.loc 1 224 0
+ 903 000c A360     		str	r3, [r4, #8]
+ 226:SYS/data_structure/binary_tree.c ****         Tree_SwapLR(relative_root->R_Node);
+ 904              		.loc 1 226 0
+ 905 000e FFF7FEFF 		bl	Tree_SwapLR
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 26
+
+
+ 906              	.LVL103:
+ 227:SYS/data_structure/binary_tree.c ****     }
+ 907              		.loc 1 227 0
+ 908 0012 A068     		ldr	r0, [r4, #8]
+ 909 0014 FFF7FEFF 		bl	Tree_SwapLR
+ 910              	.LVL104:
+ 911 0018 10BD     		pop	{r4, pc}
+ 912              	.LVL105:
+ 913              	.L82:
+ 914              	.LCFI20:
+ 915              		.cfi_def_cfa_offset 0
+ 916              		.cfi_restore 4
+ 917              		.cfi_restore 14
+ 918 001a 7047     		bx	lr
+ 919              		.cfi_endproc
+ 920              	.LFE11:
+ 922              		.section	.text.Tree_Balance_Checker,"ax",%progbits
+ 923              		.align	2
+ 924              		.global	Tree_Balance_Checker
+ 925              		.thumb
+ 926              		.thumb_func
+ 928              	Tree_Balance_Checker:
+ 929              	.LFB12:
+ 232:SYS/data_structure/binary_tree.c ****     balance_check_ouput_s output_tmp;
+ 930              		.loc 1 232 0
+ 931              		.cfi_startproc
+ 932              		@ args = 0, pretend = 0, frame = 32
+ 933              		@ frame_needed = 0, uses_anonymous_args = 0
+ 934              	.LVL106:
+ 935 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 936              	.LCFI21:
+ 937              		.cfi_def_cfa_offset 20
+ 938              		.cfi_offset 4, -20
+ 939              		.cfi_offset 5, -16
+ 940              		.cfi_offset 6, -12
+ 941              		.cfi_offset 7, -8
+ 942              		.cfi_offset 14, -4
+ 943 0002 89B0     		sub	sp, sp, #36
+ 944              	.LCFI22:
+ 945              		.cfi_def_cfa_offset 56
+ 946 0004 0446     		mov	r4, r0
+ 947 0006 1746     		mov	r7, r2
+ 948 0008 1D46     		mov	r5, r3
+ 234:SYS/data_structure/binary_tree.c ****     int8_t right_depth = 0;
+ 949              		.loc 1 234 0
+ 950 000a 0023     		movs	r3, #0
+ 951              	.LVL107:
+ 952 000c 8DF80730 		strb	r3, [sp, #7]
+ 235:SYS/data_structure/binary_tree.c ****     int8_t bias_bwt_LR = 0;
+ 953              		.loc 1 235 0
+ 954 0010 8DF80630 		strb	r3, [sp, #6]
+ 955              	.LVL108:
+ 238:SYS/data_structure/binary_tree.c ****     output_tmp.layer = 0;
+ 956              		.loc 1 238 0
+ 957 0014 0370     		strb	r3, [r0]
+ 239:SYS/data_structure/binary_tree.c ****     output_tmp.hi_bias = 0;
+ 958              		.loc 1 239 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 27
+
+
+ 959 0016 4370     		strb	r3, [r0, #1]
+ 240:SYS/data_structure/binary_tree.c ****     output_tmp.occur_dir = dir_none;
+ 960              		.loc 1 240 0
+ 961 0018 8370     		strb	r3, [r0, #2]
+ 241:SYS/data_structure/binary_tree.c ****     output_tmp.occur_node_ptr = NULL;
+ 962              		.loc 1 241 0
+ 963 001a 0372     		strb	r3, [r0, #8]
+ 242:SYS/data_structure/binary_tree.c **** 
+ 964              		.loc 1 242 0
+ 965 001c 4360     		str	r3, [r0, #4]
+ 245:SYS/data_structure/binary_tree.c ****     {
+ 966              		.loc 1 245 0
+ 967 001e 19B9     		cbnz	r1, .L84
+ 247:SYS/data_structure/binary_tree.c ****         output_tmp.isBalance = true;
+ 968              		.loc 1 247 0
+ 969 0020 1370     		strb	r3, [r2]
+ 248:SYS/data_structure/binary_tree.c ****         return output_tmp;
+ 970              		.loc 1 248 0
+ 971 0022 0123     		movs	r3, #1
+ 972 0024 0370     		strb	r3, [r0]
+ 249:SYS/data_structure/binary_tree.c ****     }
+ 973              		.loc 1 249 0
+ 974 0026 46E0     		b	.L83
+ 975              	.L84:
+ 976 0028 0E46     		mov	r6, r1
+ 253:SYS/data_structure/binary_tree.c ****         {
+ 977              		.loc 1 253 0
+ 978 002a 2B46     		mov	r3, r5
+ 979 002c 0DF10702 		add	r2, sp, #7
+ 980              	.LVL109:
+ 981 0030 4968     		ldr	r1, [r1, #4]
+ 982              	.LVL110:
+ 983 0032 02A8     		add	r0, sp, #8
+ 984              	.LVL111:
+ 985 0034 FFF7FEFF 		bl	Tree_Balance_Checker
+ 986              	.LVL112:
+ 987 0038 9DF80830 		ldrb	r3, [sp, #8]	@ zero_extendqisi2
+ 988 003c 93B3     		cbz	r3, .L86
+ 255:SYS/data_structure/binary_tree.c ****             {
+ 989              		.loc 1 255 0
+ 990 003e 2B46     		mov	r3, r5
+ 991 0040 0DF10602 		add	r2, sp, #6
+ 992 0044 B168     		ldr	r1, [r6, #8]
+ 993 0046 05A8     		add	r0, sp, #20
+ 994 0048 FFF7FEFF 		bl	Tree_Balance_Checker
+ 995              	.LVL113:
+ 996 004c 9DF81430 		ldrb	r3, [sp, #20]	@ zero_extendqisi2
+ 997 0050 F3B1     		cbz	r3, .L87
+ 257:SYS/data_structure/binary_tree.c **** 
+ 998              		.loc 1 257 0
+ 999 0052 9DF90720 		ldrsb	r2, [sp, #7]
+ 1000 0056 9DF90630 		ldrsb	r3, [sp, #6]
+ 1001 005a 9A42     		cmp	r2, r3
+ 1002 005c 02DD     		ble	.L88
+ 257:SYS/data_structure/binary_tree.c **** 
+ 1003              		.loc 1 257 0 is_stmt 0 discriminator 1
+ 1004 005e 0132     		adds	r2, r2, #1
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 28
+
+
+ 1005 0060 52B2     		sxtb	r2, r2
+ 1006 0062 01E0     		b	.L89
+ 1007              	.L88:
+ 257:SYS/data_structure/binary_tree.c **** 
+ 1008              		.loc 1 257 0 discriminator 2
+ 1009 0064 5A1C     		adds	r2, r3, #1
+ 1010 0066 52B2     		sxtb	r2, r2
+ 1011              	.L89:
+ 257:SYS/data_structure/binary_tree.c **** 
+ 1012              		.loc 1 257 0 discriminator 4
+ 1013 0068 3A70     		strb	r2, [r7]
+ 260:SYS/data_structure/binary_tree.c **** 
+ 1014              		.loc 1 260 0 is_stmt 1 discriminator 4
+ 1015 006a 9DF90730 		ldrsb	r3, [sp, #7]
+ 1016 006e 9DF90610 		ldrsb	r1, [sp, #6]
+ 1017 0072 5B1A     		subs	r3, r3, r1
+ 1018 0074 002B     		cmp	r3, #0
+ 1019 0076 B8BF     		it	lt
+ 1020 0078 5B42     		rsblt	r3, r3, #0
+ 1021 007a 59B2     		sxtb	r1, r3
+ 1022              	.LVL114:
+ 262:SYS/data_structure/binary_tree.c ****                 {
+ 1023              		.loc 1 262 0 discriminator 4
+ 1024 007c 0129     		cmp	r1, #1
+ 1025 007e 04DC     		bgt	.L90
+ 264:SYS/data_structure/binary_tree.c ****                     output_tmp.hi_bias = bias_bwt_LR;
+ 1026              		.loc 1 264 0
+ 1027 0080 0121     		movs	r1, #1
+ 1028              	.LVL115:
+ 1029 0082 2170     		strb	r1, [r4]
+ 265:SYS/data_structure/binary_tree.c ****                     output_tmp.layer = *depth;
+ 1030              		.loc 1 265 0
+ 1031 0084 A370     		strb	r3, [r4, #2]
+ 266:SYS/data_structure/binary_tree.c ****                     return output_tmp;
+ 1032              		.loc 1 266 0
+ 1033 0086 6270     		strb	r2, [r4, #1]
+ 267:SYS/data_structure/binary_tree.c ****                 }
+ 1034              		.loc 1 267 0
+ 1035 0088 15E0     		b	.L83
+ 1036              	.LVL116:
+ 1037              	.L90:
+ 272:SYS/data_structure/binary_tree.c ****                     output_tmp.layer = *depth;
+ 1038              		.loc 1 272 0
+ 1039 008a A370     		strb	r3, [r4, #2]
+ 273:SYS/data_structure/binary_tree.c ****                     return output_tmp;
+ 1040              		.loc 1 273 0
+ 1041 008c 6270     		strb	r2, [r4, #1]
+ 274:SYS/data_structure/binary_tree.c ****                 }
+ 1042              		.loc 1 274 0
+ 1043 008e 12E0     		b	.L83
+ 1044              	.LVL117:
+ 1045              	.L87:
+ 280:SYS/data_structure/binary_tree.c ****                 output_tmp.occur_dir = dir_right;
+ 1046              		.loc 1 280 0
+ 1047 0090 97F90030 		ldrsb	r3, [r7]
+ 1048 0094 6370     		strb	r3, [r4, #1]
+ 281:SYS/data_structure/binary_tree.c ****                 output_tmp.occur_node_ptr = relative_root->R_Node;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 29
+
+
+ 1049              		.loc 1 281 0
+ 1050 0096 0223     		movs	r3, #2
+ 1051 0098 2372     		strb	r3, [r4, #8]
+ 282:SYS/data_structure/binary_tree.c **** 
+ 1052              		.loc 1 282 0
+ 1053 009a B068     		ldr	r0, [r6, #8]
+ 1054 009c 6060     		str	r0, [r4, #4]
+ 284:SYS/data_structure/binary_tree.c ****                 {
+ 1055              		.loc 1 284 0
+ 1056 009e 55B1     		cbz	r5, .L83
+ 286:SYS/data_structure/binary_tree.c ****                 }
+ 1057              		.loc 1 286 0
+ 1058 00a0 A847     		blx	r5
+ 1059              	.LVL118:
+ 289:SYS/data_structure/binary_tree.c ****             }
+ 1060              		.loc 1 289 0
+ 1061 00a2 08E0     		b	.L83
+ 1062              	.L86:
+ 295:SYS/data_structure/binary_tree.c ****             output_tmp.occur_dir = dir_left;
+ 1063              		.loc 1 295 0
+ 1064 00a4 97F90030 		ldrsb	r3, [r7]
+ 1065 00a8 6370     		strb	r3, [r4, #1]
+ 296:SYS/data_structure/binary_tree.c ****             output_tmp.occur_node_ptr = relative_root->L_Node;
+ 1066              		.loc 1 296 0
+ 1067 00aa 0123     		movs	r3, #1
+ 1068 00ac 2372     		strb	r3, [r4, #8]
+ 297:SYS/data_structure/binary_tree.c **** 
+ 1069              		.loc 1 297 0
+ 1070 00ae 7068     		ldr	r0, [r6, #4]
+ 1071 00b0 6060     		str	r0, [r4, #4]
+ 299:SYS/data_structure/binary_tree.c ****             {
+ 1072              		.loc 1 299 0
+ 1073 00b2 05B1     		cbz	r5, .L83
+ 301:SYS/data_structure/binary_tree.c ****             }
+ 1074              		.loc 1 301 0
+ 1075 00b4 A847     		blx	r5
+ 1076              	.LVL119:
+ 1077              	.L83:
+ 307:SYS/data_structure/binary_tree.c **** 
+ 1078              		.loc 1 307 0
+ 1079 00b6 2046     		mov	r0, r4
+ 1080 00b8 09B0     		add	sp, sp, #36
+ 1081              	.LCFI23:
+ 1082              		.cfi_def_cfa_offset 20
+ 1083              		@ sp needed
+ 1084 00ba F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1085              		.cfi_endproc
+ 1086              	.LFE12:
+ 1088              		.section	.text.Tree_Search,"ax",%progbits
+ 1089              		.align	2
+ 1090              		.global	Tree_Search
+ 1091              		.thumb
+ 1092              		.thumb_func
+ 1094              	Tree_Search:
+ 1095              	.LFB17:
+ 430:SYS/data_structure/binary_tree.c **** }
+ 431:SYS/data_structure/binary_tree.c **** 
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 30
+
+
+ 432:SYS/data_structure/binary_tree.c **** node_template *Tree_Search(node_template *Root_Ptr, node_template *node_obj, search_callback callba
+ 433:SYS/data_structure/binary_tree.c **** {
+ 1096              		.loc 1 433 0
+ 1097              		.cfi_startproc
+ 1098              		@ args = 0, pretend = 0, frame = 0
+ 1099              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1100              		@ link register save eliminated.
+ 1101              	.LVL120:
+ 434:SYS/data_structure/binary_tree.c ****     if (Root_Ptr == NULL)
+ 435:SYS/data_structure/binary_tree.c ****         return NULL;
+ 436:SYS/data_structure/binary_tree.c **** 
+ 437:SYS/data_structure/binary_tree.c ****     //doing search here
+ 438:SYS/data_structure/binary_tree.c **** 
+ 439:SYS/data_structure/binary_tree.c ****     return NULL;
+ 440:SYS/data_structure/binary_tree.c **** }
+ 1102              		.loc 1 440 0
+ 1103 0000 0020     		movs	r0, #0
+ 1104              	.LVL121:
+ 1105 0002 7047     		bx	lr
+ 1106              		.cfi_endproc
+ 1107              	.LFE17:
+ 1109              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1110              		.align	2
+ 1111              	.LC0:
+ 1112 0000 0D0A7072 		.ascii	"\015\012pre traverse\015\000"
+ 1112      65207472 
+ 1112      61766572 
+ 1112      73650D00 
+ 1113              	.LC1:
+ 1114 0010 0D0A6D69 		.ascii	"\015\012mid traverse\015\000"
+ 1114      64207472 
+ 1114      61766572 
+ 1114      73650D00 
+ 1115              	.LC2:
+ 1116 0020 0D0A6263 		.ascii	"\015\012bck traverse\015\000"
+ 1116      6B207472 
+ 1116      61766572 
+ 1116      73650D00 
+ 1117              		.text
+ 1118              	.Letext0:
+ 1119              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1120              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1121              		.file 4 "SYS/data_structure/binary_tree.h"
+ 1122              		.file 5 "<built-in>"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 binary_tree.c
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:22     .text.Tree_RotateLeft:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:26     .text.Tree_RotateLeft:00000000 Tree_RotateLeft
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:80     .text.Tree_RotateRight:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:84     .text.Tree_RotateRight:00000000 Tree_RotateRight
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:137    .text.Tree_Node_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:142    .text.Tree_Node_Init:00000000 Tree_Node_Init
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:171    .text.Tree_ReSetRoot:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:176    .text.Tree_ReSetRoot:00000000 Tree_ReSetRoot
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:226    .text.Tree_DeleteNode:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:231    .text.Tree_DeleteNode:00000000 Tree_DeleteNode
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:280    .text.Tree_Printf_NodeName:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:285    .text.Tree_Printf_NodeName:00000000 Tree_Printf_NodeName
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:316    .text.Tree_Pre_Traverse:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:321    .text.Tree_Pre_Traverse:00000000 Tree_Pre_Traverse
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:370    .text.Tree_Mid_Traverse:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:375    .text.Tree_Mid_Traverse:00000000 Tree_Mid_Traverse
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:425    .text.Tree_Bck_Traverse:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:430    .text.Tree_Bck_Traverse:00000000 Tree_Bck_Traverse
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:480    .text.Tree_Structure_Dsp:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:485    .text.Tree_Structure_Dsp:00000000 Tree_Structure_Dsp
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:552    .text.Tree_Structure_Dsp:00000044 $d
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:559    .text.Tree_GetDepth:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:564    .text.Tree_GetDepth:00000000 Tree_GetDepth
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:619    .text.Tree_GetBalance_Gain:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:623    .text.Tree_GetBalance_Gain:00000000 Tree_GetBalance_Gain
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:669    .text.Tree_DynamicTrim:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:673    .text.Tree_DynamicTrim:00000000 Tree_DynamicTrim
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:768    .text.Tree_InsertNode:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:773    .text.Tree_InsertNode:00000000 Tree_InsertNode
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:874    .text.Tree_SwapLR:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:879    .text.Tree_SwapLR:00000000 Tree_SwapLR
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:923    .text.Tree_Balance_Checker:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:928    .text.Tree_Balance_Checker:00000000 Tree_Balance_Checker
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:1089   .text.Tree_Search:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:1094   .text.Tree_Search:00000000 Tree_Search
+C:\Users\why\AppData\Local\Temp\ccxGGpiJ.s:1110   .rodata.str1.4:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+puts

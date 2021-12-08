@@ -1,0 +1,592 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"usb_bsp.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.USB_OTG_BSP_Init,"ax",%progbits
+  22              		.align	2
+  23              		.global	USB_OTG_BSP_Init
+  24              		.thumb
+  25              		.thumb_func
+  27              	USB_OTG_BSP_Init:
+  28              	.LFB124:
+  29              		.file 1 "USB/core/usb_bsp.c"
+   1:USB/core/usb_bsp.c **** /**
+   2:USB/core/usb_bsp.c ****   ******************************************************************************
+   3:USB/core/usb_bsp.c ****   * @file    usb_bsp.c
+   4:USB/core/usb_bsp.c ****   * @author  MCD Application Team
+   5:USB/core/usb_bsp.c ****   * @version V1.1.0
+   6:USB/core/usb_bsp.c ****   * @date    19-March-2012
+   7:USB/core/usb_bsp.c ****   * @brief   This file is responsible to offer board support package and is 
+   8:USB/core/usb_bsp.c ****   *          configurable by user.
+   9:USB/core/usb_bsp.c ****   ******************************************************************************
+  10:USB/core/usb_bsp.c ****   * @attention
+  11:USB/core/usb_bsp.c ****   *
+  12:USB/core/usb_bsp.c ****   * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  13:USB/core/usb_bsp.c ****   *
+  14:USB/core/usb_bsp.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  15:USB/core/usb_bsp.c ****   * You may not use this file except in compliance with the License.
+  16:USB/core/usb_bsp.c ****   * You may obtain a copy of the License at:
+  17:USB/core/usb_bsp.c ****   *
+  18:USB/core/usb_bsp.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  19:USB/core/usb_bsp.c ****   *
+  20:USB/core/usb_bsp.c ****   * Unless required by applicable law or agreed to in writing, software 
+  21:USB/core/usb_bsp.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  22:USB/core/usb_bsp.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  23:USB/core/usb_bsp.c ****   * See the License for the specific language governing permissions and
+  24:USB/core/usb_bsp.c ****   * limitations under the License.
+  25:USB/core/usb_bsp.c ****   *
+  26:USB/core/usb_bsp.c ****   ******************************************************************************
+  27:USB/core/usb_bsp.c ****   */ 
+  28:USB/core/usb_bsp.c **** 
+  29:USB/core/usb_bsp.c **** /* Includes ------------------------------------------------------------------*/
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 2
+
+
+  30:USB/core/usb_bsp.c **** #include "usb_bsp.h"
+  31:USB/core/usb_bsp.c **** #include "usbd_conf.h"
+  32:USB/core/usb_bsp.c **** #include "tm_stm32f4_usb_vcp.h"
+  33:USB/core/usb_bsp.c **** 
+  34:USB/core/usb_bsp.c **** #include "defines.h"
+  35:USB/core/usb_bsp.c **** 
+  36:USB/core/usb_bsp.c **** #ifndef USB_VCP_NVIC_PRIORITY
+  37:USB/core/usb_bsp.c **** #define USB_VCP_NVIC_PRIORITY			0x01
+  38:USB/core/usb_bsp.c **** #endif
+  39:USB/core/usb_bsp.c **** 
+  40:USB/core/usb_bsp.c **** #ifndef USB_VCP_NVIC_SUBPRIORITY
+  41:USB/core/usb_bsp.c **** #define USB_VCP_NVIC_SUBPRIORITY		0x01
+  42:USB/core/usb_bsp.c **** #endif
+  43:USB/core/usb_bsp.c **** 
+  44:USB/core/usb_bsp.c **** extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
+  45:USB/core/usb_bsp.c **** extern uint32_t USBD_OTG_ISR_Handler(USB_OTG_CORE_HANDLE *pdev);
+  46:USB/core/usb_bsp.c **** 
+  47:USB/core/usb_bsp.c **** /**
+  48:USB/core/usb_bsp.c **** * @brief  USB_OTG_BSP_Init
+  49:USB/core/usb_bsp.c **** *         Initilizes BSP configurations
+  50:USB/core/usb_bsp.c **** * @param  None
+  51:USB/core/usb_bsp.c **** * @retval None
+  52:USB/core/usb_bsp.c **** */
+  53:USB/core/usb_bsp.c **** 
+  54:USB/core/usb_bsp.c **** void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev) {
+  30              		.loc 1 54 0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              	.LVL0:
+  35 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 20
+  38              		.cfi_offset 4, -20
+  39              		.cfi_offset 5, -16
+  40              		.cfi_offset 6, -12
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  43 0002 83B0     		sub	sp, sp, #12
+  44              	.LCFI1:
+  45              		.cfi_def_cfa_offset 32
+  55:USB/core/usb_bsp.c ****   GPIO_InitTypeDef GPIO_InitStructure;   
+  56:USB/core/usb_bsp.c **** #ifdef USE_USB_OTG_FS
+  57:USB/core/usb_bsp.c **** 	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOA , ENABLE);  
+  46              		.loc 1 57 0
+  47 0004 0121     		movs	r1, #1
+  48 0006 0846     		mov	r0, r1
+  49              	.LVL1:
+  50 0008 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+  51              	.LVL2:
+  58:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_11 | 	// OTG FS Data -
+  52              		.loc 1 58 0
+  53 000c 4FF4C053 		mov	r3, #6144
+  54 0010 0093     		str	r3, [sp]
+  59:USB/core/usb_bsp.c **** 																	   GPIO_Pin_12;	// OTG FS Data +
+  60:USB/core/usb_bsp.c **** 
+  61:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 3
+
+
+  55              		.loc 1 61 0
+  56 0012 0327     		movs	r7, #3
+  57 0014 8DF80570 		strb	r7, [sp, #5]
+  62:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  58              		.loc 1 62 0
+  59 0018 0223     		movs	r3, #2
+  60 001a 8DF80430 		strb	r3, [sp, #4]
+  63:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  61              		.loc 1 63 0
+  62 001e 0026     		movs	r6, #0
+  63 0020 8DF80660 		strb	r6, [sp, #6]
+  64:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;//NOPULL
+  64              		.loc 1 64 0
+  65 0024 8DF80760 		strb	r6, [sp, #7]
+  65:USB/core/usb_bsp.c **** 	GPIO_Init(GPIOA, &GPIO_InitStructure);  
+  66              		.loc 1 65 0
+  67 0028 1D4C     		ldr	r4, .L3
+  68 002a 6946     		mov	r1, sp
+  69 002c 2046     		mov	r0, r4
+  70 002e FFF7FEFF 		bl	GPIO_Init
+  71              	.LVL3:
+  66:USB/core/usb_bsp.c **** 
+  67:USB/core/usb_bsp.c **** 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_OTG1_FS); 
+  72              		.loc 1 67 0
+  73 0032 0A22     		movs	r2, #10
+  74 0034 0B21     		movs	r1, #11
+  75 0036 2046     		mov	r0, r4
+  76 0038 FFF7FEFF 		bl	GPIO_PinAFConfig
+  77              	.LVL4:
+  68:USB/core/usb_bsp.c **** 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_OTG1_FS);
+  78              		.loc 1 68 0
+  79 003c 0A22     		movs	r2, #10
+  80 003e 0C21     		movs	r1, #12
+  81 0040 2046     		mov	r0, r4
+  82 0042 FFF7FEFF 		bl	GPIO_PinAFConfig
+  83              	.LVL5:
+  69:USB/core/usb_bsp.c **** 
+  70:USB/core/usb_bsp.c **** #ifndef USB_VCP_DISABLE_VBUS
+  71:USB/core/usb_bsp.c **** 	// Configure  VBUS Pin
+  72:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+  84              		.loc 1 72 0
+  85 0046 4FF40073 		mov	r3, #512
+  86 004a 0093     		str	r3, [sp]
+  73:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  87              		.loc 1 73 0
+  88 004c 8DF80570 		strb	r7, [sp, #5]
+  74:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  89              		.loc 1 74 0
+  90 0050 8DF80460 		strb	r6, [sp, #4]
+  75:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+  91              		.loc 1 75 0
+  92 0054 0125     		movs	r5, #1
+  93 0056 8DF80650 		strb	r5, [sp, #6]
+  76:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+  94              		.loc 1 76 0
+  95 005a 8DF80760 		strb	r6, [sp, #7]
+  77:USB/core/usb_bsp.c **** 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 4
+
+
+  96              		.loc 1 77 0
+  97 005e 6946     		mov	r1, sp
+  98 0060 2046     		mov	r0, r4
+  99 0062 FFF7FEFF 		bl	GPIO_Init
+ 100              	.LVL6:
+  78:USB/core/usb_bsp.c **** #endif
+  79:USB/core/usb_bsp.c **** 
+  80:USB/core/usb_bsp.c **** #ifndef USB_VCP_DISABLE_ID
+  81:USB/core/usb_bsp.c **** 	// Configure ID pin
+  82:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+ 101              		.loc 1 82 0
+ 102 0066 4FF48063 		mov	r3, #1024
+ 103 006a 0093     		str	r3, [sp]
+  83:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+ 104              		.loc 1 83 0
+ 105 006c 8DF80650 		strb	r5, [sp, #6]
+  84:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;  
+ 106              		.loc 1 84 0
+ 107 0070 8DF80750 		strb	r5, [sp, #7]
+  85:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+ 108              		.loc 1 85 0
+ 109 0074 8DF80570 		strb	r7, [sp, #5]
+  86:USB/core/usb_bsp.c **** 	GPIO_Init(GPIOA, &GPIO_InitStructure);  
+ 110              		.loc 1 86 0
+ 111 0078 6946     		mov	r1, sp
+ 112 007a 2046     		mov	r0, r4
+ 113 007c FFF7FEFF 		bl	GPIO_Init
+ 114              	.LVL7:
+  87:USB/core/usb_bsp.c **** 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_OTG1_FS); 
+ 115              		.loc 1 87 0
+ 116 0080 0A22     		movs	r2, #10
+ 117 0082 1146     		mov	r1, r2
+ 118 0084 2046     		mov	r0, r4
+ 119 0086 FFF7FEFF 		bl	GPIO_PinAFConfig
+ 120              	.LVL8:
+  88:USB/core/usb_bsp.c **** #endif
+  89:USB/core/usb_bsp.c **** 
+  90:USB/core/usb_bsp.c **** 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+ 121              		.loc 1 90 0
+ 122 008a 2946     		mov	r1, r5
+ 123 008c 4FF48040 		mov	r0, #16384
+ 124 0090 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 125              	.LVL9:
+  91:USB/core/usb_bsp.c **** 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_OTG_FS, ENABLE); 
+ 126              		.loc 1 91 0
+ 127 0094 2946     		mov	r1, r5
+ 128 0096 8020     		movs	r0, #128
+ 129 0098 FFF7FEFF 		bl	RCC_AHB2PeriphClockCmd
+ 130              	.LVL10:
+  92:USB/core/usb_bsp.c ****   
+  93:USB/core/usb_bsp.c **** #else
+  94:USB/core/usb_bsp.c **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  95:USB/core/usb_bsp.c **** 
+  96:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_14 | // Data -
+  97:USB/core/usb_bsp.c **** 									GPIO_Pin_15;  // Data +
+  98:USB/core/usb_bsp.c **** 
+  99:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 5
+
+
+ 100:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+ 101:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+ 102:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+ 103:USB/core/usb_bsp.c **** 	GPIO_Init(GPIOB, &GPIO_InitStructure);
+ 104:USB/core/usb_bsp.c **** 
+ 105:USB/core/usb_bsp.c **** 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource14, GPIO_AF_OTG2_FS);
+ 106:USB/core/usb_bsp.c **** 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource15, GPIO_AF_OTG2_FS);
+ 107:USB/core/usb_bsp.c **** 	
+ 108:USB/core/usb_bsp.c **** #ifndef USB_VCP_DISABLE_VBUS
+ 109:USB/core/usb_bsp.c **** 	//Configure VBUS Pin
+ 110:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+ 111:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+ 112:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+ 113:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+ 114:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+ 115:USB/core/usb_bsp.c **** 	GPIO_Init(GPIOB, &GPIO_InitStructure);
+ 116:USB/core/usb_bsp.c **** 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource13, GPIO_AF_OTG2_FS);
+ 117:USB/core/usb_bsp.c **** #endif
+ 118:USB/core/usb_bsp.c **** 
+ 119:USB/core/usb_bsp.c **** #ifndef USB_VCP_DISABLE_ID
+ 120:USB/core/usb_bsp.c **** 	//Configure ID pin
+ 121:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_12;
+ 122:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+ 123:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+ 124:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+ 125:USB/core/usb_bsp.c **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+ 126:USB/core/usb_bsp.c **** 	GPIO_Init(GPIOB, &GPIO_InitStructure);
+ 127:USB/core/usb_bsp.c **** 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource12, GPIO_AF_OTG2_FS);
+ 128:USB/core/usb_bsp.c **** #endif
+ 129:USB/core/usb_bsp.c **** 
+ 130:USB/core/usb_bsp.c **** 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+ 131:USB/core/usb_bsp.c **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_OTG_HS, ENABLE);
+ 132:USB/core/usb_bsp.c **** 
+ 133:USB/core/usb_bsp.c **** #endif
+ 134:USB/core/usb_bsp.c **** }
+ 131              		.loc 1 134 0
+ 132 009c 03B0     		add	sp, sp, #12
+ 133              	.LCFI2:
+ 134              		.cfi_def_cfa_offset 20
+ 135              		@ sp needed
+ 136 009e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 137              	.L4:
+ 138              		.align	2
+ 139              	.L3:
+ 140 00a0 00000240 		.word	1073872896
+ 141              		.cfi_endproc
+ 142              	.LFE124:
+ 144              		.section	.text.USB_OTG_BSP_EnableInterrupt,"ax",%progbits
+ 145              		.align	2
+ 146              		.global	USB_OTG_BSP_EnableInterrupt
+ 147              		.thumb
+ 148              		.thumb_func
+ 150              	USB_OTG_BSP_EnableInterrupt:
+ 151              	.LFB125:
+ 135:USB/core/usb_bsp.c **** 
+ 136:USB/core/usb_bsp.c **** /**
+ 137:USB/core/usb_bsp.c **** * @brief  USB_OTG_BSP_EnableInterrupt
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 6
+
+
+ 138:USB/core/usb_bsp.c **** *         Enabele USB Global interrupt
+ 139:USB/core/usb_bsp.c **** * @param  None
+ 140:USB/core/usb_bsp.c **** * @retval None
+ 141:USB/core/usb_bsp.c **** */
+ 142:USB/core/usb_bsp.c **** void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev) {
+ 152              		.loc 1 142 0
+ 153              		.cfi_startproc
+ 154              		@ args = 0, pretend = 0, frame = 8
+ 155              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156              	.LVL11:
+ 157 0000 00B5     		push	{lr}
+ 158              	.LCFI3:
+ 159              		.cfi_def_cfa_offset 4
+ 160              		.cfi_offset 14, -4
+ 161 0002 83B0     		sub	sp, sp, #12
+ 162              	.LCFI4:
+ 163              		.cfi_def_cfa_offset 16
+ 143:USB/core/usb_bsp.c **** 	NVIC_InitTypeDef NVIC_InitStructure;
+ 144:USB/core/usb_bsp.c **** #ifdef USE_USB_OTG_FS
+ 145:USB/core/usb_bsp.c **** 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+ 164              		.loc 1 145 0
+ 165 0004 4FF4C060 		mov	r0, #1536
+ 166              	.LVL12:
+ 167 0008 FFF7FEFF 		bl	NVIC_PriorityGroupConfig
+ 168              	.LVL13:
+ 146:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannel = OTG_FS_IRQn;  
+ 169              		.loc 1 146 0
+ 170 000c 4323     		movs	r3, #67
+ 171 000e 8DF80430 		strb	r3, [sp, #4]
+ 147:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = USB_VCP_NVIC_PRIORITY;
+ 172              		.loc 1 147 0
+ 173 0012 0123     		movs	r3, #1
+ 174 0014 8DF80530 		strb	r3, [sp, #5]
+ 148:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = USB_VCP_NVIC_SUBPRIORITY + 2;
+ 175              		.loc 1 148 0
+ 176 0018 0322     		movs	r2, #3
+ 177 001a 8DF80620 		strb	r2, [sp, #6]
+ 149:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 178              		.loc 1 149 0
+ 179 001e 8DF80730 		strb	r3, [sp, #7]
+ 150:USB/core/usb_bsp.c **** 	NVIC_Init(&NVIC_InitStructure);
+ 180              		.loc 1 150 0
+ 181 0022 01A8     		add	r0, sp, #4
+ 182 0024 FFF7FEFF 		bl	NVIC_Init
+ 183              	.LVL14:
+ 151:USB/core/usb_bsp.c **** #else
+ 152:USB/core/usb_bsp.c **** 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+ 153:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannel = OTG_HS_IRQn;
+ 154:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = USB_VCP_NVIC_PRIORITY;
+ 155:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = USB_VCP_NVIC_SUBPRIORITY + 2;
+ 156:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 157:USB/core/usb_bsp.c **** 	NVIC_Init(&NVIC_InitStructure);
+ 158:USB/core/usb_bsp.c **** 
+ 159:USB/core/usb_bsp.c **** 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+ 160:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannel = OTG_HS_EP1_OUT_IRQn;
+ 161:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = USB_VCP_NVIC_PRIORITY;
+ 162:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = USB_VCP_NVIC_SUBPRIORITY + 1;
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 7
+
+
+ 163:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 164:USB/core/usb_bsp.c **** 	NVIC_Init(&NVIC_InitStructure);
+ 165:USB/core/usb_bsp.c **** 
+ 166:USB/core/usb_bsp.c **** 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+ 167:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannel = OTG_HS_EP1_IN_IRQn;
+ 168:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = USB_VCP_NVIC_PRIORITY;
+ 169:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = USB_VCP_NVIC_SUBPRIORITY;
+ 170:USB/core/usb_bsp.c **** 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 171:USB/core/usb_bsp.c **** 	NVIC_Init(&NVIC_InitStructure); 
+ 172:USB/core/usb_bsp.c **** 
+ 173:USB/core/usb_bsp.c **** #endif
+ 174:USB/core/usb_bsp.c **** }
+ 184              		.loc 1 174 0
+ 185 0028 03B0     		add	sp, sp, #12
+ 186              	.LCFI5:
+ 187              		.cfi_def_cfa_offset 4
+ 188              		@ sp needed
+ 189 002a 5DF804FB 		ldr	pc, [sp], #4
+ 190              		.cfi_endproc
+ 191              	.LFE125:
+ 193 002e 00BF     		.section	.text.USB_OTG_BSP_uDelay,"ax",%progbits
+ 194              		.align	2
+ 195              		.global	USB_OTG_BSP_uDelay
+ 196              		.thumb
+ 197              		.thumb_func
+ 199              	USB_OTG_BSP_uDelay:
+ 200              	.LFB126:
+ 175:USB/core/usb_bsp.c **** /**
+ 176:USB/core/usb_bsp.c **** * @brief  USB_OTG_BSP_uDelay
+ 177:USB/core/usb_bsp.c **** *         This function provides delay time in micro sec
+ 178:USB/core/usb_bsp.c **** * @param  usec : Value of delay required in micro sec
+ 179:USB/core/usb_bsp.c **** * @retval None
+ 180:USB/core/usb_bsp.c **** */
+ 181:USB/core/usb_bsp.c **** void USB_OTG_BSP_uDelay (const uint32_t usec) {
+ 201              		.loc 1 181 0
+ 202              		.cfi_startproc
+ 203              		@ args = 0, pretend = 0, frame = 0
+ 204              		@ frame_needed = 0, uses_anonymous_args = 0
+ 205              		@ link register save eliminated.
+ 206              	.LVL15:
+ 182:USB/core/usb_bsp.c **** 	uint32_t count = 0;
+ 183:USB/core/usb_bsp.c **** 	const uint32_t utime = (120 * usec / 7);
+ 207              		.loc 1 183 0
+ 208 0000 C0EB0010 		rsb	r0, r0, r0, lsl #4
+ 209              	.LVL16:
+ 210 0004 C200     		lsls	r2, r0, #3
+ 211 0006 064B     		ldr	r3, .L9
+ 212 0008 A3FB0213 		umull	r1, r3, r3, r2
+ 213 000c D21A     		subs	r2, r2, r3
+ 214 000e 03EB5202 		add	r2, r3, r2, lsr #1
+ 215 0012 9208     		lsrs	r2, r2, #2
+ 216              	.LVL17:
+ 182:USB/core/usb_bsp.c **** 	uint32_t count = 0;
+ 217              		.loc 1 182 0
+ 218 0014 0023     		movs	r3, #0
+ 219              	.LVL18:
+ 220              	.L8:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 8
+
+
+ 184:USB/core/usb_bsp.c **** 	
+ 185:USB/core/usb_bsp.c **** 	do
+ 186:USB/core/usb_bsp.c **** 	{
+ 187:USB/core/usb_bsp.c **** 		if ( ++count > utime ) {
+ 221              		.loc 1 187 0
+ 222 0016 0133     		adds	r3, r3, #1
+ 223              	.LVL19:
+ 224 0018 9A42     		cmp	r2, r3
+ 225 001a FCD2     		bcs	.L8
+ 188:USB/core/usb_bsp.c **** 			return ;
+ 189:USB/core/usb_bsp.c **** 		}
+ 190:USB/core/usb_bsp.c **** 	} while (1);
+ 191:USB/core/usb_bsp.c **** }
+ 226              		.loc 1 191 0
+ 227 001c 7047     		bx	lr
+ 228              	.L10:
+ 229 001e 00BF     		.align	2
+ 230              	.L9:
+ 231 0020 25499224 		.word	613566757
+ 232              		.cfi_endproc
+ 233              	.LFE126:
+ 235              		.section	.text.USB_OTG_BSP_mDelay,"ax",%progbits
+ 236              		.align	2
+ 237              		.global	USB_OTG_BSP_mDelay
+ 238              		.thumb
+ 239              		.thumb_func
+ 241              	USB_OTG_BSP_mDelay:
+ 242              	.LFB127:
+ 192:USB/core/usb_bsp.c **** 
+ 193:USB/core/usb_bsp.c **** 
+ 194:USB/core/usb_bsp.c **** /**
+ 195:USB/core/usb_bsp.c **** * @brief  USB_OTG_BSP_mDelay
+ 196:USB/core/usb_bsp.c **** *          This function provides delay time in milli sec
+ 197:USB/core/usb_bsp.c **** * @param  msec : Value of delay required in milli sec
+ 198:USB/core/usb_bsp.c **** * @retval None
+ 199:USB/core/usb_bsp.c **** */
+ 200:USB/core/usb_bsp.c **** void USB_OTG_BSP_mDelay (const uint32_t msec) {
+ 243              		.loc 1 200 0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 0
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247              	.LVL20:
+ 248 0000 08B5     		push	{r3, lr}
+ 249              	.LCFI6:
+ 250              		.cfi_def_cfa_offset 8
+ 251              		.cfi_offset 3, -8
+ 252              		.cfi_offset 14, -4
+ 201:USB/core/usb_bsp.c **** 	USB_OTG_BSP_uDelay(msec * 1000);   
+ 253              		.loc 1 201 0
+ 254 0002 4FF47A73 		mov	r3, #1000
+ 255 0006 03FB00F0 		mul	r0, r3, r0
+ 256              	.LVL21:
+ 257 000a FFF7FEFF 		bl	USB_OTG_BSP_uDelay
+ 258              	.LVL22:
+ 259 000e 08BD     		pop	{r3, pc}
+ 260              		.cfi_endproc
+ 261              	.LFE127:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 9
+
+
+ 263              		.section	.text.OTG_FS_WKUP_IRQHandler,"ax",%progbits
+ 264              		.align	2
+ 265              		.global	OTG_FS_WKUP_IRQHandler
+ 266              		.thumb
+ 267              		.thumb_func
+ 269              	OTG_FS_WKUP_IRQHandler:
+ 270              	.LFB128:
+ 202:USB/core/usb_bsp.c **** }
+ 203:USB/core/usb_bsp.c **** 
+ 204:USB/core/usb_bsp.c **** 
+ 205:USB/core/usb_bsp.c **** #ifdef USE_USB_OTG_FS
+ 206:USB/core/usb_bsp.c **** 
+ 207:USB/core/usb_bsp.c **** void OTG_FS_WKUP_IRQHandler(void) {
+ 271              		.loc 1 207 0
+ 272              		.cfi_startproc
+ 273              		@ args = 0, pretend = 0, frame = 0
+ 274              		@ frame_needed = 0, uses_anonymous_args = 0
+ 275 0000 08B5     		push	{r3, lr}
+ 276              	.LCFI7:
+ 277              		.cfi_def_cfa_offset 8
+ 278              		.cfi_offset 3, -8
+ 279              		.cfi_offset 14, -4
+ 208:USB/core/usb_bsp.c **** 	EXTI_ClearITPendingBit(EXTI_Line18);
+ 280              		.loc 1 208 0
+ 281 0002 4FF48020 		mov	r0, #262144
+ 282 0006 FFF7FEFF 		bl	EXTI_ClearITPendingBit
+ 283              	.LVL23:
+ 284 000a 08BD     		pop	{r3, pc}
+ 285              		.cfi_endproc
+ 286              	.LFE128:
+ 288              		.section	.text.OTG_FS_IRQHandler,"ax",%progbits
+ 289              		.align	2
+ 290              		.global	OTG_FS_IRQHandler
+ 291              		.thumb
+ 292              		.thumb_func
+ 294              	OTG_FS_IRQHandler:
+ 295              	.LFB129:
+ 209:USB/core/usb_bsp.c **** }
+ 210:USB/core/usb_bsp.c **** 
+ 211:USB/core/usb_bsp.c **** void OTG_FS_IRQHandler(void) {
+ 296              		.loc 1 211 0
+ 297              		.cfi_startproc
+ 298              		@ args = 0, pretend = 0, frame = 0
+ 299              		@ frame_needed = 0, uses_anonymous_args = 0
+ 300 0000 08B5     		push	{r3, lr}
+ 301              	.LCFI8:
+ 302              		.cfi_def_cfa_offset 8
+ 303              		.cfi_offset 3, -8
+ 304              		.cfi_offset 14, -4
+ 212:USB/core/usb_bsp.c **** 	USBD_OTG_ISR_Handler (&USB_OTG_dev);
+ 305              		.loc 1 212 0
+ 306 0002 0248     		ldr	r0, .L17
+ 307 0004 FFF7FEFF 		bl	USBD_OTG_ISR_Handler
+ 308              	.LVL24:
+ 309 0008 08BD     		pop	{r3, pc}
+ 310              	.L18:
+ 311 000a 00BF     		.align	2
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 10
+
+
+ 312              	.L17:
+ 313 000c 00000000 		.word	USB_OTG_dev
+ 314              		.cfi_endproc
+ 315              	.LFE129:
+ 317              		.text
+ 318              	.Letext0:
+ 319              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 320              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 321              		.file 4 "USER/stm32f4xx.h"
+ 322              		.file 5 "FWLIB/inc/stm32f4xx_gpio.h"
+ 323              		.file 6 "FWLIB/inc/misc.h"
+ 324              		.file 7 "USB/core/usb_regs.h"
+ 325              		.file 8 "USB/core/usb_core.h"
+ 326              		.file 9 "F4_CORE/core_cm4.h"
+ 327              		.file 10 "FWLIB/inc/stm32f4xx_rcc.h"
+ 328              		.file 11 "FWLIB/inc/stm32f4xx_exti.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccyicDf8.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_bsp.c
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:22     .text.USB_OTG_BSP_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:27     .text.USB_OTG_BSP_Init:00000000 USB_OTG_BSP_Init
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:140    .text.USB_OTG_BSP_Init:000000a0 $d
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:145    .text.USB_OTG_BSP_EnableInterrupt:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:150    .text.USB_OTG_BSP_EnableInterrupt:00000000 USB_OTG_BSP_EnableInterrupt
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:194    .text.USB_OTG_BSP_uDelay:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:199    .text.USB_OTG_BSP_uDelay:00000000 USB_OTG_BSP_uDelay
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:231    .text.USB_OTG_BSP_uDelay:00000020 $d
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:236    .text.USB_OTG_BSP_mDelay:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:241    .text.USB_OTG_BSP_mDelay:00000000 USB_OTG_BSP_mDelay
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:264    .text.OTG_FS_WKUP_IRQHandler:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:269    .text.OTG_FS_WKUP_IRQHandler:00000000 OTG_FS_WKUP_IRQHandler
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:289    .text.OTG_FS_IRQHandler:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:294    .text.OTG_FS_IRQHandler:00000000 OTG_FS_IRQHandler
+C:\Users\why\AppData\Local\Temp\ccyicDf8.s:313    .text.OTG_FS_IRQHandler:0000000c $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_AHB1PeriphClockCmd
+GPIO_Init
+GPIO_PinAFConfig
+RCC_APB2PeriphClockCmd
+RCC_AHB2PeriphClockCmd
+NVIC_PriorityGroupConfig
+NVIC_Init
+EXTI_ClearITPendingBit
+USBD_OTG_ISR_Handler
+USB_OTG_dev

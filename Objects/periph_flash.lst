@@ -1,0 +1,580 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"periph_flash.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.Flash_ReadFromADDR,"ax",%progbits
+  22              		.align	2
+  23              		.global	Flash_ReadFromADDR
+  24              		.thumb
+  25              		.thumb_func
+  27              	Flash_ReadFromADDR:
+  28              	.LFB123:
+  29              		.file 1 "Bsp/periph_flash.c"
+   1:Bsp/periph_flash.c **** #include "periph_flash.h"
+   2:Bsp/periph_flash.c **** 
+   3:Bsp/periph_flash.c **** u32 Flash_ReadFromADDR(u32 faddr)
+   4:Bsp/periph_flash.c **** {
+  30              		.loc 1 4 0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              	.LVL0:
+   5:Bsp/periph_flash.c ****   return *(vu32*)faddr;
+  36              		.loc 1 5 0
+  37 0000 0068     		ldr	r0, [r0]
+  38              	.LVL1:
+   6:Bsp/periph_flash.c **** }
+  39              		.loc 1 6 0
+  40 0002 7047     		bx	lr
+  41              		.cfi_endproc
+  42              	.LFE123:
+  44              		.section	.text.FLASH_ReadBuff,"ax",%progbits
+  45              		.align	2
+  46              		.global	FLASH_ReadBuff
+  47              		.thumb
+  48              		.thumb_func
+  50              	FLASH_ReadBuff:
+  51              	.LFB124:
+   7:Bsp/periph_flash.c **** 
+   8:Bsp/periph_flash.c **** void FLASH_ReadBuff(u32 ReadAddr,u32 *pBuffer,u32 NumToRead)
+   9:Bsp/periph_flash.c **** {
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 2
+
+
+  52              		.loc 1 9 0
+  53              		.cfi_startproc
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              	.LVL2:
+  57 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  58              	.LCFI0:
+  59              		.cfi_def_cfa_offset 24
+  60              		.cfi_offset 3, -24
+  61              		.cfi_offset 4, -20
+  62              		.cfi_offset 5, -16
+  63              		.cfi_offset 6, -12
+  64              		.cfi_offset 7, -8
+  65              		.cfi_offset 14, -4
+  66 0002 0546     		mov	r5, r0
+  67 0004 0F46     		mov	r7, r1
+  68 0006 1646     		mov	r6, r2
+  69              	.LVL3:
+  10:Bsp/periph_flash.c ****   u32 i;
+  11:Bsp/periph_flash.c ****   for(i = 0; i < NumToRead; i++)
+  70              		.loc 1 11 0
+  71 0008 0024     		movs	r4, #0
+  72 000a 06E0     		b	.L3
+  73              	.LVL4:
+  74              	.L4:
+  12:Bsp/periph_flash.c ****   {
+  13:Bsp/periph_flash.c ****     pBuffer[i] = Flash_ReadFromADDR(ReadAddr);
+  75              		.loc 1 13 0 discriminator 3
+  76 000c 2846     		mov	r0, r5
+  77 000e FFF7FEFF 		bl	Flash_ReadFromADDR
+  78              	.LVL5:
+  79 0012 47F82400 		str	r0, [r7, r4, lsl #2]
+  14:Bsp/periph_flash.c ****     ReadAddr += SIZE;
+  80              		.loc 1 14 0 discriminator 3
+  81 0016 0435     		adds	r5, r5, #4
+  82              	.LVL6:
+  11:Bsp/periph_flash.c ****   {
+  83              		.loc 1 11 0 discriminator 3
+  84 0018 0134     		adds	r4, r4, #1
+  85              	.LVL7:
+  86              	.L3:
+  11:Bsp/periph_flash.c ****   {
+  87              		.loc 1 11 0 is_stmt 0 discriminator 1
+  88 001a B442     		cmp	r4, r6
+  89 001c F6D3     		bcc	.L4
+  15:Bsp/periph_flash.c ****   }
+  16:Bsp/periph_flash.c **** }
+  90              		.loc 1 16 0 is_stmt 1
+  91 001e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+  92              		.cfi_endproc
+  93              	.LFE124:
+  95              		.section	.text.FLASH_GetFlashSector,"ax",%progbits
+  96              		.align	2
+  97              		.global	FLASH_GetFlashSector
+  98              		.thumb
+  99              		.thumb_func
+ 101              	FLASH_GetFlashSector:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 3
+
+
+ 102              	.LFB125:
+  17:Bsp/periph_flash.c **** 
+  18:Bsp/periph_flash.c **** u8 FLASH_GetFlashSector(u32 addr)
+  19:Bsp/periph_flash.c **** {
+ 103              		.loc 1 19 0
+ 104              		.cfi_startproc
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107              		@ link register save eliminated.
+ 108              	.LVL8:
+  20:Bsp/periph_flash.c ****   if(addr<ADDR_FLASH_SECTOR_1)	return FLASH_Sector_0;
+ 109              		.loc 1 20 0
+ 110 0000 154B     		ldr	r3, .L15
+ 111 0002 9842     		cmp	r0, r3
+ 112 0004 19D9     		bls	.L8
+  21:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_2)	return FLASH_Sector_1;
+ 113              		.loc 1 21 0
+ 114 0006 03F58043 		add	r3, r3, #16384
+ 115 000a 9842     		cmp	r0, r3
+ 116 000c 17D9     		bls	.L9
+  22:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_3)	return FLASH_Sector_2;
+ 117              		.loc 1 22 0
+ 118 000e 03F58043 		add	r3, r3, #16384
+ 119 0012 9842     		cmp	r0, r3
+ 120 0014 15D9     		bls	.L10
+  23:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_4)	return FLASH_Sector_3;
+ 121              		.loc 1 23 0
+ 122 0016 03F58043 		add	r3, r3, #16384
+ 123 001a 9842     		cmp	r0, r3
+ 124 001c 13D9     		bls	.L11
+  24:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_5)	return FLASH_Sector_4;
+ 125              		.loc 1 24 0
+ 126 001e 03F58033 		add	r3, r3, #65536
+ 127 0022 9842     		cmp	r0, r3
+ 128 0024 11D9     		bls	.L12
+  25:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_6)	return FLASH_Sector_5;
+ 129              		.loc 1 25 0
+ 130 0026 03F50033 		add	r3, r3, #131072
+ 131 002a 9842     		cmp	r0, r3
+ 132 002c 0FD9     		bls	.L13
+  26:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_7)	return FLASH_Sector_6;
+ 133              		.loc 1 26 0
+ 134 002e 03F50033 		add	r3, r3, #131072
+ 135 0032 9842     		cmp	r0, r3
+ 136 0034 0DD8     		bhi	.L14
+ 137 0036 3020     		movs	r0, #48
+ 138              	.LVL9:
+ 139 0038 7047     		bx	lr
+ 140              	.LVL10:
+ 141              	.L8:
+  20:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_2)	return FLASH_Sector_1;
+ 142              		.loc 1 20 0
+ 143 003a 0020     		movs	r0, #0
+ 144              	.LVL11:
+ 145 003c 7047     		bx	lr
+ 146              	.LVL12:
+ 147              	.L9:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 4
+
+
+  21:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_3)	return FLASH_Sector_2;
+ 148              		.loc 1 21 0
+ 149 003e 0820     		movs	r0, #8
+ 150              	.LVL13:
+ 151 0040 7047     		bx	lr
+ 152              	.LVL14:
+ 153              	.L10:
+  22:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_4)	return FLASH_Sector_3;
+ 154              		.loc 1 22 0
+ 155 0042 1020     		movs	r0, #16
+ 156              	.LVL15:
+ 157 0044 7047     		bx	lr
+ 158              	.LVL16:
+ 159              	.L11:
+  23:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_5)	return FLASH_Sector_4;
+ 160              		.loc 1 23 0
+ 161 0046 1820     		movs	r0, #24
+ 162              	.LVL17:
+ 163 0048 7047     		bx	lr
+ 164              	.LVL18:
+ 165              	.L12:
+  24:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_6)	return FLASH_Sector_5;
+ 166              		.loc 1 24 0
+ 167 004a 2020     		movs	r0, #32
+ 168              	.LVL19:
+ 169 004c 7047     		bx	lr
+ 170              	.LVL20:
+ 171              	.L13:
+  25:Bsp/periph_flash.c ****   else if(addr<ADDR_FLASH_SECTOR_7)	return FLASH_Sector_6;
+ 172              		.loc 1 25 0
+ 173 004e 2820     		movs	r0, #40
+ 174              	.LVL21:
+ 175 0050 7047     		bx	lr
+ 176              	.LVL22:
+ 177              	.L14:
+  27:Bsp/periph_flash.c ****   return FLASH_Sector_7;
+ 178              		.loc 1 27 0
+ 179 0052 3820     		movs	r0, #56
+ 180              	.LVL23:
+  28:Bsp/periph_flash.c **** }
+ 181              		.loc 1 28 0
+ 182 0054 7047     		bx	lr
+ 183              	.L16:
+ 184 0056 00BF     		.align	2
+ 185              	.L15:
+ 186 0058 FF3F0008 		.word	134234111
+ 187              		.cfi_endproc
+ 188              	.LFE125:
+ 190              		.section	.text.FLASH_Write,"ax",%progbits
+ 191              		.align	2
+ 192              		.global	FLASH_Write
+ 193              		.thumb
+ 194              		.thumb_func
+ 196              	FLASH_Write:
+ 197              	.LFB126:
+  29:Bsp/periph_flash.c **** 
+  30:Bsp/periph_flash.c **** void FLASH_Write(u32 WriteAddr,u32 *pBuffer,u32 NumToWrite)
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 5
+
+
+  31:Bsp/periph_flash.c **** {
+ 198              		.loc 1 31 0
+ 199              		.cfi_startproc
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202              	.LVL24:
+  32:Bsp/periph_flash.c ****   FLASH_Status status = FLASH_COMPLETE;
+  33:Bsp/periph_flash.c ****   u32 addrx = 0;
+  34:Bsp/periph_flash.c ****   u32 endaddr = 0;
+  35:Bsp/periph_flash.c **** 
+  36:Bsp/periph_flash.c ****   if(WriteAddr < STM32_FLASH_BASE || WriteAddr % SIZE) return;
+ 203              		.loc 1 36 0
+ 204 0000 B0F1006F 		cmp	r0, #134217728
+ 205 0004 40D3     		bcc	.L29
+  31:Bsp/periph_flash.c ****   FLASH_Status status = FLASH_COMPLETE;
+ 206              		.loc 1 31 0 discriminator 1
+ 207 0006 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 208              	.LCFI1:
+ 209              		.cfi_def_cfa_offset 24
+ 210              		.cfi_offset 4, -24
+ 211              		.cfi_offset 5, -20
+ 212              		.cfi_offset 6, -16
+ 213              		.cfi_offset 7, -12
+ 214              		.cfi_offset 8, -8
+ 215              		.cfi_offset 14, -4
+ 216 000a 0546     		mov	r5, r0
+ 217 000c 0F46     		mov	r7, r1
+ 218 000e 1646     		mov	r6, r2
+ 219              		.loc 1 36 0 discriminator 1
+ 220 0010 10F0030F 		tst	r0, #3
+ 221 0014 36D1     		bne	.L17
+  37:Bsp/periph_flash.c **** 
+  38:Bsp/periph_flash.c ****   FLASH_Unlock();                                  
+ 222              		.loc 1 38 0
+ 223 0016 FFF7FEFF 		bl	FLASH_Unlock
+ 224              	.LVL25:
+  39:Bsp/periph_flash.c ****   FLASH_DataCacheCmd(DISABLE);                     
+ 225              		.loc 1 39 0
+ 226 001a 0020     		movs	r0, #0
+ 227 001c FFF7FEFF 		bl	FLASH_DataCacheCmd
+ 228              	.LVL26:
+  40:Bsp/periph_flash.c **** 
+  41:Bsp/periph_flash.c ****   addrx = WriteAddr;                                  
+  42:Bsp/periph_flash.c ****   endaddr = WriteAddr + NumToWrite * SIZE;                   
+ 229              		.loc 1 42 0
+ 230 0020 05EB8606 		add	r6, r5, r6, lsl #2
+ 231              	.LVL27:
+  43:Bsp/periph_flash.c **** 
+  44:Bsp/periph_flash.c ****   if(addrx < 0X1FFF0000)                              
+ 232              		.loc 1 44 0
+ 233 0024 194B     		ldr	r3, .L30
+ 234 0026 9D42     		cmp	r5, r3
+ 235 0028 14D9     		bls	.L27
+  32:Bsp/periph_flash.c ****   u32 addrx = 0;
+ 236              		.loc 1 32 0
+ 237 002a 4FF00908 		mov	r8, #9
+ 238 002e 16E0     		b	.L20
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 6
+
+
+ 239              	.LVL28:
+ 240              	.L23:
+  45:Bsp/periph_flash.c ****   {
+  46:Bsp/periph_flash.c ****     while(addrx < endaddr)                            
+  47:Bsp/periph_flash.c ****     {
+  48:Bsp/periph_flash.c ****       if(Flash_ReadFromADDR(addrx) != 0XFFFFFFFF)      
+ 241              		.loc 1 48 0
+ 242 0030 2046     		mov	r0, r4
+ 243 0032 FFF7FEFF 		bl	Flash_ReadFromADDR
+ 244              	.LVL29:
+ 245 0036 B0F1FF3F 		cmp	r0, #-1
+ 246 003a 09D0     		beq	.L21
+  49:Bsp/periph_flash.c ****       {
+  50:Bsp/periph_flash.c ****         status=FLASH_EraseSector(FLASH_GetFlashSector(addrx), VoltageRange_3);
+ 247              		.loc 1 50 0
+ 248 003c 2046     		mov	r0, r4
+ 249 003e FFF7FEFF 		bl	FLASH_GetFlashSector
+ 250              	.LVL30:
+ 251 0042 0221     		movs	r1, #2
+ 252 0044 FFF7FEFF 		bl	FLASH_EraseSector
+ 253              	.LVL31:
+ 254 0048 8046     		mov	r8, r0
+ 255              	.LVL32:
+  51:Bsp/periph_flash.c **** 
+  52:Bsp/periph_flash.c ****         if(status!=FLASH_COMPLETE)break;            
+ 256              		.loc 1 52 0
+ 257 004a 0928     		cmp	r0, #9
+ 258 004c 05D0     		beq	.L19
+ 259 004e 06E0     		b	.L20
+ 260              	.LVL33:
+ 261              	.L21:
+  53:Bsp/periph_flash.c ****       }
+  54:Bsp/periph_flash.c ****       else addrx += SIZE;
+ 262              		.loc 1 54 0
+ 263 0050 0434     		adds	r4, r4, #4
+ 264              	.LVL34:
+ 265 0052 02E0     		b	.L19
+ 266              	.LVL35:
+ 267              	.L27:
+ 268 0054 2C46     		mov	r4, r5
+ 269 0056 4FF00908 		mov	r8, #9
+ 270              	.LVL36:
+ 271              	.L19:
+  46:Bsp/periph_flash.c ****     {
+ 272              		.loc 1 46 0
+ 273 005a B442     		cmp	r4, r6
+ 274 005c E8D3     		bcc	.L23
+ 275              	.LVL37:
+ 276              	.L20:
+  55:Bsp/periph_flash.c ****     }
+  56:Bsp/periph_flash.c ****   }
+  57:Bsp/periph_flash.c ****   if(status == FLASH_COMPLETE)
+ 277              		.loc 1 57 0
+ 278 005e B8F1090F 		cmp	r8, #9
+ 279 0062 0AD1     		bne	.L25
+ 280 0064 07E0     		b	.L24
+ 281              	.L26:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 7
+
+
+  58:Bsp/periph_flash.c ****   {
+  59:Bsp/periph_flash.c ****     while(WriteAddr < endaddr)
+  60:Bsp/periph_flash.c ****     {
+  61:Bsp/periph_flash.c ****       if(FLASH_ProgramWord(WriteAddr, *pBuffer) != FLASH_COMPLETE)
+ 282              		.loc 1 61 0
+ 283 0066 3968     		ldr	r1, [r7]
+ 284 0068 2846     		mov	r0, r5
+ 285 006a FFF7FEFF 		bl	FLASH_ProgramWord
+ 286              	.LVL38:
+ 287 006e 0928     		cmp	r0, #9
+ 288 0070 03D1     		bne	.L25
+  62:Bsp/periph_flash.c ****       {
+  63:Bsp/periph_flash.c ****         break;
+  64:Bsp/periph_flash.c ****       }
+  65:Bsp/periph_flash.c **** 
+  66:Bsp/periph_flash.c ****       WriteAddr += SIZE;
+ 289              		.loc 1 66 0
+ 290 0072 0435     		adds	r5, r5, #4
+ 291              	.LVL39:
+  67:Bsp/periph_flash.c ****       pBuffer++;
+ 292              		.loc 1 67 0
+ 293 0074 0437     		adds	r7, r7, #4
+ 294              	.LVL40:
+ 295              	.L24:
+  59:Bsp/periph_flash.c ****     {
+ 296              		.loc 1 59 0
+ 297 0076 B542     		cmp	r5, r6
+ 298 0078 F5D3     		bcc	.L26
+ 299              	.L25:
+  68:Bsp/periph_flash.c ****     }
+  69:Bsp/periph_flash.c ****   }
+  70:Bsp/periph_flash.c **** 
+  71:Bsp/periph_flash.c ****   FLASH_DataCacheCmd(ENABLE);
+ 300              		.loc 1 71 0
+ 301 007a 0120     		movs	r0, #1
+ 302 007c FFF7FEFF 		bl	FLASH_DataCacheCmd
+ 303              	.LVL41:
+  72:Bsp/periph_flash.c ****   FLASH_Lock();
+ 304              		.loc 1 72 0
+ 305 0080 FFF7FEFF 		bl	FLASH_Lock
+ 306              	.LVL42:
+ 307              	.L17:
+ 308 0084 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 309              	.LVL43:
+ 310              	.L29:
+ 311              	.LCFI2:
+ 312              		.cfi_def_cfa_offset 0
+ 313              		.cfi_restore 4
+ 314              		.cfi_restore 5
+ 315              		.cfi_restore 6
+ 316              		.cfi_restore 7
+ 317              		.cfi_restore 8
+ 318              		.cfi_restore 14
+ 319 0088 7047     		bx	lr
+ 320              	.L31:
+ 321 008a 00BF     		.align	2
+ 322              	.L30:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 8
+
+
+ 323 008c FFFFFE1F 		.word	536805375
+ 324              		.cfi_endproc
+ 325              	.LFE126:
+ 327              		.section	.text.FLASH_ERASE_PAGE,"ax",%progbits
+ 328              		.align	2
+ 329              		.global	FLASH_ERASE_PAGE
+ 330              		.thumb
+ 331              		.thumb_func
+ 333              	FLASH_ERASE_PAGE:
+ 334              	.LFB127:
+  73:Bsp/periph_flash.c **** }
+  74:Bsp/periph_flash.c **** 
+  75:Bsp/periph_flash.c **** FLASH_Status FLASH_ERASE_PAGE(u32 ERA_ADDR,uint32_t data_size)
+  76:Bsp/periph_flash.c **** {
+ 335              		.loc 1 76 0
+ 336              		.cfi_startproc
+ 337              		@ args = 0, pretend = 0, frame = 0
+ 338              		@ frame_needed = 0, uses_anonymous_args = 0
+ 339              	.LVL44:
+ 340 0000 70B5     		push	{r4, r5, r6, lr}
+ 341              	.LCFI3:
+ 342              		.cfi_def_cfa_offset 16
+ 343              		.cfi_offset 4, -16
+ 344              		.cfi_offset 5, -12
+ 345              		.cfi_offset 6, -8
+ 346              		.cfi_offset 14, -4
+ 347 0002 0446     		mov	r4, r0
+ 348 0004 0D46     		mov	r5, r1
+ 349              	.LVL45:
+  77:Bsp/periph_flash.c **** 	FLASH_Status status;
+  78:Bsp/periph_flash.c **** 	u32 addrx = 0;
+  79:Bsp/periph_flash.c ****   u32 endaddr = 0;
+  80:Bsp/periph_flash.c **** 	
+  81:Bsp/periph_flash.c **** 	FLASH_Unlock();                                  
+ 350              		.loc 1 81 0
+ 351 0006 FFF7FEFF 		bl	FLASH_Unlock
+ 352              	.LVL46:
+  82:Bsp/periph_flash.c ****   FLASH_DataCacheCmd(DISABLE);                     
+ 353              		.loc 1 82 0
+ 354 000a 0020     		movs	r0, #0
+ 355 000c FFF7FEFF 		bl	FLASH_DataCacheCmd
+ 356              	.LVL47:
+  83:Bsp/periph_flash.c **** 
+  84:Bsp/periph_flash.c ****   addrx = ERA_ADDR;                                  
+  85:Bsp/periph_flash.c ****   endaddr = ERA_ADDR + data_size * SIZE;                   
+ 357              		.loc 1 85 0
+ 358 0010 04EB8505 		add	r5, r4, r5, lsl #2
+ 359              	.LVL48:
+  86:Bsp/periph_flash.c **** 
+  87:Bsp/periph_flash.c ****   if(addrx < 0X1FFF0000)                              
+ 360              		.loc 1 87 0
+ 361 0014 0D4B     		ldr	r3, .L39
+ 362 0016 9C42     		cmp	r4, r3
+ 363 0018 11D9     		bls	.L33
+ 364 001a 12E0     		b	.L34
+ 365              	.LVL49:
+ 366              	.L37:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 9
+
+
+  88:Bsp/periph_flash.c ****   {
+  89:Bsp/periph_flash.c ****     while(addrx < endaddr)                            
+  90:Bsp/periph_flash.c ****     {
+  91:Bsp/periph_flash.c ****       if(Flash_ReadFromADDR(addrx) != 0XFFFFFFFF)      
+ 367              		.loc 1 91 0
+ 368 001c 2046     		mov	r0, r4
+ 369 001e FFF7FEFF 		bl	Flash_ReadFromADDR
+ 370              	.LVL50:
+ 371 0022 B0F1FF3F 		cmp	r0, #-1
+ 372 0026 09D0     		beq	.L35
+  92:Bsp/periph_flash.c ****       {
+  93:Bsp/periph_flash.c ****         status=FLASH_EraseSector(FLASH_GetFlashSector(addrx), VoltageRange_3);
+ 373              		.loc 1 93 0
+ 374 0028 2046     		mov	r0, r4
+ 375 002a FFF7FEFF 		bl	FLASH_GetFlashSector
+ 376              	.LVL51:
+ 377 002e 0221     		movs	r1, #2
+ 378 0030 FFF7FEFF 		bl	FLASH_EraseSector
+ 379              	.LVL52:
+ 380 0034 0646     		mov	r6, r0
+ 381              	.LVL53:
+  94:Bsp/periph_flash.c **** 
+  95:Bsp/periph_flash.c ****         if(status!=FLASH_COMPLETE)break;            
+ 382              		.loc 1 95 0
+ 383 0036 0928     		cmp	r0, #9
+ 384 0038 01D0     		beq	.L33
+ 385 003a 02E0     		b	.L34
+ 386              	.LVL54:
+ 387              	.L35:
+  96:Bsp/periph_flash.c ****       }
+  97:Bsp/periph_flash.c ****       else addrx += SIZE;
+ 388              		.loc 1 97 0
+ 389 003c 0434     		adds	r4, r4, #4
+ 390              	.LVL55:
+ 391              	.L33:
+  89:Bsp/periph_flash.c ****     {
+ 392              		.loc 1 89 0
+ 393 003e AC42     		cmp	r4, r5
+ 394 0040 ECD3     		bcc	.L37
+ 395              	.LVL56:
+ 396              	.L34:
+  98:Bsp/periph_flash.c ****     }
+  99:Bsp/periph_flash.c ****   }
+ 100:Bsp/periph_flash.c **** 
+ 101:Bsp/periph_flash.c **** 	FLASH_Lock();                                  
+ 397              		.loc 1 101 0
+ 398 0042 FFF7FEFF 		bl	FLASH_Lock
+ 399              	.LVL57:
+ 102:Bsp/periph_flash.c **** 
+ 103:Bsp/periph_flash.c **** 	return status;
+ 104:Bsp/periph_flash.c **** }
+ 400              		.loc 1 104 0
+ 401 0046 3046     		mov	r0, r6
+ 402 0048 70BD     		pop	{r4, r5, r6, pc}
+ 403              	.LVL58:
+ 404              	.L40:
+ 405 004a 00BF     		.align	2
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 10
+
+
+ 406              	.L39:
+ 407 004c FFFFFE1F 		.word	536805375
+ 408              		.cfi_endproc
+ 409              	.LFE127:
+ 411              		.text
+ 412              	.Letext0:
+ 413              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 414              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 415              		.file 4 "USER/stm32f4xx.h"
+ 416              		.file 5 "FWLIB/inc/stm32f4xx_flash.h"
+ 417              		.file 6 "F4_CORE/core_cm4.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc0iGdGB.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 periph_flash.c
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:22     .text.Flash_ReadFromADDR:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:27     .text.Flash_ReadFromADDR:00000000 Flash_ReadFromADDR
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:45     .text.FLASH_ReadBuff:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:50     .text.FLASH_ReadBuff:00000000 FLASH_ReadBuff
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:96     .text.FLASH_GetFlashSector:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:101    .text.FLASH_GetFlashSector:00000000 FLASH_GetFlashSector
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:186    .text.FLASH_GetFlashSector:00000058 $d
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:191    .text.FLASH_Write:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:196    .text.FLASH_Write:00000000 FLASH_Write
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:323    .text.FLASH_Write:0000008c $d
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:328    .text.FLASH_ERASE_PAGE:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:333    .text.FLASH_ERASE_PAGE:00000000 FLASH_ERASE_PAGE
+C:\Users\why\AppData\Local\Temp\cc0iGdGB.s:407    .text.FLASH_ERASE_PAGE:0000004c $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+FLASH_Unlock
+FLASH_DataCacheCmd
+FLASH_EraseSector
+FLASH_ProgramWord
+FLASH_Lock

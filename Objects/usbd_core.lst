@@ -1,0 +1,1365 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"usbd_core.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.USBD_RunTestMode,"ax",%progbits
+  22              		.align	2
+  23              		.thumb
+  24              		.thumb_func
+  26              	USBD_RunTestMode:
+  27              	.LFB129:
+  28              		.file 1 "USB/core/usbd_core.c"
+   1:USB/core/usbd_core.c **** /**
+   2:USB/core/usbd_core.c ****   ******************************************************************************
+   3:USB/core/usbd_core.c ****   * @file    usbd_core.c
+   4:USB/core/usbd_core.c ****   * @author  MCD Application Team
+   5:USB/core/usbd_core.c ****   * @version V1.1.0
+   6:USB/core/usbd_core.c ****   * @date    19-March-2012
+   7:USB/core/usbd_core.c ****   * @brief   This file provides all the USBD core functions.
+   8:USB/core/usbd_core.c ****   ******************************************************************************
+   9:USB/core/usbd_core.c ****   * @attention
+  10:USB/core/usbd_core.c ****   *
+  11:USB/core/usbd_core.c ****   * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  12:USB/core/usbd_core.c ****   *
+  13:USB/core/usbd_core.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  14:USB/core/usbd_core.c ****   * You may not use this file except in compliance with the License.
+  15:USB/core/usbd_core.c ****   * You may obtain a copy of the License at:
+  16:USB/core/usbd_core.c ****   *
+  17:USB/core/usbd_core.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  18:USB/core/usbd_core.c ****   *
+  19:USB/core/usbd_core.c ****   * Unless required by applicable law or agreed to in writing, software 
+  20:USB/core/usbd_core.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  21:USB/core/usbd_core.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  22:USB/core/usbd_core.c ****   * See the License for the specific language governing permissions and
+  23:USB/core/usbd_core.c ****   * limitations under the License.
+  24:USB/core/usbd_core.c ****   *
+  25:USB/core/usbd_core.c ****   ******************************************************************************
+  26:USB/core/usbd_core.c ****   */ 
+  27:USB/core/usbd_core.c **** 
+  28:USB/core/usbd_core.c **** /* Includes ------------------------------------------------------------------*/
+  29:USB/core/usbd_core.c **** #include "usbd_core.h"
+  30:USB/core/usbd_core.c **** #include "usbd_req.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 2
+
+
+  31:USB/core/usbd_core.c **** #include "usbd_ioreq.h"
+  32:USB/core/usbd_core.c **** #include "usb_dcd_int.h"
+  33:USB/core/usbd_core.c **** #include "usb_bsp.h"
+  34:USB/core/usbd_core.c **** 
+  35:USB/core/usbd_core.c **** /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+  36:USB/core/usbd_core.c **** * @{
+  37:USB/core/usbd_core.c **** */
+  38:USB/core/usbd_core.c **** 
+  39:USB/core/usbd_core.c **** 
+  40:USB/core/usbd_core.c **** /** @defgroup USBD_CORE 
+  41:USB/core/usbd_core.c **** * @brief usbd core module
+  42:USB/core/usbd_core.c **** * @{
+  43:USB/core/usbd_core.c **** */ 
+  44:USB/core/usbd_core.c **** 
+  45:USB/core/usbd_core.c **** /** @defgroup USBD_CORE_Private_TypesDefinitions
+  46:USB/core/usbd_core.c **** * @{
+  47:USB/core/usbd_core.c **** */ 
+  48:USB/core/usbd_core.c **** /**
+  49:USB/core/usbd_core.c **** * @}
+  50:USB/core/usbd_core.c **** */ 
+  51:USB/core/usbd_core.c **** 
+  52:USB/core/usbd_core.c **** 
+  53:USB/core/usbd_core.c **** /** @defgroup USBD_CORE_Private_Defines
+  54:USB/core/usbd_core.c **** * @{
+  55:USB/core/usbd_core.c **** */ 
+  56:USB/core/usbd_core.c **** 
+  57:USB/core/usbd_core.c **** /**
+  58:USB/core/usbd_core.c **** * @}
+  59:USB/core/usbd_core.c **** */ 
+  60:USB/core/usbd_core.c **** 
+  61:USB/core/usbd_core.c **** 
+  62:USB/core/usbd_core.c **** /** @defgroup USBD_CORE_Private_Macros
+  63:USB/core/usbd_core.c **** * @{
+  64:USB/core/usbd_core.c **** */ 
+  65:USB/core/usbd_core.c **** /**
+  66:USB/core/usbd_core.c **** * @}
+  67:USB/core/usbd_core.c **** */ 
+  68:USB/core/usbd_core.c **** 
+  69:USB/core/usbd_core.c **** 
+  70:USB/core/usbd_core.c **** 
+  71:USB/core/usbd_core.c **** 
+  72:USB/core/usbd_core.c **** /** @defgroup USBD_CORE_Private_FunctionPrototypes
+  73:USB/core/usbd_core.c **** * @{
+  74:USB/core/usbd_core.c **** */ 
+  75:USB/core/usbd_core.c **** static uint8_t USBD_SetupStage(USB_OTG_CORE_HANDLE *pdev);
+  76:USB/core/usbd_core.c **** static uint8_t USBD_DataOutStage(USB_OTG_CORE_HANDLE *pdev , uint8_t epnum);
+  77:USB/core/usbd_core.c **** static uint8_t USBD_DataInStage(USB_OTG_CORE_HANDLE *pdev , uint8_t epnum);
+  78:USB/core/usbd_core.c **** static uint8_t USBD_SOF(USB_OTG_CORE_HANDLE  *pdev);
+  79:USB/core/usbd_core.c **** static uint8_t USBD_Reset(USB_OTG_CORE_HANDLE  *pdev);
+  80:USB/core/usbd_core.c **** static uint8_t USBD_Suspend(USB_OTG_CORE_HANDLE  *pdev);
+  81:USB/core/usbd_core.c **** static uint8_t USBD_Resume(USB_OTG_CORE_HANDLE  *pdev);
+  82:USB/core/usbd_core.c **** #ifdef VBUS_SENSING_ENABLED
+  83:USB/core/usbd_core.c **** static uint8_t USBD_DevConnected(USB_OTG_CORE_HANDLE  *pdev);
+  84:USB/core/usbd_core.c **** static uint8_t USBD_DevDisconnected(USB_OTG_CORE_HANDLE  *pdev);
+  85:USB/core/usbd_core.c **** #endif
+  86:USB/core/usbd_core.c **** static uint8_t USBD_IsoINIncomplete(USB_OTG_CORE_HANDLE  *pdev);
+  87:USB/core/usbd_core.c **** static uint8_t USBD_IsoOUTIncomplete(USB_OTG_CORE_HANDLE  *pdev);
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 3
+
+
+  88:USB/core/usbd_core.c **** static uint8_t  USBD_RunTestMode (USB_OTG_CORE_HANDLE  *pdev) ;
+  89:USB/core/usbd_core.c **** /**
+  90:USB/core/usbd_core.c **** * @}
+  91:USB/core/usbd_core.c **** */ 
+  92:USB/core/usbd_core.c **** 
+  93:USB/core/usbd_core.c **** /** @defgroup USBD_CORE_Private_Variables
+  94:USB/core/usbd_core.c **** * @{
+  95:USB/core/usbd_core.c **** */ 
+  96:USB/core/usbd_core.c **** 
+  97:USB/core/usbd_core.c **** __IO USB_OTG_DCTL_TypeDef SET_TEST_MODE;
+  98:USB/core/usbd_core.c **** 
+  99:USB/core/usbd_core.c **** USBD_DCD_INT_cb_TypeDef USBD_DCD_INT_cb = 
+ 100:USB/core/usbd_core.c **** {
+ 101:USB/core/usbd_core.c ****   USBD_DataOutStage,
+ 102:USB/core/usbd_core.c ****   USBD_DataInStage,
+ 103:USB/core/usbd_core.c ****   USBD_SetupStage,
+ 104:USB/core/usbd_core.c ****   USBD_SOF,
+ 105:USB/core/usbd_core.c ****   USBD_Reset,
+ 106:USB/core/usbd_core.c ****   USBD_Suspend,
+ 107:USB/core/usbd_core.c ****   USBD_Resume,
+ 108:USB/core/usbd_core.c ****   USBD_IsoINIncomplete,
+ 109:USB/core/usbd_core.c ****   USBD_IsoOUTIncomplete,
+ 110:USB/core/usbd_core.c **** #ifdef VBUS_SENSING_ENABLED
+ 111:USB/core/usbd_core.c **** USBD_DevConnected, 
+ 112:USB/core/usbd_core.c **** USBD_DevDisconnected,    
+ 113:USB/core/usbd_core.c **** #endif  
+ 114:USB/core/usbd_core.c **** };
+ 115:USB/core/usbd_core.c **** 
+ 116:USB/core/usbd_core.c **** USBD_DCD_INT_cb_TypeDef  *USBD_DCD_INT_fops = &USBD_DCD_INT_cb;
+ 117:USB/core/usbd_core.c **** /**
+ 118:USB/core/usbd_core.c **** * @}
+ 119:USB/core/usbd_core.c **** */ 
+ 120:USB/core/usbd_core.c **** 
+ 121:USB/core/usbd_core.c **** /** @defgroup USBD_CORE_Private_Functions
+ 122:USB/core/usbd_core.c **** * @{
+ 123:USB/core/usbd_core.c **** */ 
+ 124:USB/core/usbd_core.c **** 
+ 125:USB/core/usbd_core.c **** /**
+ 126:USB/core/usbd_core.c **** * @brief  USBD_Init
+ 127:USB/core/usbd_core.c **** *         Initailizes the device stack and load the class driver
+ 128:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 129:USB/core/usbd_core.c **** * @param  core_address: USB OTG core ID
+ 130:USB/core/usbd_core.c **** * @param  class_cb: Class callback structure address
+ 131:USB/core/usbd_core.c **** * @param  usr_cb: User callback structure address
+ 132:USB/core/usbd_core.c **** * @retval None
+ 133:USB/core/usbd_core.c **** */
+ 134:USB/core/usbd_core.c **** void USBD_Init(USB_OTG_CORE_HANDLE *pdev,
+ 135:USB/core/usbd_core.c ****                USB_OTG_CORE_ID_TypeDef coreID,
+ 136:USB/core/usbd_core.c ****                USBD_DEVICE *pDevice,                  
+ 137:USB/core/usbd_core.c ****                USBD_Class_cb_TypeDef *class_cb, 
+ 138:USB/core/usbd_core.c ****                USBD_Usr_cb_TypeDef *usr_cb)
+ 139:USB/core/usbd_core.c **** {
+ 140:USB/core/usbd_core.c ****   /* Hardware Init */
+ 141:USB/core/usbd_core.c ****   USB_OTG_BSP_Init(pdev);  
+ 142:USB/core/usbd_core.c ****   
+ 143:USB/core/usbd_core.c ****   USBD_DeInit(pdev);
+ 144:USB/core/usbd_core.c ****   
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 4
+
+
+ 145:USB/core/usbd_core.c ****   /*Register class and user callbacks */
+ 146:USB/core/usbd_core.c ****   pdev->dev.class_cb = class_cb;
+ 147:USB/core/usbd_core.c ****   pdev->dev.usr_cb = usr_cb;  
+ 148:USB/core/usbd_core.c ****   pdev->dev.usr_device = pDevice;    
+ 149:USB/core/usbd_core.c ****   
+ 150:USB/core/usbd_core.c ****   /* set USB OTG core params */
+ 151:USB/core/usbd_core.c ****   DCD_Init(pdev , coreID);
+ 152:USB/core/usbd_core.c ****   
+ 153:USB/core/usbd_core.c ****   /* Upon Init call usr callback */
+ 154:USB/core/usbd_core.c ****   pdev->dev.usr_cb->Init();
+ 155:USB/core/usbd_core.c ****   
+ 156:USB/core/usbd_core.c ****   /* Enable Interrupts */
+ 157:USB/core/usbd_core.c ****   USB_OTG_BSP_EnableInterrupt(pdev);
+ 158:USB/core/usbd_core.c **** }
+ 159:USB/core/usbd_core.c **** 
+ 160:USB/core/usbd_core.c **** /**
+ 161:USB/core/usbd_core.c **** * @brief  USBD_DeInit 
+ 162:USB/core/usbd_core.c **** *         Re-Initialize th device library
+ 163:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 164:USB/core/usbd_core.c **** * @retval status: status
+ 165:USB/core/usbd_core.c **** */
+ 166:USB/core/usbd_core.c **** USBD_Status USBD_DeInit(USB_OTG_CORE_HANDLE *pdev)
+ 167:USB/core/usbd_core.c **** {
+ 168:USB/core/usbd_core.c ****   /* Software Init */
+ 169:USB/core/usbd_core.c ****   
+ 170:USB/core/usbd_core.c ****   return USBD_OK;
+ 171:USB/core/usbd_core.c **** }
+ 172:USB/core/usbd_core.c **** 
+ 173:USB/core/usbd_core.c **** /**
+ 174:USB/core/usbd_core.c **** * @brief  USBD_SetupStage 
+ 175:USB/core/usbd_core.c **** *         Handle the setup stage
+ 176:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 177:USB/core/usbd_core.c **** * @retval status
+ 178:USB/core/usbd_core.c **** */
+ 179:USB/core/usbd_core.c **** static uint8_t USBD_SetupStage(USB_OTG_CORE_HANDLE *pdev)
+ 180:USB/core/usbd_core.c **** {
+ 181:USB/core/usbd_core.c ****   USB_SETUP_REQ req;
+ 182:USB/core/usbd_core.c ****   
+ 183:USB/core/usbd_core.c ****   USBD_ParseSetupRequest(pdev , &req);
+ 184:USB/core/usbd_core.c ****   
+ 185:USB/core/usbd_core.c ****   switch (req.bmRequest & 0x1F) 
+ 186:USB/core/usbd_core.c ****   {
+ 187:USB/core/usbd_core.c ****   case USB_REQ_RECIPIENT_DEVICE:   
+ 188:USB/core/usbd_core.c ****     USBD_StdDevReq (pdev, &req);
+ 189:USB/core/usbd_core.c ****     break;
+ 190:USB/core/usbd_core.c ****     
+ 191:USB/core/usbd_core.c ****   case USB_REQ_RECIPIENT_INTERFACE:     
+ 192:USB/core/usbd_core.c ****     USBD_StdItfReq(pdev, &req);
+ 193:USB/core/usbd_core.c ****     break;
+ 194:USB/core/usbd_core.c ****     
+ 195:USB/core/usbd_core.c ****   case USB_REQ_RECIPIENT_ENDPOINT:        
+ 196:USB/core/usbd_core.c ****     USBD_StdEPReq(pdev, &req);   
+ 197:USB/core/usbd_core.c ****     break;
+ 198:USB/core/usbd_core.c ****     
+ 199:USB/core/usbd_core.c ****   default:           
+ 200:USB/core/usbd_core.c ****     DCD_EP_Stall(pdev , req.bmRequest & 0x80);
+ 201:USB/core/usbd_core.c ****     break;
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 5
+
+
+ 202:USB/core/usbd_core.c ****   }  
+ 203:USB/core/usbd_core.c ****   return USBD_OK;
+ 204:USB/core/usbd_core.c **** }
+ 205:USB/core/usbd_core.c **** 
+ 206:USB/core/usbd_core.c **** /**
+ 207:USB/core/usbd_core.c **** * @brief  USBD_DataOutStage 
+ 208:USB/core/usbd_core.c **** *         Handle data out stage
+ 209:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 210:USB/core/usbd_core.c **** * @param  epnum: endpoint index
+ 211:USB/core/usbd_core.c **** * @retval status
+ 212:USB/core/usbd_core.c **** */
+ 213:USB/core/usbd_core.c **** static uint8_t USBD_DataOutStage(USB_OTG_CORE_HANDLE *pdev , uint8_t epnum)
+ 214:USB/core/usbd_core.c **** {
+ 215:USB/core/usbd_core.c ****   USB_OTG_EP *ep;
+ 216:USB/core/usbd_core.c ****   
+ 217:USB/core/usbd_core.c ****   if(epnum == 0) 
+ 218:USB/core/usbd_core.c ****   {
+ 219:USB/core/usbd_core.c ****     ep = &pdev->dev.out_ep[0];
+ 220:USB/core/usbd_core.c ****     if ( pdev->dev.device_state == USB_OTG_EP0_DATA_OUT)
+ 221:USB/core/usbd_core.c ****     {
+ 222:USB/core/usbd_core.c ****       if(ep->rem_data_len > ep->maxpacket)
+ 223:USB/core/usbd_core.c ****       {
+ 224:USB/core/usbd_core.c ****         ep->rem_data_len -=  ep->maxpacket;
+ 225:USB/core/usbd_core.c ****         
+ 226:USB/core/usbd_core.c ****         if(pdev->cfg.dma_enable == 1)
+ 227:USB/core/usbd_core.c ****         {
+ 228:USB/core/usbd_core.c ****           /* in slave mode this, is handled by the RxSTSQLvl ISR */
+ 229:USB/core/usbd_core.c ****           ep->xfer_buff += ep->maxpacket; 
+ 230:USB/core/usbd_core.c ****         }        
+ 231:USB/core/usbd_core.c ****         USBD_CtlContinueRx (pdev, 
+ 232:USB/core/usbd_core.c ****                             ep->xfer_buff,
+ 233:USB/core/usbd_core.c ****                             MIN(ep->rem_data_len ,ep->maxpacket));
+ 234:USB/core/usbd_core.c ****       }
+ 235:USB/core/usbd_core.c ****       else
+ 236:USB/core/usbd_core.c ****       {
+ 237:USB/core/usbd_core.c ****         if((pdev->dev.class_cb->EP0_RxReady != NULL)&&
+ 238:USB/core/usbd_core.c ****            (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 239:USB/core/usbd_core.c ****         {
+ 240:USB/core/usbd_core.c ****           pdev->dev.class_cb->EP0_RxReady(pdev); 
+ 241:USB/core/usbd_core.c ****         }
+ 242:USB/core/usbd_core.c ****         USBD_CtlSendStatus(pdev);
+ 243:USB/core/usbd_core.c ****       }
+ 244:USB/core/usbd_core.c ****     }
+ 245:USB/core/usbd_core.c ****   }
+ 246:USB/core/usbd_core.c ****   else if((pdev->dev.class_cb->DataOut != NULL)&&
+ 247:USB/core/usbd_core.c ****           (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 248:USB/core/usbd_core.c ****   {
+ 249:USB/core/usbd_core.c ****     pdev->dev.class_cb->DataOut(pdev, epnum); 
+ 250:USB/core/usbd_core.c ****   }  
+ 251:USB/core/usbd_core.c ****   return USBD_OK;
+ 252:USB/core/usbd_core.c **** }
+ 253:USB/core/usbd_core.c **** 
+ 254:USB/core/usbd_core.c **** /**
+ 255:USB/core/usbd_core.c **** * @brief  USBD_DataInStage 
+ 256:USB/core/usbd_core.c **** *         Handle data in stage
+ 257:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 258:USB/core/usbd_core.c **** * @param  epnum: endpoint index
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 6
+
+
+ 259:USB/core/usbd_core.c **** * @retval status
+ 260:USB/core/usbd_core.c **** */
+ 261:USB/core/usbd_core.c **** static uint8_t USBD_DataInStage(USB_OTG_CORE_HANDLE *pdev , uint8_t epnum)
+ 262:USB/core/usbd_core.c **** {
+ 263:USB/core/usbd_core.c ****   USB_OTG_EP *ep;
+ 264:USB/core/usbd_core.c ****   
+ 265:USB/core/usbd_core.c ****   if(epnum == 0) 
+ 266:USB/core/usbd_core.c ****   {
+ 267:USB/core/usbd_core.c ****     ep = &pdev->dev.in_ep[0];
+ 268:USB/core/usbd_core.c ****     if ( pdev->dev.device_state == USB_OTG_EP0_DATA_IN)
+ 269:USB/core/usbd_core.c ****     {
+ 270:USB/core/usbd_core.c ****       if(ep->rem_data_len > ep->maxpacket)
+ 271:USB/core/usbd_core.c ****       {
+ 272:USB/core/usbd_core.c ****         ep->rem_data_len -=  ep->maxpacket;
+ 273:USB/core/usbd_core.c ****         if(pdev->cfg.dma_enable == 1)
+ 274:USB/core/usbd_core.c ****         {
+ 275:USB/core/usbd_core.c ****           /* in slave mode this, is handled by the TxFifoEmpty ISR */
+ 276:USB/core/usbd_core.c ****           ep->xfer_buff += ep->maxpacket;
+ 277:USB/core/usbd_core.c ****         }
+ 278:USB/core/usbd_core.c ****         USBD_CtlContinueSendData (pdev, 
+ 279:USB/core/usbd_core.c ****                                   ep->xfer_buff, 
+ 280:USB/core/usbd_core.c ****                                   ep->rem_data_len);
+ 281:USB/core/usbd_core.c ****       }
+ 282:USB/core/usbd_core.c ****       else
+ 283:USB/core/usbd_core.c ****       { /* last packet is MPS multiple, so send ZLP packet */
+ 284:USB/core/usbd_core.c ****         if((ep->total_data_len % ep->maxpacket == 0) &&
+ 285:USB/core/usbd_core.c ****            (ep->total_data_len >= ep->maxpacket) &&
+ 286:USB/core/usbd_core.c ****              (ep->total_data_len < ep->ctl_data_len ))
+ 287:USB/core/usbd_core.c ****         {
+ 288:USB/core/usbd_core.c ****           
+ 289:USB/core/usbd_core.c ****           USBD_CtlContinueSendData(pdev , NULL, 0);
+ 290:USB/core/usbd_core.c ****           ep->ctl_data_len = 0;
+ 291:USB/core/usbd_core.c ****         }
+ 292:USB/core/usbd_core.c ****         else
+ 293:USB/core/usbd_core.c ****         {
+ 294:USB/core/usbd_core.c ****           if((pdev->dev.class_cb->EP0_TxSent != NULL)&&
+ 295:USB/core/usbd_core.c ****              (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 296:USB/core/usbd_core.c ****           {
+ 297:USB/core/usbd_core.c ****             pdev->dev.class_cb->EP0_TxSent(pdev); 
+ 298:USB/core/usbd_core.c ****           }          
+ 299:USB/core/usbd_core.c ****           USBD_CtlReceiveStatus(pdev);
+ 300:USB/core/usbd_core.c ****         }
+ 301:USB/core/usbd_core.c ****       }
+ 302:USB/core/usbd_core.c ****     }
+ 303:USB/core/usbd_core.c ****     if (pdev->dev.test_mode == 1)
+ 304:USB/core/usbd_core.c ****     {
+ 305:USB/core/usbd_core.c ****       USBD_RunTestMode(pdev); 
+ 306:USB/core/usbd_core.c ****       pdev->dev.test_mode = 0;
+ 307:USB/core/usbd_core.c ****     }
+ 308:USB/core/usbd_core.c ****   }
+ 309:USB/core/usbd_core.c ****   else if((pdev->dev.class_cb->DataIn != NULL)&& 
+ 310:USB/core/usbd_core.c ****           (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 311:USB/core/usbd_core.c ****   {
+ 312:USB/core/usbd_core.c ****     pdev->dev.class_cb->DataIn(pdev, epnum); 
+ 313:USB/core/usbd_core.c ****   }  
+ 314:USB/core/usbd_core.c ****   return USBD_OK;
+ 315:USB/core/usbd_core.c **** }
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 7
+
+
+ 316:USB/core/usbd_core.c **** 
+ 317:USB/core/usbd_core.c **** 
+ 318:USB/core/usbd_core.c **** 
+ 319:USB/core/usbd_core.c **** 
+ 320:USB/core/usbd_core.c **** /**
+ 321:USB/core/usbd_core.c **** * @brief  USBD_RunTestMode 
+ 322:USB/core/usbd_core.c **** *         Launch test mode process
+ 323:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 324:USB/core/usbd_core.c **** * @retval status
+ 325:USB/core/usbd_core.c **** */
+ 326:USB/core/usbd_core.c **** static uint8_t  USBD_RunTestMode (USB_OTG_CORE_HANDLE  *pdev) 
+ 327:USB/core/usbd_core.c **** {
+  29              		.loc 1 327 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.LVL0:
+ 328:USB/core/usbd_core.c ****   USB_OTG_WRITE_REG32(&pdev->regs.DREGS->DCTL, SET_TEST_MODE.d32);
+  35              		.loc 1 328 0
+  36 0000 0369     		ldr	r3, [r0, #16]
+  37 0002 024A     		ldr	r2, .L2
+  38 0004 1268     		ldr	r2, [r2]
+  39 0006 5A60     		str	r2, [r3, #4]
+ 329:USB/core/usbd_core.c ****   return USBD_OK;  
+ 330:USB/core/usbd_core.c **** }
+  40              		.loc 1 330 0
+  41 0008 0020     		movs	r0, #0
+  42              	.LVL1:
+  43 000a 7047     		bx	lr
+  44              	.L3:
+  45              		.align	2
+  46              	.L2:
+  47 000c 00000000 		.word	SET_TEST_MODE
+  48              		.cfi_endproc
+  49              	.LFE129:
+  51              		.section	.text.USBD_Resume,"ax",%progbits
+  52              		.align	2
+  53              		.thumb
+  54              		.thumb_func
+  56              	USBD_Resume:
+  57              	.LFB131:
+ 331:USB/core/usbd_core.c **** 
+ 332:USB/core/usbd_core.c **** /**
+ 333:USB/core/usbd_core.c **** * @brief  USBD_Reset 
+ 334:USB/core/usbd_core.c **** *         Handle Reset event
+ 335:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 336:USB/core/usbd_core.c **** * @retval status
+ 337:USB/core/usbd_core.c **** */
+ 338:USB/core/usbd_core.c **** 
+ 339:USB/core/usbd_core.c **** static uint8_t USBD_Reset(USB_OTG_CORE_HANDLE  *pdev)
+ 340:USB/core/usbd_core.c **** {
+ 341:USB/core/usbd_core.c ****   /* Open EP0 OUT */
+ 342:USB/core/usbd_core.c ****   DCD_EP_Open(pdev,
+ 343:USB/core/usbd_core.c ****               0x00,
+ 344:USB/core/usbd_core.c ****               USB_OTG_MAX_EP0_SIZE,
+ 345:USB/core/usbd_core.c ****               EP_TYPE_CTRL);
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 8
+
+
+ 346:USB/core/usbd_core.c ****   
+ 347:USB/core/usbd_core.c ****   /* Open EP0 IN */
+ 348:USB/core/usbd_core.c ****   DCD_EP_Open(pdev,
+ 349:USB/core/usbd_core.c ****               0x80,
+ 350:USB/core/usbd_core.c ****               USB_OTG_MAX_EP0_SIZE,
+ 351:USB/core/usbd_core.c ****               EP_TYPE_CTRL);
+ 352:USB/core/usbd_core.c ****   
+ 353:USB/core/usbd_core.c ****   /* Upon Reset call usr call back */
+ 354:USB/core/usbd_core.c ****   pdev->dev.device_status = USB_OTG_DEFAULT;
+ 355:USB/core/usbd_core.c ****   pdev->dev.usr_cb->DeviceReset(pdev->cfg.speed);
+ 356:USB/core/usbd_core.c ****   
+ 357:USB/core/usbd_core.c ****   return USBD_OK;
+ 358:USB/core/usbd_core.c **** }
+ 359:USB/core/usbd_core.c **** 
+ 360:USB/core/usbd_core.c **** /**
+ 361:USB/core/usbd_core.c **** * @brief  USBD_Resume 
+ 362:USB/core/usbd_core.c **** *         Handle Resume event
+ 363:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 364:USB/core/usbd_core.c **** * @retval status
+ 365:USB/core/usbd_core.c **** */
+ 366:USB/core/usbd_core.c **** 
+ 367:USB/core/usbd_core.c **** static uint8_t USBD_Resume(USB_OTG_CORE_HANDLE  *pdev)
+ 368:USB/core/usbd_core.c **** {
+  58              		.loc 1 368 0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              	.LVL2:
+  63 0000 10B5     		push	{r4, lr}
+  64              	.LCFI0:
+  65              		.cfi_def_cfa_offset 8
+  66              		.cfi_offset 4, -8
+  67              		.cfi_offset 14, -4
+  68 0002 0446     		mov	r4, r0
+ 369:USB/core/usbd_core.c ****   /* Upon Resume call usr call back */
+ 370:USB/core/usbd_core.c ****   pdev->dev.usr_cb->DeviceResumed(); 
+  69              		.loc 1 370 0
+  70 0004 D0F8E835 		ldr	r3, [r0, #1512]
+  71 0008 1B69     		ldr	r3, [r3, #16]
+  72 000a 9847     		blx	r3
+  73              	.LVL3:
+ 371:USB/core/usbd_core.c ****   pdev->dev.device_status = pdev->dev.device_old_status;  
+ 372:USB/core/usbd_core.c ****   pdev->dev.device_status = USB_OTG_CONFIGURED;  
+  74              		.loc 1 372 0
+  75 000c 0323     		movs	r3, #3
+  76 000e 84F81231 		strb	r3, [r4, #274]
+ 373:USB/core/usbd_core.c ****   return USBD_OK;
+ 374:USB/core/usbd_core.c **** }
+  77              		.loc 1 374 0
+  78 0012 0020     		movs	r0, #0
+  79 0014 10BD     		pop	{r4, pc}
+  80              		.cfi_endproc
+  81              	.LFE131:
+  83 0016 00BF     		.section	.text.USBD_Suspend,"ax",%progbits
+  84              		.align	2
+  85              		.thumb
+  86              		.thumb_func
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 9
+
+
+  88              	USBD_Suspend:
+  89              	.LFB132:
+ 375:USB/core/usbd_core.c **** 
+ 376:USB/core/usbd_core.c **** 
+ 377:USB/core/usbd_core.c **** /**
+ 378:USB/core/usbd_core.c **** * @brief  USBD_Suspend 
+ 379:USB/core/usbd_core.c **** *         Handle Suspend event
+ 380:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 381:USB/core/usbd_core.c **** * @retval status
+ 382:USB/core/usbd_core.c **** */
+ 383:USB/core/usbd_core.c **** 
+ 384:USB/core/usbd_core.c **** static uint8_t USBD_Suspend(USB_OTG_CORE_HANDLE  *pdev)
+ 385:USB/core/usbd_core.c **** {
+  90              		.loc 1 385 0
+  91              		.cfi_startproc
+  92              		@ args = 0, pretend = 0, frame = 0
+  93              		@ frame_needed = 0, uses_anonymous_args = 0
+  94              	.LVL4:
+  95 0000 08B5     		push	{r3, lr}
+  96              	.LCFI1:
+  97              		.cfi_def_cfa_offset 8
+  98              		.cfi_offset 3, -8
+  99              		.cfi_offset 14, -4
+ 386:USB/core/usbd_core.c ****   pdev->dev.device_old_status = pdev->dev.device_status;
+ 100              		.loc 1 386 0
+ 101 0002 90F81231 		ldrb	r3, [r0, #274]	@ zero_extendqisi2
+ 102 0006 80F81331 		strb	r3, [r0, #275]
+ 387:USB/core/usbd_core.c ****   pdev->dev.device_status  = USB_OTG_SUSPENDED;
+ 103              		.loc 1 387 0
+ 104 000a 0423     		movs	r3, #4
+ 105 000c 80F81231 		strb	r3, [r0, #274]
+ 388:USB/core/usbd_core.c ****   /* Upon Resume call usr call back */
+ 389:USB/core/usbd_core.c ****   pdev->dev.usr_cb->DeviceSuspended(); 
+ 106              		.loc 1 389 0
+ 107 0010 D0F8E835 		ldr	r3, [r0, #1512]
+ 108 0014 DB68     		ldr	r3, [r3, #12]
+ 109 0016 9847     		blx	r3
+ 110              	.LVL5:
+ 390:USB/core/usbd_core.c ****   return USBD_OK;
+ 391:USB/core/usbd_core.c **** }
+ 111              		.loc 1 391 0
+ 112 0018 0020     		movs	r0, #0
+ 113 001a 08BD     		pop	{r3, pc}
+ 114              		.cfi_endproc
+ 115              	.LFE132:
+ 117              		.section	.text.USBD_SOF,"ax",%progbits
+ 118              		.align	2
+ 119              		.thumb
+ 120              		.thumb_func
+ 122              	USBD_SOF:
+ 123              	.LFB133:
+ 392:USB/core/usbd_core.c **** 
+ 393:USB/core/usbd_core.c **** 
+ 394:USB/core/usbd_core.c **** /**
+ 395:USB/core/usbd_core.c **** * @brief  USBD_SOF 
+ 396:USB/core/usbd_core.c **** *         Handle SOF event
+ 397:USB/core/usbd_core.c **** * @param  pdev: device instance
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 10
+
+
+ 398:USB/core/usbd_core.c **** * @retval status
+ 399:USB/core/usbd_core.c **** */
+ 400:USB/core/usbd_core.c **** 
+ 401:USB/core/usbd_core.c **** static uint8_t USBD_SOF(USB_OTG_CORE_HANDLE  *pdev)
+ 402:USB/core/usbd_core.c **** {
+ 124              		.loc 1 402 0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 0
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              	.LVL6:
+ 129 0000 08B5     		push	{r3, lr}
+ 130              	.LCFI2:
+ 131              		.cfi_def_cfa_offset 8
+ 132              		.cfi_offset 3, -8
+ 133              		.cfi_offset 14, -4
+ 403:USB/core/usbd_core.c ****   if(pdev->dev.class_cb->SOF)
+ 134              		.loc 1 403 0
+ 135 0002 D0F8E435 		ldr	r3, [r0, #1508]
+ 136 0006 DB69     		ldr	r3, [r3, #28]
+ 137 0008 03B1     		cbz	r3, .L9
+ 404:USB/core/usbd_core.c ****   {
+ 405:USB/core/usbd_core.c ****     pdev->dev.class_cb->SOF(pdev); 
+ 138              		.loc 1 405 0
+ 139 000a 9847     		blx	r3
+ 140              	.LVL7:
+ 141              	.L9:
+ 406:USB/core/usbd_core.c ****   }
+ 407:USB/core/usbd_core.c ****   return USBD_OK;
+ 408:USB/core/usbd_core.c **** }
+ 142              		.loc 1 408 0
+ 143 000c 0020     		movs	r0, #0
+ 144 000e 08BD     		pop	{r3, pc}
+ 145              		.cfi_endproc
+ 146              	.LFE133:
+ 148              		.section	.text.USBD_IsoINIncomplete,"ax",%progbits
+ 149              		.align	2
+ 150              		.thumb
+ 151              		.thumb_func
+ 153              	USBD_IsoINIncomplete:
+ 154              	.LFB136:
+ 409:USB/core/usbd_core.c **** /**
+ 410:USB/core/usbd_core.c **** * @brief  USBD_SetCfg 
+ 411:USB/core/usbd_core.c **** *        Configure device and start the interface
+ 412:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 413:USB/core/usbd_core.c **** * @param  cfgidx: configuration index
+ 414:USB/core/usbd_core.c **** * @retval status
+ 415:USB/core/usbd_core.c **** */
+ 416:USB/core/usbd_core.c **** 
+ 417:USB/core/usbd_core.c **** USBD_Status USBD_SetCfg(USB_OTG_CORE_HANDLE  *pdev, uint8_t cfgidx)
+ 418:USB/core/usbd_core.c **** {
+ 419:USB/core/usbd_core.c ****   pdev->dev.class_cb->Init(pdev, cfgidx); 
+ 420:USB/core/usbd_core.c ****   
+ 421:USB/core/usbd_core.c ****   /* Upon set config call usr call back */
+ 422:USB/core/usbd_core.c ****   pdev->dev.usr_cb->DeviceConfigured();
+ 423:USB/core/usbd_core.c ****   return USBD_OK; 
+ 424:USB/core/usbd_core.c **** }
+ 425:USB/core/usbd_core.c **** 
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 11
+
+
+ 426:USB/core/usbd_core.c **** /**
+ 427:USB/core/usbd_core.c **** * @brief  USBD_ClrCfg 
+ 428:USB/core/usbd_core.c **** *         Clear current configuration
+ 429:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 430:USB/core/usbd_core.c **** * @param  cfgidx: configuration index
+ 431:USB/core/usbd_core.c **** * @retval status: USBD_Status
+ 432:USB/core/usbd_core.c **** */
+ 433:USB/core/usbd_core.c **** USBD_Status USBD_ClrCfg(USB_OTG_CORE_HANDLE  *pdev, uint8_t cfgidx)
+ 434:USB/core/usbd_core.c **** {
+ 435:USB/core/usbd_core.c ****   pdev->dev.class_cb->DeInit(pdev, cfgidx);   
+ 436:USB/core/usbd_core.c ****   return USBD_OK;
+ 437:USB/core/usbd_core.c **** }
+ 438:USB/core/usbd_core.c **** 
+ 439:USB/core/usbd_core.c **** /**
+ 440:USB/core/usbd_core.c **** * @brief  USBD_IsoINIncomplete 
+ 441:USB/core/usbd_core.c **** *         Handle iso in incomplete event
+ 442:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 443:USB/core/usbd_core.c **** * @retval status
+ 444:USB/core/usbd_core.c **** */
+ 445:USB/core/usbd_core.c **** static uint8_t USBD_IsoINIncomplete(USB_OTG_CORE_HANDLE  *pdev)
+ 446:USB/core/usbd_core.c **** {
+ 155              		.loc 1 446 0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 0
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              	.LVL8:
+ 160 0000 08B5     		push	{r3, lr}
+ 161              	.LCFI3:
+ 162              		.cfi_def_cfa_offset 8
+ 163              		.cfi_offset 3, -8
+ 164              		.cfi_offset 14, -4
+ 447:USB/core/usbd_core.c ****   pdev->dev.class_cb->IsoINIncomplete(pdev);   
+ 165              		.loc 1 447 0
+ 166 0002 D0F8E435 		ldr	r3, [r0, #1508]
+ 167 0006 1B6A     		ldr	r3, [r3, #32]
+ 168 0008 9847     		blx	r3
+ 169              	.LVL9:
+ 448:USB/core/usbd_core.c ****   return USBD_OK;
+ 449:USB/core/usbd_core.c **** }
+ 170              		.loc 1 449 0
+ 171 000a 0020     		movs	r0, #0
+ 172 000c 08BD     		pop	{r3, pc}
+ 173              		.cfi_endproc
+ 174              	.LFE136:
+ 176 000e 00BF     		.section	.text.USBD_IsoOUTIncomplete,"ax",%progbits
+ 177              		.align	2
+ 178              		.thumb
+ 179              		.thumb_func
+ 181              	USBD_IsoOUTIncomplete:
+ 182              	.LFB137:
+ 450:USB/core/usbd_core.c **** 
+ 451:USB/core/usbd_core.c **** /**
+ 452:USB/core/usbd_core.c **** * @brief  USBD_IsoOUTIncomplete 
+ 453:USB/core/usbd_core.c **** *         Handle iso out incomplete event
+ 454:USB/core/usbd_core.c **** * @param  pdev: device instance
+ 455:USB/core/usbd_core.c **** * @retval status
+ 456:USB/core/usbd_core.c **** */
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 12
+
+
+ 457:USB/core/usbd_core.c **** static uint8_t USBD_IsoOUTIncomplete(USB_OTG_CORE_HANDLE  *pdev)
+ 458:USB/core/usbd_core.c **** {
+ 183              		.loc 1 458 0
+ 184              		.cfi_startproc
+ 185              		@ args = 0, pretend = 0, frame = 0
+ 186              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187              	.LVL10:
+ 188 0000 08B5     		push	{r3, lr}
+ 189              	.LCFI4:
+ 190              		.cfi_def_cfa_offset 8
+ 191              		.cfi_offset 3, -8
+ 192              		.cfi_offset 14, -4
+ 459:USB/core/usbd_core.c ****   pdev->dev.class_cb->IsoOUTIncomplete(pdev);   
+ 193              		.loc 1 459 0
+ 194 0002 D0F8E435 		ldr	r3, [r0, #1508]
+ 195 0006 5B6A     		ldr	r3, [r3, #36]
+ 196 0008 9847     		blx	r3
+ 197              	.LVL11:
+ 460:USB/core/usbd_core.c ****   return USBD_OK;
+ 461:USB/core/usbd_core.c **** }
+ 198              		.loc 1 461 0
+ 199 000a 0020     		movs	r0, #0
+ 200 000c 08BD     		pop	{r3, pc}
+ 201              		.cfi_endproc
+ 202              	.LFE137:
+ 204 000e 00BF     		.section	.text.USBD_Reset,"ax",%progbits
+ 205              		.align	2
+ 206              		.thumb
+ 207              		.thumb_func
+ 209              	USBD_Reset:
+ 210              	.LFB130:
+ 340:USB/core/usbd_core.c ****   /* Open EP0 OUT */
+ 211              		.loc 1 340 0
+ 212              		.cfi_startproc
+ 213              		@ args = 0, pretend = 0, frame = 0
+ 214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 215              	.LVL12:
+ 216 0000 10B5     		push	{r4, lr}
+ 217              	.LCFI5:
+ 218              		.cfi_def_cfa_offset 8
+ 219              		.cfi_offset 4, -8
+ 220              		.cfi_offset 14, -4
+ 221 0002 0446     		mov	r4, r0
+ 342:USB/core/usbd_core.c ****               0x00,
+ 222              		.loc 1 342 0
+ 223 0004 0023     		movs	r3, #0
+ 224 0006 4022     		movs	r2, #64
+ 225 0008 1946     		mov	r1, r3
+ 226 000a FFF7FEFF 		bl	DCD_EP_Open
+ 227              	.LVL13:
+ 348:USB/core/usbd_core.c ****               0x80,
+ 228              		.loc 1 348 0
+ 229 000e 0023     		movs	r3, #0
+ 230 0010 4022     		movs	r2, #64
+ 231 0012 8021     		movs	r1, #128
+ 232 0014 2046     		mov	r0, r4
+ 233 0016 FFF7FEFF 		bl	DCD_EP_Open
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 13
+
+
+ 234              	.LVL14:
+ 354:USB/core/usbd_core.c ****   pdev->dev.usr_cb->DeviceReset(pdev->cfg.speed);
+ 235              		.loc 1 354 0
+ 236 001a 0123     		movs	r3, #1
+ 237 001c 84F81231 		strb	r3, [r4, #274]
+ 355:USB/core/usbd_core.c ****   
+ 238              		.loc 1 355 0
+ 239 0020 D4F8E835 		ldr	r3, [r4, #1512]
+ 240 0024 5B68     		ldr	r3, [r3, #4]
+ 241 0026 A078     		ldrb	r0, [r4, #2]	@ zero_extendqisi2
+ 242 0028 9847     		blx	r3
+ 243              	.LVL15:
+ 358:USB/core/usbd_core.c **** 
+ 244              		.loc 1 358 0
+ 245 002a 0020     		movs	r0, #0
+ 246 002c 10BD     		pop	{r4, pc}
+ 247              		.cfi_endproc
+ 248              	.LFE130:
+ 250 002e 00BF     		.section	.text.USBD_SetupStage,"ax",%progbits
+ 251              		.align	2
+ 252              		.thumb
+ 253              		.thumb_func
+ 255              	USBD_SetupStage:
+ 256              	.LFB126:
+ 180:USB/core/usbd_core.c ****   USB_SETUP_REQ req;
+ 257              		.loc 1 180 0
+ 258              		.cfi_startproc
+ 259              		@ args = 0, pretend = 0, frame = 8
+ 260              		@ frame_needed = 0, uses_anonymous_args = 0
+ 261              	.LVL16:
+ 262 0000 10B5     		push	{r4, lr}
+ 263              	.LCFI6:
+ 264              		.cfi_def_cfa_offset 8
+ 265              		.cfi_offset 4, -8
+ 266              		.cfi_offset 14, -4
+ 267 0002 82B0     		sub	sp, sp, #8
+ 268              	.LCFI7:
+ 269              		.cfi_def_cfa_offset 16
+ 270 0004 0446     		mov	r4, r0
+ 183:USB/core/usbd_core.c ****   
+ 271              		.loc 1 183 0
+ 272 0006 6946     		mov	r1, sp
+ 273 0008 FFF7FEFF 		bl	USBD_ParseSetupRequest
+ 274              	.LVL17:
+ 185:USB/core/usbd_core.c ****   {
+ 275              		.loc 1 185 0
+ 276 000c 9DF80010 		ldrb	r1, [sp]	@ zero_extendqisi2
+ 277 0010 01F01F03 		and	r3, r1, #31
+ 278 0014 012B     		cmp	r3, #1
+ 279 0016 08D0     		beq	.L19
+ 280 0018 13B1     		cbz	r3, .L20
+ 281 001a 022B     		cmp	r3, #2
+ 282 001c 0AD0     		beq	.L21
+ 283 001e 0EE0     		b	.L23
+ 284              	.L20:
+ 188:USB/core/usbd_core.c ****     break;
+ 285              		.loc 1 188 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 14
+
+
+ 286 0020 6946     		mov	r1, sp
+ 287 0022 2046     		mov	r0, r4
+ 288 0024 FFF7FEFF 		bl	USBD_StdDevReq
+ 289              	.LVL18:
+ 189:USB/core/usbd_core.c ****     
+ 290              		.loc 1 189 0
+ 291 0028 0EE0     		b	.L22
+ 292              	.L19:
+ 192:USB/core/usbd_core.c ****     break;
+ 293              		.loc 1 192 0
+ 294 002a 6946     		mov	r1, sp
+ 295 002c 2046     		mov	r0, r4
+ 296 002e FFF7FEFF 		bl	USBD_StdItfReq
+ 297              	.LVL19:
+ 193:USB/core/usbd_core.c ****     
+ 298              		.loc 1 193 0
+ 299 0032 09E0     		b	.L22
+ 300              	.L21:
+ 196:USB/core/usbd_core.c ****     break;
+ 301              		.loc 1 196 0
+ 302 0034 6946     		mov	r1, sp
+ 303 0036 2046     		mov	r0, r4
+ 304 0038 FFF7FEFF 		bl	USBD_StdEPReq
+ 305              	.LVL20:
+ 197:USB/core/usbd_core.c ****     
+ 306              		.loc 1 197 0
+ 307 003c 04E0     		b	.L22
+ 308              	.L23:
+ 200:USB/core/usbd_core.c ****     break;
+ 309              		.loc 1 200 0
+ 310 003e 01F08001 		and	r1, r1, #128
+ 311 0042 2046     		mov	r0, r4
+ 312 0044 FFF7FEFF 		bl	DCD_EP_Stall
+ 313              	.LVL21:
+ 314              	.L22:
+ 204:USB/core/usbd_core.c **** 
+ 315              		.loc 1 204 0
+ 316 0048 0020     		movs	r0, #0
+ 317 004a 02B0     		add	sp, sp, #8
+ 318              	.LCFI8:
+ 319              		.cfi_def_cfa_offset 8
+ 320              		@ sp needed
+ 321 004c 10BD     		pop	{r4, pc}
+ 322              		.cfi_endproc
+ 323              	.LFE126:
+ 325 004e 00BF     		.section	.text.USBD_DataInStage,"ax",%progbits
+ 326              		.align	2
+ 327              		.thumb
+ 328              		.thumb_func
+ 330              	USBD_DataInStage:
+ 331              	.LFB128:
+ 262:USB/core/usbd_core.c ****   USB_OTG_EP *ep;
+ 332              		.loc 1 262 0
+ 333              		.cfi_startproc
+ 334              		@ args = 0, pretend = 0, frame = 0
+ 335              		@ frame_needed = 0, uses_anonymous_args = 0
+ 336              	.LVL22:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 15
+
+
+ 337 0000 10B5     		push	{r4, lr}
+ 338              	.LCFI9:
+ 339              		.cfi_def_cfa_offset 8
+ 340              		.cfi_offset 4, -8
+ 341              		.cfi_offset 14, -4
+ 342 0002 0446     		mov	r4, r0
+ 265:USB/core/usbd_core.c ****   {
+ 343              		.loc 1 265 0
+ 344 0004 0029     		cmp	r1, #0
+ 345 0006 47D1     		bne	.L26
+ 346              	.LVL23:
+ 268:USB/core/usbd_core.c ****     {
+ 347              		.loc 1 268 0
+ 348 0008 90F81131 		ldrb	r3, [r0, #273]	@ zero_extendqisi2
+ 349 000c 022B     		cmp	r3, #2
+ 350 000e 38D1     		bne	.L27
+ 270:USB/core/usbd_core.c ****       {
+ 351              		.loc 1 270 0
+ 352 0010 D0F83821 		ldr	r2, [r0, #312]
+ 353 0014 D0F82431 		ldr	r3, [r0, #292]
+ 354 0018 9A42     		cmp	r2, r3
+ 355 001a 11D9     		bls	.L28
+ 272:USB/core/usbd_core.c ****         if(pdev->cfg.dma_enable == 1)
+ 356              		.loc 1 272 0
+ 357 001c D21A     		subs	r2, r2, r3
+ 358 001e C0F83821 		str	r2, [r0, #312]
+ 273:USB/core/usbd_core.c ****         {
+ 359              		.loc 1 273 0
+ 360 0022 C178     		ldrb	r1, [r0, #3]	@ zero_extendqisi2
+ 361              	.LVL24:
+ 362 0024 0129     		cmp	r1, #1
+ 363 0026 04D1     		bne	.L29
+ 276:USB/core/usbd_core.c ****         }
+ 364              		.loc 1 276 0
+ 365 0028 D0F82811 		ldr	r1, [r0, #296]
+ 366 002c 0B44     		add	r3, r3, r1
+ 367 002e C0F82831 		str	r3, [r0, #296]
+ 368              	.L29:
+ 278:USB/core/usbd_core.c ****                                   ep->xfer_buff, 
+ 369              		.loc 1 278 0
+ 370 0032 92B2     		uxth	r2, r2
+ 371 0034 D4F82811 		ldr	r1, [r4, #296]
+ 372 0038 2046     		mov	r0, r4
+ 373              	.LVL25:
+ 374 003a FFF7FEFF 		bl	USBD_CtlContinueSendData
+ 375              	.LVL26:
+ 376 003e 20E0     		b	.L27
+ 377              	.LVL27:
+ 378              	.L28:
+ 284:USB/core/usbd_core.c ****            (ep->total_data_len >= ep->maxpacket) &&
+ 379              		.loc 1 284 0
+ 380 0040 D0F83C11 		ldr	r1, [r0, #316]
+ 381              	.LVL28:
+ 382 0044 B1FBF3F2 		udiv	r2, r1, r3
+ 383 0048 03FB1212 		mls	r2, r3, r2, r1
+ 384 004c 62B9     		cbnz	r2, .L30
+ 284:USB/core/usbd_core.c ****            (ep->total_data_len >= ep->maxpacket) &&
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 16
+
+
+ 385              		.loc 1 284 0 is_stmt 0 discriminator 1
+ 386 004e 8B42     		cmp	r3, r1
+ 387 0050 0AD8     		bhi	.L30
+ 286:USB/core/usbd_core.c ****         {
+ 388              		.loc 1 286 0 is_stmt 1
+ 389 0052 D0F84031 		ldr	r3, [r0, #320]
+ 285:USB/core/usbd_core.c ****              (ep->total_data_len < ep->ctl_data_len ))
+ 390              		.loc 1 285 0
+ 391 0056 9942     		cmp	r1, r3
+ 392 0058 06D2     		bcs	.L30
+ 289:USB/core/usbd_core.c ****           ep->ctl_data_len = 0;
+ 393              		.loc 1 289 0
+ 394 005a 1146     		mov	r1, r2
+ 395 005c FFF7FEFF 		bl	USBD_CtlContinueSendData
+ 396              	.LVL29:
+ 290:USB/core/usbd_core.c ****         }
+ 397              		.loc 1 290 0
+ 398 0060 0023     		movs	r3, #0
+ 399 0062 C4F84031 		str	r3, [r4, #320]
+ 400 0066 0CE0     		b	.L27
+ 401              	.LVL30:
+ 402              	.L30:
+ 294:USB/core/usbd_core.c ****              (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 403              		.loc 1 294 0
+ 404 0068 D4F8E435 		ldr	r3, [r4, #1508]
+ 405 006c DB68     		ldr	r3, [r3, #12]
+ 406 006e 2BB1     		cbz	r3, .L31
+ 295:USB/core/usbd_core.c ****           {
+ 407              		.loc 1 295 0 discriminator 1
+ 408 0070 94F81221 		ldrb	r2, [r4, #274]	@ zero_extendqisi2
+ 294:USB/core/usbd_core.c ****              (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 409              		.loc 1 294 0 discriminator 1
+ 410 0074 032A     		cmp	r2, #3
+ 411 0076 01D1     		bne	.L31
+ 297:USB/core/usbd_core.c ****           }          
+ 412              		.loc 1 297 0
+ 413 0078 2046     		mov	r0, r4
+ 414              	.LVL31:
+ 415 007a 9847     		blx	r3
+ 416              	.LVL32:
+ 417              	.L31:
+ 299:USB/core/usbd_core.c ****         }
+ 418              		.loc 1 299 0
+ 419 007c 2046     		mov	r0, r4
+ 420 007e FFF7FEFF 		bl	USBD_CtlReceiveStatus
+ 421              	.LVL33:
+ 422              	.L27:
+ 303:USB/core/usbd_core.c ****     {
+ 423              		.loc 1 303 0
+ 424 0082 94F81631 		ldrb	r3, [r4, #278]	@ zero_extendqisi2
+ 425 0086 012B     		cmp	r3, #1
+ 426 0088 11D1     		bne	.L32
+ 305:USB/core/usbd_core.c ****       pdev->dev.test_mode = 0;
+ 427              		.loc 1 305 0
+ 428 008a 2046     		mov	r0, r4
+ 429 008c FFF7FEFF 		bl	USBD_RunTestMode
+ 430              	.LVL34:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 17
+
+
+ 306:USB/core/usbd_core.c ****     }
+ 431              		.loc 1 306 0
+ 432 0090 0023     		movs	r3, #0
+ 433 0092 84F81631 		strb	r3, [r4, #278]
+ 434 0096 0AE0     		b	.L32
+ 435              	.LVL35:
+ 436              	.L26:
+ 437 0098 0A46     		mov	r2, r1
+ 309:USB/core/usbd_core.c ****           (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 438              		.loc 1 309 0
+ 439 009a D0F8E435 		ldr	r3, [r0, #1508]
+ 440 009e 5B69     		ldr	r3, [r3, #20]
+ 441 00a0 2BB1     		cbz	r3, .L32
+ 310:USB/core/usbd_core.c ****   {
+ 442              		.loc 1 310 0 discriminator 1
+ 443 00a2 90F81211 		ldrb	r1, [r0, #274]	@ zero_extendqisi2
+ 444              	.LVL36:
+ 309:USB/core/usbd_core.c ****           (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 445              		.loc 1 309 0 discriminator 1
+ 446 00a6 0329     		cmp	r1, #3
+ 447 00a8 01D1     		bne	.L32
+ 312:USB/core/usbd_core.c ****   }  
+ 448              		.loc 1 312 0
+ 449 00aa 1146     		mov	r1, r2
+ 450 00ac 9847     		blx	r3
+ 451              	.LVL37:
+ 452              	.L32:
+ 315:USB/core/usbd_core.c **** 
+ 453              		.loc 1 315 0
+ 454 00ae 0020     		movs	r0, #0
+ 455 00b0 10BD     		pop	{r4, pc}
+ 456              		.cfi_endproc
+ 457              	.LFE128:
+ 459 00b2 00BF     		.section	.text.USBD_DataOutStage,"ax",%progbits
+ 460              		.align	2
+ 461              		.thumb
+ 462              		.thumb_func
+ 464              	USBD_DataOutStage:
+ 465              	.LFB127:
+ 214:USB/core/usbd_core.c ****   USB_OTG_EP *ep;
+ 466              		.loc 1 214 0
+ 467              		.cfi_startproc
+ 468              		@ args = 0, pretend = 0, frame = 0
+ 469              		@ frame_needed = 0, uses_anonymous_args = 0
+ 470              	.LVL38:
+ 471 0000 10B5     		push	{r4, lr}
+ 472              	.LCFI10:
+ 473              		.cfi_def_cfa_offset 8
+ 474              		.cfi_offset 4, -8
+ 475              		.cfi_offset 14, -4
+ 476 0002 0446     		mov	r4, r0
+ 217:USB/core/usbd_core.c ****   {
+ 477              		.loc 1 217 0
+ 478 0004 59BB     		cbnz	r1, .L35
+ 479              	.LVL39:
+ 220:USB/core/usbd_core.c ****     {
+ 480              		.loc 1 220 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 18
+
+
+ 481 0006 90F81131 		ldrb	r3, [r0, #273]	@ zero_extendqisi2
+ 482 000a 032B     		cmp	r3, #3
+ 483 000c 32D1     		bne	.L36
+ 222:USB/core/usbd_core.c ****       {
+ 484              		.loc 1 222 0
+ 485 000e D0F89033 		ldr	r3, [r0, #912]
+ 486 0012 D0F87C23 		ldr	r2, [r0, #892]
+ 487 0016 9342     		cmp	r3, r2
+ 488 0018 14D9     		bls	.L37
+ 224:USB/core/usbd_core.c ****         
+ 489              		.loc 1 224 0
+ 490 001a 9B1A     		subs	r3, r3, r2
+ 491 001c C0F89033 		str	r3, [r0, #912]
+ 226:USB/core/usbd_core.c ****         {
+ 492              		.loc 1 226 0
+ 493 0020 C178     		ldrb	r1, [r0, #3]	@ zero_extendqisi2
+ 494              	.LVL40:
+ 495 0022 0129     		cmp	r1, #1
+ 496 0024 04D1     		bne	.L38
+ 229:USB/core/usbd_core.c ****         }        
+ 497              		.loc 1 229 0
+ 498 0026 D0F88013 		ldr	r1, [r0, #896]
+ 499 002a 1144     		add	r1, r1, r2
+ 500 002c C0F88013 		str	r1, [r0, #896]
+ 501              	.L38:
+ 233:USB/core/usbd_core.c ****       }
+ 502              		.loc 1 233 0
+ 503 0030 9A42     		cmp	r2, r3
+ 504 0032 28BF     		it	cs
+ 505 0034 1A46     		movcs	r2, r3
+ 231:USB/core/usbd_core.c ****                             ep->xfer_buff,
+ 506              		.loc 1 231 0
+ 507 0036 92B2     		uxth	r2, r2
+ 508 0038 D4F88013 		ldr	r1, [r4, #896]
+ 509 003c 2046     		mov	r0, r4
+ 510              	.LVL41:
+ 511 003e FFF7FEFF 		bl	USBD_CtlContinueRx
+ 512              	.LVL42:
+ 513 0042 17E0     		b	.L36
+ 514              	.LVL43:
+ 515              	.L37:
+ 237:USB/core/usbd_core.c ****            (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 516              		.loc 1 237 0
+ 517 0044 D0F8E435 		ldr	r3, [r0, #1508]
+ 518 0048 1B69     		ldr	r3, [r3, #16]
+ 519 004a 23B1     		cbz	r3, .L39
+ 238:USB/core/usbd_core.c ****         {
+ 520              		.loc 1 238 0 discriminator 1
+ 521 004c 90F81221 		ldrb	r2, [r0, #274]	@ zero_extendqisi2
+ 237:USB/core/usbd_core.c ****            (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 522              		.loc 1 237 0 discriminator 1
+ 523 0050 032A     		cmp	r2, #3
+ 524 0052 00D1     		bne	.L39
+ 240:USB/core/usbd_core.c ****         }
+ 525              		.loc 1 240 0
+ 526 0054 9847     		blx	r3
+ 527              	.LVL44:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 19
+
+
+ 528              	.L39:
+ 242:USB/core/usbd_core.c ****       }
+ 529              		.loc 1 242 0
+ 530 0056 2046     		mov	r0, r4
+ 531 0058 FFF7FEFF 		bl	USBD_CtlSendStatus
+ 532              	.LVL45:
+ 533 005c 0AE0     		b	.L36
+ 534              	.LVL46:
+ 535              	.L35:
+ 536 005e 0A46     		mov	r2, r1
+ 246:USB/core/usbd_core.c ****           (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 537              		.loc 1 246 0
+ 538 0060 D0F8E435 		ldr	r3, [r0, #1508]
+ 539 0064 9B69     		ldr	r3, [r3, #24]
+ 540 0066 2BB1     		cbz	r3, .L36
+ 247:USB/core/usbd_core.c ****   {
+ 541              		.loc 1 247 0 discriminator 1
+ 542 0068 90F81211 		ldrb	r1, [r0, #274]	@ zero_extendqisi2
+ 543              	.LVL47:
+ 246:USB/core/usbd_core.c ****           (pdev->dev.device_status == USB_OTG_CONFIGURED))
+ 544              		.loc 1 246 0 discriminator 1
+ 545 006c 0329     		cmp	r1, #3
+ 546 006e 01D1     		bne	.L36
+ 249:USB/core/usbd_core.c ****   }  
+ 547              		.loc 1 249 0
+ 548 0070 1146     		mov	r1, r2
+ 549 0072 9847     		blx	r3
+ 550              	.LVL48:
+ 551              	.L36:
+ 252:USB/core/usbd_core.c **** 
+ 552              		.loc 1 252 0
+ 553 0074 0020     		movs	r0, #0
+ 554 0076 10BD     		pop	{r4, pc}
+ 555              		.cfi_endproc
+ 556              	.LFE127:
+ 558              		.section	.text.USBD_Init,"ax",%progbits
+ 559              		.align	2
+ 560              		.global	USBD_Init
+ 561              		.thumb
+ 562              		.thumb_func
+ 564              	USBD_Init:
+ 565              	.LFB124:
+ 139:USB/core/usbd_core.c ****   /* Hardware Init */
+ 566              		.loc 1 139 0
+ 567              		.cfi_startproc
+ 568              		@ args = 4, pretend = 0, frame = 0
+ 569              		@ frame_needed = 0, uses_anonymous_args = 0
+ 570              	.LVL49:
+ 571 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 572              	.LCFI11:
+ 573              		.cfi_def_cfa_offset 24
+ 574              		.cfi_offset 3, -24
+ 575              		.cfi_offset 4, -20
+ 576              		.cfi_offset 5, -16
+ 577              		.cfi_offset 6, -12
+ 578              		.cfi_offset 7, -8
+ 579              		.cfi_offset 14, -4
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 20
+
+
+ 580 0002 0446     		mov	r4, r0
+ 581 0004 0D46     		mov	r5, r1
+ 582 0006 1646     		mov	r6, r2
+ 583 0008 1F46     		mov	r7, r3
+ 141:USB/core/usbd_core.c ****   
+ 584              		.loc 1 141 0
+ 585 000a FFF7FEFF 		bl	USB_OTG_BSP_Init
+ 586              	.LVL50:
+ 146:USB/core/usbd_core.c ****   pdev->dev.usr_cb = usr_cb;  
+ 587              		.loc 1 146 0
+ 588 000e C4F8E475 		str	r7, [r4, #1508]
+ 147:USB/core/usbd_core.c ****   pdev->dev.usr_device = pDevice;    
+ 589              		.loc 1 147 0
+ 590 0012 069B     		ldr	r3, [sp, #24]
+ 591 0014 C4F8E835 		str	r3, [r4, #1512]
+ 148:USB/core/usbd_core.c ****   
+ 592              		.loc 1 148 0
+ 593 0018 C4F8EC65 		str	r6, [r4, #1516]
+ 151:USB/core/usbd_core.c ****   
+ 594              		.loc 1 151 0
+ 595 001c 2946     		mov	r1, r5
+ 596 001e 2046     		mov	r0, r4
+ 597 0020 FFF7FEFF 		bl	DCD_Init
+ 598              	.LVL51:
+ 154:USB/core/usbd_core.c ****   
+ 599              		.loc 1 154 0
+ 600 0024 D4F8E835 		ldr	r3, [r4, #1512]
+ 601 0028 1B68     		ldr	r3, [r3]
+ 602 002a 9847     		blx	r3
+ 603              	.LVL52:
+ 157:USB/core/usbd_core.c **** }
+ 604              		.loc 1 157 0
+ 605 002c 2046     		mov	r0, r4
+ 606 002e FFF7FEFF 		bl	USB_OTG_BSP_EnableInterrupt
+ 607              	.LVL53:
+ 608 0032 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 609              		.cfi_endproc
+ 610              	.LFE124:
+ 612              		.section	.text.USBD_DeInit,"ax",%progbits
+ 613              		.align	2
+ 614              		.global	USBD_DeInit
+ 615              		.thumb
+ 616              		.thumb_func
+ 618              	USBD_DeInit:
+ 619              	.LFB125:
+ 167:USB/core/usbd_core.c ****   /* Software Init */
+ 620              		.loc 1 167 0
+ 621              		.cfi_startproc
+ 622              		@ args = 0, pretend = 0, frame = 0
+ 623              		@ frame_needed = 0, uses_anonymous_args = 0
+ 624              		@ link register save eliminated.
+ 625              	.LVL54:
+ 171:USB/core/usbd_core.c **** 
+ 626              		.loc 1 171 0
+ 627 0000 0020     		movs	r0, #0
+ 628              	.LVL55:
+ 629 0002 7047     		bx	lr
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 21
+
+
+ 630              		.cfi_endproc
+ 631              	.LFE125:
+ 633              		.section	.text.USBD_SetCfg,"ax",%progbits
+ 634              		.align	2
+ 635              		.global	USBD_SetCfg
+ 636              		.thumb
+ 637              		.thumb_func
+ 639              	USBD_SetCfg:
+ 640              	.LFB134:
+ 418:USB/core/usbd_core.c ****   pdev->dev.class_cb->Init(pdev, cfgidx); 
+ 641              		.loc 1 418 0
+ 642              		.cfi_startproc
+ 643              		@ args = 0, pretend = 0, frame = 0
+ 644              		@ frame_needed = 0, uses_anonymous_args = 0
+ 645              	.LVL56:
+ 646 0000 10B5     		push	{r4, lr}
+ 647              	.LCFI12:
+ 648              		.cfi_def_cfa_offset 8
+ 649              		.cfi_offset 4, -8
+ 650              		.cfi_offset 14, -4
+ 651 0002 0446     		mov	r4, r0
+ 419:USB/core/usbd_core.c ****   
+ 652              		.loc 1 419 0
+ 653 0004 D0F8E435 		ldr	r3, [r0, #1508]
+ 654 0008 1B68     		ldr	r3, [r3]
+ 655 000a 9847     		blx	r3
+ 656              	.LVL57:
+ 422:USB/core/usbd_core.c ****   return USBD_OK; 
+ 657              		.loc 1 422 0
+ 658 000c D4F8E835 		ldr	r3, [r4, #1512]
+ 659 0010 9B68     		ldr	r3, [r3, #8]
+ 660 0012 9847     		blx	r3
+ 661              	.LVL58:
+ 424:USB/core/usbd_core.c **** 
+ 662              		.loc 1 424 0
+ 663 0014 0020     		movs	r0, #0
+ 664 0016 10BD     		pop	{r4, pc}
+ 665              		.cfi_endproc
+ 666              	.LFE134:
+ 668              		.section	.text.USBD_ClrCfg,"ax",%progbits
+ 669              		.align	2
+ 670              		.global	USBD_ClrCfg
+ 671              		.thumb
+ 672              		.thumb_func
+ 674              	USBD_ClrCfg:
+ 675              	.LFB135:
+ 434:USB/core/usbd_core.c ****   pdev->dev.class_cb->DeInit(pdev, cfgidx);   
+ 676              		.loc 1 434 0
+ 677              		.cfi_startproc
+ 678              		@ args = 0, pretend = 0, frame = 0
+ 679              		@ frame_needed = 0, uses_anonymous_args = 0
+ 680              	.LVL59:
+ 681 0000 08B5     		push	{r3, lr}
+ 682              	.LCFI13:
+ 683              		.cfi_def_cfa_offset 8
+ 684              		.cfi_offset 3, -8
+ 685              		.cfi_offset 14, -4
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 22
+
+
+ 435:USB/core/usbd_core.c ****   return USBD_OK;
+ 686              		.loc 1 435 0
+ 687 0002 D0F8E435 		ldr	r3, [r0, #1508]
+ 688 0006 5B68     		ldr	r3, [r3, #4]
+ 689 0008 9847     		blx	r3
+ 690              	.LVL60:
+ 437:USB/core/usbd_core.c **** 
+ 691              		.loc 1 437 0
+ 692 000a 0020     		movs	r0, #0
+ 693 000c 08BD     		pop	{r3, pc}
+ 694              		.cfi_endproc
+ 695              	.LFE135:
+ 697              		.global	USBD_DCD_INT_fops
+ 698              		.global	USBD_DCD_INT_cb
+ 699              		.comm	SET_TEST_MODE,4,4
+ 700 000e 00BF     		.section	.data.USBD_DCD_INT_fops,"aw",%progbits
+ 701              		.align	2
+ 704              	USBD_DCD_INT_fops:
+ 705 0000 00000000 		.word	USBD_DCD_INT_cb
+ 706              		.section	.data.USBD_DCD_INT_cb,"aw",%progbits
+ 707              		.align	2
+ 710              	USBD_DCD_INT_cb:
+ 711 0000 00000000 		.word	USBD_DataOutStage
+ 712 0004 00000000 		.word	USBD_DataInStage
+ 713 0008 00000000 		.word	USBD_SetupStage
+ 714 000c 00000000 		.word	USBD_SOF
+ 715 0010 00000000 		.word	USBD_Reset
+ 716 0014 00000000 		.word	USBD_Suspend
+ 717 0018 00000000 		.word	USBD_Resume
+ 718 001c 00000000 		.word	USBD_IsoINIncomplete
+ 719 0020 00000000 		.word	USBD_IsoOUTIncomplete
+ 720 0024 00000000 		.space	8
+ 720      00000000 
+ 721              		.text
+ 722              	.Letext0:
+ 723              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 724              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 725              		.file 4 "USB/core/usb_regs.h"
+ 726              		.file 5 "USB/core/usb_defines.h"
+ 727              		.file 6 "USB/core/usb_core.h"
+ 728              		.file 7 "USB/core/usbd_core.h"
+ 729              		.file 8 "USB/core/usb_dcd_int.h"
+ 730              		.file 9 "F4_CORE/core_cm4.h"
+ 731              		.file 10 "USB/core/usb_dcd.h"
+ 732              		.file 11 "USB/core/usbd_req.h"
+ 733              		.file 12 "USB/core/usbd_ioreq.h"
+ 734              		.file 13 "USB/core/usb_bsp.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc5VKFci.s 			page 23
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 usbd_core.c
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:22     .text.USBD_RunTestMode:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:26     .text.USBD_RunTestMode:00000000 USBD_RunTestMode
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:47     .text.USBD_RunTestMode:0000000c $d
+                            *COM*:00000004 SET_TEST_MODE
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:52     .text.USBD_Resume:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:56     .text.USBD_Resume:00000000 USBD_Resume
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:84     .text.USBD_Suspend:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:88     .text.USBD_Suspend:00000000 USBD_Suspend
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:118    .text.USBD_SOF:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:122    .text.USBD_SOF:00000000 USBD_SOF
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:149    .text.USBD_IsoINIncomplete:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:153    .text.USBD_IsoINIncomplete:00000000 USBD_IsoINIncomplete
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:177    .text.USBD_IsoOUTIncomplete:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:181    .text.USBD_IsoOUTIncomplete:00000000 USBD_IsoOUTIncomplete
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:205    .text.USBD_Reset:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:209    .text.USBD_Reset:00000000 USBD_Reset
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:251    .text.USBD_SetupStage:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:255    .text.USBD_SetupStage:00000000 USBD_SetupStage
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:326    .text.USBD_DataInStage:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:330    .text.USBD_DataInStage:00000000 USBD_DataInStage
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:460    .text.USBD_DataOutStage:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:464    .text.USBD_DataOutStage:00000000 USBD_DataOutStage
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:559    .text.USBD_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:564    .text.USBD_Init:00000000 USBD_Init
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:613    .text.USBD_DeInit:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:618    .text.USBD_DeInit:00000000 USBD_DeInit
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:634    .text.USBD_SetCfg:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:639    .text.USBD_SetCfg:00000000 USBD_SetCfg
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:669    .text.USBD_ClrCfg:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:674    .text.USBD_ClrCfg:00000000 USBD_ClrCfg
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:704    .data.USBD_DCD_INT_fops:00000000 USBD_DCD_INT_fops
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:710    .data.USBD_DCD_INT_cb:00000000 USBD_DCD_INT_cb
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:701    .data.USBD_DCD_INT_fops:00000000 $d
+C:\Users\why\AppData\Local\Temp\cc5VKFci.s:707    .data.USBD_DCD_INT_cb:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+DCD_EP_Open
+USBD_ParseSetupRequest
+USBD_StdDevReq
+USBD_StdItfReq
+USBD_StdEPReq
+DCD_EP_Stall
+USBD_CtlContinueSendData
+USBD_CtlReceiveStatus
+USBD_CtlContinueRx
+USBD_CtlSendStatus
+USB_OTG_BSP_Init
+DCD_Init
+USB_OTG_BSP_EnableInterrupt

@@ -192,6 +192,11 @@
 
 //IIC IO definition
 
+#define Encoder_Port GPIOC
+#define Encoder_IO_CLK RCC_AHB1Periph_GPIOC
+#define Encoder_IO_A_PinSource GPIO_PinSource7
+#define Encoder_IO_B_PinSource GPIO_PinSource6
+
 #define SetBit(x) 1 << x
 
 typedef enum

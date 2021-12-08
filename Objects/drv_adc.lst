@@ -1,0 +1,329 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc4LhTqR.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"drv_adc.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.DrvADC_Get,"ax",%progbits
+  22              		.align	2
+  23              		.thumb
+  24              		.thumb_func
+  26              	DrvADC_Get:
+  27              	.LFB124:
+  28              		.file 1 "Drv/drv_adc.c"
+   1:Drv/drv_adc.c **** #include "drv_adc.h"
+   2:Drv/drv_adc.c **** #include "periph_adc.h"
+   3:Drv/drv_adc.c **** #include "periph_gpio.h"
+   4:Drv/drv_adc.c **** 
+   5:Drv/drv_adc.c **** typedef struct
+   6:Drv/drv_adc.c **** {
+   7:Drv/drv_adc.c ****     bool InUse;
+   8:Drv/drv_adc.c ****     uint8_t id;
+   9:Drv/drv_adc.c **** } ADC_Channel_State;
+  10:Drv/drv_adc.c **** 
+  11:Drv/drv_adc.c **** /* internal variable */
+  12:Drv/drv_adc.c **** static ADC_Channel_State Channel_State[ADC1_Channel_Sum] = {false};
+  13:Drv/drv_adc.c **** static uint8_t InUse_ADC_Channel_cnt = 0;
+  14:Drv/drv_adc.c **** 
+  15:Drv/drv_adc.c **** /* external variable */
+  16:Drv/drv_adc.c **** static uint16_t DrvADC_Get(ADC_Channel_List channel);
+  17:Drv/drv_adc.c **** static bool DrvADC_Ctl(DrvADC_CMD_List cmd, uint8_t data);
+  18:Drv/drv_adc.c **** 
+  19:Drv/drv_adc.c **** /* driver object */
+  20:Drv/drv_adc.c **** DrvADC_TypeDef DrvADC = {
+  21:Drv/drv_adc.c ****     .ctl = DrvADC_Ctl,
+  22:Drv/drv_adc.c ****     .read = DrvADC_Get,
+  23:Drv/drv_adc.c **** };
+  24:Drv/drv_adc.c **** 
+  25:Drv/drv_adc.c **** static bool DrvADC_Open(ADC_Channel_List channel)
+  26:Drv/drv_adc.c **** {
+  27:Drv/drv_adc.c ****     if (channel >= ADC1_Channel_Sum)
+  28:Drv/drv_adc.c ****         return false;
+  29:Drv/drv_adc.c **** 
+  30:Drv/drv_adc.c ****     if (!Channel_State[channel].InUse)
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc4LhTqR.s 			page 2
+
+
+  31:Drv/drv_adc.c ****     {
+  32:Drv/drv_adc.c ****         Channel_State[channel].InUse = true;
+  33:Drv/drv_adc.c ****         Channel_State[channel].id = InUse_ADC_Channel_cnt;
+  34:Drv/drv_adc.c **** 
+  35:Drv/drv_adc.c ****         InUse_ADC_Channel_cnt++;
+  36:Drv/drv_adc.c **** 
+  37:Drv/drv_adc.c ****         Periph_ADC_IO_Init(channel);
+  38:Drv/drv_adc.c ****         Periph_ADC_Init(channel);
+  39:Drv/drv_adc.c **** 
+  40:Drv/drv_adc.c ****         return true;
+  41:Drv/drv_adc.c ****     }
+  42:Drv/drv_adc.c **** 
+  43:Drv/drv_adc.c ****     return false;
+  44:Drv/drv_adc.c **** }
+  45:Drv/drv_adc.c **** 
+  46:Drv/drv_adc.c **** static uint16_t DrvADC_Get(ADC_Channel_List channel)
+  47:Drv/drv_adc.c **** {
+  29              		.loc 1 47 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              	.LVL0:
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  48:Drv/drv_adc.c ****     if (Channel_State[channel].InUse)
+  39              		.loc 1 48 0
+  40 0002 064B     		ldr	r3, .L5
+  41 0004 13F81030 		ldrb	r3, [r3, r0, lsl #1]	@ zero_extendqisi2
+  42 0008 33B1     		cbz	r3, .L3
+  49:Drv/drv_adc.c ****     {
+  50:Drv/drv_adc.c ****         return Periph_ADC_GetValue(channel, Channel_State[channel].id);
+  43              		.loc 1 50 0
+  44 000a 044B     		ldr	r3, .L5
+  45 000c 03EB4003 		add	r3, r3, r0, lsl #1
+  46 0010 5978     		ldrb	r1, [r3, #1]	@ zero_extendqisi2
+  47 0012 FFF7FEFF 		bl	Periph_ADC_GetValue
+  48              	.LVL1:
+  49 0016 08BD     		pop	{r3, pc}
+  50              	.LVL2:
+  51              	.L3:
+  51:Drv/drv_adc.c ****     }
+  52:Drv/drv_adc.c **** 
+  53:Drv/drv_adc.c ****     return 0;
+  52              		.loc 1 53 0
+  53 0018 0020     		movs	r0, #0
+  54              	.LVL3:
+  54:Drv/drv_adc.c **** }
+  55              		.loc 1 54 0
+  56 001a 08BD     		pop	{r3, pc}
+  57              	.L6:
+  58              		.align	2
+  59              	.L5:
+  60 001c 00000000 		.word	.LANCHOR0
+  61              		.cfi_endproc
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc4LhTqR.s 			page 3
+
+
+  62              	.LFE124:
+  64              		.section	.text.DrvADC_Open,"ax",%progbits
+  65              		.align	2
+  66              		.thumb
+  67              		.thumb_func
+  69              	DrvADC_Open:
+  70              	.LFB123:
+  26:Drv/drv_adc.c ****     if (channel >= ADC1_Channel_Sum)
+  71              		.loc 1 26 0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  75              	.LVL4:
+  27:Drv/drv_adc.c ****         return false;
+  76              		.loc 1 27 0
+  77 0000 0E28     		cmp	r0, #14
+  78 0002 17D8     		bhi	.L9
+  26:Drv/drv_adc.c ****     if (channel >= ADC1_Channel_Sum)
+  79              		.loc 1 26 0
+  80 0004 38B5     		push	{r3, r4, r5, lr}
+  81              	.LCFI1:
+  82              		.cfi_def_cfa_offset 16
+  83              		.cfi_offset 3, -16
+  84              		.cfi_offset 4, -12
+  85              		.cfi_offset 5, -8
+  86              		.cfi_offset 14, -4
+  30:Drv/drv_adc.c ****     {
+  87              		.loc 1 30 0
+  88 0006 0D4B     		ldr	r3, .L12
+  89 0008 13F81030 		ldrb	r3, [r3, r0, lsl #1]	@ zero_extendqisi2
+  90 000c A3B9     		cbnz	r3, .L10
+  91 000e 0446     		mov	r4, r0
+  32:Drv/drv_adc.c ****         Channel_State[channel].id = InUse_ADC_Channel_cnt;
+  92              		.loc 1 32 0
+  93 0010 0A4A     		ldr	r2, .L12
+  94 0012 0125     		movs	r5, #1
+  95 0014 02F81050 		strb	r5, [r2, r0, lsl #1]
+  33:Drv/drv_adc.c **** 
+  96              		.loc 1 33 0
+  97 0018 0949     		ldr	r1, .L12+4
+  98 001a 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  99 001c 02EB4002 		add	r2, r2, r0, lsl #1
+ 100 0020 5370     		strb	r3, [r2, #1]
+  35:Drv/drv_adc.c **** 
+ 101              		.loc 1 35 0
+ 102 0022 2B44     		add	r3, r3, r5
+ 103 0024 0B70     		strb	r3, [r1]
+  37:Drv/drv_adc.c ****         Periph_ADC_Init(channel);
+ 104              		.loc 1 37 0
+ 105 0026 FFF7FEFF 		bl	Periph_ADC_IO_Init
+ 106              	.LVL5:
+  38:Drv/drv_adc.c **** 
+ 107              		.loc 1 38 0
+ 108 002a 2046     		mov	r0, r4
+ 109 002c FFF7FEFF 		bl	Periph_ADC_Init
+ 110              	.LVL6:
+  40:Drv/drv_adc.c ****     }
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc4LhTqR.s 			page 4
+
+
+ 111              		.loc 1 40 0
+ 112 0030 2846     		mov	r0, r5
+ 113 0032 38BD     		pop	{r3, r4, r5, pc}
+ 114              	.LVL7:
+ 115              	.L9:
+ 116              	.LCFI2:
+ 117              		.cfi_def_cfa_offset 0
+ 118              		.cfi_restore 3
+ 119              		.cfi_restore 4
+ 120              		.cfi_restore 5
+ 121              		.cfi_restore 14
+  28:Drv/drv_adc.c **** 
+ 122              		.loc 1 28 0
+ 123 0034 0020     		movs	r0, #0
+ 124              	.LVL8:
+  44:Drv/drv_adc.c **** 
+ 125              		.loc 1 44 0
+ 126 0036 7047     		bx	lr
+ 127              	.LVL9:
+ 128              	.L10:
+ 129              	.LCFI3:
+ 130              		.cfi_def_cfa_offset 16
+ 131              		.cfi_offset 3, -16
+ 132              		.cfi_offset 4, -12
+ 133              		.cfi_offset 5, -8
+ 134              		.cfi_offset 14, -4
+  43:Drv/drv_adc.c **** }
+ 135              		.loc 1 43 0
+ 136 0038 0020     		movs	r0, #0
+ 137              	.LVL10:
+  44:Drv/drv_adc.c **** 
+ 138              		.loc 1 44 0
+ 139 003a 38BD     		pop	{r3, r4, r5, pc}
+ 140              	.L13:
+ 141              		.align	2
+ 142              	.L12:
+ 143 003c 00000000 		.word	.LANCHOR0
+ 144 0040 00000000 		.word	.LANCHOR1
+ 145              		.cfi_endproc
+ 146              	.LFE123:
+ 148              		.section	.text.DrvADC_Ctl,"ax",%progbits
+ 149              		.align	2
+ 150              		.thumb
+ 151              		.thumb_func
+ 153              	DrvADC_Ctl:
+ 154              	.LFB125:
+  55:Drv/drv_adc.c **** 
+  56:Drv/drv_adc.c **** static bool DrvADC_Ctl(DrvADC_CMD_List cmd, uint8_t data)
+  57:Drv/drv_adc.c **** {
+ 155              		.loc 1 57 0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 0
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              	.LVL11:
+  58:Drv/drv_adc.c ****     switch ((uint8_t)cmd)
+ 160              		.loc 1 58 0
+ 161 0000 20B9     		cbnz	r0, .L18
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc4LhTqR.s 			page 5
+
+
+  57:Drv/drv_adc.c ****     switch ((uint8_t)cmd)
+ 162              		.loc 1 57 0
+ 163 0002 08B5     		push	{r3, lr}
+ 164              	.LCFI4:
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 3, -8
+ 167              		.cfi_offset 14, -4
+ 168 0004 0846     		mov	r0, r1
+ 169              	.LVL12:
+  59:Drv/drv_adc.c ****     {
+  60:Drv/drv_adc.c ****     case ADC_Open:
+  61:Drv/drv_adc.c ****         return DrvADC_Open((ADC_Channel_List)data);
+ 170              		.loc 1 61 0
+ 171 0006 FFF7FEFF 		bl	DrvADC_Open
+ 172              	.LVL13:
+ 173 000a 08BD     		pop	{r3, pc}
+ 174              	.LVL14:
+ 175              	.L18:
+ 176              	.LCFI5:
+ 177              		.cfi_def_cfa_offset 0
+ 178              		.cfi_restore 3
+ 179              		.cfi_restore 14
+  62:Drv/drv_adc.c **** 
+  63:Drv/drv_adc.c ****     case ADC_Close:
+  64:Drv/drv_adc.c ****         /* TODO */
+  65:Drv/drv_adc.c ****         return false;
+ 180              		.loc 1 65 0
+ 181 000c 0020     		movs	r0, #0
+ 182              	.LVL15:
+ 183 000e 7047     		bx	lr
+ 184              		.cfi_endproc
+ 185              	.LFE125:
+ 187              		.global	DrvADC
+ 188              		.section	.data.DrvADC,"aw",%progbits
+ 189              		.align	2
+ 192              	DrvADC:
+ 193 0000 00000000 		.word	DrvADC_Ctl
+ 194 0004 00000000 		.word	DrvADC_Get
+ 195              		.section	.bss.InUse_ADC_Channel_cnt,"aw",%nobits
+ 196              		.set	.LANCHOR1,. + 0
+ 199              	InUse_ADC_Channel_cnt:
+ 200 0000 00       		.space	1
+ 201              		.section	.bss.Channel_State,"aw",%nobits
+ 202              		.align	2
+ 203              		.set	.LANCHOR0,. + 0
+ 206              	Channel_State:
+ 207 0000 00000000 		.space	30
+ 207      00000000 
+ 207      00000000 
+ 207      00000000 
+ 207      00000000 
+ 208              		.text
+ 209              	.Letext0:
+ 210              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 211              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 212              		.file 4 "Bsp/periph_adc.h"
+ 213              		.file 5 "Drv/drv_adc.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc4LhTqR.s 			page 6
+
+
+ 214              		.file 6 "F4_CORE/core_cm4.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\cc4LhTqR.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 drv_adc.c
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:22     .text.DrvADC_Get:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:26     .text.DrvADC_Get:00000000 DrvADC_Get
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:60     .text.DrvADC_Get:0000001c $d
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:65     .text.DrvADC_Open:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:69     .text.DrvADC_Open:00000000 DrvADC_Open
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:143    .text.DrvADC_Open:0000003c $d
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:149    .text.DrvADC_Ctl:00000000 $t
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:153    .text.DrvADC_Ctl:00000000 DrvADC_Ctl
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:192    .data.DrvADC:00000000 DrvADC
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:189    .data.DrvADC:00000000 $d
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:199    .bss.InUse_ADC_Channel_cnt:00000000 InUse_ADC_Channel_cnt
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:200    .bss.InUse_ADC_Channel_cnt:00000000 $d
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:202    .bss.Channel_State:00000000 $d
+C:\Users\why\AppData\Local\Temp\cc4LhTqR.s:206    .bss.Channel_State:00000000 Channel_State
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+Periph_ADC_GetValue
+Periph_ADC_IO_Init
+Periph_ADC_Init

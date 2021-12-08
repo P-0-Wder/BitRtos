@@ -136,6 +136,7 @@ App/Task_Display/Task_Widget.c \
 App/Task_Input/Task_Input.c \
 App/Task_Input/Input_IO_Def.c \
 App/Task_Shell/Task_Shell.c \
+App/Task_Encoder/Task_Encoder.c\
 Dev/Dev_5DirButton.c \
 Dev/Dev_Button.c \
 Dev/Dev_Toggle.c \
@@ -238,6 +239,7 @@ C_INCLUDES =  \
 -IApp/Task_Display \
 -IApp/Task_Input \
 -IApp/Task_Shell \
+-IApp/Task_Encoder\
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -303,7 +305,7 @@ $(BUILD_DIR):
 # -rd /s /q $(BUILD_DIR)
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	-rd /s /q $(BUILD_DIR)
 	
 #######################################
 # dependencies

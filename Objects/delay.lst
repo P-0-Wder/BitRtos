@@ -1,0 +1,292 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\cclLCj3w.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"delay.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.delay_init,"ax",%progbits
+  22              		.align	2
+  23              		.global	delay_init
+  24              		.thumb
+  25              		.thumb_func
+  27              	delay_init:
+  28              	.LFB123:
+  29              		.file 1 "SYS/delay/delay.c"
+   1:SYS/delay/delay.c **** #include "delay.h"
+   2:SYS/delay/delay.c **** #include "runtime.h"
+   3:SYS/delay/delay.c **** #include "stm32f4xx_it.h"
+   4:SYS/delay/delay.c **** #include "misc.h"
+   5:SYS/delay/delay.c **** 
+   6:SYS/delay/delay.c **** #define configTICK_RATE_HZ 167
+   7:SYS/delay/delay.c **** 
+   8:SYS/delay/delay.c **** static volatile uint32_t us_time;
+   9:SYS/delay/delay.c **** 
+  10:SYS/delay/delay.c **** static u8 fac_us = 0;
+  11:SYS/delay/delay.c **** static u16 fac_ms = 0;
+  12:SYS/delay/delay.c **** 
+  13:SYS/delay/delay.c **** void delay_init(void)
+  14:SYS/delay/delay.c **** {
+  30              		.loc 1 14 0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  15:SYS/delay/delay.c **** 	u32 reload;
+  16:SYS/delay/delay.c **** 	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
+  39              		.loc 1 16 0
+  40 0002 0420     		movs	r0, #4
+  41 0004 FFF7FEFF 		bl	SysTick_CLKSourceConfig
+  42              	.LVL0:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cclLCj3w.s 			page 2
+
+
+  17:SYS/delay/delay.c **** 	fac_us = configTICK_RATE_HZ + 1;
+  43              		.loc 1 17 0
+  44 0008 A822     		movs	r2, #168
+  45 000a 074B     		ldr	r3, .L3
+  46 000c 1A70     		strb	r2, [r3]
+  47              	.LVL1:
+  18:SYS/delay/delay.c **** 	reload = configTICK_RATE_HZ + 1;
+  19:SYS/delay/delay.c **** 	reload *= 1000000 / configTICK_RATE_HZ;
+  20:SYS/delay/delay.c **** 	fac_ms = 1000 / configTICK_RATE_HZ;
+  21:SYS/delay/delay.c **** 	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+  48              		.loc 1 21 0
+  49 000e 074B     		ldr	r3, .L3+4
+  50 0010 1A68     		ldr	r2, [r3]
+  51 0012 42F00202 		orr	r2, r2, #2
+  52 0016 1A60     		str	r2, [r3]
+  22:SYS/delay/delay.c **** 	SysTick->LOAD = reload;
+  53              		.loc 1 22 0
+  54 0018 054A     		ldr	r2, .L3+8
+  55 001a 5A60     		str	r2, [r3, #4]
+  23:SYS/delay/delay.c **** 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+  56              		.loc 1 23 0
+  57 001c 1A68     		ldr	r2, [r3]
+  58 001e 42F00102 		orr	r2, r2, #1
+  59 0022 1A60     		str	r2, [r3]
+  60 0024 08BD     		pop	{r3, pc}
+  61              	.L4:
+  62 0026 00BF     		.align	2
+  63              	.L3:
+  64 0028 00000000 		.word	.LANCHOR0
+  65 002c 10E000E0 		.word	-536813552
+  66 0030 A0590F00 		.word	1005984
+  67              		.cfi_endproc
+  68              	.LFE123:
+  70              		.section	.text.delay_us,"ax",%progbits
+  71              		.align	2
+  72              		.global	delay_us
+  73              		.thumb
+  74              		.thumb_func
+  76              	delay_us:
+  77              	.LFB124:
+  24:SYS/delay/delay.c **** }
+  25:SYS/delay/delay.c **** 
+  26:SYS/delay/delay.c **** void delay_us(u32 nus)
+  27:SYS/delay/delay.c **** {
+  78              		.loc 1 27 0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82              		@ link register save eliminated.
+  83              	.LVL2:
+  84 0000 30B4     		push	{r4, r5}
+  85              	.LCFI1:
+  86              		.cfi_def_cfa_offset 8
+  87              		.cfi_offset 4, -8
+  88              		.cfi_offset 5, -4
+  28:SYS/delay/delay.c **** 	nus *= 2;
+  89              		.loc 1 28 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\cclLCj3w.s 			page 3
+
+
+  90 0002 4000     		lsls	r0, r0, #1
+  91              	.LVL3:
+  29:SYS/delay/delay.c **** 	u32 ticks;
+  30:SYS/delay/delay.c **** 	u32 told, tnow, tcnt = 0;
+  31:SYS/delay/delay.c **** 	u32 reload = SysTick->LOAD; //LOAD的值
+  92              		.loc 1 31 0
+  93 0004 0B4A     		ldr	r2, .L11
+  94 0006 5568     		ldr	r5, [r2, #4]
+  95              	.LVL4:
+  32:SYS/delay/delay.c **** 	ticks = nus * fac_us;		//需要的节拍数
+  96              		.loc 1 32 0
+  97 0008 0B4B     		ldr	r3, .L11+4
+  98 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  99 000c 03FB00F4 		mul	r4, r3, r0
+ 100              	.LVL5:
+  33:SYS/delay/delay.c **** 	told = SysTick->VAL;		//刚进入时的计数器值
+ 101              		.loc 1 33 0
+ 102 0010 9368     		ldr	r3, [r2, #8]
+ 103              	.LVL6:
+  30:SYS/delay/delay.c **** 	u32 reload = SysTick->LOAD; //LOAD的值
+ 104              		.loc 1 30 0
+ 105 0012 0021     		movs	r1, #0
+ 106              	.LVL7:
+ 107              	.L9:
+ 108 0014 1A46     		mov	r2, r3
+ 109              	.LVL8:
+ 110              	.L6:
+  34:SYS/delay/delay.c **** 	while (1)
+  35:SYS/delay/delay.c **** 	{
+  36:SYS/delay/delay.c **** 		tnow = SysTick->VAL;
+ 111              		.loc 1 36 0
+ 112 0016 074B     		ldr	r3, .L11
+ 113 0018 9B68     		ldr	r3, [r3, #8]
+ 114              	.LVL9:
+  37:SYS/delay/delay.c **** 		if (tnow != told)
+ 115              		.loc 1 37 0
+ 116 001a 9A42     		cmp	r2, r3
+ 117 001c FBD0     		beq	.L6
+  38:SYS/delay/delay.c **** 		{
+  39:SYS/delay/delay.c **** 			if (tnow < told)
+ 118              		.loc 1 39 0
+ 119 001e 02D9     		bls	.L7
+  40:SYS/delay/delay.c **** 				tcnt += told - tnow; //这里注意一下SYSTICK是一个递减的计数器就可以了.
+ 120              		.loc 1 40 0
+ 121 0020 D21A     		subs	r2, r2, r3
+ 122 0022 1144     		add	r1, r1, r2
+ 123              	.LVL10:
+ 124 0024 02E0     		b	.L8
+ 125              	.L7:
+  41:SYS/delay/delay.c **** 			else
+  42:SYS/delay/delay.c **** 				tcnt += reload - tnow + told;
+ 126              		.loc 1 42 0
+ 127 0026 E81A     		subs	r0, r5, r3
+ 128 0028 0244     		add	r2, r2, r0
+ 129 002a 1144     		add	r1, r1, r2
+ 130              	.LVL11:
+ 131              	.L8:
+ARM GAS  C:\Users\why\AppData\Local\Temp\cclLCj3w.s 			page 4
+
+
+  43:SYS/delay/delay.c **** 			told = tnow;
+  44:SYS/delay/delay.c **** 			if (tcnt >= ticks)
+ 132              		.loc 1 44 0
+ 133 002c A142     		cmp	r1, r4
+ 134 002e F1D3     		bcc	.L9
+  45:SYS/delay/delay.c **** 				break; //时间超过/等于要延迟的时间,则退出.
+  46:SYS/delay/delay.c **** 		}
+  47:SYS/delay/delay.c **** 	};
+  48:SYS/delay/delay.c **** }
+ 135              		.loc 1 48 0
+ 136 0030 30BC     		pop	{r4, r5}
+ 137              	.LCFI2:
+ 138              		.cfi_restore 5
+ 139              		.cfi_restore 4
+ 140              		.cfi_def_cfa_offset 0
+ 141              	.LVL12:
+ 142 0032 7047     		bx	lr
+ 143              	.L12:
+ 144              		.align	2
+ 145              	.L11:
+ 146 0034 10E000E0 		.word	-536813552
+ 147 0038 00000000 		.word	.LANCHOR0
+ 148              		.cfi_endproc
+ 149              	.LFE124:
+ 151              		.section	.text.delay_ms,"ax",%progbits
+ 152              		.align	2
+ 153              		.global	delay_ms
+ 154              		.thumb
+ 155              		.thumb_func
+ 157              	delay_ms:
+ 158              	.LFB125:
+  49:SYS/delay/delay.c **** 
+  50:SYS/delay/delay.c **** void delay_ms(uint32_t MS)
+  51:SYS/delay/delay.c **** {
+ 159              		.loc 1 51 0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163              	.LVL13:
+ 164 0000 10B5     		push	{r4, lr}
+ 165              	.LCFI3:
+ 166              		.cfi_def_cfa_offset 8
+ 167              		.cfi_offset 4, -8
+ 168              		.cfi_offset 14, -4
+  52:SYS/delay/delay.c **** 	while (MS--)
+ 169              		.loc 1 52 0
+ 170 0002 04E0     		b	.L14
+ 171              	.LVL14:
+ 172              	.L15:
+  53:SYS/delay/delay.c **** 	{
+  54:SYS/delay/delay.c **** 		delay_us(REAL_MS);
+ 173              		.loc 1 54 0
+ 174 0004 4FF47A70 		mov	r0, #1000
+ 175 0008 FFF7FEFF 		bl	delay_us
+ 176              	.LVL15:
+  52:SYS/delay/delay.c **** 	while (MS--)
+ 177              		.loc 1 52 0
+ARM GAS  C:\Users\why\AppData\Local\Temp\cclLCj3w.s 			page 5
+
+
+ 178 000c 2046     		mov	r0, r4
+ 179              	.LVL16:
+ 180              	.L14:
+ 181 000e 441E     		subs	r4, r0, #1
+ 182              	.LVL17:
+ 183 0010 0028     		cmp	r0, #0
+ 184 0012 F7D1     		bne	.L15
+  55:SYS/delay/delay.c **** 	}
+  56:SYS/delay/delay.c **** }
+ 185              		.loc 1 56 0
+ 186 0014 10BD     		pop	{r4, pc}
+ 187              		.cfi_endproc
+ 188              	.LFE125:
+ 190 0016 00BF     		.section	.bss.fac_us,"aw",%nobits
+ 191              		.set	.LANCHOR0,. + 0
+ 194              	fac_us:
+ 195 0000 00       		.space	1
+ 196              		.section	.bss.us_time,"aw",%nobits
+ 197              		.align	2
+ 200              	us_time:
+ 201 0000 00000000 		.space	4
+ 202              		.text
+ 203              	.Letext0:
+ 204              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 205              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 206              		.file 4 "F4_CORE/core_cm4.h"
+ 207              		.file 5 "USER/stm32f4xx.h"
+ 208              		.file 6 "FWLIB/inc/misc.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\cclLCj3w.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 delay.c
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:22     .text.delay_init:00000000 $t
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:27     .text.delay_init:00000000 delay_init
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:64     .text.delay_init:00000028 $d
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:71     .text.delay_us:00000000 $t
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:76     .text.delay_us:00000000 delay_us
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:146    .text.delay_us:00000034 $d
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:152    .text.delay_ms:00000000 $t
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:157    .text.delay_ms:00000000 delay_ms
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:194    .bss.fac_us:00000000 fac_us
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:195    .bss.fac_us:00000000 $d
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:197    .bss.us_time:00000000 $d
+C:\Users\why\AppData\Local\Temp\cclLCj3w.s:200    .bss.us_time:00000000 us_time
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+SysTick_CLKSourceConfig

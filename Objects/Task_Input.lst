@@ -1,0 +1,477 @@
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"Task_Input.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.TaskInput_Init,"ax",%progbits
+  22              		.align	2
+  23              		.thumb
+  24              		.thumb_func
+  26              	TaskInput_Init:
+  27              	.LFB124:
+  28              		.file 1 "App/Task_Input/Task_Input.c"
+   1:App/Task_Input/Task_Input.c **** #include "task_manager.h"
+   2:App/Task_Input/Task_Input.c **** #include "Task_Input.h"
+   3:App/Task_Input/Task_Input.c **** #include "Input_IO_Def.h"
+   4:App/Task_Input/Task_Input.c **** 
+   5:App/Task_Input/Task_Input.c **** /* internal variable */
+   6:App/Task_Input/Task_Input.c **** static Input_Data_TypeDef InputData;
+   7:App/Task_Input/Task_Input.c **** static TaskInput_Stage_List Task_Stage = TaskInput_Initialize;
+   8:App/Task_Input/Task_Input.c **** 
+   9:App/Task_Input/Task_Input.c **** static Gimbal_Proc_TypeDef Gimbal_L_ProcObj;
+  10:App/Task_Input/Task_Input.c **** static Gimbal_Proc_TypeDef Gimbal_R_ProcObj;
+  11:App/Task_Input/Task_Input.c **** 
+  12:App/Task_Input/Task_Input.c **** static AnalogProc_Obj_TypeDef L_Pot_ProcObj;
+  13:App/Task_Input/Task_Input.c **** static AnalogProc_Obj_TypeDef R_Pot_ProcObj;
+  14:App/Task_Input/Task_Input.c **** 
+  15:App/Task_Input/Task_Input.c **** /* input hardware abstract object */
+  16:App/Task_Input/Task_Input.c **** static DevEncoder_Obj_TypeDef Encoder_Obj;
+  17:App/Task_Input/Task_Input.c **** //static DevGimbal_Obj_TypeDef Gimbal_L_Obj;
+  18:App/Task_Input/Task_Input.c **** //static DevGimbal_Obj_TypeDef Gimbal_R_Obj;
+  19:App/Task_Input/Task_Input.c **** //static DevButton_TypeDef Btn_LShoulder_Obj;
+  20:App/Task_Input/Task_Input.c **** //static DevButton_TypeDef Btn_RShoulder_Obj;
+  21:App/Task_Input/Task_Input.c **** //static DirButton_Obj_TypeDef Btn_5Dir_Obj;
+  22:App/Task_Input/Task_Input.c **** 
+  23:App/Task_Input/Task_Input.c **** /* internal funciton */
+  24:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Init(void);
+  25:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Update(void);
+  26:App/Task_Input/Task_Input.c **** Input_Data_TypeDef TaskInput_GetData(void);
+  27:App/Task_Input/Task_Input.c **** 
+  28:App/Task_Input/Task_Input.c **** /* internal function */
+  29:App/Task_Input/Task_Input.c **** 
+  30:App/Task_Input/Task_Input.c **** /* external variable */
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 2
+
+
+  31:App/Task_Input/Task_Input.c **** 
+  32:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Init(void)
+  33:App/Task_Input/Task_Input.c **** {
+  29              		.loc 1 33 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 48
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 4, -16
+  37              		.cfi_offset 5, -12
+  38              		.cfi_offset 6, -8
+  39              		.cfi_offset 14, -4
+  40 0002 8EB0     		sub	sp, sp, #56
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 72
+  34:App/Task_Input/Task_Input.c ****     /* encoder pin */
+  35:App/Task_Input/Task_Input.c ****     DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
+  36:App/Task_Input/Task_Input.c **** 
+  37:App/Task_Input/Task_Input.c ****     InputData.error = Input_Initial;
+  43              		.loc 1 37 0
+  44 0004 0126     		movs	r6, #1
+  45 0006 134B     		ldr	r3, .L5
+  46 0008 DE75     		strb	r6, [r3, #23]
+  38:App/Task_Input/Task_Input.c **** 
+  39:App/Task_Input/Task_Input.c ****     EncPin[Encoder_IO_A] = Encoder_A_Pin;
+  47              		.loc 1 39 0
+  48 000a 134B     		ldr	r3, .L5+4
+  49 000c 02AC     		add	r4, sp, #8
+  50 000e 0FCB     		ldmia	r3, {r0, r1, r2, r3}
+  51 0010 84E80F00 		stmia	r4, {r0, r1, r2, r3}
+  40:App/Task_Input/Task_Input.c ****     EncPin[Encoder_IO_B] = Encoder_B_Pin;
+  52              		.loc 1 40 0
+  53 0014 114B     		ldr	r3, .L5+8
+  54 0016 06AD     		add	r5, sp, #24
+  55 0018 0FCB     		ldmia	r3, {r0, r1, r2, r3}
+  56 001a 85E80F00 		stmia	r5, {r0, r1, r2, r3}
+  41:App/Task_Input/Task_Input.c ****     EncPin[Encoder_IO_Btn] = Encoder_Btn;
+  57              		.loc 1 41 0
+  58 001e 104B     		ldr	r3, .L5+12
+  59 0020 0FCB     		ldmia	r3, {r0, r1, r2, r3}
+  60 0022 0EAD     		add	r5, sp, #56
+  61 0024 05E90F00 		stmdb	r5, {r0, r1, r2, r3}
+  42:App/Task_Input/Task_Input.c **** 
+  43:App/Task_Input/Task_Input.c ****     /* init encoder */
+  44:App/Task_Input/Task_Input.c ****     if (!DevEncoder.open(&Encoder_Obj, EncPin, true, Timer_3, TIM_Channel_1, TIM_Channel_2))
+  62              		.loc 1 44 0
+  63 0028 0E4B     		ldr	r3, .L5+16
+  64 002a 1D68     		ldr	r5, [r3]
+  65 002c 0423     		movs	r3, #4
+  66 002e 0193     		str	r3, [sp, #4]
+  67 0030 0023     		movs	r3, #0
+  68 0032 0093     		str	r3, [sp]
+  69 0034 3346     		mov	r3, r6
+  70 0036 3246     		mov	r2, r6
+  71 0038 2146     		mov	r1, r4
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 3
+
+
+  72 003a 0B48     		ldr	r0, .L5+20
+  73 003c A847     		blx	r5
+  74              	.LVL0:
+  75 003e 18B9     		cbnz	r0, .L2
+  45:App/Task_Input/Task_Input.c ****     {
+  46:App/Task_Input/Task_Input.c ****         InputData.error = Input_Encoder_Error;
+  76              		.loc 1 46 0
+  77 0040 0220     		movs	r0, #2
+  78 0042 044B     		ldr	r3, .L5
+  79 0044 D875     		strb	r0, [r3, #23]
+  47:App/Task_Input/Task_Input.c ****         return Input_Encoder_Error;
+  80              		.loc 1 47 0
+  81 0046 02E0     		b	.L3
+  82              	.L2:
+  48:App/Task_Input/Task_Input.c ****     }
+  49:App/Task_Input/Task_Input.c **** 
+  50:App/Task_Input/Task_Input.c ****     /* init gimbal */
+  51:App/Task_Input/Task_Input.c **** 
+  52:App/Task_Input/Task_Input.c ****     /* init direction button */
+  53:App/Task_Input/Task_Input.c **** 
+  54:App/Task_Input/Task_Input.c ****     /* init shoulder button */
+  55:App/Task_Input/Task_Input.c **** 
+  56:App/Task_Input/Task_Input.c ****     /* init shoulder toggle */
+  57:App/Task_Input/Task_Input.c **** 
+  58:App/Task_Input/Task_Input.c ****     /* init side pot */
+  59:App/Task_Input/Task_Input.c **** 
+  60:App/Task_Input/Task_Input.c ****     InputData.error = Input_NoError;
+  83              		.loc 1 60 0
+  84 0048 0020     		movs	r0, #0
+  85 004a 024B     		ldr	r3, .L5
+  86 004c D875     		strb	r0, [r3, #23]
+  87              	.L3:
+  61:App/Task_Input/Task_Input.c ****     return Input_NoError;
+  62:App/Task_Input/Task_Input.c **** }
+  88              		.loc 1 62 0
+  89 004e 0EB0     		add	sp, sp, #56
+  90              	.LCFI2:
+  91              		.cfi_def_cfa_offset 16
+  92              		@ sp needed
+  93 0050 70BD     		pop	{r4, r5, r6, pc}
+  94              	.L6:
+  95 0052 00BF     		.align	2
+  96              	.L5:
+  97 0054 00000000 		.word	.LANCHOR0
+  98 0058 00000000 		.word	Encoder_A_Pin
+  99 005c 00000000 		.word	Encoder_B_Pin
+ 100 0060 00000000 		.word	Encoder_Btn
+ 101 0064 00000000 		.word	DevEncoder
+ 102 0068 00000000 		.word	.LANCHOR1
+ 103              		.cfi_endproc
+ 104              	.LFE124:
+ 106              		.section	.text.TaskInput_Update,"ax",%progbits
+ 107              		.align	2
+ 108              		.thumb
+ 109              		.thumb_func
+ 111              	TaskInput_Update:
+ 112              	.LFB127:
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 4
+
+
+  63:App/Task_Input/Task_Input.c **** 
+  64:App/Task_Input/Task_Input.c **** static int16_t TaskInput_Analog_Filter(int16_t in)
+  65:App/Task_Input/Task_Input.c **** {
+  66:App/Task_Input/Task_Input.c ****     int16_t flt_val = 0;
+  67:App/Task_Input/Task_Input.c **** 
+  68:App/Task_Input/Task_Input.c ****     /* filter the input analog value */
+  69:App/Task_Input/Task_Input.c **** 
+  70:App/Task_Input/Task_Input.c ****     return flt_val;
+  71:App/Task_Input/Task_Input.c **** }
+  72:App/Task_Input/Task_Input.c **** 
+  73:App/Task_Input/Task_Input.c **** static int16_t TaskInput_AnalogValue_Map(int16_t in)
+  74:App/Task_Input/Task_Input.c **** {
+  75:App/Task_Input/Task_Input.c ****     int16_t map_val = 0;
+  76:App/Task_Input/Task_Input.c ****     double gain = 0.0;
+  77:App/Task_Input/Task_Input.c **** 
+  78:App/Task_Input/Task_Input.c ****     /* include analog input liner and none liner condition map */
+  79:App/Task_Input/Task_Input.c **** 
+  80:App/Task_Input/Task_Input.c ****     return map_val;
+  81:App/Task_Input/Task_Input.c **** }
+  82:App/Task_Input/Task_Input.c **** 
+  83:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Update(void)
+  84:App/Task_Input/Task_Input.c **** {
+ 113              		.loc 1 84 0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 8
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+  85:App/Task_Input/Task_Input.c ****     if (InputData.error != Input_NoError)
+ 117              		.loc 1 85 0
+ 118 0000 094B     		ldr	r3, .L11
+ 119 0002 D87D     		ldrb	r0, [r3, #23]	@ zero_extendqisi2
+ 120 0004 78B9     		cbnz	r0, .L10
+  84:App/Task_Input/Task_Input.c ****     if (InputData.error != Input_NoError)
+ 121              		.loc 1 84 0
+ 122 0006 10B5     		push	{r4, lr}
+ 123              	.LCFI3:
+ 124              		.cfi_def_cfa_offset 8
+ 125              		.cfi_offset 4, -8
+ 126              		.cfi_offset 14, -4
+ 127 0008 82B0     		sub	sp, sp, #8
+ 128              	.LCFI4:
+ 129              		.cfi_def_cfa_offset 16
+  86:App/Task_Input/Task_Input.c ****         return InputData.error;
+  87:App/Task_Input/Task_Input.c **** 
+  88:App/Task_Input/Task_Input.c ****     /* get encdoer */
+  89:App/Task_Input/Task_Input.c ****     InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
+ 130              		.loc 1 89 0
+ 131 000a 084B     		ldr	r3, .L11+4
+ 132 000c DB68     		ldr	r3, [r3, #12]
+ 133 000e 064C     		ldr	r4, .L11
+ 134 0010 0749     		ldr	r1, .L11+8
+ 135 0012 6846     		mov	r0, sp
+ 136 0014 9847     		blx	r3
+ 137              	.LVL1:
+ 138 0016 009B     		ldr	r3, [sp]	@ unaligned
+ 139 0018 C4F80E30 		str	r3, [r4, #14]	@ unaligned
+ 140 001c BDF80430 		ldrh	r3, [sp, #4]	@ unaligned
+ 141 0020 6382     		strh	r3, [r4, #18]	@ unaligned
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 5
+
+
+  90:App/Task_Input/Task_Input.c **** 
+  91:App/Task_Input/Task_Input.c ****     /* analog input */
+  92:App/Task_Input/Task_Input.c ****     /* get left gimbal */
+  93:App/Task_Input/Task_Input.c **** 
+  94:App/Task_Input/Task_Input.c ****     /* get right gimbal */
+  95:App/Task_Input/Task_Input.c **** 
+  96:App/Task_Input/Task_Input.c ****     /* get left side pot value */
+  97:App/Task_Input/Task_Input.c **** 
+  98:App/Task_Input/Task_Input.c ****     /* get right side pot value */
+  99:App/Task_Input/Task_Input.c **** 
+ 100:App/Task_Input/Task_Input.c ****     /* get battery percent */
+ 101:App/Task_Input/Task_Input.c **** }
+ 142              		.loc 1 101 0
+ 143 0022 02B0     		add	sp, sp, #8
+ 144              	.LCFI5:
+ 145              		.cfi_def_cfa_offset 8
+ 146              		@ sp needed
+ 147 0024 10BD     		pop	{r4, pc}
+ 148              	.L10:
+ 149              	.LCFI6:
+ 150              		.cfi_def_cfa_offset 0
+ 151              		.cfi_restore 4
+ 152              		.cfi_restore 14
+ 153 0026 7047     		bx	lr
+ 154              	.L12:
+ 155              		.align	2
+ 156              	.L11:
+ 157 0028 00000000 		.word	.LANCHOR0
+ 158 002c 00000000 		.word	DevEncoder
+ 159 0030 00000000 		.word	.LANCHOR1
+ 160              		.cfi_endproc
+ 161              	.LFE127:
+ 163              		.section	.text.TaskInput_GetData,"ax",%progbits
+ 164              		.align	2
+ 165              		.global	TaskInput_GetData
+ 166              		.thumb
+ 167              		.thumb_func
+ 169              	TaskInput_GetData:
+ 170              	.LFB129:
+ 102:App/Task_Input/Task_Input.c **** 
+ 103:App/Task_Input/Task_Input.c **** static void TaskInput_Gimbal_Cali(void)
+ 104:App/Task_Input/Task_Input.c **** {
+ 105:App/Task_Input/Task_Input.c **** }
+ 106:App/Task_Input/Task_Input.c **** 
+ 107:App/Task_Input/Task_Input.c **** Input_Data_TypeDef TaskInput_GetData(void)
+ 108:App/Task_Input/Task_Input.c **** {
+ 171              		.loc 1 108 0
+ 172              		.cfi_startproc
+ 173              		@ args = 0, pretend = 0, frame = 0
+ 174              		@ frame_needed = 0, uses_anonymous_args = 0
+ 175              		@ link register save eliminated.
+ 176              	.LVL2:
+ 177 0000 30B4     		push	{r4, r5}
+ 178              	.LCFI7:
+ 179              		.cfi_def_cfa_offset 8
+ 180              		.cfi_offset 4, -8
+ 181              		.cfi_offset 5, -4
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 6
+
+
+ 182 0002 0546     		mov	r5, r0
+ 109:App/Task_Input/Task_Input.c ****     return InputData;
+ 183              		.loc 1 109 0
+ 184 0004 054C     		ldr	r4, .L15
+ 185 0006 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 186              	.LVL3:
+ 187 0008 2860     		str	r0, [r5]	@ unaligned
+ 188 000a 6960     		str	r1, [r5, #4]	@ unaligned
+ 189 000c AA60     		str	r2, [r5, #8]	@ unaligned
+ 190 000e EB60     		str	r3, [r5, #12]	@ unaligned
+ 191 0010 03CC     		ldmia	r4!, {r0, r1}
+ 192 0012 2861     		str	r0, [r5, #16]	@ unaligned
+ 193 0014 6961     		str	r1, [r5, #20]	@ unaligned
+ 110:App/Task_Input/Task_Input.c **** }
+ 194              		.loc 1 110 0
+ 195 0016 2846     		mov	r0, r5
+ 196 0018 30BC     		pop	{r4, r5}
+ 197              	.LCFI8:
+ 198              		.cfi_restore 5
+ 199              		.cfi_restore 4
+ 200              		.cfi_def_cfa_offset 0
+ 201              	.LVL4:
+ 202 001a 7047     		bx	lr
+ 203              	.L16:
+ 204              		.align	2
+ 205              	.L15:
+ 206 001c 00000000 		.word	.LANCHOR0
+ 207              		.cfi_endproc
+ 208              	.LFE129:
+ 210              		.section	.text.TaskInput_Core,"ax",%progbits
+ 211              		.align	2
+ 212              		.global	TaskInput_Core
+ 213              		.thumb
+ 214              		.thumb_func
+ 216              	TaskInput_Core:
+ 217              	.LFB130:
+ 111:App/Task_Input/Task_Input.c **** 
+ 112:App/Task_Input/Task_Input.c **** void TaskInput_Core(Task_Handler self)
+ 113:App/Task_Input/Task_Input.c **** {
+ 218              		.loc 1 113 0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222              	.LVL5:
+ 223 0000 08B5     		push	{r3, lr}
+ 224              	.LCFI9:
+ 225              		.cfi_def_cfa_offset 8
+ 226              		.cfi_offset 3, -8
+ 227              		.cfi_offset 14, -4
+ 114:App/Task_Input/Task_Input.c ****     switch (Task_Stage)
+ 228              		.loc 1 114 0
+ 229 0002 0A4B     		ldr	r3, .L23
+ 230 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 231 0006 13B1     		cbz	r3, .L19
+ 232 0008 022B     		cmp	r3, #2
+ 233 000a 0BD0     		beq	.L20
+ 234 000c 08BD     		pop	{r3, pc}
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 7
+
+
+ 235              	.L19:
+ 115:App/Task_Input/Task_Input.c ****     {
+ 116:App/Task_Input/Task_Input.c ****     case TaskInput_Initialize:
+ 117:App/Task_Input/Task_Input.c ****         if (TaskInput_Init() != Input_NoError)
+ 236              		.loc 1 117 0
+ 237 000e FFF7FEFF 		bl	TaskInput_Init
+ 238              	.LVL6:
+ 239 0012 18B1     		cbz	r0, .L21
+ 118:App/Task_Input/Task_Input.c ****         {
+ 119:App/Task_Input/Task_Input.c ****             Task_Stage = TaskInput_Init_Error;
+ 240              		.loc 1 119 0
+ 241 0014 0122     		movs	r2, #1
+ 242 0016 054B     		ldr	r3, .L23
+ 243 0018 1A70     		strb	r2, [r3]
+ 244 001a 08BD     		pop	{r3, pc}
+ 245              	.L21:
+ 120:App/Task_Input/Task_Input.c ****         }
+ 121:App/Task_Input/Task_Input.c ****         else
+ 122:App/Task_Input/Task_Input.c ****             Task_Stage = TaskInput_Updating;
+ 246              		.loc 1 122 0
+ 247 001c 0222     		movs	r2, #2
+ 248 001e 034B     		ldr	r3, .L23
+ 249 0020 1A70     		strb	r2, [r3]
+ 250 0022 08BD     		pop	{r3, pc}
+ 251              	.LVL7:
+ 252              	.L20:
+ 123:App/Task_Input/Task_Input.c ****         break;
+ 124:App/Task_Input/Task_Input.c **** 
+ 125:App/Task_Input/Task_Input.c ****     case TaskInput_Init_Error:
+ 126:App/Task_Input/Task_Input.c ****         /* TODO Error Process */
+ 127:App/Task_Input/Task_Input.c ****         break;
+ 128:App/Task_Input/Task_Input.c **** 
+ 129:App/Task_Input/Task_Input.c ****     case TaskInput_Updating:
+ 130:App/Task_Input/Task_Input.c ****         TaskInput_Update();
+ 253              		.loc 1 130 0
+ 254 0024 FFF7FEFF 		bl	TaskInput_Update
+ 255              	.LVL8:
+ 256 0028 08BD     		pop	{r3, pc}
+ 257              	.L24:
+ 258 002a 00BF     		.align	2
+ 259              	.L23:
+ 260 002c 00000000 		.word	.LANCHOR2
+ 261              		.cfi_endproc
+ 262              	.LFE130:
+ 264              		.section	.bss.Task_Stage,"aw",%nobits
+ 265              		.set	.LANCHOR2,. + 0
+ 268              	Task_Stage:
+ 269 0000 00       		.space	1
+ 270              		.section	.bss.InputData,"aw",%nobits
+ 271              		.align	2
+ 272              		.set	.LANCHOR0,. + 0
+ 275              	InputData:
+ 276 0000 00000000 		.space	24
+ 276      00000000 
+ 276      00000000 
+ 276      00000000 
+ 276      00000000 
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 8
+
+
+ 277              		.section	.bss.Encoder_Obj,"aw",%nobits
+ 278              		.align	2
+ 279              		.set	.LANCHOR1,. + 0
+ 282              	Encoder_Obj:
+ 283 0000 00000000 		.space	76
+ 283      00000000 
+ 283      00000000 
+ 283      00000000 
+ 283      00000000 
+ 284              		.text
+ 285              	.Letext0:
+ 286              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 287              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 288              		.file 4 "SYS/task_manager/task_manager.h"
+ 289              		.file 5 "Bsp/periph_gpio.h"
+ 290              		.file 6 "Dev/Dev_Toggle.h"
+ 291              		.file 7 "Dev/Dev_5DirButton.h"
+ 292              		.file 8 "Dev/Dev_Gimbal.h"
+ 293              		.file 9 "Bsp/periph_timer.h"
+ 294              		.file 10 "Drv/drv_timer.h"
+ 295              		.file 11 "Dev/Dev_Encoder.h"
+ 296              		.file 12 "App/Task_Input/Task_Input.h"
+ 297              		.file 13 "F4_CORE/core_cm4.h"
+ 298              		.file 14 "App/Task_Input/Input_IO_Def.h"
+ARM GAS  C:\Users\why\AppData\Local\Temp\ccwbKENE.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Task_Input.c
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:22     .text.TaskInput_Init:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:26     .text.TaskInput_Init:00000000 TaskInput_Init
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:97     .text.TaskInput_Init:00000054 $d
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:107    .text.TaskInput_Update:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:111    .text.TaskInput_Update:00000000 TaskInput_Update
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:157    .text.TaskInput_Update:00000028 $d
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:164    .text.TaskInput_GetData:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:169    .text.TaskInput_GetData:00000000 TaskInput_GetData
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:206    .text.TaskInput_GetData:0000001c $d
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:211    .text.TaskInput_Core:00000000 $t
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:216    .text.TaskInput_Core:00000000 TaskInput_Core
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:260    .text.TaskInput_Core:0000002c $d
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:268    .bss.Task_Stage:00000000 Task_Stage
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:269    .bss.Task_Stage:00000000 $d
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:271    .bss.InputData:00000000 $d
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:275    .bss.InputData:00000000 InputData
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:278    .bss.Encoder_Obj:00000000 $d
+C:\Users\why\AppData\Local\Temp\ccwbKENE.s:282    .bss.Encoder_Obj:00000000 Encoder_Obj
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+Encoder_A_Pin
+Encoder_B_Pin
+Encoder_Btn
+DevEncoder
