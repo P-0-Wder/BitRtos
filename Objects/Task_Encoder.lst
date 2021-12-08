@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 1
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 1
 
 
    1              		.syntax unified
@@ -42,39 +42,59 @@ ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 1
   11:App/Task_Encoder/Task_Encoder.c **** void Task_Encoder_Init(void)
   12:App/Task_Encoder/Task_Encoder.c **** {
   13:App/Task_Encoder/Task_Encoder.c ****     static int encoder_sta = encoder_init_sta;
-  14:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Encoder_Init(Encoder_Port,Encoder_IO_CLK,GPIO_Pin_7,Encoder_IO_A_PinSource,GPIO_AF_TIM8
-  15:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Encoder_Init(Encoder_Port,Encoder_IO_CLK,GPIO_Pin_6,Encoder_IO_B_PinSource,GPIO_AF_TIM8
-  16:App/Task_Encoder/Task_Encoder.c ****     periph_Timer_Encoder_Mode_Init(Timer_8,TIM_Channel_1,TIM_Channel_2);
-  17:App/Task_Encoder/Task_Encoder.c **** }
-  18:App/Task_Encoder/Task_Encoder.c **** 
+  14:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Encoder_Init(encoder_port,encoder_io_clk,encoder_io_a_pin,encoder_io_a_pinsource,GPIO_A
+  15:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Encoder_Init(encoder_port,encoder_io_clk,encoder_io_b_pin,encoder_io_b_pinsource,GPIO_A
+  16:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Input_Init(encoder_key_clk,encoder_key_pin,encoder_key_port);
+  17:App/Task_Encoder/Task_Encoder.c ****     periph_Timer_Encoder_Mode_Init(Timer_8,TIM_Channel_1,TIM_Channel_2);
+  18:App/Task_Encoder/Task_Encoder.c **** }
   19:App/Task_Encoder/Task_Encoder.c **** 
-  20:App/Task_Encoder/Task_Encoder.c **** void Task_Encoder_Core(Task_Handler self)
+  20:App/Task_Encoder/Task_Encoder.c **** void encoder_get_state(Timer_list timerx)
   21:App/Task_Encoder/Task_Encoder.c **** {
-  22:App/Task_Encoder/Task_Encoder.c ****     switch(encoder_sta)
-  23:App/Task_Encoder/Task_Encoder.c ****     {
-  24:App/Task_Encoder/Task_Encoder.c ****         case encoder_init_sta:
-  25:App/Task_Encoder/Task_Encoder.c ****             Task_Encoder_Init();
-  26:App/Task_Encoder/Task_Encoder.c ****             encoder_sta = encoder_get_sta;
-  27:App/Task_Encoder/Task_Encoder.c ****             break;
-  28:App/Task_Encoder/Task_Encoder.c ****         case encoder_get_sta:
-  29:App/Task_Encoder/Task_Encoder.c ****             encoder_get_state(Timer_8);
-ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 2
+  22:App/Task_Encoder/Task_Encoder.c ****     static int key_cnt = 0,click_flag = 0;
+  23:App/Task_Encoder/Task_Encoder.c ****     encoder_sta_getlist.num_rotation_circle += (short)Timer_Port[timerx]->CNT;
+  24:App/Task_Encoder/Task_Encoder.c ****     Timer_Port[timerx]->CNT = 0;
+  25:App/Task_Encoder/Task_Encoder.c ****     if(GPIO_Get_IO_LEVEL(encoder_key_port,encoder_key_pin) && click_flag == 1)
+  26:App/Task_Encoder/Task_Encoder.c ****     {
+  27:App/Task_Encoder/Task_Encoder.c ****         click_flag = 0;
+  28:App/Task_Encoder/Task_Encoder.c ****         key_cnt = 0; 
+  29:App/Task_Encoder/Task_Encoder.c ****     }
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 2
 
 
-  30:App/Task_Encoder/Task_Encoder.c ****         break;
-  31:App/Task_Encoder/Task_Encoder.c **** 
-  32:App/Task_Encoder/Task_Encoder.c ****     }
-  33:App/Task_Encoder/Task_Encoder.c **** }
-  34:App/Task_Encoder/Task_Encoder.c **** 
-  35:App/Task_Encoder/Task_Encoder.c **** void encoder_get_state(Timer_list timerx)
-  36:App/Task_Encoder/Task_Encoder.c **** {
-  37:App/Task_Encoder/Task_Encoder.c ****     encoder_sta_getlist.num_rotation_circle += (short)Timer_Port[timerx]->CNT;
-  38:App/Task_Encoder/Task_Encoder.c ****     Timer_Port[timerx]->CNT = 0;
-  39:App/Task_Encoder/Task_Encoder.c **** }
-  40:App/Task_Encoder/Task_Encoder.c **** 
-  41:App/Task_Encoder/Task_Encoder.c **** void encoder_get_to_shell_show(void)
-  42:App/Task_Encoder/Task_Encoder.c **** {
-  30              		.loc 1 42 0
+  30:App/Task_Encoder/Task_Encoder.c ****     else if(!(GPIO_Get_IO_LEVEL(encoder_key_port,encoder_key_pin)) && click_flag == 0)
+  31:App/Task_Encoder/Task_Encoder.c ****     {
+  32:App/Task_Encoder/Task_Encoder.c ****         key_cnt++;
+  33:App/Task_Encoder/Task_Encoder.c ****         if(!(GPIO_Get_IO_LEVEL(encoder_key_port,encoder_key_pin)) && key_cnt == 200)
+  34:App/Task_Encoder/Task_Encoder.c ****         {
+  35:App/Task_Encoder/Task_Encoder.c ****             encoder_sta_getlist.encoder_key += 1;
+  36:App/Task_Encoder/Task_Encoder.c ****             click_flag = 1;
+  37:App/Task_Encoder/Task_Encoder.c ****             key_cnt = 0;
+  38:App/Task_Encoder/Task_Encoder.c ****         }
+  39:App/Task_Encoder/Task_Encoder.c ****     }
+  40:App/Task_Encoder/Task_Encoder.c **** }
+  41:App/Task_Encoder/Task_Encoder.c **** 
+  42:App/Task_Encoder/Task_Encoder.c **** 
+  43:App/Task_Encoder/Task_Encoder.c **** void Task_Encoder_Core(Task_Handler self)
+  44:App/Task_Encoder/Task_Encoder.c **** {
+  45:App/Task_Encoder/Task_Encoder.c ****     switch(encoder_sta)
+  46:App/Task_Encoder/Task_Encoder.c ****     {
+  47:App/Task_Encoder/Task_Encoder.c ****         case encoder_init_sta:
+  48:App/Task_Encoder/Task_Encoder.c ****             Task_Encoder_Init();
+  49:App/Task_Encoder/Task_Encoder.c ****             encoder_sta = encoder_get_sta;
+  50:App/Task_Encoder/Task_Encoder.c ****             break;
+  51:App/Task_Encoder/Task_Encoder.c ****         case encoder_get_sta:
+  52:App/Task_Encoder/Task_Encoder.c ****             encoder_get_state(Timer_8);
+  53:App/Task_Encoder/Task_Encoder.c ****         break;
+  54:App/Task_Encoder/Task_Encoder.c **** 
+  55:App/Task_Encoder/Task_Encoder.c ****     }
+  56:App/Task_Encoder/Task_Encoder.c **** }
+  57:App/Task_Encoder/Task_Encoder.c **** 
+  58:App/Task_Encoder/Task_Encoder.c **** 
+  59:App/Task_Encoder/Task_Encoder.c **** 
+  60:App/Task_Encoder/Task_Encoder.c **** /*The rotation number of the encoder can be reported to the shell display */
+  61:App/Task_Encoder/Task_Encoder.c **** void encoder_get_to_shell_show(void)
+  62:App/Task_Encoder/Task_Encoder.c **** {
+  30              		.loc 1 62 0
   31              		.cfi_startproc
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -83,276 +103,386 @@ ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 1
   36              		.cfi_def_cfa_offset 8
   37              		.cfi_offset 3, -8
   38              		.cfi_offset 14, -4
-  43:App/Task_Encoder/Task_Encoder.c ****     bt_printf("emcoder_num:%d\r\n",encoder_sta_getlist.num_rotation_circle/4);
-  39              		.loc 1 43 0
-  40 0002 054B     		ldr	r3, .L4
-  41 0004 1968     		ldr	r1, [r3]
-  42 0006 0029     		cmp	r1, #0
-  43 0008 00DA     		bge	.L2
-  44 000a 0331     		adds	r1, r1, #3
-  45              	.L2:
-  46 000c 8910     		asrs	r1, r1, #2
-  47 000e 0348     		ldr	r0, .L4+4
-  48 0010 FFF7FEFF 		bl	bt_printf
-  49              	.LVL0:
-  50 0014 08BD     		pop	{r3, pc}
-  51              	.L5:
-  52 0016 00BF     		.align	2
-  53              	.L4:
-  54 0018 00000000 		.word	encoder_sta_getlist
-  55 001c 00000000 		.word	.LC0
-  56              		.cfi_endproc
-  57              	.LFE127:
-  59              		.section	.text.Task_Encoder_Init,"ax",%progbits
-  60              		.align	2
-  61              		.global	Task_Encoder_Init
-  62              		.thumb
-  63              		.thumb_func
-  65              	Task_Encoder_Init:
-  66              	.LFB124:
+  63:App/Task_Encoder/Task_Encoder.c ****     bt_printf("emcoder_num:%d,encoder_key:%d\r\n",encoder_sta_getlist.num_rotation_circle/4,encoder
+  39              		.loc 1 63 0
+  40 0002 064A     		ldr	r2, .L4
+  41 0004 1368     		ldr	r3, [r2]
+  42 0006 5268     		ldr	r2, [r2, #4]
+  43 0008 1946     		mov	r1, r3
+  44 000a 002B     		cmp	r3, #0
+  45 000c 00DA     		bge	.L2
+  46 000e D91C     		adds	r1, r3, #3
+  47              	.L2:
+  48 0010 8910     		asrs	r1, r1, #2
+  49 0012 0348     		ldr	r0, .L4+4
+  50 0014 FFF7FEFF 		bl	bt_printf
+  51              	.LVL0:
+  52 0018 08BD     		pop	{r3, pc}
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 3
+
+
+  53              	.L5:
+  54 001a 00BF     		.align	2
+  55              	.L4:
+  56 001c 00000000 		.word	encoder_sta_getlist
+  57 0020 00000000 		.word	.LC0
+  58              		.cfi_endproc
+  59              	.LFE127:
+  61              		.section	.text.Task_Encoder_Init,"ax",%progbits
+  62              		.align	2
+  63              		.global	Task_Encoder_Init
+  64              		.thumb
+  65              		.thumb_func
+  67              	Task_Encoder_Init:
+  68              	.LFB124:
   12:App/Task_Encoder/Task_Encoder.c ****     static int encoder_sta = encoder_init_sta;
-  67              		.loc 1 12 0
-  68              		.cfi_startproc
-  69              		@ args = 0, pretend = 0, frame = 0
-  70              		@ frame_needed = 0, uses_anonymous_args = 0
-  71 0000 30B5     		push	{r4, r5, lr}
-  72              	.LCFI1:
-  73              		.cfi_def_cfa_offset 12
-ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 3
+  69              		.loc 1 12 0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73 0000 30B5     		push	{r4, r5, lr}
+  74              	.LCFI1:
+  75              		.cfi_def_cfa_offset 12
+  76              		.cfi_offset 4, -12
+  77              		.cfi_offset 5, -8
+  78              		.cfi_offset 14, -4
+  79 0002 83B0     		sub	sp, sp, #12
+  80              	.LCFI2:
+  81              		.cfi_def_cfa_offset 24
+  14:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Encoder_Init(encoder_port,encoder_io_clk,encoder_io_b_pin,encoder_io_b_pinsource,GPIO_A
+  82              		.loc 1 14 0
+  83 0004 0D4D     		ldr	r5, .L8
+  84 0006 0324     		movs	r4, #3
+  85 0008 0094     		str	r4, [sp]
+  86 000a 0723     		movs	r3, #7
+  87 000c 8022     		movs	r2, #128
+  88 000e 0421     		movs	r1, #4
+  89 0010 2846     		mov	r0, r5
+  90 0012 FFF7FEFF 		bl	GPIO_IO_Encoder_Init
+  91              	.LVL1:
+  15:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Input_Init(encoder_key_clk,encoder_key_pin,encoder_key_port);
+  92              		.loc 1 15 0
+  93 0016 0094     		str	r4, [sp]
+  94 0018 0623     		movs	r3, #6
+  95 001a 4022     		movs	r2, #64
+  96 001c 0421     		movs	r1, #4
+  97 001e 2846     		mov	r0, r5
+  98 0020 FFF7FEFF 		bl	GPIO_IO_Encoder_Init
+  99              	.LVL2:
+  16:App/Task_Encoder/Task_Encoder.c ****     periph_Timer_Encoder_Mode_Init(Timer_8,TIM_Channel_1,TIM_Channel_2);
+ 100              		.loc 1 16 0
+ 101 0024 064A     		ldr	r2, .L8+4
+ 102 0026 0421     		movs	r1, #4
+ 103 0028 0220     		movs	r0, #2
+ 104 002a FFF7FEFF 		bl	GPIO_IO_Input_Init
+ 105              	.LVL3:
+  17:App/Task_Encoder/Task_Encoder.c **** }
+ 106              		.loc 1 17 0
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 4
 
 
-  74              		.cfi_offset 4, -12
-  75              		.cfi_offset 5, -8
-  76              		.cfi_offset 14, -4
-  77 0002 83B0     		sub	sp, sp, #12
-  78              	.LCFI2:
-  79              		.cfi_def_cfa_offset 24
-  14:App/Task_Encoder/Task_Encoder.c ****     GPIO_IO_Encoder_Init(Encoder_Port,Encoder_IO_CLK,GPIO_Pin_6,Encoder_IO_B_PinSource,GPIO_AF_TIM8
-  80              		.loc 1 14 0
-  81 0004 0B4D     		ldr	r5, .L8
-  82 0006 0324     		movs	r4, #3
-  83 0008 0094     		str	r4, [sp]
-  84 000a 0723     		movs	r3, #7
-  85 000c 8022     		movs	r2, #128
-  86 000e 0421     		movs	r1, #4
-  87 0010 2846     		mov	r0, r5
-  88 0012 FFF7FEFF 		bl	GPIO_IO_Encoder_Init
-  89              	.LVL1:
-  15:App/Task_Encoder/Task_Encoder.c ****     periph_Timer_Encoder_Mode_Init(Timer_8,TIM_Channel_1,TIM_Channel_2);
-  90              		.loc 1 15 0
-  91 0016 0094     		str	r4, [sp]
-  92 0018 0623     		movs	r3, #6
-  93 001a 4022     		movs	r2, #64
-  94 001c 0421     		movs	r1, #4
-  95 001e 2846     		mov	r0, r5
-  96 0020 FFF7FEFF 		bl	GPIO_IO_Encoder_Init
-  97              	.LVL2:
-  16:App/Task_Encoder/Task_Encoder.c **** }
-  98              		.loc 1 16 0
-  99 0024 0422     		movs	r2, #4
- 100 0026 0021     		movs	r1, #0
- 101 0028 2046     		mov	r0, r4
- 102 002a FFF7FEFF 		bl	periph_Timer_Encoder_Mode_Init
- 103              	.LVL3:
-  17:App/Task_Encoder/Task_Encoder.c **** 
- 104              		.loc 1 17 0
- 105 002e 03B0     		add	sp, sp, #12
- 106              	.LCFI3:
- 107              		.cfi_def_cfa_offset 12
- 108              		@ sp needed
- 109 0030 30BD     		pop	{r4, r5, pc}
- 110              	.L9:
- 111 0032 00BF     		.align	2
- 112              	.L8:
- 113 0034 00080240 		.word	1073874944
- 114              		.cfi_endproc
- 115              	.LFE124:
- 117              		.section	.text.encoder_get_state,"ax",%progbits
- 118              		.align	2
- 119              		.global	encoder_get_state
- 120              		.thumb
- 121              		.thumb_func
- 123              	encoder_get_state:
- 124              	.LFB126:
-  36:App/Task_Encoder/Task_Encoder.c ****     encoder_sta_getlist.num_rotation_circle += (short)Timer_Port[timerx]->CNT;
- 125              		.loc 1 36 0
- 126              		.cfi_startproc
- 127              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 4
+ 107 002e 0422     		movs	r2, #4
+ 108 0030 0021     		movs	r1, #0
+ 109 0032 2046     		mov	r0, r4
+ 110 0034 FFF7FEFF 		bl	periph_Timer_Encoder_Mode_Init
+ 111              	.LVL4:
+  18:App/Task_Encoder/Task_Encoder.c **** 
+ 112              		.loc 1 18 0
+ 113 0038 03B0     		add	sp, sp, #12
+ 114              	.LCFI3:
+ 115              		.cfi_def_cfa_offset 12
+ 116              		@ sp needed
+ 117 003a 30BD     		pop	{r4, r5, pc}
+ 118              	.L9:
+ 119              		.align	2
+ 120              	.L8:
+ 121 003c 00080240 		.word	1073874944
+ 122 0040 00040240 		.word	1073873920
+ 123              		.cfi_endproc
+ 124              	.LFE124:
+ 126              		.section	.text.encoder_get_state,"ax",%progbits
+ 127              		.align	2
+ 128              		.global	encoder_get_state
+ 129              		.thumb
+ 130              		.thumb_func
+ 132              	encoder_get_state:
+ 133              	.LFB125:
+  21:App/Task_Encoder/Task_Encoder.c ****     static int key_cnt = 0,click_flag = 0;
+ 134              		.loc 1 21 0
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 0
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138              	.LVL5:
+ 139 0000 08B5     		push	{r3, lr}
+ 140              	.LCFI4:
+ 141              		.cfi_def_cfa_offset 8
+ 142              		.cfi_offset 3, -8
+ 143              		.cfi_offset 14, -4
+  23:App/Task_Encoder/Task_Encoder.c ****     Timer_Port[timerx]->CNT = 0;
+ 144              		.loc 1 23 0
+ 145 0002 1E4B     		ldr	r3, .L14
+ 146 0004 53F82020 		ldr	r2, [r3, r0, lsl #2]
+ 147 0008 536A     		ldr	r3, [r2, #36]
+ 148 000a 1D49     		ldr	r1, .L14+4
+ 149 000c 0868     		ldr	r0, [r1]
+ 150              	.LVL6:
+ 151 000e 00FA83F3 		sxtah	r3, r0, r3
+ 152 0012 0B60     		str	r3, [r1]
+  24:App/Task_Encoder/Task_Encoder.c ****     if(GPIO_Get_IO_LEVEL(encoder_key_port,encoder_key_pin) && click_flag == 1)
+ 153              		.loc 1 24 0
+ 154 0014 0023     		movs	r3, #0
+ 155 0016 5362     		str	r3, [r2, #36]
+  25:App/Task_Encoder/Task_Encoder.c ****     {
+ 156              		.loc 1 25 0
+ 157 0018 0421     		movs	r1, #4
+ 158 001a 1A48     		ldr	r0, .L14+8
+ 159 001c FFF7FEFF 		bl	GPIO_Get_IO_LEVEL
+ 160              	.LVL7:
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 5
 
 
- 128              		@ frame_needed = 0, uses_anonymous_args = 0
- 129              		@ link register save eliminated.
- 130              	.LVL4:
-  37:App/Task_Encoder/Task_Encoder.c ****     Timer_Port[timerx]->CNT = 0;
- 131              		.loc 1 37 0
- 132 0000 054B     		ldr	r3, .L11
- 133 0002 53F82020 		ldr	r2, [r3, r0, lsl #2]
- 134 0006 536A     		ldr	r3, [r2, #36]
- 135 0008 0449     		ldr	r1, .L11+4
- 136 000a 0868     		ldr	r0, [r1]
- 137              	.LVL5:
- 138 000c 00FA83F3 		sxtah	r3, r0, r3
- 139 0010 0B60     		str	r3, [r1]
-  38:App/Task_Encoder/Task_Encoder.c **** }
- 140              		.loc 1 38 0
- 141 0012 0023     		movs	r3, #0
- 142 0014 5362     		str	r3, [r2, #36]
- 143 0016 7047     		bx	lr
- 144              	.L12:
- 145              		.align	2
- 146              	.L11:
- 147 0018 00000000 		.word	Timer_Port
- 148 001c 00000000 		.word	encoder_sta_getlist
- 149              		.cfi_endproc
- 150              	.LFE126:
- 152              		.section	.text.Task_Encoder_Core,"ax",%progbits
- 153              		.align	2
- 154              		.global	Task_Encoder_Core
- 155              		.thumb
- 156              		.thumb_func
- 158              	Task_Encoder_Core:
- 159              	.LFB125:
-  21:App/Task_Encoder/Task_Encoder.c ****     switch(encoder_sta)
- 160              		.loc 1 21 0
- 161              		.cfi_startproc
- 162              		@ args = 0, pretend = 0, frame = 0
- 163              		@ frame_needed = 0, uses_anonymous_args = 0
- 164              	.LVL6:
- 165 0000 08B5     		push	{r3, lr}
- 166              	.LCFI4:
- 167              		.cfi_def_cfa_offset 8
- 168              		.cfi_offset 3, -8
- 169              		.cfi_offset 14, -4
-  22:App/Task_Encoder/Task_Encoder.c ****     {
- 170              		.loc 1 22 0
- 171 0002 084B     		ldr	r3, .L18
- 172 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 173 0006 13B1     		cbz	r3, .L15
- 174 0008 012B     		cmp	r3, #1
- 175 000a 06D0     		beq	.L16
- 176 000c 08BD     		pop	{r3, pc}
- 177              	.L15:
- 178              	.LBB2:
-  25:App/Task_Encoder/Task_Encoder.c ****             encoder_sta = encoder_get_sta;
- 179              		.loc 1 25 0
- 180 000e FFF7FEFF 		bl	Task_Encoder_Init
- 181              	.LVL7:
-ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 5
+ 161 0020 48B1     		cbz	r0, .L11
+  25:App/Task_Encoder/Task_Encoder.c ****     {
+ 162              		.loc 1 25 0 is_stmt 0 discriminator 1
+ 163 0022 194B     		ldr	r3, .L14+12
+ 164 0024 1B68     		ldr	r3, [r3]
+ 165 0026 012B     		cmp	r3, #1
+ 166 0028 05D1     		bne	.L11
+  27:App/Task_Encoder/Task_Encoder.c ****         key_cnt = 0; 
+ 167              		.loc 1 27 0 is_stmt 1
+ 168 002a 0023     		movs	r3, #0
+ 169 002c 164A     		ldr	r2, .L14+12
+ 170 002e 1360     		str	r3, [r2]
+  28:App/Task_Encoder/Task_Encoder.c ****     }
+ 171              		.loc 1 28 0
+ 172 0030 164A     		ldr	r2, .L14+16
+ 173 0032 1360     		str	r3, [r2]
+ 174 0034 08BD     		pop	{r3, pc}
+ 175              	.L11:
+  30:App/Task_Encoder/Task_Encoder.c ****     {
+ 176              		.loc 1 30 0
+ 177 0036 0421     		movs	r1, #4
+ 178 0038 1248     		ldr	r0, .L14+8
+ 179 003a FFF7FEFF 		bl	GPIO_Get_IO_LEVEL
+ 180              	.LVL8:
+ 181 003e E0B9     		cbnz	r0, .L10
+  30:App/Task_Encoder/Task_Encoder.c ****     {
+ 182              		.loc 1 30 0 is_stmt 0 discriminator 1
+ 183 0040 114B     		ldr	r3, .L14+12
+ 184 0042 1B68     		ldr	r3, [r3]
+ 185 0044 CBB9     		cbnz	r3, .L10
+  32:App/Task_Encoder/Task_Encoder.c ****         if(!(GPIO_Get_IO_LEVEL(encoder_key_port,encoder_key_pin)) && key_cnt == 200)
+ 186              		.loc 1 32 0 is_stmt 1
+ 187 0046 114A     		ldr	r2, .L14+16
+ 188 0048 1368     		ldr	r3, [r2]
+ 189 004a 0133     		adds	r3, r3, #1
+ 190 004c 1360     		str	r3, [r2]
+  33:App/Task_Encoder/Task_Encoder.c ****         {
+ 191              		.loc 1 33 0
+ 192 004e 0421     		movs	r1, #4
+ 193 0050 00F18040 		add	r0, r0, #1073741824
+ 194 0054 00F50130 		add	r0, r0, #132096
+ 195 0058 FFF7FEFF 		bl	GPIO_Get_IO_LEVEL
+ 196              	.LVL9:
+ 197 005c 68B9     		cbnz	r0, .L10
+  33:App/Task_Encoder/Task_Encoder.c ****         {
+ 198              		.loc 1 33 0 is_stmt 0 discriminator 1
+ 199 005e 0B4B     		ldr	r3, .L14+16
+ 200 0060 1B68     		ldr	r3, [r3]
+ 201 0062 C82B     		cmp	r3, #200
+ 202 0064 09D1     		bne	.L10
+  35:App/Task_Encoder/Task_Encoder.c ****             click_flag = 1;
+ 203              		.loc 1 35 0 is_stmt 1
+ 204 0066 064A     		ldr	r2, .L14+4
+ 205 0068 5368     		ldr	r3, [r2, #4]
+ 206 006a 0133     		adds	r3, r3, #1
+ 207 006c 5360     		str	r3, [r2, #4]
+  36:App/Task_Encoder/Task_Encoder.c ****             key_cnt = 0;
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 6
 
 
-  26:App/Task_Encoder/Task_Encoder.c ****             break;
- 182              		.loc 1 26 0
- 183 0012 0122     		movs	r2, #1
- 184 0014 034B     		ldr	r3, .L18
- 185 0016 1A70     		strb	r2, [r3]
-  27:App/Task_Encoder/Task_Encoder.c ****         case encoder_get_sta:
- 186              		.loc 1 27 0
- 187 0018 08BD     		pop	{r3, pc}
- 188              	.LVL8:
- 189              	.L16:
-  29:App/Task_Encoder/Task_Encoder.c ****         break;
- 190              		.loc 1 29 0
- 191 001a 0320     		movs	r0, #3
- 192              	.LVL9:
- 193 001c FFF7FEFF 		bl	encoder_get_state
- 194              	.LVL10:
- 195 0020 08BD     		pop	{r3, pc}
- 196              	.L19:
- 197 0022 00BF     		.align	2
- 198              	.L18:
- 199 0024 00000000 		.word	.LANCHOR0
- 200              	.LBE2:
- 201              		.cfi_endproc
- 202              	.LFE125:
- 204              		.global	shellCommandencoder_get_to_shell_show
- 205              		.global	shellDescencoder_get_to_shell_show
- 206              		.global	shellCmdencoder_get_to_shell_show
- 207              		.comm	Encoder_Tsk_Hdl,4,4
- 208              		.comm	encoder_sta_getlist,8,4
- 209              		.global	encoder_sta
- 210              		.section	.bss.encoder_sta,"aw",%nobits
- 211              		.set	.LANCHOR0,. + 0
- 214              	encoder_sta:
- 215 0000 00       		.space	1
- 216              		.section	.rodata.shellCmdencoder_get_to_shell_show,"a",%progbits
- 217              		.align	2
- 220              	shellCmdencoder_get_to_shell_show:
- 221 0000 656E636F 		.ascii	"encoder_get_to_shell_show\000"
- 221      6465725F 
- 221      6765745F 
- 221      746F5F73 
- 221      68656C6C 
- 222              		.section	.rodata.str1.4,"aMS",%progbits,1
- 223              		.align	2
- 224              	.LC0:
- 225 0000 656D636F 		.ascii	"emcoder_num:%d\015\012\000"
- 225      6465725F 
- 225      6E756D3A 
- 225      25640D0A 
- 225      00
- 226              		.section	.rodata.shellDescencoder_get_to_shell_show,"a",%progbits
- 227              		.align	2
- 230              	shellDescencoder_get_to_shell_show:
- 231 0000 67657463 		.ascii	"getconder\000"
- 231      6F6E6465 
- 231      7200
- 232              		.section	shellCommand,"a",%progbits
-ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 6
+ 208              		.loc 1 36 0
+ 209 006e 0122     		movs	r2, #1
+ 210 0070 054B     		ldr	r3, .L14+12
+ 211 0072 1A60     		str	r2, [r3]
+  37:App/Task_Encoder/Task_Encoder.c ****         }
+ 212              		.loc 1 37 0
+ 213 0074 0022     		movs	r2, #0
+ 214 0076 054B     		ldr	r3, .L14+16
+ 215 0078 1A60     		str	r2, [r3]
+ 216              	.L10:
+ 217 007a 08BD     		pop	{r3, pc}
+ 218              	.L15:
+ 219              		.align	2
+ 220              	.L14:
+ 221 007c 00000000 		.word	Timer_Port
+ 222 0080 00000000 		.word	encoder_sta_getlist
+ 223 0084 00040240 		.word	1073873920
+ 224 0088 00000000 		.word	.LANCHOR0
+ 225 008c 00000000 		.word	.LANCHOR1
+ 226              		.cfi_endproc
+ 227              	.LFE125:
+ 229              		.section	.text.Task_Encoder_Core,"ax",%progbits
+ 230              		.align	2
+ 231              		.global	Task_Encoder_Core
+ 232              		.thumb
+ 233              		.thumb_func
+ 235              	Task_Encoder_Core:
+ 236              	.LFB126:
+  44:App/Task_Encoder/Task_Encoder.c ****     switch(encoder_sta)
+ 237              		.loc 1 44 0
+ 238              		.cfi_startproc
+ 239              		@ args = 0, pretend = 0, frame = 0
+ 240              		@ frame_needed = 0, uses_anonymous_args = 0
+ 241              	.LVL10:
+ 242 0000 08B5     		push	{r3, lr}
+ 243              	.LCFI5:
+ 244              		.cfi_def_cfa_offset 8
+ 245              		.cfi_offset 3, -8
+ 246              		.cfi_offset 14, -4
+  45:App/Task_Encoder/Task_Encoder.c ****     {
+ 247              		.loc 1 45 0
+ 248 0002 084B     		ldr	r3, .L21
+ 249 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 250 0006 13B1     		cbz	r3, .L18
+ 251 0008 012B     		cmp	r3, #1
+ 252 000a 06D0     		beq	.L19
+ 253 000c 08BD     		pop	{r3, pc}
+ 254              	.L18:
+  48:App/Task_Encoder/Task_Encoder.c ****             encoder_sta = encoder_get_sta;
+ 255              		.loc 1 48 0
+ 256 000e FFF7FEFF 		bl	Task_Encoder_Init
+ 257              	.LVL11:
+  49:App/Task_Encoder/Task_Encoder.c ****             break;
+ 258              		.loc 1 49 0
+ 259 0012 0122     		movs	r2, #1
+ 260 0014 034B     		ldr	r3, .L21
+ 261 0016 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 7
 
 
- 233              		.align	2
- 236              	shellCommandencoder_get_to_shell_show:
- 237 0000 00210000 		.word	8448
- 238 0004 00000000 		.word	shellCmdencoder_get_to_shell_show
- 239 0008 00000000 		.word	encoder_get_to_shell_show
- 240 000c 00000000 		.word	shellDescencoder_get_to_shell_show
- 241              		.text
- 242              	.Letext0:
- 243              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
- 244              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
- 245              		.file 4 "SYS/task_manager/task_manager.h"
- 246              		.file 5 "App/Task_Encoder/Task_Encoder.h"
- 247              		.file 6 "USER/stm32f4xx.h"
- 248              		.file 7 "Bsp/periph_timer.h"
- 249              		.file 8 "Dev/Dev_Encoder.h"
- 250              		.file 9 "SYS/shell/shell.h"
- 251              		.file 10 "Bsp/periph_serial.h"
- 252              		.file 11 "F4_CORE/core_cm4.h"
- 253              		.file 12 "SYS/shell/shell_port.h"
- 254              		.file 13 "Bsp/periph_gpio.h"
-ARM GAS  C:\Users\why\AppData\Local\Temp\cccJaesf.s 			page 7
+  50:App/Task_Encoder/Task_Encoder.c ****         case encoder_get_sta:
+ 262              		.loc 1 50 0
+ 263 0018 08BD     		pop	{r3, pc}
+ 264              	.LVL12:
+ 265              	.L19:
+  52:App/Task_Encoder/Task_Encoder.c ****         break;
+ 266              		.loc 1 52 0
+ 267 001a 0320     		movs	r0, #3
+ 268              	.LVL13:
+ 269 001c FFF7FEFF 		bl	encoder_get_state
+ 270              	.LVL14:
+ 271 0020 08BD     		pop	{r3, pc}
+ 272              	.L22:
+ 273 0022 00BF     		.align	2
+ 274              	.L21:
+ 275 0024 00000000 		.word	.LANCHOR2
+ 276              		.cfi_endproc
+ 277              	.LFE126:
+ 279              		.global	shellCommandencoder_get_to_shell_show
+ 280              		.global	shellDescencoder_get_to_shell_show
+ 281              		.global	shellCmdencoder_get_to_shell_show
+ 282              		.comm	Encoder_Tsk_Hdl,4,4
+ 283              		.comm	encoder_sta_getlist,8,4
+ 284              		.global	encoder_sta
+ 285              		.section	.bss.key_cnt.10373,"aw",%nobits
+ 286              		.align	2
+ 287              		.set	.LANCHOR1,. + 0
+ 290              	key_cnt.10373:
+ 291 0000 00000000 		.space	4
+ 292              		.section	.bss.click_flag.10374,"aw",%nobits
+ 293              		.align	2
+ 294              		.set	.LANCHOR0,. + 0
+ 297              	click_flag.10374:
+ 298 0000 00000000 		.space	4
+ 299              		.section	.rodata.shellCmdencoder_get_to_shell_show,"a",%progbits
+ 300              		.align	2
+ 303              	shellCmdencoder_get_to_shell_show:
+ 304 0000 656E636F 		.ascii	"encoder_get_to_shell_show\000"
+ 304      6465725F 
+ 304      6765745F 
+ 304      746F5F73 
+ 304      68656C6C 
+ 305              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 306              		.align	2
+ 307              	.LC0:
+ 308 0000 656D636F 		.ascii	"emcoder_num:%d,encoder_key:%d\015\012\000"
+ 308      6465725F 
+ 308      6E756D3A 
+ 308      25642C65 
+ 308      6E636F64 
+ 309              		.section	.rodata.shellDescencoder_get_to_shell_show,"a",%progbits
+ 310              		.align	2
+ 313              	shellDescencoder_get_to_shell_show:
+ 314 0000 67657463 		.ascii	"getconder\000"
+ 314      6F6E6465 
+ 314      7200
+ 315              		.section	shellCommand,"a",%progbits
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 8
+
+
+ 316              		.align	2
+ 319              	shellCommandencoder_get_to_shell_show:
+ 320 0000 00210000 		.word	8448
+ 321 0004 00000000 		.word	shellCmdencoder_get_to_shell_show
+ 322 0008 00000000 		.word	encoder_get_to_shell_show
+ 323 000c 00000000 		.word	shellDescencoder_get_to_shell_show
+ 324              		.section	.bss.encoder_sta,"aw",%nobits
+ 325              		.set	.LANCHOR2,. + 0
+ 328              	encoder_sta:
+ 329 0000 00       		.space	1
+ 330              		.text
+ 331              	.Letext0:
+ 332              		.file 2 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 333              		.file 3 "d:\\gcc_arm\\5.4 2016q3\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 334              		.file 4 "SYS/task_manager/task_manager.h"
+ 335              		.file 5 "App/Task_Encoder/Task_Encoder.h"
+ 336              		.file 6 "USER/stm32f4xx.h"
+ 337              		.file 7 "Bsp/periph_timer.h"
+ 338              		.file 8 "Dev/Dev_Encoder.h"
+ 339              		.file 9 "SYS/shell/shell.h"
+ 340              		.file 10 "Bsp/periph_serial.h"
+ 341              		.file 11 "F4_CORE/core_cm4.h"
+ 342              		.file 12 "SYS/shell/shell_port.h"
+ 343              		.file 13 "Bsp/periph_gpio.h"
+ARM GAS  C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s 			page 9
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 Task_Encoder.c
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:22     .text.encoder_get_to_shell_show:00000000 $t
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:27     .text.encoder_get_to_shell_show:00000000 encoder_get_to_shell_show
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:54     .text.encoder_get_to_shell_show:00000018 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:22     .text.encoder_get_to_shell_show:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:27     .text.encoder_get_to_shell_show:00000000 encoder_get_to_shell_show
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:56     .text.encoder_get_to_shell_show:0000001c $d
                             *COM*:00000008 encoder_sta_getlist
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:60     .text.Task_Encoder_Init:00000000 $t
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:65     .text.Task_Encoder_Init:00000000 Task_Encoder_Init
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:113    .text.Task_Encoder_Init:00000034 $d
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:118    .text.encoder_get_state:00000000 $t
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:123    .text.encoder_get_state:00000000 encoder_get_state
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:147    .text.encoder_get_state:00000018 $d
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:153    .text.Task_Encoder_Core:00000000 $t
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:158    .text.Task_Encoder_Core:00000000 Task_Encoder_Core
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:199    .text.Task_Encoder_Core:00000024 $d
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:236    shellCommand:00000000 shellCommandencoder_get_to_shell_show
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:230    .rodata.shellDescencoder_get_to_shell_show:00000000 shellDescencoder_get_to_shell_show
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:220    .rodata.shellCmdencoder_get_to_shell_show:00000000 shellCmdencoder_get_to_shell_show
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:62     .text.Task_Encoder_Init:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:67     .text.Task_Encoder_Init:00000000 Task_Encoder_Init
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:121    .text.Task_Encoder_Init:0000003c $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:127    .text.encoder_get_state:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:132    .text.encoder_get_state:00000000 encoder_get_state
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:221    .text.encoder_get_state:0000007c $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:230    .text.Task_Encoder_Core:00000000 $t
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:235    .text.Task_Encoder_Core:00000000 Task_Encoder_Core
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:275    .text.Task_Encoder_Core:00000024 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:319    shellCommand:00000000 shellCommandencoder_get_to_shell_show
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:313    .rodata.shellDescencoder_get_to_shell_show:00000000 shellDescencoder_get_to_shell_show
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:303    .rodata.shellCmdencoder_get_to_shell_show:00000000 shellCmdencoder_get_to_shell_show
                             *COM*:00000004 Encoder_Tsk_Hdl
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:214    .bss.encoder_sta:00000000 encoder_sta
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:215    .bss.encoder_sta:00000000 $d
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:217    .rodata.shellCmdencoder_get_to_shell_show:00000000 $d
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:223    .rodata.str1.4:00000000 $d
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:227    .rodata.shellDescencoder_get_to_shell_show:00000000 $d
-C:\Users\why\AppData\Local\Temp\cccJaesf.s:233    shellCommand:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:328    .bss.encoder_sta:00000000 encoder_sta
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:286    .bss.key_cnt.10373:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:290    .bss.key_cnt.10373:00000000 key_cnt.10373
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:293    .bss.click_flag.10374:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:297    .bss.click_flag.10374:00000000 click_flag.10374
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:300    .rodata.shellCmdencoder_get_to_shell_show:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:306    .rodata.str1.4:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:310    .rodata.shellDescencoder_get_to_shell_show:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:316    shellCommand:00000000 $d
+C:\Users\ADMINI~1\AppData\Local\Temp\cc1moNJj.s:329    .bss.encoder_sta:00000000 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS
 bt_printf
 GPIO_IO_Encoder_Init
+GPIO_IO_Input_Init
 periph_Timer_Encoder_Mode_Init
+GPIO_Get_IO_LEVEL
 Timer_Port

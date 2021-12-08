@@ -192,10 +192,18 @@
 
 //IIC IO definition
 
-#define Encoder_Port GPIOC
-#define Encoder_IO_CLK RCC_AHB1Periph_GPIOC
-#define Encoder_IO_A_PinSource GPIO_PinSource7
-#define Encoder_IO_B_PinSource GPIO_PinSource6
+#define encoder_port GPIOC
+#define encoder_io_clk RCC_AHB1Periph_GPIOC
+
+#define encoder_io_a_pin GPIO_Pin_7
+#define encoder_io_b_pin GPIO_Pin_6
+
+#define encoder_io_a_pinsource GPIO_PinSource7
+#define encoder_io_b_pinsource GPIO_PinSource6
+
+#define encoder_key_port GPIOB
+#define encoder_key_clk RCC_AHB1Periph_GPIOB
+#define encoder_key_pin GPIO_Pin_2
 
 #define SetBit(x) 1 << x
 
