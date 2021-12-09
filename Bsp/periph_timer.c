@@ -152,7 +152,10 @@ void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint16_t channel_a, uint1
 
 int8_t periph_Timer_GetEncoder_Input(Timer_list timerx)
 {
-	return (int8_t)Timer_Port[timerx]->CNT;
+	int8_t tmp = (int8_t)Timer_Port[timerx]->CNT;
+	Timer_Port[timerx]->CNT = 0;
+
+	return tmp;
 }
 
 void periph_Timer_PWMOutPut_Mode_Init(Timer_list timerx, PWM_Hz hz, Timer_PWM_Channel_State CH1_State, Timer_PWM_Channel_State CH2_State, Timer_PWM_Channel_State CH3_State, Timer_PWM_Channel_State CH4_State)

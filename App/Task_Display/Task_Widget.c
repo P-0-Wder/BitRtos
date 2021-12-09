@@ -1,6 +1,7 @@
 #include "Task_Widget.h"
 #include "task_manager.h"
 #include "widget_mng.h"
+#include "Task_Input.h"
 
 /* this task only for test */
 
@@ -47,12 +48,11 @@ static void TestWidget_Dynamic_Dsp(void)
     static int8_t selector = 0;
     static int8_t selector_cnt = 0;
     static bool selector_switch = false;
-    static int16_t slidebar_in = 0;
 
     if (!change)
     {
         rad += 2;
-        slidebar_in--;
+        // slidebar_in--;
 
         if (rad >= 32)
         {
@@ -65,7 +65,7 @@ static void TestWidget_Dynamic_Dsp(void)
     else
     {
         rad -= 2;
-        slidebar_in++;
+        // slidebar_in++;
 
         if (rad <= 2)
         {
@@ -124,7 +124,8 @@ static void TestWidget_Dynamic_Dsp(void)
     }
 
     Widget_Mng.Control(test4)->Clear();
-    Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &slidebar_in);
+    Widget_Mng.Control(test4)->Draw()->draw_num(Font_12, TaskInput_GetData()->Enc_Val.val, 8, 30, true);
+    Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &(TaskInput_GetData()->Enc_Val.val));
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
 
     Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);

@@ -94,7 +94,7 @@ static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj)
         data_tmp.btn = DrvGPIO.get(&obj->IO[Encoder_IO_Btn]);
     }
 
-    data_tmp.val += DrvTimer.get(&obj->TimerObj);
+    data_tmp.val = DrvTimer.get(&obj->TimerObj);
 
     if (obj->init_state & Encoder_Dir_Invert)
     {

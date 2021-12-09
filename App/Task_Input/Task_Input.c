@@ -25,7 +25,7 @@ static DevEncoder_Obj_TypeDef Encoder_Obj;
 /* internal funciton */
 static Input_Error_List TaskInput_Init(void);
 static Input_Error_List TaskInput_Update(void);
-Input_Data_TypeDef TaskInput_GetData(void);
+Input_Data_TypeDef *TaskInput_GetData(void);
 
 /* internal function */
 
@@ -88,7 +88,7 @@ static Input_Error_List TaskInput_Update(void)
         return InputData.error;
 
     /* get encdoer */
-    // InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
+    InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
 
     /* analog input */
     /* get left gimbal */
@@ -106,9 +106,9 @@ static void TaskInput_Gimbal_Cali(void)
 {
 }
 
-Input_Data_TypeDef TaskInput_GetData(void)
+Input_Data_TypeDef *TaskInput_GetData(void)
 {
-    return InputData;
+    return &InputData;
 }
 
 void TaskInput_Core(Task_Handler self)
