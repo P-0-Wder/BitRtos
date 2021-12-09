@@ -83,6 +83,7 @@ typedef struct
 } Input_Data_TypeDef;
 
 void TaskInput_Core(Task_Handler self);
+Input_Data_TypeDef TaskInput_GetData(void);
 
 extern Task_Handler SigInput_Tsk_Hdl;
 
