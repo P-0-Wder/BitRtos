@@ -14,7 +14,7 @@ Objects/Dev_Encoder.o: Dev/Dev_Encoder.c Dev/Dev_Encoder.h Drv/drv_gpio.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h Drv/drv_timer.h \
- Bsp/periph_timer.h App/Task_Input/Input_IO_Def.h
+ Bsp/periph_timer.h
 Dev/Dev_Encoder.h:
 Drv/drv_gpio.h:
 Bsp/periph_gpio.h:
@@ -53,4 +53,3 @@ FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
 Drv/drv_timer.h:
 Bsp/periph_timer.h:
-App/Task_Input/Input_IO_Def.h:

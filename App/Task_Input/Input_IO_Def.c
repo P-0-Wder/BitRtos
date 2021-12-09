@@ -110,6 +110,14 @@ DrvGPIO_Obj_TypeDef Encoder_B_Pin = {
     .AF_TIMx = GPIO_AF_TIM8,
 };
 
+/* for temp use exit */
+DrvGPIO_Obj_TypeDef Encoder_Btn = {
+    .CLK = encoder_key_clk,
+    .Pin = encoder_key_pin,
+    .Port = encoder_key_port,
+    .IO_Type = GPIO_Input,
+};
+
 DrvGPIO_Obj_TypeDef Power_Btn = {
     .CLK = encoder_key_clk,
     .IO_Type = GPIO_Mode_IN,

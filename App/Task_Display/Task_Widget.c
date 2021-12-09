@@ -12,7 +12,7 @@ static Widget_Handle test3;
 static Widget_Handle test4;
 
 /* external function definition */
-Task_Handler TaskWidget_Hdl = 0;
+Task_Handler Widget_Tsk_Hdl = 0;
 
 static UI_Button_Handle test_btn_1 = 0;
 static UI_Button_Handle test_btn_2 = 0;

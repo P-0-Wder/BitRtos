@@ -14,6 +14,6 @@ typedef enum
 
 void TaskWidget_Core(Task_Handler self);
 
-extern Task_Handler TaskWidget_Hdl;
+extern Task_Handler Widget_Tsk_Hdl;
 
 #endif

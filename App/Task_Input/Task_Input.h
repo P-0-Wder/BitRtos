@@ -84,4 +84,6 @@ typedef struct
 
 void TaskInput_Core(Task_Handler self);
 
+extern Task_Handler SigInput_Tsk_Hdl;
+
 #endif

@@ -1,7 +1,6 @@
 #include "Dev_Encoder.h"
 #include "drv_gpio.h"
 #include "drv_timer.h"
-#include "Input_IO_Def.h"
 #include <string.h>
 
 /* internal variable */

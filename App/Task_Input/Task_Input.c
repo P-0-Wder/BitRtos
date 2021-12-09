@@ -2,6 +2,8 @@
 #include "Task_Input.h"
 #include "Input_IO_Def.h"
 
+Task_Handler SigInput_Tsk_Hdl;
+
 /* internal variable */
 static Input_Data_TypeDef InputData;
 static TaskInput_Stage_List Task_Stage = TaskInput_Initialize;
