@@ -41,7 +41,7 @@ static Input_Error_List TaskInput_Init(void)
     EncPin[Encoder_IO_Btn] = Encoder_Btn;
 
     /* init encoder */
-    if (!DevEncoder.open(&Encoder_Obj, EncPin, true, Timer_3, TIM_Channel_1, TIM_Channel_2))
+    if (!DevEncoder.open(&Encoder_Obj, EncPin, true, Timer_8, TIM_Channel_1, TIM_Channel_2))
     {
         InputData.error = Input_Encoder_Error;
         return Input_Encoder_Error;

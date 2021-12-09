@@ -7,11 +7,13 @@
 
 TIM_TypeDef *Timer_Port[Timer_Port_Sum] = {TIM2,
 										   TIM3,
-										   TIM4};
+										   TIM4,
+										   TIM8};
 
 static uint32_t Timer_CLK[Timer_Port_Sum] = {RCC_APB1Periph_TIM2,
 											 RCC_APB1Periph_TIM3,
-											 RCC_APB1Periph_TIM4};
+											 RCC_APB1Periph_TIM4,
+											 RCC_APB2Periph_TIM8};
 
 static uint8_t Timer_IRQ_Channel[Timer_Port_Sum] = {TIM2_IRQn,
 													TIM3_IRQn,
@@ -132,12 +134,13 @@ void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint16_t channel_a, uint1
 	TIM_TimeBaseStructure.TIM_Prescaler = 0;
 	TIM_TimeBaseInit(Timer_Port[timerx], &TIM_TimeBaseStructure);
 
-	TIM_ICInitStructure.TIM_ICFilter = 10;
+	TIM_ICInitStructure.TIM_ICFilter = 6;
 	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
-	TIM_ICInitStructure.TIM_Channel = channel_a; //TIM_Channel_1
+	TIM_ICInitStructure.TIM_Channel = channel_a;
 	TIM_ICInit(Timer_Port[timerx], &TIM_ICInitStructure);
 
-	TIM_ICInitStructure.TIM_Channel = channel_b; //TIM_Channel_2
+	TIM_ICInitStructure.TIM_Channel = channel_b;
+	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
 	TIM_ICInit(Timer_Port[timerx], &TIM_ICInitStructure);
 
 	TIM_EncoderInterfaceConfig(Timer_Port[timerx], TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);

@@ -1,9 +1,10 @@
 #ifndef __PERIPH_GPIO_H
 #define __PERIPH_GPIO_H
 
-#include "stm32f4xx.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 //Serial IO definition
 #define USART1_IO_PORT GPIOA
@@ -216,6 +217,9 @@ typedef struct
 	void *Port;
 	DrvGPIO_CTL_TypeDef IO_Type;
 	uint8_t AF_TIMx;
+
+	bool Exit;
+	uint32_t Exit_line;
 } DrvGPIO_Obj_TypeDef;
 
 void GPIO_USART1_IO_Init(void);
