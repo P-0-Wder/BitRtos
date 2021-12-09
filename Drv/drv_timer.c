@@ -46,9 +46,9 @@ static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
             (((DrvTimer_Obj_TypeDef *)p_data)->timerx > Timer_4) ||
             (((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_a == ((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_b) ||
             (((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_a < TIM_Channel_1) ||
-            (((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_a < TIM_Channel_4) ||
+            (((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_a > TIM_Channel_4) ||
             (((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_b < TIM_Channel_1) ||
-            (((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_b < TIM_Channel_4))
+            (((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_b > TIM_Channel_4))
             return false;
 
         periph_Timer_Encoder_Mode_Init(((DrvTimer_Obj_TypeDef *)p_data)->timerx,
