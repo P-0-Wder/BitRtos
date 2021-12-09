@@ -88,7 +88,7 @@ static Input_Error_List TaskInput_Update(void)
         return InputData.error;
 
     /* get encdoer */
-    InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
+    // InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
 
     /* analog input */
     /* get left gimbal */
