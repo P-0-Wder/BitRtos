@@ -28,11 +28,68 @@ void periph_exit_init(Periph_Exti_Config_TypeDef exti_cfg)
     periph_nvic_Structure_Setting(exti_cfg.nvic_channel, exti_cfg.pre_priority, exti_cfg.sub_priority, exti_cfg.nvic_state);
 }
 
-bool periph_exti_SetCallback(uint32_t EXTI_LineX, exti_callback callbck)
+static uint8_t Get_EXTI_Index(uint32_t EXIT_LineX)
 {
+    float f_exti_id = (float)EXIT_LineX;
+    uint32_t u32_exti_id = 0;
+    uint8_t exp = 0;
+
+    u32_exti_id = *((unsigned long *)(&f_exti_id));
+
+    exp = (u32_exti_id >> 23) & 0xFF;
+    exp -= 127;
+
+    return exp;
 }
 
-exti_callback periph_exti_GetCallback(uint32_t EXIT_LineX)
+static bool periph_exti_checkExti_Line(uint32_t EXTI_LineX)
 {
-    return CallBack_List[EXIT_LineX];
+    switch (EXTI_LineX)
+    {
+    case EXTI_Line0:
+    case EXTI_Line1:
+    case EXTI_Line2:
+    case EXTI_Line3:
+    case EXTI_Line4:
+    case EXTI_Line5:
+    case EXTI_Line6:
+    case EXTI_Line7:
+    case EXTI_Line8:
+    case EXTI_Line9:
+    case EXTI_Line10:
+    case EXTI_Line11:
+    case EXTI_Line12:
+    case EXTI_Line13:
+    case EXTI_Line14:
+    case EXTI_Line15:
+    case EXTI_Line16:
+    case EXTI_Line17:
+    case EXTI_Line18:
+    case EXTI_Line19:
+    case EXTI_Line20:
+    case EXTI_Line21:
+    case EXTI_Line22:
+    case EXTI_Line23:
+        return true;
+
+    default:
+        return false;
+    }
+}
+
+bool periph_exti_SetCallback(uint32_t EXTI_LineX, exti_callback callback)
+{
+    if (!periph_exti_checkExti_Line(EXTI_LineX))
+        return false;
+
+    CallBack_List[Get_EXTI_Index(EXTI_LineX)] = callback;
+    return true;
+}
+
+exti_callback periph_exti_GetCallback(uint32_t EXTI_LineX)
+{
+    if (!periph_exti_checkExti_Line(EXTI_LineX))
+        return NULL;
+
+    return CallBack_List[Get_EXTI_Index(EXTI_LineX)];
 }
