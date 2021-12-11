@@ -19,12 +19,12 @@ void Shell_Printf(const int *ch, ...)
 static void bt_printf(const char *fmt, ...)
 {
 	va_list args;
-	static char *bt_log_buf = NULL;
+	static char bt_log_buf[128];
 	int i = 0;
 	int x = 0;
 	va_start(args, fmt);
 
-	vsnprintf(bt_log_buf, strlen(bt_log_buf) - 1, fmt, args);
+	vsnprintf(bt_log_buf, sizeof(bt_log_buf) - 1, fmt, args);
 	Shell_Printf(bt_log_buf);
 	va_end(args);
 }
