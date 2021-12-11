@@ -612,6 +612,18 @@ static bool UI_ProcessBar_SetIncDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar
     return true;
 }
 
+static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint16_t val)
+{
+    if ((Obj == NULL) || (val > Obj->range))
+        return false;
+
+    Obj->cur_val = val;
+
+    Obj->percent = ((float)val) / Obj->range;
+
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t unit_len)
