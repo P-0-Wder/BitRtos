@@ -582,9 +582,7 @@ static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj)
     return Obj->is_selected;
 }
 
-/***************************************************************** still developing down below **********************************************************************/
-
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint32_t range)
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range)
 {
     if (Obj == NULL)
         return false;
@@ -592,17 +590,29 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, uint8
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     Obj->width = width;
-    Obj->height = height;
+    Obj->height = Default_Font + 6;
 
     Obj->cur_val = 0;
     Obj->range = range;
 
     Obj->percent = 0.0;
 
-    Obj->Mv_Dir = ProcBar_MoveDir_Default;
+    Obj->Mv_Dir = UI_ProcBar_MoveDir_Default;
 
     return true;
 }
+
+static bool UI_ProcessBar_SetIncDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir)
+{
+    if ((Obj == NULL) || (Dir < 0) || (Dir > UI_ProcBar_MoveDir_Right))
+        return false;
+
+    Obj->Mv_Dir = Dir;
+
+    return true;
+}
+
+/***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t unit_len)
 {

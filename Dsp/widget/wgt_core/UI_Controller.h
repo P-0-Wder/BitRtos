@@ -71,12 +71,14 @@ typedef void (*UI_FillRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_
 typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 typedef int (*UI_SliderBarTrigger_Callback)(int16_t data);
+typedef int (*UI_ProcBarTrigger_Callback)(void *data, uint16_t len);
 
 typedef enum
 {
     UI_Type_Button = 0,
     UI_Type_CheckBox,
     UI_Type_SlideBar,
+    UI_Type_ProcBar,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;
@@ -87,6 +89,13 @@ typedef enum
     SilderBar_Default_Mode = SliderBar_Horizon_Mode,
     SliderBar_Vertical_Mode,
 } UI_SliderBar_Mode_List;
+
+typedef enum
+{
+    UI_ProcBar_MoveDir_Default = 0,
+    UI_ProcBar_MoveDir_Left = 0,
+    UI_ProcBar_MoveDir_Right = 1,
+} UI_ProcessBar_MoveDir_TypeDef;
 
 /*
 * use linked list to distinguish which item in created ui item list.
@@ -181,6 +190,25 @@ typedef struct
 
     /* need callback function */
 } UI_SlideBarObj_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
+
+    float percent;
+
+    uint32_t range;
+    uint32_t cur_val;
+
+    uint8_t width;
+    uint8_t height;
+
+    UI_ProcessBar_MoveDir_TypeDef Mv_Dir;
+
+    UI_ProcBarTrigger_Callback Finish_Callback;
+    UI_ProcBarTrigger_Callback Error_Callback;
+} UI_ProcessBarObj_TypeDef;
+
 #pragma pack()
 
 typedef struct
@@ -214,28 +242,6 @@ typedef struct
     bool (*Get_Select)(UI_SlideBarObj_TypeDef *Obj);
     void (*Set_Select)(UI_SlideBarObj_TypeDef *Obj, bool state);
 } UI_SliderBar_Interface_TypeDef;
-
-typedef enum
-{
-    ProcBar_MoveDir_Default = 0,
-    ProcBar_MoveDir_Left = 0,
-    ProcBar_MoveDir_Right = 1,
-} ProcessBar_MoveDir_TypeDef;
-
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
-
-    float percent;
-
-    uint32_t range;
-    uint32_t cur_val;
-
-    uint8_t width;
-    uint8_t height;
-
-    ProcessBar_MoveDir_TypeDef Mv_Dir;
-} UI_ProcessBarObj_TypeDef;
 
 typedef struct
 {
