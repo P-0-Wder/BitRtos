@@ -177,6 +177,8 @@ typedef struct
     int16_t step_len;
     float cur_val;
 
+    bool is_selected;
+
     /* need callback function */
 } UI_SlideBarObj_TypeDef;
 #pragma pack()
@@ -209,6 +211,8 @@ typedef struct
     bool (*Input)(UI_SlideBarObj_TypeDef *Obj, int16_t *step);
     bool (*Trigger)(UI_SlideBarObj_TypeDef *Obj);
     bool (*ctl)(UI_SlideBarObj_TypeDef *Obj);
+    bool (*Get_Select)(UI_SlideBarObj_TypeDef *Obj);
+    void (*Set_Select)(UI_SlideBarObj_TypeDef *Obj, bool state);
 } UI_SliderBar_Interface_TypeDef;
 
 typedef enum

@@ -33,6 +33,8 @@ static bool UI_SlideBar_SetCallBack(UI_SlideBarObj_TypeDef *Obj, UI_SliderBarTri
 static bool UI_SlideBar_Input(UI_SlideBarObj_TypeDef *Obj, int16_t *step);
 static bool UI_SlideBar_Trigger(UI_SlideBarObj_TypeDef *Obj);
 static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj);
+static void UI_SlideBar_SetSelect(UI_SlideBarObj_TypeDef *Obj, bool select);
+static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -66,6 +68,8 @@ UI_SliderBar_Interface_TypeDef UI_SlideBar = {
     .Input = UI_SlideBar_Input,
     .Trigger = UI_SlideBar_Trigger,
     .ctl = UI_SlideBar_CTL,
+    .Set_Select = UI_SlideBar_SetSelect,
+    .Get_Select = UI_SlideBar_IsSelected,
 };
 
 /******************************* general function *********************************/
@@ -170,7 +174,8 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         block_x = HandleToSlideBarObj(item->Handler)->Gen_Data.x + 3;
         block_y = HandleToSlideBarObj(item->Handler)->Gen_Data.y + 1;
 
-        UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
+        if (!UI_SlideBar_IsSelected(HandleToButtonObj(item->Handler)))
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
         break;
 
     default:
@@ -449,6 +454,7 @@ static bool UI_SlideBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List
         return false;
 
     Obj->mode = mode;
+    Obj->is_selected = false;
 
     UI_GenData_Init(&(Obj->Gen_Data), label, x, y);
 
@@ -553,6 +559,22 @@ static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
         return false;
 
     return true;
+}
+
+static void UI_SlideBar_SetSelect(UI_SlideBarObj_TypeDef *Obj, bool select)
+{
+    if (Obj == NULL)
+        return;
+
+    Obj->is_selected = true;
+}
+
+static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    return Obj->is_selected;
 }
 
 /***************************************************************** still developing down below **********************************************************************/
