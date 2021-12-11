@@ -175,7 +175,12 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         block_y = HandleToSlideBarObj(item->Handler)->Gen_Data.y + 1;
 
         if (!UI_SlideBar_IsSelected(HandleToButtonObj(item->Handler)))
+        {
             UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
+        }
+        else
+        {
+        }
         break;
 
     default:
