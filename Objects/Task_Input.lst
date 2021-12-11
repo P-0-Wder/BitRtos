@@ -1,0 +1,534 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Task_Input.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.TaskInput_Init,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	TaskInput_Init:
+  26              	.LFB126:
+  27              		.file 1 "App/Task_Input/Task_Input.c"
+   1:App/Task_Input/Task_Input.c **** #include "task_manager.h"
+   2:App/Task_Input/Task_Input.c **** #include "Task_Input.h"
+   3:App/Task_Input/Task_Input.c **** #include "Input_IO_Def.h"
+   4:App/Task_Input/Task_Input.c **** 
+   5:App/Task_Input/Task_Input.c **** Task_Handler SigInput_Tsk_Hdl;
+   6:App/Task_Input/Task_Input.c **** 
+   7:App/Task_Input/Task_Input.c **** /* internal variable */
+   8:App/Task_Input/Task_Input.c **** static Input_Data_TypeDef InputData;
+   9:App/Task_Input/Task_Input.c **** static TaskInput_Stage_List Task_Stage = TaskInput_Initialize;
+  10:App/Task_Input/Task_Input.c **** 
+  11:App/Task_Input/Task_Input.c **** static Gimbal_Proc_TypeDef Gimbal_L_ProcObj;
+  12:App/Task_Input/Task_Input.c **** static Gimbal_Proc_TypeDef Gimbal_R_ProcObj;
+  13:App/Task_Input/Task_Input.c **** 
+  14:App/Task_Input/Task_Input.c **** static AnalogProc_Obj_TypeDef L_Pot_ProcObj;
+  15:App/Task_Input/Task_Input.c **** static AnalogProc_Obj_TypeDef R_Pot_ProcObj;
+  16:App/Task_Input/Task_Input.c **** 
+  17:App/Task_Input/Task_Input.c **** /* input hardware abstract object */
+  18:App/Task_Input/Task_Input.c **** static DevEncoder_Obj_TypeDef Encoder_Obj;
+  19:App/Task_Input/Task_Input.c **** //static DevGimbal_Obj_TypeDef Gimbal_L_Obj;
+  20:App/Task_Input/Task_Input.c **** //static DevGimbal_Obj_TypeDef Gimbal_R_Obj;
+  21:App/Task_Input/Task_Input.c **** //static DevButton_TypeDef Btn_LShoulder_Obj;
+  22:App/Task_Input/Task_Input.c **** //static DevButton_TypeDef Btn_RShoulder_Obj;
+  23:App/Task_Input/Task_Input.c **** //static DirButton_Obj_TypeDef Btn_5Dir_Obj;
+  24:App/Task_Input/Task_Input.c **** 
+  25:App/Task_Input/Task_Input.c **** /* internal funciton */
+  26:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Init(void);
+  27:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Update(void);
+  28:App/Task_Input/Task_Input.c **** Input_Data_TypeDef *TaskInput_GetData(void);
+  29:App/Task_Input/Task_Input.c **** 
+  30:App/Task_Input/Task_Input.c **** /* internal function */
+  31:App/Task_Input/Task_Input.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 2
+
+
+  32:App/Task_Input/Task_Input.c **** /* external variable */
+  33:App/Task_Input/Task_Input.c **** 
+  34:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Init(void)
+  35:App/Task_Input/Task_Input.c **** {
+  28              		.loc 1 35 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 64
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 30B5     		push	{r4, r5, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 12
+  35              		.cfi_offset 4, -12
+  36              		.cfi_offset 5, -8
+  37              		.cfi_offset 14, -4
+  38 0002 93B0     		sub	sp, sp, #76
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 88
+  36:App/Task_Input/Task_Input.c ****     /* encoder pin */
+  37:App/Task_Input/Task_Input.c ****     DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
+  41              		.loc 1 37 5 view .LVU1
+  38:App/Task_Input/Task_Input.c **** 
+  39:App/Task_Input/Task_Input.c ****     InputData.error = Input_Initial;
+  42              		.loc 1 39 5 view .LVU2
+  43              		.loc 1 39 21 is_stmt 0 view .LVU3
+  44 0004 4FF0010E 		mov	lr, #1
+  45 0008 184B     		ldr	r3, .L6
+  46 000a 83F817E0 		strb	lr, [r3, #23]
+  40:App/Task_Input/Task_Input.c **** 
+  41:App/Task_Input/Task_Input.c ****     EncPin[Encoder_IO_A] = Encoder_A_Pin;
+  47              		.loc 1 41 5 is_stmt 1 view .LVU4
+  48              		.loc 1 41 26 is_stmt 0 view .LVU5
+  49 000e 03AC     		add	r4, sp, #12
+  50 0010 174D     		ldr	r5, .L6+4
+  51 0012 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+  52 0014 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+  53 0016 2B68     		ldr	r3, [r5]
+  54 0018 2360     		str	r3, [r4]
+  42:App/Task_Input/Task_Input.c ****     EncPin[Encoder_IO_B] = Encoder_B_Pin;
+  55              		.loc 1 42 5 is_stmt 1 view .LVU6
+  56              		.loc 1 42 26 is_stmt 0 view .LVU7
+  57 001a 08AC     		add	r4, sp, #32
+  58 001c 154D     		ldr	r5, .L6+8
+  59 001e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+  60 0020 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+  61 0022 2B68     		ldr	r3, [r5]
+  62 0024 2360     		str	r3, [r4]
+  43:App/Task_Input/Task_Input.c ****     EncPin[Encoder_IO_Btn] = Encoder_Btn;
+  63              		.loc 1 43 5 is_stmt 1 view .LVU8
+  64              		.loc 1 43 28 is_stmt 0 view .LVU9
+  65 0026 0DF1340C 		add	ip, sp, #52
+  66 002a 134C     		ldr	r4, .L6+12
+  67 002c 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+  68 002e ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+  69 0032 2368     		ldr	r3, [r4]
+  70 0034 CCF80030 		str	r3, [ip]
+  44:App/Task_Input/Task_Input.c **** 
+  45:App/Task_Input/Task_Input.c ****     /* init encoder */
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 3
+
+
+  46:App/Task_Input/Task_Input.c ****     if (!DevEncoder.open(&Encoder_Obj, EncPin, true, Timer_8, TIM_Channel_1, TIM_Channel_2))
+  71              		.loc 1 46 5 is_stmt 1 view .LVU10
+  72              		.loc 1 46 20 is_stmt 0 view .LVU11
+  73 0038 104B     		ldr	r3, .L6+16
+  74 003a 1C68     		ldr	r4, [r3]
+  75              		.loc 1 46 10 view .LVU12
+  76 003c 0423     		movs	r3, #4
+  77 003e 0193     		str	r3, [sp, #4]
+  78 0040 0023     		movs	r3, #0
+  79 0042 0093     		str	r3, [sp]
+  80 0044 0323     		movs	r3, #3
+  81 0046 7246     		mov	r2, lr
+  82 0048 03A9     		add	r1, sp, #12
+  83 004a 0D48     		ldr	r0, .L6+20
+  84 004c A047     		blx	r4
+  85              	.LVL0:
+  86              		.loc 1 46 8 view .LVU13
+  87 004e 48B1     		cbz	r0, .L5
+  47:App/Task_Input/Task_Input.c ****     {
+  48:App/Task_Input/Task_Input.c ****         InputData.error = Input_Encoder_Error;
+  49:App/Task_Input/Task_Input.c ****         return Input_Encoder_Error;
+  50:App/Task_Input/Task_Input.c ****     }
+  51:App/Task_Input/Task_Input.c **** 
+  52:App/Task_Input/Task_Input.c ****     DevEncoder.invert(&Encoder_Obj, Encoder_Dir_Invert);
+  88              		.loc 1 52 5 is_stmt 1 view .LVU14
+  89              		.loc 1 52 15 is_stmt 0 view .LVU15
+  90 0050 0A4B     		ldr	r3, .L6+16
+  91 0052 5B68     		ldr	r3, [r3, #4]
+  92              		.loc 1 52 5 view .LVU16
+  93 0054 0121     		movs	r1, #1
+  94 0056 0A48     		ldr	r0, .L6+20
+  95 0058 9847     		blx	r3
+  96              	.LVL1:
+  53:App/Task_Input/Task_Input.c **** 
+  54:App/Task_Input/Task_Input.c ****     /* init gimbal */
+  55:App/Task_Input/Task_Input.c **** 
+  56:App/Task_Input/Task_Input.c ****     /* init direction button */
+  57:App/Task_Input/Task_Input.c **** 
+  58:App/Task_Input/Task_Input.c ****     /* init shoulder button */
+  59:App/Task_Input/Task_Input.c **** 
+  60:App/Task_Input/Task_Input.c ****     /* init shoulder toggle */
+  61:App/Task_Input/Task_Input.c **** 
+  62:App/Task_Input/Task_Input.c ****     /* init side pot */
+  63:App/Task_Input/Task_Input.c **** 
+  64:App/Task_Input/Task_Input.c ****     InputData.error = Input_NoError;
+  97              		.loc 1 64 5 is_stmt 1 view .LVU17
+  98              		.loc 1 64 21 is_stmt 0 view .LVU18
+  99 005a 0020     		movs	r0, #0
+ 100 005c 034B     		ldr	r3, .L6
+ 101 005e D875     		strb	r0, [r3, #23]
+  65:App/Task_Input/Task_Input.c ****     return Input_NoError;
+ 102              		.loc 1 65 5 is_stmt 1 view .LVU19
+ 103              	.L3:
+  66:App/Task_Input/Task_Input.c **** }
+ 104              		.loc 1 66 1 is_stmt 0 view .LVU20
+ 105 0060 13B0     		add	sp, sp, #76
+ 106              	.LCFI2:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 4
+
+
+ 107              		.cfi_remember_state
+ 108              		.cfi_def_cfa_offset 12
+ 109              		@ sp needed
+ 110 0062 30BD     		pop	{r4, r5, pc}
+ 111              	.L5:
+ 112              	.LCFI3:
+ 113              		.cfi_restore_state
+  48:App/Task_Input/Task_Input.c ****         return Input_Encoder_Error;
+ 114              		.loc 1 48 9 is_stmt 1 view .LVU21
+  48:App/Task_Input/Task_Input.c ****         return Input_Encoder_Error;
+ 115              		.loc 1 48 25 is_stmt 0 view .LVU22
+ 116 0064 0220     		movs	r0, #2
+ 117 0066 014B     		ldr	r3, .L6
+ 118 0068 D875     		strb	r0, [r3, #23]
+  49:App/Task_Input/Task_Input.c ****     }
+ 119              		.loc 1 49 9 is_stmt 1 view .LVU23
+  49:App/Task_Input/Task_Input.c ****     }
+ 120              		.loc 1 49 16 is_stmt 0 view .LVU24
+ 121 006a F9E7     		b	.L3
+ 122              	.L7:
+ 123              		.align	2
+ 124              	.L6:
+ 125 006c 00000000 		.word	.LANCHOR0
+ 126 0070 00000000 		.word	Encoder_A_Pin
+ 127 0074 00000000 		.word	Encoder_B_Pin
+ 128 0078 00000000 		.word	Encoder_Btn
+ 129 007c 00000000 		.word	DevEncoder
+ 130 0080 00000000 		.word	.LANCHOR1
+ 131              		.cfi_endproc
+ 132              	.LFE126:
+ 134              		.section	.text.TaskInput_Update,"ax",%progbits
+ 135              		.align	1
+ 136              		.syntax unified
+ 137              		.thumb
+ 138              		.thumb_func
+ 139              		.fpu fpv4-sp-d16
+ 141              	TaskInput_Update:
+ 142              	.LFB129:
+  67:App/Task_Input/Task_Input.c **** 
+  68:App/Task_Input/Task_Input.c **** static int16_t TaskInput_Analog_Filter(int16_t in)
+  69:App/Task_Input/Task_Input.c **** {
+  70:App/Task_Input/Task_Input.c ****     int16_t flt_val = 0;
+  71:App/Task_Input/Task_Input.c **** 
+  72:App/Task_Input/Task_Input.c ****     /* filter the input analog value */
+  73:App/Task_Input/Task_Input.c **** 
+  74:App/Task_Input/Task_Input.c ****     return flt_val;
+  75:App/Task_Input/Task_Input.c **** }
+  76:App/Task_Input/Task_Input.c **** 
+  77:App/Task_Input/Task_Input.c **** static int16_t TaskInput_AnalogValue_Map(int16_t in)
+  78:App/Task_Input/Task_Input.c **** {
+  79:App/Task_Input/Task_Input.c ****     int16_t map_val = 0;
+  80:App/Task_Input/Task_Input.c ****     double gain = 0.0;
+  81:App/Task_Input/Task_Input.c **** 
+  82:App/Task_Input/Task_Input.c ****     /* include analog input liner and none liner condition map */
+  83:App/Task_Input/Task_Input.c **** 
+  84:App/Task_Input/Task_Input.c ****     return map_val;
+  85:App/Task_Input/Task_Input.c **** }
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 5
+
+
+  86:App/Task_Input/Task_Input.c **** 
+  87:App/Task_Input/Task_Input.c **** static Input_Error_List TaskInput_Update(void)
+  88:App/Task_Input/Task_Input.c **** {
+ 143              		.loc 1 88 1 is_stmt 1 view -0
+ 144              		.cfi_startproc
+ 145              		@ args = 0, pretend = 0, frame = 8
+ 146              		@ frame_needed = 0, uses_anonymous_args = 0
+  89:App/Task_Input/Task_Input.c ****     if (InputData.error != Input_NoError)
+ 147              		.loc 1 89 5 view .LVU26
+ 148              		.loc 1 89 18 is_stmt 0 view .LVU27
+ 149 0000 094B     		ldr	r3, .L14
+ 150 0002 D87D     		ldrb	r0, [r3, #23]	@ zero_extendqisi2
+ 151              		.loc 1 89 8 view .LVU28
+ 152 0004 78B9     		cbnz	r0, .L11
+  88:App/Task_Input/Task_Input.c ****     if (InputData.error != Input_NoError)
+ 153              		.loc 1 88 1 view .LVU29
+ 154 0006 10B5     		push	{r4, lr}
+ 155              	.LCFI4:
+ 156              		.cfi_def_cfa_offset 8
+ 157              		.cfi_offset 4, -8
+ 158              		.cfi_offset 14, -4
+ 159 0008 82B0     		sub	sp, sp, #8
+ 160              	.LCFI5:
+ 161              		.cfi_def_cfa_offset 16
+  90:App/Task_Input/Task_Input.c ****         return InputData.error;
+  91:App/Task_Input/Task_Input.c **** 
+  92:App/Task_Input/Task_Input.c ****     /* get encdoer */
+  93:App/Task_Input/Task_Input.c ****     InputData.Enc_Val = DevEncoder.get(&Encoder_Obj);
+ 162              		.loc 1 93 5 is_stmt 1 view .LVU30
+ 163              		.loc 1 93 35 is_stmt 0 view .LVU31
+ 164 000a 084B     		ldr	r3, .L14+4
+ 165 000c DB68     		ldr	r3, [r3, #12]
+ 166              		.loc 1 93 25 view .LVU32
+ 167 000e 064C     		ldr	r4, .L14
+ 168 0010 0749     		ldr	r1, .L14+8
+ 169 0012 6846     		mov	r0, sp
+ 170 0014 9847     		blx	r3
+ 171              	.LVL2:
+ 172 0016 009B     		ldr	r3, [sp]	@ unaligned
+ 173 0018 C4F80E30 		str	r3, [r4, #14]	@ unaligned
+ 174 001c BDF80430 		ldrh	r3, [sp, #4]	@ unaligned
+ 175 0020 6382     		strh	r3, [r4, #18]	@ unaligned
+  94:App/Task_Input/Task_Input.c **** 
+  95:App/Task_Input/Task_Input.c ****     /* analog input */
+  96:App/Task_Input/Task_Input.c ****     /* get left gimbal */
+  97:App/Task_Input/Task_Input.c **** 
+  98:App/Task_Input/Task_Input.c ****     /* get right gimbal */
+  99:App/Task_Input/Task_Input.c **** 
+ 100:App/Task_Input/Task_Input.c ****     /* get left side pot value */
+ 101:App/Task_Input/Task_Input.c **** 
+ 102:App/Task_Input/Task_Input.c ****     /* get right side pot value */
+ 103:App/Task_Input/Task_Input.c **** 
+ 104:App/Task_Input/Task_Input.c ****     /* get battery percent */
+ 105:App/Task_Input/Task_Input.c **** }
+ 176              		.loc 1 105 1 view .LVU33
+ 177 0022 02B0     		add	sp, sp, #8
+ 178              	.LCFI6:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 6
+
+
+ 179              		.cfi_def_cfa_offset 8
+ 180              		@ sp needed
+ 181 0024 10BD     		pop	{r4, pc}
+ 182              	.L11:
+ 183              	.LCFI7:
+ 184              		.cfi_def_cfa_offset 0
+ 185              		.cfi_restore 4
+ 186              		.cfi_restore 14
+ 187 0026 7047     		bx	lr
+ 188              	.L15:
+ 189              		.align	2
+ 190              	.L14:
+ 191 0028 00000000 		.word	.LANCHOR0
+ 192 002c 00000000 		.word	DevEncoder
+ 193 0030 00000000 		.word	.LANCHOR1
+ 194              		.cfi_endproc
+ 195              	.LFE129:
+ 197              		.section	.text.TaskInput_GetData,"ax",%progbits
+ 198              		.align	1
+ 199              		.global	TaskInput_GetData
+ 200              		.syntax unified
+ 201              		.thumb
+ 202              		.thumb_func
+ 203              		.fpu fpv4-sp-d16
+ 205              	TaskInput_GetData:
+ 206              	.LFB131:
+ 106:App/Task_Input/Task_Input.c **** 
+ 107:App/Task_Input/Task_Input.c **** static void TaskInput_Gimbal_Cali(void)
+ 108:App/Task_Input/Task_Input.c **** {
+ 109:App/Task_Input/Task_Input.c **** }
+ 110:App/Task_Input/Task_Input.c **** 
+ 111:App/Task_Input/Task_Input.c **** Input_Data_TypeDef *TaskInput_GetData(void)
+ 112:App/Task_Input/Task_Input.c **** {
+ 207              		.loc 1 112 1 is_stmt 1 view -0
+ 208              		.cfi_startproc
+ 209              		@ args = 0, pretend = 0, frame = 0
+ 210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 211              		@ link register save eliminated.
+ 113:App/Task_Input/Task_Input.c ****     return &InputData;
+ 212              		.loc 1 113 5 view .LVU35
+ 114:App/Task_Input/Task_Input.c **** }
+ 213              		.loc 1 114 1 is_stmt 0 view .LVU36
+ 214 0000 0048     		ldr	r0, .L17
+ 215 0002 7047     		bx	lr
+ 216              	.L18:
+ 217              		.align	2
+ 218              	.L17:
+ 219 0004 00000000 		.word	.LANCHOR0
+ 220              		.cfi_endproc
+ 221              	.LFE131:
+ 223              		.section	.text.TaskInput_Core,"ax",%progbits
+ 224              		.align	1
+ 225              		.global	TaskInput_Core
+ 226              		.syntax unified
+ 227              		.thumb
+ 228              		.thumb_func
+ 229              		.fpu fpv4-sp-d16
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 7
+
+
+ 231              	TaskInput_Core:
+ 232              	.LVL3:
+ 233              	.LFB132:
+ 115:App/Task_Input/Task_Input.c **** 
+ 116:App/Task_Input/Task_Input.c **** void TaskInput_Core(Task_Handler self)
+ 117:App/Task_Input/Task_Input.c **** {
+ 234              		.loc 1 117 1 is_stmt 1 view -0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 0
+ 237              		@ frame_needed = 0, uses_anonymous_args = 0
+ 238              		.loc 1 117 1 is_stmt 0 view .LVU38
+ 239 0000 08B5     		push	{r3, lr}
+ 240              	.LCFI8:
+ 241              		.cfi_def_cfa_offset 8
+ 242              		.cfi_offset 3, -8
+ 243              		.cfi_offset 14, -4
+ 118:App/Task_Input/Task_Input.c ****     switch (Task_Stage)
+ 244              		.loc 1 118 5 is_stmt 1 view .LVU39
+ 245 0002 0A4B     		ldr	r3, .L25
+ 246 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 247 0006 13B1     		cbz	r3, .L20
+ 248 0008 022B     		cmp	r3, #2
+ 249 000a 0BD0     		beq	.L21
+ 250              	.LVL4:
+ 251              	.L19:
+ 119:App/Task_Input/Task_Input.c ****     {
+ 120:App/Task_Input/Task_Input.c ****     case TaskInput_Initialize:
+ 121:App/Task_Input/Task_Input.c ****         if (TaskInput_Init() != Input_NoError)
+ 122:App/Task_Input/Task_Input.c ****         {
+ 123:App/Task_Input/Task_Input.c ****             Task_Stage = TaskInput_Init_Error;
+ 124:App/Task_Input/Task_Input.c ****         }
+ 125:App/Task_Input/Task_Input.c ****         else
+ 126:App/Task_Input/Task_Input.c ****             Task_Stage = TaskInput_Updating;
+ 127:App/Task_Input/Task_Input.c ****         break;
+ 128:App/Task_Input/Task_Input.c **** 
+ 129:App/Task_Input/Task_Input.c ****     case TaskInput_Init_Error:
+ 130:App/Task_Input/Task_Input.c ****         /* TODO Error Process */
+ 131:App/Task_Input/Task_Input.c ****         break;
+ 132:App/Task_Input/Task_Input.c **** 
+ 133:App/Task_Input/Task_Input.c ****     case TaskInput_Updating:
+ 134:App/Task_Input/Task_Input.c ****         TaskInput_Update();
+ 135:App/Task_Input/Task_Input.c ****         break;
+ 136:App/Task_Input/Task_Input.c **** 
+ 137:App/Task_Input/Task_Input.c ****     default:
+ 138:App/Task_Input/Task_Input.c ****         break;
+ 139:App/Task_Input/Task_Input.c ****     }
+ 140:App/Task_Input/Task_Input.c **** }
+ 252              		.loc 1 140 1 is_stmt 0 view .LVU40
+ 253 000c 08BD     		pop	{r3, pc}
+ 254              	.LVL5:
+ 255              	.L20:
+ 121:App/Task_Input/Task_Input.c ****         {
+ 256              		.loc 1 121 9 is_stmt 1 view .LVU41
+ 121:App/Task_Input/Task_Input.c ****         {
+ 257              		.loc 1 121 13 is_stmt 0 view .LVU42
+ 258 000e FFF7FEFF 		bl	TaskInput_Init
+ 259              	.LVL6:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 8
+
+
+ 121:App/Task_Input/Task_Input.c ****         {
+ 260              		.loc 1 121 12 view .LVU43
+ 261 0012 18B1     		cbz	r0, .L23
+ 123:App/Task_Input/Task_Input.c ****         }
+ 262              		.loc 1 123 13 is_stmt 1 view .LVU44
+ 123:App/Task_Input/Task_Input.c ****         }
+ 263              		.loc 1 123 24 is_stmt 0 view .LVU45
+ 264 0014 054B     		ldr	r3, .L25
+ 265 0016 0122     		movs	r2, #1
+ 266 0018 1A70     		strb	r2, [r3]
+ 267 001a F7E7     		b	.L19
+ 268              	.L23:
+ 126:App/Task_Input/Task_Input.c ****         break;
+ 269              		.loc 1 126 13 is_stmt 1 view .LVU46
+ 126:App/Task_Input/Task_Input.c ****         break;
+ 270              		.loc 1 126 24 is_stmt 0 view .LVU47
+ 271 001c 034B     		ldr	r3, .L25
+ 272 001e 0222     		movs	r2, #2
+ 273 0020 1A70     		strb	r2, [r3]
+ 274 0022 F3E7     		b	.L19
+ 275              	.LVL7:
+ 276              	.L21:
+ 134:App/Task_Input/Task_Input.c ****         break;
+ 277              		.loc 1 134 9 is_stmt 1 view .LVU48
+ 278 0024 FFF7FEFF 		bl	TaskInput_Update
+ 279              	.LVL8:
+ 135:App/Task_Input/Task_Input.c **** 
+ 280              		.loc 1 135 9 view .LVU49
+ 281              		.loc 1 140 1 is_stmt 0 view .LVU50
+ 282 0028 F0E7     		b	.L19
+ 283              	.L26:
+ 284 002a 00BF     		.align	2
+ 285              	.L25:
+ 286 002c 00000000 		.word	.LANCHOR2
+ 287              		.cfi_endproc
+ 288              	.LFE132:
+ 290              		.global	SigInput_Tsk_Hdl
+ 291              		.section	.bss.Encoder_Obj,"aw",%nobits
+ 292              		.align	2
+ 293              		.set	.LANCHOR1,. + 0
+ 296              	Encoder_Obj:
+ 297 0000 00000000 		.space	88
+ 297      00000000 
+ 297      00000000 
+ 297      00000000 
+ 297      00000000 
+ 298              		.section	.bss.InputData,"aw",%nobits
+ 299              		.align	2
+ 300              		.set	.LANCHOR0,. + 0
+ 303              	InputData:
+ 304 0000 00000000 		.space	24
+ 304      00000000 
+ 304      00000000 
+ 304      00000000 
+ 304      00000000 
+ 305              		.section	.bss.SigInput_Tsk_Hdl,"aw",%nobits
+ 306              		.align	2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 9
+
+
+ 309              	SigInput_Tsk_Hdl:
+ 310 0000 00000000 		.space	4
+ 311              		.section	.bss.Task_Stage,"aw",%nobits
+ 312              		.set	.LANCHOR2,. + 0
+ 315              	Task_Stage:
+ 316 0000 00       		.space	1
+ 317              		.text
+ 318              	.Letext0:
+ 319              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 320              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 321              		.file 4 "SYS/task_manager/task_manager.h"
+ 322              		.file 5 "Bsp/periph_gpio.h"
+ 323              		.file 6 "Dev/Dev_Toggle.h"
+ 324              		.file 7 "Dev/Dev_5DirButton.h"
+ 325              		.file 8 "Dev/Dev_Gimbal.h"
+ 326              		.file 9 "Bsp/periph_timer.h"
+ 327              		.file 10 "Drv/drv_timer.h"
+ 328              		.file 11 "Dev/Dev_Encoder.h"
+ 329              		.file 12 "App/Task_Input/Task_Input.h"
+ 330              		.file 13 "App/Task_Input/Input_IO_Def.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Task_Input.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:18     .text.TaskInput_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:25     .text.TaskInput_Init:0000000000000000 TaskInput_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:125    .text.TaskInput_Init:000000000000006c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:135    .text.TaskInput_Update:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:141    .text.TaskInput_Update:0000000000000000 TaskInput_Update
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:191    .text.TaskInput_Update:0000000000000028 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:198    .text.TaskInput_GetData:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:205    .text.TaskInput_GetData:0000000000000000 TaskInput_GetData
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:219    .text.TaskInput_GetData:0000000000000004 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:224    .text.TaskInput_Core:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:231    .text.TaskInput_Core:0000000000000000 TaskInput_Core
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:286    .text.TaskInput_Core:000000000000002c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:309    .bss.SigInput_Tsk_Hdl:0000000000000000 SigInput_Tsk_Hdl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:292    .bss.Encoder_Obj:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:296    .bss.Encoder_Obj:0000000000000000 Encoder_Obj
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:299    .bss.InputData:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:303    .bss.InputData:0000000000000000 InputData
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:306    .bss.SigInput_Tsk_Hdl:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:315    .bss.Task_Stage:0000000000000000 Task_Stage
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cceI39bw.s:316    .bss.Task_Stage:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+Encoder_A_Pin
+Encoder_B_Pin
+Encoder_Btn
+DevEncoder
