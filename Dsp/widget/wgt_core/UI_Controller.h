@@ -55,18 +55,18 @@ typedef enum
 typedef uint8_t (*UI_GetWidget_Width)(void);
 typedef uint8_t (*UI_GetWidget_Height)(void);
 
-typedef void (*UI_DrawPoint)(int8_t x, int8_t y, bool state);
-typedef void (*UI_DrawLine)(int8_t x, int8_t y, uint8_t len, uint8_t line_width, bool col_inv);
-typedef void (*UI_DrawRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width, bool col_inv);
-typedef void (*UI_DrawRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t line_width, bool col_inv);
-typedef void (*UI_DrawCircle)(int8_t cneter_x, int8_t cneter_y, uint8_t radius, uint8_t line_width, bool col_inv);
-typedef void (*UI_DrawCircleSection)(int8_t x, int8_t y, uint8_t radius, uint8_t option, uint8_t line_width, bool col_inv);
-typedef void (*UI_DrawStr)(uint8_t font, char *str, int8_t x, int8_t y, bool inv);
+typedef void (*UI_DrawPoint)(int16_t x, int16_t y, bool state);
+typedef void (*UI_DrawLine)(int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv);
+typedef void (*UI_DrawRadiusRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width, bool col_inv);
+typedef void (*UI_DrawRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t line_width, bool col_inv);
+typedef void (*UI_DrawCircle)(int16_t cneter_x, int16_t cneter_y, uint8_t radius, uint8_t line_width, bool col_inv);
+typedef void (*UI_DrawCircleSection)(int16_t x, int16_t y, uint8_t radius, uint8_t option, uint8_t line_width, bool col_inv);
+typedef void (*UI_DrawStr)(uint8_t font, char *str, int16_t x, int16_t y, bool inv);
 
-typedef void (*UI_FillRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, bool col_inv);
-typedef void (*UI_FillCircle)(int8_t x, int8_t y, uint8_t radius, bool col_inv);
-typedef void (*UI_FillCircle_Section)(int8_t x, int8_t y, uint8_t radius, uint8_t section, bool col_inv);
-typedef void (*UI_FillRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
+typedef void (*UI_FillRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, bool col_inv);
+typedef void (*UI_FillCircle)(int16_t x, int16_t y, uint8_t radius, bool col_inv);
+typedef void (*UI_FillCircle_Section)(int16_t x, int16_t y, uint8_t radius, uint8_t section, bool col_inv);
+typedef void (*UI_FillRadiusRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
 
 typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
@@ -241,7 +241,9 @@ typedef struct
 
 typedef struct
 {
-    bool (*init)();
+    bool (*init)(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
+    bool (*Move)();
+    bool (*set_DspDir)();
     bool (*set_CurVal)();
     bool (*ctl)();
 } UI_ProcessBar_Interface_TypeDef;

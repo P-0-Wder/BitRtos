@@ -602,7 +602,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16
     return true;
 }
 
-static bool UI_ProcessBar_SetIncDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir)
+static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir)
 {
     if ((Obj == NULL) || (Dir < 0) || (Dir > UI_ProcBar_MoveDir_Right))
         return false;
@@ -620,6 +620,15 @@ static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint16_t val)
     Obj->cur_val = val;
 
     Obj->percent = ((float)val) / Obj->range;
+
+    return true;
+}
+
+static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
+{
+    if ((UI_DspInterface.draw_radius_rectangle == NULL) ||
+        (UI_DspInterface.draw_str == NULL))
+        return false;
 
     return true;
 }
@@ -734,11 +743,6 @@ static bool UI_Drop_Init()
 }
 
 /******************************* control function *********************************/
-
-static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj, uint8_t pcnt)
-{
-    return true;
-}
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 {
