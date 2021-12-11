@@ -49,6 +49,8 @@ static Input_Error_List TaskInput_Init(void)
         return Input_Encoder_Error;
     }
 
+    DevEncoder.invert(&Encoder_Obj, Encoder_Dir_Invert);
+
     /* init gimbal */
 
     /* init direction button */

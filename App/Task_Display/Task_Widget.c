@@ -51,7 +51,7 @@ static void TestWidget_Dynamic_Dsp(void)
     static uint32_t Lst_Encoder_Val = 0;
     uint32_t encoder_val = 0;
 
-    encoder_val = TaskInput_GetData()->Enc_Val.val - Lst_Encoder_Val;
+    encoder_val = Lst_Encoder_Val - TaskInput_GetData()->Enc_Val.val;
     Lst_Encoder_Val = TaskInput_GetData()->Enc_Val.val;
 
     if (!change)
