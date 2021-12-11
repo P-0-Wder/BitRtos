@@ -48,6 +48,11 @@ static void TestWidget_Dynamic_Dsp(void)
     static int8_t selector = 0;
     static int8_t selector_cnt = 0;
     static bool selector_switch = false;
+    static uint32_t Lst_Encoder_Val = 0;
+    uint32_t encoder_val = 0;
+
+    encoder_val = TaskInput_GetData()->Enc_Val.val - Lst_Encoder_Val;
+    Lst_Encoder_Val = TaskInput_GetData()->Enc_Val.val;
 
     if (!change)
     {
@@ -125,7 +130,7 @@ static void TestWidget_Dynamic_Dsp(void)
 
     Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->Draw()->draw_num(Font_12, TaskInput_GetData()->Enc_Val.val, 8, 30, true);
-    Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &(TaskInput_GetData()->Enc_Val.val));
+    Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &encoder_val);
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
 
     Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);

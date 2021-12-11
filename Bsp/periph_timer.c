@@ -132,6 +132,8 @@ void periph_Timer_Encoder_Mode_Init(Timer_list timerx, uint16_t channel_a, uint1
 
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
 	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(Timer_Port[timerx], &TIM_TimeBaseStructure);
 
 	TIM_ICInitStructure.TIM_ICFilter = 6;
