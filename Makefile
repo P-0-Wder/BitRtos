@@ -111,6 +111,7 @@ Bsp/periph_timer_irq.c \
 Bsp/periph_timer.c \
 Bsp/periph_dma_irq.c \
 Bsp/periph_adc.c \
+Bsp/periph_exti.c \
 Drv/drv_adc.c \
 Drv/drv_spi.c \
 Drv/drv_gpio.c \

@@ -11,24 +11,28 @@
 
 static exti_callback CallBack_List[GEN_EXTI_LINE_SUM] = {NULL};
 
-void periph_exti_init()
+void periph_exit_init(Periph_Exti_Config_TypeDef exti_cfg)
 {
     EXTI_InitTypeDef EXTI_InitStruct;
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-    SYSCFG_EXTILineConfig();
+    SYSCFG_EXTILineConfig(exti_cfg.exti_port, exti_cfg.exti_pinsource);
 
-    EXTI_InitStruct.EXTI_Line = ;
+    EXTI_InitStruct.EXTI_Line = exti_cfg.exti_line;
     EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
     EXTI_InitStruct.EXTI_LineCmd = ENABLE;
 
     EXTI_Init(&EXTI_InitStruct);
 
-    periph_nvic_Structure_Setting();
+    periph_nvic_Structure_Setting(exti_cfg.nvic_channel, exti_cfg.pre_priority, exti_cfg.sub_priority, exti_cfg.nvic_state);
 }
 
-exti_callback periph_exti_GetCallback(uint32_t EXTI_LineX)
+bool periph_exti_SetCallback(uint32_t EXTI_LineX, exti_callback callbck)
 {
-    return CallBack_List[EXTI_LineX];
+}
+
+exti_callback periph_exti_GetCallback(uint32_t EXIT_LineX)
+{
+    return CallBack_List[EXIT_LineX];
 }

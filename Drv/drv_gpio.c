@@ -1,5 +1,6 @@
 #include "drv_gpio.h"
 #include "periph_gpio.h"
+#include "periph_exti.h"
 
 /* internal function define */
 

@@ -82,8 +82,6 @@ static void TestWidget_Dynamic_Dsp(void)
 
     if (!selector_switch)
     {
-        selector_cnt++;
-
         if ((selector_cnt % 10) == 0)
             selector = 1;
 
@@ -94,8 +92,6 @@ static void TestWidget_Dynamic_Dsp(void)
     }
     else
     {
-        selector_cnt--;
-
         if ((selector_cnt % 10) == 0)
             selector = -1;
 
@@ -127,9 +123,9 @@ static void TestWidget_Dynamic_Dsp(void)
             move = false;
         }
     }
+    selector = encoder_val;
 
     Widget_Mng.Control(test4)->Clear();
-    Widget_Mng.Control(test4)->Draw()->draw_num(Font_12, TaskInput_GetData()->Enc_Val.val, 8, 30, true);
     Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &encoder_val);
     Widget_Mng.Control(test4)->Draw()->draw_char(Font_12, '4', 8, 2, true);
 
