@@ -626,9 +626,14 @@ static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint16_t val)
 
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
 {
+    char dig_str[3];
+    memset(dig_str, NULL, 3);
+
     if ((UI_DspInterface.draw_radius_rectangle == NULL) ||
         (UI_DspInterface.draw_str == NULL))
         return false;
+
+    itoa((uint8_t)(Obj->percent), dig_str, 10);
 
     return true;
 }
