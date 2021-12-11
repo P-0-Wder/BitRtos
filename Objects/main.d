@@ -13,8 +13,8 @@ Objects/main.o: USER/main.c SYS/runtime/runtime.h Bsp/periph_gpio.h \
  FWLIB/inc/stm32f4xx_cryp.h FWLIB/inc/stm32f4xx_hash.h \
  FWLIB/inc/stm32f4xx_rng.h FWLIB/inc/stm32f4xx_can.h \
  FWLIB/inc/stm32f4xx_dac.h FWLIB/inc/stm32f4xx_dcmi.h \
- FWLIB/inc/stm32f4xx_fsmc.h Drv/drv_serial.h Bsp/periph_serial.h \
- Bsp/periph_dma.h SYS/task_manager/task_manager.h \
+ FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_exti.h Drv/drv_serial.h \
+ Bsp/periph_serial.h Bsp/periph_dma.h SYS/task_manager/task_manager.h \
  SYS/task_manager/task_manager_cfg.h SYS/data_structure/binary_tree.h \
  SYS/data_structure/linked_list.h App/Task_Display/Task_Widget.h \
  App/Task_Input/Task_Input.h Dev/Dev_Toggle.h Drv/drv_gpio.h \
@@ -56,6 +56,7 @@ FWLIB/inc/stm32f4xx_can.h:
 FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
+Bsp/periph_exti.h:
 Drv/drv_serial.h:
 Bsp/periph_serial.h:
 Bsp/periph_dma.h:

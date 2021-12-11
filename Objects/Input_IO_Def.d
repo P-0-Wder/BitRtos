@@ -14,7 +14,7 @@ Objects/Input_IO_Def.o: App/Task_Input/Input_IO_Def.c \
  FWLIB/inc/stm32f4xx_cryp.h FWLIB/inc/stm32f4xx_hash.h \
  FWLIB/inc/stm32f4xx_rng.h FWLIB/inc/stm32f4xx_can.h \
  FWLIB/inc/stm32f4xx_dac.h FWLIB/inc/stm32f4xx_dcmi.h \
- FWLIB/inc/stm32f4xx_fsmc.h
+ FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_exti.h
 App/Task_Input/Input_IO_Def.h:
 Bsp/periph_gpio.h:
 FWLIB/inc/stm32f4xx_rcc.h:
@@ -50,3 +50,4 @@ FWLIB/inc/stm32f4xx_can.h:
 FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
+Bsp/periph_exti.h:

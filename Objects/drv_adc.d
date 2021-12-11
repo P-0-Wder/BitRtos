@@ -13,7 +13,7 @@ Objects/drv_adc.o: Drv/drv_adc.c Drv/drv_adc.h Bsp/periph_adc.h \
  FWLIB/inc/stm32f4xx_wwdg.h FWLIB/inc/misc.h FWLIB/inc/stm32f4xx_cryp.h \
  FWLIB/inc/stm32f4xx_hash.h FWLIB/inc/stm32f4xx_rng.h \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
- FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h
+ FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_exti.h
 Drv/drv_adc.h:
 Bsp/periph_adc.h:
 Bsp/periph_gpio.h:
@@ -50,3 +50,4 @@ FWLIB/inc/stm32f4xx_can.h:
 FWLIB/inc/stm32f4xx_dac.h:
 FWLIB/inc/stm32f4xx_dcmi.h:
 FWLIB/inc/stm32f4xx_fsmc.h:
+Bsp/periph_exti.h:
