@@ -71,7 +71,6 @@ typedef void (*UI_FillRadiusRectangle)(int8_t x, int8_t y, uint8_t width, uint8_
 typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 typedef int (*UI_SliderBarTrigger_Callback)(int16_t data);
-typedef int (*UI_ProcBarTrigger_Callback)(void *data, uint16_t len);
 
 typedef enum
 {
@@ -204,9 +203,6 @@ typedef struct
     uint8_t height;
 
     UI_ProcessBar_MoveDir_TypeDef Mv_Dir;
-
-    UI_ProcBarTrigger_Callback Finish_Callback;
-    UI_ProcBarTrigger_Callback Error_Callback;
 } UI_ProcessBarObj_TypeDef;
 
 #pragma pack()
@@ -242,6 +238,13 @@ typedef struct
     bool (*Get_Select)(UI_SlideBarObj_TypeDef *Obj);
     void (*Set_Select)(UI_SlideBarObj_TypeDef *Obj, bool state);
 } UI_SliderBar_Interface_TypeDef;
+
+typedef struct
+{
+    bool (*init)();
+    bool (*set_CurVal)();
+    bool (*ctl)();
+} UI_ProcessBar_Interface_TypeDef;
 
 typedef struct
 {
