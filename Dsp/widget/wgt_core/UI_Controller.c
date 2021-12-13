@@ -176,13 +176,15 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         if (!UI_SlideBar_IsSelected(HandleToButtonObj(item->Handler)))
         {
             block_x = HandleToSlideBarObj(item->Handler)->Gen_Data.x + 3;
+
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
         }
         else
         {
-            block_x = HandleToSlideBarObj(item->Handler)->BarCoord_X - 2;
-        }
+            block_x = HandleToSlideBarObj(item->Handler)->BarCoord_X - 3;
 
-        UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - block_x - 6), Default_Font - 1, true);
+        }
         break;
 
     default:
