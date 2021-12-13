@@ -1439,28 +1439,25 @@ static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl)
     return true;
 }
 
-static bool WidgetUI_SlideBar_IsSelected(UI_SlideBar_Handle hdl)
+static bool WidgetUI_Select_SlideBar(UI_SlideBar_Handle hdl)
 {
+    bool select = false;
+
     if (hdl == 0)
         return false;
 
-    if (UI_SlideBar.Get_Select != NULL)
-        return UI_SlideBar.Get_Select(HandleToSlideBarObj(hdl));
-    else
-        return false;
-}
+    if ((UI_SlideBar.Get_Select != NULL) && (UI_SlideBar.Set_Select != NULL))
+    {
+        select = UI_SlideBar.Get_Select(HandleToSlideBarObj(hdl));
+        UI_SlideBar.Set_Select(HandleToSlideBarObj(hdl), !select);
 
-static bool WidgetUI_ConfirmSelect_SlideBar(UI_SlideBar_Handle hdl, bool state)
-{
-    if (hdl == 0)
-        return false;
+        if (!select)
+            WidgetUI_SlideBar_Trigger(hdl);
 
-    if (UI_SlideBar.Set_Select != NULL)
-        UI_SlideBar.Set_Select(HandleToSlideBarObj(hdl), state);
-    else
-        return false;
+        return true;
+    }
 
-    return true;
+    return false;
 }
 
 static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
