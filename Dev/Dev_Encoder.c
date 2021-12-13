@@ -13,6 +13,7 @@ static void DevEncoder_EXTI_InternalCallBack(void);
 static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b);
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
 static bool DevEncoder_Set_BtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_Callback callback);
+static bool DevEncoder_ButtonTrigger(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *btn_io);
 static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
 static uint8_t DevEncoder_GetNum(void);
 
@@ -23,6 +24,7 @@ DevEncoder_TypeDef DevEncoder = {
     .open = DevEncoder_Open,
     .num = DevEncoder_GetNum,
     .set_btn_callback = DevEncoder_Set_BtnCallback,
+    .trigger_button = DevEncoder_ButtonTrigger,
 };
 
 static uint8_t DevEncoder_GetNum(void)
@@ -77,6 +79,16 @@ static bool DevEncoder_Set_BtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_
     }
 
     return false;
+}
+
+static bool DevEncoder_ButtonTrigger(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *btn_io)
+{
+    if (DrvGPIO.get(btn_io) == GPIO_LOW)
+    {
+    }
+    else if (DrvGPIO.get(btn_io) == GPIO_HIGH)
+    {
+    }
 }
 
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val)
