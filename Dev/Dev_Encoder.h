@@ -6,6 +6,8 @@
 #include "drv_gpio.h"
 #include "drv_timer.h"
 
+typedef int (*Encoder_Btn_Callback)(void);
+
 typedef enum
 {
     Encoder_Dir_Invert = SetBit(0),

@@ -52,6 +52,7 @@ static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uin
 static bool DrvGPIO_Close(DrvGPIO_Obj_TypeDef *Obj)
 {
     /* ToDo */
+    return true;
 }
 
 static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level)
@@ -65,6 +66,8 @@ static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef l
     }
     else
         GPIO_Set_IO_LEVEL(Obj->Port, Obj->Pin, HI);
+
+    return true;
 }
 
 static DrvGPIO_IO_Level_TypeDef DrvGPIO_Get(DrvGPIO_Obj_TypeDef *Obj)

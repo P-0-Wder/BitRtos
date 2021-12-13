@@ -5,8 +5,10 @@
 
 /* internal variable */
 static uint8_t encoder_sum = 0;
+static Encoder_Btn_Callback EncoderBtn_TriggerCallback = NULL;
 
 /* internal function */
+static void DevEncoder_EXTI_InternalCallBack(void);
 
 /* external funtion */
 static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b);
@@ -40,7 +42,7 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io
 
     if (btn_enable)
     {
-        DrvGPIO.open(&io[Encoder_IO_Btn], GPIO_Input, NULL);
+        DrvGPIO.open(&io[Encoder_IO_Btn], GPIO_EXTI_Input, DevEncoder_EXTI_InternalCallBack);
     }
 
     DrvGPIO.open(&io[Encoder_IO_A], GPIO_Encoder, NULL);
@@ -63,6 +65,12 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io
     }
 
     return obj->init_state;
+}
+
+static void DevEncoder_EXTI_InternalCallBack(void)
+{
+    if (EncoderBtn_TriggerCallback != NULL)
+        EncoderBtn_TriggerCallback();
 }
 
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val)
