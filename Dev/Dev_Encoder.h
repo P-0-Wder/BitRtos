@@ -45,6 +45,7 @@ typedef struct
     bool btn_en;
 
     DrvGPIO_Obj_TypeDef IO[Encoder_IO_Sum];
+    Encoder_Btn_Callback Btn_Callback;
 } DevEncoder_Obj_TypeDef;
 
 typedef struct
