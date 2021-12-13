@@ -202,24 +202,6 @@ typedef enum
 	LO = 1,
 } IO_LEVEL;
 
-typedef enum
-{
-	GPIO_Output = 0,
-	GPIO_Input,
-	GPIO_Encoder,
-	GPIO_EXTI_Input,
-} DrvGPIO_CTL_TypeDef;
-
-typedef struct
-{
-	uint32_t CLK;
-	uint16_t Pin;
-	uint8_t Pin_Src;
-	void *Port;
-	DrvGPIO_CTL_TypeDef IO_Type;
-	uint8_t AF_TIMx;
-} DrvGPIO_Obj_TypeDef;
-
 void GPIO_USART1_IO_Init(void);
 void GPIO_USART2_IO_Init(void);
 void GPIO_USART3_IO_Init(void);

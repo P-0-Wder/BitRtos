@@ -2,7 +2,7 @@
 #define __INPUT_IO_DEF_H
 
 #include <stdint.h>
-#include "periph_gpio.h"
+#include "drv_gpio.h"
 
 #define encoder_port GPIOC
 #define encoder_io_clk RCC_AHB1Periph_GPIOC

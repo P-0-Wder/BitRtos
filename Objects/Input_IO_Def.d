@@ -1,5 +1,5 @@
 Objects/Input_IO_Def.o: App/Task_Input/Input_IO_Def.c \
- App/Task_Input/Input_IO_Def.h Bsp/periph_gpio.h \
+ App/Task_Input/Input_IO_Def.h Drv/drv_gpio.h Bsp/periph_gpio.h \
  FWLIB/inc/stm32f4xx_rcc.h USER/stm32f4xx.h F4_CORE/core_cm4.h \
  F4_CORE/core_cmInstr.h F4_CORE/core_cmFunc.h F4_CORE/core_cmSimd.h \
  USER/system_stm32f4xx.h USER/stm32f4xx_conf.h FWLIB/inc/stm32f4xx_adc.h \
@@ -16,6 +16,7 @@ Objects/Input_IO_Def.o: App/Task_Input/Input_IO_Def.c \
  FWLIB/inc/stm32f4xx_dac.h FWLIB/inc/stm32f4xx_dcmi.h \
  FWLIB/inc/stm32f4xx_fsmc.h Bsp/periph_exti.h
 App/Task_Input/Input_IO_Def.h:
+Drv/drv_gpio.h:
 Bsp/periph_gpio.h:
 FWLIB/inc/stm32f4xx_rcc.h:
 USER/stm32f4xx.h:

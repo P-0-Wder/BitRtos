@@ -14,6 +14,24 @@ typedef enum
     GPIO_HIGH,
 } DrvGPIO_IO_Level_TypeDef;
 
+typedef enum
+{
+    GPIO_Output = 0,
+    GPIO_Input,
+    GPIO_Encoder,
+    GPIO_EXTI_Input,
+} DrvGPIO_CTL_TypeDef;
+
+typedef struct
+{
+    uint32_t CLK;
+    uint16_t Pin;
+    uint8_t Pin_Src;
+    void *Port;
+    DrvGPIO_CTL_TypeDef IO_Type;
+    uint8_t AF_TIMx;
+} DrvGPIO_Obj_TypeDef;
+
 /* still need exti init & interrupt func regist */
 typedef struct
 {
