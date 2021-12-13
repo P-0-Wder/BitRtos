@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "periph_gpio.h"
+#include "periph_exti.h"
 
 typedef void (*GPIO_EXTI_Callback)(void);
 

@@ -1,6 +1,19 @@
 #include "Input_IO_Def.h"
 #include "drv_gpio.h"
 
+#define encoder_port GPIOC
+#define encoder_io_clk RCC_AHB1Periph_GPIOC
+
+#define encoder_io_a_pin GPIO_Pin_7
+#define encoder_io_b_pin GPIO_Pin_6
+
+#define encoder_io_a_pinsource GPIO_PinSource7
+#define encoder_io_b_pinsource GPIO_PinSource6
+
+#define encoder_key_port GPIOB
+#define encoder_key_clk RCC_AHB1Periph_GPIOB
+#define encoder_key_pin GPIO_Pin_2
+
 /*DrvGPIO_Obj_TypeDef Toggle_Left = {
     .CLK =,
     .IO_Type =,
@@ -115,7 +128,14 @@ DrvGPIO_Obj_TypeDef Encoder_Btn = {
     .CLK = encoder_key_clk,
     .Pin = encoder_key_pin,
     .Port = encoder_key_port,
-    .IO_Type = GPIO_Input,
+    .IO_Type = GPIO_EXTI_Input,
+
+    .Exti_Cfg.exti_line = EXTI_Line2,
+    .Exti_Cfg.exti_pinsource = EXTI_PinSource2,
+    .Exti_Cfg.exti_port = EXTI_PortSourceGPIOB,
+    .Exti_Cfg.nvic_channel = EXTI2_IRQn,
+    .Exti_Cfg.pre_priority = 3,
+    .Exti_Cfg.sub_priority = 3,
 };
 
 DrvGPIO_Obj_TypeDef Power_Btn = {

@@ -25,11 +25,12 @@ static DevEncoder_Obj_TypeDef Encoder_Obj;
 /* internal funciton */
 static Input_Error_List TaskInput_Init(void);
 static Input_Error_List TaskInput_Update(void);
-Input_Data_TypeDef *TaskInput_GetData(void);
+static void TaskInput_EncoderBtn_Callback(void);
 
 /* internal function */
 
 /* external variable */
+Input_Data_TypeDef *TaskInput_GetData(void);
 
 static Input_Error_List TaskInput_Init(void)
 {
@@ -43,7 +44,8 @@ static Input_Error_List TaskInput_Init(void)
     EncPin[Encoder_IO_Btn] = Encoder_Btn;
 
     /* init encoder */
-    if (!DevEncoder.open(&Encoder_Obj, EncPin, true, Timer_8, TIM_Channel_1, TIM_Channel_2))
+    if (!DevEncoder.set_btn_callback(&Encoder_Obj, TaskInput_EncoderBtn_Callback) ||
+        !DevEncoder.open(&Encoder_Obj, EncPin, true, Timer_8, TIM_Channel_1, TIM_Channel_2))
     {
         InputData.error = Input_Encoder_Error;
         return Input_Encoder_Error;
@@ -82,6 +84,10 @@ static int16_t TaskInput_AnalogValue_Map(int16_t in)
     /* include analog input liner and none liner condition map */
 
     return map_val;
+}
+
+static void TaskInput_EncoderBtn_Callback(void)
+{
 }
 
 static Input_Error_List TaskInput_Update(void)

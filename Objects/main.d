@@ -18,8 +18,8 @@ Objects/main.o: USER/main.c SYS/runtime/runtime.h Bsp/periph_gpio.h \
  SYS/task_manager/task_manager_cfg.h SYS/data_structure/binary_tree.h \
  SYS/data_structure/linked_list.h App/Task_Display/Task_Widget.h \
  App/Task_Input/Task_Input.h Dev/Dev_Toggle.h Drv/drv_gpio.h \
- Dev/Dev_5DirButton.h Dev/Dev_Gimbal.h Bsp/periph_adc.h Dev/Dev_Button.h \
- Dev/Dev_Encoder.h Drv/drv_timer.h Bsp/periph_timer.h \
+ Bsp/periph_exti.h Dev/Dev_5DirButton.h Dev/Dev_Gimbal.h Bsp/periph_adc.h \
+ Dev/Dev_Button.h Dev/Dev_Encoder.h Drv/drv_timer.h Bsp/periph_timer.h \
  App/Task_Shell/Task_Shell.h
 SYS/runtime/runtime.h:
 Bsp/periph_gpio.h:
@@ -68,6 +68,7 @@ App/Task_Display/Task_Widget.h:
 App/Task_Input/Task_Input.h:
 Dev/Dev_Toggle.h:
 Drv/drv_gpio.h:
+Bsp/periph_exti.h:
 Dev/Dev_5DirButton.h:
 Dev/Dev_Gimbal.h:
 Bsp/periph_adc.h:

@@ -25,7 +25,7 @@ void periph_exit_init(Periph_Exti_Config_TypeDef exti_cfg)
 
     EXTI_Init(&EXTI_InitStruct);
 
-    periph_nvic_Structure_Setting(exti_cfg.nvic_channel, exti_cfg.pre_priority, exti_cfg.sub_priority, exti_cfg.nvic_state);
+    periph_nvic_Structure_Setting(exti_cfg.nvic_channel, exti_cfg.pre_priority, exti_cfg.sub_priority, ENABLE);
 }
 
 static uint8_t Get_EXTI_Index(uint32_t EXIT_LineX)

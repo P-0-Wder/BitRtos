@@ -17,8 +17,8 @@ Objects/SrvOled.o: Dsp/screen/service/SrvOled.c \
  FWLIB/inc/stm32f4xx_can.h FWLIB/inc/stm32f4xx_dac.h \
  FWLIB/inc/stm32f4xx_dcmi.h FWLIB/inc/stm32f4xx_fsmc.h \
  SYS/data_structure/queue.h Drv/drv_gpio.h Bsp/periph_gpio.h \
- Bsp/periph_exti.h Dsp/screen/OledIO_Definition/OledIO_Def.h \
- Dsp/screen/service/SrvOled.h
+ Bsp/periph_exti.h Bsp/periph_exti.h \
+ Dsp/screen/OledIO_Definition/OledIO_Def.h Dsp/screen/service/SrvOled.h
 Dsp/screen/device/oled1306.h:
 Dsp/screen/OledIO_Definition/Oled_DspProp_Def.h:
 Drv/drv_spi.h:
@@ -59,6 +59,7 @@ FWLIB/inc/stm32f4xx_fsmc.h:
 SYS/data_structure/queue.h:
 Drv/drv_gpio.h:
 Bsp/periph_gpio.h:
+Bsp/periph_exti.h:
 Bsp/periph_exti.h:
 Dsp/screen/OledIO_Definition/OledIO_Def.h:
 Dsp/screen/service/SrvOled.h:

@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "stm32f4xx.h"
+#include "stm32f4xx_syscfg.h"
+#include "stm32f4xx_exti.h"
 
 typedef void (*exti_callback)(void);
 
@@ -17,7 +19,6 @@ typedef struct
     uint8_t nvic_channel;
     uint8_t pre_priority;
     uint8_t sub_priority;
-    FunctionalState nvic_state;
 } Periph_Exti_Config_TypeDef;
 
 void periph_exit_init(Periph_Exti_Config_TypeDef exti_cfg);
