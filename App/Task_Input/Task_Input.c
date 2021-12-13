@@ -14,6 +14,8 @@ static Gimbal_Proc_TypeDef Gimbal_R_ProcObj;
 static AnalogProc_Obj_TypeDef L_Pot_ProcObj;
 static AnalogProc_Obj_TypeDef R_Pot_ProcObj;
 
+static DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
+
 /* input hardware abstract object */
 static DevEncoder_Obj_TypeDef Encoder_Obj;
 //static DevGimbal_Obj_TypeDef Gimbal_L_Obj;
@@ -34,9 +36,6 @@ Input_Data_TypeDef *TaskInput_GetData(void);
 
 static Input_Error_List TaskInput_Init(void)
 {
-    /* encoder pin */
-    DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
-
     InputData.error = Input_Initial;
 
     EncPin[Encoder_IO_A] = Encoder_A_Pin;
@@ -88,6 +87,7 @@ static int16_t TaskInput_AnalogValue_Map(int16_t in)
 
 static void TaskInput_EncoderBtn_Callback(void)
 {
+    DevEncoder.trigger_button(&Encoder_Obj, &EncPin[Encoder_IO_Btn]);
 }
 
 static Input_Error_List TaskInput_Update(void)

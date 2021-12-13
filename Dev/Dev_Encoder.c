@@ -83,12 +83,16 @@ static bool DevEncoder_Set_BtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_
 
 static bool DevEncoder_ButtonTrigger(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *btn_io)
 {
+    bool btn_state = false;
+
     if (DrvGPIO.get(btn_io) == GPIO_LOW)
     {
     }
     else if (DrvGPIO.get(btn_io) == GPIO_HIGH)
     {
     }
+
+    return btn_state;
 }
 
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val)
