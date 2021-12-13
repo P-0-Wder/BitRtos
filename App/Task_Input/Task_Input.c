@@ -87,7 +87,27 @@ static int16_t TaskInput_AnalogValue_Map(int16_t in)
 
 static void TaskInput_EncoderBtn_Callback(void)
 {
-    DevEncoder.trigger_button(&Encoder_Obj, &EncPin[Encoder_IO_Btn]);
+    if (DevEncoder.trigger_button(&Encoder_Obj, &EncPin[Encoder_IO_Btn]))
+    {
+    }
+    else
+    {
+    }
+}
+
+void TaskInput_SetCallback(TaskInput_Callback_TypeList type, TaskInput_Callback callback)
+{
+    switch (type)
+    {
+    case EncoderBtn_Push_Callback:
+        break;
+
+    case EncoderBtn_Release_Callback:
+        break;
+
+    default:
+        break;
+    }
 }
 
 static Input_Error_List TaskInput_Update(void)

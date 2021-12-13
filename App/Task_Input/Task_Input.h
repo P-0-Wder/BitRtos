@@ -14,6 +14,16 @@
 #define GIMBAL_RANGE 500
 #define FILTER_BUFF_SIZE 11
 
+typedef int (*TaskInput_Callback)(void *data, uint16_t len);
+
+typedef enum
+{
+    EncoderBtn_Push_Callback = 0,
+    EncoderBtn_Release_Callback,
+
+    TaskInput_Callback_TypeSum,
+} TaskInput_Callback_TypeList;
+
 typedef enum
 {
     TaskInput_Initialize = 0,
