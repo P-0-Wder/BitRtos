@@ -30,6 +30,8 @@ typedef struct
     void *Port;
     DrvGPIO_CTL_TypeDef IO_Type;
     uint8_t AF_TIMx;
+
+    Periph_Exti_Config_TypeDef Exti_Cfg;
 } DrvGPIO_Obj_TypeDef;
 
 /* still need exti init & interrupt func regist */

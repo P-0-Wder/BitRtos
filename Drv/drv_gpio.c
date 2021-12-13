@@ -25,24 +25,27 @@ static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uin
     {
     case GPIO_Output:
         GPIO_IO_Output_Init(Obj->CLK, Obj->Pin, Obj->Port);
-        break;
+        return true;
 
     case GPIO_Input:
         GPIO_IO_Input_Init(Obj->CLK, Obj->Pin, Obj->Port);
-        break;
+        return true;
 
     case GPIO_Encoder:
         GPIO_IO_Encoder_Init(Obj->Port, Obj->CLK, Obj->Pin, Obj->Pin_Src, Obj->AF_TIMx);
-        break;
+        return true;
 
     case GPIO_EXTI_Input:
         GPIO_IO_Input_Init(Obj->CLK, Obj->Pin, Obj->Port);
-        /* use for sync signal input */
 
-        break;
+        /* use for sync signal input */
+        periph_exit_init(Obj->Exti_Cfg);
+
+        /* set callback function */
+        return periph_exti_SetCallback(Obj->Exti_Cfg.exti_line, (exti_callback)data);
 
     default:
-        break;
+        return false;
     }
 }
 
