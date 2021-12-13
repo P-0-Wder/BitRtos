@@ -85,8 +85,10 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x,
     {
         if (font == Font_12)
             temp = oled_asc2_1206[c][t];
-        else
+        else if (font == Font_16)
             temp = oled_asc2_1608[c][t];
+        else if (font == Font_8)
+            temp = oled_asc2_0808[c][t];
 
         for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
         {
