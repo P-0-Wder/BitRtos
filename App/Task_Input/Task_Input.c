@@ -16,6 +16,9 @@ static AnalogProc_Obj_TypeDef R_Pot_ProcObj;
 
 static DrvGPIO_Obj_TypeDef EncPin[Encoder_IO_Sum];
 
+static TaskInput_Callback EncoderBtn_Push_Callback = NULL;
+static TaskInput_Callback EncoderBtn_Release_Callback = NULL;
+
 /* input hardware abstract object */
 static DevEncoder_Obj_TypeDef Encoder_Obj;
 //static DevGimbal_Obj_TypeDef Gimbal_L_Obj;
@@ -89,9 +92,13 @@ static void TaskInput_EncoderBtn_Callback(void)
 {
     if (DevEncoder.trigger_button(&Encoder_Obj, &EncPin[Encoder_IO_Btn]))
     {
+        if (EncoderBtn_Push_Callback != NULL)
+            EncoderBtn_Push_Callback();
     }
     else
     {
+        if (EncoderBtn_Release_Callback != NULL)
+            EncoderBtn_Release_Callback();
     }
 }
 
@@ -99,10 +106,12 @@ void TaskInput_SetCallback(TaskInput_Callback_TypeList type, TaskInput_Callback 
 {
     switch (type)
     {
-    case EncoderBtn_Push_Callback:
+    case DevEncoderBtn_Push_Callback:
+        EncoderBtn_Push_Callback = callback;
         break;
 
-    case EncoderBtn_Release_Callback:
+    case DevEncoderBtn_Release_Callback:
+        EncoderBtn_Release_Callback = callback;
         break;
 
     default:
