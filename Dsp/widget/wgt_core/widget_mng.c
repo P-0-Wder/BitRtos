@@ -1037,6 +1037,11 @@ static void WidgetUI_GetCur_SelectedCtl()
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
 }
 
+static WidgetUI_Item_TypeDef *WidgetUI_GetCurSelected_UICTL_Item(void)
+{
+    return (WidgetUI_Item_TypeDef *)(GetCur_Active_Widget()->CurSelected_CTL->data);
+}
+
 static bool WidgetUI_SelectCtl(int8_t *search_offset)
 {
     volatile WidgetObj_TypeDef *tmp = GetCur_Active_Widget();

@@ -215,11 +215,6 @@ static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int16_t dst_x, int16_t d
 }
 
 /********************************************** UI Button Object ***************************************************/
-/*
-*  the operation of button ctl is a async operation
-*  exti irq or input signal triiger first then out of the trigger code 
-*  check signal value doing process
-*/
 static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state)
 {
     if (Obj == NULL)
