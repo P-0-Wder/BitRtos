@@ -16,6 +16,8 @@ typedef struct
 
     uint32_t exti_line;
 
+    EXTITrigger_TypeDef trigger_type;
+
     uint8_t nvic_channel;
     uint8_t pre_priority;
     uint8_t sub_priority;

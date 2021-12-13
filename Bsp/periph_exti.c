@@ -19,7 +19,7 @@ void periph_exit_init(Periph_Exti_Config_TypeDef exti_cfg)
     SYSCFG_EXTILineConfig(exti_cfg.exti_port, exti_cfg.exti_pinsource);
 
     EXTI_InitStruct.EXTI_Line = exti_cfg.exti_line;
-    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
+    EXTI_InitStruct.EXTI_Trigger = exti_cfg.trigger_type;
     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
     EXTI_InitStruct.EXTI_LineCmd = ENABLE;
 
