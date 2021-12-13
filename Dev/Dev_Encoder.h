@@ -11,7 +11,6 @@ typedef int (*Encoder_Btn_Callback)(void);
 typedef enum
 {
     Encoder_Dir_Invert = SetBit(0),
-    Encoder_Btn_Invert = SetBit(1),
     Encoder_None_Invert = 0,
 } Encoder_Invert_List;
 
@@ -33,7 +32,6 @@ typedef struct
 {
     Encoder_State_List state;
     int16_t val;
-    bool btn;
 } Encoder_Data_TypeDef;
 
 typedef struct

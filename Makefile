@@ -105,6 +105,7 @@ Bsp/periph_gpio.c \
 Bsp/periph_iic.c \
 Bsp/periph_nvic.c \
 Bsp/periph_serial_irq.c \
+Bsp/periph_exti_irq.c \
 Bsp/periph_serial.c \
 Bsp/periph_spi.c \
 Bsp/periph_timer_irq.c \

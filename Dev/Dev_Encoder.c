@@ -102,22 +102,11 @@ static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj)
         return data_tmp;
     }
 
-    /* check encoder button */
-    if (obj->btn_en)
-    {
-        data_tmp.btn = DrvGPIO.get(&obj->IO[Encoder_IO_Btn]);
-    }
-
     data_tmp.val = DrvTimer.get(&obj->TimerObj);
 
     if (obj->invert_reg & Encoder_Dir_Invert)
     {
         data_tmp.val *= -1;
-    }
-
-    if (obj->invert_reg & Encoder_Btn_Invert)
-    {
-        data_tmp.btn = ~data_tmp.btn;
     }
 
     return data_tmp;

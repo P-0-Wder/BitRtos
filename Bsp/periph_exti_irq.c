@@ -16,7 +16,11 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line0);
     }
-    else if (SET == EXTI_GetITStatus(EXTI_Line1))
+}
+
+void EXTI1_IRQHandler(void)
+{
+    if (SET == EXTI_GetITStatus(EXTI_Line1))
     {
         EXTI_ClearFlag(EXTI_Line1);
 
@@ -27,7 +31,11 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line1);
     }
-    else if (SET == EXTI_GetITStatus(EXTI_Line2))
+}
+
+void EXTI2_IRQHandler(void)
+{
+    if (SET == EXTI_GetITStatus(EXTI_Line2))
     {
         EXTI_ClearFlag(EXTI_Line2);
 
@@ -38,7 +46,11 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line2);
     }
-    else if (SET == EXTI_GetITStatus(EXTI_Line3))
+}
+
+void EXTI3_IRQHandler(void)
+{
+    if (SET == EXTI_GetITStatus(EXTI_Line3))
     {
         EXTI_ClearFlag(EXTI_Line3);
 
@@ -49,7 +61,11 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line3);
     }
-    else if (SET == EXTI_GetITStatus(EXTI_Line4))
+}
+
+void EXTI4_IRQHandler(void)
+{
+    if (SET == EXTI_GetITStatus(EXTI_Line4))
     {
         EXTI_ClearFlag(EXTI_Line4);
 
@@ -60,7 +76,11 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line4);
     }
-    else if (SET == EXTI_GetITStatus(EXTI_Line5))
+}
+
+void EXTI9_5_IRQHandler(void)
+{
+    if (SET == EXTI_GetITStatus(EXTI_Line5))
     {
         EXTI_ClearFlag(EXTI_Line5);
 
@@ -115,7 +135,11 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line9);
     }
-    else if (SET == EXTI_GetITStatus(EXTI_Line10))
+}
+
+void EXTI15_10_IRQHandler(void)
+{
+    if (SET == EXTI_GetITStatus(EXTI_Line10))
     {
         EXTI_ClearFlag(EXTI_Line10);
 
@@ -181,20 +205,4 @@ void EXTI0_IRQHandler(void)
 
         EXTI_ClearITPendingBit(EXTI_Line15);
     }
-}
-
-void EXTI1_IRQHandler(void)
-{
-}
-
-void EXTI2_IRQHandler(void)
-{
-}
-
-void EXTI3_IRQHandler(void)
-{
-}
-
-void EXTI4_IRQHandler(void)
-{
 }
