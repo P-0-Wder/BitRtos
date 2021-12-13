@@ -87,10 +87,16 @@ static bool DevEncoder_ButtonTrigger(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_Ty
 
     if (DrvGPIO.get(btn_io) == GPIO_LOW)
     {
+        btn_state = true;
+
+        btn_io->Exti_Cfg.trigger_type = EXTI_Trigger_Rising;
     }
     else if (DrvGPIO.get(btn_io) == GPIO_HIGH)
     {
+        btn_io->Exti_Cfg.trigger_type = EXTI_Trigger_Falling;
     }
+
+    DrvGPIO.open(btn_io, GPIO_EXTI_Input, (uint32_t)obj->Btn_Callback);
 
     return btn_state;
 }
