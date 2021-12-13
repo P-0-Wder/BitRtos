@@ -32,6 +32,7 @@ typedef struct
 {
     Encoder_State_List state;
     int16_t val;
+    bool btn;
 } Encoder_Data_TypeDef;
 
 typedef struct
