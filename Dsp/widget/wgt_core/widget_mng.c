@@ -1439,6 +1439,14 @@ static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl)
     return true;
 }
 
+static bool WidgetUI_ConfirmSelect_SlideBar(UI_SlideBar_Handle hdl, bool state)
+{
+    if (hdl == 0)
+        return false;
+
+    return true;
+}
+
 static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
 {
     if (hdl == 0)
