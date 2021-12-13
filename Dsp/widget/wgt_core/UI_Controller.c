@@ -470,6 +470,9 @@ static bool UI_SlideBar_Init(UI_SlideBarObj_TypeDef *Obj, UI_SliderBar_Mode_List
     Obj->scale = (limit_max - limit_min) / (float)step_len;
     Obj->cur_val = start_val;
 
+    Obj->BarCoord_X = 0;
+    Obj->BarCoord_Y = 0;
+
     return true;
 }
 
@@ -529,7 +532,6 @@ static bool UI_SlideBar_Trigger(UI_SlideBarObj_TypeDef *Obj)
 
 static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
 {
-    int16_t Bar_CoordX = 0;
     int16_t Block_CoordX = 0;
     int16_t Block_CoordY = 0;
     int16_t input_trip = 0;
@@ -541,17 +543,24 @@ static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
 
     input_trip = Obj->limit_max - Obj->limit_min;
 
-    Block_CoordY = Obj->Gen_Data.y;
-    Block_CoordY += 5;
-
     UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
 
     if (Obj->mode == SliderBar_Horizon_Mode)
     {
-        Block_CoordX = Bar_CoordX = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * FONT_WIDTH + DEFAULT_SLIDERBAR_OFFSET;
+        if (Obj->BarCoord_X == 0)
+        {
+            Obj->BarCoord_X = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * FONT_WIDTH + DEFAULT_SLIDERBAR_OFFSET;
+        }
+
+        if (Obj->BarCoord_Y == 0)
+        {
+            Obj->BarCoord_Y = Obj->Gen_Data.y + 5;
+        }
+
+        Block_CoordX = Obj->BarCoord_X;
         Block_CoordX += (Obj->cur_val - Obj->limit_min) / ((float)(input_trip)) * (DEFAULT_SLIDERBAR_LEN - DEFAULT_SLIDERBAR_BLOCK_WIDTH);
 
-        UI_DspInterface.fill_rectangle(Bar_CoordX, Block_CoordY, DEFAULT_SLIDERBAR_LEN, DEFAULT_SLIDERBAR_LINESIZE, true);
+        UI_DspInterface.fill_rectangle(Obj->BarCoord_X, Obj->BarCoord_Y, DEFAULT_SLIDERBAR_LEN, DEFAULT_SLIDERBAR_LINESIZE, true);
 
         Block_CoordY = Obj->Gen_Data.y + 3;
         UI_DspInterface.fill_rectangle(Block_CoordX, Block_CoordY, DEFAULT_SLIDERBAR_BLOCK_WIDTH, DEFAULT_SLIDERBAR_BLOCK_HIGH, true);

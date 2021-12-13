@@ -187,6 +187,9 @@ typedef struct
 
     bool is_selected;
 
+    int16_t BarCoord_X;
+    int16_t BarCoord_Y;
+
     /* need callback function */
 } UI_SlideBarObj_TypeDef;
 
