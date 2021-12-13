@@ -12,6 +12,7 @@ static void DevEncoder_EXTI_InternalCallBack(void);
 /* external funtion */
 static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io, uint8_t btn_enable, uint8_t timerx, uint16_t ch_a, uint16_t ch_b);
 static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
+static bool DevEncoder_Set_BtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_Callback callback);
 static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
 static uint8_t DevEncoder_GetNum(void);
 
@@ -21,6 +22,7 @@ DevEncoder_TypeDef DevEncoder = {
     .invert = DevEncoder_Invert,
     .open = DevEncoder_Open,
     .num = DevEncoder_GetNum,
+    .set_btn_callback = DevEncoder_Set_BtnCallback,
 };
 
 static uint8_t DevEncoder_GetNum(void)
@@ -66,7 +68,7 @@ static bool DevEncoder_Open(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *io
     return obj->init_state;
 }
 
-static bool DevEncoder_Set_ExternalBtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_Callback callback)
+static bool DevEncoder_Set_BtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_Callback callback)
 {
     if (obj != NULL)
     {
