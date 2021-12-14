@@ -132,7 +132,7 @@ static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int16_t 
     {
         if (GenDsp_DrawChar(font, map, *str, x, y, col_inv))
         {
-            x += FONT_WIDTH;
+            x += FONT_WIDTH - 2;
             str++;
         }
         else
