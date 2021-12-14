@@ -127,7 +127,7 @@ static void TestWidget_Dynamic_Dsp(void)
 
     Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &encoder_val);
-    Widget_Mng.Control(test4)->Draw()->draw_str(Font_8, "GJMNPQRSUVWYZ", 2, 2, true);
+    Widget_Mng.Control(test4)->Draw()->draw_str(Font_8, "GJM/NPQRSUVWYZ", 2, 2, true);
 
     Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);
     Widget_Mng.Control(test4)->UI()->Fresh();
