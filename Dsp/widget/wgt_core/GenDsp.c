@@ -76,7 +76,6 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x,
 {
     uint8_t temp;
     int16_t y0 = y;
-    uint8_t char_width;
     c -= ' ';
 
     if (DspRange.width <= x)
@@ -86,21 +85,18 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x,
     {
         if (font == Font_12)
         {
-            char_width = FONT_12_WIDTH;
             temp = oled_asc2_1206[c][t];
         }
         else if (font == Font_16)
         {
-            char_width = FONT_16_WIDTH;
             temp = oled_asc2_1608[c][t];
         }
         else if (font == Font_8)
         {
-            char_width = FONT_8_WIDTH;
             temp = oled_asc2_0806[c][t];
         }
 
-        for (uint8_t bit_index = 0; bit_index < char_width; bit_index++)
+        for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
         {
             if ((DspRange.x + DspRange.width) <= x)
                 return false;
@@ -132,7 +128,7 @@ static void GenDsp_DrawStr(GenFont_List font, uint8_t **map, char *str, int16_t 
     {
         if (GenDsp_DrawChar(font, map, *str, x, y, col_inv))
         {
-            x += FONT_WIDTH - 2;
+            x += STR_DIS;
             str++;
         }
         else
@@ -154,7 +150,7 @@ static uint8_t GenDsp_GetStrLen(GenFont_List font, char *str)
 
     while (*str != '\0')
     {
-        len += FONT_WIDTH;
+        len += STR_DIS;
         str++;
     }
 

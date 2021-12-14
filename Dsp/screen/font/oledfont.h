@@ -4,10 +4,7 @@
 #include <stdint.h>
 
 #define FONT_WIDTH 8
-
-#define FONT_8_WIDTH 8
-#define FONT_12_WIDTH 8
-#define FONT_16_WIDTH 8
+#define STR_DIS (FONT_WIDTH - 2)
 
 typedef enum
 {
