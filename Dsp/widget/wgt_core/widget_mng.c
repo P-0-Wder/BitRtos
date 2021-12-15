@@ -97,6 +97,7 @@ static void Widget_FillRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint
 static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Instance(void);
 static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
+static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(void);
 
 /* general UI Mathod */
 static void WidgetUI_Init(void);
@@ -151,6 +152,11 @@ WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
     .Input = WidgetUI_SlideBar_Input,
 };
 
+WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
+    .create = NULL,
+    .Move = NULL,
+};
+
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
@@ -158,6 +164,7 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Button = WidgetUI_GetButton_Instance,
     .CheckBox = WidgetUI_GetCheckBox_Instance,
     .SlideBar = WidgetUI_GetSlideBar_Instance,
+    .ProcessBar = WidgetUI_GetProcessBar_Instance,
     // .UI_DigInput = NULL,
     // .UI_StrInput = NULL,
     // .UI_ProcBar = NULL,
@@ -1481,5 +1488,42 @@ static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
 }
 
 /************************************** widget SlideBar interface ******************************************/
+
+/************************************** widget ProcessBar interface ******************************************/
+
+static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(void)
+{
+    return &WidgetUI_ProcessBar;
+}
+
+static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, int16_t y, uint8_t width, int16_t range)
+{
+}
+
+static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBar_MoveDir_TypeDef dir)
+{
+    if (hdl == 0)
+        return false;
+
+    return true;
+}
+
+static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, int32_t val)
+{
+    if (hdl == 0)
+        return false;
+
+    return true;
+}
+
+static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_t y)
+{
+    if (hdl == 0)
+        return false;
+
+    return true;
+}
+
+/************************************** widget ProcessBar interface ******************************************/
 
 /************************************** widget UI interface ******************************************/

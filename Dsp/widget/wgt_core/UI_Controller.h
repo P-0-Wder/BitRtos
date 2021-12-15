@@ -12,17 +12,17 @@ typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 typedef UI_GenCTL_Handle UI_SlideBar_Handle;
+typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 
 #define HandleToButtonObj(x) ((UI_ButtonObj_TypeDef *)x)
 #define HandleToCheckBoxObj(x) ((UI_CheckBoxObj_TypeDef *)x)
 #define HandleToSlideBarObj(x) ((UI_SlideBarObj_TypeDef *)x)
+#define HandleToProcessBarObj(x) ((UI_ProcessBarObj_TypeDef *)x)
 
-#define LABEL_COMBINE(x) x##" : "
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
-#define Default_Font Font_12
+#define Default_Font Font_8
 
-#define DEFAULT_FONT font_12
 #define DEFAULT_BUTTON_PUSH_LABEL "yes"
 #define DEFAULT_BUTTON_RELEASE_LABEL "no"
 #define DEFAULT_BUTTON_WIDTH 30
@@ -246,9 +246,9 @@ typedef struct
 {
     bool (*init)(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
     bool (*Move)();
-    bool (*set_DspDir)();
-    bool (*set_CurVal)();
-    bool (*ctl)();
+    bool (*set_DspDir)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
+    bool (*set_CurVal)(UI_ProcessBarObj_TypeDef *Obj, uint32_t val);
+    bool (*ctl)(UI_ProcessBarObj_TypeDef *Obj);
 } UI_ProcessBar_Interface_TypeDef;
 
 typedef struct
@@ -339,6 +339,7 @@ typedef struct
     bool inputing;
 } UI_StrInputObj_TypeDef;
 
+bool UI_Set_FontType(uint8_t font);
 void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawLine line,
                          UI_DrawRectangle rectangle,
@@ -358,4 +359,5 @@ void UI_Set_GetWidgetWidthMathod(UI_GetWidget_Width mathod);
 extern UI_Button_Interface_TypeDef UI_Button;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
 extern UI_SliderBar_Interface_TypeDef UI_SlideBar;
+extern UI_ProcessBar_Interface_TypeDef UI_Process;
 #endif

@@ -4,6 +4,7 @@
 
 /* internal object */
 static UI_DrawInterface_TypeDef UI_DspInterface;
+static uint8_t base_font = Default_Font;
 
 /* external function */
 /* UI Get General Get Mathod */
@@ -35,6 +36,13 @@ static bool UI_SlideBar_Trigger(UI_SlideBarObj_TypeDef *Obj);
 static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj);
 static void UI_SlideBar_SetSelect(UI_SlideBarObj_TypeDef *Obj, bool select);
 static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj);
+
+/* UI Process bar section */
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
+static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
+static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint32_t val);
+static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj);
+static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16_t y);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -72,7 +80,25 @@ UI_SliderBar_Interface_TypeDef UI_SlideBar = {
     .Get_Select = UI_SlideBar_IsSelected,
 };
 
+UI_ProcessBar_Interface_TypeDef UI_Process = {
+    .init = UI_ProcessBar_Init,
+    .Move = UI_ProcessBar_Move,
+    .set_CurVal = UI_ProcessBar_SetCurVal,
+    .set_DspDir = UI_ProcessBar_SetDspDir,
+    .ctl = UI_ProcessBar_Ctl,
+};
+
 /******************************* general function *********************************/
+
+bool UI_Set_FontType(uint8_t font)
+{
+    if (font < Font_8 || font > Font_16)
+        return false;
+
+    base_font = font;
+
+    return true;
+}
 
 void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawLine line,
@@ -124,6 +150,7 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     int16_t block_y;
 
     uint8_t widget_width = 128;
+    uint8_t selector_height = 0;
 
     if (UI_Get_WidgetWidth != NULL)
     {
@@ -135,6 +162,21 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 
     if (item == NULL)
         return false;
+
+    switch (base_font)
+    {
+    case Font_8:
+        selector_height = Font_8 + 2;
+        break;
+
+    case Font_12:
+    case Font_16:
+        selector_height = Font_12 - 1;
+        break;
+
+    default:
+        return false;
+    }
 
     switch ((uint8_t)(item->type))
     {
@@ -167,7 +209,7 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         block_x = HandleToCheckBoxObj(item->Handler)->Gen_Data.x + 3;
         block_y = HandleToCheckBoxObj(item->Handler)->Gen_Data.y + 1;
 
-        UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
+        UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         break;
 
     case UI_Type_SlideBar:
@@ -177,13 +219,13 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         {
             block_x = HandleToSlideBarObj(item->Handler)->Gen_Data.x + 3;
 
-            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), Default_Font - 1, true);
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         }
         else
         {
             block_x = HandleToSlideBarObj(item->Handler)->BarCoord_X - 3;
 
-            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - block_x - 6), Default_Font - 1, true);
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - block_x - 6), selector_height, true);
         }
         break;
 
@@ -354,7 +396,7 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
-                UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
+                UI_DspInterface.draw_str(base_font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
         }
         else
         {
@@ -365,12 +407,12 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
             {
                 /* display label normally */
                 if (Obj->Release_Label != NULL)
-                    UI_DspInterface.draw_str(Default_Font, Obj->Release_Label, Obj->Gen_Data.x + 9, Obj->Gen_Data.y, true);
+                    UI_DspInterface.draw_str(base_font, Obj->Release_Label, Obj->Gen_Data.x + 9, Obj->Gen_Data.y, true);
             }
             else
             {
                 if (Obj->PushDown_Label != NULL)
-                    UI_DspInterface.draw_str(Default_Font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
+                    UI_DspInterface.draw_str(base_font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
             }
         }
     }
@@ -428,6 +470,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 {
     uint16_t StrDsp_x = 0;
     int16_t frame_y = 0;
+    int16_t str_y = Obj->Gen_Data.y;
 
     if ((Obj == NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
@@ -439,7 +482,10 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
     frame_y = Obj->Gen_Data.y + 3;
     StrDsp_x += DEFAULT_CHECKBOX_OFFSET;
 
-    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
+    if (base_font == Font_8)
+        str_y += 1;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, str_y, true);
     UI_DspInterface.draw_rectangle(StrDsp_x, frame_y, DEFAULT_CHECKBOX_FRAME_SIZE, DEFAULT_CHECKBOX_FRAME_SIZE, 1, true);
 
     if (Obj->checked)
@@ -534,15 +580,19 @@ static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
     int16_t Block_CoordX = 0;
     int16_t Block_CoordY = 0;
     int16_t input_trip = 0;
+    int16_t str_y = Obj->Gen_Data.y;
 
     if ((Obj == NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
         (UI_DspInterface.fill_rectangle == NULL))
         return false;
 
+    if (base_font == Font_8)
+        str_y += 1;
+
     input_trip = Obj->limit_max - Obj->limit_min;
 
-    UI_DspInterface.draw_str(Default_Font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, Obj->Gen_Data.y, true);
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, str_y, true);
 
     if (Obj->mode == SliderBar_Horizon_Mode)
     {
@@ -598,7 +648,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     Obj->width = width;
-    Obj->height = Default_Font + 6;
+    Obj->height = base_font + 6;
 
     Obj->cur_val = 0;
     Obj->range = range;
@@ -620,7 +670,7 @@ static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar
     return true;
 }
 
-static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint16_t val)
+static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint32_t val)
 {
     if ((Obj == NULL) || (val > Obj->range))
         return false;
@@ -630,6 +680,13 @@ static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint16_t val)
     Obj->percent = ((float)val) / Obj->range;
 
     return true;
+}
+static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
