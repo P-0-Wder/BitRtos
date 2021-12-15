@@ -1498,6 +1498,15 @@ static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(vo
 
 static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, int16_t y, uint8_t width, int16_t range)
 {
+    UI_ProcessBarObj_TypeDef *processbar = NULL;
+
+    processbar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
+
+    if ((processbar == NULL) ||
+        (!UI_Process.init(processbar, label, x, y, width, range)))
+        return NULL;
+
+    return ((UI_ProcessBar_Handle)processbar);
 }
 
 static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBar_MoveDir_TypeDef dir)
