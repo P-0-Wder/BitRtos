@@ -1496,6 +1496,7 @@ static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(vo
     return &WidgetUI_ProcessBar;
 }
 
+/* process bar cant be selected */
 static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, int16_t y, uint8_t width, int16_t range)
 {
     UI_ProcessBarObj_TypeDef *processbar = NULL;
