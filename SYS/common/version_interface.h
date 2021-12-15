@@ -18,6 +18,7 @@ typedef struct
 typedef struct
 {
     VerBlock_TypeDef BootVer;
+    VerBlock_TypeDef OsVer;
     VerBlock_TypeDef AppVer;
     uint64_t sn;
     char bref[128];
