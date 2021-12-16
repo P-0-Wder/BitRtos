@@ -44,6 +44,8 @@ typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 #define DEFAULT_SLIDERBAR_BLOCK_HIGH 6
 #define DEFAULT_SLIDERBAR_OFFSET 5
 
+#define DEFAULT_PROCESSBAR_LINE_WIDTH 1
+
 typedef enum
 {
     UICircle_Left_Up = 0x02,

@@ -695,13 +695,32 @@ static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
 {
     char dig_str[3];
+    uint8_t frame_height = 0;
     memset(dig_str, NULL, 3);
 
     if ((UI_DspInterface.draw_radius_rectangle == NULL) ||
         (UI_DspInterface.draw_str == NULL))
         return false;
 
+    switch (base_font)
+    {
+    case Font_8:
+        frame_height = base_font + 6;
+        break;
+
+    case Font_12:
+        frame_height = base_font + 4;
+        break;
+
+    default:
+        frame_height = base_font + 6;
+        break;
+    }
+
     itoa((uint8_t)(Obj->percent), dig_str, 10);
+
+    /* show processbar on mid in the widget */
+    UI_DspInterface.draw_radius_rectangle();
 
     if (Obj->Mv_Dir == UI_ProcBar_MoveDir_Right)
     {
