@@ -245,7 +245,7 @@ typedef struct
 typedef struct
 {
     bool (*init)(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
-    bool (*Move)();
+    bool (*Move)(UI_ProcessBarObj_TypeDef *Obj, int16_t x, int16_t y);
     bool (*set_DspDir)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
     bool (*set_CurVal)(UI_ProcessBarObj_TypeDef *Obj, uint32_t val);
     bool (*ctl)(UI_ProcessBarObj_TypeDef *Obj);

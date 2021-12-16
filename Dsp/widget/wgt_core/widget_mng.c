@@ -1531,7 +1531,7 @@ static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_
     if (hdl == 0)
         return false;
 
-    return true;
+    return UI_ProcessBar.Move(HandleToProcessBarObj(hdl), x, y);
 }
 
 /************************************** widget ProcessBar interface ******************************************/
