@@ -128,6 +128,12 @@ static bool WidgetUI_SlideBar_Input(UI_SlideBar_Handle hdl, int16_t step);
 static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl);
 static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl);
 
+/* Widget UI ProcessBar Mathod */
+static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, int16_t y, uint8_t width, int16_t range);
+static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBar_MoveDir_TypeDef dir);
+static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, uint32_t val);
+static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_t y);
+
 /* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .create = WidgetUI_Creat_Button,
@@ -153,8 +159,10 @@ WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
 };
 
 WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
-    .create = NULL,
-    .Move = NULL,
+    .create = WidgetUI_Create_ProcessBar,
+    .Set_DspDir = WidgetUI_ProcessBar_SetDspDir,
+    .Set_Value = WidgetUI_ProcessBar_SetCurValue,
+    .Move = WidgetUI_ProcessBar_Move,
 };
 
 /* for temp we init each var as null */
@@ -1496,7 +1504,7 @@ static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(vo
     return &WidgetUI_ProcessBar;
 }
 
-/* process bar cant be selected */
+/* process bar can`t be selected */
 static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, int16_t y, uint8_t width, int16_t range)
 {
     UI_ProcessBarObj_TypeDef *processbar = NULL;
