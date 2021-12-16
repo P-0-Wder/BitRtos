@@ -1518,12 +1518,12 @@ static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBa
     return UI_ProcessBar.set_DspDir(HandleToProcessBarObj(hdl), dir);
 }
 
-static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, int32_t val)
+static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, uint32_t val)
 {
     if (hdl == 0)
         return false;
 
-    return true;
+    return UI_ProcessBar.set_CurVal(HandleToProcessBarObj(hdl), val);
 }
 
 static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_t y)
