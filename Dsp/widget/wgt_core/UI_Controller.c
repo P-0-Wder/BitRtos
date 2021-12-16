@@ -655,7 +655,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16
 
     Obj->percent = 0.0;
 
-    Obj->Mv_Dir = UI_ProcBar_MoveDir_Default;
+    Obj->Mv_Dir = UI_ProcBar_GrothDir_Default;
 
     return true;
 }
@@ -665,8 +665,8 @@ static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar
     if (Obj == NULL)
         return false;
 
-    if ((Dir > UI_ProcBar_MoveDir_Right) || (Dir < 0))
-        Obj->Mv_Dir = UI_ProcBar_MoveDir_Default;
+    if ((Dir > UI_ProcBar_GrothFrom_Mid) || (Dir < 0))
+        Obj->Mv_Dir = UI_ProcBar_GrothDir_Default;
     else
         Obj->Mv_Dir = Dir;
 
@@ -696,6 +696,7 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
 {
     char dig_str[3];
     uint8_t frame_height = 0;
+    int16_t dsp_coordX = 0;
     memset(dig_str, NULL, 3);
 
     if ((UI_DspInterface.draw_radius_rectangle == NULL) ||
@@ -719,13 +720,14 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
 
     itoa((uint8_t)(Obj->percent), dig_str, 10);
 
-    /* show processbar on mid in the widget */
-    // UI_DspInterface.draw_radius_rectangle();
-
-    if (Obj->Mv_Dir == UI_ProcBar_MoveDir_Right)
+    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
+    {
+        // UI_DspInterface.draw_radius_rectangle();
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
     }
-    else if (Obj->Mv_Dir == UI_ProcBar_MoveDir_Left)
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
     }
 
