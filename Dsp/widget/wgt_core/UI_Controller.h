@@ -92,8 +92,8 @@ typedef enum
 typedef enum
 {
     UI_ProcBar_MoveDir_Default = 0,
-    UI_ProcBar_MoveDir_Left = 0,
-    UI_ProcBar_MoveDir_Right = 1,
+    UI_ProcBar_MoveDir_Right = 0,
+    UI_ProcBar_MoveDir_Left = 1,
 } UI_ProcessBar_MoveDir_TypeDef;
 
 /*

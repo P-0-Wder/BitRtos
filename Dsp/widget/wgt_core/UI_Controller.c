@@ -662,10 +662,13 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16
 
 static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir)
 {
-    if ((Obj == NULL) || (Dir < 0) || (Dir > UI_ProcBar_MoveDir_Right))
+    if (Obj == NULL)
         return false;
 
-    Obj->Mv_Dir = Dir;
+    if ((Dir > UI_ProcBar_MoveDir_Right) || (Dir < 0))
+        Obj->Mv_Dir = UI_ProcBar_MoveDir_Default;
+    else
+        Obj->Mv_Dir = Dir;
 
     return true;
 }
@@ -699,6 +702,13 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
         return false;
 
     itoa((uint8_t)(Obj->percent), dig_str, 10);
+
+    if (Obj->Mv_Dir == UI_ProcBar_MoveDir_Right)
+    {
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_MoveDir_Left)
+    {
+    }
 
     return true;
 }
