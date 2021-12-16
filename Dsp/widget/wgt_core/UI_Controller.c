@@ -720,7 +720,7 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
     itoa((uint8_t)(Obj->percent), dig_str, 10);
 
     /* show processbar on mid in the widget */
-    UI_DspInterface.draw_radius_rectangle();
+    // UI_DspInterface.draw_radius_rectangle();
 
     if (Obj->Mv_Dir == UI_ProcBar_MoveDir_Right)
     {

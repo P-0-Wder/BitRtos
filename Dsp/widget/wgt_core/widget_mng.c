@@ -133,6 +133,7 @@ static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, i
 static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBar_MoveDir_TypeDef dir);
 static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, uint32_t val);
 static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_t y);
+static bool WidgetUI_Fresh_ProcessBar(UI_ProcessBar_Handle hdl);
 
 /* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
@@ -1112,6 +1113,9 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
     case UI_Type_SlideBar:
         return WidgetUI_Fresh_SlideBar(UI_Data->Handler);
 
+    case UI_Type_ProcBar:
+        return WidgetUI_Fresh_ProcessBar(UI_Data->Handler);
+
     default:
         return false;
     }
@@ -1172,6 +1176,21 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         default:
             return 0;
         }
+        break;
+
+    case UI_Type_ProcBar:
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return HandleToProcessBarObj(item->Handler)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return HandleToProcessBarObj(item->Handler)->Gen_Data.y;
+
+        default:
+            return 0;
+        }
+
         break;
 
     default:
@@ -1302,19 +1321,6 @@ static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y)
     return UI_Button.move(Btn_Hdl, x, y);
 }
 
-static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
-{
-    if (Btn_Hdl == 0)
-        return false;
-
-    HandleToButtonObj(Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-    if ((HandleToButtonObj(Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
-        return false;
-
-    UI_Button.ctl(HandleToButtonObj(Btn_Hdl));
-    return true;
-}
-
 /* button operate */
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type)
 {
@@ -1329,6 +1335,18 @@ static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_
     {
         UI_Button.release(HandleToButtonObj(Btn_Hdl));
     }
+}
+
+static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
+{
+    if (Btn_Hdl == 0)
+        return false;
+
+    HandleToButtonObj(Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+    if ((HandleToButtonObj(Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
+        return false;
+
+    return UI_Button.ctl(HandleToButtonObj(Btn_Hdl));
 }
 /************************************** widget Button interface ******************************************/
 
@@ -1389,9 +1407,7 @@ static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
     if ((HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
         return false;
 
-    UI_CheckBox.ctl(HandleToCheckBoxObj(checkbox_hdl));
-
-    return true;
+    return UI_CheckBox.ctl(HandleToCheckBoxObj(checkbox_hdl));
 }
 
 /************************************** widget CheckBox interface ******************************************/
@@ -1490,9 +1506,7 @@ static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
         (HandleToSlideBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
         return false;
 
-    UI_SlideBar.ctl(HandleToSlideBarObj(hdl));
-
-    return true;
+    return UI_SlideBar.ctl(HandleToSlideBarObj(hdl));
 }
 
 /************************************** widget SlideBar interface ******************************************/
@@ -1512,7 +1526,8 @@ static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, i
     processbar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
 
     if ((processbar == NULL) ||
-        (!UI_ProcessBar.init(processbar, label, x, y, width, range)))
+        (!UI_ProcessBar.init(processbar, label, x, y, width, range)) ||
+        (!WidgetUIList_InsertItem(processbar, UI_Type_ProcBar)))
         return NULL;
 
     return ((UI_ProcessBar_Handle)processbar);
@@ -1540,6 +1555,19 @@ static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_
         return false;
 
     return UI_ProcessBar.Move(HandleToProcessBarObj(hdl), x, y);
+}
+
+static bool WidgetUI_Fresh_ProcessBar(UI_SlideBar_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+
+    HandleToProcessBarObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+    if ((HandleToProcessBarObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+        (HandleToProcessBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
+        return false;
+
+    return UI_ProcessBar.ctl(HandleToSlideBarObj(hdl));
 }
 
 /************************************** widget ProcessBar interface ******************************************/
