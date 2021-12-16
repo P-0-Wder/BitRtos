@@ -80,7 +80,7 @@ UI_SliderBar_Interface_TypeDef UI_SlideBar = {
     .Get_Select = UI_SlideBar_IsSelected,
 };
 
-UI_ProcessBar_Interface_TypeDef UI_Process = {
+UI_ProcessBar_Interface_TypeDef UI_ProcessBar = {
     .init = UI_ProcessBar_Init,
     .Move = UI_ProcessBar_Move,
     .set_CurVal = UI_ProcessBar_SetCurVal,

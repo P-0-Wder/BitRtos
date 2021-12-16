@@ -359,5 +359,5 @@ void UI_Set_GetWidgetWidthMathod(UI_GetWidget_Width mathod);
 extern UI_Button_Interface_TypeDef UI_Button;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
 extern UI_SliderBar_Interface_TypeDef UI_SlideBar;
-extern UI_ProcessBar_Interface_TypeDef UI_Process;
+extern UI_ProcessBar_Interface_TypeDef UI_ProcessBar;
 #endif

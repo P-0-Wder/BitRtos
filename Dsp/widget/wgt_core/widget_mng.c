@@ -1504,7 +1504,7 @@ static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, int16_t x, i
     processbar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
 
     if ((processbar == NULL) ||
-        (!UI_Process.init(processbar, label, x, y, width, range)))
+        (!UI_ProcessBar.init(processbar, label, x, y, width, range)))
         return NULL;
 
     return ((UI_ProcessBar_Handle)processbar);
@@ -1515,7 +1515,7 @@ static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBa
     if (hdl == 0)
         return false;
 
-    return true;
+    return UI_ProcessBar.set_DspDir(HandleToProcessBarObj(hdl), dir);
 }
 
 static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, int32_t val)
