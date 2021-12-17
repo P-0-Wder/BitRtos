@@ -38,9 +38,9 @@ static void UI_SlideBar_SetSelect(UI_SlideBarObj_TypeDef *Obj, bool select);
 static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj);
 
 /* UI Process bar section */
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, int32_t min, int32_t max);
 static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
-static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint32_t val);
+static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, int32_t val);
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj);
 static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16_t y);
 
@@ -640,9 +640,9 @@ static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj)
     return Obj->is_selected;
 }
 
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range)
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, int32_t min, int32_t max)
 {
-    if (Obj == NULL)
+    if ((Obj == NULL) || (min > max))
         return false;
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
@@ -651,7 +651,9 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspT
     Obj->height = base_font + 6;
 
     Obj->cur_val = 0;
-    Obj->range = range;
+    Obj->max = max;
+    Obj->min = min;
+    Obj->range = max - min;
 
     Obj->percent = 0.0;
 
@@ -674,14 +676,15 @@ static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar
     return true;
 }
 
-static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint32_t val)
+static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, int32_t val)
 {
-    if ((Obj == NULL) || (val > Obj->range))
+    if ((Obj == NULL) || (val > Obj->max) || (val < Obj->min))
         return false;
 
-    Obj->cur_val = val;
+    int32_t range = Obj->max - Obj->min;
 
-    Obj->percent = ((float)val) / Obj->range;
+    Obj->cur_val = val;
+    Obj->percent = ((float)val) / range;
 
     return true;
 }

@@ -129,9 +129,9 @@ static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl);
 static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl);
 
 /* Widget UI ProcessBar Mathod */
-static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, UI_ProcessBar_DspType_List dsp_type, int16_t x, int16_t y, uint8_t width, int16_t range);
+static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, UI_ProcessBar_DspType_List dsp_type, int16_t x, int16_t y, uint8_t width, int32_t min, int32_t max);
 static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBar_MoveDir_TypeDef dir);
-static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, uint32_t val);
+static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, int32_t val);
 static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_t y);
 static bool WidgetUI_Fresh_ProcessBar(UI_ProcessBar_Handle hdl);
 
@@ -1519,14 +1519,14 @@ static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(vo
 }
 
 /* process bar can`t be selected */
-static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, UI_ProcessBar_DspType_List dsp_type, int16_t x, int16_t y, uint8_t width, int16_t range)
+static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, UI_ProcessBar_DspType_List dsp_type, int16_t x, int16_t y, uint8_t width, int32_t min, int32_t max)
 {
     UI_ProcessBarObj_TypeDef *processbar = NULL;
 
     processbar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
 
     if ((processbar == NULL) ||
-        (!UI_ProcessBar.init(processbar, dsp_type, label, x, y, width, range)) ||
+        (!UI_ProcessBar.init(processbar, dsp_type, label, x, y, width, min, max)) ||
         (!WidgetUIList_InsertItem(processbar, UI_Type_ProcBar)))
         return NULL;
 
@@ -1541,7 +1541,7 @@ static bool WidgetUI_ProcessBar_SetDspDir(UI_ProcessBar_Handle hdl, UI_ProcessBa
     return UI_ProcessBar.set_DspDir(HandleToProcessBarObj(hdl), dir);
 }
 
-static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, uint32_t val)
+static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, int32_t val)
 {
     if (hdl == 0)
         return false;

@@ -210,8 +210,10 @@ typedef struct
 
     float percent;
 
-    uint32_t range;
-    uint32_t cur_val;
+    int32_t min;
+    int32_t max;
+    int32_t range;
+    int32_t cur_val;
 
     uint8_t width;
     uint8_t height;
@@ -256,10 +258,10 @@ typedef struct
 
 typedef struct
 {
-    bool (*init)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
+    bool (*init)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, int32_t min, int32_t max);
     bool (*Move)(UI_ProcessBarObj_TypeDef *Obj, int16_t x, int16_t y);
     bool (*set_DspDir)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
-    bool (*set_CurVal)(UI_ProcessBarObj_TypeDef *Obj, uint32_t val);
+    bool (*set_CurVal)(UI_ProcessBarObj_TypeDef *Obj, int32_t val);
     bool (*ctl)(UI_ProcessBarObj_TypeDef *Obj);
 } UI_ProcessBar_Interface_TypeDef;
 

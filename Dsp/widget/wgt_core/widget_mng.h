@@ -149,9 +149,9 @@ typedef struct
 
 typedef struct
 {
-    UI_ProcessBar_Handle (*create)(char *label, UI_ProcessBar_DspType_List dsp_type, int16_t x, int16_t y, uint8_t width, int16_t range);
+    UI_ProcessBar_Handle (*create)(char *label, UI_ProcessBar_DspType_List dsp_type, int16_t x, int16_t y, uint8_t width, int32_t min, int32_t max);
     bool (*Set_DspDir)(UI_ProcessBar_Handle hdl, UI_ProcessBar_MoveDir_TypeDef dir);
-    bool (*Set_Value)(UI_ProcessBar_Handle hdl, uint32_t val);
+    bool (*Set_Value)(UI_ProcessBar_Handle hdl, int32_t val);
     bool (*Move)(UI_ProcessBar_Handle hdl, int16_t x, int16_t y);
 } WidgetUI_ProcessBar_Interface_TypeDef;
 
