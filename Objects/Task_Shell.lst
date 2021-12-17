@@ -1,0 +1,402 @@
+ARM GAS  /tmp/ccokmhYL.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Task_Shell.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Shell_Write,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	Shell_Write:
+  26              	.LVL0:
+  27              	.LFB127:
+  28              		.file 1 "App/Task_Shell/Task_Shell.c"
+   1:App/Task_Shell/Task_Shell.c **** #include "Task_Shell.h"
+   2:App/Task_Shell/Task_Shell.c **** #include "drv_serial.h"
+   3:App/Task_Shell/Task_Shell.c **** #include "shell_port.h"
+   4:App/Task_Shell/Task_Shell.c **** #include "oledfont.h"
+   5:App/Task_Shell/Task_Shell.c **** 
+   6:App/Task_Shell/Task_Shell.c **** Task_Handler Shell_Tsk_Hdl;
+   7:App/Task_Shell/Task_Shell.c **** 
+   8:App/Task_Shell/Task_Shell.c **** #define SHELL_SERIAL_PORT DrvSerial_1
+   9:App/Task_Shell/Task_Shell.c **** 
+  10:App/Task_Shell/Task_Shell.c **** /* internal variable */
+  11:App/Task_Shell/Task_Shell.c **** TaskShell_State_List TaskState = Shell_State_Init;
+  12:App/Task_Shell/Task_Shell.c **** 
+  13:App/Task_Shell/Task_Shell.c **** static void Shell_RecCallback(uint8_t *data, uint16_t len)
+  14:App/Task_Shell/Task_Shell.c **** {
+  15:App/Task_Shell/Task_Shell.c ****     for (uint16_t i = 0; i < len; i++)
+  16:App/Task_Shell/Task_Shell.c ****     {
+  17:App/Task_Shell/Task_Shell.c ****         shellHandler(Shell_GetInstence(), data[i]);
+  18:App/Task_Shell/Task_Shell.c ****     }
+  19:App/Task_Shell/Task_Shell.c **** }
+  20:App/Task_Shell/Task_Shell.c **** 
+  21:App/Task_Shell/Task_Shell.c **** static int Shell_Write(const uint8_t *ch, uint16_t len)
+  22:App/Task_Shell/Task_Shell.c **** {
+  29              		.loc 1 22 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 22 1 is_stmt 0 view .LVU1
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/ccokmhYL.s 			page 2
+
+
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  23:App/Task_Shell/Task_Shell.c ****     DrvSerial.write(SHELL_SERIAL_PORT, ch, len);
+  39              		.loc 1 23 5 is_stmt 1 view .LVU2
+  40              		.loc 1 23 14 is_stmt 0 view .LVU3
+  41 0002 034B     		ldr	r3, .L3
+  42 0004 9B68     		ldr	r3, [r3, #8]
+  43              		.loc 1 23 5 view .LVU4
+  44 0006 0A46     		mov	r2, r1
+  45 0008 0146     		mov	r1, r0
+  46              	.LVL1:
+  47              		.loc 1 23 5 view .LVU5
+  48 000a 0020     		movs	r0, #0
+  49              	.LVL2:
+  50              		.loc 1 23 5 view .LVU6
+  51 000c 9847     		blx	r3
+  52              	.LVL3:
+  24:App/Task_Shell/Task_Shell.c **** }
+  53              		.loc 1 24 1 view .LVU7
+  54 000e 08BD     		pop	{r3, pc}
+  55              	.L4:
+  56              		.align	2
+  57              	.L3:
+  58 0010 00000000 		.word	DrvSerial
+  59              		.cfi_endproc
+  60              	.LFE127:
+  62              		.section	.text.TaskShell_Init,"ax",%progbits
+  63              		.align	1
+  64              		.syntax unified
+  65              		.thumb
+  66              		.thumb_func
+  67              		.fpu fpv4-sp-d16
+  69              	TaskShell_Init:
+  70              	.LFB128:
+  25:App/Task_Shell/Task_Shell.c **** 
+  26:App/Task_Shell/Task_Shell.c **** static bool TaskShell_Init(void)
+  27:App/Task_Shell/Task_Shell.c **** {
+  71              		.loc 1 27 1 is_stmt 1 view -0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 16
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  75 0000 10B5     		push	{r4, lr}
+  76              	.LCFI1:
+  77              		.cfi_def_cfa_offset 8
+  78              		.cfi_offset 4, -8
+  79              		.cfi_offset 14, -4
+  80 0002 84B0     		sub	sp, sp, #16
+  81              	.LCFI2:
+  82              		.cfi_def_cfa_offset 24
+  28:App/Task_Shell/Task_Shell.c ****     static TaskShell_State_List TaskState = Shell_State_Init;
+  83              		.loc 1 28 5 view .LVU9
+  29:App/Task_Shell/Task_Shell.c **** 
+  30:App/Task_Shell/Task_Shell.c ****     DrvSerial_Config_Typedef Serial1_Cfg;
+  84              		.loc 1 30 5 view .LVU10
+  31:App/Task_Shell/Task_Shell.c **** 
+  32:App/Task_Shell/Task_Shell.c ****     Serial1_Cfg.baudrate = Serial_115200;
+  85              		.loc 1 32 5 view .LVU11
+ARM GAS  /tmp/ccokmhYL.s 			page 3
+
+
+  86              		.loc 1 32 26 is_stmt 0 view .LVU12
+  87 0004 4FF4E133 		mov	r3, #115200
+  88 0008 0093     		str	r3, [sp]
+  33:App/Task_Shell/Task_Shell.c ****     Serial1_Cfg.PreemptionPriority = 3;
+  89              		.loc 1 33 5 is_stmt 1 view .LVU13
+  90              		.loc 1 33 36 is_stmt 0 view .LVU14
+  91 000a 0323     		movs	r3, #3
+  92 000c 8DF80430 		strb	r3, [sp, #4]
+  34:App/Task_Shell/Task_Shell.c ****     Serial1_Cfg.SubPriority = 0;
+  93              		.loc 1 34 5 is_stmt 1 view .LVU15
+  94              		.loc 1 34 29 is_stmt 0 view .LVU16
+  95 0010 0020     		movs	r0, #0
+  96 0012 8DF80500 		strb	r0, [sp, #5]
+  35:App/Task_Shell/Task_Shell.c ****     Serial1_Cfg.mode = DrvSerial_MODE_DMA_TxRx;
+  97              		.loc 1 35 5 is_stmt 1 view .LVU17
+  98              		.loc 1 35 22 is_stmt 0 view .LVU18
+  99 0016 0223     		movs	r3, #2
+ 100 0018 8DF80630 		strb	r3, [sp, #6]
+  36:App/Task_Shell/Task_Shell.c ****     Serial1_Cfg.Irq_Callback = Shell_RecCallback;
+ 101              		.loc 1 36 5 is_stmt 1 view .LVU19
+ 102              		.loc 1 36 30 is_stmt 0 view .LVU20
+ 103 001c 094B     		ldr	r3, .L9
+ 104 001e 0293     		str	r3, [sp, #8]
+  37:App/Task_Shell/Task_Shell.c ****     Serial1_Cfg.send_mode = DrvSerial_Send_Async;
+ 105              		.loc 1 37 5 is_stmt 1 view .LVU21
+ 106              		.loc 1 37 27 is_stmt 0 view .LVU22
+ 107 0020 8DF80C00 		strb	r0, [sp, #12]
+  38:App/Task_Shell/Task_Shell.c **** 
+  39:App/Task_Shell/Task_Shell.c ****     if (DrvSerial.ctl(SHELL_SERIAL_PORT, DrvSerial_Open, (uint32_t)&Serial1_Cfg, sizeof(Serial1_Cfg
+ 108              		.loc 1 39 5 is_stmt 1 view .LVU23
+ 109              		.loc 1 39 18 is_stmt 0 view .LVU24
+ 110 0024 084B     		ldr	r3, .L9+4
+ 111 0026 1C68     		ldr	r4, [r3]
+ 112              		.loc 1 39 9 view .LVU25
+ 113 0028 1023     		movs	r3, #16
+ 114 002a 6A46     		mov	r2, sp
+ 115 002c 0146     		mov	r1, r0
+ 116 002e A047     		blx	r4
+ 117              	.LVL4:
+ 118              		.loc 1 39 8 view .LVU26
+ 119 0030 0446     		mov	r4, r0
+ 120 0032 10B9     		cbnz	r0, .L8
+ 121              	.L6:
+  40:App/Task_Shell/Task_Shell.c ****     {
+  41:App/Task_Shell/Task_Shell.c ****         Shell_Init(Shell_Write);
+  42:App/Task_Shell/Task_Shell.c ****         return true;
+  43:App/Task_Shell/Task_Shell.c ****     }
+  44:App/Task_Shell/Task_Shell.c **** 
+  45:App/Task_Shell/Task_Shell.c ****     return false;
+  46:App/Task_Shell/Task_Shell.c **** }
+ 122              		.loc 1 46 1 view .LVU27
+ 123 0034 2046     		mov	r0, r4
+ 124 0036 04B0     		add	sp, sp, #16
+ 125              	.LCFI3:
+ 126              		.cfi_remember_state
+ 127              		.cfi_def_cfa_offset 8
+ 128              		@ sp needed
+ARM GAS  /tmp/ccokmhYL.s 			page 4
+
+
+ 129 0038 10BD     		pop	{r4, pc}
+ 130              	.L8:
+ 131              	.LCFI4:
+ 132              		.cfi_restore_state
+  41:App/Task_Shell/Task_Shell.c ****         return true;
+ 133              		.loc 1 41 9 is_stmt 1 view .LVU28
+ 134 003a 0448     		ldr	r0, .L9+8
+ 135 003c FFF7FEFF 		bl	Shell_Init
+ 136              	.LVL5:
+  42:App/Task_Shell/Task_Shell.c ****     }
+ 137              		.loc 1 42 9 view .LVU29
+  42:App/Task_Shell/Task_Shell.c ****     }
+ 138              		.loc 1 42 16 is_stmt 0 view .LVU30
+ 139 0040 F8E7     		b	.L6
+ 140              	.L10:
+ 141 0042 00BF     		.align	2
+ 142              	.L9:
+ 143 0044 00000000 		.word	Shell_RecCallback
+ 144 0048 00000000 		.word	DrvSerial
+ 145 004c 00000000 		.word	Shell_Write
+ 146              		.cfi_endproc
+ 147              	.LFE128:
+ 149              		.section	.text.Shell_RecCallback,"ax",%progbits
+ 150              		.align	1
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.fpu fpv4-sp-d16
+ 156              	Shell_RecCallback:
+ 157              	.LVL6:
+ 158              	.LFB126:
+  14:App/Task_Shell/Task_Shell.c ****     for (uint16_t i = 0; i < len; i++)
+ 159              		.loc 1 14 1 is_stmt 1 view -0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+  14:App/Task_Shell/Task_Shell.c ****     for (uint16_t i = 0; i < len; i++)
+ 163              		.loc 1 14 1 is_stmt 0 view .LVU32
+ 164 0000 70B5     		push	{r4, r5, r6, lr}
+ 165              	.LCFI5:
+ 166              		.cfi_def_cfa_offset 16
+ 167              		.cfi_offset 4, -16
+ 168              		.cfi_offset 5, -12
+ 169              		.cfi_offset 6, -8
+ 170              		.cfi_offset 14, -4
+ 171 0002 0646     		mov	r6, r0
+ 172 0004 0D46     		mov	r5, r1
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 173              		.loc 1 15 5 is_stmt 1 view .LVU33
+ 174              	.LBB2:
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 175              		.loc 1 15 10 view .LVU34
+ 176              	.LVL7:
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 177              		.loc 1 15 19 is_stmt 0 view .LVU35
+ 178 0006 0024     		movs	r4, #0
+ 179              	.LVL8:
+ARM GAS  /tmp/ccokmhYL.s 			page 5
+
+
+ 180              	.L12:
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 181              		.loc 1 15 5 discriminator 1 view .LVU36
+ 182 0008 AC42     		cmp	r4, r5
+ 183 000a 07D2     		bcs	.L15
+  17:App/Task_Shell/Task_Shell.c ****     }
+ 184              		.loc 1 17 9 is_stmt 1 discriminator 3 view .LVU37
+ 185 000c FFF7FEFF 		bl	Shell_GetInstence
+ 186              	.LVL9:
+ 187 0010 315D     		ldrb	r1, [r6, r4]	@ zero_extendqisi2
+ 188 0012 FFF7FEFF 		bl	shellHandler
+ 189              	.LVL10:
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 190              		.loc 1 15 36 is_stmt 0 discriminator 3 view .LVU38
+ 191 0016 0134     		adds	r4, r4, #1
+ 192              	.LVL11:
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 193              		.loc 1 15 36 discriminator 3 view .LVU39
+ 194 0018 A4B2     		uxth	r4, r4
+ 195              	.LVL12:
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 196              		.loc 1 15 36 discriminator 3 view .LVU40
+ 197 001a F5E7     		b	.L12
+ 198              	.L15:
+  15:App/Task_Shell/Task_Shell.c ****     {
+ 199              		.loc 1 15 36 discriminator 3 view .LVU41
+ 200              	.LBE2:
+  19:App/Task_Shell/Task_Shell.c **** 
+ 201              		.loc 1 19 1 view .LVU42
+ 202 001c 70BD     		pop	{r4, r5, r6, pc}
+  19:App/Task_Shell/Task_Shell.c **** 
+ 203              		.loc 1 19 1 view .LVU43
+ 204              		.cfi_endproc
+ 205              	.LFE126:
+ 207              		.section	.text.TaskShell_Core,"ax",%progbits
+ 208              		.align	1
+ 209              		.global	TaskShell_Core
+ 210              		.syntax unified
+ 211              		.thumb
+ 212              		.thumb_func
+ 213              		.fpu fpv4-sp-d16
+ 215              	TaskShell_Core:
+ 216              	.LVL13:
+ 217              	.LFB129:
+  47:App/Task_Shell/Task_Shell.c **** 
+  48:App/Task_Shell/Task_Shell.c **** void TaskShell_Core(Task_Handler self)
+  49:App/Task_Shell/Task_Shell.c **** {
+ 218              		.loc 1 49 1 is_stmt 1 view -0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222              		.loc 1 49 1 is_stmt 0 view .LVU45
+ 223 0000 08B5     		push	{r3, lr}
+ 224              	.LCFI6:
+ 225              		.cfi_def_cfa_offset 8
+ 226              		.cfi_offset 3, -8
+ 227              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccokmhYL.s 			page 6
+
+
+  50:App/Task_Shell/Task_Shell.c ****     switch ((uint8_t)TaskState)
+ 228              		.loc 1 50 5 is_stmt 1 view .LVU46
+ 229              		.loc 1 50 13 is_stmt 0 view .LVU47
+ 230 0002 054B     		ldr	r3, .L20
+ 231 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 232              		.loc 1 50 5 view .LVU48
+ 233 0006 03B1     		cbz	r3, .L19
+ 234              	.LVL14:
+ 235              	.L16:
+  51:App/Task_Shell/Task_Shell.c ****     {
+  52:App/Task_Shell/Task_Shell.c ****     case Shell_State_Init:
+  53:App/Task_Shell/Task_Shell.c ****         TaskShell_Init();
+  54:App/Task_Shell/Task_Shell.c ****         TaskState = Shell_State_Polling;
+  55:App/Task_Shell/Task_Shell.c ****         break;
+  56:App/Task_Shell/Task_Shell.c **** 
+  57:App/Task_Shell/Task_Shell.c ****     case Shell_State_Polling:
+  58:App/Task_Shell/Task_Shell.c ****         break;
+  59:App/Task_Shell/Task_Shell.c **** 
+  60:App/Task_Shell/Task_Shell.c ****     default:
+  61:App/Task_Shell/Task_Shell.c ****         break;
+  62:App/Task_Shell/Task_Shell.c ****     }
+  63:App/Task_Shell/Task_Shell.c **** }
+ 236              		.loc 1 63 1 view .LVU49
+ 237 0008 08BD     		pop	{r3, pc}
+ 238              	.LVL15:
+ 239              	.L19:
+  53:App/Task_Shell/Task_Shell.c ****         TaskState = Shell_State_Polling;
+ 240              		.loc 1 53 9 is_stmt 1 view .LVU50
+ 241 000a FFF7FEFF 		bl	TaskShell_Init
+ 242              	.LVL16:
+  54:App/Task_Shell/Task_Shell.c ****         break;
+ 243              		.loc 1 54 9 view .LVU51
+  54:App/Task_Shell/Task_Shell.c ****         break;
+ 244              		.loc 1 54 19 is_stmt 0 view .LVU52
+ 245 000e 024B     		ldr	r3, .L20
+ 246 0010 0122     		movs	r2, #1
+ 247 0012 1A70     		strb	r2, [r3]
+  55:App/Task_Shell/Task_Shell.c **** 
+ 248              		.loc 1 55 9 is_stmt 1 view .LVU53
+ 249              		.loc 1 63 1 is_stmt 0 view .LVU54
+ 250 0014 F8E7     		b	.L16
+ 251              	.L21:
+ 252 0016 00BF     		.align	2
+ 253              	.L20:
+ 254 0018 00000000 		.word	.LANCHOR0
+ 255              		.cfi_endproc
+ 256              	.LFE129:
+ 258              		.global	TaskState
+ 259              		.comm	Shell_Tsk_Hdl,4,4
+ 260              		.section	.bss.TaskState,"aw",%nobits
+ 261              		.set	.LANCHOR0,. + 0
+ 264              	TaskState:
+ 265 0000 00       		.space	1
+ 266              		.text
+ 267              	.Letext0:
+ 268              		.file 2 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 269              		.file 3 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ARM GAS  /tmp/ccokmhYL.s 			page 7
+
+
+ 270              		.file 4 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 271              		.file 5 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 272              		.file 6 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 273              		.file 7 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 274              		.file 8 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 275              		.file 9 "SYS/task_manager/task_manager.h"
+ 276              		.file 10 "App/Task_Shell/Task_Shell.h"
+ 277              		.file 11 "F4_CORE/core_cm4.h"
+ 278              		.file 12 "USER/system_stm32f4xx.h"
+ 279              		.file 13 "Bsp/periph_serial.h"
+ 280              		.file 14 "Drv/drv_serial.h"
+ 281              		.file 15 "Dsp/screen/font/oledfont.h"
+ 282              		.file 16 "SYS/shell/shell_port.h"
+ 283              		.file 17 "SYS/shell/shell.h"
+ARM GAS  /tmp/ccokmhYL.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Task_Shell.c
+     /tmp/ccokmhYL.s:18     .text.Shell_Write:0000000000000000 $t
+     /tmp/ccokmhYL.s:25     .text.Shell_Write:0000000000000000 Shell_Write
+     /tmp/ccokmhYL.s:58     .text.Shell_Write:0000000000000010 $d
+     /tmp/ccokmhYL.s:63     .text.TaskShell_Init:0000000000000000 $t
+     /tmp/ccokmhYL.s:69     .text.TaskShell_Init:0000000000000000 TaskShell_Init
+     /tmp/ccokmhYL.s:143    .text.TaskShell_Init:0000000000000044 $d
+     /tmp/ccokmhYL.s:156    .text.Shell_RecCallback:0000000000000000 Shell_RecCallback
+     /tmp/ccokmhYL.s:150    .text.Shell_RecCallback:0000000000000000 $t
+     /tmp/ccokmhYL.s:208    .text.TaskShell_Core:0000000000000000 $t
+     /tmp/ccokmhYL.s:215    .text.TaskShell_Core:0000000000000000 TaskShell_Core
+     /tmp/ccokmhYL.s:254    .text.TaskShell_Core:0000000000000018 $d
+     /tmp/ccokmhYL.s:264    .bss.TaskState:0000000000000000 TaskState
+                            *COM*:0000000000000004 Shell_Tsk_Hdl
+     /tmp/ccokmhYL.s:265    .bss.TaskState:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+DrvSerial
+Shell_Init
+Shell_GetInstence
+shellHandler

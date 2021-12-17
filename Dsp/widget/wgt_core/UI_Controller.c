@@ -704,7 +704,6 @@ static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
 
     if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
     {
-        // UI_DspInterface.draw_radius_rectangle();
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
@@ -714,6 +713,8 @@ static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
     }
     else
         return false;
+
+    UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, (Obj->height / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
 
     return true;
 }

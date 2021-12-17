@@ -1,0 +1,398 @@
+ARM GAS  /tmp/ccHkp6Z7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"drv_spi.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DrvSpi_Transfer,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DrvSpi_Transfer:
+  26              	.LVL0:
+  27              	.LFB128:
+  28              		.file 1 "Drv/drv_spi.c"
+   1:Drv/drv_spi.c **** #include "drv_spi.h"
+   2:Drv/drv_spi.c **** #include "periph_spi.h"
+   3:Drv/drv_spi.c **** 
+   4:Drv/drv_spi.c **** /* external function define */
+   5:Drv/drv_spi.c **** static void DrvSpi_Open(DrvSpi_Obj_TypeDef *Obj);
+   6:Drv/drv_spi.c **** static void DrvSpi_Close(DrvSpi_Obj_TypeDef *Obj);
+   7:Drv/drv_spi.c **** static bool DrvSpi_Transmit(DrvSpi_Obj_TypeDef *Obj, uint8_t data);
+   8:Drv/drv_spi.c **** static bool DrvSpi_Receive(DrvSpi_Obj_TypeDef *Obj, uint8_t *data);
+   9:Drv/drv_spi.c **** static bool DrvSpi_transmit_receive(DrvSpi_Obj_TypeDef *Obj, uint8_t tdata, uint8_t *rdata);
+  10:Drv/drv_spi.c **** static void DrvSpi_SetSpeed(DrvSpi_Obj_TypeDef *Obj, SPIClockSpeed_e speed);
+  11:Drv/drv_spi.c **** static uint16_t DrvSpi_Transfer(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata, uint16_t l
+  12:Drv/drv_spi.c **** 
+  13:Drv/drv_spi.c **** /* internal function define */
+  14:Drv/drv_spi.c **** 
+  15:Drv/drv_spi.c **** DrvSpi_GenProcFunc_TypeDef GenSPI_Drv = {
+  16:Drv/drv_spi.c ****     .open = DrvSpi_Open,
+  17:Drv/drv_spi.c ****     .close = DrvSpi_Close,
+  18:Drv/drv_spi.c ****     .transmit = DrvSpi_Transmit,
+  19:Drv/drv_spi.c ****     .receive = DrvSpi_Receive,
+  20:Drv/drv_spi.c ****     .transmit_receive = DrvSpi_transmit_receive,
+  21:Drv/drv_spi.c ****     .set_speed = DrvSpi_SetSpeed,
+  22:Drv/drv_spi.c ****     .transfer = DrvSpi_Transfer,
+  23:Drv/drv_spi.c **** };
+  24:Drv/drv_spi.c **** 
+  25:Drv/drv_spi.c **** uint8_t periph_SPI_CheckBusy(SPI_List SPIx);
+  26:Drv/drv_spi.c **** 
+  27:Drv/drv_spi.c **** static void DrvSpi_Open(DrvSpi_Obj_TypeDef *Obj)
+  28:Drv/drv_spi.c **** {
+  29:Drv/drv_spi.c ****     periph_SPI_Init(Obj->SPIx, Obj->speed, Obj->CPOL, Obj->CPHA);
+  30:Drv/drv_spi.c **** }
+ARM GAS  /tmp/ccHkp6Z7.s 			page 2
+
+
+  31:Drv/drv_spi.c **** 
+  32:Drv/drv_spi.c **** static void DrvSpi_Close(DrvSpi_Obj_TypeDef *Obj)
+  33:Drv/drv_spi.c **** {
+  34:Drv/drv_spi.c ****     periph_SPI_DeInit(Obj->SPIx);
+  35:Drv/drv_spi.c **** }
+  36:Drv/drv_spi.c **** 
+  37:Drv/drv_spi.c **** static bool DrvSpi_Transmit(DrvSpi_Obj_TypeDef *Obj, uint8_t data)
+  38:Drv/drv_spi.c **** {
+  39:Drv/drv_spi.c ****     return periph_SPI_WriteByte(Obj->SPIx, data);
+  40:Drv/drv_spi.c **** }
+  41:Drv/drv_spi.c **** 
+  42:Drv/drv_spi.c **** static bool DrvSpi_Receive(DrvSpi_Obj_TypeDef *Obj, uint8_t *data)
+  43:Drv/drv_spi.c **** {
+  44:Drv/drv_spi.c ****     return periph_SPI_ReadByte(Obj->SPIx, data);
+  45:Drv/drv_spi.c **** }
+  46:Drv/drv_spi.c **** 
+  47:Drv/drv_spi.c **** static bool DrvSpi_transmit_receive(DrvSpi_Obj_TypeDef *Obj, uint8_t tdata, uint8_t *rdata)
+  48:Drv/drv_spi.c **** {
+  49:Drv/drv_spi.c ****     return periph_SPI_ReadWriteByte(Obj->SPIx, tdata, rdata);
+  50:Drv/drv_spi.c **** }
+  51:Drv/drv_spi.c **** 
+  52:Drv/drv_spi.c **** static uint16_t DrvSpi_Transfer(DrvSpi_Obj_TypeDef *Obj, uint8_t *tdata, uint8_t *rdata, uint16_t l
+  53:Drv/drv_spi.c **** {
+  29              		.loc 1 53 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 53 1 is_stmt 0 view .LVU1
+  34 0000 10B5     		push	{r4, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 4, -8
+  38              		.cfi_offset 14, -4
+  39 0002 1446     		mov	r4, r2
+  54:Drv/drv_spi.c ****     return periph_SPI_Transfer(Obj->SPIx, rdata, tdata, len);
+  40              		.loc 1 54 5 is_stmt 1 view .LVU2
+  41              		.loc 1 54 12 is_stmt 0 view .LVU3
+  42 0004 0A46     		mov	r2, r1
+  43              	.LVL1:
+  44              		.loc 1 54 12 view .LVU4
+  45 0006 2146     		mov	r1, r4
+  46              	.LVL2:
+  47              		.loc 1 54 12 view .LVU5
+  48 0008 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+  49              	.LVL3:
+  50              		.loc 1 54 12 view .LVU6
+  51 000a FFF7FEFF 		bl	periph_SPI_Transfer
+  52              	.LVL4:
+  55:Drv/drv_spi.c **** }
+  53              		.loc 1 55 1 view .LVU7
+  54 000e 10BD     		pop	{r4, pc}
+  55              		.loc 1 55 1 view .LVU8
+  56              		.cfi_endproc
+  57              	.LFE128:
+  59              		.section	.text.DrvSpi_transmit_receive,"ax",%progbits
+  60              		.align	1
+  61              		.syntax unified
+ARM GAS  /tmp/ccHkp6Z7.s 			page 3
+
+
+  62              		.thumb
+  63              		.thumb_func
+  64              		.fpu fpv4-sp-d16
+  66              	DrvSpi_transmit_receive:
+  67              	.LVL5:
+  68              	.LFB127:
+  48:Drv/drv_spi.c ****     return periph_SPI_ReadWriteByte(Obj->SPIx, tdata, rdata);
+  69              		.loc 1 48 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  48:Drv/drv_spi.c ****     return periph_SPI_ReadWriteByte(Obj->SPIx, tdata, rdata);
+  73              		.loc 1 48 1 is_stmt 0 view .LVU10
+  74 0000 08B5     		push	{r3, lr}
+  75              	.LCFI1:
+  76              		.cfi_def_cfa_offset 8
+  77              		.cfi_offset 3, -8
+  78              		.cfi_offset 14, -4
+  49:Drv/drv_spi.c **** }
+  79              		.loc 1 49 5 is_stmt 1 view .LVU11
+  49:Drv/drv_spi.c **** }
+  80              		.loc 1 49 12 is_stmt 0 view .LVU12
+  81 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+  82              	.LVL6:
+  49:Drv/drv_spi.c **** }
+  83              		.loc 1 49 12 view .LVU13
+  84 0004 FFF7FEFF 		bl	periph_SPI_ReadWriteByte
+  85              	.LVL7:
+  50:Drv/drv_spi.c **** 
+  86              		.loc 1 50 1 view .LVU14
+  87 0008 08BD     		pop	{r3, pc}
+  88              		.cfi_endproc
+  89              	.LFE127:
+  91              		.section	.text.DrvSpi_Receive,"ax",%progbits
+  92              		.align	1
+  93              		.syntax unified
+  94              		.thumb
+  95              		.thumb_func
+  96              		.fpu fpv4-sp-d16
+  98              	DrvSpi_Receive:
+  99              	.LVL8:
+ 100              	.LFB126:
+  43:Drv/drv_spi.c ****     return periph_SPI_ReadByte(Obj->SPIx, data);
+ 101              		.loc 1 43 1 is_stmt 1 view -0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 0
+ 104              		@ frame_needed = 0, uses_anonymous_args = 0
+  43:Drv/drv_spi.c ****     return periph_SPI_ReadByte(Obj->SPIx, data);
+ 105              		.loc 1 43 1 is_stmt 0 view .LVU16
+ 106 0000 08B5     		push	{r3, lr}
+ 107              	.LCFI2:
+ 108              		.cfi_def_cfa_offset 8
+ 109              		.cfi_offset 3, -8
+ 110              		.cfi_offset 14, -4
+  44:Drv/drv_spi.c **** }
+ 111              		.loc 1 44 5 is_stmt 1 view .LVU17
+  44:Drv/drv_spi.c **** }
+ARM GAS  /tmp/ccHkp6Z7.s 			page 4
+
+
+ 112              		.loc 1 44 12 is_stmt 0 view .LVU18
+ 113 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 114              	.LVL9:
+  44:Drv/drv_spi.c **** }
+ 115              		.loc 1 44 12 view .LVU19
+ 116 0004 FFF7FEFF 		bl	periph_SPI_ReadByte
+ 117              	.LVL10:
+  45:Drv/drv_spi.c **** 
+ 118              		.loc 1 45 1 view .LVU20
+ 119 0008 08BD     		pop	{r3, pc}
+ 120              		.cfi_endproc
+ 121              	.LFE126:
+ 123              		.section	.text.DrvSpi_Transmit,"ax",%progbits
+ 124              		.align	1
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.fpu fpv4-sp-d16
+ 130              	DrvSpi_Transmit:
+ 131              	.LVL11:
+ 132              	.LFB125:
+  38:Drv/drv_spi.c ****     return periph_SPI_WriteByte(Obj->SPIx, data);
+ 133              		.loc 1 38 1 is_stmt 1 view -0
+ 134              		.cfi_startproc
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+  38:Drv/drv_spi.c ****     return periph_SPI_WriteByte(Obj->SPIx, data);
+ 137              		.loc 1 38 1 is_stmt 0 view .LVU22
+ 138 0000 08B5     		push	{r3, lr}
+ 139              	.LCFI3:
+ 140              		.cfi_def_cfa_offset 8
+ 141              		.cfi_offset 3, -8
+ 142              		.cfi_offset 14, -4
+  39:Drv/drv_spi.c **** }
+ 143              		.loc 1 39 5 is_stmt 1 view .LVU23
+  39:Drv/drv_spi.c **** }
+ 144              		.loc 1 39 12 is_stmt 0 view .LVU24
+ 145 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 146              	.LVL12:
+  39:Drv/drv_spi.c **** }
+ 147              		.loc 1 39 12 view .LVU25
+ 148 0004 FFF7FEFF 		bl	periph_SPI_WriteByte
+ 149              	.LVL13:
+  40:Drv/drv_spi.c **** 
+ 150              		.loc 1 40 1 view .LVU26
+ 151 0008 08BD     		pop	{r3, pc}
+ 152              		.cfi_endproc
+ 153              	.LFE125:
+ 155              		.section	.text.DrvSpi_SetSpeed,"ax",%progbits
+ 156              		.align	1
+ 157              		.syntax unified
+ 158              		.thumb
+ 159              		.thumb_func
+ 160              		.fpu fpv4-sp-d16
+ 162              	DrvSpi_SetSpeed:
+ 163              	.LVL14:
+ 164              	.LFB129:
+ARM GAS  /tmp/ccHkp6Z7.s 			page 5
+
+
+  56:Drv/drv_spi.c **** 
+  57:Drv/drv_spi.c **** static void DrvSpi_SetSpeed(DrvSpi_Obj_TypeDef *Obj, SPIClockSpeed_e speed)
+  58:Drv/drv_spi.c **** {
+ 165              		.loc 1 58 1 is_stmt 1 view -0
+ 166              		.cfi_startproc
+ 167              		@ args = 0, pretend = 0, frame = 0
+ 168              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169              		.loc 1 58 1 is_stmt 0 view .LVU28
+ 170 0000 08B5     		push	{r3, lr}
+ 171              	.LCFI4:
+ 172              		.cfi_def_cfa_offset 8
+ 173              		.cfi_offset 3, -8
+ 174              		.cfi_offset 14, -4
+  59:Drv/drv_spi.c ****     periph_SPI_SetSpeed(Obj->SPIx, Obj->speed);
+ 175              		.loc 1 59 5 is_stmt 1 view .LVU29
+ 176 0002 4178     		ldrb	r1, [r0, #1]	@ zero_extendqisi2
+ 177              	.LVL15:
+ 178              		.loc 1 59 5 is_stmt 0 view .LVU30
+ 179 0004 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 180              	.LVL16:
+ 181              		.loc 1 59 5 view .LVU31
+ 182 0006 FFF7FEFF 		bl	periph_SPI_SetSpeed
+ 183              	.LVL17:
+  60:Drv/drv_spi.c **** }
+ 184              		.loc 1 60 1 view .LVU32
+ 185 000a 08BD     		pop	{r3, pc}
+ 186              		.cfi_endproc
+ 187              	.LFE129:
+ 189              		.section	.text.DrvSpi_Close,"ax",%progbits
+ 190              		.align	1
+ 191              		.syntax unified
+ 192              		.thumb
+ 193              		.thumb_func
+ 194              		.fpu fpv4-sp-d16
+ 196              	DrvSpi_Close:
+ 197              	.LVL18:
+ 198              	.LFB124:
+  33:Drv/drv_spi.c ****     periph_SPI_DeInit(Obj->SPIx);
+ 199              		.loc 1 33 1 is_stmt 1 view -0
+ 200              		.cfi_startproc
+ 201              		@ args = 0, pretend = 0, frame = 0
+ 202              		@ frame_needed = 0, uses_anonymous_args = 0
+  33:Drv/drv_spi.c ****     periph_SPI_DeInit(Obj->SPIx);
+ 203              		.loc 1 33 1 is_stmt 0 view .LVU34
+ 204 0000 08B5     		push	{r3, lr}
+ 205              	.LCFI5:
+ 206              		.cfi_def_cfa_offset 8
+ 207              		.cfi_offset 3, -8
+ 208              		.cfi_offset 14, -4
+  34:Drv/drv_spi.c **** }
+ 209              		.loc 1 34 5 is_stmt 1 view .LVU35
+ 210 0002 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 211              	.LVL19:
+  34:Drv/drv_spi.c **** }
+ 212              		.loc 1 34 5 is_stmt 0 view .LVU36
+ 213 0004 FFF7FEFF 		bl	periph_SPI_DeInit
+ 214              	.LVL20:
+ARM GAS  /tmp/ccHkp6Z7.s 			page 6
+
+
+  35:Drv/drv_spi.c **** 
+ 215              		.loc 1 35 1 view .LVU37
+ 216 0008 08BD     		pop	{r3, pc}
+ 217              		.cfi_endproc
+ 218              	.LFE124:
+ 220              		.section	.text.DrvSpi_Open,"ax",%progbits
+ 221              		.align	1
+ 222              		.syntax unified
+ 223              		.thumb
+ 224              		.thumb_func
+ 225              		.fpu fpv4-sp-d16
+ 227              	DrvSpi_Open:
+ 228              	.LVL21:
+ 229              	.LFB123:
+  28:Drv/drv_spi.c ****     periph_SPI_Init(Obj->SPIx, Obj->speed, Obj->CPOL, Obj->CPHA);
+ 230              		.loc 1 28 1 is_stmt 1 view -0
+ 231              		.cfi_startproc
+ 232              		@ args = 0, pretend = 0, frame = 0
+ 233              		@ frame_needed = 0, uses_anonymous_args = 0
+  28:Drv/drv_spi.c ****     periph_SPI_Init(Obj->SPIx, Obj->speed, Obj->CPOL, Obj->CPHA);
+ 234              		.loc 1 28 1 is_stmt 0 view .LVU39
+ 235 0000 08B5     		push	{r3, lr}
+ 236              	.LCFI6:
+ 237              		.cfi_def_cfa_offset 8
+ 238              		.cfi_offset 3, -8
+ 239              		.cfi_offset 14, -4
+  29:Drv/drv_spi.c **** }
+ 240              		.loc 1 29 5 is_stmt 1 view .LVU40
+ 241 0002 8388     		ldrh	r3, [r0, #4]
+ 242 0004 4288     		ldrh	r2, [r0, #2]
+ 243 0006 4178     		ldrb	r1, [r0, #1]	@ zero_extendqisi2
+ 244 0008 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 245              	.LVL22:
+  29:Drv/drv_spi.c **** }
+ 246              		.loc 1 29 5 is_stmt 0 view .LVU41
+ 247 000a FFF7FEFF 		bl	periph_SPI_Init
+ 248              	.LVL23:
+  30:Drv/drv_spi.c **** 
+ 249              		.loc 1 30 1 view .LVU42
+ 250 000e 08BD     		pop	{r3, pc}
+ 251              		.cfi_endproc
+ 252              	.LFE123:
+ 254              		.global	GenSPI_Drv
+ 255              		.section	.data.GenSPI_Drv,"aw"
+ 256              		.align	2
+ 259              	GenSPI_Drv:
+ 260 0000 00000000 		.word	DrvSpi_Open
+ 261 0004 00000000 		.word	DrvSpi_Close
+ 262 0008 00000000 		.word	DrvSpi_SetSpeed
+ 263 000c 00000000 		.word	DrvSpi_Transmit
+ 264 0010 00000000 		.word	DrvSpi_Receive
+ 265 0014 00000000 		.word	DrvSpi_transmit_receive
+ 266 0018 00000000 		.word	DrvSpi_Transfer
+ 267              		.text
+ 268              	.Letext0:
+ 269              		.file 2 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ 270              		.file 3 "/home/bt0/stm32/compile-tool/gcc-arm-none-eabi-8-2018-q4-major-linux/gcc-arm-none-eabi-8-
+ARM GAS  /tmp/ccHkp6Z7.s 			page 7
+
+
+ 271              		.file 4 "F4_CORE/core_cm4.h"
+ 272              		.file 5 "USER/system_stm32f4xx.h"
+ 273              		.file 6 "Bsp/periph_spi.h"
+ 274              		.file 7 "SYS/data_structure/queue.h"
+ 275              		.file 8 "Drv/drv_spi.h"
+ARM GAS  /tmp/ccHkp6Z7.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 drv_spi.c
+     /tmp/ccHkp6Z7.s:18     .text.DrvSpi_Transfer:0000000000000000 $t
+     /tmp/ccHkp6Z7.s:25     .text.DrvSpi_Transfer:0000000000000000 DrvSpi_Transfer
+     /tmp/ccHkp6Z7.s:60     .text.DrvSpi_transmit_receive:0000000000000000 $t
+     /tmp/ccHkp6Z7.s:66     .text.DrvSpi_transmit_receive:0000000000000000 DrvSpi_transmit_receive
+     /tmp/ccHkp6Z7.s:92     .text.DrvSpi_Receive:0000000000000000 $t
+     /tmp/ccHkp6Z7.s:98     .text.DrvSpi_Receive:0000000000000000 DrvSpi_Receive
+     /tmp/ccHkp6Z7.s:124    .text.DrvSpi_Transmit:0000000000000000 $t
+     /tmp/ccHkp6Z7.s:130    .text.DrvSpi_Transmit:0000000000000000 DrvSpi_Transmit
+     /tmp/ccHkp6Z7.s:156    .text.DrvSpi_SetSpeed:0000000000000000 $t
+     /tmp/ccHkp6Z7.s:162    .text.DrvSpi_SetSpeed:0000000000000000 DrvSpi_SetSpeed
+     /tmp/ccHkp6Z7.s:190    .text.DrvSpi_Close:0000000000000000 $t
+     /tmp/ccHkp6Z7.s:196    .text.DrvSpi_Close:0000000000000000 DrvSpi_Close
+     /tmp/ccHkp6Z7.s:221    .text.DrvSpi_Open:0000000000000000 $t
+     /tmp/ccHkp6Z7.s:227    .text.DrvSpi_Open:0000000000000000 DrvSpi_Open
+     /tmp/ccHkp6Z7.s:259    .data.GenSPI_Drv:0000000000000000 GenSPI_Drv
+     /tmp/ccHkp6Z7.s:256    .data.GenSPI_Drv:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+periph_SPI_Transfer
+periph_SPI_ReadWriteByte
+periph_SPI_ReadByte
+periph_SPI_WriteByte
+periph_SPI_SetSpeed
+periph_SPI_DeInit
+periph_SPI_Init
