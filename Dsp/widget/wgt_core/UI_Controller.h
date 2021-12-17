@@ -93,6 +93,14 @@ typedef enum
 
 typedef enum
 {
+    UI_ProcBar_DspType_1 = 0,
+    UI_ProcBar_DspType_2,
+    UI_ProcBar_DspType_3,
+    UI_ProcBar_DspType_Sum,
+} UI_ProcessBar_DspType_List;
+
+typedef enum
+{
     UI_ProcBar_GrothDir_Default = 0,
     UI_ProcBar_GrothFrom_Right = 0,
     UI_ProcBar_GrothFrom_Left = 1,
@@ -208,6 +216,7 @@ typedef struct
     uint8_t width;
     uint8_t height;
 
+    UI_ProcessBar_DspType_List dsp_type;
     UI_ProcessBar_MoveDir_TypeDef Mv_Dir;
 } UI_ProcessBarObj_TypeDef;
 

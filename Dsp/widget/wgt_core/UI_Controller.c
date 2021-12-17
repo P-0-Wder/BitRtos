@@ -684,6 +684,7 @@ static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint32_t val)
 
     return true;
 }
+
 static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16_t y)
 {
     if (Obj == NULL)
