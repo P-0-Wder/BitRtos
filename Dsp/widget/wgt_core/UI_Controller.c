@@ -38,7 +38,7 @@ static void UI_SlideBar_SetSelect(UI_SlideBarObj_TypeDef *Obj, bool select);
 static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj);
 
 /* UI Process bar section */
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
 static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
 static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, uint32_t val);
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj);
@@ -640,7 +640,7 @@ static bool UI_SlideBar_IsSelected(UI_SlideBarObj_TypeDef *Obj)
     return Obj->is_selected;
 }
 
-static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range)
+static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range)
 {
     if (Obj == NULL)
         return false;
@@ -655,6 +655,7 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, char *label, int16
 
     Obj->percent = 0.0;
 
+    Obj->Dsp_Type = dsp_type;
     Obj->Mv_Dir = UI_ProcBar_GrothDir_Default;
 
     return true;
@@ -693,6 +694,69 @@ static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16
     return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
+static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
+    {
+        // UI_DspInterface.draw_radius_rectangle();
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
+    {
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
+    {
+    }
+    else
+        return false;
+
+    return true;
+}
+
+static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
+    {
+        // UI_DspInterface.draw_radius_rectangle();
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
+    {
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
+    {
+    }
+    else
+        return false;
+
+    return true;
+}
+
+static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
+    {
+        // UI_DspInterface.draw_radius_rectangle();
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
+    {
+    }
+    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
+    {
+    }
+    else
+        return false;
+
+    return true;
+}
+
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
 {
     char dig_str[3];
@@ -719,20 +783,20 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
         break;
     }
 
-    itoa((uint8_t)(Obj->percent), dig_str, 10);
+    switch (Obj->Dsp_Type)
+    {
+    case UI_ProcBar_DspType_LoadBar:
+        return UI_ProcessBar_DspLoadBar(Obj);
 
-    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
-    {
-        // UI_DspInterface.draw_radius_rectangle();
-    }
-    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
-    {
-    }
-    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
-    {
-    }
+    case UI_ProcBar_DspType_DotBar:
+        return UI_ProcessBar_DspDotBar(Obj);
 
-    return true;
+    case UI_ProcBar_DspType_FrameBar:
+        return UI_ProcessBar_DspFrameBar(Obj);
+
+    default:
+        return false;
+    }
 }
 
 /***************************************************************** still developing down below **********************************************************************/

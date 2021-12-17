@@ -149,7 +149,7 @@ typedef struct
 
 typedef struct
 {
-    UI_ProcessBar_Handle (*create)(char *label, int16_t x, int16_t y, uint8_t width, int16_t range);
+    UI_ProcessBar_Handle (*create)(char *label, UI_ProcessBar_DspType_List dsp_type, int16_t x, int16_t y, uint8_t width, int16_t range);
     bool (*Set_DspDir)(UI_ProcessBar_Handle hdl, UI_ProcessBar_MoveDir_TypeDef dir);
     bool (*Set_Value)(UI_ProcessBar_Handle hdl, uint32_t val);
     bool (*Move)(UI_ProcessBar_Handle hdl, int16_t x, int16_t y);

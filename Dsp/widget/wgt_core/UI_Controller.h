@@ -93,9 +93,9 @@ typedef enum
 
 typedef enum
 {
-    UI_ProcBar_DspType_1 = 0,
-    UI_ProcBar_DspType_2,
-    UI_ProcBar_DspType_3,
+    UI_ProcBar_DspType_LoadBar = 0,
+    UI_ProcBar_DspType_DotBar,
+    UI_ProcBar_DspType_FrameBar,
     UI_ProcBar_DspType_Sum,
 } UI_ProcessBar_DspType_List;
 
@@ -216,7 +216,7 @@ typedef struct
     uint8_t width;
     uint8_t height;
 
-    UI_ProcessBar_DspType_List dsp_type;
+    UI_ProcessBar_DspType_List Dsp_Type;
     UI_ProcessBar_MoveDir_TypeDef Mv_Dir;
 } UI_ProcessBarObj_TypeDef;
 
@@ -256,7 +256,7 @@ typedef struct
 
 typedef struct
 {
-    bool (*init)(UI_ProcessBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
+    bool (*init)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspType_List dsp_type, char *label, int16_t x, int16_t y, uint8_t width, uint32_t range);
     bool (*Move)(UI_ProcessBarObj_TypeDef *Obj, int16_t x, int16_t y);
     bool (*set_DspDir)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
     bool (*set_CurVal)(UI_ProcessBarObj_TypeDef *Obj, uint32_t val);
