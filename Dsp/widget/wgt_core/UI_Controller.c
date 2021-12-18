@@ -1,6 +1,8 @@
 #include "UI_Controller.h"
 #include "runtime.h"
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 /* internal object */
 static UI_DrawInterface_TypeDef UI_DspInterface;
@@ -478,7 +480,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
         (UI_DspInterface.draw_rectangle == NULL))
         return false;
 
-    StrDsp_x = strlen(Obj->Gen_Data.label) * FONT_WIDTH;
+    StrDsp_x = strlen(Obj->Gen_Data.label) * STR_DIS;
     frame_y = Obj->Gen_Data.y + 3;
     StrDsp_x += DEFAULT_CHECKBOX_OFFSET;
 
@@ -598,7 +600,7 @@ static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
     {
         if (Obj->BarCoord_X == 0)
         {
-            Obj->BarCoord_X = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * FONT_WIDTH + DEFAULT_SLIDERBAR_OFFSET;
+            Obj->BarCoord_X = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * STR_DIS + DEFAULT_SLIDERBAR_OFFSET;
         }
 
         if (Obj->BarCoord_Y == 0)
@@ -648,6 +650,24 @@ static bool UI_ProcessBar_Init(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_DspT
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
     Obj->width = width;
+
+    switch (base_font)
+    {
+    case Font_8:
+        Obj->height = base_font + 6;
+        break;
+
+    case Font_12:
+    case Font_16:
+        /* need modify */
+        Obj->height = base_font + 6;
+        break;
+
+    default:
+        Obj->height = base_font + 6;
+        break;
+    }
+
     Obj->height = base_font + 6;
 
     Obj->cur_val = 0;
@@ -699,22 +719,25 @@ static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16
 
 static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
 {
+    uint8_t frame_radius = 0;
+    int16_t Str_CoordX = 0;
+    int16_t Str_CoordY = 0;
+    int8_t Pcnt_Val = 0;
+    char *dsp_str = "download:";
+    char pcnt_str[4];
+
     if (Obj == NULL)
         return false;
 
-    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
-    {
-    }
-    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
-    {
-    }
-    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
-    {
-    }
-    else
-        return false;
+    Pcnt_Val = (int16_t)(Obj->cur_val / (float)Obj->range);
+    sprintf(pcnt_str, "%d%%", Pcnt_Val);
+    strcat(dsp_str, pcnt_str);
 
+    Str_CoordX = Obj->Gen_Data.x + (strlen(dsp_str) * STR_DIS) / 2;
+
+    //display direction frome left to right
     UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, (Obj->height / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+    UI_DspInterface.draw_str(base_font, dsp_str, Str_CoordX, Str_CoordY, true);
 
     return true;
 }
@@ -764,28 +787,11 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
 {
     char dig_str[3];
-    uint8_t frame_height = 0;
-    int16_t dsp_coordX = 0;
     memset(dig_str, NULL, 3);
 
     if ((UI_DspInterface.draw_radius_rectangle == NULL) ||
         (UI_DspInterface.draw_str == NULL))
         return false;
-
-    switch (base_font)
-    {
-    case Font_8:
-        frame_height = base_font + 6;
-        break;
-
-    case Font_12:
-        frame_height = base_font + 4;
-        break;
-
-    default:
-        frame_height = base_font + 6;
-        break;
-    }
 
     switch (Obj->Dsp_Type)
     {
