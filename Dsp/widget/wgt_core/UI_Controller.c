@@ -738,6 +738,7 @@ static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
     //display direction frome left to right
     UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, (Obj->height / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     UI_DspInterface.draw_str(base_font, dsp_str, Str_CoordX, Str_CoordY, true);
+    UI_DspInterface.fill_radius_rectangle();
 
     return true;
 }
