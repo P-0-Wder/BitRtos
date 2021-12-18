@@ -766,8 +766,12 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
 
 static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
 {
+    int16_t frame_CoordX = 0;
+
     if (Obj == NULL)
         return false;
+
+    frame_CoordX = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * STR_DIS + 5;
 
     if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
     {
