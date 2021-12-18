@@ -767,11 +767,15 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
 static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
 {
     int16_t frame_CoordX = 0;
+    uint8_t frame_Height = 0;
 
     if (Obj == NULL)
         return false;
 
     frame_CoordX = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * STR_DIS + 5;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+    // UI_DspInterface.draw_rectangle(frame_CoordX, Obj->Gen_Data.y, Obj->width, Obj->);
 
     if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
     {
