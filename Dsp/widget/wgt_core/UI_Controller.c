@@ -735,7 +735,7 @@ static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
 
     Str_CoordX = Obj->Gen_Data.x + (strlen(dsp_str) * STR_DIS) / 2;
 
-    //display direction frome left to right
+    //display direction from left
     UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, (Obj->height / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     UI_DspInterface.draw_str(base_font, dsp_str, Str_CoordX, Str_CoordY, true);
     UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, Obj->width - 6, Obj->height - 6, (Obj->height - 6) / 2, true);
@@ -748,10 +748,6 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
     if (Obj == NULL)
         return false;
 
-    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
-    {
-        // UI_DspInterface.draw_radius_rectangle();
-    }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
     }
@@ -767,22 +763,43 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
 static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
 {
     int16_t frame_CoordX = 0;
+    uint8_t frame_width = 0;
     uint8_t frame_Height = 0;
+    int16_t block_start_CoordX = 0;
+    int16_t block_start_CoordY = 0;
+    int16_t block_end_CoordX = 0;
+    int16_t block_end_CoordY = 0;
 
     if (Obj == NULL)
         return false;
 
     frame_CoordX = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * STR_DIS + 5;
 
-    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
-    // UI_DspInterface.draw_rectangle(frame_CoordX, Obj->Gen_Data.y, Obj->width, Obj->);
+    switch (base_font)
+    {
+    case Font_8:
+        frame_Height = 5;
+        break;
 
-    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Right)
-    {
-        // UI_DspInterface.draw_radius_rectangle();
+    case Font_12:
+    case Font_16:
+    default:
+        return false;
     }
-    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
+
+    if (Obj->width / 2 == 0)
+        frame_width = Obj->width - 1;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+    UI_DspInterface.draw_rectangle(frame_CoordX, Obj->Gen_Data.y, frame_width, frame_Height, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+
+    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
+        block_start_CoordX = Obj->Gen_Data.x + 2;
+        block_start_CoordY = Obj->Gen_Data.y + 2;
+
+        block_end_CoordX = (Obj->cur_val / (float)Obj->range) * (frame_width - 4);
+        block_end_CoordY = block_start_CoordY;
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {

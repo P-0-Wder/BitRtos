@@ -102,7 +102,6 @@ typedef enum
 typedef enum
 {
     UI_ProcBar_GrothDir_Default = 0,
-    UI_ProcBar_GrothFrom_Right = 0,
     UI_ProcBar_GrothFrom_Left = 1,
     UI_ProcBar_GrothFrom_Mid = 2,
 } UI_ProcessBar_MoveDir_TypeDef;
