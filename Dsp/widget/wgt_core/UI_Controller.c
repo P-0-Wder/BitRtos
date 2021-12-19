@@ -857,6 +857,18 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
     }
 }
 
+static bool UI_Drop_Init()
+{
+
+    return true;
+}
+
+static bool UI_Drop_Ctl()
+{
+
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t unit_len)
@@ -894,62 +906,6 @@ static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, char *label,
     return true;
 }
 
-static bool UI_ComboBoxGroup_Init(UI_ComboBox_Group_TypeDef *group, char *label)
-{
-    if (group == NULL)
-        return false;
-
-    group->item_num = 0;
-    group->label = label;
-
-    for (uint8_t i = 0; i < MAX_COMBOBOX_ITEM; i++)
-    {
-        group->Obj[i] = NULL;
-    }
-
-    return true;
-}
-
-static UI_ComboBox_Group_TypeDef *UI_ComboGroup_Create(char *label)
-{
-    UI_ComboBox_Group_TypeDef *ComboGroup_Tmp = NULL;
-
-    ComboGroup_Tmp = (UI_ComboBox_Group_TypeDef *)malloc(sizeof(UI_ComboBox_Group_TypeDef));
-
-    if (ComboGroup_Tmp == NULL)
-        return NULL;
-
-    UI_ComboBoxGroup_Init(ComboGroup_Tmp, label);
-
-    return ComboGroup_Tmp;
-}
-
-static bool UI_ComboBox_Init(UI_ComboBoxObj_TypeDef *Obj, UI_ComboBox_Group_TypeDef *group, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t state)
-{
-    if ((Obj == NULL) || (group == NULL) || (group->item_num >= MAX_COMBOBOX_ITEM))
-        return false;
-
-    Obj->radius = radius;
-
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
-
-    Obj->item_id = group->item_num;
-
-    if (group->item_num == 0)
-    {
-        Obj->checked = true;
-    }
-    else
-        Obj->checked = false;
-
-    Obj->group_ptr = group;
-
-    group->Obj[group->item_num] = Obj;
-    group->item_num++;
-
-    return true;
-}
-
 static bool UI_DigInput_Init()
 {
     return true;
@@ -957,12 +913,6 @@ static bool UI_DigInput_Init()
 
 static bool UI_StrInput_Init()
 {
-    return true;
-}
-
-static bool UI_Drop_Init()
-{
-
     return true;
 }
 
@@ -992,46 +942,6 @@ static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
     return true;
 }
 
-/* use group control the combo box */
-static bool UI_ComboBox_Ctl(UI_ComboBoxObj_TypeDef *Obj, uint8_t state)
-{
-    UI_ComboBox_Group_TypeDef *group = NULL;
-
-    if (Obj->DrawCircle == NULL)
-        return false;
-
-    group = (UI_ComboBox_Group_TypeDef *)Obj->group_ptr;
-
-    Obj->checked = state;
-
-    for (uint8_t i = 0; i < group->item_num; i++)
-    {
-        if (Obj->checked)
-        {
-            group->Obj[i]->checked = false;
-        }
-    }
-
-    for (uint8_t i = 0; i < Obj->radius; i++)
-    {
-        if (i != 1)
-        {
-            if (i == 0)
-            {
-                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius, 1, true);
-            }
-            else if (Obj->checked)
-            {
-                Obj->DrawCircle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->radius - i, 1, true);
-            }
-        }
-    }
-
-    group->Obj[Obj->item_id]->checked = Obj->checked;
-
-    return true;
-}
-
 static bool UI_DigInput_Ctl()
 {
 
@@ -1039,12 +949,6 @@ static bool UI_DigInput_Ctl()
 }
 
 static bool UI_StrInput_Ctl()
-{
-
-    return true;
-}
-
-static bool UI_Drop_Ctl()
 {
 
     return true;

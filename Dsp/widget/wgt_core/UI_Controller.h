@@ -295,24 +295,6 @@ typedef struct
 
 typedef struct
 {
-    UI_GeneralData_TypeDef Gen_Data;
-    uint8_t item_id;
-    void *group_ptr;
-    bool checked;
-    uint8_t radius;
-
-    UI_DrawCircle DrawCircle;
-} UI_ComboBoxObj_TypeDef;
-
-typedef struct
-{
-    char *label;
-    uint8_t item_num;
-    UI_ComboBoxObj_TypeDef *Obj[MAX_COMBOBOX_ITEM];
-} UI_ComboBox_Group_TypeDef;
-
-typedef struct
-{
     char *name;
     bool selected;
     bool active;
