@@ -769,6 +769,7 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
     int16_t block_start_CoordY = 0;
     int16_t block_end_CoordX = 0;
     int16_t block_end_CoordY = 0;
+    uint8_t val_percent = 0;
 
     if (Obj == NULL)
         return false;
@@ -804,15 +805,17 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
         UI_DspInterface.draw_line(Obj->Gen_Data.x + frame_width / 2, Obj->Gen_Data.y, frame_Height, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        block_start_CoordY = Obj->Gen_Data.y + 2;
 
         if (Obj->cur_val < Obj->min + (Obj->range / 2))
         {
+            block_start_CoordX = ;
+            block_end_CoordX = Obj->Gen_Data.x + frame_width / 2 - 1;
         }
         else if (Obj->cur_val > Obj->min + (Obj->range / 2))
         {
-        }
-        else
-        {
+            block_start_CoordX = Obj->Gen_Data.x + frame_width / 2 + 1;
+            block_end_CoordX = ;
         }
     }
     else
