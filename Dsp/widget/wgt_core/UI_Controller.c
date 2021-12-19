@@ -846,11 +846,11 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
     case UI_ProcBar_DspType_LoadBar:
         return UI_ProcessBar_DspLoadBar(Obj);
 
-        // case UI_ProcBar_DspType_DotBar:
-        //     return UI_ProcessBar_DspDotBar(Obj);
+    case UI_ProcBar_DspType_DotBar:
+        return UI_ProcessBar_DspDotBar(Obj);
 
-        // case UI_ProcBar_DspType_FrameBar:
-        //     return UI_ProcessBar_DspFrameBar(Obj);
+    case UI_ProcBar_DspType_FrameBar:
+        return UI_ProcessBar_DspFrameBar(Obj);
 
     default:
         return false;
