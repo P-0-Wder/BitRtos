@@ -698,12 +698,18 @@ static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar
 
 static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, int32_t val)
 {
-    if ((Obj == NULL) || (val > Obj->max) || (val < Obj->min))
+    if (Obj == NULL)
         return false;
 
     int32_t range = Obj->max - Obj->min;
 
-    Obj->cur_val = val;
+    if (val >= Obj->max)
+        Obj->cur_val = Obj->max;
+    else if (val <= Obj->min)
+        Obj->cur_val = Obj->min;
+    else
+        Obj->cur_val = val;
+
     Obj->percent = ((float)val) / range;
 
     return true;
@@ -722,23 +728,24 @@ static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
     uint8_t frame_radius = 0;
     int16_t Str_CoordX = 0;
     int16_t Str_CoordY = 0;
-    int8_t Pcnt_Val = 0;
-    char *dsp_str = "download:";
-    char pcnt_str[4];
+    float Pcnt_Val = 0;
+    char dsp_str[20];
 
     if (Obj == NULL)
         return false;
 
-    Pcnt_Val = (int16_t)(Obj->cur_val / (float)Obj->range);
-    sprintf(pcnt_str, "%d%%", Pcnt_Val);
-    strcat(dsp_str, pcnt_str);
+    memset(dsp_str, '\0', 20);
 
-    Str_CoordX = Obj->Gen_Data.x + (strlen(dsp_str) * STR_DIS) / 2;
+    Pcnt_Val = (Obj->cur_val / (float)Obj->range);
+    sprintf(dsp_str, "On Process : %d%%", (uint8_t)(Pcnt_Val * 100));
+
+    Str_CoordX = Obj->Gen_Data.x + (Obj->width - (strlen(dsp_str) * STR_DIS)) / 2;
+    Str_CoordY = Obj->Gen_Data.y - base_font - 2;
 
     //display direction from left
-    UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, (Obj->height / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+    UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, DEFAULT_PROCESSBAR_DOWNLOADTYPE_HEIGHT, DEFAULT_PROCESSBAR_DOWNLOADTYPE_RADIUS, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     UI_DspInterface.draw_str(base_font, dsp_str, Str_CoordX, Str_CoordY, true);
-    UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, Obj->width - 6, Obj->height - 6, (Obj->height - 6) / 2, true);
+    UI_DspInterface.draw_line(Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, Pcnt_Val * (Obj->width - 6) + Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, true);
 
     return true;
 }
@@ -769,7 +776,6 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
     int16_t block_start_CoordY = 0;
     int16_t block_end_CoordX = 0;
     int16_t block_end_CoordY = 0;
-    uint8_t val_percent = 0;
 
     if (Obj == NULL)
         return false;
@@ -809,14 +815,16 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
 
         if (Obj->cur_val < Obj->min + (Obj->range / 2))
         {
-            block_start_CoordX = ;
+            block_start_CoordX = (Obj->cur_val / (float)Obj->range) * Obj->width;
             block_end_CoordX = Obj->Gen_Data.x + frame_width / 2 - 1;
         }
         else if (Obj->cur_val > Obj->min + (Obj->range / 2))
         {
             block_start_CoordX = Obj->Gen_Data.x + frame_width / 2 + 1;
-            block_end_CoordX = ;
+            block_end_CoordX = (Obj->cur_val / (float)Obj->range) * Obj->width;
         }
+
+        UI_DspInterface.fill_rectangle(block_start_CoordX, block_start_CoordY, block_end_CoordX - block_start_CoordX, frame_Height - 2, true);
     }
     else
         return false;
@@ -838,11 +846,11 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
     case UI_ProcBar_DspType_LoadBar:
         return UI_ProcessBar_DspLoadBar(Obj);
 
-    case UI_ProcBar_DspType_DotBar:
-        return UI_ProcessBar_DspDotBar(Obj);
+        // case UI_ProcBar_DspType_DotBar:
+        //     return UI_ProcessBar_DspDotBar(Obj);
 
-    case UI_ProcBar_DspType_FrameBar:
-        return UI_ProcessBar_DspFrameBar(Obj);
+        // case UI_ProcBar_DspType_FrameBar:
+        //     return UI_ProcessBar_DspFrameBar(Obj);
 
     default:
         return false;

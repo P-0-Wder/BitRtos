@@ -19,6 +19,7 @@ static UI_Button_Handle test_btn_1 = 0;
 static UI_Button_Handle test_btn_2 = 0;
 static UI_CheckBox_Handle test_checkbox_1 = 0;
 static UI_SlideBar_Handle test_slidebar_1 = 0;
+static UI_ProcessBar_Handle test_processbar_1 = 0;
 
 /* internal function definition */
 
@@ -36,6 +37,7 @@ static void TaskWidget_Init(void)
 
     test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 12 * 4, true);
     test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("slidebar", 0, 18, SliderBar_Horizon_Mode, 10, -10, 0, 50);
+    test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("download type bar", UI_ProcBar_DspType_LoadBar, 10, 42, 110, 0, 100);
 }
 
 static void TestWidget_Dynamic_Dsp(void)
@@ -125,8 +127,17 @@ static void TestWidget_Dynamic_Dsp(void)
     }
     selector = encoder_val;
 
+    static int8_t prc_val;
+    prc_val += encoder_val;
+    if (prc_val >= 100)
+        prc_val = 100;
+    else if (prc_val <= 0)
+        prc_val = 0;
+
     Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &encoder_val);
+
+    Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_Value(test_processbar_1, prc_val);
     Widget_Mng.Control(test4)->Draw()->draw_str(Font_8, "slidebar Timer CH1", 2, 2, true);
 
     Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);

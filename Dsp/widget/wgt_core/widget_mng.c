@@ -1221,13 +1221,13 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
     item_nxt_x = WidgetUI_GetCoord(item_nxt, WidgetUI_get_x);
     item_nxt_y = WidgetUI_GetCoord(item_nxt, WidgetUI_get_y);
 
-    if (item_prv_y > item_nxt_y)
+    if (item_prv_y < item_nxt_y)
     {
         return item_prv;
     }
     else if (item_prv_y == item_nxt_y)
     {
-        if (item_prv_x >= item_nxt_x)
+        if (item_prv_x <= item_nxt_x)
         {
             return item_nxt;
         }
@@ -1263,10 +1263,11 @@ static bool WidgetUIList_InsertItem(UI_GenCTL_Handle hdl, WidgetUI_Type_List typ
     else
     {
         tmp->UICtl_List = UI_Item;
-        tmp->CurSelected_CTL = UI_Item;
 
         List_Init(tmp->UICtl_List, NULL, by_condition, WidgetUI_InsertSequence_Callback);
     }
+
+    tmp->CurSelected_CTL = tmp->UICtl_List;
 
     /* insert list item */
     tmp->ui_ctl_num++;
