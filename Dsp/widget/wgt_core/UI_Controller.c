@@ -803,6 +803,17 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
+        UI_DspInterface.draw_line(Obj->Gen_Data.x + frame_width / 2, Obj->Gen_Data.y, frame_Height, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+
+        if (Obj->cur_val < Obj->min + (Obj->range / 2))
+        {
+        }
+        else if (Obj->cur_val > Obj->min + (Obj->range / 2))
+        {
+        }
+        else
+        {
+        }
     }
     else
         return false;
