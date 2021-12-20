@@ -60,7 +60,8 @@ typedef uint8_t (*UI_GetWidget_Width)(void);
 typedef uint8_t (*UI_GetWidget_Height)(void);
 
 typedef void (*UI_DrawPoint)(int16_t x, int16_t y, bool state);
-typedef void (*UI_DrawLine)(int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv);
+typedef void (*UI_DrawHLine)(int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv);
+typedef void (*UI_DrawVLine)(int16_t x, int16_t y, uint8_t len, uint8_t line_width, bool col_inv);
 typedef void (*UI_DrawRadiusRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t line_width, bool col_inv);
 typedef void (*UI_DrawRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t line_width, bool col_inv);
 typedef void (*UI_DrawCircle)(int16_t cneter_x, int16_t cneter_y, uint8_t radius, uint8_t line_width, bool col_inv);
@@ -104,8 +105,8 @@ typedef enum
 typedef enum
 {
     UI_ProcBar_GrothDir_Default = 0,
-    UI_ProcBar_GrothFrom_Left = 1,
-    UI_ProcBar_GrothFrom_Mid = 2,
+    UI_ProcBar_GrothFrom_Left = 0,
+    UI_ProcBar_GrothFrom_Mid = 1,
 } UI_ProcessBar_MoveDir_TypeDef;
 
 /*
@@ -122,7 +123,8 @@ typedef struct
 {
     UI_DrawStr draw_str;
     UI_DrawPoint draw_point;
-    UI_DrawLine draw_line;
+    UI_DrawHLine draw_line_h;
+    UI_DrawVLine draw_line_v;
     UI_DrawRadiusRectangle draw_radius_rectangle;
     UI_DrawRectangle draw_rectangle;
     UI_DrawCircle draw_circle;
@@ -282,15 +284,11 @@ typedef struct
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
-
-    UI_DrawLine DrawLine;
 } UI_VerticalBarObj_TypeDef;
 
 typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
-
-    UI_DrawLine DrawLine;
 } UI_HorizonBarObj_TypeDef;
 
 typedef struct
@@ -338,7 +336,8 @@ typedef struct
 
 bool UI_Set_FontType(uint8_t font);
 void UI_Set_DspInterface(UI_DrawPoint point,
-                         UI_DrawLine line,
+                         UI_DrawHLine line_h,
+                         UI_DrawVLine line_v,
                          UI_DrawRectangle rectangle,
                          UI_DrawRadiusRectangle radius_rectangle,
                          UI_DrawCircle circle,

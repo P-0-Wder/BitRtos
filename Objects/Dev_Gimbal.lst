@@ -1,0 +1,514 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Dev_Gimbal.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DevGimbal_Obj_Clear,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DevGimbal_Obj_Clear:
+  26              	.LVL0:
+  27              	.LFB123:
+  28              		.file 1 "Dev/Dev_Gimbal.c"
+   1:Dev/Dev_Gimbal.c **** #include <string.h>
+   2:Dev/Dev_Gimbal.c **** #include "Dev_Gimbal.h"
+   3:Dev/Dev_Gimbal.c **** #include "drv_adc.h"
+   4:Dev/Dev_Gimbal.c **** #include "drv_gpio.h"
+   5:Dev/Dev_Gimbal.c **** 
+   6:Dev/Dev_Gimbal.c **** /* internal variable */
+   7:Dev/Dev_Gimbal.c **** static uint8_t Gimbal_Num = 0;
+   8:Dev/Dev_Gimbal.c **** 
+   9:Dev/Dev_Gimbal.c **** /* external function */
+  10:Dev/Dev_Gimbal.c **** static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj);
+  11:Dev/Dev_Gimbal.c **** static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj);
+  12:Dev/Dev_Gimbal.c **** static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg);
+  13:Dev/Dev_Gimbal.c **** static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj);
+  14:Dev/Dev_Gimbal.c **** static uint8_t DrvGimbal_GetNum(void);
+  15:Dev/Dev_Gimbal.c **** 
+  16:Dev/Dev_Gimbal.c **** /* external variable */
+  17:Dev/Dev_Gimbal.c **** DevGimbal_TypeDef DevGimbal = {
+  18:Dev/Dev_Gimbal.c ****     .obj_clear = DevGimbal_Obj_Clear,
+  19:Dev/Dev_Gimbal.c ****     .open = DevGimbal_Open,
+  20:Dev/Dev_Gimbal.c ****     .invert = DevGimbal_Invert,
+  21:Dev/Dev_Gimbal.c ****     .get = DevGimbal_Get,
+  22:Dev/Dev_Gimbal.c ****     .get_gimbal_num = DrvGimbal_GetNum,
+  23:Dev/Dev_Gimbal.c **** };
+  24:Dev/Dev_Gimbal.c **** 
+  25:Dev/Dev_Gimbal.c **** static bool DevGimbal_Obj_Clear(DevGimbal_Obj_TypeDef *obj)
+  26:Dev/Dev_Gimbal.c **** {
+  29              		.loc 1 26 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 2
+
+
+  33              		@ link register save eliminated.
+  27:Dev/Dev_Gimbal.c ****     if (obj == NULL)
+  34              		.loc 1 27 5 view .LVU1
+  35              		.loc 1 27 8 is_stmt 0 view .LVU2
+  36 0000 30B1     		cbz	r0, .L3
+  28:Dev/Dev_Gimbal.c ****         return false;
+  29:Dev/Dev_Gimbal.c **** 
+  30:Dev/Dev_Gimbal.c ****     obj->Ch_X = ADC1_Channel_None;
+  37              		.loc 1 30 5 is_stmt 1 view .LVU3
+  38              		.loc 1 30 15 is_stmt 0 view .LVU4
+  39 0002 FF22     		movs	r2, #255
+  40 0004 4270     		strb	r2, [r0, #1]
+  31:Dev/Dev_Gimbal.c ****     obj->Ch_Y = ADC1_Channel_None;
+  41              		.loc 1 31 5 is_stmt 1 view .LVU5
+  42              		.loc 1 31 15 is_stmt 0 view .LVU6
+  43 0006 8270     		strb	r2, [r0, #2]
+  32:Dev/Dev_Gimbal.c **** 
+  33:Dev/Dev_Gimbal.c ****     obj->invert_reg = Gimbal_NoneAxis_Invert;
+  44              		.loc 1 33 5 is_stmt 1 view .LVU7
+  45              		.loc 1 33 21 is_stmt 0 view .LVU8
+  46 0008 0022     		movs	r2, #0
+  47 000a 0270     		strb	r2, [r0]
+  34:Dev/Dev_Gimbal.c **** 
+  35:Dev/Dev_Gimbal.c ****     return true;
+  48              		.loc 1 35 5 is_stmt 1 view .LVU9
+  49              		.loc 1 35 12 is_stmt 0 view .LVU10
+  50 000c 0120     		movs	r0, #1
+  51              	.LVL1:
+  52              		.loc 1 35 12 view .LVU11
+  53 000e 7047     		bx	lr
+  54              	.LVL2:
+  55              	.L3:
+  28:Dev/Dev_Gimbal.c **** 
+  56              		.loc 1 28 16 view .LVU12
+  57 0010 0020     		movs	r0, #0
+  58              	.LVL3:
+  36:Dev/Dev_Gimbal.c **** }
+  59              		.loc 1 36 1 view .LVU13
+  60 0012 7047     		bx	lr
+  61              		.cfi_endproc
+  62              	.LFE123:
+  64              		.section	.text.DrvGimbal_GetNum,"ax",%progbits
+  65              		.align	1
+  66              		.syntax unified
+  67              		.thumb
+  68              		.thumb_func
+  69              		.fpu fpv4-sp-d16
+  71              	DrvGimbal_GetNum:
+  72              	.LFB124:
+  37:Dev/Dev_Gimbal.c **** 
+  38:Dev/Dev_Gimbal.c **** static uint8_t DrvGimbal_GetNum(void)
+  39:Dev/Dev_Gimbal.c **** {
+  73              		.loc 1 39 1 is_stmt 1 view -0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 0
+  76              		@ frame_needed = 0, uses_anonymous_args = 0
+  77              		@ link register save eliminated.
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 3
+
+
+  40:Dev/Dev_Gimbal.c ****     return Gimbal_Num;
+  78              		.loc 1 40 5 view .LVU15
+  41:Dev/Dev_Gimbal.c **** }
+  79              		.loc 1 41 1 is_stmt 0 view .LVU16
+  80 0000 014B     		ldr	r3, .L5
+  81 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  82 0004 7047     		bx	lr
+  83              	.L6:
+  84 0006 00BF     		.align	2
+  85              	.L5:
+  86 0008 00000000 		.word	.LANCHOR0
+  87              		.cfi_endproc
+  88              	.LFE124:
+  90              		.section	.text.DevGimbal_Open,"ax",%progbits
+  91              		.align	1
+  92              		.syntax unified
+  93              		.thumb
+  94              		.thumb_func
+  95              		.fpu fpv4-sp-d16
+  97              	DevGimbal_Open:
+  98              	.LVL4:
+  99              	.LFB125:
+  42:Dev/Dev_Gimbal.c **** 
+  43:Dev/Dev_Gimbal.c **** static bool DevGimbal_Open(DevGimbal_Obj_TypeDef *obj)
+  44:Dev/Dev_Gimbal.c **** {
+ 100              		.loc 1 44 1 is_stmt 1 view -0
+ 101              		.cfi_startproc
+ 102              		@ args = 0, pretend = 0, frame = 0
+ 103              		@ frame_needed = 0, uses_anonymous_args = 0
+  45:Dev/Dev_Gimbal.c ****     if ((obj == NULL) || (obj->Ch_X == ADC1_Channel_None) || (obj->Ch_Y == ADC1_Channel_None) || (o
+ 104              		.loc 1 45 5 view .LVU18
+ 105              		.loc 1 45 8 is_stmt 0 view .LVU19
+ 106 0000 B8B1     		cbz	r0, .L9
+  44:Dev/Dev_Gimbal.c ****     if ((obj == NULL) || (obj->Ch_X == ADC1_Channel_None) || (obj->Ch_Y == ADC1_Channel_None) || (o
+ 107              		.loc 1 44 1 discriminator 1 view .LVU20
+ 108 0002 38B5     		push	{r3, r4, r5, lr}
+ 109              	.LCFI0:
+ 110              		.cfi_def_cfa_offset 16
+ 111              		.cfi_offset 3, -16
+ 112              		.cfi_offset 4, -12
+ 113              		.cfi_offset 5, -8
+ 114              		.cfi_offset 14, -4
+ 115 0004 0446     		mov	r4, r0
+ 116              		.loc 1 45 30 discriminator 1 view .LVU21
+ 117 0006 4178     		ldrb	r1, [r0, #1]	@ zero_extendqisi2
+ 118              		.loc 1 45 23 discriminator 1 view .LVU22
+ 119 0008 FF29     		cmp	r1, #255
+ 120 000a 14D0     		beq	.L10
+ 121              		.loc 1 45 66 discriminator 2 view .LVU23
+ 122 000c 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 123              		.loc 1 45 59 discriminator 2 view .LVU24
+ 124 000e FF2B     		cmp	r3, #255
+ 125 0010 13D0     		beq	.L11
+ 126              		.loc 1 45 95 discriminator 3 view .LVU25
+ 127 0012 9942     		cmp	r1, r3
+ 128 0014 13D0     		beq	.L12
+  46:Dev/Dev_Gimbal.c ****         return false;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 4
+
+
+  47:Dev/Dev_Gimbal.c **** 
+  48:Dev/Dev_Gimbal.c ****     DrvADC.ctl(ADC_Open, obj->Ch_X);
+ 129              		.loc 1 48 5 is_stmt 1 view .LVU26
+ 130              		.loc 1 48 11 is_stmt 0 view .LVU27
+ 131 0016 0B4D     		ldr	r5, .L17
+ 132 0018 2B68     		ldr	r3, [r5]
+ 133              		.loc 1 48 5 view .LVU28
+ 134 001a 0020     		movs	r0, #0
+ 135              	.LVL5:
+ 136              		.loc 1 48 5 view .LVU29
+ 137 001c 9847     		blx	r3
+ 138              	.LVL6:
+  49:Dev/Dev_Gimbal.c ****     DrvADC.ctl(ADC_Open, obj->Ch_Y);
+ 139              		.loc 1 49 5 is_stmt 1 view .LVU30
+ 140              		.loc 1 49 11 is_stmt 0 view .LVU31
+ 141 001e 2B68     		ldr	r3, [r5]
+ 142              		.loc 1 49 5 view .LVU32
+ 143 0020 A178     		ldrb	r1, [r4, #2]	@ zero_extendqisi2
+ 144 0022 0020     		movs	r0, #0
+ 145 0024 9847     		blx	r3
+ 146              	.LVL7:
+  50:Dev/Dev_Gimbal.c **** 
+  51:Dev/Dev_Gimbal.c ****     Gimbal_Num++;
+ 147              		.loc 1 51 5 is_stmt 1 view .LVU33
+ 148              		.loc 1 51 15 is_stmt 0 view .LVU34
+ 149 0026 084A     		ldr	r2, .L17+4
+ 150 0028 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 151 002a 0133     		adds	r3, r3, #1
+ 152 002c 1370     		strb	r3, [r2]
+  52:Dev/Dev_Gimbal.c **** 
+  53:Dev/Dev_Gimbal.c ****     return true;
+ 153              		.loc 1 53 5 is_stmt 1 view .LVU35
+ 154              		.loc 1 53 12 is_stmt 0 view .LVU36
+ 155 002e 0120     		movs	r0, #1
+ 156              	.L8:
+  54:Dev/Dev_Gimbal.c **** }
+ 157              		.loc 1 54 1 view .LVU37
+ 158 0030 38BD     		pop	{r3, r4, r5, pc}
+ 159              	.LVL8:
+ 160              	.L9:
+ 161              	.LCFI1:
+ 162              		.cfi_def_cfa_offset 0
+ 163              		.cfi_restore 3
+ 164              		.cfi_restore 4
+ 165              		.cfi_restore 5
+ 166              		.cfi_restore 14
+  46:Dev/Dev_Gimbal.c **** 
+ 167              		.loc 1 46 16 view .LVU38
+ 168 0032 0020     		movs	r0, #0
+ 169              	.LVL9:
+ 170              		.loc 1 54 1 view .LVU39
+ 171 0034 7047     		bx	lr
+ 172              	.LVL10:
+ 173              	.L10:
+ 174              	.LCFI2:
+ 175              		.cfi_def_cfa_offset 16
+ 176              		.cfi_offset 3, -16
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 5
+
+
+ 177              		.cfi_offset 4, -12
+ 178              		.cfi_offset 5, -8
+ 179              		.cfi_offset 14, -4
+  46:Dev/Dev_Gimbal.c **** 
+ 180              		.loc 1 46 16 view .LVU40
+ 181 0036 0020     		movs	r0, #0
+ 182              	.LVL11:
+  46:Dev/Dev_Gimbal.c **** 
+ 183              		.loc 1 46 16 view .LVU41
+ 184 0038 FAE7     		b	.L8
+ 185              	.LVL12:
+ 186              	.L11:
+  46:Dev/Dev_Gimbal.c **** 
+ 187              		.loc 1 46 16 view .LVU42
+ 188 003a 0020     		movs	r0, #0
+ 189              	.LVL13:
+  46:Dev/Dev_Gimbal.c **** 
+ 190              		.loc 1 46 16 view .LVU43
+ 191 003c F8E7     		b	.L8
+ 192              	.LVL14:
+ 193              	.L12:
+  46:Dev/Dev_Gimbal.c **** 
+ 194              		.loc 1 46 16 view .LVU44
+ 195 003e 0020     		movs	r0, #0
+ 196              	.LVL15:
+  46:Dev/Dev_Gimbal.c **** 
+ 197              		.loc 1 46 16 view .LVU45
+ 198 0040 F6E7     		b	.L8
+ 199              	.L18:
+ 200 0042 00BF     		.align	2
+ 201              	.L17:
+ 202 0044 00000000 		.word	DrvADC
+ 203 0048 00000000 		.word	.LANCHOR0
+ 204              		.cfi_endproc
+ 205              	.LFE125:
+ 207              		.section	.text.DevGimbal_Invert,"ax",%progbits
+ 208              		.align	1
+ 209              		.syntax unified
+ 210              		.thumb
+ 211              		.thumb_func
+ 212              		.fpu fpv4-sp-d16
+ 214              	DevGimbal_Invert:
+ 215              	.LVL16:
+ 216              	.LFB126:
+  55:Dev/Dev_Gimbal.c **** 
+  56:Dev/Dev_Gimbal.c **** static bool DevGimbal_Invert(DevGimbal_Obj_TypeDef *obj, uint8_t invert_reg)
+  57:Dev/Dev_Gimbal.c **** {
+ 217              		.loc 1 57 1 is_stmt 1 view -0
+ 218              		.cfi_startproc
+ 219              		@ args = 0, pretend = 0, frame = 0
+ 220              		@ frame_needed = 0, uses_anonymous_args = 0
+ 221              		@ link register save eliminated.
+  58:Dev/Dev_Gimbal.c ****     if (obj == NULL)
+ 222              		.loc 1 58 5 view .LVU47
+ 223              		.loc 1 58 8 is_stmt 0 view .LVU48
+ 224 0000 10B1     		cbz	r0, .L21
+  59:Dev/Dev_Gimbal.c ****         return false;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 6
+
+
+  60:Dev/Dev_Gimbal.c **** 
+  61:Dev/Dev_Gimbal.c ****     obj->invert_reg = invert_reg;
+ 225              		.loc 1 61 5 is_stmt 1 view .LVU49
+ 226              		.loc 1 61 21 is_stmt 0 view .LVU50
+ 227 0002 0170     		strb	r1, [r0]
+  62:Dev/Dev_Gimbal.c **** 
+  63:Dev/Dev_Gimbal.c ****     return true;
+ 228              		.loc 1 63 5 is_stmt 1 view .LVU51
+ 229              		.loc 1 63 12 is_stmt 0 view .LVU52
+ 230 0004 0120     		movs	r0, #1
+ 231              	.LVL17:
+ 232              		.loc 1 63 12 view .LVU53
+ 233 0006 7047     		bx	lr
+ 234              	.LVL18:
+ 235              	.L21:
+  59:Dev/Dev_Gimbal.c ****         return false;
+ 236              		.loc 1 59 16 view .LVU54
+ 237 0008 0020     		movs	r0, #0
+ 238              	.LVL19:
+  64:Dev/Dev_Gimbal.c **** }
+ 239              		.loc 1 64 1 view .LVU55
+ 240 000a 7047     		bx	lr
+ 241              		.cfi_endproc
+ 242              	.LFE126:
+ 244              		.section	.text.DevGimbal_Get,"ax",%progbits
+ 245              		.align	1
+ 246              		.syntax unified
+ 247              		.thumb
+ 248              		.thumb_func
+ 249              		.fpu fpv4-sp-d16
+ 251              	DevGimbal_Get:
+ 252              	.LVL20:
+ 253              	.LFB127:
+  65:Dev/Dev_Gimbal.c **** 
+  66:Dev/Dev_Gimbal.c **** static DevGimbal_Val_TypeDef DevGimbal_Get(DevGimbal_Obj_TypeDef *obj)
+  67:Dev/Dev_Gimbal.c **** {
+ 254              		.loc 1 67 1 is_stmt 1 view -0
+ 255              		.cfi_startproc
+ 256              		@ args = 0, pretend = 0, frame = 0
+ 257              		@ frame_needed = 0, uses_anonymous_args = 0
+ 258              		.loc 1 67 1 is_stmt 0 view .LVU57
+ 259 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 260              	.LCFI3:
+ 261              		.cfi_def_cfa_offset 24
+ 262              		.cfi_offset 3, -24
+ 263              		.cfi_offset 4, -20
+ 264              		.cfi_offset 5, -16
+ 265              		.cfi_offset 6, -12
+ 266              		.cfi_offset 7, -8
+ 267              		.cfi_offset 14, -4
+ 268 0002 0446     		mov	r4, r0
+  68:Dev/Dev_Gimbal.c ****     DevGimbal_Val_TypeDef Val_tmp;
+ 269              		.loc 1 68 5 is_stmt 1 view .LVU58
+  69:Dev/Dev_Gimbal.c **** 
+  70:Dev/Dev_Gimbal.c ****     Val_tmp.error = false;
+ 270              		.loc 1 70 5 view .LVU59
+ 271              		.loc 1 70 19 is_stmt 0 view .LVU60
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 7
+
+
+ 272 0004 0023     		movs	r3, #0
+ 273 0006 0370     		strb	r3, [r0]
+  71:Dev/Dev_Gimbal.c ****     Val_tmp.Gim_X = 0;
+ 274              		.loc 1 71 5 is_stmt 1 view .LVU61
+ 275              		.loc 1 71 19 is_stmt 0 view .LVU62
+ 276 0008 4380     		strh	r3, [r0, #2]	@ movhi
+  72:Dev/Dev_Gimbal.c ****     Val_tmp.Gim_Y = 0;
+ 277              		.loc 1 72 5 is_stmt 1 view .LVU63
+ 278              		.loc 1 72 19 is_stmt 0 view .LVU64
+ 279 000a 8380     		strh	r3, [r0, #4]	@ movhi
+  73:Dev/Dev_Gimbal.c **** 
+  74:Dev/Dev_Gimbal.c ****     if (obj == NULL)
+ 280              		.loc 1 74 5 is_stmt 1 view .LVU65
+ 281              		.loc 1 74 8 is_stmt 0 view .LVU66
+ 282 000c B9B1     		cbz	r1, .L27
+ 283 000e 0E46     		mov	r6, r1
+  75:Dev/Dev_Gimbal.c ****     {
+  76:Dev/Dev_Gimbal.c ****         Val_tmp.error = true;
+  77:Dev/Dev_Gimbal.c ****     }
+  78:Dev/Dev_Gimbal.c ****     else
+  79:Dev/Dev_Gimbal.c ****     {
+  80:Dev/Dev_Gimbal.c ****         Val_tmp.Gim_X = DrvADC.read((uint32_t)obj->Ch_X);
+ 284              		.loc 1 80 9 is_stmt 1 view .LVU67
+ 285              		.loc 1 80 31 is_stmt 0 view .LVU68
+ 286 0010 0C4F     		ldr	r7, .L28
+ 287 0012 7B68     		ldr	r3, [r7, #4]
+ 288              		.loc 1 80 25 view .LVU69
+ 289 0014 4878     		ldrb	r0, [r1, #1]	@ zero_extendqisi2
+ 290              	.LVL21:
+ 291              		.loc 1 80 25 view .LVU70
+ 292 0016 9847     		blx	r3
+ 293              	.LVL22:
+ 294              		.loc 1 80 25 view .LVU71
+ 295 0018 0546     		mov	r5, r0
+ 296              		.loc 1 80 23 view .LVU72
+ 297 001a 6080     		strh	r0, [r4, #2]	@ movhi
+  81:Dev/Dev_Gimbal.c ****         Val_tmp.Gim_Y = DrvADC.read((uint32_t)obj->Ch_Y);
+ 298              		.loc 1 81 9 is_stmt 1 view .LVU73
+ 299              		.loc 1 81 31 is_stmt 0 view .LVU74
+ 300 001c 7B68     		ldr	r3, [r7, #4]
+ 301              		.loc 1 81 25 view .LVU75
+ 302 001e B078     		ldrb	r0, [r6, #2]	@ zero_extendqisi2
+ 303 0020 9847     		blx	r3
+ 304              	.LVL23:
+ 305              		.loc 1 81 23 view .LVU76
+ 306 0022 A080     		strh	r0, [r4, #4]	@ movhi
+  82:Dev/Dev_Gimbal.c **** 
+  83:Dev/Dev_Gimbal.c ****         if (obj->invert_reg & Gimbal_AxisX_Invert)
+ 307              		.loc 1 83 9 is_stmt 1 view .LVU77
+ 308              		.loc 1 83 16 is_stmt 0 view .LVU78
+ 309 0024 3378     		ldrb	r3, [r6]	@ zero_extendqisi2
+ 310              		.loc 1 83 12 view .LVU79
+ 311 0026 13F0010F 		tst	r3, #1
+ 312 002a 01D0     		beq	.L25
+  84:Dev/Dev_Gimbal.c ****         {
+  85:Dev/Dev_Gimbal.c ****             Val_tmp.Gim_X *= -1;
+ 313              		.loc 1 85 13 is_stmt 1 view .LVU80
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 8
+
+
+ 314              		.loc 1 85 27 is_stmt 0 view .LVU81
+ 315 002c 6D42     		rsbs	r5, r5, #0
+ 316 002e 6580     		strh	r5, [r4, #2]	@ movhi
+ 317              	.L25:
+  86:Dev/Dev_Gimbal.c ****         }
+  87:Dev/Dev_Gimbal.c **** 
+  88:Dev/Dev_Gimbal.c ****         if (obj->invert_reg & Gimbal_AxisY_Invert)
+ 318              		.loc 1 88 9 is_stmt 1 view .LVU82
+ 319              		.loc 1 88 12 is_stmt 0 view .LVU83
+ 320 0030 13F0020F 		tst	r3, #2
+ 321 0034 01D0     		beq	.L22
+  89:Dev/Dev_Gimbal.c ****         {
+  90:Dev/Dev_Gimbal.c ****             Val_tmp.Gim_Y *= -1;
+ 322              		.loc 1 90 13 is_stmt 1 view .LVU84
+ 323              		.loc 1 90 27 is_stmt 0 view .LVU85
+ 324 0036 4042     		rsbs	r0, r0, #0
+ 325 0038 A080     		strh	r0, [r4, #4]	@ movhi
+  91:Dev/Dev_Gimbal.c ****         }
+  92:Dev/Dev_Gimbal.c ****     }
+  93:Dev/Dev_Gimbal.c **** 
+  94:Dev/Dev_Gimbal.c ****     return Val_tmp;
+ 326              		.loc 1 94 5 is_stmt 1 view .LVU86
+ 327              	.LVL24:
+ 328              	.L22:
+  95:Dev/Dev_Gimbal.c **** }
+ 329              		.loc 1 95 1 is_stmt 0 view .LVU87
+ 330 003a 2046     		mov	r0, r4
+ 331 003c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 332              	.LVL25:
+ 333              	.L27:
+  76:Dev/Dev_Gimbal.c ****     }
+ 334              		.loc 1 76 9 is_stmt 1 view .LVU88
+  76:Dev/Dev_Gimbal.c ****     }
+ 335              		.loc 1 76 23 is_stmt 0 view .LVU89
+ 336 003e 0123     		movs	r3, #1
+ 337 0040 0370     		strb	r3, [r0]
+ 338 0042 FAE7     		b	.L22
+ 339              	.L29:
+ 340              		.align	2
+ 341              	.L28:
+ 342 0044 00000000 		.word	DrvADC
+ 343              		.cfi_endproc
+ 344              	.LFE127:
+ 346              		.global	DevGimbal
+ 347              		.section	.bss.Gimbal_Num,"aw",%nobits
+ 348              		.set	.LANCHOR0,. + 0
+ 351              	Gimbal_Num:
+ 352 0000 00       		.space	1
+ 353              		.section	.data.DevGimbal,"aw"
+ 354              		.align	2
+ 357              	DevGimbal:
+ 358 0000 00000000 		.word	DevGimbal_Obj_Clear
+ 359 0004 00000000 		.word	DevGimbal_Open
+ 360 0008 00000000 		.word	DevGimbal_Invert
+ 361 000c 00000000 		.word	DrvGimbal_GetNum
+ 362 0010 00000000 		.word	DevGimbal_Get
+ 363              		.text
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 9
+
+
+ 364              	.Letext0:
+ 365              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 366              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 367              		.file 4 "Bsp/periph_adc.h"
+ 368              		.file 5 "Dev/Dev_Gimbal.h"
+ 369              		.file 6 "Drv/drv_adc.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Dev_Gimbal.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:18     .text.DevGimbal_Obj_Clear:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:25     .text.DevGimbal_Obj_Clear:0000000000000000 DevGimbal_Obj_Clear
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:65     .text.DrvGimbal_GetNum:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:71     .text.DrvGimbal_GetNum:0000000000000000 DrvGimbal_GetNum
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:86     .text.DrvGimbal_GetNum:0000000000000008 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:91     .text.DevGimbal_Open:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:97     .text.DevGimbal_Open:0000000000000000 DevGimbal_Open
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:202    .text.DevGimbal_Open:0000000000000044 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:208    .text.DevGimbal_Invert:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:214    .text.DevGimbal_Invert:0000000000000000 DevGimbal_Invert
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:245    .text.DevGimbal_Get:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:251    .text.DevGimbal_Get:0000000000000000 DevGimbal_Get
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:342    .text.DevGimbal_Get:0000000000000044 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:357    .data.DevGimbal:0000000000000000 DevGimbal
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:351    .bss.Gimbal_Num:0000000000000000 Gimbal_Num
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:352    .bss.Gimbal_Num:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//cccGHWcq.s:354    .data.DevGimbal:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+DrvADC

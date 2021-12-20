@@ -1024,7 +1024,8 @@ static uint8_t WidgetUI_GetWidgetWidth(void)
 static void WidgetUI_Init(void)
 {
     UI_Set_DspInterface(WidgetDraw_Interface.draw_point,
-                        WidgetDraw_Interface.draw_line,
+                        WidgetDraw_Interface.draw_hline,
+                        WidgetDraw_Interface.draw_vline,
                         WidgetDraw_Interface.draw_rectangle,
                         WidgetDraw_Interface.draw_radius_rectangle,
                         WidgetDraw_Interface.draw_circle,

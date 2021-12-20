@@ -52,6 +52,9 @@ static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
 static bool UI_Get_Selected(UI_GeneralData_TypeDef GenData);
 static bool UI_Move(UI_GeneralData_TypeDef *GenUI_Info, int16_t dst_x, int16_t dst_y);
 
+/* UI custom display mathod */
+static bool UI_Draw_HorDotLine(int16_t x, int16_t y, uint8_t len, uint8_t line_width);
+
 /* external Object var */
 UI_Button_Interface_TypeDef UI_Button = {
     .ctl = UI_Button_Ctl,
@@ -103,7 +106,8 @@ bool UI_Set_FontType(uint8_t font)
 }
 
 void UI_Set_DspInterface(UI_DrawPoint point,
-                         UI_DrawLine line,
+                         UI_DrawHLine line_h,
+                         UI_DrawVLine line_v,
                          UI_DrawRectangle rectangle,
                          UI_DrawRadiusRectangle radius_rectangle,
                          UI_DrawCircle circle,
@@ -116,7 +120,8 @@ void UI_Set_DspInterface(UI_DrawPoint point,
 {
     UI_DspInterface.draw_circle = circle;
     UI_DspInterface.draw_circle_section = circle_section;
-    UI_DspInterface.draw_line = line;
+    UI_DspInterface.draw_line_h = line_h;
+    UI_DspInterface.draw_line_v = line_v;
     UI_DspInterface.draw_point = point;
     UI_DspInterface.draw_rectangle = rectangle;
     UI_DspInterface.draw_radius_rectangle = radius_rectangle;
@@ -131,6 +136,28 @@ void UI_Set_DspInterface(UI_DrawPoint point,
 void UI_Set_GetWidgetWidthMathod(UI_GetWidget_Width mathod)
 {
     UI_Get_WidgetWidth = mathod;
+}
+
+static bool UI_Draw_HorDotLine(int16_t x, int16_t y, uint8_t len, uint8_t line_width)
+{
+    if ((UI_DspInterface.draw_point == NULL) || (UI_Get_WidgetWidth == NULL))
+        return false;
+
+    if (x > UI_Get_WidgetWidth())
+        return true;
+
+    for (int16_t i = x; i < x + len; i++)
+    {
+        for (uint8_t width = 0; width < line_width; width++)
+        {
+            if (i / 2)
+            {
+                UI_DspInterface.draw_point(i, y + width, true);
+            }
+        }
+    }
+
+    return true;
 }
 
 /* still in developing about this selector */
@@ -745,21 +772,40 @@ static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
     //display direction from left
     UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, DEFAULT_PROCESSBAR_DOWNLOADTYPE_HEIGHT, DEFAULT_PROCESSBAR_DOWNLOADTYPE_RADIUS, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     UI_DspInterface.draw_str(base_font, dsp_str, Str_CoordX, Str_CoordY, true);
-    UI_DspInterface.draw_line(Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, Pcnt_Val * (Obj->width - 6) + Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, true);
+    UI_DspInterface.draw_line_h(Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, Pcnt_Val * (Obj->width - 6) + Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, true);
 
     return true;
 }
 
 static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
 {
+    uint8_t bar_width = 0;
+    int16_t bar_start_x = 0;
+    int16_t bar_end_x = 0;
+
     if (Obj == NULL)
         return false;
 
-    else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
+    if (Obj->width / 2 == 0)
+        bar_width = Obj->width + 1;
+
+    /* step  1 draw dot line */
+    UI_Draw_HorDotLine(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, DEFAULT_PROCESSBAR_LINE_WIDTH);
+
+    if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
+        UI_DspInterface.draw_line_v(Obj->Gen_Data.x, Obj->Gen_Data.y - 2, 5, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
+        UI_DspInterface.draw_line_v(Obj->Gen_Data.x + bar_width / 2, Obj->Gen_Data.y - 2, 5, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+
+        if (Obj->cur_val < (Obj->min + Obj->range / 2))
+        {
+        }
+        else if (Obj->cur_val > (Obj->max + Obj->range / 2))
+        {
+        }
     }
     else
         return false;
@@ -810,7 +856,7 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
-        UI_DspInterface.draw_line(Obj->Gen_Data.x + frame_width / 2, Obj->Gen_Data.y, frame_Height, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_h(Obj->Gen_Data.x + frame_width / 2, Obj->Gen_Data.y, frame_Height, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         block_start_CoordY = Obj->Gen_Data.y + 2;
 
         if (Obj->cur_val < Obj->min + (Obj->range / 2))
@@ -920,17 +966,11 @@ static bool UI_StrInput_Init()
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if (Obj->DrawLine == NULL)
-        return false;
-
     return true;
 }
 
 static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    if (Obj->DrawLine == NULL)
-        return false;
-
     return true;
 }
 
