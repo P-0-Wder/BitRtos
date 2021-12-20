@@ -772,7 +772,7 @@ static bool UI_ProcessBar_DspLoadBar(UI_ProcessBarObj_TypeDef *Obj)
     //display direction from left
     UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, DEFAULT_PROCESSBAR_DOWNLOADTYPE_HEIGHT, DEFAULT_PROCESSBAR_DOWNLOADTYPE_RADIUS, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     UI_DspInterface.draw_str(base_font, dsp_str, Str_CoordX, Str_CoordY, true);
-    UI_DspInterface.draw_line_h(Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, Pcnt_Val * (Obj->width - 6) + Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, true);
+    UI_DspInterface.draw_line_h(Obj->Gen_Data.x + 2, Obj->Gen_Data.y + 2, Pcnt_Val * (Obj->width - 6), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
 
     return true;
 }
@@ -782,6 +782,7 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
     uint8_t bar_width = 0;
     int16_t bar_start_x = 0;
     int16_t bar_end_x = 0;
+    float Pcnt_Val = 0;
 
     if (Obj == NULL)
         return false;
@@ -794,7 +795,12 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
 
     if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
+        bar_start_x = Obj->Gen_Data.x;
+        Pcnt_Val = (Obj->cur_val / (float)Obj->range);
+
         UI_DspInterface.draw_line_v(Obj->Gen_Data.x, Obj->Gen_Data.y - 2, 5, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y - 1, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 1, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
