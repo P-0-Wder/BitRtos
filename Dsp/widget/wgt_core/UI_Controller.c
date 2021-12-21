@@ -915,8 +915,44 @@ static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj)
     }
 }
 
-static bool UI_Drop_Init()
+static bool UI_Drop_Init(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_t y)
 {
+    if (Obj == NULL)
+        return false;
+
+    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
+
+    Obj->CurDrop_Item = NULL;
+    Obj->item_cnt = 0;
+    Obj->DropList = NULL;
+    Obj->is_selected = false;
+
+    return true;
+}
+
+static item_obj *UI_Drop_CreateDropItem(char *item_desc, void *data, UI_Drop_Callback callback)
+{
+    item_obj *item_tmp = NULL;
+    UI_DropItemDataObj_TypeDef *itemdata_tmp = NULL;
+
+    itemdata_tmp = (UI_DropItemDataObj_TypeDef *)MMU_malloc(sizeof(UI_DropItemDataObj_TypeDef));
+    item_tmp = (item_obj *)MMU_malloc(sizeof(item_obj));
+
+    if ((item_tmp == NULL) || (itemdata_tmp == NULL))
+        return NULL;
+
+    item_tmp->data = itemdata_tmp;
+
+    return item_tmp;
+}
+
+static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, UI_Drop_Callback callback)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (UI_Drop_CreateDropItem(item_desc, data, callback) == NULL)
+        return false;
 
     return true;
 }
@@ -949,21 +985,6 @@ static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, char *label, uint8
     return true;
 }
 
-static bool UI_ProcessCircle_Init(UI_ProcessCircleObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t radius, uint8_t line_width, uint32_t range)
-{
-    if (Obj == NULL)
-        return false;
-
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
-
-    Obj->radius = radius;
-    Obj->percent = 0.0;
-    Obj->range = range;
-    Obj->cur_val = 0;
-
-    return true;
-}
-
 static bool UI_DigInput_Init()
 {
     return true;
@@ -983,14 +1004,6 @@ static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    return true;
-}
-
-static bool UI_ProcessCircle_Ctl(UI_ProcessCircleObj_TypeDef *Obj, uint8_t pcnt)
-{
-    if (Obj->DrawPoint == NULL)
-        return false;
-
     return true;
 }
 

@@ -77,6 +77,8 @@ typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 typedef int (*UI_SliderBarTrigger_Callback)(int16_t data);
 
+typedef int (*UI_Drop_Callback)(void *data, int16_t len);
+
 typedef enum
 {
     UI_Type_Button = 0,
@@ -225,6 +227,26 @@ typedef struct
     UI_ProcessBar_MoveDir_TypeDef Mv_Dir;
 } UI_ProcessBarObj_TypeDef;
 
+typedef struct
+{
+    uint8_t id;
+    char *describe;
+    void *data;
+    UI_Drop_Callback callback;
+} UI_DropItemDataObj_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
+    uint8_t item_cnt;
+
+    list_obj *DropList;
+    item_obj *CurDrop_Item;
+
+    bool is_selected;
+
+} UI_DropObj_TypeDef;
+
 #pragma pack()
 
 typedef struct
@@ -255,8 +277,8 @@ typedef struct
     bool (*Input)(UI_SlideBarObj_TypeDef *Obj, int16_t *step);
     bool (*Trigger)(UI_SlideBarObj_TypeDef *Obj);
     bool (*ctl)(UI_SlideBarObj_TypeDef *Obj);
-    bool (*Get_Select)(UI_SlideBarObj_TypeDef *Obj);
     void (*Set_Select)(UI_SlideBarObj_TypeDef *Obj, bool state);
+    bool (*Get_Select)(UI_SlideBarObj_TypeDef *Obj);
 } UI_SliderBar_Interface_TypeDef;
 
 typedef struct
@@ -266,20 +288,18 @@ typedef struct
     bool (*set_DspDir)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_MoveDir_TypeDef Dir);
     bool (*set_CurVal)(UI_ProcessBarObj_TypeDef *Obj, int32_t val);
     bool (*ctl)(UI_ProcessBarObj_TypeDef *Obj);
+    bool (*Set_Select)(UI_ProcessBarObj_TypeDef *Obj, bool state);
+    bool (*Get_Select)(UI_ProcessBarObj_TypeDef *Obj);
 } UI_ProcessBar_Interface_TypeDef;
 
 typedef struct
 {
-    UI_GeneralData_TypeDef Gen_Data;
-
-    float percent;
-    uint32_t range;
-    uint32_t cur_val;
-
-    uint8_t radius;
-
-    UI_DrawPoint DrawPoint;
-} UI_ProcessCircleObj_TypeDef;
+    bool (*init)(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+    bool (*add_drop_item)(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, UI_Drop_Callback callback);
+    bool (*Move)(UI_DropObj_TypeDef *Obj, int16_t x, int16_t y);
+    bool (*Set_Select)(UI_DropObj_TypeDef *Obj, bool state);
+    bool (*Get_Select)(UI_DropObj_TypeDef *Obj);
+} UI_Drop_Interface_TypeDef;
 
 typedef struct
 {
@@ -293,38 +313,12 @@ typedef struct
 
 typedef struct
 {
-    char *name;
-    bool selected;
-    bool active;
-    UI_ButtonTrigger_Callback callback;
-} UI_DropItemObj_TypeDef;
-
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
-    uint8_t item_num;
-    uint8_t item_height;
-    uint8_t item_width;
-    UI_DropItemObj_TypeDef item[MAX_DROP_ITEM];
-} UI_DropListObj_TypeDef;
-
-typedef struct
-{
     UI_GeneralData_TypeDef Gen_Data;
     int32_t range;
     char *input_dig;
     int32_t dig;
     bool inputing;
 } UI_DigInputObj_TypeDef;
-
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
-    uint8_t item_num;
-
-    /* need a linked list */
-    list_obj item_list;
-} UI_DropObj_TypeDef;
 
 typedef struct
 {
