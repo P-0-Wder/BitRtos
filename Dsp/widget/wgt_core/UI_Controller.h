@@ -77,7 +77,7 @@ typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 typedef int (*UI_SliderBarTrigger_Callback)(int16_t data);
 
-typedef int (*UI_Drop_Callback)(void *data, int16_t len);
+typedef int (*UI_Drop_Callback)(void *data);
 
 typedef enum
 {

@@ -984,6 +984,10 @@ static bool UI_Drop_SetSelect(UI_DropObj_TypeDef *Obj, bool state)
 
     Obj->is_selected = state;
 
+    if (!state && (Obj->CurDrop_Item->data != NULL) && (((UI_DropItemDataObj_TypeDef *)Obj->CurDrop_Item->data)->callback != NULL))
+        /* trigger drop item callback */
+        ((UI_DropItemDataObj_TypeDef *)Obj->CurDrop_Item->data)->callback(((UI_DropItemDataObj_TypeDef *)Obj->CurDrop_Item->data)->data);
+
     return true;
 }
 
