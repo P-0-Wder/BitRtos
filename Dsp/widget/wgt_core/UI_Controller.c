@@ -930,7 +930,7 @@ static bool UI_Drop_Init(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_
     return true;
 }
 
-static item_obj *UI_Drop_CreateDropItem(char *item_desc, void *data, UI_Drop_Callback callback)
+static item_obj *UI_Drop_CreateDropItem(uint8_t id, char *item_desc, void *data, UI_Drop_Callback callback)
 {
     item_obj *item_tmp = NULL;
     UI_DropItemDataObj_TypeDef *itemdata_tmp = NULL;
@@ -940,6 +940,11 @@ static item_obj *UI_Drop_CreateDropItem(char *item_desc, void *data, UI_Drop_Cal
 
     if ((item_tmp == NULL) || (itemdata_tmp == NULL))
         return NULL;
+
+    itemdata_tmp->callback = callback;
+    itemdata_tmp->data = data;
+    itemdata_tmp->describe = item_desc;
+    itemdata_tmp->id = id;
 
     List_ItemInit(item_tmp, itemdata_tmp);
 
@@ -953,7 +958,7 @@ static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *
     if (Obj == NULL)
         return false;
 
-    item_temp = UI_Drop_CreateDropItem(item_desc, data, callback);
+    item_temp = UI_Drop_CreateDropItem(Obj->item_cnt, item_desc, data, callback);
 
     if (item_temp == NULL)
         return false;
@@ -961,12 +966,43 @@ static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *
     if (Obj->DropList == NULL)
     {
         Obj->DropList = item_temp;
+        Obj->CurDrop_Item = Obj->DropList;
         List_Init(Obj->DropList, item_temp, by_order, NULL);
     }
     else
         List_Insert_Item(Obj->DropList, item_temp);
 
+    Obj->item_cnt++;
+
     return true;
+}
+
+static bool UI_Drop_SetSelect(UI_DropObj_TypeDef *Obj, bool state)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->is_selected = state;
+
+    return true;
+}
+
+static bool UI_Drop_GetSelect(UI_DropObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    return Obj->is_selected;
+}
+
+static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, uint8_t offset)
+{
+    item_obj *tmp = NULL;
+
+    if ((Obj == NULL) || (offset > Obj->item_cnt))
+        return false;
+
+    return false;
 }
 
 static bool UI_Drop_Ctl()
