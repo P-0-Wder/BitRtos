@@ -941,18 +941,30 @@ static item_obj *UI_Drop_CreateDropItem(char *item_desc, void *data, UI_Drop_Cal
     if ((item_tmp == NULL) || (itemdata_tmp == NULL))
         return NULL;
 
-    item_tmp->data = itemdata_tmp;
+    List_ItemInit(item_tmp, itemdata_tmp);
 
     return item_tmp;
 }
 
 static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, UI_Drop_Callback callback)
 {
+    item_obj *item_temp = NULL;
+
     if (Obj == NULL)
         return false;
 
-    if (UI_Drop_CreateDropItem(item_desc, data, callback) == NULL)
+    item_temp = UI_Drop_CreateDropItem(item_desc, data, callback);
+
+    if (item_temp == NULL)
         return false;
+
+    if (Obj->DropList == NULL)
+    {
+        Obj->DropList = item_temp;
+        List_Init(Obj->DropList, item_temp, by_order, NULL);
+    }
+    else
+        List_Insert_Item(Obj->DropList, item_temp);
 
     return true;
 }
