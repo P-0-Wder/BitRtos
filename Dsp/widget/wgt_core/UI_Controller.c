@@ -995,14 +995,35 @@ static bool UI_Drop_GetSelect(UI_DropObj_TypeDef *Obj)
     return Obj->is_selected;
 }
 
-static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, uint8_t offset)
+static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, int8_t *offset)
 {
     item_obj *tmp = NULL;
 
-    if ((Obj == NULL) || (offset > Obj->item_cnt))
+    if ((Obj == NULL) || (offset > Obj->item_cnt) || (Obj->CurDrop_Item == NULL))
         return false;
 
-    return false;
+    tmp = Obj->CurDrop_Item;
+
+    while (*offset)
+    {
+        if (tmp == NULL)
+            return false;
+
+        if (*offset > 0)
+        {
+            tmp = tmp->nxt;
+            *offset--;
+        }
+        else if (*offset < 0)
+        {
+            tmp = tmp->prv;
+            *offset++;
+        }
+    }
+
+    Obj->CurDrop_Item = tmp;
+
+    return true;
 }
 
 static bool UI_Drop_Ctl()
