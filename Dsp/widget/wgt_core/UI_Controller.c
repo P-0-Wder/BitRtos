@@ -1109,9 +1109,10 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
 
     /* show drop item id */
     UI_DspInterface.draw_dig(base_font, ((UI_DropItemDataObj_TypeDef *)(Obj->CurDrop_Item->data))->id, dropitem_x, dropitem_y, true);
-    dropitem_x += base_font;
 
     /* show drop item label */
+    dropitem_x += base_font + 2;
+    UI_DspInterface.draw_str(base_font, ((UI_DropItemDataObj_TypeDef *)(Obj->CurDrop_Item->data))->describe, dropitem_x, dropitem_y, true);
 
     return true;
 }
