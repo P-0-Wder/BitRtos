@@ -1091,7 +1091,8 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
     int16_t dropitem_y = 0;
 
     if ((Obj == NULL) &&
-        (UI_DspInterface.draw_str == NULL))
+        (UI_DspInterface.draw_str == NULL) &&
+        (UI_DspInterface.draw_dig == NULL))
         return false;
 
     str_x = Obj->Gen_Data.x + 3;
@@ -1106,7 +1107,11 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
     dropitem_y = str_y + base_font;
     dropitem_x = Obj->Gen_Data.x + base_font;
 
-    /* show drop item */
+    /* show drop item id */
+    UI_DspInterface.draw_dig(base_font, ((UI_DropItemDataObj_TypeDef *)(Obj->CurDrop_Item->data))->id, dropitem_x, dropitem_y, true);
+    dropitem_x += base_font;
+
+    /* show drop item label */
 
     return true;
 }
