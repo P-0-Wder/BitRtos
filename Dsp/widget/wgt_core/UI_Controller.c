@@ -278,9 +278,16 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_Drop:
-        block_x = HandleToDropObj(item->Handler)->Gen_Data.x;
         block_y = HandleToDropObj(item->Handler)->Gen_Data.y;
 
+        if (HandleToDropObj(item->Handler)->is_selected)
+        {
+            block_x = HandleToDropObj(item->Handler)->Gen_Data.x;
+        }
+        else
+        {
+            block_x = HandleToDropObj(item->Handler)->Gen_Data.x;
+        }
         break;
 
     default:
