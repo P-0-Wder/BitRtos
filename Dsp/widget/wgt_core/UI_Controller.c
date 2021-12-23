@@ -530,9 +530,10 @@ static bool UI_CheckBox_Trigger(UI_CheckBoxObj_TypeDef *Obj)
 
 static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
 {
-    uint16_t StrDsp_x = 0;
+    int16_t frame_x = 0;
     int16_t frame_y = 0;
-    int16_t str_y = Obj->Gen_Data.y;
+    int16_t str_x = 0;
+    int16_t str_y = 0;
 
     if ((Obj == NULL) ||
         (UI_DspInterface.draw_str == NULL) ||
@@ -540,18 +541,21 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
         (UI_DspInterface.draw_rectangle == NULL))
         return false;
 
-    StrDsp_x = strlen(Obj->Gen_Data.label) * STR_DIS;
+    frame_x = strlen(Obj->Gen_Data.label) * STR_DIS;
     frame_y = Obj->Gen_Data.y + 3;
-    StrDsp_x += DEFAULT_CHECKBOX_OFFSET;
+    frame_x += DEFAULT_CHECKBOX_OFFSET;
+
+    str_x = Obj->Gen_Data.x + 3;
+    str_y = Obj->Gen_Data.y;
 
     if (base_font == Font_8)
         str_y += 1;
 
-    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x + 3, str_y, true);
-    UI_DspInterface.draw_rectangle(StrDsp_x, frame_y, DEFAULT_CHECKBOX_FRAME_SIZE, DEFAULT_CHECKBOX_FRAME_SIZE, 1, true);
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, str_y, true);
+    UI_DspInterface.draw_rectangle(frame_x, frame_y, DEFAULT_CHECKBOX_FRAME_SIZE, DEFAULT_CHECKBOX_FRAME_SIZE, 1, true);
 
     if (Obj->checked)
-        UI_DspInterface.fill_rectangle(StrDsp_x + 2, frame_y + 2, DEFAULT_CHECKBOX_FILLFRAME, DEFAULT_CHECKBOX_FILLFRAME, true);
+        UI_DspInterface.fill_rectangle(frame_x + 2, frame_y + 2, DEFAULT_CHECKBOX_FILLFRAME, DEFAULT_CHECKBOX_FILLFRAME, true);
 
     return true;
 }
@@ -868,7 +872,11 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
     int16_t block_end_CoordX = 0;
     int16_t block_end_CoordY = 0;
 
-    if (Obj == NULL)
+    if ((Obj == NULL) &&
+        (UI_DspInterface.draw_str == NULL) &&
+        (UI_DspInterface.draw_rectangle == NULL) &&
+        (UI_DspInterface.draw_line_h == NULL) &&
+        (UI_DspInterface.fill_rectangle == NULL))
         return false;
 
     frame_CoordX = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * STR_DIS + 5;
@@ -1075,8 +1083,20 @@ static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, int8_t *offset)
 
 static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
 {
-    if (Obj == NULL)
+    int16_t str_x = 0;
+    int16_t str_y = 0;
+
+    if ((Obj == NULL) &&
+        (UI_DspInterface.draw_str == NULL))
         return false;
+
+    str_x = Obj->Gen_Data.x + 3;
+    str_y = Obj->Gen_Data.y;
+
+    if (base_font == Font_8)
+        str_y += 1;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, str_y, true);
 
     return true;
 }
