@@ -46,6 +46,15 @@ static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, int32_t val);
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj);
 static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16_t y);
 
+/* UI Drop Section */
+static bool UI_Drop_Init(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+static bool UI_Drop_Move(UI_DropObj_TypeDef *Obj, int16_t x, int16_t y);
+static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, UI_Drop_Callback callback);
+static bool UI_Drop_SetSelect(UI_DropObj_TypeDef *Obj, bool state);
+static bool UI_Drop_GetSelect(UI_DropObj_TypeDef *Obj);
+static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, int8_t *offset);
+static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj);
+
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
@@ -91,6 +100,16 @@ UI_ProcessBar_Interface_TypeDef UI_ProcessBar = {
     .set_CurVal = UI_ProcessBar_SetCurVal,
     .set_DspDir = UI_ProcessBar_SetDspDir,
     .ctl = UI_ProcessBar_Ctl,
+};
+
+UI_Drop_Interface_TypeDef UI_Drop = {
+    .init = UI_Drop_Init,
+    .Move = UI_Drop_Move,
+    .Select_DropItem = UI_Drop_SelectItem,
+    .Set_Select = UI_Drop_SetSelect,
+    .Get_Select = UI_Drop_GetSelect,
+    .Add_drop_item = UI_Drop_AddDropItem,
+    .ctl = UI_Drop_Ctl,
 };
 
 /******************************* general function *********************************/
@@ -930,6 +949,14 @@ static bool UI_Drop_Init(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_
     return true;
 }
 
+static bool UI_Drop_Move(UI_DropObj_TypeDef *Obj, int16_t x, int16_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    return UI_Move(&(Obj->Gen_Data), x, y);
+}
+
 static item_obj *UI_Drop_CreateDropItem(uint8_t id, char *item_desc, void *data, UI_Drop_Callback callback)
 {
     item_obj *item_tmp = NULL;
@@ -985,8 +1012,10 @@ static bool UI_Drop_SetSelect(UI_DropObj_TypeDef *Obj, bool state)
     Obj->is_selected = state;
 
     if (!state && (Obj->CurDrop_Item->data != NULL) && (((UI_DropItemDataObj_TypeDef *)Obj->CurDrop_Item->data)->callback != NULL))
+    {
         /* trigger drop item callback */
         ((UI_DropItemDataObj_TypeDef *)Obj->CurDrop_Item->data)->callback(((UI_DropItemDataObj_TypeDef *)Obj->CurDrop_Item->data)->data);
+    }
 
     return true;
 }
@@ -1030,8 +1059,10 @@ static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, int8_t *offset)
     return true;
 }
 
-static bool UI_Drop_Ctl()
+static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
 {
+    if (Obj == NULL)
+        return false;
 
     return true;
 }
