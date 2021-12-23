@@ -278,11 +278,15 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_Drop:
+        block_x = HandleToDropObj(item->Handler)->Gen_Data.x;
+        block_y = HandleToDropObj(item->Handler)->Gen_Data.y;
+
         break;
 
     default:
-        break;
+        return false;
     }
+
     return true;
 }
 
