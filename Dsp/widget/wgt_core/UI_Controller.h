@@ -14,6 +14,7 @@ typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 typedef UI_GenCTL_Handle UI_SlideBar_Handle;
 typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 
+#define HandleToDropObj(x) ((UI_DropObj_TypeDef *)x)
 #define HandleToButtonObj(x) ((UI_ButtonObj_TypeDef *)x)
 #define HandleToCheckBoxObj(x) ((UI_CheckBoxObj_TypeDef *)x)
 #define HandleToSlideBarObj(x) ((UI_SlideBarObj_TypeDef *)x)
@@ -85,6 +86,7 @@ typedef enum
     UI_Type_CheckBox,
     UI_Type_SlideBar,
     UI_Type_ProcBar,
+    UI_Type_Drop,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;

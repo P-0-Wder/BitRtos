@@ -277,6 +277,9 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         }
         break;
 
+    case UI_Type_Drop:
+        break;
+
     default:
         break;
     }
