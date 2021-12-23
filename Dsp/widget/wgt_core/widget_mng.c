@@ -1031,6 +1031,7 @@ static void WidgetUI_Init(void)
                         WidgetDraw_Interface.draw_circle,
                         WidgetDraw_Interface.draw_circle_section,
                         WidgetDraw_Interface.draw_str,
+                        WidgetDraw_Interface.draw_num,
                         WidgetDraw_Interface.fill_circle,
                         WidgetDraw_Interface.fill_circle_section,
                         WidgetDraw_Interface.fill_rectangle,

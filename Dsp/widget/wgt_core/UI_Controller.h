@@ -68,6 +68,7 @@ typedef void (*UI_DrawRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t he
 typedef void (*UI_DrawCircle)(int16_t cneter_x, int16_t cneter_y, uint8_t radius, uint8_t line_width, bool col_inv);
 typedef void (*UI_DrawCircleSection)(int16_t x, int16_t y, uint8_t radius, uint8_t option, uint8_t line_width, bool col_inv);
 typedef void (*UI_DrawStr)(uint8_t font, char *str, int16_t x, int16_t y, bool inv);
+typedef void (*UI_DrawDig)(uint8_t font, int16_t dig, int16_t x, int16_t y, bool inv);
 
 typedef void (*UI_FillRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, bool col_inv);
 typedef void (*UI_FillCircle)(int16_t x, int16_t y, uint8_t radius, bool col_inv);
@@ -126,6 +127,7 @@ typedef struct
 typedef struct
 {
     UI_DrawStr draw_str;
+    UI_DrawDig draw_dig;
     UI_DrawPoint draw_point;
     UI_DrawHLine draw_line_h;
     UI_DrawVLine draw_line_v;
@@ -341,6 +343,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawCircle circle,
                          UI_DrawCircleSection circle_section,
                          UI_DrawStr str,
+                         UI_DrawDig dig,
                          UI_FillCircle fill_circle,
                          UI_FillCircle_Section fillcircle_section,
                          UI_FillRectangle fill_rectangle,

@@ -132,6 +132,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawCircle circle,
                          UI_DrawCircleSection circle_section,
                          UI_DrawStr str,
+                         UI_DrawDig dig,
                          UI_FillCircle fill_circle,
                          UI_FillCircle_Section fillcircle_section,
                          UI_FillRectangle fill_rectangle,
@@ -145,6 +146,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
     UI_DspInterface.draw_rectangle = rectangle;
     UI_DspInterface.draw_radius_rectangle = radius_rectangle;
     UI_DspInterface.draw_str = str;
+    UI_DspInterface.draw_dig = dig;
 
     UI_DspInterface.fill_circle = fill_circle;
     UI_DspInterface.fill_circle_section = fillcircle_section;
@@ -1085,6 +1087,8 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
 {
     int16_t str_x = 0;
     int16_t str_y = 0;
+    int16_t dropitem_x = 0;
+    int16_t dropitem_y = 0;
 
     if ((Obj == NULL) &&
         (UI_DspInterface.draw_str == NULL))
@@ -1096,7 +1100,13 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
     if (base_font == Font_8)
         str_y += 1;
 
+    /* show label */
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, str_y, true);
+
+    dropitem_y = str_y + base_font;
+    dropitem_x = Obj->Gen_Data.x + base_font;
+
+    /* show drop item */
 
     return true;
 }
