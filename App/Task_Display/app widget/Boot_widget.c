@@ -1,31 +1,40 @@
 #include "Boot_widget.h"
 #include "widget_mng.h"
 
-BootDsp_State_List Boot_Stage = Boot_State_Init;
-Boot_Page_List Cur_DspPage = Boot_Page_8Bit;
+static BootDsp_State_List Boot_Stage = Boot_State_Init;
+static Boot_Page_List Cur_DspPage = Boot_Page_8Bit;
+static Widget_Handle Dsp_Handle;
 
-static void Boot_Init_Page(void)
+static bool Boot_Init_Page(void)
 {
 }
 
 static Boot_Page_List Boot_Show_8Bit_Logo(void)
 {
+    return Boot_Page_8Bit + 1;
 }
 
 static Boot_Page_List Boot_Show_BitRTOS_Logo(void)
 {
+    return Boot_Page_BitRtos + 1;
 }
 
 static Boot_Page_List Boot_Show_ELRS_Logo(void)
 {
+
+    return Boot_Page_ELRS + 1;
 }
 
-bool BootDsp_Ctl(void)
+bool BootDsp_Ctl(Widget_Handle hdl)
 {
+    if (hdl == 0)
+        return false;
+
     switch (Boot_Stage)
     {
     case Boot_State_Init:
-        Boot_Init_Page();
+        if (Boot_Init_Page())
+            Boot_Stage = Boot_State_Dsp;
         break;
 
     case Boot_State_Dsp:
