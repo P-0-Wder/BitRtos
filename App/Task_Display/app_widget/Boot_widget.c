@@ -21,14 +21,13 @@ static Boot_Page_List Boot_Show_BitRTOS_Logo(void)
 
 static Boot_Page_List Boot_Show_ELRS_Logo(void)
 {
-
     return Boot_Page_ELRS + 1;
 }
 
-bool BootDsp_Ctl(Widget_Handle hdl)
+BootDsp_State_List BootDsp_Ctl(Widget_Handle hdl)
 {
     if (hdl == 0)
-        return false;
+        return Boot_State_Error;
 
     switch (Boot_Stage)
     {
@@ -56,12 +55,12 @@ bool BootDsp_Ctl(Widget_Handle hdl)
             return true;
 
         default:
-            return false;
+            return Boot_State_Error;
         }
         break;
 
     default:
-        return false;
+        return Boot_State_Error;
     }
 
     return true;

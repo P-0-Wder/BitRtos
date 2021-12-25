@@ -2,6 +2,7 @@
 #define __BOOT_WIDGET_H
 
 #include <stdbool.h>
+#include "widget_mng.h"
 
 typedef enum
 {
@@ -15,8 +16,9 @@ typedef enum
 {
     Boot_State_Init = 0,
     Boot_State_Dsp,
+    Boot_State_Error,
 } BootDsp_State_List;
 
-bool BootDsp_Ctl(void);
+BootDsp_State_List BootDsp_Ctl(Widget_Handle hdl);
 
 #endif
