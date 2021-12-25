@@ -1,5 +1,8 @@
 #include "Task_Widget.h"
 #include "task_manager.h"
+#include "Boot_widget.h"
+#include "OS_widget.h"
+#include "version_widget.h"
 #include "widget_mng.h"
 #include "Task_Input.h"
 
