@@ -281,6 +281,7 @@ typedef struct
     double CurVal;
 
     UI_DigInput_SelectedPart selected_part;
+    uint8_t effective_len;
     int32_t IntPart;
     uint32_t PointPart;
 } UI_DoubleDigData_TypeDef;
@@ -355,7 +356,7 @@ typedef struct
 {
     bool (*init)(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_DigInput_Type type);
     bool (*set_range_IntInput)(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur);
-    bool (*set_range_DouInput)(UI_DigInputObj_TypeDef *Obj, double max, double min, double cur);
+    bool (*set_range_DouInput)(UI_DigInputObj_TypeDef *Obj, uint8_t effective_len, double max, double min, double cur);
     bool (*Move)(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y);
 
     bool (*get_CurInput_Int)(UI_DigInputObj_TypeDef *Obj, int32_t *data);

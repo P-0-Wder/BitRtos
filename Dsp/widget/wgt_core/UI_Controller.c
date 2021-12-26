@@ -58,6 +58,7 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj);
 /* UI Digital Input Section */
 static bool UI_DigInput_Init(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_DigInput_Type type);
 static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur);
+static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t effecitve_len, double max, double min, double cur);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -1170,10 +1171,20 @@ static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, int32_t max, in
     return true;
 }
 
-static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, double max, double min, double cur)
+static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t effecitve_len, double max, double min, double cur)
 {
-    if ((Obj == NULL) || (max - min <= 0.00001))
+    if ((Obj == NULL) || (max - min <= 0.00001) || (effecitve_len == 0))
         return false;
+
+    Obj->InputData_Dou.Max = max;
+    Obj->InputData_Dou.Min = min;
+    Obj->InputData_Dou.CurVal = cur;
+    Obj->InputData_Dou.effective_len = effecitve_len;
+
+    Obj->InputData_Dou.IntPart = (int32_t)cur;
+    Obj->InputData_Dou.PointPart = cur - (int32_t)cur;
+
+    Obj->InputData_Dou.selected_part = DigInput_PointPart;
 
     return true;
 }
