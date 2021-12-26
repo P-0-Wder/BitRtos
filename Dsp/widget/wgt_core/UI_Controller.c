@@ -61,6 +61,7 @@ static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, uint8_t efft_in
 static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t efft_int_len, uint8_t efft_point_len, double max, double min, double cur);
 static bool UI_DigInput_GetDoubleVal(UI_DigInputObj_TypeDef *Obj, double *Out);
 static bool UI_DigInput_GetIntVal(UI_DigInputObj_TypeDef *Obj, int32_t *Out);
+static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -127,7 +128,7 @@ UI_DigInput_Interface_TypeDef UI_DigInput = {
     .set_range_IntInput = UI_DigInput_SetIntRange,
     .get_CurInout_Double = UI_DigInput_GetDoubleVal,
     .get_CurInput_Int = UI_DigInput_GetIntVal,
-    .Move = NULL,
+    .Move = UI_DigInput_Move,
     .ctl = NULL,
 };
 
@@ -1217,6 +1218,14 @@ static bool UI_DigInput_GetIntVal(UI_DigInputObj_TypeDef *Obj, int32_t *Out)
     *Out = Obj->InputData_Int.CurVal;
 
     return true;
+}
+
+static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
 static bool UI_StrInput_Init()
