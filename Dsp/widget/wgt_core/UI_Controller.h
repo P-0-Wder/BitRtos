@@ -267,16 +267,16 @@ typedef enum
 
 typedef struct
 {
-    int32_t Int_Range_Max;
-    int32_t Int_Range_Min;
+    int32_t Max;
+    int32_t Min;
 
     int32_t CurVal;
 } UI_IntDigData_TypeDef;
 
 typedef struct
 {
-    double Dou_Range_Max;
-    double Dou_Range_Min;
+    double Max;
+    double Min;
 
     double CurVal;
 
@@ -289,7 +289,8 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
     UI_DigInput_Type type;
-    UI_IntDigData_TypeDef InputData;
+    UI_IntDigData_TypeDef InputData_Int;
+    UI_DoubleDigData_TypeDef InputData_Dou;
 
     bool selected;
 } UI_DigInputObj_TypeDef;
@@ -355,6 +356,7 @@ typedef struct
     bool (*init)(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_DigInput_Type type);
     bool (*set_range_IntInput)(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur);
     bool (*set_range_DouInput)(UI_DigInputObj_TypeDef *Obj, double max, double min, double cur);
+    bool (*Move)(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y);
 
     bool (*get_CurInput_Int)(UI_DigInputObj_TypeDef *Obj, int32_t *data);
     bool (*get_CurInout_Double)(UI_DigInputObj_TypeDef *Obj, double *data);
@@ -402,6 +404,7 @@ void UI_Set_GetWidgetWidthMathod(UI_GetWidget_Width mathod);
 
 extern UI_Drop_Interface_TypeDef UI_Drop;
 extern UI_Button_Interface_TypeDef UI_Button;
+extern UI_DigInput_Interface_TypeDef UI_DigInput;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
 extern UI_SliderBar_Interface_TypeDef UI_SlideBar;
 extern UI_ProcessBar_Interface_TypeDef UI_ProcessBar;

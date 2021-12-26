@@ -55,6 +55,10 @@ static bool UI_Drop_GetSelect(UI_DropObj_TypeDef *Obj);
 static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, int8_t *offset);
 static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj);
 
+/* UI Digital Input Section */
+static bool UI_DigInput_Init(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_DigInput_Type type);
+static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur);
+
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
@@ -110,6 +114,17 @@ UI_Drop_Interface_TypeDef UI_Drop = {
     .Get_Select = UI_Drop_GetSelect,
     .Add_drop_item = UI_Drop_AddDropItem,
     .ctl = UI_Drop_Ctl,
+};
+
+UI_DigInput_Interface_TypeDef UI_DigInput = {
+    .init = NULL,
+    .part_select = NULL,
+    .Select_UI = NULL,
+    .set_range_DouInput = NULL,
+    .set_range_IntInput = NULL,
+    .get_CurInout_Double = NULL,
+    .get_CurInput_Int = NULL,
+    .Move = NULL,
 };
 
 /******************************* general function *********************************/
@@ -1117,8 +1132,41 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_DigInput_Init()
+static bool UI_DigInput_Init(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_DigInput_Type type)
 {
+    if (Obj == NULL)
+        return false;
+
+    UI_GenData_Init(&(Obj->Gen_Data), label, x, y);
+
+    Obj->type = type;
+    Obj->selected = false;
+    Obj->InputData_Int.CurVal = 0;
+
+    Obj->InputData_Int.Max = 0;
+    Obj->InputData_Int.Min = 0;
+    Obj->InputData_Int.CurVal = 0;
+
+    Obj->InputData_Dou.Max = 0.0;
+    Obj->InputData_Dou.Min = 0.0;
+    Obj->InputData_Dou.CurVal = 0.0;
+
+    Obj->InputData_Dou.IntPart = 0;
+    Obj->InputData_Dou.PointPart = 0;
+    Obj->InputData_Dou.selected_part = DigInput_DefaultPart;
+
+    return true;
+}
+
+static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->InputData_Int.Max = max;
+    Obj->InputData_Int.Min = min;
+    Obj->InputData_Int.CurVal = cur;
+
     return true;
 }
 
