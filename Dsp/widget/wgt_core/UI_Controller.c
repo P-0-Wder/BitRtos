@@ -1204,6 +1204,16 @@ static bool UI_DigInput_GetDoubleVal(UI_DigInputObj_TypeDef *Obj, double *Out)
     return true;
 }
 
+static bool UI_DigInput_GetIntVal(UI_DigInputObj_TypeDef *Obj, int32_t *Out)
+{
+    if ((Obj == NULL) || (Obj->type == UI_DoubleDig_Input))
+        return false;
+
+    *Out = Obj->InputData_Int.CurVal;
+
+    return true;
+}
+
 static bool UI_StrInput_Init()
 {
     return true;
