@@ -62,6 +62,8 @@ static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t efft_in
 static bool UI_DigInput_GetDoubleVal(UI_DigInputObj_TypeDef *Obj, double *Out);
 static bool UI_DigInput_GetIntVal(UI_DigInputObj_TypeDef *Obj, int32_t *Out);
 static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y);
+static bool UI_DigInput_SetSelectStatus(UI_DigInputObj_TypeDef *Obj, bool status);
+static bool UI_DigInput_GetSelectStatus(UI_DigInputObj_TypeDef *Obj);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -123,7 +125,7 @@ UI_Drop_Interface_TypeDef UI_Drop = {
 UI_DigInput_Interface_TypeDef UI_DigInput = {
     .init = UI_DigInput_Init,
     .input_part_select = NULL,
-    .Select_UI = NULL,
+    .Select_UI = UI_DigInput_SetSelectStatus,
     .set_range_DouInput = UI_DigInput_SetDouRange,
     .set_range_IntInput = UI_DigInput_SetIntRange,
     .get_CurInout_Double = UI_DigInput_GetDoubleVal,
