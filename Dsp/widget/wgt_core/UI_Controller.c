@@ -1161,7 +1161,9 @@ static bool UI_DigInput_Init(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x
 
 static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur)
 {
-    if ((Obj == NULL) || (max <= min))
+    if ((Obj == NULL) ||
+        (max <= min) ||
+        (Obj->type == UI_DoubleDig_Input))
         return false;
 
     Obj->InputData_Int.Max = max;
@@ -1173,7 +1175,10 @@ static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, int32_t max, in
 
 static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t effecitve_len, double max, double min, double cur)
 {
-    if ((Obj == NULL) || (max - min <= 0.00001) || (effecitve_len == 0))
+    if ((Obj == NULL) ||
+        (effecitve_len == 0) ||
+        (max - min <= 0.00001) ||
+        (Obj->type == UI_IntDig_Input))
         return false;
 
     Obj->InputData_Dou.Max = max;
@@ -1185,6 +1190,16 @@ static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t effecit
     Obj->InputData_Dou.PointPart = cur - (int32_t)cur;
 
     Obj->InputData_Dou.selected_part = DigInput_PointPart;
+
+    return true;
+}
+
+static bool UI_DigInput_GetDoubleVal(UI_DigInputObj_TypeDef *Obj, double *Out)
+{
+    if ((Obj == NULL) || (Obj->type == UI_IntDig_Input))
+        return false;
+
+    *Out = Obj->InputData_Dou.CurVal;
 
     return true;
 }
