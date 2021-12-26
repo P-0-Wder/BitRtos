@@ -5,21 +5,19 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define VERSION_MEM_SPACE 256
-
 #pragma pack(1)
 typedef struct
 {
-    uint8_t base_id;
-    uint8_t mid_id;
-    uint8_t cur_id;
-} VerBlock_TypeDef;
+    uint8_t ID_1;
+    uint8_t ID_2;
+    uint8_t ID_3;
+} VersionFrame_TypeDef;
 
 typedef struct
 {
-    VerBlock_TypeDef BootVer;
-    VerBlock_TypeDef OsVer;
-    VerBlock_TypeDef AppVer;
+    VersionFrame_TypeDef BootVer;
+    VersionFrame_TypeDef OsVer;
+    VersionFrame_TypeDef AppVer;
     uint64_t sn;
     char bref[128];
 } Version_Info_TypeDef;

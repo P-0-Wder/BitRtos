@@ -1117,6 +1117,16 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
     return true;
 }
 
+static bool UI_DigInput_Init()
+{
+    return true;
+}
+
+static bool UI_StrInput_Init()
+{
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t unit_len)
@@ -1136,16 +1146,6 @@ static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, char *label, uint8
 
     UI_GenData_Init(&Obj->Gen_Data, label, x, y);
 
-    return true;
-}
-
-static bool UI_DigInput_Init()
-{
-    return true;
-}
-
-static bool UI_StrInput_Init()
-{
     return true;
 }
 

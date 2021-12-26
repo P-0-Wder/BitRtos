@@ -251,6 +251,49 @@ typedef struct
 
 } UI_DropObj_TypeDef;
 
+typedef enum
+{
+    UI_DefaultDig_Input = 0,
+    UI_IntDig_Input = 0,
+    UI_DoubleDig_Input,
+} UI_DigInput_Type;
+
+typedef enum
+{
+    DigInput_DefaultPart = 0,
+    DigInput_IntPart = 0,
+    DigInput_PointPart,
+} UI_DigInput_SelectedPart;
+
+typedef struct
+{
+    int32_t Int_Range_Max;
+    int32_t Int_Range_Min;
+
+    int32_t CurVal;
+} UI_IntDigData_TypeDef;
+
+typedef struct
+{
+    double Dou_Range_Max;
+    double Dou_Range_Min;
+
+    double CurVal;
+
+    UI_DigInput_SelectedPart input_selected;
+    int32_t IntPart;
+    uint32_t PointPart;
+} UI_DoubleDigData_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
+    UI_DigInput_Type type;
+    UI_IntDigData_TypeDef InputData;
+
+    bool selected;
+} UI_DigInputObj_TypeDef;
+
 #pragma pack()
 
 typedef struct
@@ -316,15 +359,6 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
 } UI_HorizonBarObj_TypeDef;
-
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
-    int32_t range;
-    char *input_dig;
-    int32_t dig;
-    bool inputing;
-} UI_DigInputObj_TypeDef;
 
 typedef struct
 {
