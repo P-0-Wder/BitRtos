@@ -1220,6 +1220,24 @@ static bool UI_DigInput_GetIntVal(UI_DigInputObj_TypeDef *Obj, int32_t *Out)
     return true;
 }
 
+static bool UI_DigInput_SetSelectStatus(UI_DigInputObj_TypeDef *Obj, bool status)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->selected = status;
+
+    return true;
+}
+
+static bool UI_DigInput_GetSelectStatus(UI_DigInputObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    return Obj->selected;
+}
+
 static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y)
 {
     if (Obj == NULL)
