@@ -172,6 +172,17 @@ typedef enum
 #pragma pack(1)
 typedef struct
 {
+    int16_t x;
+    int16_t y;
+    uint8_t width;
+    uint8_t height;
+
+    bool OnDsp;
+    SYSTEM_RunTime ShowRt;
+} CharCuser_TypeDef;
+
+typedef struct
+{
     UI_GeneralData_TypeDef Gen_Data;
     UI_Button_State_List default_state;
     UI_Button_State_List state;
