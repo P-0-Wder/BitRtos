@@ -1160,12 +1160,20 @@ static bool UI_DigInput_Init(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x
 
 static bool UI_DigInput_SetIntRange(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur)
 {
-    if (Obj == NULL)
+    if ((Obj == NULL) || (max <= min))
         return false;
 
     Obj->InputData_Int.Max = max;
     Obj->InputData_Int.Min = min;
     Obj->InputData_Int.CurVal = cur;
+
+    return true;
+}
+
+static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, double max, double min, double cur)
+{
+    if ((Obj == NULL) || (max - min <= 0.00001))
+        return false;
 
     return true;
 }
