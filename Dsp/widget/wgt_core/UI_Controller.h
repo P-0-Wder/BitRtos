@@ -352,6 +352,19 @@ typedef struct
 
 typedef struct
 {
+    bool (*init)(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_DigInput_Type type);
+    bool (*set_range_IntInput)(UI_DigInputObj_TypeDef *Obj, int32_t max, int32_t min, int32_t cur);
+    bool (*set_range_DouInput)(UI_DigInputObj_TypeDef *Obj, double max, double min, double cur);
+
+    bool (*get_CurInput_Int)(UI_DigInputObj_TypeDef *Obj, int32_t *data);
+    bool (*get_CurInout_Double)(UI_DigInputObj_TypeDef *Obj, double *data);
+
+    bool (*Select_UI)(UI_DigInputObj_TypeDef *Obj, bool state);
+    bool (*part_select)(UI_DigInputObj_TypeDef *Obj, UI_DigInput_SelectedPart part);
+} UI_DigInput_Interface_TypeDef;
+
+typedef struct
+{
     UI_GeneralData_TypeDef Gen_Data;
 } UI_VerticalBarObj_TypeDef;
 
