@@ -280,7 +280,7 @@ typedef struct
 
     double CurVal;
 
-    UI_DigInput_SelectedPart input_selected;
+    UI_DigInput_SelectedPart selected_part;
     int32_t IntPart;
     uint32_t PointPart;
 } UI_DoubleDigData_TypeDef;
