@@ -269,6 +269,7 @@ typedef struct
 {
     int32_t Max;
     int32_t Min;
+    uint8_t effective_len;
 
     int32_t CurVal;
 } UI_IntDigData_TypeDef;
@@ -281,7 +282,8 @@ typedef struct
     double CurVal;
 
     UI_DigInput_SelectedPart selected_part;
-    uint8_t effective_len;
+    uint8_t effective_int_len;
+    uint8_t effective_point_len;
     int32_t IntPart;
     uint32_t PointPart;
 } UI_DoubleDigData_TypeDef;
