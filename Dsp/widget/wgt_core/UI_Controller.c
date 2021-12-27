@@ -853,6 +853,8 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
     /* step  1 draw dot line */
     UI_Draw_HorDotLine(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, DEFAULT_PROCESSBAR_LINE_WIDTH);
 
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y - base_font - 3, true);
+
     if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
         bar_start_x = Obj->Gen_Data.x;
