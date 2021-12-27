@@ -109,6 +109,13 @@ typedef enum
 
 typedef enum
 {
+    UI_ProcBar_LabelDefaultSide = 0,
+    UI_ProcBar_LabelUpSide = 0,
+    UI_ProcBar_LabelRightSide,
+} UI_ProcessBar_LabelPos_List;
+
+typedef enum
+{
     UI_ProcBar_GrothDir_Default = 0,
     UI_ProcBar_GrothFrom_Left = 0,
     UI_ProcBar_GrothFrom_Mid = 1,
