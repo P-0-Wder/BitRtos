@@ -853,7 +853,7 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
         bar_width = Obj->width + 1;
 
     /* step  1 draw dot line */
-    UI_Draw_HorDotLine(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, DEFAULT_PROCESSBAR_LINE_WIDTH);
+    UI_Draw_HorDotLine(Obj->Gen_Data.x, Obj->Gen_Data.y + 1, Obj->width, DEFAULT_PROCESSBAR_LINE_WIDTH);
 
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y - base_font - 3, true);
 
@@ -862,9 +862,9 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
         bar_start_x = Obj->Gen_Data.x;
         Pcnt_Val = (Obj->cur_val / (float)Obj->range);
 
-        UI_DspInterface.draw_line_v(Obj->Gen_Data.x, Obj->Gen_Data.y - 2, 4, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
-        UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y - 1, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
-        UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 1, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_v(Obj->Gen_Data.x, Obj->Gen_Data.y - 1, 4, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 2, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
@@ -874,14 +874,14 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
         if (Obj->cur_val < (Obj->min + Obj->range / 2))
         {
             bar_start_x = Obj->Gen_Data.x + bar_width / 2 - (Pcnt_Val * bar_width / 2);
-            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y - 1, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
-            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 1, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 2, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         }
         else if (Obj->cur_val > (Obj->max + Obj->range / 2))
         {
             bar_start_x = Obj->Gen_Data.x + bar_width / 2;
-            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y - 1, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
-            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 1, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+            UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 2, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         }
     }
     else

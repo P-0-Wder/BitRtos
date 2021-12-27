@@ -245,6 +245,7 @@ typedef struct
     uint8_t width;
     uint8_t height;
 
+    UI_ProcessBar_LabelPos_List label_pos;
     UI_ProcessBar_DspType_List Dsp_Type;
     UI_ProcessBar_MoveDir_TypeDef Mv_Dir;
 } UI_ProcessBarObj_TypeDef;
