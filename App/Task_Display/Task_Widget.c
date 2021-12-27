@@ -40,7 +40,8 @@ static void TaskWidget_Init(void)
 
     test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 12 * 4, true);
     test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("slidebar", 0, 18, SliderBar_Horizon_Mode, 10, -10, 0, 50);
-    test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("download type bar", UI_ProcBar_DspType_DotBar, 10, 42, 110, 0, 100);
+    test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("dot type bar", UI_ProcBar_DspType_DotBar, 10, 42, 50, 0, 100);
+    Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_DspDir(test_processbar_1, UI_ProcBar_GrothFrom_Mid);
 }
 
 static void TestWidget_Dynamic_Dsp(void)

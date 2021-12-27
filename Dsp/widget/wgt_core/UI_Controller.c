@@ -849,7 +849,7 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
     if (Obj == NULL)
         return false;
 
-    if (Obj->width / 2 == 0)
+    if (Obj->width % 2 == 0)
         bar_width = Obj->width + 1;
 
     /* step  1 draw dot line */
