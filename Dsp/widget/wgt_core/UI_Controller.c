@@ -869,7 +869,7 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
-        UI_DspInterface.draw_line_v(Obj->Gen_Data.x + bar_width / 2, Obj->Gen_Data.y - 2, 5, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_v(Obj->Gen_Data.x + bar_width / 2, Obj->Gen_Data.y - 1, 4, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
 
         if (Obj->cur_val < mid_val)
         {
