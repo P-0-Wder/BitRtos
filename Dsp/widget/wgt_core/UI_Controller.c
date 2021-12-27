@@ -193,7 +193,7 @@ static bool UI_Draw_HorDotLine(int16_t x, int16_t y, uint8_t len, uint8_t line_w
     {
         for (uint8_t width = 0; width < line_width; width++)
         {
-            if (i / 2)
+            if (i % 2)
             {
                 UI_DspInterface.draw_point(i, y + width, true);
             }
@@ -858,7 +858,7 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
         bar_start_x = Obj->Gen_Data.x;
         Pcnt_Val = (Obj->cur_val / (float)Obj->range);
 
-        UI_DspInterface.draw_line_v(Obj->Gen_Data.x, Obj->Gen_Data.y - 2, 5, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_v(Obj->Gen_Data.x, Obj->Gen_Data.y - 2, 4, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y - 1, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 1, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     }
@@ -893,8 +893,7 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
     uint8_t frame_Height = 0;
     int16_t block_start_CoordX = 0;
     int16_t block_start_CoordY = 0;
-    int16_t block_end_CoordX = 0;
-    int16_t block_end_CoordY = 0;
+    int16_t bar_len = 0;
 
     if ((Obj == NULL) &&
         (UI_DspInterface.draw_str == NULL) &&
@@ -917,19 +916,20 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
         return false;
     }
 
-    if (Obj->width / 2 == 0)
+    if (Obj->width % 2 == 0)
         frame_width = Obj->width - 1;
 
-    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
-    UI_DspInterface.draw_rectangle(frame_CoordX, Obj->Gen_Data.y, frame_width, frame_Height, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y - base_font - 3, true);
+    UI_DspInterface.draw_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, frame_width, frame_Height, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
 
     if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
         block_start_CoordX = Obj->Gen_Data.x + 2;
         block_start_CoordY = Obj->Gen_Data.y + 2;
 
-        block_end_CoordX = (Obj->cur_val / (float)Obj->range) * (frame_width - 4);
-        block_end_CoordY = block_start_CoordY;
+        bar_len = (Obj->cur_val / (float)Obj->range) * (frame_width - 5);
+
+        UI_DspInterface.draw_line_h(block_start_CoordX, block_start_CoordY, bar_len, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     }
     else if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Mid)
     {
@@ -939,15 +939,15 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
         if (Obj->cur_val < Obj->min + (Obj->range / 2))
         {
             block_start_CoordX = (Obj->cur_val / (float)Obj->range) * Obj->width;
-            block_end_CoordX = Obj->Gen_Data.x + frame_width / 2 - 1;
+            bar_len = Obj->Gen_Data.x + frame_width / 2 - 1;
         }
         else if (Obj->cur_val > Obj->min + (Obj->range / 2))
         {
             block_start_CoordX = Obj->Gen_Data.x + frame_width / 2 + 1;
-            block_end_CoordX = (Obj->cur_val / (float)Obj->range) * Obj->width;
+            bar_len = (Obj->cur_val / (float)Obj->range) * Obj->width;
         }
 
-        UI_DspInterface.fill_rectangle(block_start_CoordX, block_start_CoordY, block_end_CoordX - block_start_CoordX, frame_Height - 2, true);
+        UI_DspInterface.fill_rectangle(block_start_CoordX, block_start_CoordY, bar_len - block_start_CoordX, frame_Height - 2, true);
     }
     else
         return false;
