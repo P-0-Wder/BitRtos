@@ -45,6 +45,7 @@ static bool UI_ProcessBar_SetDspDir(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar
 static bool UI_ProcessBar_SetCurVal(UI_ProcessBarObj_TypeDef *Obj, int32_t val);
 static bool UI_ProcessBar_Ctl(UI_ProcessBarObj_TypeDef *Obj);
 static bool UI_ProcessBar_Move(UI_ProcessBarObj_TypeDef *Obj, uint16_t x, uint16_t y);
+static bool UI_ProcessBar_SetLabelPos(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_LabelPos_List Pos);
 
 /* UI Drop Section */
 static bool UI_Drop_Init(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
@@ -110,6 +111,7 @@ UI_ProcessBar_Interface_TypeDef UI_ProcessBar = {
     .set_CurVal = UI_ProcessBar_SetCurVal,
     .set_DspDir = UI_ProcessBar_SetDspDir,
     .ctl = UI_ProcessBar_Ctl,
+    .Set_LabelPos = UI_ProcessBar_SetLabelPos,
 };
 
 UI_Drop_Interface_TypeDef UI_Drop = {
@@ -952,6 +954,14 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
         UI_DspInterface.fill_rectangle(block_start_CoordX, block_start_CoordY, bar_len - block_start_CoordX, frame_Height - 2, true);
     }
     else
+        return false;
+
+    return true;
+}
+
+static bool UI_ProcessBar_SetLabelPos(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_LabelPos_List Pos)
+{
+    if ((Obj == NULL) || (Obj->Dsp_Type == UI_ProcBar_DspType_LoadBar))
         return false;
 
     return true;

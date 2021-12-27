@@ -359,6 +359,7 @@ typedef struct
     bool (*ctl)(UI_ProcessBarObj_TypeDef *Obj);
     bool (*Set_Select)(UI_ProcessBarObj_TypeDef *Obj, bool state);
     bool (*Get_Select)(UI_ProcessBarObj_TypeDef *Obj);
+    bool (*Set_LabelPos)(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessBar_LabelPos_List Pos);
 } UI_ProcessBar_Interface_TypeDef;
 
 typedef struct
