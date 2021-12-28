@@ -1606,6 +1606,14 @@ static UI_Drop_Handle WidgetUI_Create_Drop(char *label, int16_t x, int16_t y)
     return ((UI_Drop_Handle)drop);
 }
 
+static bool WidgetUI_Drop_Move(UI_Drop_Handle hdl, int16_t x, int16_t y)
+{
+    if (hdl == NULL)
+        return false;
+
+    return UI_Drop.Move(HandleToDropObj(hdl), x, y);
+}
+
 /************************************** widget Drop interface ******************************************/
 
 /************************************** widget UI interface ******************************************/
