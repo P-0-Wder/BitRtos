@@ -145,6 +145,7 @@ typedef struct
     bool (*Input)(UI_SlideBar_Handle hdl, int16_t *step);
     bool (*Move)(UI_SlideBar_Handle hdl, int16_t x, int16_t y);
     bool (*Trigger)(UI_SlideBar_Handle hdl);
+    bool (*Select)(UI_SlideBar_Handle hdl);
 } WidgetUI_SlideBar_Interface_TypeDef;
 
 typedef struct
@@ -160,7 +161,8 @@ typedef struct
     UI_Drop_Handle (*create)(char *label, int16_t x, int16_t y);
     bool (*add_item)(UI_Drop_Handle hdl, char *label, void *data, UI_Drop_Callback callback);
     bool (*select_item)(UI_Drop_Handle hdl, int8_t *offset);
-    bool (*move)(UI_Drop_Handle hdl, int16_t x, int16_t y);
+    bool (*Move)(UI_Drop_Handle hdl, int16_t x, int16_t y);
+    bool (*Select)(UI_Drop_Handle hdl);
 } WidgetUI_Drop_interface_TypeDef;
 
 typedef struct

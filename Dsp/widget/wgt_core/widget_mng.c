@@ -98,6 +98,7 @@ static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Instance(void);
 static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
 static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(void);
+static WidgetUI_Drop_interface_TypeDef *WidgetUI_GetDrop_Instance(void);
 
 /* general UI Mathod */
 static void WidgetUI_Init(void);
@@ -126,6 +127,7 @@ static bool WidgetUI_SlideBar_Move(UI_SlideBar_Handle hdl, int16_t x, int16_t y)
 static bool WidgetUI_SlideBar_SetCallBack(UI_SlideBar_Handle hdl, UI_SliderBarTrigger_Callback callback);
 static bool WidgetUI_SlideBar_Input(UI_SlideBar_Handle hdl, int16_t step);
 static bool WidgetUI_SlideBar_Trigger(UI_SlideBar_Handle hdl);
+static bool WidgetUI_Select_SlideBar(UI_SlideBar_Handle hdl);
 static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl);
 
 /* Widget UI ProcessBar Mathod */
@@ -157,6 +159,7 @@ WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
     .Trigger = WidgetUI_SlideBar_Trigger,
     .Set_CallBack = WidgetUI_SlideBar_SetCallBack,
     .Input = WidgetUI_SlideBar_Input,
+    .Select = WidgetUI_Select_SlideBar,
 };
 
 WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
@@ -164,6 +167,14 @@ WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
     .Set_DspDir = WidgetUI_ProcessBar_SetDspDir,
     .Set_Value = WidgetUI_ProcessBar_SetCurValue,
     .Move = WidgetUI_ProcessBar_Move,
+};
+
+WidgetUI_Drop_interface_TypeDef WidgetUI_Drop = {
+    .create = NULL,
+    .Move = NULL,
+    .Select = NULL,
+    .select_item = NULL,
+    .add_item = NULL,
 };
 
 /* for temp we init each var as null */
@@ -174,7 +185,7 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .CheckBox = WidgetUI_GetCheckBox_Instance,
     .SlideBar = WidgetUI_GetSlideBar_Instance,
     .ProcessBar = WidgetUI_GetProcessBar_Instance,
-    // .UI_DigInput = NULL,
+    .drop = WidgetUI_GetDrop_Instance,
     // .UI_StrInput = NULL,
     // .UI_ProcBar = NULL,
     // .UI_VerBar = NULL,
@@ -1576,7 +1587,10 @@ static bool WidgetUI_Fresh_ProcessBar(UI_SlideBar_Handle hdl)
 /************************************** widget ProcessBar interface ******************************************/
 
 /************************************** widget Drop interface ******************************************/
-
+static WidgetUI_Drop_interface_TypeDef *WidgetUI_GetDrop_Instance(void)
+{
+    return &WidgetUI_Drop;
+}
 /************************************** widget Drop interface ******************************************/
 
 /************************************** widget UI interface ******************************************/
