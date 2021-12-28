@@ -946,9 +946,9 @@ static bool UI_ProcessBar_DspFrameBar(UI_ProcessBarObj_TypeDef *Obj)
 
         if (Obj->cur_val < mid_val)
         {
-            // Pcnt_Val = (((Obj->range / 2) - Obj->cur_val) / ((float)(Obj->range / 2)));
-            // block_start_CoordX = Obj->Gen_Data.x + bar_len / 2 - (Pcnt_Val * bar_len / 2);
-            // UI_DspInterface.draw_line_h(block_start_CoordX, block_start_CoordY, (Pcnt_Val * bar_len / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+            Pcnt_Val = (((Obj->range / 2) - Obj->cur_val) / ((float)(Obj->range / 2)));
+            block_start_CoordX = Obj->Gen_Data.x + 1 + frame_width / 2 - (Pcnt_Val * (frame_width - 4) / 2);
+            UI_DspInterface.draw_line_h(block_start_CoordX, block_start_CoordY, (Pcnt_Val * (frame_width - 4) / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         }
         else if (Obj->cur_val > mid_val)
         {
