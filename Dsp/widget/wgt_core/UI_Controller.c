@@ -50,7 +50,7 @@ static bool UI_ProcessBar_SetLabelPos(UI_ProcessBarObj_TypeDef *Obj, UI_ProcessB
 /* UI Drop Section */
 static bool UI_Drop_Init(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
 static bool UI_Drop_Move(UI_DropObj_TypeDef *Obj, int16_t x, int16_t y);
-static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, UI_Drop_Callback callback);
+static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, uint16_t data_size, UI_Drop_Callback callback);
 static bool UI_Drop_SetSelect(UI_DropObj_TypeDef *Obj, bool state);
 static bool UI_Drop_GetSelect(UI_DropObj_TypeDef *Obj);
 static bool UI_Drop_SelectItem(UI_DropObj_TypeDef *Obj, int8_t *offset);
@@ -1020,7 +1020,7 @@ static bool UI_Drop_Move(UI_DropObj_TypeDef *Obj, int16_t x, int16_t y)
     return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
-static item_obj *UI_Drop_CreateDropItem(uint8_t id, char *item_desc, void *data, UI_Drop_Callback callback)
+static item_obj *UI_Drop_CreateDropItem(uint8_t id, char *item_desc, void *data, uint16_t data_size, UI_Drop_Callback callback)
 {
     item_obj *item_tmp = NULL;
     UI_DropItemDataObj_TypeDef *itemdata_tmp = NULL;
@@ -1035,20 +1035,21 @@ static item_obj *UI_Drop_CreateDropItem(uint8_t id, char *item_desc, void *data,
     itemdata_tmp->data = data;
     itemdata_tmp->describe = item_desc;
     itemdata_tmp->id = id;
+    itemdata_tmp->data_size = data_size;
 
     List_ItemInit(item_tmp, itemdata_tmp);
 
     return item_tmp;
 }
 
-static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, UI_Drop_Callback callback)
+static bool UI_Drop_AddDropItem(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, uint16_t data_size, UI_Drop_Callback callback)
 {
     item_obj *item_temp = NULL;
 
     if (Obj == NULL)
         return false;
 
-    item_temp = UI_Drop_CreateDropItem(Obj->item_cnt, item_desc, data, callback);
+    item_temp = UI_Drop_CreateDropItem(Obj->item_cnt, item_desc, data, data_size, callback);
 
     if (item_temp == NULL)
         return false;

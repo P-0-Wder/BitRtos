@@ -159,7 +159,7 @@ typedef struct
 typedef struct
 {
     UI_Drop_Handle (*create)(char *label, int16_t x, int16_t y);
-    bool (*add_item)(UI_Drop_Handle hdl, char *label, void *data, UI_Drop_Callback callback);
+    bool (*add_item)(UI_Drop_Handle hdl, char *label, void *data, uint16_t data_size, UI_Drop_Callback callback);
     bool (*select_item)(UI_Drop_Handle hdl, int8_t *offset);
     bool (*Move)(UI_Drop_Handle hdl, int16_t x, int16_t y);
     bool (*Select)(UI_Drop_Handle hdl);
