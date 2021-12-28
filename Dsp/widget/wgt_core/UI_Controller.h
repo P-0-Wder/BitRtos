@@ -89,6 +89,7 @@ typedef enum
     UI_Type_SlideBar,
     UI_Type_ProcBar,
     UI_Type_Drop,
+    UI_Type_DigInput,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;

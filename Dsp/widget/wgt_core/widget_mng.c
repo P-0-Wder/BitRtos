@@ -1591,6 +1591,21 @@ static WidgetUI_Drop_interface_TypeDef *WidgetUI_GetDrop_Instance(void)
 {
     return &WidgetUI_Drop;
 }
+
+static UI_Drop_Handle WidgetUI_Create_Drop(char *label, int16_t x, int16_t y)
+{
+    UI_DropObj_TypeDef *drop = NULL;
+
+    drop = (UI_DropObj_TypeDef *)MMU_Malloc(sizeof(UI_DropObj_TypeDef));
+
+    if ((drop == NULL) ||
+        (!UI_Drop.init(drop, label, x, y)) ||
+        (!WidgetUIList_InsertItem(drop, UI_Type_Drop)))
+        return NULL;
+
+    return ((UI_Drop_Handle)drop);
+}
+
 /************************************** widget Drop interface ******************************************/
 
 /************************************** widget UI interface ******************************************/
