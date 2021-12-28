@@ -157,6 +157,14 @@ typedef struct
 
 typedef struct
 {
+    UI_Drop_Handle (*create)(char *label, int16_t x, int16_t y);
+    bool (*add_item)(UI_Drop_Handle hdl, char *label, void *data, UI_Drop_Callback callback);
+    bool (*select_item)(UI_Drop_Handle hdl, int8_t *offset);
+    bool (*move)(UI_Drop_Handle hdl, int16_t x, int16_t y);
+} WidgetUI_Drop_interface_TypeDef;
+
+typedef struct
+{
     /* general UI function mathod */
     bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
@@ -167,7 +175,7 @@ typedef struct
     WidgetUI_CheckBox_Interface_TypeDef *(*CheckBox)(void);
     WidgetUI_SlideBar_Interface_TypeDef *(*SlideBar)(void);
     WidgetUI_ProcessBar_Interface_TypeDef *(*ProcessBar)(void);
-    // void (*UI_ComboBox)();
+    WidgetUI_Drop_interface_TypeDef *(*drop)(void);
     // void (*UI_DigInput)();
     // void (*UI_StrInput)();
     // void (*UI_ProcBar)();

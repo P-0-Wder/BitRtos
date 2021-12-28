@@ -9,6 +9,7 @@
 #include "linked_list.h"
 
 typedef uint32_t UI_GenCTL_Handle;
+typedef UI_GenCTL_Handle UI_Drop_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 typedef UI_GenCTL_Handle UI_SlideBar_Handle;
@@ -368,7 +369,7 @@ typedef struct
     bool (*init)(UI_DropObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
     bool (*Add_drop_item)(UI_DropObj_TypeDef *Obj, char *item_desc, void *data, UI_Drop_Callback callback);
     bool (*Move)(UI_DropObj_TypeDef *Obj, int16_t x, int16_t y);
-    bool (*Select_DropItem)(UI_DropObj_TypeDef *Obj, uint8_t select_offset);
+    bool (*Select_DropItem)(UI_DropObj_TypeDef *Obj, int8_t *select_offset);
     bool (*Set_Select)(UI_DropObj_TypeDef *Obj, bool state);
     bool (*Get_Select)(UI_DropObj_TypeDef *Obj);
     bool (*ctl)(UI_DropObj_TypeDef *Obj);

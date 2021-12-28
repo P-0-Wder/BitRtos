@@ -1,0 +1,783 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"periph_exti.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Get_EXTI_Index,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	Get_EXTI_Index:
+  26              	.LVL0:
+  27              	.LFB124:
+  28              		.file 1 "Bsp/periph_exti.c"
+   1:Bsp/periph_exti.c **** #include "periph_exti.h"
+   2:Bsp/periph_exti.c **** #include "periph_nvic.h"
+   3:Bsp/periph_exti.c **** #include "stm32f4xx_rcc.h"
+   4:Bsp/periph_exti.c **** #include "stm32f4xx_exti.h"
+   5:Bsp/periph_exti.c **** #include "stm32f4xx_syscfg.h"
+   6:Bsp/periph_exti.c **** #include <string.h>
+   7:Bsp/periph_exti.c **** 
+   8:Bsp/periph_exti.c **** #if defined STM32F40_41xxx
+   9:Bsp/periph_exti.c **** #define GEN_EXTI_LINE_SUM 16
+  10:Bsp/periph_exti.c **** #endif
+  11:Bsp/periph_exti.c **** 
+  12:Bsp/periph_exti.c **** static exti_callback CallBack_List[GEN_EXTI_LINE_SUM] = {NULL};
+  13:Bsp/periph_exti.c **** 
+  14:Bsp/periph_exti.c **** void periph_exit_init(Periph_Exti_Config_TypeDef exti_cfg)
+  15:Bsp/periph_exti.c **** {
+  16:Bsp/periph_exti.c ****     EXTI_InitTypeDef EXTI_InitStruct;
+  17:Bsp/periph_exti.c **** 
+  18:Bsp/periph_exti.c ****     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+  19:Bsp/periph_exti.c ****     SYSCFG_EXTILineConfig(exti_cfg.exti_port, exti_cfg.exti_pinsource);
+  20:Bsp/periph_exti.c **** 
+  21:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Line = exti_cfg.exti_line;
+  22:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Trigger = exti_cfg.trigger_type;
+  23:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+  24:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+  25:Bsp/periph_exti.c **** 
+  26:Bsp/periph_exti.c ****     EXTI_Init(&EXTI_InitStruct);
+  27:Bsp/periph_exti.c **** 
+  28:Bsp/periph_exti.c ****     periph_nvic_Structure_Setting(exti_cfg.nvic_channel, exti_cfg.pre_priority, exti_cfg.sub_priori
+  29:Bsp/periph_exti.c **** }
+  30:Bsp/periph_exti.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 2
+
+
+  31:Bsp/periph_exti.c **** static uint8_t Get_EXTI_Index(uint32_t EXIT_LineX)
+  32:Bsp/periph_exti.c **** {
+  29              		.loc 1 32 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              		.loc 1 32 1 is_stmt 0 view .LVU1
+  35 0000 07EE900A 		vmov	s15, r0	@ int
+  33:Bsp/periph_exti.c ****     float f_exti_id = (float)EXIT_LineX;
+  36              		.loc 1 33 5 is_stmt 1 view .LVU2
+  37              	.LVL1:
+  34:Bsp/periph_exti.c ****     uint32_t u32_exti_id = 0;
+  38              		.loc 1 34 5 view .LVU3
+  35:Bsp/periph_exti.c ****     uint8_t exp = 0;
+  39              		.loc 1 35 5 view .LVU4
+  36:Bsp/periph_exti.c **** 
+  37:Bsp/periph_exti.c ****     u32_exti_id = *((unsigned long *)(&f_exti_id));
+  40              		.loc 1 37 5 view .LVU5
+  41              		.loc 1 37 17 is_stmt 0 view .LVU6
+  42 0004 F8EE677A 		vcvt.f32.u32	s15, s15
+  43              	.LVL2:
+  44              		.loc 1 37 17 view .LVU7
+  45 0008 17EE900A 		vmov	r0, s15
+  46              	.LVL3:
+  38:Bsp/periph_exti.c **** 
+  39:Bsp/periph_exti.c ****     exp = (u32_exti_id >> 23) & 0xFF;
+  47              		.loc 1 39 5 is_stmt 1 view .LVU8
+  48              		.loc 1 39 9 is_stmt 0 view .LVU9
+  49 000c C0F3C750 		ubfx	r0, r0, #23, #8
+  50              	.LVL4:
+  40:Bsp/periph_exti.c ****     exp -= 127;
+  51              		.loc 1 40 5 is_stmt 1 view .LVU10
+  52              		.loc 1 40 9 is_stmt 0 view .LVU11
+  53 0010 7F38     		subs	r0, r0, #127
+  54              	.LVL5:
+  41:Bsp/periph_exti.c **** 
+  42:Bsp/periph_exti.c ****     return exp;
+  55              		.loc 1 42 5 is_stmt 1 view .LVU12
+  43:Bsp/periph_exti.c **** }
+  56              		.loc 1 43 1 is_stmt 0 view .LVU13
+  57 0012 C0B2     		uxtb	r0, r0
+  58              		.loc 1 43 1 view .LVU14
+  59 0014 7047     		bx	lr
+  60              		.cfi_endproc
+  61              	.LFE124:
+  63              		.section	.text.periph_exti_checkExti_Line,"ax",%progbits
+  64              		.align	1
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  68              		.fpu fpv4-sp-d16
+  70              	periph_exti_checkExti_Line:
+  71              	.LVL6:
+  72              	.LFB125:
+  44:Bsp/periph_exti.c **** 
+  45:Bsp/periph_exti.c **** static bool periph_exti_checkExti_Line(uint32_t EXTI_LineX)
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 3
+
+
+  46:Bsp/periph_exti.c **** {
+  73              		.loc 1 46 1 is_stmt 1 view -0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 0
+  76              		@ frame_needed = 0, uses_anonymous_args = 0
+  77              		@ link register save eliminated.
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+  78              		.loc 1 47 5 view .LVU16
+  79 0000 B0F5805F 		cmp	r0, #4096
+  80 0004 69D0     		beq	.L12
+  81 0006 34D8     		bhi	.L4
+  82 0008 4028     		cmp	r0, #64
+  83 000a 68D0     		beq	.L13
+  84 000c 0BD9     		bls	.L33
+  85 000e B0F5007F 		cmp	r0, #512
+  86 0012 6CD0     		beq	.L17
+  87 0014 22D9     		bls	.L34
+  88 0016 B0F5806F 		cmp	r0, #1024
+  89 001a 6CD0     		beq	.L20
+  90 001c B0F5006F 		cmp	r0, #2048
+  91 0020 25D0     		beq	.L35
+  48:Bsp/periph_exti.c ****     {
+  49:Bsp/periph_exti.c ****     case EXTI_Line0:
+  50:Bsp/periph_exti.c ****     case EXTI_Line1:
+  51:Bsp/periph_exti.c ****     case EXTI_Line2:
+  52:Bsp/periph_exti.c ****     case EXTI_Line3:
+  53:Bsp/periph_exti.c ****     case EXTI_Line4:
+  54:Bsp/periph_exti.c ****     case EXTI_Line5:
+  55:Bsp/periph_exti.c ****     case EXTI_Line6:
+  56:Bsp/periph_exti.c ****     case EXTI_Line7:
+  57:Bsp/periph_exti.c ****     case EXTI_Line8:
+  58:Bsp/periph_exti.c ****     case EXTI_Line9:
+  59:Bsp/periph_exti.c ****     case EXTI_Line10:
+  60:Bsp/periph_exti.c ****     case EXTI_Line11:
+  61:Bsp/periph_exti.c ****     case EXTI_Line12:
+  62:Bsp/periph_exti.c ****     case EXTI_Line13:
+  63:Bsp/periph_exti.c ****     case EXTI_Line14:
+  64:Bsp/periph_exti.c ****     case EXTI_Line15:
+  65:Bsp/periph_exti.c ****     case EXTI_Line16:
+  66:Bsp/periph_exti.c ****     case EXTI_Line17:
+  67:Bsp/periph_exti.c ****     case EXTI_Line18:
+  68:Bsp/periph_exti.c ****     case EXTI_Line19:
+  69:Bsp/periph_exti.c ****     case EXTI_Line20:
+  70:Bsp/periph_exti.c ****     case EXTI_Line21:
+  71:Bsp/periph_exti.c ****     case EXTI_Line22:
+  72:Bsp/periph_exti.c ****     case EXTI_Line23:
+  73:Bsp/periph_exti.c ****         return true;
+  74:Bsp/periph_exti.c **** 
+  75:Bsp/periph_exti.c ****     default:
+  76:Bsp/periph_exti.c ****         return false;
+  92              		.loc 1 76 16 is_stmt 0 view .LVU17
+  93 0022 0020     		movs	r0, #0
+  94              	.LVL7:
+  95              		.loc 1 76 16 view .LVU18
+  96 0024 7047     		bx	lr
+  97              	.LVL8:
+  98              	.L33:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 4
+
+
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+  99              		.loc 1 47 5 view .LVU19
+ 100 0026 2028     		cmp	r0, #32
+ 101 0028 5BD8     		bhi	.L14
+ 102 002a 0028     		cmp	r0, #0
+ 103 002c 5BD0     		beq	.L15
+ 104 002e 0138     		subs	r0, r0, #1
+ 105              	.LVL9:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 106              		.loc 1 47 5 view .LVU20
+ 107 0030 1F28     		cmp	r0, #31
+ 108 0032 5AD8     		bhi	.L16
+ 109 0034 DFE800F0 		tbb	[pc, r0]
+ 110              	.L7:
+ 111 0038 10       		.byte	(.L6-.L7)/2
+ 112 0039 10       		.byte	(.L6-.L7)/2
+ 113 003a 59       		.byte	(.L16-.L7)/2
+ 114 003b 10       		.byte	(.L6-.L7)/2
+ 115 003c 59       		.byte	(.L16-.L7)/2
+ 116 003d 59       		.byte	(.L16-.L7)/2
+ 117 003e 59       		.byte	(.L16-.L7)/2
+ 118 003f 10       		.byte	(.L6-.L7)/2
+ 119 0040 59       		.byte	(.L16-.L7)/2
+ 120 0041 59       		.byte	(.L16-.L7)/2
+ 121 0042 59       		.byte	(.L16-.L7)/2
+ 122 0043 59       		.byte	(.L16-.L7)/2
+ 123 0044 59       		.byte	(.L16-.L7)/2
+ 124 0045 59       		.byte	(.L16-.L7)/2
+ 125 0046 59       		.byte	(.L16-.L7)/2
+ 126 0047 10       		.byte	(.L6-.L7)/2
+ 127 0048 59       		.byte	(.L16-.L7)/2
+ 128 0049 59       		.byte	(.L16-.L7)/2
+ 129 004a 59       		.byte	(.L16-.L7)/2
+ 130 004b 59       		.byte	(.L16-.L7)/2
+ 131 004c 59       		.byte	(.L16-.L7)/2
+ 132 004d 59       		.byte	(.L16-.L7)/2
+ 133 004e 59       		.byte	(.L16-.L7)/2
+ 134 004f 59       		.byte	(.L16-.L7)/2
+ 135 0050 59       		.byte	(.L16-.L7)/2
+ 136 0051 59       		.byte	(.L16-.L7)/2
+ 137 0052 59       		.byte	(.L16-.L7)/2
+ 138 0053 59       		.byte	(.L16-.L7)/2
+ 139 0054 59       		.byte	(.L16-.L7)/2
+ 140 0055 59       		.byte	(.L16-.L7)/2
+ 141 0056 59       		.byte	(.L16-.L7)/2
+ 142 0057 10       		.byte	(.L6-.L7)/2
+ 143              		.p2align 1
+ 144              	.L6:
+ 145 0058 0120     		movs	r0, #1
+ 146              	.LVL10:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 147              		.loc 1 47 5 view .LVU21
+ 148 005a 7047     		bx	lr
+ 149              	.LVL11:
+ 150              	.L34:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 151              		.loc 1 47 5 view .LVU22
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 5
+
+
+ 152 005c 8028     		cmp	r0, #128
+ 153 005e 48D0     		beq	.L18
+ 154 0060 B0F5807F 		cmp	r0, #256
+ 155 0064 01D0     		beq	.L36
+ 156              		.loc 1 76 16 view .LVU23
+ 157 0066 0020     		movs	r0, #0
+ 158              	.LVL12:
+ 159              		.loc 1 76 16 view .LVU24
+ 160 0068 7047     		bx	lr
+ 161              	.LVL13:
+ 162              	.L36:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 163              		.loc 1 47 5 view .LVU25
+ 164 006a 0120     		movs	r0, #1
+ 165              	.LVL14:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 166              		.loc 1 47 5 view .LVU26
+ 167 006c 7047     		bx	lr
+ 168              	.LVL15:
+ 169              	.L35:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 170              		.loc 1 47 5 view .LVU27
+ 171 006e 0120     		movs	r0, #1
+ 172              	.LVL16:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 173              		.loc 1 47 5 view .LVU28
+ 174 0070 7047     		bx	lr
+ 175              	.LVL17:
+ 176              	.L4:
+  47:Bsp/periph_exti.c ****     switch (EXTI_LineX)
+ 177              		.loc 1 47 5 view .LVU29
+ 178 0072 B0F5802F 		cmp	r0, #262144
+ 179 0076 40D0     		beq	.L22
+ 180 0078 0BD9     		bls	.L37
+ 181 007a B0F5001F 		cmp	r0, #2097152
+ 182 007e 44D0     		beq	.L28
+ 183 0080 1FD9     		bls	.L38
+ 184 0082 B0F5800F 		cmp	r0, #4194304
+ 185 0086 44D0     		beq	.L31
+ 186 0088 B0F5000F 		cmp	r0, #8388608
+ 187 008c 23D0     		beq	.L39
+ 188              		.loc 1 76 16 view .LVU30
+ 189 008e 0020     		movs	r0, #0
+ 190              	.LVL18:
+  77:Bsp/periph_exti.c ****     }
+  78:Bsp/periph_exti.c **** }
+ 191              		.loc 1 78 1 view .LVU31
+ 192 0090 7047     		bx	lr
+ 193              	.LVL19:
+ 194              	.L37:
+  47:Bsp/periph_exti.c ****     {
+ 195              		.loc 1 47 5 view .LVU32
+ 196 0092 B0F5004F 		cmp	r0, #32768
+ 197 0096 32D0     		beq	.L23
+ 198 0098 07D9     		bls	.L40
+ 199 009a B0F5803F 		cmp	r0, #65536
+ 200 009e 32D0     		beq	.L26
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 6
+
+
+ 201 00a0 B0F5003F 		cmp	r0, #131072
+ 202 00a4 0BD0     		beq	.L41
+  76:Bsp/periph_exti.c ****     }
+ 203              		.loc 1 76 16 view .LVU33
+ 204 00a6 0020     		movs	r0, #0
+ 205              	.LVL20:
+  76:Bsp/periph_exti.c ****     }
+ 206              		.loc 1 76 16 view .LVU34
+ 207 00a8 7047     		bx	lr
+ 208              	.LVL21:
+ 209              	.L40:
+  47:Bsp/periph_exti.c ****     {
+ 210              		.loc 1 47 5 view .LVU35
+ 211 00aa B0F5005F 		cmp	r0, #8192
+ 212 00ae 28D0     		beq	.L24
+ 213 00b0 B0F5804F 		cmp	r0, #16384
+ 214 00b4 01D0     		beq	.L42
+  76:Bsp/periph_exti.c ****     }
+ 215              		.loc 1 76 16 view .LVU36
+ 216 00b6 0020     		movs	r0, #0
+ 217              	.LVL22:
+  76:Bsp/periph_exti.c ****     }
+ 218              		.loc 1 76 16 view .LVU37
+ 219 00b8 7047     		bx	lr
+ 220              	.LVL23:
+ 221              	.L42:
+  47:Bsp/periph_exti.c ****     {
+ 222              		.loc 1 47 5 view .LVU38
+ 223 00ba 0120     		movs	r0, #1
+ 224              	.LVL24:
+  47:Bsp/periph_exti.c ****     {
+ 225              		.loc 1 47 5 view .LVU39
+ 226 00bc 7047     		bx	lr
+ 227              	.LVL25:
+ 228              	.L41:
+  47:Bsp/periph_exti.c ****     {
+ 229              		.loc 1 47 5 view .LVU40
+ 230 00be 0120     		movs	r0, #1
+ 231              	.LVL26:
+  47:Bsp/periph_exti.c ****     {
+ 232              		.loc 1 47 5 view .LVU41
+ 233 00c0 7047     		bx	lr
+ 234              	.LVL27:
+ 235              	.L38:
+  47:Bsp/periph_exti.c ****     {
+ 236              		.loc 1 47 5 view .LVU42
+ 237 00c2 B0F5002F 		cmp	r0, #524288
+ 238 00c6 22D0     		beq	.L29
+ 239 00c8 B0F5801F 		cmp	r0, #1048576
+ 240 00cc 01D0     		beq	.L43
+  76:Bsp/periph_exti.c ****     }
+ 241              		.loc 1 76 16 view .LVU43
+ 242 00ce 0020     		movs	r0, #0
+ 243              	.LVL28:
+  76:Bsp/periph_exti.c ****     }
+ 244              		.loc 1 76 16 view .LVU44
+ 245 00d0 7047     		bx	lr
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 7
+
+
+ 246              	.LVL29:
+ 247              	.L43:
+  47:Bsp/periph_exti.c ****     {
+ 248              		.loc 1 47 5 view .LVU45
+ 249 00d2 0120     		movs	r0, #1
+ 250              	.LVL30:
+  47:Bsp/periph_exti.c ****     {
+ 251              		.loc 1 47 5 view .LVU46
+ 252 00d4 7047     		bx	lr
+ 253              	.LVL31:
+ 254              	.L39:
+  47:Bsp/periph_exti.c ****     {
+ 255              		.loc 1 47 5 view .LVU47
+ 256 00d6 0120     		movs	r0, #1
+ 257              	.LVL32:
+  47:Bsp/periph_exti.c ****     {
+ 258              		.loc 1 47 5 view .LVU48
+ 259 00d8 7047     		bx	lr
+ 260              	.LVL33:
+ 261              	.L12:
+  47:Bsp/periph_exti.c ****     {
+ 262              		.loc 1 47 5 view .LVU49
+ 263 00da 0120     		movs	r0, #1
+ 264              	.LVL34:
+  47:Bsp/periph_exti.c ****     {
+ 265              		.loc 1 47 5 view .LVU50
+ 266 00dc 7047     		bx	lr
+ 267              	.LVL35:
+ 268              	.L13:
+  47:Bsp/periph_exti.c ****     {
+ 269              		.loc 1 47 5 view .LVU51
+ 270 00de 0120     		movs	r0, #1
+ 271              	.LVL36:
+  47:Bsp/periph_exti.c ****     {
+ 272              		.loc 1 47 5 view .LVU52
+ 273 00e0 7047     		bx	lr
+ 274              	.LVL37:
+ 275              	.L14:
+  76:Bsp/periph_exti.c ****     }
+ 276              		.loc 1 76 16 view .LVU53
+ 277 00e2 0020     		movs	r0, #0
+ 278              	.LVL38:
+  76:Bsp/periph_exti.c ****     }
+ 279              		.loc 1 76 16 view .LVU54
+ 280 00e4 7047     		bx	lr
+ 281              	.LVL39:
+ 282              	.L15:
+  76:Bsp/periph_exti.c ****     }
+ 283              		.loc 1 76 16 view .LVU55
+ 284 00e6 0020     		movs	r0, #0
+ 285              	.LVL40:
+  76:Bsp/periph_exti.c ****     }
+ 286              		.loc 1 76 16 view .LVU56
+ 287 00e8 7047     		bx	lr
+ 288              	.L16:
+ 289 00ea 0020     		movs	r0, #0
+ 290 00ec 7047     		bx	lr
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 8
+
+
+ 291              	.LVL41:
+ 292              	.L17:
+  47:Bsp/periph_exti.c ****     {
+ 293              		.loc 1 47 5 view .LVU57
+ 294 00ee 0120     		movs	r0, #1
+ 295              	.LVL42:
+  47:Bsp/periph_exti.c ****     {
+ 296              		.loc 1 47 5 view .LVU58
+ 297 00f0 7047     		bx	lr
+ 298              	.LVL43:
+ 299              	.L18:
+  47:Bsp/periph_exti.c ****     {
+ 300              		.loc 1 47 5 view .LVU59
+ 301 00f2 0120     		movs	r0, #1
+ 302              	.LVL44:
+  47:Bsp/periph_exti.c ****     {
+ 303              		.loc 1 47 5 view .LVU60
+ 304 00f4 7047     		bx	lr
+ 305              	.LVL45:
+ 306              	.L20:
+  47:Bsp/periph_exti.c ****     {
+ 307              		.loc 1 47 5 view .LVU61
+ 308 00f6 0120     		movs	r0, #1
+ 309              	.LVL46:
+  47:Bsp/periph_exti.c ****     {
+ 310              		.loc 1 47 5 view .LVU62
+ 311 00f8 7047     		bx	lr
+ 312              	.LVL47:
+ 313              	.L22:
+  47:Bsp/periph_exti.c ****     {
+ 314              		.loc 1 47 5 view .LVU63
+ 315 00fa 0120     		movs	r0, #1
+ 316              	.LVL48:
+  47:Bsp/periph_exti.c ****     {
+ 317              		.loc 1 47 5 view .LVU64
+ 318 00fc 7047     		bx	lr
+ 319              	.LVL49:
+ 320              	.L23:
+  47:Bsp/periph_exti.c ****     {
+ 321              		.loc 1 47 5 view .LVU65
+ 322 00fe 0120     		movs	r0, #1
+ 323              	.LVL50:
+  47:Bsp/periph_exti.c ****     {
+ 324              		.loc 1 47 5 view .LVU66
+ 325 0100 7047     		bx	lr
+ 326              	.LVL51:
+ 327              	.L24:
+  47:Bsp/periph_exti.c ****     {
+ 328              		.loc 1 47 5 view .LVU67
+ 329 0102 0120     		movs	r0, #1
+ 330              	.LVL52:
+  47:Bsp/periph_exti.c ****     {
+ 331              		.loc 1 47 5 view .LVU68
+ 332 0104 7047     		bx	lr
+ 333              	.LVL53:
+ 334              	.L26:
+  47:Bsp/periph_exti.c ****     {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 9
+
+
+ 335              		.loc 1 47 5 view .LVU69
+ 336 0106 0120     		movs	r0, #1
+ 337              	.LVL54:
+  47:Bsp/periph_exti.c ****     {
+ 338              		.loc 1 47 5 view .LVU70
+ 339 0108 7047     		bx	lr
+ 340              	.LVL55:
+ 341              	.L28:
+  47:Bsp/periph_exti.c ****     {
+ 342              		.loc 1 47 5 view .LVU71
+ 343 010a 0120     		movs	r0, #1
+ 344              	.LVL56:
+  47:Bsp/periph_exti.c ****     {
+ 345              		.loc 1 47 5 view .LVU72
+ 346 010c 7047     		bx	lr
+ 347              	.LVL57:
+ 348              	.L29:
+  47:Bsp/periph_exti.c ****     {
+ 349              		.loc 1 47 5 view .LVU73
+ 350 010e 0120     		movs	r0, #1
+ 351              	.LVL58:
+  47:Bsp/periph_exti.c ****     {
+ 352              		.loc 1 47 5 view .LVU74
+ 353 0110 7047     		bx	lr
+ 354              	.LVL59:
+ 355              	.L31:
+  47:Bsp/periph_exti.c ****     {
+ 356              		.loc 1 47 5 view .LVU75
+ 357 0112 0120     		movs	r0, #1
+ 358              	.LVL60:
+  47:Bsp/periph_exti.c ****     {
+ 359              		.loc 1 47 5 view .LVU76
+ 360 0114 7047     		bx	lr
+ 361              		.cfi_endproc
+ 362              	.LFE125:
+ 364              		.section	.text.periph_exit_init,"ax",%progbits
+ 365              		.align	1
+ 366              		.global	periph_exit_init
+ 367              		.syntax unified
+ 368              		.thumb
+ 369              		.thumb_func
+ 370              		.fpu fpv4-sp-d16
+ 372              	periph_exit_init:
+ 373              	.LFB123:
+  15:Bsp/periph_exti.c ****     EXTI_InitTypeDef EXTI_InitStruct;
+ 374              		.loc 1 15 1 is_stmt 1 view -0
+ 375              		.cfi_startproc
+ 376              		@ args = 0, pretend = 0, frame = 24
+ 377              		@ frame_needed = 0, uses_anonymous_args = 0
+ 378 0000 10B5     		push	{r4, lr}
+ 379              	.LCFI0:
+ 380              		.cfi_def_cfa_offset 8
+ 381              		.cfi_offset 4, -8
+ 382              		.cfi_offset 14, -4
+ 383 0002 86B0     		sub	sp, sp, #24
+ 384              	.LCFI1:
+ 385              		.cfi_def_cfa_offset 32
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 10
+
+
+ 386 0004 01AB     		add	r3, sp, #4
+ 387 0006 83E80700 		stm	r3, {r0, r1, r2}
+  16:Bsp/periph_exti.c **** 
+ 388              		.loc 1 16 5 view .LVU78
+  18:Bsp/periph_exti.c ****     SYSCFG_EXTILineConfig(exti_cfg.exti_port, exti_cfg.exti_pinsource);
+ 389              		.loc 1 18 5 view .LVU79
+ 390 000a 0121     		movs	r1, #1
+ 391 000c 4FF48040 		mov	r0, #16384
+ 392 0010 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 393              	.LVL61:
+  19:Bsp/periph_exti.c **** 
+ 394              		.loc 1 19 5 view .LVU80
+ 395 0014 9DF80510 		ldrb	r1, [sp, #5]	@ zero_extendqisi2
+ 396 0018 9DF80400 		ldrb	r0, [sp, #4]	@ zero_extendqisi2
+ 397 001c FFF7FEFF 		bl	SYSCFG_EXTILineConfig
+ 398              	.LVL62:
+  21:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Trigger = exti_cfg.trigger_type;
+ 399              		.loc 1 21 5 view .LVU81
+  21:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Trigger = exti_cfg.trigger_type;
+ 400              		.loc 1 21 41 is_stmt 0 view .LVU82
+ 401 0020 029B     		ldr	r3, [sp, #8]
+  21:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Trigger = exti_cfg.trigger_type;
+ 402              		.loc 1 21 31 view .LVU83
+ 403 0022 0493     		str	r3, [sp, #16]
+  22:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+ 404              		.loc 1 22 5 is_stmt 1 view .LVU84
+  22:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+ 405              		.loc 1 22 44 is_stmt 0 view .LVU85
+ 406 0024 9DF80C30 		ldrb	r3, [sp, #12]	@ zero_extendqisi2
+  22:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+ 407              		.loc 1 22 34 view .LVU86
+ 408 0028 8DF81530 		strb	r3, [sp, #21]
+  23:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+ 409              		.loc 1 23 5 is_stmt 1 view .LVU87
+  23:Bsp/periph_exti.c ****     EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+ 410              		.loc 1 23 31 is_stmt 0 view .LVU88
+ 411 002c 0023     		movs	r3, #0
+ 412 002e 8DF81430 		strb	r3, [sp, #20]
+  24:Bsp/periph_exti.c **** 
+ 413              		.loc 1 24 5 is_stmt 1 view .LVU89
+  24:Bsp/periph_exti.c **** 
+ 414              		.loc 1 24 34 is_stmt 0 view .LVU90
+ 415 0032 0124     		movs	r4, #1
+ 416 0034 8DF81640 		strb	r4, [sp, #22]
+  26:Bsp/periph_exti.c **** 
+ 417              		.loc 1 26 5 is_stmt 1 view .LVU91
+ 418 0038 04A8     		add	r0, sp, #16
+ 419 003a FFF7FEFF 		bl	EXTI_Init
+ 420              	.LVL63:
+  28:Bsp/periph_exti.c **** }
+ 421              		.loc 1 28 5 view .LVU92
+ 422 003e 2346     		mov	r3, r4
+ 423 0040 9DF80F20 		ldrb	r2, [sp, #15]	@ zero_extendqisi2
+ 424 0044 9DF80E10 		ldrb	r1, [sp, #14]	@ zero_extendqisi2
+ 425 0048 9DF80D00 		ldrb	r0, [sp, #13]	@ zero_extendqisi2
+ 426 004c FFF7FEFF 		bl	periph_nvic_Structure_Setting
+ 427              	.LVL64:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 11
+
+
+  29:Bsp/periph_exti.c **** 
+ 428              		.loc 1 29 1 is_stmt 0 view .LVU93
+ 429 0050 06B0     		add	sp, sp, #24
+ 430              	.LCFI2:
+ 431              		.cfi_def_cfa_offset 8
+ 432              		@ sp needed
+ 433 0052 10BD     		pop	{r4, pc}
+ 434              		.cfi_endproc
+ 435              	.LFE123:
+ 437              		.section	.text.periph_exti_SetCallback,"ax",%progbits
+ 438              		.align	1
+ 439              		.global	periph_exti_SetCallback
+ 440              		.syntax unified
+ 441              		.thumb
+ 442              		.thumb_func
+ 443              		.fpu fpv4-sp-d16
+ 445              	periph_exti_SetCallback:
+ 446              	.LVL65:
+ 447              	.LFB126:
+  79:Bsp/periph_exti.c **** 
+  80:Bsp/periph_exti.c **** bool periph_exti_SetCallback(uint32_t EXTI_LineX, exti_callback callback)
+  81:Bsp/periph_exti.c **** {
+ 448              		.loc 1 81 1 is_stmt 1 view -0
+ 449              		.cfi_startproc
+ 450              		@ args = 0, pretend = 0, frame = 0
+ 451              		@ frame_needed = 0, uses_anonymous_args = 0
+ 452              		.loc 1 81 1 is_stmt 0 view .LVU95
+ 453 0000 70B5     		push	{r4, r5, r6, lr}
+ 454              	.LCFI3:
+ 455              		.cfi_def_cfa_offset 16
+ 456              		.cfi_offset 4, -16
+ 457              		.cfi_offset 5, -12
+ 458              		.cfi_offset 6, -8
+ 459              		.cfi_offset 14, -4
+ 460 0002 0546     		mov	r5, r0
+ 461 0004 0C46     		mov	r4, r1
+  82:Bsp/periph_exti.c ****     if (!periph_exti_checkExti_Line(EXTI_LineX))
+ 462              		.loc 1 82 5 is_stmt 1 view .LVU96
+ 463              		.loc 1 82 10 is_stmt 0 view .LVU97
+ 464 0006 FFF7FEFF 		bl	periph_exti_checkExti_Line
+ 465              	.LVL66:
+ 466              		.loc 1 82 8 view .LVU98
+ 467 000a 0646     		mov	r6, r0
+ 468 000c 28B1     		cbz	r0, .L47
+  83:Bsp/periph_exti.c ****         return false;
+  84:Bsp/periph_exti.c **** 
+  85:Bsp/periph_exti.c ****     CallBack_List[Get_EXTI_Index(EXTI_LineX)] = callback;
+ 469              		.loc 1 85 5 is_stmt 1 view .LVU99
+ 470              		.loc 1 85 19 is_stmt 0 view .LVU100
+ 471 000e 2846     		mov	r0, r5
+ 472 0010 FFF7FEFF 		bl	Get_EXTI_Index
+ 473              	.LVL67:
+ 474              		.loc 1 85 47 view .LVU101
+ 475 0014 024B     		ldr	r3, .L49
+ 476 0016 43F82040 		str	r4, [r3, r0, lsl #2]
+  86:Bsp/periph_exti.c ****     return true;
+ 477              		.loc 1 86 5 is_stmt 1 view .LVU102
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 12
+
+
+ 478              	.L47:
+  87:Bsp/periph_exti.c **** }
+ 479              		.loc 1 87 1 is_stmt 0 view .LVU103
+ 480 001a 3046     		mov	r0, r6
+ 481 001c 70BD     		pop	{r4, r5, r6, pc}
+ 482              	.LVL68:
+ 483              	.L50:
+ 484              		.loc 1 87 1 view .LVU104
+ 485 001e 00BF     		.align	2
+ 486              	.L49:
+ 487 0020 00000000 		.word	.LANCHOR0
+ 488              		.cfi_endproc
+ 489              	.LFE126:
+ 491              		.section	.text.periph_exti_GetCallback,"ax",%progbits
+ 492              		.align	1
+ 493              		.global	periph_exti_GetCallback
+ 494              		.syntax unified
+ 495              		.thumb
+ 496              		.thumb_func
+ 497              		.fpu fpv4-sp-d16
+ 499              	periph_exti_GetCallback:
+ 500              	.LVL69:
+ 501              	.LFB127:
+  88:Bsp/periph_exti.c **** 
+  89:Bsp/periph_exti.c **** exti_callback periph_exti_GetCallback(uint32_t EXTI_LineX)
+  90:Bsp/periph_exti.c **** {
+ 502              		.loc 1 90 1 is_stmt 1 view -0
+ 503              		.cfi_startproc
+ 504              		@ args = 0, pretend = 0, frame = 0
+ 505              		@ frame_needed = 0, uses_anonymous_args = 0
+ 506              		.loc 1 90 1 is_stmt 0 view .LVU106
+ 507 0000 10B5     		push	{r4, lr}
+ 508              	.LCFI4:
+ 509              		.cfi_def_cfa_offset 8
+ 510              		.cfi_offset 4, -8
+ 511              		.cfi_offset 14, -4
+ 512 0002 0446     		mov	r4, r0
+  91:Bsp/periph_exti.c ****     if (!periph_exti_checkExti_Line(EXTI_LineX))
+ 513              		.loc 1 91 5 is_stmt 1 view .LVU107
+ 514              		.loc 1 91 10 is_stmt 0 view .LVU108
+ 515 0004 FFF7FEFF 		bl	periph_exti_checkExti_Line
+ 516              	.LVL70:
+ 517              		.loc 1 91 8 view .LVU109
+ 518 0008 30B1     		cbz	r0, .L53
+  92:Bsp/periph_exti.c ****         return NULL;
+  93:Bsp/periph_exti.c **** 
+  94:Bsp/periph_exti.c ****     return CallBack_List[Get_EXTI_Index(EXTI_LineX)];
+ 519              		.loc 1 94 5 is_stmt 1 view .LVU110
+ 520              		.loc 1 94 26 is_stmt 0 view .LVU111
+ 521 000a 2046     		mov	r0, r4
+ 522 000c FFF7FEFF 		bl	Get_EXTI_Index
+ 523              	.LVL71:
+ 524              		.loc 1 94 25 view .LVU112
+ 525 0010 024B     		ldr	r3, .L55
+ 526 0012 53F82000 		ldr	r0, [r3, r0, lsl #2]
+ 527              	.L51:
+  95:Bsp/periph_exti.c **** }...
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 13
+
+
+ 528              		.loc 1 95 1 view .LVU113
+ 529 0016 10BD     		pop	{r4, pc}
+ 530              	.LVL72:
+ 531              	.L53:
+  92:Bsp/periph_exti.c ****         return NULL;
+ 532              		.loc 1 92 16 view .LVU114
+ 533 0018 0020     		movs	r0, #0
+ 534 001a FCE7     		b	.L51
+ 535              	.L56:
+ 536              		.align	2
+ 537              	.L55:
+ 538 001c 00000000 		.word	.LANCHOR0
+ 539              		.cfi_endproc
+ 540              	.LFE127:
+ 542              		.section	.bss.CallBack_List,"aw",%nobits
+ 543              		.align	2
+ 544              		.set	.LANCHOR0,. + 0
+ 547              	CallBack_List:
+ 548 0000 00000000 		.space	64
+ 548      00000000 
+ 548      00000000 
+ 548      00000000 
+ 548      00000000 
+ 549              		.text
+ 550              	.Letext0:
+ 551              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 552              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 553              		.file 4 "USER/stm32f4xx.h"
+ 554              		.file 5 "FWLIB/inc/stm32f4xx_exti.h"
+ 555              		.file 6 "Bsp/periph_exti.h"
+ 556              		.file 7 "FWLIB/inc/stm32f4xx_rcc.h"
+ 557              		.file 8 "FWLIB/inc/stm32f4xx_syscfg.h"
+ 558              		.file 9 "Bsp/periph_nvic.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 periph_exti.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:18     .text.Get_EXTI_Index:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:25     .text.Get_EXTI_Index:0000000000000000 Get_EXTI_Index
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:64     .text.periph_exti_checkExti_Line:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:70     .text.periph_exti_checkExti_Line:0000000000000000 periph_exti_checkExti_Line
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:111    .text.periph_exti_checkExti_Line:0000000000000038 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:143    .text.periph_exti_checkExti_Line:0000000000000058 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:365    .text.periph_exit_init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:372    .text.periph_exit_init:0000000000000000 periph_exit_init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:438    .text.periph_exti_SetCallback:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:445    .text.periph_exti_SetCallback:0000000000000000 periph_exti_SetCallback
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:487    .text.periph_exti_SetCallback:0000000000000020 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:492    .text.periph_exti_GetCallback:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:499    .text.periph_exti_GetCallback:0000000000000000 periph_exti_GetCallback
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:538    .text.periph_exti_GetCallback:000000000000001c $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:543    .bss.CallBack_List:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccYeFJM8.s:547    .bss.CallBack_List:0000000000000000 CallBack_List
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+SYSCFG_EXTILineConfig
+EXTI_Init
+periph_nvic_Structure_Setting
