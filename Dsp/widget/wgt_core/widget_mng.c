@@ -1622,6 +1622,35 @@ static bool WidgetUI_Drop_Move(UI_Drop_Handle hdl, int16_t x, int16_t y)
     return UI_Drop.Move(HandleToDropObj(hdl), x, y);
 }
 
+static bool WidgetUI_Drop_Select(UI_Drop_Handle hdl, bool state)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_Drop.Set_Select(HandleToDropObj(hdl), state);
+}
+
+static bool WidgetUI_Drop_SelectItem(UI_Drop_Handle hdl, uint8_t *offset)
+{
+    if (hdl == 0)
+        return false;
+
+    if (UI_Drop.Get_Select(hdl))
+    {
+        UI_Drop.Select_DropItem(HandleToDropObj(hdl), offset);
+    }
+    else
+        return false;
+}
+
+static bool WidgetUI_Drop_Ctl(UI_Drop_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+
+    return true;
+}
+
 /************************************** widget Drop interface ******************************************/
 
 /************************************** widget UI interface ******************************************/
