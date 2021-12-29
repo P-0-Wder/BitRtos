@@ -304,6 +304,10 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         }
         break;
 
+    case UI_Type_ProcBar:
+        /* show next */
+        break;
+
     case UI_Type_Drop:
         block_x = HandleToDropObj(item->Handler)->Gen_Data.x + 3;
 
