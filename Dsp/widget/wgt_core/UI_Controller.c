@@ -305,15 +305,16 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_Drop:
-        block_y = HandleToDropObj(item->Handler)->Gen_Data.y;
+        block_x = HandleToDropObj(item->Handler)->Gen_Data.x + 3;
 
         if (HandleToDropObj(item->Handler)->is_selected)
         {
-            block_x = HandleToDropObj(item->Handler)->Gen_Data.x;
+            block_y = HandleToDropObj(item->Handler)->Gen_Data.y;
         }
         else
         {
-            block_x = HandleToDropObj(item->Handler)->Gen_Data.x;
+            block_y = HandleToDropObj(item->Handler)->Gen_Data.y + base_font + 2;
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), UICTL_DROP_HEIGHT, true);
         }
         break;
 
@@ -330,6 +331,7 @@ static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, int16_
 
     GenData->x = x;
     GenData->y = y;
+    GenData->height = 0;
 
     GenData->operatable = false;
 }
@@ -1145,11 +1147,11 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
     /* show label */
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, str_y, true);
 
-    dropitem_y = str_y + base_font;
-    dropitem_x = Obj->Gen_Data.x + base_font;
+    dropitem_y = str_y + base_font + 2;
+    dropitem_x = Obj->Gen_Data.x + base_font * 2;
 
     /* show drop item id */
-    UI_DspInterface.draw_dig(base_font, ((UI_DropItemDataObj_TypeDef *)(Obj->CurDrop_Item->data))->id, dropitem_x, dropitem_y, true);
+    UI_DspInterface.draw_dig(base_font, ((UI_DropItemDataObj_TypeDef *)(Obj->CurDrop_Item->data))->id + 1, dropitem_x, dropitem_y, true);
 
     /* show drop item label */
     dropitem_x += base_font + 2;

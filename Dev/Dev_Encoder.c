@@ -124,7 +124,7 @@ static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj)
         return data_tmp;
     }
 
-    data_tmp.val = DrvTimer.get(&obj->TimerObj);
+    data_tmp.val = DrvTimer.get(&obj->TimerObj) / 2;
 
     if (obj->invert_reg & Encoder_Dir_Invert)
     {

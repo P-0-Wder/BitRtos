@@ -23,6 +23,7 @@ static UI_Button_Handle test_btn_2 = 0;
 static UI_CheckBox_Handle test_checkbox_1 = 0;
 static UI_SlideBar_Handle test_slidebar_1 = 0;
 static UI_ProcessBar_Handle test_processbar_1 = 0;
+static UI_Drop_Handle test_drop = 0;
 
 /* internal function definition */
 
@@ -40,7 +41,9 @@ static void TaskWidget_Init(void)
 
     test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 12 * 4, true);
     test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("slidebar", 0, 18, SliderBar_Horizon_Mode, 10, -10, 0, 50);
-    test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("frame type bar", UI_ProcBar_DspType_FrameBar, 10, 42, 50, 0, 100);
+    test_drop = Widget_Mng.Control(test4)->UI()->Drop()->create("drop", 0, 28);
+    Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item 1", NULL, 0, NULL);
+    // test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("frame type bar", UI_ProcBar_DspType_FrameBar, 10, 42, 50, 0, 100);
     Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_DspDir(test_processbar_1, UI_ProcBar_GrothFrom_Mid);
 }
 
@@ -141,7 +144,7 @@ static void TestWidget_Dynamic_Dsp(void)
     Widget_Mng.Control(test4)->Clear();
     Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &encoder_val);
 
-    Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_Value(test_processbar_1, prc_val);
+    // Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_Value(test_processbar_1, prc_val);
     Widget_Mng.Control(test4)->Draw()->draw_str(Font_8, "slidebar Timer", 2, 2, true);
 
     Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);

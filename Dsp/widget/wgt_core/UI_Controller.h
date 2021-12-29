@@ -51,6 +51,15 @@ typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 #define DEFAULT_PROCESSBAR_DOWNLOADTYPE_HEIGHT 5
 #define DEFAULT_PROCESSBAR_DOWNLOADTYPE_RADIUS 2
 
+#define UICTL_SLIDERBAR_HEIGHT
+#define UICTL_PROCESSBAR_DOWNLOAD_HEIGHT
+#define UICTL_PROCESSBAR_DOT_HEIGHT
+#define UICTL_PROCESSBAR_FRAME_HEIGHT
+#define UICTL_CHECKBOX_HEIGHT
+#define UICTL_DROP_HEIGHT 10
+#define UICTL_DIGINPUT_HEIGHT
+#define UICTL_STRINPUT_HEIGHT
+
 typedef enum
 {
     UICircle_Left_Up = 0x02,
@@ -157,6 +166,7 @@ typedef struct
     char *label;
     int16_t x;
     int16_t y;
+    uint8_t height;
 
     bool operatable;
 } UI_GeneralData_TypeDef;

@@ -193,7 +193,7 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .CheckBox = WidgetUI_GetCheckBox_Instance,
     .SlideBar = WidgetUI_GetSlideBar_Instance,
     .ProcessBar = WidgetUI_GetProcessBar_Instance,
-    .drop = WidgetUI_GetDrop_Instance,
+    .Drop = WidgetUI_GetDrop_Instance,
     // .UI_StrInput = NULL,
     // .UI_ProcBar = NULL,
     // .UI_VerBar = NULL,
@@ -1677,5 +1677,9 @@ static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
 }
 
 /************************************** widget Drop interface ******************************************/
+
+/************************************** widget DigInput interface ******************************************/
+
+/************************************** widget DigInput interface ******************************************/
 
 /************************************** widget UI interface ******************************************/

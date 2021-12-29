@@ -177,7 +177,7 @@ typedef struct
     WidgetUI_CheckBox_Interface_TypeDef *(*CheckBox)(void);
     WidgetUI_SlideBar_Interface_TypeDef *(*SlideBar)(void);
     WidgetUI_ProcessBar_Interface_TypeDef *(*ProcessBar)(void);
-    WidgetUI_Drop_interface_TypeDef *(*drop)(void);
+    WidgetUI_Drop_interface_TypeDef *(*Drop)(void);
     // void (*UI_DigInput)();
     // void (*UI_StrInput)();
     // void (*UI_ProcBar)();
