@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "mmu.h"
 
 /* internal object */
 static UI_DrawInterface_TypeDef UI_DspInterface;
@@ -1025,8 +1026,8 @@ static item_obj *UI_Drop_CreateDropItem(uint8_t id, char *item_desc, void *data,
     item_obj *item_tmp = NULL;
     UI_DropItemDataObj_TypeDef *itemdata_tmp = NULL;
 
-    itemdata_tmp = (UI_DropItemDataObj_TypeDef *)MMU_malloc(sizeof(UI_DropItemDataObj_TypeDef));
-    item_tmp = (item_obj *)MMU_malloc(sizeof(item_obj));
+    itemdata_tmp = (UI_DropItemDataObj_TypeDef *)MMU_Malloc(sizeof(UI_DropItemDataObj_TypeDef));
+    item_tmp = (item_obj *)MMU_Malloc(sizeof(item_obj));
 
     if ((item_tmp == NULL) || (itemdata_tmp == NULL))
         return NULL;

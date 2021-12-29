@@ -137,6 +137,13 @@ static bool WidgetUI_ProcessBar_SetCurValue(UI_ProcessBar_Handle hdl, int32_t va
 static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_t y);
 static bool WidgetUI_Fresh_ProcessBar(UI_ProcessBar_Handle hdl);
 
+/* Widget UI Drop Mathod */
+static UI_Drop_Handle WidgetUI_Create_Drop(char *label, int16_t x, int16_t y);
+static bool WidgetUI_Drop_Move(UI_Drop_Handle hdl, int16_t x, int16_t y);
+static bool WidgetUI_Drop_Select(UI_Drop_Handle hdl, bool state);
+static bool WidgetUI_Drop_SelectItem(UI_Drop_Handle hdl, uint8_t *offset);
+static bool WidgetUI_Add_DropItem(UI_Drop_Handle hdl, char *label, void *data, uint16_t data_size, UI_Drop_Callback callback);
+
 /* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .create = WidgetUI_Creat_Button,
@@ -170,11 +177,11 @@ WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
 };
 
 WidgetUI_Drop_interface_TypeDef WidgetUI_Drop = {
-    .create = NULL,
-    .Move = NULL,
-    .Select = NULL,
-    .select_item = NULL,
-    .add_item = NULL,
+    .create = WidgetUI_Create_Drop,
+    .Move = WidgetUI_Drop_Move,
+    .Select = WidgetUI_Drop_Select,
+    .select_item = WidgetUI_Drop_SelectItem,
+    .add_item = WidgetUI_Add_DropItem,
 };
 
 /* for temp we init each var as null */
@@ -1206,6 +1213,20 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
 
         break;
 
+    case UI_Type_Drop:
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return HandleToDropObj(item->Handler)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return HandleToDropObj(item->Handler)->Gen_Data.y;
+
+        default:
+            return 0;
+        }
+        break;
+
     default:
         return 0;
     }
@@ -1643,12 +1664,12 @@ static bool WidgetUI_Drop_SelectItem(UI_Drop_Handle hdl, uint8_t *offset)
         return false;
 }
 
-static bool WidgetUI_Drop_Ctl(UI_Drop_Handle hdl)
+static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
 {
     if (hdl == 0)
         return false;
 
-    return true;
+    return UI_Drop.ctl(HandleToDropObj(hdl));
 }
 
 /************************************** widget Drop interface ******************************************/
