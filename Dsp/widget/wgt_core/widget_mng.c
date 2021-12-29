@@ -143,6 +143,7 @@ static bool WidgetUI_Drop_Move(UI_Drop_Handle hdl, int16_t x, int16_t y);
 static bool WidgetUI_Drop_Select(UI_Drop_Handle hdl, bool state);
 static bool WidgetUI_Drop_SelectItem(UI_Drop_Handle hdl, uint8_t *offset);
 static bool WidgetUI_Add_DropItem(UI_Drop_Handle hdl, char *label, void *data, uint16_t data_size, UI_Drop_Callback callback);
+static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl);
 
 /* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
@@ -1135,6 +1136,9 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
 
     case UI_Type_ProcBar:
         return WidgetUI_Fresh_ProcessBar(UI_Data->Handler);
+
+    case UI_Type_Drop:
+        return WidgetUI_Fresh_Drop(UI_Data->Handler);
 
     default:
         return false;
