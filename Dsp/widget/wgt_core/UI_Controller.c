@@ -208,7 +208,7 @@ static bool UI_Draw_HorDotLine(int16_t x, int16_t y, uint8_t len, uint8_t line_w
 
 /* still in developing about this selector */
 /* FYI different UI Item Got different selector */
-bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
+WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 {
     /* button selector coordinate */
     int16_t Btn_Slct_LftUp_X = 0;
@@ -232,11 +232,11 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         widget_width = UI_Get_WidgetWidth();
 
         if (widget_width == 0)
-            return false;
+            return UI_Fresh_Error;
     }
 
     if (item == NULL)
-        return false;
+        return UI_Fresh_Error;
 
     switch (base_font)
     {
@@ -250,7 +250,7 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     default:
-        return false;
+        return UI_Fresh_Error;
     }
 
     switch ((uint8_t)(item->type))
@@ -258,7 +258,7 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     case UI_Type_Button:
 
         if (UI_DspInterface.fill_circle_section == NULL)
-            return false;
+            return UI_Fresh_Error;
 
         /* comput button selector coordinate first */
         Btn_Slct_LftUp_X = HandleToButtonObj(item->Handler)->Gen_Data.x;
@@ -306,7 +306,7 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 
     case UI_Type_ProcBar:
         /* show next */
-        break;
+        return UI_Fresh_Skip;
 
     case UI_Type_Drop:
         block_x = HandleToDropObj(item->Handler)->Gen_Data.x + 3;
@@ -323,10 +323,10 @@ bool UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     default:
-        return false;
+        return UI_Fresh_Error;
     }
 
-    return true;
+    return UI_Fresh_Done;
 }
 
 static void UI_GenData_Init(UI_GeneralData_TypeDef *GenData, char *label, int16_t x, int16_t y)

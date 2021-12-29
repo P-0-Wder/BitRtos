@@ -1083,35 +1083,63 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
 {
     volatile WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
     volatile item_obj *UIItem_tmp = tmp->CurSelected_CTL;
+    WidgetUI_FreshState_List fresh_state;
+    int8_t offset = *search_offset;
 
-    if ((UIItem_tmp == NULL) ||
-        (tmp->CurSelected_CTL == NULL))
-        return false;
-
-    if (*search_offset > tmp->ui_ctl_num)
-        *search_offset = tmp->ui_ctl_num;
-
-    if (*search_offset > 0)
+    while (true)
     {
-        for (; *search_offset > 0; UIItem_tmp = UIItem_tmp->nxt, (*search_offset)--)
+        if ((UIItem_tmp == NULL) ||
+            (tmp->CurSelected_CTL == NULL))
+            return false;
+
+        if (*search_offset > tmp->ui_ctl_num)
+            *search_offset = tmp->ui_ctl_num;
+
+        if (*search_offset > 0)
         {
-            if (UIItem_tmp->nxt == NULL)
-                break;
+            for (; *search_offset > 0; UIItem_tmp = UIItem_tmp->nxt, (*search_offset)--)
+            {
+                if (UIItem_tmp->nxt == NULL)
+                    break;
+            }
+        }
+        else if (*search_offset < 0)
+        {
+            for (; *search_offset < 0; UIItem_tmp = UIItem_tmp->prv, (*search_offset)++)
+            {
+                if (UIItem_tmp->prv == NULL)
+                    break;
+            }
+        }
+
+        /* move UI selector on it */
+        tmp->CurSelected_CTL = UIItem_tmp;
+
+        fresh_state = UI_ShowSelector((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data));
+
+        switch ((uint8_t)fresh_state)
+        {
+        case UI_Fresh_Done:
+            return true;
+
+        case UI_Fresh_Error:
+            return false;
+
+        case UI_Fresh_Skip:
+            if (offset > 0)
+            {
+                *search_offset += 1;
+            }
+            else if (offset < 0)
+            {
+                *search_offset -= 1;
+            }
+            break;
+
+        default:
+            return false;
         }
     }
-    else if (*search_offset < 0)
-    {
-        for (; *search_offset < 0; UIItem_tmp = UIItem_tmp->prv, (*search_offset)++)
-        {
-            if (UIItem_tmp->prv == NULL)
-                break;
-        }
-    }
-
-    /* move UI selector on it */
-    tmp->CurSelected_CTL = UIItem_tmp;
-
-    return UI_ShowSelector((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data));
 }
 
 static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)

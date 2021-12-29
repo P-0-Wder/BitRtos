@@ -106,6 +106,13 @@ typedef enum
 
 typedef enum
 {
+    UI_Fresh_Error = 0,
+    UI_Fresh_Done,
+    UI_Fresh_Skip,
+} WidgetUI_FreshState_List;
+
+typedef enum
+{
     SliderBar_Horizon_Mode = 0,
     SilderBar_Default_Mode = SliderBar_Horizon_Mode,
     SliderBar_Vertical_Mode,
@@ -436,7 +443,7 @@ void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_FillRectangle fill_rectangle,
                          UI_FillRadiusRectangle fill_radius_rectangle);
 
-bool UI_ShowSelector(WidgetUI_Item_TypeDef *item);
+WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item);
 
 void UI_Set_GetWidgetWidthMathod(UI_GetWidget_Width mathod);
 
