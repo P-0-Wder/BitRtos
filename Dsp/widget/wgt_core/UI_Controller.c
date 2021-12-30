@@ -852,6 +852,7 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
     uint8_t bar_width = 0;
     int16_t bar_start_x = 0;
     int16_t mid_val = Obj->min + Obj->range / 2;
+    int16_t dorbar_dsp = 0;
     float Pcnt_Val = 0;
 
     if (Obj == NULL)
@@ -860,17 +861,19 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
     if (Obj->width % 2 == 0)
         bar_width = Obj->width + 1;
 
-    /* step  1 draw dot line */
-    UI_Draw_HorDotLine(Obj->Gen_Data.x, Obj->Gen_Data.y + 1, Obj->width, DEFAULT_PROCESSBAR_LINE_WIDTH);
+    dorbar_dsp = Obj->Gen_Data.x + 3;
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, dorbar_dsp, Obj->Gen_Data.y - base_font - 4, true);
 
-    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y - base_font - 3, true);
+    dorbar_dsp += 2;
+    /* step  1 draw dot line */
+    UI_Draw_HorDotLine(dorbar_dsp, Obj->Gen_Data.y + 1, Obj->width, DEFAULT_PROCESSBAR_LINE_WIDTH);
 
     if (Obj->Mv_Dir == UI_ProcBar_GrothFrom_Left)
     {
-        bar_start_x = Obj->Gen_Data.x;
+        bar_start_x = dorbar_dsp;
         Pcnt_Val = (Obj->cur_val / (float)Obj->range);
 
-        UI_DspInterface.draw_line_v(Obj->Gen_Data.x, Obj->Gen_Data.y - 1, 4, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
+        UI_DspInterface.draw_line_v(bar_start_x, Obj->Gen_Data.y - 1, 4, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 2, Obj->width * Pcnt_Val, DEFAULT_PROCESSBAR_LINE_WIDTH, true);
     }
@@ -881,14 +884,14 @@ static bool UI_ProcessBar_DspDotBar(UI_ProcessBarObj_TypeDef *Obj)
         if (Obj->cur_val < mid_val)
         {
             Pcnt_Val = (((Obj->range / 2) - Obj->cur_val) / ((float)(Obj->range / 2)));
-            bar_start_x = Obj->Gen_Data.x + bar_width / 2 - (Pcnt_Val * bar_width / 2);
+            bar_start_x = dorbar_dsp + bar_width / 2 - (Pcnt_Val * bar_width / 2);
             UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
             UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 2, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         }
         else if (Obj->cur_val > mid_val)
         {
             Pcnt_Val = ((Obj->cur_val - (Obj->range / 2)) / ((float)(Obj->range / 2)));
-            bar_start_x = Obj->Gen_Data.x + bar_width / 2;
+            bar_start_x = dorbar_dsp + bar_width / 2;
             UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
             UI_DspInterface.draw_line_h(bar_start_x, Obj->Gen_Data.y + 2, (Pcnt_Val * bar_width / 2), DEFAULT_PROCESSBAR_LINE_WIDTH, true);
         }

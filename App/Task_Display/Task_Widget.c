@@ -39,8 +39,8 @@ static void TaskWidget_Init(void)
     // test_btn_1 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_1", 90, 5, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Reset_Btn, DEFAULT_BUTTON_STATE);
     // test_btn_2 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_2", 90, 10 + DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT, Lock_Btn, DEFAULT_BUTTON_STATE);
 
-    test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 48, true);
-    test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("frame type bar", UI_ProcBar_DspType_DotBar, 10, 42, 50, 0, 100);
+    test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 28, true);
+    test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("frame type bar", UI_ProcBar_DspType_DotBar, 0, 52, 50, 0, 100);
     Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_DspDir(test_processbar_1, UI_ProcBar_GrothFrom_Left);
     test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("slidebar", 0, 18, SliderBar_Horizon_Mode, 10, -10, 0, 50);
     test_drop = Widget_Mng.Control(test4)->UI()->Drop()->create("drop", 0, 60);
