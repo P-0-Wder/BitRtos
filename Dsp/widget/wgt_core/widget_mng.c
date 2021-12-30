@@ -105,21 +105,22 @@ static void WidgetUI_Init(void);
 static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void);
 static bool WidgetUI_SelectCtl(int8_t *search_offset);
 static void WidgetUI_Fresh(void);
+static void WidgetUI_SetAll_CoordY_Offset(int8_t offset);
 
 /* Widget UI Button Mathod */
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
 static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback);
 static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y);
-static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
+static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
 
 /* Widget UI CheckBox Mathod */
 static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16_t y, bool state);
 static bool WidgetUI_CheckBox_Trigger(UI_CheckBox_Handle checkbox_hdl);
 static bool WidgetUI_CheckBox_Move(UI_CheckBox_Handle checkbox_hdl, int16_t x, int16_t y);
-static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl);
 static bool WidgetUI_CheckBox_SetCallBack(UI_CheckBox_Handle checkbox_hdl, UI_CheckBoxTrigger_Callback callback);
+static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl);
 
 /* Widget UI SlideBar Mathod */
 static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16_t y, UI_SliderBar_Mode_List mode, int16_t max, int16_t min, int16_t start_val, int16_t step_len);
@@ -1411,6 +1412,10 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
         return false;
 
     HandleToButtonObj(Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+
+    if (HandleToButtonObj(Btn_Hdl)->Gen_Data.y < 0)
+        return true;
+
     if ((HandleToButtonObj(Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
         return false;
 
@@ -1472,6 +1477,10 @@ static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
         return false;
 
     HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+
+    if (HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y < 0)
+        return true;
+
     if ((HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
         return false;
 
@@ -1570,6 +1579,10 @@ static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
         return false;
 
     HandleToSlideBarObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+
+    if (HandleToSlideBarObj(hdl)->Gen_Data.y < 0)
+        return true;
+
     if ((HandleToSlideBarObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
         (HandleToSlideBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
         return false;
@@ -1631,6 +1644,10 @@ static bool WidgetUI_Fresh_ProcessBar(UI_SlideBar_Handle hdl)
         return false;
 
     HandleToProcessBarObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+
+    if (HandleToProcessBarObj(hdl)->Gen_Data.y < 0)
+        return true;
+
     if ((HandleToProcessBarObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
         (HandleToProcessBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
         return false;
@@ -1700,6 +1717,15 @@ static bool WidgetUI_Drop_SelectItem(UI_Drop_Handle hdl, uint8_t *offset)
 static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
 {
     if (hdl == 0)
+        return false;
+
+    HandleToDropObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
+
+    if (HandleToDropObj(hdl)->Gen_Data.y < 0)
+        return true;
+
+    if ((HandleToDropObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+        (HandleToDropObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
         return false;
 
     return UI_Drop.ctl(HandleToDropObj(hdl));
