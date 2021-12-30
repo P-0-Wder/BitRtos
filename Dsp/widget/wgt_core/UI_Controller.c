@@ -318,7 +318,7 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         else
         {
             block_y = HandleToDropObj(item->Handler)->Gen_Data.y + base_font + 2;
-            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), UICTL_DROP_HEIGHT, true);
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         }
         break;
 
