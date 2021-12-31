@@ -1586,7 +1586,8 @@ static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
     if (hdl == 0)
         return false;
 
-    if (HandleToSlideBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset < UI_Get_FontType())
+    if (HandleToSlideBarObj(hdl)->Gen_Data.y < UI_Get_FontType() ||
+        HandleToSlideBarObj(hdl)->Gen_Data.x < 0)
         return true;
 
     if ((HandleToSlideBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset >= (GetCur_Active_Widget()->height - 8)) ||
