@@ -1073,6 +1073,7 @@ static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void)
     return &WidgetUI_Interface;
 }
 
+/* still in developing */
 static void WidgetUI_SetAll_CoordY_Offset(int8_t offset)
 {
     GetCur_Active_Widget()->UI_CoordY_Offset = offset;
@@ -1648,12 +1649,34 @@ static bool WidgetUI_Fresh_ProcessBar(UI_SlideBar_Handle hdl)
     if (hdl == 0)
         return false;
 
-    if (HandleToProcessBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset < UI_Get_FontType())
+    if (HandleToProcessBarObj(hdl)->Gen_Data.y < UI_Get_FontType() ||
+        HandleToProcessBarObj(hdl)->Gen_Data.x < 0)
         return true;
 
-    if ((HandleToProcessBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset >= (GetCur_Active_Widget()->height - 8)) ||
+    if ((HandleToProcessBarObj(hdl)->Gen_Data.y >= (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToProcessBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
+    {
+        if (WidgetUI_GetCurSelected_UICtl() == hdl)
+            switch (HandleToProcessBarObj(hdl)->Dsp_Type)
+            {
+            case UI_ProcBar_DspType_LoadBar:
+                WidgetUI_SetAll_CoordY_Offset(-UICTL_PROCESSBAR_DOWNLOAD_HEIGHT);
+                break;
+
+            case UI_ProcBar_DspType_DotBar:
+                WidgetUI_SetAll_CoordY_Offset(-UICTL_PROCESSBAR_DOT_HEIGHT);
+                break;
+
+            case UI_ProcBar_DspType_FrameBar:
+                WidgetUI_SetAll_CoordY_Offset(-UICTL_PROCESSBAR_FRAME_HEIGHT);
+                break;
+
+            default:
+                return false;
+            }
+
         return false;
+    }
 
     return UI_ProcessBar.ctl(HandleToSlideBarObj(hdl));
 }
@@ -1722,18 +1745,15 @@ static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
     if (hdl == 0)
         return false;
 
-    if (HandleToDropObj(hdl)->Gen_Data.y < UI_Get_FontType() || HandleToDropObj(hdl)->Gen_Data.x < 0)
+    if (HandleToDropObj(hdl)->Gen_Data.y < UI_Get_FontType() ||
+        HandleToDropObj(hdl)->Gen_Data.x < 0)
         return true;
 
-    if ((HandleToDropObj(hdl)->Gen_Data.y >= (GetCur_Active_Widget()->height - 8)) ||
+    if ((HandleToDropObj(hdl)->Gen_Data.y >= (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToDropObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
     {
         if (WidgetUI_GetCurSelected_UICtl() == hdl)
-        {
             WidgetUI_SetAll_CoordY_Offset(-UICTL_DROP_HEIGHT);
-
-            UI_Drop.Move(HandleToDropObj(hdl), HandleToDropObj(hdl)->Gen_Data.x, HandleToDropObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset);
-        }
 
         return false;
     }
