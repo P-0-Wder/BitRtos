@@ -1590,9 +1590,16 @@ static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
         HandleToSlideBarObj(hdl)->Gen_Data.x < 0)
         return true;
 
-    if ((HandleToSlideBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset >= (GetCur_Active_Widget()->height - 8)) ||
+    if ((HandleToSlideBarObj(hdl)->Gen_Data.y >= (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToSlideBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
+    {
+        if (WidgetUI_GetCurSelected_UICtl() == hdl)
+        {
+            WidgetUI_SetAll_CoordY_Offset(-UICTL_SLIDERBAR_HEIGHT);
+        }
+
         return false;
+    }
 
     return UI_SlideBar.ctl(HandleToSlideBarObj(hdl));
 }
