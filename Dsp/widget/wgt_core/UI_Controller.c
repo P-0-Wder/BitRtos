@@ -149,6 +149,11 @@ bool UI_Set_FontType(uint8_t font)
     return true;
 }
 
+uint8_t UI_Get_FontType(void)
+{
+    return base_font;
+}
+
 void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawHLine line_h,
                          UI_DrawVLine line_v,

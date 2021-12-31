@@ -106,6 +106,7 @@ static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void);
 static bool WidgetUI_SelectCtl(int8_t *search_offset);
 static void WidgetUI_Fresh(void);
 static void WidgetUI_SetAll_CoordY_Offset(int8_t offset);
+static UI_GenCTL_Handle WidgetUI_GetCurSelected_UICtl(void);
 
 /* Widget UI Button Mathod */
 static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
@@ -483,6 +484,8 @@ static bool Widget_Show(void)
                              true);
     }
 
+    Widget_DrawStr(Font_8, GetCur_Active_Widget()->name, 0, 0, true);
+
     if (!GetCur_Active_Widget()->show_state)
     {
         GetCur_Active_Widget()->show_state = true;
@@ -503,6 +506,11 @@ static bool Widget_Show(void)
     }
 
     return true;
+}
+
+static UI_GenCTL_Handle WidgetUI_GetCurSelected_UICtl(void)
+{
+    return ((WidgetUI_Item_TypeDef *)((GetCur_Active_Widget()->CurSelected_CTL)->data))->Handler;
 }
 
 static bool Widget_Hide(void)
@@ -1068,6 +1076,9 @@ static WidgetUI_Utils_TypeDef *WidgetUI_GetUtil(void)
 static void WidgetUI_SetAll_CoordY_Offset(int8_t offset)
 {
     GetCur_Active_Widget()->UI_CoordY_Offset = offset;
+
+    /* All UI item set itself coord y */
+    /* use linked list to traverse */
 }
 
 static void WidgetUI_GetCur_SelectedCtl()
@@ -1411,12 +1422,10 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
     if (Btn_Hdl == 0)
         return false;
 
-    HandleToButtonObj(Btn_Hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-
-    if (HandleToButtonObj(Btn_Hdl)->Gen_Data.y < 0)
+    if (HandleToButtonObj(Btn_Hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset < UI_Get_FontType())
         return true;
 
-    if ((HandleToButtonObj(Btn_Hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
+    if ((HandleToButtonObj(Btn_Hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset >= (GetCur_Active_Widget()->height - 8)))
         return false;
 
     return UI_Button.ctl(HandleToButtonObj(Btn_Hdl));
@@ -1476,12 +1485,10 @@ static bool WidgetUI_Fresh_CheckBox(UI_CheckBox_Handle checkbox_hdl)
     if (checkbox_hdl == 0)
         return false;
 
-    HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-
-    if (HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y < 0)
+    if (HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset < UI_Get_FontType())
         return true;
 
-    if ((HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y >= GetCur_Active_Widget()->height))
+    if ((HandleToCheckBoxObj(checkbox_hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset >= (GetCur_Active_Widget()->height - 8)))
         return false;
 
     return UI_CheckBox.ctl(HandleToCheckBoxObj(checkbox_hdl));
@@ -1578,12 +1585,10 @@ static bool WidgetUI_Fresh_SlideBar(UI_SlideBar_Handle hdl)
     if (hdl == 0)
         return false;
 
-    HandleToSlideBarObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-
-    if (HandleToSlideBarObj(hdl)->Gen_Data.y < 0)
+    if (HandleToSlideBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset < UI_Get_FontType())
         return true;
 
-    if ((HandleToSlideBarObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+    if ((HandleToSlideBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset >= (GetCur_Active_Widget()->height - 8)) ||
         (HandleToSlideBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
         return false;
 
@@ -1643,12 +1648,10 @@ static bool WidgetUI_Fresh_ProcessBar(UI_SlideBar_Handle hdl)
     if (hdl == 0)
         return false;
 
-    HandleToProcessBarObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-
-    if (HandleToProcessBarObj(hdl)->Gen_Data.y < 0)
+    if (HandleToProcessBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset < UI_Get_FontType())
         return true;
 
-    if ((HandleToProcessBarObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+    if ((HandleToProcessBarObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset >= (GetCur_Active_Widget()->height - 8)) ||
         (HandleToProcessBarObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
         return false;
 
@@ -1719,14 +1722,21 @@ static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
     if (hdl == 0)
         return false;
 
-    HandleToDropObj(hdl)->Gen_Data.y += GetCur_Active_Widget()->UI_CoordY_Offset;
-
-    if (HandleToDropObj(hdl)->Gen_Data.y < 0)
+    if (HandleToDropObj(hdl)->Gen_Data.y < UI_Get_FontType() || HandleToDropObj(hdl)->Gen_Data.x < 0)
         return true;
 
-    if ((HandleToDropObj(hdl)->Gen_Data.y >= GetCur_Active_Widget()->height) ||
+    if ((HandleToDropObj(hdl)->Gen_Data.y >= (GetCur_Active_Widget()->height - 8)) ||
         (HandleToDropObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
+    {
+        if (WidgetUI_GetCurSelected_UICtl() == hdl)
+        {
+            WidgetUI_SetAll_CoordY_Offset(-UICTL_DROP_HEIGHT);
+
+            UI_Drop.Move(HandleToDropObj(hdl), HandleToDropObj(hdl)->Gen_Data.x, HandleToDropObj(hdl)->Gen_Data.y + GetCur_Active_Widget()->UI_CoordY_Offset);
+        }
+
         return false;
+    }
 
     return UI_Drop.ctl(HandleToDropObj(hdl));
 }

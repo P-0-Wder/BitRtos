@@ -56,7 +56,7 @@ typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 #define UICTL_PROCESSBAR_DOT_HEIGHT
 #define UICTL_PROCESSBAR_FRAME_HEIGHT
 #define UICTL_CHECKBOX_HEIGHT
-#define UICTL_DROP_HEIGHT
+#define UICTL_DROP_HEIGHT 20
 #define UICTL_DIGINPUT_HEIGHT
 #define UICTL_STRINPUT_HEIGHT
 
@@ -429,6 +429,8 @@ typedef struct
 } UI_StrInputObj_TypeDef;
 
 bool UI_Set_FontType(uint8_t font);
+uint8_t UI_Get_FontType(void);
+
 void UI_Set_DspInterface(UI_DrawPoint point,
                          UI_DrawHLine line_h,
                          UI_DrawVLine line_v,
