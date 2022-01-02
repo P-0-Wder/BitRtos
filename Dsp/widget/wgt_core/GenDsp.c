@@ -98,7 +98,11 @@ static bool GenDsp_DrawChar(GenFont_List font, uint8_t **map, char c, int16_t x,
 
         for (uint8_t bit_index = 0; bit_index < FONT_WIDTH; bit_index++)
         {
-            if ((DspRange.x + DspRange.width) <= x || x < 0 || y < 0)
+            if ((DspRange.x + DspRange.width) <= x ||
+                x < 0 ||
+                y < 0 ||
+                x >= DspRange.width ||
+                y >= DspRange.heigh)
                 return false;
 
             if (temp & 0x80)
