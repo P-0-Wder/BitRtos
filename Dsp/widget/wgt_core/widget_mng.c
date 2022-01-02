@@ -1167,6 +1167,41 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     /* move UI selector on it */
     tmp->CurSelected_CTL = UIItem_tmp;
 
+    switch (((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->type)
+    {
+    case UI_Type_Button:
+        if (HandleToButtonObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+            return true;
+        else
+            break;
+
+    case UI_Type_CheckBox:
+        if (HandleToCheckBoxObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+            return true;
+        else
+            break;
+
+    case UI_Type_SlideBar:
+        if (HandleToSlideBarObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+            return true;
+        else
+            break;
+
+    case UI_Type_Drop:
+        if (HandleToDropObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+            return true;
+        else
+            break;
+
+    case UI_Type_ProcBar:
+        if (HandleToProcessBarObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+            return true;
+        else
+            break;
+    default:
+        break;
+    }
+
     fresh_state = UI_ShowSelector((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data));
 
     switch ((uint8_t)fresh_state)
@@ -1178,21 +1213,11 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
         return false;
 
     case UI_Fresh_Skip:
-        // if (offset > 0)
-        // {
-        //     *search_offset += 1;
-        // }
-        // else if (offset < 0)
-        // {
-        //     *search_offset -= 1;
-        // }
-        // break;
         return true;
 
     default:
         return false;
     }
-    // }
 }
 
 static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
@@ -1720,6 +1745,8 @@ static bool WidgetUI_ProcessBar_Move(UI_ProcessBar_Handle hdl, int16_t x, int16_
 
 static bool WidgetUI_Fresh_ProcessBar(UI_SlideBar_Handle hdl)
 {
+    int16_t offset = 0;
+
     if (hdl == 0)
         return false;
 
@@ -1836,6 +1863,8 @@ static bool WidgetUI_Drop_SelectItem(UI_Drop_Handle hdl, uint8_t *offset)
 
 static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
 {
+    int16_t offset = 0;
+
     if (hdl == 0)
         return false;
 
@@ -1848,11 +1877,13 @@ static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
         return true;
     }
 
-    if ((HandleToDropObj(hdl)->Gen_Data.y >= (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
+    if ((HandleToDropObj(hdl)->Gen_Data.y + UICTL_DROP_HEIGHT > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToDropObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
     {
+        offset = GetCur_Active_Widget()->height - UI_Get_FontType() - (HandleToDropObj(hdl)->Gen_Data.y + UICTL_DROP_HEIGHT);
+
         if (WidgetUI_GetCurSelected_UICtl() == hdl)
-            WidgetUI_SetAll_CoordY_Offset(-UICTL_DROP_HEIGHT);
+            WidgetUI_SetAll_CoordY_Offset(offset);
 
         return false;
     }
