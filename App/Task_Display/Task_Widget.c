@@ -44,7 +44,7 @@ static void TaskWidget_Init(void)
     Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_DspDir(test_processbar_1, UI_ProcBar_GrothFrom_Left);
     test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("slidebar", 0, 18, SliderBar_Horizon_Mode, 10, -10, 0, 50);
     test_drop = Widget_Mng.Control(test4)->UI()->Drop()->create("drop", 0, 60);
-    Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item 1", NULL, 0, NULL);
+    Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item_1", NULL, 0, NULL);
 }
 
 static void TestWidget_Dynamic_Dsp(void)
