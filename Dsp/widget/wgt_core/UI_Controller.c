@@ -700,15 +700,8 @@ static bool UI_SlideBar_CTL(UI_SlideBarObj_TypeDef *Obj)
 
     if (Obj->mode == SliderBar_Horizon_Mode)
     {
-        if (Obj->BarCoord_X == 0)
-        {
-            Obj->BarCoord_X = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * STR_DIS + DEFAULT_SLIDERBAR_OFFSET;
-        }
-
-        if (Obj->BarCoord_Y == 0)
-        {
-            Obj->BarCoord_Y = Obj->Gen_Data.y + 5;
-        }
+        Obj->BarCoord_X = Obj->Gen_Data.x + strlen(Obj->Gen_Data.label) * STR_DIS + DEFAULT_SLIDERBAR_OFFSET;
+        Obj->BarCoord_Y = Obj->Gen_Data.y + 5;
 
         Block_CoordX = Obj->BarCoord_X;
         Block_CoordX += (Obj->cur_val - Obj->limit_min) / ((float)(input_trip)) * (DEFAULT_SLIDERBAR_LEN - DEFAULT_SLIDERBAR_BLOCK_WIDTH);
