@@ -324,6 +324,7 @@ typedef struct
     UI_DigInput_SelectedPart selected_part;
     uint8_t effective_int_len;
     uint8_t effective_point_len;
+
     int32_t IntPart;
     uint32_t PointPart;
 } UI_DoubleDigData_TypeDef;
@@ -336,6 +337,7 @@ typedef struct
     UI_DoubleDigData_TypeDef InputData_Dou;
 
     bool selected;
+    UI_DigInput_SelectedPart select_part;
 } UI_DigInputObj_TypeDef;
 
 #pragma pack()

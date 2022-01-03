@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "mmu.h"
 
 /* internal object */
@@ -1266,6 +1267,40 @@ static bool UI_DigInput_GetSelectStatus(UI_DigInputObj_TypeDef *Obj)
     return Obj->selected;
 }
 
+static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos, int8_t *val)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->type == UI_IntDig_Input)
+    {
+        if (Obj->InputData_Int.effective_len < int_pos)
+            return false;
+
+        Obj->InputData_Int.CurVal += pow(10, int_pos) * (*val);
+    }
+    else if (Obj->type == UI_DoubleDig_Input)
+    {
+        if (Obj->InputData_Dou.effective_int_len < int_pos)
+            return false;
+
+        Obj->InputData_Dou.CurVal += pow(10, int_pos) * (*val);
+    }
+    else
+        return false;
+
+    *val = 0;
+    return true;
+}
+
+static bool UI_DigInput_SetDouValue(UI_DigInputObj_TypeDef *Obj, uint8_t dou_pos, int8_t *val)
+{
+    if (Obj == NULL)
+        return false;
+
+    return true;
+}
+
 static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y)
 {
     if (Obj == NULL)
@@ -1274,8 +1309,38 @@ static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y)
     return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
-static bool UI_StrInput_Init()
+static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
 {
+    if (Obj == NULL)
+        return false;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+
+    switch (Obj->type)
+    {
+    case UI_IntDig_Input:
+        if ((Obj->InputData_Int.CurVal >= Obj->InputData_Int.Max) ||
+            (10 <= abs(Obj->InputData_Int.CurVal / pow(10, Obj->InputData_Int.effective_len))))
+        {
+            Obj->InputData_Int.CurVal = Obj->InputData_Int.Max;
+        }
+        else if (Obj->InputData_Int.CurVal <= Obj->InputData_Int.Min)
+        {
+            Obj->InputData_Int.CurVal = Obj->InputData_Int.Min;
+        }
+
+        if ((Obj->selected) && (Obj->select_part == DigInput_IntPart))
+        {
+        }
+        break;
+
+    case UI_DoubleDig_Input:
+        break;
+
+    default:
+        break;
+    }
+
     return true;
 }
 
@@ -1301,6 +1366,10 @@ static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, char *label, uint8
     return true;
 }
 
+static bool UI_StrInput_Init()
+{
+    return true;
+}
 /******************************* control function *********************************/
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
