@@ -71,6 +71,7 @@ static bool UI_DigInput_SetCallback(UI_DigInputObj_TypeDef *Obj, UI_DigInput_Cal
 static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos, int8_t *val);
 static bool UI_DigInput_SetDouValue(UI_DigInputObj_TypeDef *Obj, uint8_t dou_pos, int8_t *val);
 static bool UI_DigInput_InputValue(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int8_t *val);
+static int8_t UI_DigInput_GetEffectSize(UI_DigInputObj_TypeDef *Obj, UI_DigInput_SelectedPart part);
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj);
 
 /* general function */
@@ -140,6 +141,7 @@ UI_DigInput_Interface_TypeDef UI_DigInput = {
     .set_range_IntInput = UI_DigInput_SetIntRange,
     .get_CurInout_Double = UI_DigInput_GetDoubleVal,
     .get_CurInput_Int = UI_DigInput_GetIntVal,
+    .get_effective_len = UI_DigInput_GetEffectSize,
     .Move = UI_DigInput_Move,
     .ctl = UI_DigInput_CTL,
 };
@@ -332,6 +334,9 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
             block_y = HandleToDropObj(item->Handler)->Gen_Data.y + 1;
             UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         }
+        break;
+
+    case UI_Type_DigInput:
         break;
 
     default:
@@ -1194,7 +1199,6 @@ static bool UI_DigInput_Init(UI_DigInputObj_TypeDef *Obj, char *label, int16_t x
 
     Obj->InputData_Dou.IntPart = 0;
     Obj->InputData_Dou.PointPart = 0;
-    Obj->InputData_Dou.selected_part = DigInput_DefaultPart;
 
     return true;
 }
@@ -1232,8 +1236,6 @@ static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t efft_in
 
     Obj->InputData_Dou.IntPart = (int64_t)cur;
     Obj->InputData_Dou.PointPart = cur - (int64_t)cur;
-
-    Obj->InputData_Dou.selected_part = DigInput_PointPart;
 
     return true;
 }
@@ -1382,6 +1384,31 @@ static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y)
         return false;
 
     return UI_Move(&(Obj->Gen_Data), x, y);
+}
+
+static int8_t UI_DigInput_GetEffectSize(UI_DigInputObj_TypeDef *Obj, UI_DigInput_SelectedPart part)
+{
+    if (Obj == NULL)
+        return -1;
+
+    if (Obj->type == UI_IntDig_Input)
+    {
+        if (part != DigInput_IntPart)
+            return -1;
+
+        return Obj->InputData_Int.effective_len;
+    }
+    else if (Obj->type == UI_DoubleDig_Input)
+    {
+        if (part == DigInput_IntPart)
+            return Obj->InputData_Dou.effective_int_len;
+        else if (part == DigInput_PointPart)
+            return Obj->InputData_Dou.effective_point_len;
+
+        return -1;
+    }
+    else
+        return -1;
 }
 
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)

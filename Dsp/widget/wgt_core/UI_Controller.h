@@ -19,11 +19,12 @@ typedef UI_GenCTL_Handle UI_SlideBar_Handle;
 typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 
 #define HandleToDropObj(x) ((UI_DropObj_TypeDef *)x)
+#define HandleToDropObj(x) ((UI_DropObj_TypeDef *)x)
 #define HandleToButtonObj(x) ((UI_ButtonObj_TypeDef *)x)
 #define HandleToCheckBoxObj(x) ((UI_CheckBoxObj_TypeDef *)x)
 #define HandleToSlideBarObj(x) ((UI_SlideBarObj_TypeDef *)x)
+#define HandleToDigInputObj(x) ((UI_DigInputObj_TypeDef *)x)
 #define HandleToProcessBarObj(x) ((UI_ProcessBarObj_TypeDef *)x)
-#define HandleToDropObj(x) ((UI_DropObj_TypeDef *)x)
 
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
@@ -54,14 +55,15 @@ typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 #define DEFAULT_PROCESSBAR_DOWNLOADTYPE_HEIGHT 5
 #define DEFAULT_PROCESSBAR_DOWNLOADTYPE_RADIUS 2
 
-#define UICTL_SLIDERBAR_HEIGHT 10
+#define UICTL_DEFAULT_HEIGHT 10
+#define UICTL_SLIDERBAR_HEIGHT UICTL_DEFAULT_HEIGHT
 #define UICTL_PROCESSBAR_DOWNLOAD_HEIGHT 20
 #define UICTL_PROCESSBAR_DOT_HEIGHT 20
 #define UICTL_PROCESSBAR_FRAME_HEIGHT 20
-#define UICTL_CHECKBOX_HEIGHT 10
-#define UICTL_DROP_HEIGHT 20
-#define UICTL_DIGINPUT_HEIGHT
-#define UICTL_STRINPUT_HEIGHT
+#define UICTL_CHECKBOX_HEIGHT UICTL_DEFAULT_HEIGHT
+#define UICTL_DROP_HEIGHT UICTL_DEFAULT_HEIGHT
+#define UICTL_DIGINPUT_HEIGHT UICTL_DEFAULT_HEIGHT
+#define UICTL_STRINPUT_HEIGHT UICTL_DEFAULT_HEIGHT
 
 typedef enum
 {
@@ -104,6 +106,7 @@ typedef enum
     UI_Type_ProcBar,
     UI_Type_Drop,
     UI_Type_DigInput,
+    UI_Type_StrInput,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;
@@ -325,7 +328,6 @@ typedef struct
 
     double CurVal;
 
-    UI_DigInput_SelectedPart selected_part;
     uint8_t effective_int_len;
     uint8_t effective_point_len;
 
@@ -341,7 +343,6 @@ typedef struct
     UI_DoubleDigData_TypeDef InputData_Dou;
 
     bool selected;
-    UI_DigInput_SelectedPart select_part;
     UI_DigInput_Callback callback;
 } UI_DigInputObj_TypeDef;
 
@@ -421,6 +422,7 @@ typedef struct
     bool (*get_CurInput_Int)(UI_DigInputObj_TypeDef *Obj, int32_t *data);
     bool (*get_CurInout_Double)(UI_DigInputObj_TypeDef *Obj, double *data);
     bool (*set_callback)(UI_DigInputObj_TypeDef *Obj, UI_DigInput_Callback callback);
+    int8_t (*get_effective_len)(UI_DigInputObj_TypeDef *Obj, UI_DigInput_SelectedPart part);
 
     bool (*Set_Select)(UI_DigInputObj_TypeDef *Obj, bool state);
     bool (*input_val)(UI_DigInputObj_TypeDef *Obj, uint8_t set_pos, int8_t *val);
@@ -471,6 +473,7 @@ extern UI_Drop_Interface_TypeDef UI_Drop;
 extern UI_Button_Interface_TypeDef UI_Button;
 extern UI_DigInput_Interface_TypeDef UI_DigInput;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
+extern UI_DigInput_Interface_TypeDef UI_DigInput;
 extern UI_SliderBar_Interface_TypeDef UI_SlideBar;
 extern UI_ProcessBar_Interface_TypeDef UI_ProcessBar;
 #endif
