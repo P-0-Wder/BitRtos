@@ -1904,8 +1904,17 @@ static WidgetUI_DigInput_Interface_TypeDef *WidgetUI_GetDigInput_Instance(void)
     return &WidgetUI_DigInput;
 }
 
-static UI_DigInput_Handle WidgetUI_Create_DigInput()
+static UI_DigInput_Handle WidgetUI_Create_DigInput(char *label, int16_t x, int16_t y, UI_DigInput_Type type)
 {
+    UI_DigInputObj_TypeDef *dig_input = NULL;
+
+    dig_input = (UI_DigInputObj_TypeDef *)MMU_Malloc(sizeof(UI_DigInputObj_TypeDef));
+    if ((dig_input == NULL) ||
+        (!UI_DigInput.init(dig_input, label, x, y + UI_Get_FontType(), type)) ||
+        (!WidgetUIList_InsertItem(dig_input, UI_Type_DigInput)))
+        return NULL;
+
+    return ((UI_DigInput_Handle)dig_input);
 }
 
 /************************************** widget DigInput interface ******************************************/
