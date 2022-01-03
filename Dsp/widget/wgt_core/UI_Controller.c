@@ -1369,6 +1369,11 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
     return true;
 }
 
+static bool UI_StrInput_Init()
+{
+    return true;
+}
+
 /***************************************************************** still developing down below **********************************************************************/
 
 static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t unit_len)
@@ -1391,10 +1396,6 @@ static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, char *label, uint8
     return true;
 }
 
-static bool UI_StrInput_Init()
-{
-    return true;
-}
 /******************************* control function *********************************/
 
 static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)

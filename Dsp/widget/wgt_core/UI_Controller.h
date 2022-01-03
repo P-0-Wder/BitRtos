@@ -8,6 +8,9 @@
 #include "runtime.h"
 #include "linked_list.h"
 
+#define MAX_INPUTSTR_LEN 16
+#define DEFAULT_STRINPUT_STATE "____________"
+
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Drop_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
@@ -89,8 +92,9 @@ typedef void (*UI_FillRadiusRectangle)(int16_t x, int16_t y, uint8_t width, uint
 typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 typedef int (*UI_SliderBarTrigger_Callback)(int16_t data);
-
 typedef int (*UI_Drop_Callback)(void *data);
+typedef int (*UI_DigInput_Callback)(void *data, uint8_t len);
+typedef int (*UI_StrInput_Callback)(char *data, uint8_t len);
 
 typedef enum
 {
@@ -338,7 +342,17 @@ typedef struct
 
     bool selected;
     UI_DigInput_SelectedPart select_part;
+    UI_DigInput_Callback callback;
 } UI_DigInputObj_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
+    char str[MAX_INPUTSTR_LEN];
+    bool selected;
+    uint8_t selected_pos;
+    UI_StrInput_Callback callback;
+} UI_StrInputObj_TypeDef;
 
 #pragma pack()
 
@@ -414,6 +428,11 @@ typedef struct
 
 typedef struct
 {
+    bool (*init)(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+} UI_StrInput_Interface_TypeDef;
+
+typedef struct
+{
     UI_GeneralData_TypeDef Gen_Data;
 } UI_VerticalBarObj_TypeDef;
 
@@ -421,14 +440,6 @@ typedef struct
 {
     UI_GeneralData_TypeDef Gen_Data;
 } UI_HorizonBarObj_TypeDef;
-
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
-    uint8_t max_input_len;
-    char *input_str;
-    bool inputing;
-} UI_StrInputObj_TypeDef;
 
 bool UI_Set_FontType(uint8_t font);
 uint8_t UI_Get_FontType(void);
