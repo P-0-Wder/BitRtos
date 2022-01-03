@@ -148,6 +148,9 @@ static bool WidgetUI_Drop_SelectItem(UI_Drop_Handle hdl, uint8_t *offset);
 static bool WidgetUI_Add_DropItem(UI_Drop_Handle hdl, char *label, void *data, uint16_t data_size, UI_Drop_Callback callback);
 static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl);
 
+/* Widget UI Digital Input Mathod */
+static UI_DigInput_Handle WidgetUI_Create_DigInput(char *label, int16_t x, int16_t y, UI_DigInput_Type type);
+
 /* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .create = WidgetUI_Creat_Button,
