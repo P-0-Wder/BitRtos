@@ -16,6 +16,7 @@ typedef UI_GenCTL_Handle UI_Drop_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 typedef UI_GenCTL_Handle UI_SlideBar_Handle;
+typedef UI_GenCTL_Handle UI_DigInput_Handle;
 typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 
 #define HandleToDropObj(x) ((UI_DropObj_TypeDef *)x)

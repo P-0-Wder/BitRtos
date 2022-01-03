@@ -94,11 +94,12 @@ static void Widget_FillRectangle(int16_t x, int16_t y, uint8_t width, uint8_t he
 static void Widget_FillRadiusRectangle(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_cnv);
 
 /* Widget UI Get Button Interface */
+static WidgetUI_Drop_Interface_TypeDef *WidgetUI_GetDrop_Instance(void);
 static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Instance(void);
 static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
+static WidgetUI_DigInput_Interface_TypeDef *WidgetUI_GetDigInput_Instance(void);
 static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(void);
-static WidgetUI_Drop_interface_TypeDef *WidgetUI_GetDrop_Instance(void);
 
 /* general UI Mathod */
 static void WidgetUI_Init(void);
@@ -179,12 +180,16 @@ WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
     .Move = WidgetUI_ProcessBar_Move,
 };
 
-WidgetUI_Drop_interface_TypeDef WidgetUI_Drop = {
+WidgetUI_Drop_Interface_TypeDef WidgetUI_Drop = {
     .create = WidgetUI_Create_Drop,
     .Move = WidgetUI_Drop_Move,
     .Select = WidgetUI_Drop_Select,
     .select_item = WidgetUI_Drop_SelectItem,
     .add_item = WidgetUI_Add_DropItem,
+};
+
+WidgetUI_DigInput_Interface_TypeDef WidgetUI_DigInput = {
+    .create = NULL,
 };
 
 /* for temp we init each var as null */
@@ -1805,7 +1810,7 @@ static bool WidgetUI_Fresh_ProcessBar(UI_SlideBar_Handle hdl)
 /************************************** widget ProcessBar interface ******************************************/
 
 /************************************** widget Drop interface ******************************************/
-static WidgetUI_Drop_interface_TypeDef *WidgetUI_GetDrop_Instance(void)
+static WidgetUI_Drop_Interface_TypeDef *WidgetUI_GetDrop_Instance(void)
 {
     return &WidgetUI_Drop;
 }
@@ -1894,6 +1899,14 @@ static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
 /************************************** widget Drop interface ******************************************/
 
 /************************************** widget DigInput interface ******************************************/
+static WidgetUI_DigInput_Interface_TypeDef *WidgetUI_GetDigInput_Instance(void)
+{
+    return &WidgetUI_DigInput;
+}
+
+static UI_DigInput_Handle WidgetUI_Create_DigInput()
+{
+}
 
 /************************************** widget DigInput interface ******************************************/
 

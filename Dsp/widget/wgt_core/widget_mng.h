@@ -163,7 +163,12 @@ typedef struct
     bool (*select_item)(UI_Drop_Handle hdl, int8_t *offset);
     bool (*Move)(UI_Drop_Handle hdl, int16_t x, int16_t y);
     bool (*Select)(UI_Drop_Handle hdl);
-} WidgetUI_Drop_interface_TypeDef;
+} WidgetUI_Drop_Interface_TypeDef;
+
+typedef struct
+{
+    UI_DigInput_Handle (*create)(char *label, int16_t x, int16_t y, UI_DigInput_Type type);
+} WidgetUI_DigInput_Interface_TypeDef;
 
 typedef struct
 {
@@ -177,8 +182,8 @@ typedef struct
     WidgetUI_CheckBox_Interface_TypeDef *(*CheckBox)(void);
     WidgetUI_SlideBar_Interface_TypeDef *(*SlideBar)(void);
     WidgetUI_ProcessBar_Interface_TypeDef *(*ProcessBar)(void);
-    WidgetUI_Drop_interface_TypeDef *(*Drop)(void);
-    // void (*UI_DigInput)();
+    WidgetUI_Drop_Interface_TypeDef *(*Drop)(void);
+    WidgetUI_DigInput_Interface_TypeDef (*DigInput)(void);
     // void (*UI_StrInput)();
     // void (*UI_ProcBar)();
     // void (*UI_VerBar)();
