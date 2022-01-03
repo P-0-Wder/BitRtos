@@ -323,7 +323,7 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         }
         else
         {
-            block_y = HandleToDropObj(item->Handler)->Gen_Data.y + base_font + 2;
+            block_y = HandleToDropObj(item->Handler)->Gen_Data.y + 1;
             UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         }
         break;
@@ -1153,8 +1153,9 @@ static bool UI_Drop_Ctl(UI_DropObj_TypeDef *Obj)
     /* show label */
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, str_y, true);
 
-    dropitem_y = str_y + base_font + 2;
-    dropitem_x = Obj->Gen_Data.x + base_font * 2;
+    // dropitem_y = str_y + base_font + 2;
+    dropitem_y = str_y;
+    dropitem_x = Obj->Gen_Data.x + STR_DIS * strlen(Obj->Gen_Data.label);
 
     /* show drop item id */
     UI_DspInterface.draw_dig(base_font, ((UI_DropItemDataObj_TypeDef *)(Obj->CurDrop_Item->data))->id + 1, dropitem_x, dropitem_y, true);
@@ -1221,8 +1222,8 @@ static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t efft_in
     Obj->InputData_Dou.effective_int_len = efft_int_len;
     Obj->InputData_Dou.effective_point_len = efft_point_len;
 
-    Obj->InputData_Dou.IntPart = (int32_t)cur;
-    Obj->InputData_Dou.PointPart = cur - (int32_t)cur;
+    Obj->InputData_Dou.IntPart = (int64_t)cur;
+    Obj->InputData_Dou.PointPart = cur - (int64_t)cur;
 
     Obj->InputData_Dou.selected_part = DigInput_PointPart;
 
@@ -1278,6 +1279,12 @@ static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos
             return false;
 
         Obj->InputData_Int.CurVal += pow(10, int_pos) * (*val);
+        if (Obj->InputData_Int.Max <= Obj->InputData_Int.CurVal)
+        {
+            Obj->InputData_Int.CurVal = Obj->InputData_Int.Max;
+        }
+        else if (Obj->InputData_Int.Min <= Obj->InputData_Int.CurVal)
+            Obj->InputData_Int.CurVal = Obj->InputData_Int.Min;
     }
     else if (Obj->type == UI_DoubleDig_Input)
     {
@@ -1285,6 +1292,7 @@ static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos
             return false;
 
         Obj->InputData_Dou.CurVal += pow(10, int_pos) * (*val);
+        Obj->InputData_Dou.IntPart = (int64_t)Obj->InputData_Dou.CurVal;
     }
     else
         return false;
@@ -1295,8 +1303,16 @@ static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos
 
 static bool UI_DigInput_SetDouValue(UI_DigInputObj_TypeDef *Obj, uint8_t dou_pos, int8_t *val)
 {
-    if (Obj == NULL)
+    int8_t power = 0;
+
+    if ((Obj == NULL) || (Obj->type == UI_IntDig_Input) || (Obj->InputData_Dou.effective_point_len < dou_pos))
         return false;
+
+    power = -1 * dou_pos;
+    Obj->InputData_Dou.CurVal += pow(10, power) * (*val);
+    Obj->InputData_Dou.PointPart = Obj->InputData_Dou.CurVal - (int64_t)(Obj->InputData_Dou.CurVal);
+
+    *val = 0;
 
     return true;
 }
@@ -1311,30 +1327,37 @@ static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y)
 
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
 {
+    int16_t int_dsp_offset = 0;
+    int16_t dou_dsp_offset = 0;
+
     if (Obj == NULL)
         return false;
 
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+    int_dsp_offset = strlen(Obj->Gen_Data.label) * STR_DIS + 5;
 
     switch (Obj->type)
     {
     case UI_IntDig_Input:
-        if ((Obj->InputData_Int.CurVal >= Obj->InputData_Int.Max) ||
-            (10 <= abs(Obj->InputData_Int.CurVal / pow(10, Obj->InputData_Int.effective_len))))
+        for (uint8_t i = Obj->InputData_Int.effective_len; i > 0; i--)
         {
-            Obj->InputData_Int.CurVal = Obj->InputData_Int.Max;
-        }
-        else if (Obj->InputData_Int.CurVal <= Obj->InputData_Int.Min)
-        {
-            Obj->InputData_Int.CurVal = Obj->InputData_Int.Min;
-        }
-
-        if ((Obj->selected) && (Obj->select_part == DigInput_IntPart))
-        {
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + int_dsp_offset, Obj->Gen_Data.y, true);
+            int_dsp_offset += STR_DIS;
         }
         break;
 
     case UI_DoubleDig_Input:
+        for (uint8_t i = Obj->InputData_Dou.effective_int_len; i > 0; i--)
+        {
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + int_dsp_offset, Obj->Gen_Data.y, true);
+            int_dsp_offset += STR_DIS;
+        }
+
+        UI_DspInterface.draw_str(base_font, ".", Obj->Gen_Data.x + int_dsp_offset, Obj->Gen_Data.y, true);
+
+        for (uint8_t i = Obj->InputData_Dou.effective_point_len; i > 0; i++)
+        {
+        }
         break;
 
     default:

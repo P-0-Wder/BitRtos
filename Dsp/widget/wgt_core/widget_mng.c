@@ -1170,31 +1170,31 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     switch (((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->type)
     {
     case UI_Type_Button:
-        if (HandleToButtonObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+        if (HandleToButtonObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < UI_Get_FontType())
             return true;
         else
             break;
 
     case UI_Type_CheckBox:
-        if (HandleToCheckBoxObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+        if (HandleToCheckBoxObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < UI_Get_FontType())
             return true;
         else
             break;
 
     case UI_Type_SlideBar:
-        if (HandleToSlideBarObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+        if (HandleToSlideBarObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < UI_Get_FontType())
             return true;
         else
             break;
 
     case UI_Type_Drop:
-        if (HandleToDropObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+        if (HandleToDropObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < UI_Get_FontType())
             return true;
         else
             break;
 
     case UI_Type_ProcBar:
-        if (HandleToProcessBarObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < (UI_Get_FontType() + 2))
+        if (HandleToProcessBarObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < UI_Get_FontType())
             return true;
         else
             break;
@@ -1434,7 +1434,7 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y,
 
     if ((btn == NULL) ||
         (!WidgetUIList_InsertItem(btn, UI_Type_Button)) ||
-        (!UI_Button.init(btn, label, x, y, width, height, type, state)))
+        (!UI_Button.init(btn, label, x, y + UI_Get_FontType(), width, height, type, state)))
         return NULL;
 
     return (UI_Button_Handle)btn;
@@ -1522,7 +1522,7 @@ static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16
     checkbox = (UI_CheckBoxObj_TypeDef *)MMU_Malloc(sizeof(UI_CheckBoxObj_TypeDef));
 
     if ((checkbox == NULL) ||
-        (!UI_CheckBox.init(checkbox, label, x, y, state)) ||
+        (!UI_CheckBox.init(checkbox, label, x, y + UI_Get_FontType(), state)) ||
         (!WidgetUIList_InsertItem(checkbox, UI_Type_CheckBox)))
         return NULL;
 
@@ -1598,7 +1598,7 @@ static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16
     slidebar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
 
     if ((slidebar == NULL) ||
-        (!UI_SlideBar.init(slidebar, mode, label, x, y, max, min, start_val, step_len)) ||
+        (!UI_SlideBar.init(slidebar, mode, label, x, y + UI_Get_FontType(), max, min, start_val, step_len)) ||
         (!WidgetUIList_InsertItem(slidebar, UI_Type_SlideBar)))
         return NULL;
 
@@ -1712,7 +1712,7 @@ static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, UI_ProcessBa
     processbar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
 
     if ((processbar == NULL) ||
-        (!UI_ProcessBar.init(processbar, dsp_type, label, x, y, width, min, max)) ||
+        (!UI_ProcessBar.init(processbar, dsp_type, label, x, y + UI_Get_FontType(), width, min, max)) ||
         (!WidgetUIList_InsertItem(processbar, UI_Type_ProcBar)))
         return NULL;
 
@@ -1817,7 +1817,7 @@ static UI_Drop_Handle WidgetUI_Create_Drop(char *label, int16_t x, int16_t y)
     drop = (UI_DropObj_TypeDef *)MMU_Malloc(sizeof(UI_DropObj_TypeDef));
 
     if ((drop == NULL) ||
-        (!UI_Drop.init(drop, label, x, y)) ||
+        (!UI_Drop.init(drop, label, x, y + UI_Get_FontType())) ||
         (!WidgetUIList_InsertItem(drop, UI_Type_Drop)))
         return NULL;
 
@@ -1877,7 +1877,7 @@ static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
         return true;
     }
 
-    if ((HandleToDropObj(hdl)->Gen_Data.y + UICTL_DROP_HEIGHT > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
+    if ((HandleToDropObj(hdl)->Gen_Data.y > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToDropObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
     {
         offset = GetCur_Active_Widget()->height - UI_Get_FontType() - (HandleToDropObj(hdl)->Gen_Data.y + UICTL_DROP_HEIGHT);
