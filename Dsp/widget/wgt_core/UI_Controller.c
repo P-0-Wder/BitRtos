@@ -67,6 +67,10 @@ static bool UI_DigInput_GetIntVal(UI_DigInputObj_TypeDef *Obj, int32_t *Out);
 static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y);
 static bool UI_DigInput_SetSelectStatus(UI_DigInputObj_TypeDef *Obj, bool status);
 static bool UI_DigInput_GetSelectStatus(UI_DigInputObj_TypeDef *Obj);
+static bool UI_DigInput_SetCallback(UI_DigInputObj_TypeDef *Obj, UI_DigInput_Callback callback);
+static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos, int8_t *val);
+static bool UI_DigInput_SetDouValue(UI_DigInputObj_TypeDef *Obj, uint8_t dou_pos, int8_t *val);
+static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj);
 
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
@@ -130,12 +134,13 @@ UI_DigInput_Interface_TypeDef UI_DigInput = {
     .init = UI_DigInput_Init,
     .input_part_select = NULL,
     .Set_Select = UI_DigInput_SetSelectStatus,
+    .set_callback = UI_DigInput_SetCallback,
     .set_range_DouInput = UI_DigInput_SetDouRange,
     .set_range_IntInput = UI_DigInput_SetIntRange,
     .get_CurInout_Double = UI_DigInput_GetDoubleVal,
     .get_CurInput_Int = UI_DigInput_GetIntVal,
     .Move = UI_DigInput_Move,
-    .ctl = NULL,
+    .ctl = UI_DigInput_CTL,
 };
 
 /******************************* general function *********************************/
@@ -1294,6 +1299,33 @@ static bool UI_DigInput_GetSelectStatus(UI_DigInputObj_TypeDef *Obj)
     return Obj->selected;
 }
 
+static bool UI_DigInput_SelectInputPart(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int8_t *val)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->type == UI_IntDig_Input && pos <= Obj->InputData_Int.effective_len)
+    {
+        UI_DigInput_SetIntValue(Obj, pos, val);
+    }
+    else if (Obj->type == UI_DoubleDig_Input)
+    {
+        if (Obj->InputData_Dou.effective_int_len >= pos)
+        {
+            UI_DigInput_SetIntValue(Obj, pos, val);
+        }
+        else
+        {
+            pos -= Obj->InputData_Dou.effective_int_len;
+            UI_DigInput_SetDouValue(Obj, pos, val);
+        }
+    }
+    else
+        return false;
+
+    return true;
+}
+
 static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos, int8_t *val)
 {
     if (Obj == NULL)
@@ -1389,7 +1421,7 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
         break;
 
     default:
-        break;
+        return false;
     }
 
     return true;
