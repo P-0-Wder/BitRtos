@@ -1222,10 +1222,22 @@ static bool UI_DigInput_SetDouRange(UI_DigInputObj_TypeDef *Obj, uint8_t efft_in
     Obj->InputData_Dou.effective_int_len = efft_int_len;
     Obj->InputData_Dou.effective_point_len = efft_point_len;
 
+    Obj->callback = NULL;
+
     Obj->InputData_Dou.IntPart = (int64_t)cur;
     Obj->InputData_Dou.PointPart = cur - (int64_t)cur;
 
     Obj->InputData_Dou.selected_part = DigInput_PointPart;
+
+    return true;
+}
+
+static bool UI_DigInput_SetCallback(UI_DigInputObj_TypeDef *Obj, UI_DigInput_Callback callback)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->callback = callback;
 
     return true;
 }
@@ -1256,6 +1268,20 @@ static bool UI_DigInput_SetSelectStatus(UI_DigInputObj_TypeDef *Obj, bool status
         return false;
 
     Obj->selected = status;
+
+    if (!status && (Obj->callback != NULL))
+    {
+        if (Obj->type == UI_IntDig_Input)
+        {
+            Obj->callback(&(Obj->InputData_Int.CurVal), sizeof(int32_t));
+        }
+        else if (Obj->type == UI_DoubleDig_Input)
+        {
+            Obj->callback(&(Obj->InputData_Dou.CurVal), sizeof(double));
+        }
+        else
+            return false;
+    }
 
     return true;
 }

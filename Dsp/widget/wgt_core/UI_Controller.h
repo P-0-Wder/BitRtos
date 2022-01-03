@@ -420,8 +420,9 @@ typedef struct
 
     bool (*get_CurInput_Int)(UI_DigInputObj_TypeDef *Obj, int32_t *data);
     bool (*get_CurInout_Double)(UI_DigInputObj_TypeDef *Obj, double *data);
+    bool (*set_callback)(UI_DigInputObj_TypeDef *Obj, UI_DigInput_Callback callback);
 
-    bool (*Select_UI)(UI_DigInputObj_TypeDef *Obj, bool state);
+    bool (*Set_Select)(UI_DigInputObj_TypeDef *Obj, bool state);
     bool (*input_part_select)(UI_DigInputObj_TypeDef *Obj, UI_DigInput_SelectedPart part);
     bool (*ctl)(UI_DigInputObj_TypeDef *Obj);
 } UI_DigInput_Interface_TypeDef;
@@ -429,6 +430,10 @@ typedef struct
 typedef struct
 {
     bool (*init)(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+    bool (*Move)(UI_StrInputObj_TypeDef *Obj, int16_t x, int16_t y);
+    bool (*set_callback)(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Callback callback);
+    bool (*Set_Select)(UI_StrInputObj_TypeDef *Obj, bool state);
+    bool (*ctl)(UI_StrInputObj_TypeDef *Obj);
 } UI_StrInput_Interface_TypeDef;
 
 typedef struct
