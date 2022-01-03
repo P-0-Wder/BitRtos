@@ -1327,36 +1327,38 @@ static bool UI_DigInput_Move(UI_DigInputObj_TypeDef *Obj, int16_t x, int16_t y)
 
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
 {
-    int16_t int_dsp_offset = 0;
-    int16_t dou_dsp_offset = 0;
+    int16_t dig_dsp_offset = 0;
 
     if (Obj == NULL)
         return false;
 
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
-    int_dsp_offset = strlen(Obj->Gen_Data.label) * STR_DIS + 5;
+    dig_dsp_offset = strlen(Obj->Gen_Data.label) * STR_DIS + 5;
 
     switch (Obj->type)
     {
     case UI_IntDig_Input:
         for (uint8_t i = Obj->InputData_Int.effective_len; i > 0; i--)
         {
-            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + int_dsp_offset, Obj->Gen_Data.y, true);
-            int_dsp_offset += STR_DIS;
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            dig_dsp_offset += STR_DIS;
         }
         break;
 
     case UI_DoubleDig_Input:
         for (uint8_t i = Obj->InputData_Dou.effective_int_len; i > 0; i--)
         {
-            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + int_dsp_offset, Obj->Gen_Data.y, true);
-            int_dsp_offset += STR_DIS;
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            dig_dsp_offset += STR_DIS;
         }
 
-        UI_DspInterface.draw_str(base_font, ".", Obj->Gen_Data.x + int_dsp_offset, Obj->Gen_Data.y, true);
+        UI_DspInterface.draw_str(base_font, ".", Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+        dig_dsp_offset += STR_DIS;
 
         for (uint8_t i = Obj->InputData_Dou.effective_point_len; i > 0; i++)
         {
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Dou.PointPart / (int)pow(10, i), Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            dig_dsp_offset += STR_DIS;
         }
         break;
 
