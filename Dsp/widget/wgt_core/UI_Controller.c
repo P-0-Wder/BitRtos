@@ -70,6 +70,7 @@ static bool UI_DigInput_GetSelectStatus(UI_DigInputObj_TypeDef *Obj);
 static bool UI_DigInput_SetCallback(UI_DigInputObj_TypeDef *Obj, UI_DigInput_Callback callback);
 static bool UI_DigInput_SetIntValue(UI_DigInputObj_TypeDef *Obj, uint8_t int_pos, int8_t *val);
 static bool UI_DigInput_SetDouValue(UI_DigInputObj_TypeDef *Obj, uint8_t dou_pos, int8_t *val);
+static bool UI_DigInput_InputValue(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int8_t *val);
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj);
 
 /* general function */
@@ -132,7 +133,7 @@ UI_Drop_Interface_TypeDef UI_Drop = {
 
 UI_DigInput_Interface_TypeDef UI_DigInput = {
     .init = UI_DigInput_Init,
-    .input_part_select = NULL,
+    .input_val = UI_DigInput_InputValue,
     .Set_Select = UI_DigInput_SetSelectStatus,
     .set_callback = UI_DigInput_SetCallback,
     .set_range_DouInput = UI_DigInput_SetDouRange,
@@ -1299,7 +1300,7 @@ static bool UI_DigInput_GetSelectStatus(UI_DigInputObj_TypeDef *Obj)
     return Obj->selected;
 }
 
-static bool UI_DigInput_SelectInputPart(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int8_t *val)
+static bool UI_DigInput_InputValue(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int8_t *val)
 {
     if (Obj == NULL)
         return false;

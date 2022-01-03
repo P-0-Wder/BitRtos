@@ -423,7 +423,7 @@ typedef struct
     bool (*set_callback)(UI_DigInputObj_TypeDef *Obj, UI_DigInput_Callback callback);
 
     bool (*Set_Select)(UI_DigInputObj_TypeDef *Obj, bool state);
-    bool (*input_part_select)(UI_DigInputObj_TypeDef *Obj, UI_DigInput_SelectedPart part);
+    bool (*input_val)(UI_DigInputObj_TypeDef *Obj, uint8_t set_pos, int8_t *val);
     bool (*ctl)(UI_DigInputObj_TypeDef *Obj);
 } UI_DigInput_Interface_TypeDef;
 
