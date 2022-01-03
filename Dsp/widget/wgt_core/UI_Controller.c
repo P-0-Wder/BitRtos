@@ -255,7 +255,7 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     switch (base_font)
     {
     case Font_8:
-        selector_height = Font_8 + 2;
+        selector_height = UICTL_DEFAULT_HEIGHT;
         break;
 
     case Font_12:
@@ -323,20 +323,29 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         return UI_Fresh_Skip;
 
     case UI_Type_Drop:
-        block_x = HandleToDropObj(item->Handler)->Gen_Data.x + 3;
-
         if (HandleToDropObj(item->Handler)->is_selected)
         {
             block_y = HandleToDropObj(item->Handler)->Gen_Data.y;
         }
         else
         {
+            block_x = HandleToDropObj(item->Handler)->Gen_Data.x + 3;
             block_y = HandleToDropObj(item->Handler)->Gen_Data.y + 1;
             UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         }
         break;
 
     case UI_Type_DigInput:
+        if (HandleToDigInputObj(item->Handler)->selected)
+        {
+            block_y = HandleToDigInputObj(item->Handler)->Gen_Data.y;
+        }
+        else
+        {
+            block_x = HandleToDigInputObj(item->Handler)->Gen_Data.x + 3;
+            block_y = HandleToDigInputObj(item->Handler)->Gen_Data.y + 1;
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
+        }
         break;
 
     default:
