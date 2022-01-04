@@ -344,6 +344,7 @@ typedef struct
     UI_DoubleDigData_TypeDef InputData_Dou;
 
     bool selected;
+    uint8_t selected_pos;
     UI_DigInput_Callback callback;
 } UI_DigInputObj_TypeDef;
 
