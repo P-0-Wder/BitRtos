@@ -1510,10 +1510,13 @@ static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state)
         return false;
 
     Obj->selected = state;
-    if (!state && (Obj->callback != NULL))
+    if (!state)
     {
-        Obj->callback(Obj->str, strlen(Obj->str));
+        if (Obj->callback != NULL)
+            Obj->callback(Obj->str, strlen(Obj->str));
     }
+    else
+        Obj->selected_pos = 0;
 
     return true;
 }
