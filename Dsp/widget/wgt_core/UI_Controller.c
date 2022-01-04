@@ -353,6 +353,19 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         }
         break;
 
+    case UI_Type_StrInput:
+        if (HandleToStrInputObj(item->Handler)->selected)
+        {
+            block_y = HandleToStrInputObj(item->Handler)->Gen_Data.y;
+        }
+        else
+        {
+            block_x = HandleToStrInputObj(item->Handler)->Gen_Data.x + 3;
+            block_y = HandleToStrInputObj(item->Handler)->Gen_Data.y + 1;
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
+        }
+        break;
+
     default:
         return UI_Fresh_Error;
     }
@@ -1501,6 +1514,17 @@ static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state)
     {
         Obj->callback(Obj->str, strlen(Obj->str));
     }
+
+    return true;
+}
+
+static bool UI_StrInput_SetChar(UI_StrInputObj_TypeDef *Obj, uint8_t index, char *input)
+{
+    if ((Obj == NULL) && (index < MAX_INPUTSTR_LEN))
+        return false;
+
+    Obj->str[index] = *input;
+    input = NULL;
 
     return true;
 }

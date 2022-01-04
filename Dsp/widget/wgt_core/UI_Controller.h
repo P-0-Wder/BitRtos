@@ -25,6 +25,7 @@ typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 #define HandleToCheckBoxObj(x) ((UI_CheckBoxObj_TypeDef *)x)
 #define HandleToSlideBarObj(x) ((UI_SlideBarObj_TypeDef *)x)
 #define HandleToDigInputObj(x) ((UI_DigInputObj_TypeDef *)x)
+#define HandleToStrInputObj(x) ((UI_StrInputObj_TypeDef *)x)
 #define HandleToProcessBarObj(x) ((UI_ProcessBarObj_TypeDef *)x)
 
 #define MAX_DROP_ITEM 20
