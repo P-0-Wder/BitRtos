@@ -1537,14 +1537,13 @@ static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state)
     return true;
 }
 
-static bool UI_StrInput_SetChar(UI_StrInputObj_TypeDef *Obj, uint8_t index, char *input)
+static bool UI_StrInput_SetChar(UI_StrInputObj_TypeDef *Obj, uint8_t index, char input)
 {
     if ((Obj == NULL) && (index < MAX_INPUTSTR_LEN))
         return false;
 
     Obj->selected_pos = index;
-    Obj->str[index] = *input;
-    input = NULL;
+    Obj->str[index] = input;
 
     return true;
 }
