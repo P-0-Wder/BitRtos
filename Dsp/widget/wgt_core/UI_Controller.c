@@ -1549,10 +1549,15 @@ static char *UI_StrInput_GetStr(UI_StrInputObj_TypeDef *Obj)
 
 static bool UI_StrInput_Ctl(UI_StrInputObj_TypeDef *Obj)
 {
+    int16_t str_dsp_offset = 0;
+
     if (Obj == NULL)
         return false;
 
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+
+    str_dsp_offset = STR_DIS * strlen(Obj->Gen_Data.label) + 5;
+    UI_DspInterface.draw_str(base_font, Obj->str, Obj->Gen_Data.x + str_dsp_offset, Obj->Gen_Data.y, true);
 
     return true;
 }
