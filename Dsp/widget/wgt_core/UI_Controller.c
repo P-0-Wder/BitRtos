@@ -1351,9 +1351,9 @@ static bool UI_DigInput_InputValue(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int
         else
         {
             pos -= Obj->InputData_Dou.effective_int_len;
+            UI_DigInput_SetDouValue(Obj, pos, val);
             Obj->InputData_Dou.int_selected_pos = 0;
             Obj->InputData_Dou.dou_selected_pos = pos;
-            UI_DigInput_SetDouValue(Obj, pos, val);
         }
     }
     else
