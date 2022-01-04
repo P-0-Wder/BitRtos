@@ -1926,6 +1926,46 @@ static UI_DigInput_Handle WidgetUI_Create_DigInput(char *label, int16_t x, int16
     return ((UI_DigInput_Handle)dig_input);
 }
 
+static bool WidgetUI_DigInput_SetIntRange(UI_DigInput_Handle hdl, uint8_t eff_len, int32_t min, int32_t max, int32_t default_val)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.set_range_IntInput(HandleToDigInputObj(hdl), eff_len, max, min, default_val);
+}
+
+static bool WidgetUI_DigInput_SetDouRange(UI_DigInput_Handle hdl, uint8_t int_eff_len, uint8_t dou_eff_len, double max, double min, double cur)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.set_range_DouInput(HandleToDigInputObj(hdl), int_eff_len, dou_eff_len, max, min, cur);
+}
+
+static bool WidgetUI_DigInput_Move(UI_DigInput_Handle hdl, int16_t x, int16_t y)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.Move(HandleToDigInputObj(hdl), x, y);
+}
+
+static bool WidgetUI_DigInput_Select(UI_DigInput_Handle hdl, bool state)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.Set_Select(HandleToDigInputObj(hdl), state);
+}
+
+static bool WidgetUI_DigInput_Value(UI_DigInput_Handle hdl, uint8_t pos, int8_t *val)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.input_val(HandleToDigInputObj(hdl), pos, val);
+}
+
 /************************************** widget DigInput interface ******************************************/
 
 /************************************** widget StrInput interface ******************************************/
