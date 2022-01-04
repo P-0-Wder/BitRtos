@@ -1526,6 +1526,7 @@ static bool UI_StrInput_SetChar(UI_StrInputObj_TypeDef *Obj, uint8_t index, char
     if ((Obj == NULL) && (index < MAX_INPUTSTR_LEN))
         return false;
 
+    Obj->selected_pos = index;
     Obj->str[index] = *input;
     input = NULL;
 
