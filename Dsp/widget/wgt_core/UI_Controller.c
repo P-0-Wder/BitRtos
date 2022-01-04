@@ -79,6 +79,15 @@ static bool UI_DigInput_InputValue(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int
 static int8_t UI_DigInput_GetEffectSize(UI_DigInputObj_TypeDef *Obj, UI_DigInput_SelectedPart part);
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj);
 
+/* UI String Input Section */
+static bool UI_StrInput_Init(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+static bool UI_StrInput_Move(UI_StrInputObj_TypeDef *Obj, int16_t x, int16_t y);
+static bool UI_StrInput_SetCallback(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Callback callback);
+static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state);
+static bool UI_StrInput_SetChar(UI_StrInputObj_TypeDef *Obj, uint8_t index, char *input);
+static char *UI_StrInput_GetStr(UI_StrInputObj_TypeDef *Obj);
+static bool UI_StrInput_Ctl(UI_StrInputObj_TypeDef *Obj);
+
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
@@ -149,6 +158,16 @@ UI_DigInput_Interface_TypeDef UI_DigInput = {
     .get_effective_len = UI_DigInput_GetEffectSize,
     .Move = UI_DigInput_Move,
     .ctl = UI_DigInput_CTL,
+};
+
+UI_StrInput_Interface_TypeDef UI_StrInput = {
+    .init = UI_StrInput_Init,
+    .set_callback = UI_StrInput_SetCallback,
+    .Set_Select = UI_StrInput_Select,
+    .Move = UI_StrInput_Move,
+    .input_char = UI_StrInput_SetChar,
+    .get_str = UI_StrInput_GetStr,
+    .ctl = UI_StrInput_Ctl,
 };
 
 /******************************* general function *********************************/

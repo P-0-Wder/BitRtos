@@ -440,6 +440,8 @@ typedef struct
     bool (*Move)(UI_StrInputObj_TypeDef *Obj, int16_t x, int16_t y);
     bool (*set_callback)(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Callback callback);
     bool (*Set_Select)(UI_StrInputObj_TypeDef *Obj, bool state);
+    bool (*input_char)(UI_StrInputObj_TypeDef *Obj, uint8_t pos, char input);
+    char *(*get_str)(UI_StrInputObj_TypeDef *Obj);
     bool (*ctl)(UI_StrInputObj_TypeDef *Obj);
 } UI_StrInput_Interface_TypeDef;
 
