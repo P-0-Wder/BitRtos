@@ -9,7 +9,6 @@
 #include "linked_list.h"
 
 #define MAX_INPUTSTR_LEN 16
-#define DEFAULT_STRINPUT_STATE "____________"
 
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Drop_Handle;
