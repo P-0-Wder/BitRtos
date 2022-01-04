@@ -1337,16 +1337,22 @@ static bool UI_DigInput_InputValue(UI_DigInputObj_TypeDef *Obj, uint8_t pos, int
     if (Obj->type == UI_IntDig_Input && pos <= Obj->InputData_Int.effective_len)
     {
         UI_DigInput_SetIntValue(Obj, pos, val);
+
+        Obj->InputData_Int.selected_pos = pos;
     }
     else if (Obj->type == UI_DoubleDig_Input)
     {
         if (Obj->InputData_Dou.effective_int_len >= pos)
         {
             UI_DigInput_SetIntValue(Obj, pos, val);
+            Obj->InputData_Dou.int_selected_pos = pos;
+            Obj->InputData_Dou.dou_selected_pos = 0;
         }
         else
         {
             pos -= Obj->InputData_Dou.effective_int_len;
+            Obj->InputData_Dou.int_selected_pos = 0;
+            Obj->InputData_Dou.dou_selected_pos = pos;
             UI_DigInput_SetDouValue(Obj, pos, val);
         }
     }

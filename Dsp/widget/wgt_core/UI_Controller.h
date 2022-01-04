@@ -318,6 +318,7 @@ typedef struct
     int32_t Max;
     int32_t Min;
     uint8_t effective_len;
+    uint8_t selected_pos;
 
     int32_t CurVal;
 } UI_IntDigData_TypeDef;
@@ -328,6 +329,8 @@ typedef struct
     double Min;
 
     double CurVal;
+    uint8_t int_selected_pos;
+    uint8_t dou_selected_pos;
 
     uint8_t effective_int_len;
     uint8_t effective_point_len;
@@ -344,7 +347,6 @@ typedef struct
     UI_DoubleDigData_TypeDef InputData_Dou;
 
     bool selected;
-    uint8_t selected_pos;
     UI_DigInput_Callback callback;
 } UI_DigInputObj_TypeDef;
 
