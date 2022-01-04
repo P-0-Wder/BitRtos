@@ -1510,6 +1510,16 @@ static bool UI_StrInput_Move(UI_StrInputObj_TypeDef *Obj, int16_t x, int16_t y)
     return UI_Move(&(Obj->Gen_Data), x, y);
 }
 
+static bool UI_StrInput_SetCallback(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Callback callback)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->callback = callback;
+
+    return true;
+}
+
 static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state)
 {
     if (Obj == NULL)
