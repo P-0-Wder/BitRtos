@@ -1966,6 +1966,20 @@ static bool WidgetUI_DigInput_Value(UI_DigInput_Handle hdl, uint8_t pos, int8_t 
     return UI_DigInput.input_val(HandleToDigInputObj(hdl), pos, val);
 }
 
+static bool WidgetUI_DigInput_Fresh(UI_DigInput_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+
+    if (HandleToDigInputObj(hdl)->Gen_Data.y < UI_Get_FontType() ||
+        HandleToDigInputObj(hdl)->Gen_Data.x < 0)
+        return true;
+
+    // if(HandleToDigInputObj(hdl)->Gen_Data.y )
+
+    return UI_DigInput.ctl(HandleToDigInputObj(hdl));
+}
+
 /************************************** widget DigInput interface ******************************************/
 
 /************************************** widget StrInput interface ******************************************/
