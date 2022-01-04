@@ -99,6 +99,7 @@ static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Instance(void);
 static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
 static WidgetUI_DigInput_Interface_TypeDef *WidgetUI_GetDigInput_Instance(void);
+static WidgetUI_StrInput_Interface_TypeDef *WidgetUI_GetStrInput_Instance(void);
 static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(void);
 
 /* general UI Mathod */
@@ -195,6 +196,10 @@ WidgetUI_DigInput_Interface_TypeDef WidgetUI_DigInput = {
     .create = NULL,
 };
 
+WidgetUI_StrInput_Interface_TypeDef WidgetUI_StrInput = {
+    .create = NULL,
+};
+
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
@@ -203,8 +208,9 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .CheckBox = WidgetUI_GetCheckBox_Instance,
     .SlideBar = WidgetUI_GetSlideBar_Instance,
     .ProcessBar = WidgetUI_GetProcessBar_Instance,
+    .DigInput = WidgetUI_GetDigInput_Instance,
+    .StrInput = WidgetUI_GetStrInput_Instance,
     .Drop = WidgetUI_GetDrop_Instance,
-    // .UI_StrInput = NULL,
     // .UI_ProcBar = NULL,
     // .UI_VerBar = NULL,
     // .UI_HorBar = NULL,
@@ -1923,6 +1929,15 @@ static UI_DigInput_Handle WidgetUI_Create_DigInput(char *label, int16_t x, int16
 /************************************** widget DigInput interface ******************************************/
 
 /************************************** widget StrInput interface ******************************************/
+
+static WidgetUI_StrInput_Interface_TypeDef *WidgetUI_GetStrInput_Instance(void)
+{
+    return &WidgetUI_StrInput;
+}
+
+static UI_StrInput_Handle WidgetUI_Create_StrInput(char *label, int16_t x, int16_t y)
+{
+}
 
 /************************************** widget StrInput interface ******************************************/
 
