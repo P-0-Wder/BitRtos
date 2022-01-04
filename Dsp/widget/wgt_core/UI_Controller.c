@@ -1469,8 +1469,49 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_StrInput_Init()
+static bool UI_StrInput_Init(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y)
 {
+    if (Obj == NULL)
+        return false;
+
+    UI_GenData_Init(&(Obj->Gen_Data), label, x, y);
+    memset(Obj->str, NULL, sizeof(Obj->str));
+    Obj->selected_pos = 0;
+    Obj->selected = false;
+    Obj->callback = NULL;
+
+    return true;
+}
+
+static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->selected = state;
+    if (!state && (Obj->callback != NULL))
+    {
+        Obj->callback(Obj->str, strlen(Obj->str));
+    }
+
+    return true;
+}
+
+static char *UI_StrInput_GetStr(UI_StrInputObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return NULL;
+
+    return Obj->str;
+}
+
+static bool UI_StrInput_Ctl(UI_StrInputObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+
     return true;
 }
 
@@ -1505,17 +1546,5 @@ static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
 
 static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
 {
-    return true;
-}
-
-static bool UI_DigInput_Ctl()
-{
-
-    return true;
-}
-
-static bool UI_StrInput_Ctl()
-{
-
     return true;
 }
