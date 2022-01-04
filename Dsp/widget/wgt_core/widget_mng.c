@@ -1926,6 +1926,14 @@ static UI_DigInput_Handle WidgetUI_Create_DigInput(char *label, int16_t x, int16
     return ((UI_DigInput_Handle)dig_input);
 }
 
+static bool WidgetUI_DigInput_Setcallback(UI_DigInput_Handle hdl, UI_DigInput_Callback callback)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.set_callback(HandleToDigInputObj(hdl), callback);
+}
+
 static bool WidgetUI_DigInput_SetIntRange(UI_DigInput_Handle hdl, uint8_t eff_len, int32_t min, int32_t max, int32_t default_val)
 {
     if (hdl == 0)
