@@ -168,7 +168,7 @@ static bool WidgetUI_StrInput_StrChar(UI_StrInput_Handle hdl, uint8_t pos, char 
 static bool WidgetUI_Fresh_StrInput(UI_StrInput_Handle hdl);
 
 /* Widget Button object Interface */
-WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
+static WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .create = WidgetUI_Creat_Button,
     .Set_OprLabel = WidgetUI_SetButton_OprLabel,
     .Set_TriggerCallback = WidgetUI_SetButton_TriggerCallback,
@@ -176,14 +176,14 @@ WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .Operate = WidgetUI_Button_Operate,
 };
 
-WidgetUI_CheckBox_Interface_TypeDef WidgetUI_CheckBox = {
+static WidgetUI_CheckBox_Interface_TypeDef WidgetUI_CheckBox = {
     .create = WidgetUI_Create_CheckBox,
     .Move = WidgetUI_CheckBox_Move,
     .Set_CallBack = WidgetUI_CheckBox_SetCallBack,
     .Trigger = WidgetUI_CheckBox_Trigger,
 };
 
-WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
+static WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
     .create = WidgetUI_Create_SlideBar,
     .Move = WidgetUI_SlideBar_Move,
     .Trigger = WidgetUI_SlideBar_Trigger,
@@ -192,14 +192,14 @@ WidgetUI_SlideBar_Interface_TypeDef WidgetUI_SlideBar = {
     .Select = WidgetUI_Select_SlideBar,
 };
 
-WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
+static WidgetUI_ProcessBar_Interface_TypeDef WidgetUI_ProcessBar = {
     .create = WidgetUI_Create_ProcessBar,
     .Set_DspDir = WidgetUI_ProcessBar_SetDspDir,
     .Set_Value = WidgetUI_ProcessBar_SetCurValue,
     .Move = WidgetUI_ProcessBar_Move,
 };
 
-WidgetUI_Drop_Interface_TypeDef WidgetUI_Drop = {
+static WidgetUI_Drop_Interface_TypeDef WidgetUI_Drop = {
     .create = WidgetUI_Create_Drop,
     .Move = WidgetUI_Drop_Move,
     .Select = WidgetUI_Drop_Select,
@@ -207,7 +207,7 @@ WidgetUI_Drop_Interface_TypeDef WidgetUI_Drop = {
     .add_item = WidgetUI_Add_DropItem,
 };
 
-WidgetUI_DigInput_Interface_TypeDef WidgetUI_DigInput = {
+static WidgetUI_DigInput_Interface_TypeDef WidgetUI_DigInput = {
     .create = WidgetUI_Create_DigInput,
     .Move = WidgetUI_DigInput_Move,
     .set_callback = WidgetUI_DigInput_Setcallback,
@@ -217,8 +217,8 @@ WidgetUI_DigInput_Interface_TypeDef WidgetUI_DigInput = {
     .select = WidgetUI_DigInput_Select,
 };
 
-WidgetUI_StrInput_Interface_TypeDef WidgetUI_StrInput = {
-    .create = NULL,
+static WidgetUI_StrInput_Interface_TypeDef WidgetUI_StrInput = {
+    .create = WidgetUI_Create_StrInput,
     .Move = WidgetUI_StrInput_Move,
     .set_callback = WidgetUI_StrInput_SetCallback,
     .Select = WidgetUI_StrInput_Select,

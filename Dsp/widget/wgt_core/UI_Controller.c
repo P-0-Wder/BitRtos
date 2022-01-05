@@ -360,6 +360,8 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_DigInput:
+        block_y = HandleToDigInputObj(item->Handler)->Gen_Data.y - 1;
+
         if (HandleToDigInputObj(item->Handler)->selected)
         {
             block_y = HandleToDigInputObj(item->Handler)->Gen_Data.y;
@@ -367,12 +369,13 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         else
         {
             block_x = HandleToDigInputObj(item->Handler)->Gen_Data.x + 3;
-            block_y = HandleToDigInputObj(item->Handler)->Gen_Data.y + 1;
             UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         }
         break;
 
     case UI_Type_StrInput:
+        block_y = HandleToStrInputObj(item->Handler)->Gen_Data.y - 1;
+
         if (HandleToStrInputObj(item->Handler)->selected)
         {
             block_y = HandleToStrInputObj(item->Handler)->Gen_Data.y;
@@ -380,7 +383,6 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         else
         {
             block_x = HandleToStrInputObj(item->Handler)->Gen_Data.x + 3;
-            block_y = HandleToStrInputObj(item->Handler)->Gen_Data.y + 1;
             UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
         }
         break;
@@ -1466,11 +1468,14 @@ static int8_t UI_DigInput_GetEffectSize(UI_DigInputObj_TypeDef *Obj, UI_DigInput
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
 {
     int16_t dig_dsp_offset = 0;
+    int16_t str_x = 0;
 
     if (Obj == NULL)
         return false;
 
-    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+    str_x = Obj->Gen_Data.x + 3;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, Obj->Gen_Data.y, true);
     dig_dsp_offset = strlen(Obj->Gen_Data.label) * STR_DIS + 5;
 
     switch (Obj->type)
@@ -1478,7 +1483,7 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
     case UI_IntDig_Input:
         for (uint8_t i = Obj->InputData_Int.effective_len; i > 0; i--)
         {
-            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
             dig_dsp_offset += STR_DIS;
         }
         break;
@@ -1486,16 +1491,16 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
     case UI_DoubleDig_Input:
         for (uint8_t i = Obj->InputData_Dou.effective_int_len; i > 0; i--)
         {
-            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
             dig_dsp_offset += STR_DIS;
         }
 
-        UI_DspInterface.draw_str(base_font, ".", Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+        UI_DspInterface.draw_str(base_font, ".", str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
         dig_dsp_offset += STR_DIS;
 
         for (uint8_t i = Obj->InputData_Dou.effective_point_len; i > 0; i++)
         {
-            UI_DspInterface.draw_dig(base_font, Obj->InputData_Dou.PointPart / (int)pow(10, i), Obj->Gen_Data.x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            UI_DspInterface.draw_dig(base_font, Obj->InputData_Dou.PointPart / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
             dig_dsp_offset += STR_DIS;
         }
         break;
@@ -1578,14 +1583,17 @@ static char *UI_StrInput_GetStr(UI_StrInputObj_TypeDef *Obj)
 static bool UI_StrInput_Ctl(UI_StrInputObj_TypeDef *Obj)
 {
     int16_t str_dsp_offset = 0;
+    int16_t str_x = 0;
 
     if (Obj == NULL)
         return false;
 
-    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, Obj->Gen_Data.x, Obj->Gen_Data.y, true);
+    str_x = Obj->Gen_Data.x + 3;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, Obj->Gen_Data.y, true);
 
     str_dsp_offset = STR_DIS * strlen(Obj->Gen_Data.label) + 5;
-    UI_DspInterface.draw_str(base_font, Obj->str, Obj->Gen_Data.x + str_dsp_offset, Obj->Gen_Data.y, true);
+    UI_DspInterface.draw_str(base_font, Obj->str, str_x + str_dsp_offset, Obj->Gen_Data.y, true);
 
     return true;
 }

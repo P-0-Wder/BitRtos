@@ -24,7 +24,7 @@ static UI_CheckBox_Handle test_checkbox_1 = 0;
 static UI_SlideBar_Handle test_slidebar_1 = 0;
 static UI_ProcessBar_Handle test_processbar_1 = 0;
 static UI_Drop_Handle test_drop = 0;
-static UI_Drop_Handle test_drop_2 = 0;
+static UI_DigInput_Handle test_DigInput = 0;
 
 /* internal function definition */
 
@@ -43,14 +43,13 @@ static void TaskWidget_Init(void)
     test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 10, true);
     test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("frame type bar", UI_ProcBar_DspType_DotBar, 0, 32, 50, 0, 100);
     Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_DspDir(test_processbar_1, UI_ProcBar_GrothFrom_Left);
-    test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("slidebar", 0, 0, SliderBar_Horizon_Mode, 10, -10, 0, 50);
+    test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("Slidebar", 0, 0, SliderBar_Horizon_Mode, 10, -10, 0, 50);
     test_drop = Widget_Mng.Control(test4)->UI()->Drop()->create("drop 1: ", 0, 36);
     Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item_1", NULL, 0, NULL);
     Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item_2", NULL, 0, NULL);
 
-    test_drop_2 = Widget_Mng.Control(test4)->UI()->Drop()->create("drop 2: ", 0, 45);
-    Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop_2, "item_1", NULL, 0, NULL);
-    Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop_2, "item_2", NULL, 0, NULL);
+    test_DigInput = Widget_Mng.Control(test4)->UI()->DigInput()->create("Int Input:", 0, 47, UI_IntDig_Input);
+    // Widget_Mng.Control(test4)->UI()->StrInput()->create("Str Input:", 0, 45);
 }
 
 static void TestWidget_Dynamic_Dsp(void)

@@ -198,8 +198,8 @@ typedef struct
     WidgetUI_SlideBar_Interface_TypeDef *(*SlideBar)(void);
     WidgetUI_ProcessBar_Interface_TypeDef *(*ProcessBar)(void);
     WidgetUI_Drop_Interface_TypeDef *(*Drop)(void);
-    WidgetUI_DigInput_Interface_TypeDef (*DigInput)(void);
-    WidgetUI_StrInput_Interface_TypeDef (*StrInput)(void);
+    WidgetUI_DigInput_Interface_TypeDef *(*DigInput)(void);
+    WidgetUI_StrInput_Interface_TypeDef *(*StrInput)(void);
     // void (*UI_ProcBar)();
     // void (*UI_VerBar)();
     // void (*UI_HorBar)();
