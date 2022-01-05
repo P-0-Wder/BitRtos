@@ -1501,6 +1501,9 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
 
     case UI_DoubleDig_Input:
         /* still in debug down below */
+        int_dsp_val = abs(Obj->InputData_Dou.IntPart);
+        dou_dsp_val = abs(pow(10, Obj->InputData_Dou.effective_point_len) * Obj->InputData_Dou.PointPart);
+
         for (int8_t i = (Obj->InputData_Dou.effective_int_len - 1); i >= 0; i--)
         {
             UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
