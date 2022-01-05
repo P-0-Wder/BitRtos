@@ -1,0 +1,1338 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Task_Widget.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.rodata.TaskWidget_Init.str1.4,"aMS",%progbits,1
+  18              		.align	2
+  19              	.LC0:
+  20 0000 74657374 		.ascii	"test1\000"
+  20      3100
+  21 0006 0000     		.align	2
+  22              	.LC1:
+  23 0008 74657374 		.ascii	"test4\000"
+  23      3400
+  24 000e 0000     		.align	2
+  25              	.LC2:
+  26 0010 63686563 		.ascii	"checkbox\000"
+  26      6B626F78 
+  26      00
+  27 0019 000000   		.align	2
+  28              	.LC3:
+  29 001c 6672616D 		.ascii	"frame type bar\000"
+  29      65207479 
+  29      70652062 
+  29      617200
+  30 002b 00       		.align	2
+  31              	.LC4:
+  32 002c 536C6964 		.ascii	"Slidebar\000"
+  32      65626172 
+  32      00
+  33 0035 000000   		.align	2
+  34              	.LC5:
+  35 0038 64726F70 		.ascii	"drop 1: \000"
+  35      20313A20 
+  35      00
+  36 0041 000000   		.align	2
+  37              	.LC6:
+  38 0044 6974656D 		.ascii	"item_1\000"
+  38      5F3100
+  39 004b 00       		.align	2
+  40              	.LC7:
+  41 004c 6974656D 		.ascii	"item_2\000"
+  41      5F3200
+  42 0053 00       		.align	2
+  43              	.LC8:
+  44 0054 496E7420 		.ascii	"Int Input:\000"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 2
+
+
+  44      496E7075 
+  44      743A00
+  45              		.section	.text.TaskWidget_Init,"ax",%progbits
+  46              		.align	1
+  47              		.arch armv7e-m
+  48              		.syntax unified
+  49              		.thumb
+  50              		.thumb_func
+  51              		.fpu fpv4-sp-d16
+  53              	TaskWidget_Init:
+  54              	.LFB126:
+  55              		.file 1 "App/Task_Display/Task_Widget.c"
+   1:App/Task_Display/Task_Widget.c **** #include "Task_Widget.h"
+   2:App/Task_Display/Task_Widget.c **** #include "task_manager.h"
+   3:App/Task_Display/Task_Widget.c **** #include "Boot_widget.h"
+   4:App/Task_Display/Task_Widget.c **** #include "OS_widget.h"
+   5:App/Task_Display/Task_Widget.c **** #include "version_widget.h"
+   6:App/Task_Display/Task_Widget.c **** #include "widget_mng.h"
+   7:App/Task_Display/Task_Widget.c **** #include "Task_Input.h"
+   8:App/Task_Display/Task_Widget.c **** 
+   9:App/Task_Display/Task_Widget.c **** /* this task only for test */
+  10:App/Task_Display/Task_Widget.c **** 
+  11:App/Task_Display/Task_Widget.c **** /* internal variable */
+  12:App/Task_Display/Task_Widget.c **** static TaskWidget_State_List TaskWidget_State = TaskWdiget_State_Init;
+  13:App/Task_Display/Task_Widget.c **** static Widget_Handle test1;
+  14:App/Task_Display/Task_Widget.c **** static Widget_Handle test2;
+  15:App/Task_Display/Task_Widget.c **** static Widget_Handle test3;
+  16:App/Task_Display/Task_Widget.c **** static Widget_Handle test4;
+  17:App/Task_Display/Task_Widget.c **** 
+  18:App/Task_Display/Task_Widget.c **** /* external function definition */
+  19:App/Task_Display/Task_Widget.c **** Task_Handler Widget_Tsk_Hdl = 0;
+  20:App/Task_Display/Task_Widget.c **** 
+  21:App/Task_Display/Task_Widget.c **** static UI_Button_Handle test_btn_1 = 0;
+  22:App/Task_Display/Task_Widget.c **** static UI_Button_Handle test_btn_2 = 0;
+  23:App/Task_Display/Task_Widget.c **** static UI_CheckBox_Handle test_checkbox_1 = 0;
+  24:App/Task_Display/Task_Widget.c **** static UI_SlideBar_Handle test_slidebar_1 = 0;
+  25:App/Task_Display/Task_Widget.c **** static UI_ProcessBar_Handle test_processbar_1 = 0;
+  26:App/Task_Display/Task_Widget.c **** static UI_Drop_Handle test_drop = 0;
+  27:App/Task_Display/Task_Widget.c **** static UI_DigInput_Handle test_DigInput = 0;
+  28:App/Task_Display/Task_Widget.c **** 
+  29:App/Task_Display/Task_Widget.c **** /* internal function definition */
+  30:App/Task_Display/Task_Widget.c **** 
+  31:App/Task_Display/Task_Widget.c **** static void TaskWidget_Init(void)
+  32:App/Task_Display/Task_Widget.c **** {
+  56              		.loc 1 32 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+  61              	.LCFI0:
+  62              		.cfi_def_cfa_offset 32
+  63              		.cfi_offset 4, -32
+  64              		.cfi_offset 5, -28
+  65              		.cfi_offset 6, -24
+  66              		.cfi_offset 7, -20
+  67              		.cfi_offset 8, -16
+  68              		.cfi_offset 9, -12
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 3
+
+
+  69              		.cfi_offset 10, -8
+  70              		.cfi_offset 14, -4
+  71 0004 84B0     		sub	sp, sp, #16
+  72              	.LCFI1:
+  73              		.cfi_def_cfa_offset 48
+  33:App/Task_Display/Task_Widget.c ****     Widget_Mng.config_all->mirror(Oled_MirrorX);
+  74              		.loc 1 33 5 view .LVU1
+  75              		.loc 1 33 15 is_stmt 0 view .LVU2
+  76 0006 5A4D     		ldr	r5, .L3
+  77 0008 2B68     		ldr	r3, [r5]	@ unaligned
+  78              		.loc 1 33 26 view .LVU3
+  79 000a 1B68     		ldr	r3, [r3]	@ unaligned
+  80              		.loc 1 33 5 view .LVU4
+  81 000c 0020     		movs	r0, #0
+  82 000e 9847     		blx	r3
+  83              	.LVL0:
+  34:App/Task_Display/Task_Widget.c **** 
+  35:App/Task_Display/Task_Widget.c ****     test1 = Widget_Mng.Create(20, 2, 25, 20, "test1", true);
+  84              		.loc 1 35 5 is_stmt 1 view .LVU5
+  85              		.loc 1 35 23 is_stmt 0 view .LVU6
+  86 0010 6C68     		ldr	r4, [r5, #4]	@ unaligned
+  87              		.loc 1 35 13 view .LVU7
+  88 0012 0127     		movs	r7, #1
+  89 0014 0197     		str	r7, [sp, #4]
+  90 0016 574B     		ldr	r3, .L3+4
+  91 0018 0093     		str	r3, [sp]
+  92 001a 1423     		movs	r3, #20
+  93 001c 1922     		movs	r2, #25
+  94 001e 0221     		movs	r1, #2
+  95 0020 1846     		mov	r0, r3
+  96 0022 A047     		blx	r4
+  97              	.LVL1:
+  98              		.loc 1 35 11 view .LVU8
+  99 0024 544B     		ldr	r3, .L3+8
+ 100 0026 1860     		str	r0, [r3]
+  36:App/Task_Display/Task_Widget.c ****     // test2 = Widget_Mng.Create(50, 5, 50, 20, "test2", true);
+  37:App/Task_Display/Task_Widget.c ****     // test3 = Widget_Mng.Create(10, 15, 70, 40, "test3", true);
+  38:App/Task_Display/Task_Widget.c ****     test4 = Widget_Mng.Create(0, 0, 128, 64, "test4", false);
+ 101              		.loc 1 38 5 is_stmt 1 view .LVU9
+ 102              		.loc 1 38 23 is_stmt 0 view .LVU10
+ 103 0028 6E68     		ldr	r6, [r5, #4]	@ unaligned
+ 104              		.loc 1 38 13 view .LVU11
+ 105 002a 0024     		movs	r4, #0
+ 106 002c 0194     		str	r4, [sp, #4]
+ 107 002e 534B     		ldr	r3, .L3+12
+ 108 0030 0093     		str	r3, [sp]
+ 109 0032 4023     		movs	r3, #64
+ 110 0034 8022     		movs	r2, #128
+ 111 0036 2146     		mov	r1, r4
+ 112 0038 2046     		mov	r0, r4
+ 113 003a B047     		blx	r6
+ 114              	.LVL2:
+ 115              		.loc 1 38 11 view .LVU12
+ 116 003c 504E     		ldr	r6, .L3+16
+ 117 003e 3060     		str	r0, [r6]
+  39:App/Task_Display/Task_Widget.c **** 
+  40:App/Task_Display/Task_Widget.c ****     // test_btn_1 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_1", 90, 5, DEFAULT_
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 4
+
+
+  41:App/Task_Display/Task_Widget.c ****     // test_btn_2 = Widget_Mng.Control(test4)->UI()->Button()->create("test_btn_2", 90, 10 + DEFAUL
+  42:App/Task_Display/Task_Widget.c **** 
+  43:App/Task_Display/Task_Widget.c ****     test_checkbox_1 = Widget_Mng.Control(test4)->UI()->CheckBox()->create("checkbox", 0, 10, true);
+ 118              		.loc 1 43 5 is_stmt 1 view .LVU13
+ 119              		.loc 1 43 33 is_stmt 0 view .LVU14
+ 120 0040 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 121              		.loc 1 43 23 view .LVU15
+ 122 0042 9847     		blx	r3
+ 123              	.LVL3:
+ 124              		.loc 1 43 48 view .LVU16
+ 125 0044 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 126              		.loc 1 43 23 view .LVU17
+ 127 0046 9847     		blx	r3
+ 128              	.LVL4:
+ 129              		.loc 1 43 54 view .LVU18
+ 130 0048 0369     		ldr	r3, [r0, #16]	@ unaligned
+ 131              		.loc 1 43 23 view .LVU19
+ 132 004a 9847     		blx	r3
+ 133              	.LVL5:
+ 134              		.loc 1 43 66 view .LVU20
+ 135 004c D0F80080 		ldr	r8, [r0]	@ unaligned
+ 136              		.loc 1 43 23 view .LVU21
+ 137 0050 3B46     		mov	r3, r7
+ 138 0052 0A22     		movs	r2, #10
+ 139 0054 2146     		mov	r1, r4
+ 140 0056 4B48     		ldr	r0, .L3+20
+ 141 0058 C047     		blx	r8
+ 142              	.LVL6:
+ 143              		.loc 1 43 21 view .LVU22
+ 144 005a 4B4B     		ldr	r3, .L3+24
+ 145 005c 1860     		str	r0, [r3]
+  44:App/Task_Display/Task_Widget.c ****     test_processbar_1 = Widget_Mng.Control(test4)->UI()->ProcessBar()->create("frame type bar", UI_
+ 146              		.loc 1 44 5 is_stmt 1 view .LVU23
+ 147              		.loc 1 44 35 is_stmt 0 view .LVU24
+ 148 005e AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 149              		.loc 1 44 25 view .LVU25
+ 150 0060 3068     		ldr	r0, [r6]
+ 151 0062 9847     		blx	r3
+ 152              	.LVL7:
+ 153              		.loc 1 44 50 view .LVU26
+ 154 0064 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 155              		.loc 1 44 25 view .LVU27
+ 156 0066 9847     		blx	r3
+ 157              	.LVL8:
+ 158              		.loc 1 44 56 view .LVU28
+ 159 0068 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 160              		.loc 1 44 25 view .LVU29
+ 161 006a 9847     		blx	r3
+ 162              	.LVL9:
+ 163              		.loc 1 44 70 view .LVU30
+ 164 006c D0F800A0 		ldr	r10, [r0]	@ unaligned
+ 165              		.loc 1 44 25 view .LVU31
+ 166 0070 4FF06408 		mov	r8, #100
+ 167 0074 CDF80880 		str	r8, [sp, #8]
+ 168 0078 0194     		str	r4, [sp, #4]
+ 169 007a 4FF03209 		mov	r9, #50
+ 170 007e CDF80090 		str	r9, [sp]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 5
+
+
+ 171 0082 2023     		movs	r3, #32
+ 172 0084 2246     		mov	r2, r4
+ 173 0086 3946     		mov	r1, r7
+ 174 0088 4048     		ldr	r0, .L3+28
+ 175 008a D047     		blx	r10
+ 176              	.LVL10:
+ 177              		.loc 1 44 23 view .LVU32
+ 178 008c 404F     		ldr	r7, .L3+32
+ 179 008e 3860     		str	r0, [r7]
+  45:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_DspDir(test_processbar_1, UI_ProcBar_GrothFr
+ 180              		.loc 1 45 5 is_stmt 1 view .LVU33
+ 181              		.loc 1 45 15 is_stmt 0 view .LVU34
+ 182 0090 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 183              		.loc 1 45 5 view .LVU35
+ 184 0092 3068     		ldr	r0, [r6]
+ 185 0094 9847     		blx	r3
+ 186              	.LVL11:
+ 187              		.loc 1 45 30 view .LVU36
+ 188 0096 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 189              		.loc 1 45 5 view .LVU37
+ 190 0098 9847     		blx	r3
+ 191              	.LVL12:
+ 192              		.loc 1 45 36 view .LVU38
+ 193 009a 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 194              		.loc 1 45 5 view .LVU39
+ 195 009c 9847     		blx	r3
+ 196              	.LVL13:
+ 197              		.loc 1 45 50 view .LVU40
+ 198 009e 4368     		ldr	r3, [r0, #4]	@ unaligned
+ 199              		.loc 1 45 5 view .LVU41
+ 200 00a0 2146     		mov	r1, r4
+ 201 00a2 3868     		ldr	r0, [r7]
+ 202 00a4 9847     		blx	r3
+ 203              	.LVL14:
+  46:App/Task_Display/Task_Widget.c ****     test_slidebar_1 = Widget_Mng.Control(test4)->UI()->SlideBar()->create("Slidebar", 0, 0, SliderB
+ 204              		.loc 1 46 5 is_stmt 1 view .LVU42
+ 205              		.loc 1 46 33 is_stmt 0 view .LVU43
+ 206 00a6 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 207              		.loc 1 46 23 view .LVU44
+ 208 00a8 3068     		ldr	r0, [r6]
+ 209 00aa 9847     		blx	r3
+ 210              	.LVL15:
+ 211              		.loc 1 46 48 view .LVU45
+ 212 00ac 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 213              		.loc 1 46 23 view .LVU46
+ 214 00ae 9847     		blx	r3
+ 215              	.LVL16:
+ 216              		.loc 1 46 54 view .LVU47
+ 217 00b0 4369     		ldr	r3, [r0, #20]	@ unaligned
+ 218              		.loc 1 46 23 view .LVU48
+ 219 00b2 9847     		blx	r3
+ 220              	.LVL17:
+ 221              		.loc 1 46 66 view .LVU49
+ 222 00b4 0768     		ldr	r7, [r0]	@ unaligned
+ 223              		.loc 1 46 23 view .LVU50
+ 224 00b6 CDF80C90 		str	r9, [sp, #12]
+ 225 00ba 0294     		str	r4, [sp, #8]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 6
+
+
+ 226 00bc 6FF00903 		mvn	r3, #9
+ 227 00c0 0193     		str	r3, [sp, #4]
+ 228 00c2 0A23     		movs	r3, #10
+ 229 00c4 0093     		str	r3, [sp]
+ 230 00c6 2346     		mov	r3, r4
+ 231 00c8 2246     		mov	r2, r4
+ 232 00ca 2146     		mov	r1, r4
+ 233 00cc 3148     		ldr	r0, .L3+36
+ 234 00ce B847     		blx	r7
+ 235              	.LVL18:
+ 236              		.loc 1 46 21 view .LVU51
+ 237 00d0 314B     		ldr	r3, .L3+40
+ 238 00d2 1860     		str	r0, [r3]
+  47:App/Task_Display/Task_Widget.c ****     test_drop = Widget_Mng.Control(test4)->UI()->Drop()->create("drop 1: ", 0, 36);
+ 239              		.loc 1 47 5 is_stmt 1 view .LVU52
+ 240              		.loc 1 47 27 is_stmt 0 view .LVU53
+ 241 00d4 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 242              		.loc 1 47 17 view .LVU54
+ 243 00d6 3068     		ldr	r0, [r6]
+ 244 00d8 9847     		blx	r3
+ 245              	.LVL19:
+ 246              		.loc 1 47 42 view .LVU55
+ 247 00da 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 248              		.loc 1 47 17 view .LVU56
+ 249 00dc 9847     		blx	r3
+ 250              	.LVL20:
+ 251              		.loc 1 47 48 view .LVU57
+ 252 00de C369     		ldr	r3, [r0, #28]	@ unaligned
+ 253              		.loc 1 47 17 view .LVU58
+ 254 00e0 9847     		blx	r3
+ 255              	.LVL21:
+ 256              		.loc 1 47 56 view .LVU59
+ 257 00e2 0368     		ldr	r3, [r0]	@ unaligned
+ 258              		.loc 1 47 17 view .LVU60
+ 259 00e4 2422     		movs	r2, #36
+ 260 00e6 2146     		mov	r1, r4
+ 261 00e8 2C48     		ldr	r0, .L3+44
+ 262 00ea 9847     		blx	r3
+ 263              	.LVL22:
+ 264              		.loc 1 47 15 view .LVU61
+ 265 00ec 2C4F     		ldr	r7, .L3+48
+ 266 00ee 3860     		str	r0, [r7]
+  48:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item_1", NULL, 0, NULL);
+ 267              		.loc 1 48 5 is_stmt 1 view .LVU62
+ 268              		.loc 1 48 15 is_stmt 0 view .LVU63
+ 269 00f0 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 270              		.loc 1 48 5 view .LVU64
+ 271 00f2 3068     		ldr	r0, [r6]
+ 272 00f4 9847     		blx	r3
+ 273              	.LVL23:
+ 274              		.loc 1 48 30 view .LVU65
+ 275 00f6 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 276              		.loc 1 48 5 view .LVU66
+ 277 00f8 9847     		blx	r3
+ 278              	.LVL24:
+ 279              		.loc 1 48 36 view .LVU67
+ 280 00fa C369     		ldr	r3, [r0, #28]	@ unaligned
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 7
+
+
+ 281              		.loc 1 48 5 view .LVU68
+ 282 00fc 9847     		blx	r3
+ 283              	.LVL25:
+ 284              		.loc 1 48 44 view .LVU69
+ 285 00fe D0F80490 		ldr	r9, [r0, #4]	@ unaligned
+ 286              		.loc 1 48 5 view .LVU70
+ 287 0102 0094     		str	r4, [sp]
+ 288 0104 2346     		mov	r3, r4
+ 289 0106 2246     		mov	r2, r4
+ 290 0108 2649     		ldr	r1, .L3+52
+ 291 010a 3868     		ldr	r0, [r7]
+ 292 010c C847     		blx	r9
+ 293              	.LVL26:
+  49:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item_2", NULL, 0, NULL);
+ 294              		.loc 1 49 5 is_stmt 1 view .LVU71
+ 295              		.loc 1 49 15 is_stmt 0 view .LVU72
+ 296 010e AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 297              		.loc 1 49 5 view .LVU73
+ 298 0110 3068     		ldr	r0, [r6]
+ 299 0112 9847     		blx	r3
+ 300              	.LVL27:
+ 301              		.loc 1 49 30 view .LVU74
+ 302 0114 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 303              		.loc 1 49 5 view .LVU75
+ 304 0116 9847     		blx	r3
+ 305              	.LVL28:
+ 306              		.loc 1 49 36 view .LVU76
+ 307 0118 C369     		ldr	r3, [r0, #28]	@ unaligned
+ 308              		.loc 1 49 5 view .LVU77
+ 309 011a 9847     		blx	r3
+ 310              	.LVL29:
+ 311              		.loc 1 49 44 view .LVU78
+ 312 011c D0F80490 		ldr	r9, [r0, #4]	@ unaligned
+ 313              		.loc 1 49 5 view .LVU79
+ 314 0120 0094     		str	r4, [sp]
+ 315 0122 2346     		mov	r3, r4
+ 316 0124 2246     		mov	r2, r4
+ 317 0126 2049     		ldr	r1, .L3+56
+ 318 0128 3868     		ldr	r0, [r7]
+ 319 012a C847     		blx	r9
+ 320              	.LVL30:
+  50:App/Task_Display/Task_Widget.c **** 
+  51:App/Task_Display/Task_Widget.c ****     test_DigInput = Widget_Mng.Control(test4)->UI()->DigInput()->create("Int Input:", 0, 47, UI_Int
+ 321              		.loc 1 51 5 is_stmt 1 view .LVU80
+ 322              		.loc 1 51 31 is_stmt 0 view .LVU81
+ 323 012c AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 324              		.loc 1 51 21 view .LVU82
+ 325 012e 3068     		ldr	r0, [r6]
+ 326 0130 9847     		blx	r3
+ 327              	.LVL31:
+ 328              		.loc 1 51 46 view .LVU83
+ 329 0132 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 330              		.loc 1 51 21 view .LVU84
+ 331 0134 9847     		blx	r3
+ 332              	.LVL32:
+ 333              		.loc 1 51 52 view .LVU85
+ 334 0136 036A     		ldr	r3, [r0, #32]	@ unaligned
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 8
+
+
+ 335              		.loc 1 51 21 view .LVU86
+ 336 0138 9847     		blx	r3
+ 337              	.LVL33:
+ 338              		.loc 1 51 64 view .LVU87
+ 339 013a 0768     		ldr	r7, [r0]	@ unaligned
+ 340              		.loc 1 51 21 view .LVU88
+ 341 013c 2346     		mov	r3, r4
+ 342 013e 2F22     		movs	r2, #47
+ 343 0140 2146     		mov	r1, r4
+ 344 0142 1A48     		ldr	r0, .L3+60
+ 345 0144 B847     		blx	r7
+ 346              	.LVL34:
+ 347              		.loc 1 51 19 view .LVU89
+ 348 0146 1A4C     		ldr	r4, .L3+64
+ 349 0148 2060     		str	r0, [r4]
+  52:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->DigInput()->set_IntInput_Range(test_DigInput, 3, -100, 100, 20
+ 350              		.loc 1 52 5 is_stmt 1 view .LVU90
+ 351              		.loc 1 52 15 is_stmt 0 view .LVU91
+ 352 014a AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 353              		.loc 1 52 5 view .LVU92
+ 354 014c 3068     		ldr	r0, [r6]
+ 355 014e 9847     		blx	r3
+ 356              	.LVL35:
+ 357              		.loc 1 52 30 view .LVU93
+ 358 0150 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 359              		.loc 1 52 5 view .LVU94
+ 360 0152 9847     		blx	r3
+ 361              	.LVL36:
+ 362              		.loc 1 52 36 view .LVU95
+ 363 0154 036A     		ldr	r3, [r0, #32]	@ unaligned
+ 364              		.loc 1 52 5 view .LVU96
+ 365 0156 9847     		blx	r3
+ 366              	.LVL37:
+ 367              		.loc 1 52 48 view .LVU97
+ 368 0158 C568     		ldr	r5, [r0, #12]	@ unaligned
+ 369              		.loc 1 52 5 view .LVU98
+ 370 015a 1423     		movs	r3, #20
+ 371 015c 0093     		str	r3, [sp]
+ 372 015e 4346     		mov	r3, r8
+ 373 0160 6FF06302 		mvn	r2, #99
+ 374 0164 0321     		movs	r1, #3
+ 375 0166 2068     		ldr	r0, [r4]
+ 376 0168 A847     		blx	r5
+ 377              	.LVL38:
+  53:App/Task_Display/Task_Widget.c **** 
+  54:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test4)->UI()->StrInput()->create("Str Input:", 0, 45);
+  55:App/Task_Display/Task_Widget.c **** }
+ 378              		.loc 1 55 1 view .LVU99
+ 379 016a 04B0     		add	sp, sp, #16
+ 380              	.LCFI2:
+ 381              		.cfi_def_cfa_offset 32
+ 382              		@ sp needed
+ 383 016c BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 384              	.L4:
+ 385              		.align	2
+ 386              	.L3:
+ 387 0170 00000000 		.word	Widget_Mng
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 9
+
+
+ 388 0174 00000000 		.word	.LC0
+ 389 0178 00000000 		.word	.LANCHOR0
+ 390 017c 08000000 		.word	.LC1
+ 391 0180 00000000 		.word	.LANCHOR1
+ 392 0184 10000000 		.word	.LC2
+ 393 0188 00000000 		.word	.LANCHOR2
+ 394 018c 1C000000 		.word	.LC3
+ 395 0190 00000000 		.word	.LANCHOR3
+ 396 0194 2C000000 		.word	.LC4
+ 397 0198 00000000 		.word	.LANCHOR4
+ 398 019c 38000000 		.word	.LC5
+ 399 01a0 00000000 		.word	.LANCHOR5
+ 400 01a4 44000000 		.word	.LC6
+ 401 01a8 4C000000 		.word	.LC7
+ 402 01ac 54000000 		.word	.LC8
+ 403 01b0 00000000 		.word	.LANCHOR6
+ 404              		.cfi_endproc
+ 405              	.LFE126:
+ 407              		.section	.text.TestWidget_Dynamic_Dsp,"ax",%progbits
+ 408              		.align	1
+ 409              		.syntax unified
+ 410              		.thumb
+ 411              		.thumb_func
+ 412              		.fpu fpv4-sp-d16
+ 414              	TestWidget_Dynamic_Dsp:
+ 415              	.LFB127:
+  56:App/Task_Display/Task_Widget.c **** 
+  57:App/Task_Display/Task_Widget.c **** static void TestWidget_Dynamic_Dsp(void)
+  58:App/Task_Display/Task_Widget.c **** {
+ 416              		.loc 1 58 1 is_stmt 1 view -0
+ 417              		.cfi_startproc
+ 418              		@ args = 0, pretend = 0, frame = 8
+ 419              		@ frame_needed = 0, uses_anonymous_args = 0
+ 420 0000 30B5     		push	{r4, r5, lr}
+ 421              	.LCFI3:
+ 422              		.cfi_def_cfa_offset 12
+ 423              		.cfi_offset 4, -12
+ 424              		.cfi_offset 5, -8
+ 425              		.cfi_offset 14, -4
+ 426 0002 83B0     		sub	sp, sp, #12
+ 427              	.LCFI4:
+ 428              		.cfi_def_cfa_offset 24
+  59:App/Task_Display/Task_Widget.c ****     static int8_t rad = 0;
+ 429              		.loc 1 59 5 view .LVU101
+  60:App/Task_Display/Task_Widget.c ****     static bool change = false;
+ 430              		.loc 1 60 5 view .LVU102
+  61:App/Task_Display/Task_Widget.c **** 
+  62:App/Task_Display/Task_Widget.c ****     static int8_t dis = 0;
+ 431              		.loc 1 62 5 view .LVU103
+  63:App/Task_Display/Task_Widget.c ****     static bool move = false;
+ 432              		.loc 1 63 5 view .LVU104
+  64:App/Task_Display/Task_Widget.c ****     static int8_t selector = 0;
+ 433              		.loc 1 64 5 view .LVU105
+  65:App/Task_Display/Task_Widget.c ****     static int8_t selector_cnt = 0;
+ 434              		.loc 1 65 5 view .LVU106
+  66:App/Task_Display/Task_Widget.c ****     static bool selector_switch = false;
+ 435              		.loc 1 66 5 view .LVU107
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 10
+
+
+  67:App/Task_Display/Task_Widget.c ****     static uint32_t Lst_Encoder_Val = 0;
+ 436              		.loc 1 67 5 view .LVU108
+  68:App/Task_Display/Task_Widget.c ****     uint32_t encoder_val = 0;
+ 437              		.loc 1 68 5 view .LVU109
+ 438              		.loc 1 68 14 is_stmt 0 view .LVU110
+ 439 0004 0023     		movs	r3, #0
+ 440 0006 0193     		str	r3, [sp, #4]
+  69:App/Task_Display/Task_Widget.c **** 
+  70:App/Task_Display/Task_Widget.c ****     encoder_val = Lst_Encoder_Val - TaskInput_GetData()->Enc_Val.val;
+ 441              		.loc 1 70 5 is_stmt 1 view .LVU111
+ 442              		.loc 1 70 35 is_stmt 0 view .LVU112
+ 443 0008 524D     		ldr	r5, .L15
+ 444 000a 2C68     		ldr	r4, [r5]
+ 445              		.loc 1 70 37 view .LVU113
+ 446 000c FFF7FEFF 		bl	TaskInput_GetData
+ 447              	.LVL39:
+ 448              		.loc 1 70 65 view .LVU114
+ 449 0010 B0F91030 		ldrsh	r3, [r0, #16]
+ 450              		.loc 1 70 35 view .LVU115
+ 451 0014 E41A     		subs	r4, r4, r3
+ 452              		.loc 1 70 17 view .LVU116
+ 453 0016 0194     		str	r4, [sp, #4]
+  71:App/Task_Display/Task_Widget.c ****     Lst_Encoder_Val = TaskInput_GetData()->Enc_Val.val;
+ 454              		.loc 1 71 5 is_stmt 1 view .LVU117
+ 455              		.loc 1 71 23 is_stmt 0 view .LVU118
+ 456 0018 FFF7FEFF 		bl	TaskInput_GetData
+ 457              	.LVL40:
+ 458              		.loc 1 71 51 view .LVU119
+ 459 001c B0F91030 		ldrsh	r3, [r0, #16]
+ 460              		.loc 1 71 21 view .LVU120
+ 461 0020 2B60     		str	r3, [r5]
+  72:App/Task_Display/Task_Widget.c **** 
+  73:App/Task_Display/Task_Widget.c ****     if (!change)
+ 462              		.loc 1 73 5 is_stmt 1 view .LVU121
+ 463              		.loc 1 73 9 is_stmt 0 view .LVU122
+ 464 0022 4D4B     		ldr	r3, .L15+4
+ 465 0024 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 466              		.loc 1 73 8 view .LVU123
+ 467 0026 002B     		cmp	r3, #0
+ 468 0028 71D1     		bne	.L6
+  74:App/Task_Display/Task_Widget.c ****     {
+  75:App/Task_Display/Task_Widget.c ****         rad += 2;
+ 469              		.loc 1 75 9 is_stmt 1 view .LVU124
+ 470              		.loc 1 75 13 is_stmt 0 view .LVU125
+ 471 002a 4C4A     		ldr	r2, .L15+8
+ 472 002c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 473 002e 0233     		adds	r3, r3, #2
+ 474 0030 5BB2     		sxtb	r3, r3
+ 475 0032 1370     		strb	r3, [r2]
+  76:App/Task_Display/Task_Widget.c ****         // slidebar_in--;
+  77:App/Task_Display/Task_Widget.c **** 
+  78:App/Task_Display/Task_Widget.c ****         if (rad >= 32)
+ 476              		.loc 1 78 9 is_stmt 1 view .LVU126
+ 477              		.loc 1 78 12 is_stmt 0 view .LVU127
+ 478 0034 1F2B     		cmp	r3, #31
+ 479 0036 0FDD     		ble	.L7
+  79:App/Task_Display/Task_Widget.c ****         {
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 11
+
+
+  80:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_PushDwn);
+  81:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_PushDwn);
+  82:App/Task_Display/Task_Widget.c ****             Widget_Mng.Control(test4)->UI()->CheckBox()->Trigger(test_checkbox_1);
+ 480              		.loc 1 82 13 is_stmt 1 view .LVU128
+ 481              		.loc 1 82 23 is_stmt 0 view .LVU129
+ 482 0038 494B     		ldr	r3, .L15+12
+ 483 003a 9B68     		ldr	r3, [r3, #8]	@ unaligned
+ 484              		.loc 1 82 13 view .LVU130
+ 485 003c 494A     		ldr	r2, .L15+16
+ 486 003e 1068     		ldr	r0, [r2]
+ 487 0040 9847     		blx	r3
+ 488              	.LVL41:
+ 489              		.loc 1 82 38 view .LVU131
+ 490 0042 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 491              		.loc 1 82 13 view .LVU132
+ 492 0044 9847     		blx	r3
+ 493              	.LVL42:
+ 494              		.loc 1 82 44 view .LVU133
+ 495 0046 0369     		ldr	r3, [r0, #16]	@ unaligned
+ 496              		.loc 1 82 13 view .LVU134
+ 497 0048 9847     		blx	r3
+ 498              	.LVL43:
+ 499              		.loc 1 82 56 view .LVU135
+ 500 004a 8368     		ldr	r3, [r0, #8]	@ unaligned
+ 501              		.loc 1 82 13 view .LVU136
+ 502 004c 464A     		ldr	r2, .L15+20
+ 503 004e 1068     		ldr	r0, [r2]
+ 504 0050 9847     		blx	r3
+ 505              	.LVL44:
+  83:App/Task_Display/Task_Widget.c ****             change = true;
+ 506              		.loc 1 83 13 is_stmt 1 view .LVU137
+ 507              		.loc 1 83 20 is_stmt 0 view .LVU138
+ 508 0052 414B     		ldr	r3, .L15+4
+ 509 0054 0122     		movs	r2, #1
+ 510 0056 1A70     		strb	r2, [r3]
+ 511              	.L7:
+  84:App/Task_Display/Task_Widget.c ****         }
+  85:App/Task_Display/Task_Widget.c ****     }
+  86:App/Task_Display/Task_Widget.c ****     else
+  87:App/Task_Display/Task_Widget.c ****     {
+  88:App/Task_Display/Task_Widget.c ****         rad -= 2;
+  89:App/Task_Display/Task_Widget.c ****         // slidebar_in++;
+  90:App/Task_Display/Task_Widget.c **** 
+  91:App/Task_Display/Task_Widget.c ****         if (rad <= 2)
+  92:App/Task_Display/Task_Widget.c ****         {
+  93:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_1, UI_Btn_RlsUp);
+  94:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test4)->UI()->Button()->Operate(test_btn_2, UI_Btn_RlsUp);
+  95:App/Task_Display/Task_Widget.c ****             change = false;
+  96:App/Task_Display/Task_Widget.c ****         }
+  97:App/Task_Display/Task_Widget.c ****     }
+  98:App/Task_Display/Task_Widget.c **** 
+  99:App/Task_Display/Task_Widget.c ****     if (!selector_switch)
+ 512              		.loc 1 99 5 is_stmt 1 view .LVU139
+ 513              		.loc 1 99 9 is_stmt 0 view .LVU140
+ 514 0058 444B     		ldr	r3, .L15+24
+ 515 005a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 516 005c 83F00102 		eor	r2, r3, #1
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 12
+
+
+ 517              		.loc 1 99 8 view .LVU141
+ 518 0060 002B     		cmp	r3, #0
+ 519 0062 5FD1     		bne	.L8
+ 100:App/Task_Display/Task_Widget.c ****     {
+ 101:App/Task_Display/Task_Widget.c ****         if ((selector_cnt % 10) == 0)
+ 520              		.loc 1 101 9 is_stmt 1 view .LVU142
+ 102:App/Task_Display/Task_Widget.c ****             selector = 1;
+ 521              		.loc 1 102 13 view .LVU143
+ 522              		.loc 1 102 22 is_stmt 0 view .LVU144
+ 523 0064 424B     		ldr	r3, .L15+28
+ 524 0066 0122     		movs	r2, #1
+ 525 0068 1A70     		strb	r2, [r3]
+ 103:App/Task_Display/Task_Widget.c **** 
+ 104:App/Task_Display/Task_Widget.c ****         if (selector_cnt >= 30)
+ 526              		.loc 1 104 9 is_stmt 1 view .LVU145
+ 527              	.L9:
+ 105:App/Task_Display/Task_Widget.c ****         {
+ 106:App/Task_Display/Task_Widget.c ****             selector_switch = !selector_switch;
+ 107:App/Task_Display/Task_Widget.c ****         }
+ 108:App/Task_Display/Task_Widget.c ****     }
+ 109:App/Task_Display/Task_Widget.c ****     else
+ 110:App/Task_Display/Task_Widget.c ****     {
+ 111:App/Task_Display/Task_Widget.c ****         if ((selector_cnt % 10) == 0)
+ 112:App/Task_Display/Task_Widget.c ****             selector = -1;
+ 113:App/Task_Display/Task_Widget.c **** 
+ 114:App/Task_Display/Task_Widget.c ****         if (selector_cnt <= 0)
+ 115:App/Task_Display/Task_Widget.c ****         {
+ 116:App/Task_Display/Task_Widget.c ****             selector_switch = !selector_switch;
+ 117:App/Task_Display/Task_Widget.c ****         }
+ 118:App/Task_Display/Task_Widget.c ****     }
+ 119:App/Task_Display/Task_Widget.c **** 
+ 120:App/Task_Display/Task_Widget.c ****     if (!move)
+ 528              		.loc 1 120 5 view .LVU146
+ 529              		.loc 1 120 9 is_stmt 0 view .LVU147
+ 530 006a 424B     		ldr	r3, .L15+32
+ 531 006c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 532              		.loc 1 120 8 view .LVU148
+ 533 006e 002B     		cmp	r3, #0
+ 534 0070 5ED1     		bne	.L10
+ 121:App/Task_Display/Task_Widget.c ****     {
+ 122:App/Task_Display/Task_Widget.c ****         dis += 2;
+ 535              		.loc 1 122 9 is_stmt 1 view .LVU149
+ 536              		.loc 1 122 13 is_stmt 0 view .LVU150
+ 537 0072 414A     		ldr	r2, .L15+36
+ 538 0074 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 539 0076 0233     		adds	r3, r3, #2
+ 540 0078 5BB2     		sxtb	r3, r3
+ 541 007a 1370     		strb	r3, [r2]
+ 123:App/Task_Display/Task_Widget.c **** 
+ 124:App/Task_Display/Task_Widget.c ****         if (dis > 20)
+ 542              		.loc 1 124 9 is_stmt 1 view .LVU151
+ 543              		.loc 1 124 12 is_stmt 0 view .LVU152
+ 544 007c 142B     		cmp	r3, #20
+ 545 007e 02DD     		ble	.L11
+ 125:App/Task_Display/Task_Widget.c ****         {
+ 126:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test1)->Clear();
+ 127:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test1)->Draw()->draw_char(Font_12, '1', 8, 2, true);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 13
+
+
+ 128:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test1)->Show();
+ 129:App/Task_Display/Task_Widget.c ****             move = true;
+ 546              		.loc 1 129 13 is_stmt 1 view .LVU153
+ 547              		.loc 1 129 18 is_stmt 0 view .LVU154
+ 548 0080 3C4B     		ldr	r3, .L15+32
+ 549 0082 0122     		movs	r2, #1
+ 550 0084 1A70     		strb	r2, [r3]
+ 551              	.L11:
+ 130:App/Task_Display/Task_Widget.c ****         }
+ 131:App/Task_Display/Task_Widget.c ****     }
+ 132:App/Task_Display/Task_Widget.c ****     else
+ 133:App/Task_Display/Task_Widget.c ****     {
+ 134:App/Task_Display/Task_Widget.c ****         dis -= 2;
+ 135:App/Task_Display/Task_Widget.c **** 
+ 136:App/Task_Display/Task_Widget.c ****         if (dis <= 2)
+ 137:App/Task_Display/Task_Widget.c ****         {
+ 138:App/Task_Display/Task_Widget.c ****             // Widget_Mng.Control(test1)->Hide();
+ 139:App/Task_Display/Task_Widget.c ****             move = false;
+ 140:App/Task_Display/Task_Widget.c ****         }
+ 141:App/Task_Display/Task_Widget.c ****     }
+ 142:App/Task_Display/Task_Widget.c ****     selector = encoder_val;
+ 552              		.loc 1 142 5 is_stmt 1 view .LVU155
+ 553              		.loc 1 142 14 is_stmt 0 view .LVU156
+ 554 0086 019B     		ldr	r3, [sp, #4]
+ 555 0088 394A     		ldr	r2, .L15+28
+ 556 008a 1370     		strb	r3, [r2]
+ 143:App/Task_Display/Task_Widget.c **** 
+ 144:App/Task_Display/Task_Widget.c ****     static int8_t prc_val;
+ 557              		.loc 1 144 5 is_stmt 1 view .LVU157
+ 145:App/Task_Display/Task_Widget.c ****     prc_val += encoder_val;
+ 558              		.loc 1 145 5 view .LVU158
+ 559              		.loc 1 145 13 is_stmt 0 view .LVU159
+ 560 008c 3B4A     		ldr	r2, .L15+40
+ 561 008e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 562 0090 0B44     		add	r3, r3, r1
+ 563 0092 5BB2     		sxtb	r3, r3
+ 564 0094 1370     		strb	r3, [r2]
+ 146:App/Task_Display/Task_Widget.c ****     if (prc_val >= 100)
+ 565              		.loc 1 146 5 is_stmt 1 view .LVU160
+ 566              		.loc 1 146 8 is_stmt 0 view .LVU161
+ 567 0096 632B     		cmp	r3, #99
+ 568 0098 55DD     		ble	.L12
+ 147:App/Task_Display/Task_Widget.c ****         prc_val = 100;
+ 569              		.loc 1 147 9 is_stmt 1 view .LVU162
+ 570              		.loc 1 147 17 is_stmt 0 view .LVU163
+ 571 009a 1346     		mov	r3, r2
+ 572 009c 6422     		movs	r2, #100
+ 573 009e 1A70     		strb	r2, [r3]
+ 574              	.L13:
+ 148:App/Task_Display/Task_Widget.c ****     else if (prc_val <= 0)
+ 149:App/Task_Display/Task_Widget.c ****         prc_val = 0;
+ 150:App/Task_Display/Task_Widget.c **** 
+ 151:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->Clear();
+ 575              		.loc 1 151 5 is_stmt 1 view .LVU164
+ 576              		.loc 1 151 15 is_stmt 0 view .LVU165
+ 577 00a0 2F4D     		ldr	r5, .L15+12
+ 578 00a2 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 14
+
+
+ 579              		.loc 1 151 5 view .LVU166
+ 580 00a4 2F4C     		ldr	r4, .L15+16
+ 581 00a6 2068     		ldr	r0, [r4]
+ 582 00a8 9847     		blx	r3
+ 583              	.LVL45:
+ 584              		.loc 1 151 30 view .LVU167
+ 585 00aa C368     		ldr	r3, [r0, #12]	@ unaligned
+ 586              		.loc 1 151 5 view .LVU168
+ 587 00ac 9847     		blx	r3
+ 588              	.LVL46:
+ 152:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->SlideBar()->Input(test_slidebar_1, &encoder_val);
+ 589              		.loc 1 152 5 is_stmt 1 view .LVU169
+ 590              		.loc 1 152 15 is_stmt 0 view .LVU170
+ 591 00ae AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 592              		.loc 1 152 5 view .LVU171
+ 593 00b0 2068     		ldr	r0, [r4]
+ 594 00b2 9847     		blx	r3
+ 595              	.LVL47:
+ 596              		.loc 1 152 30 view .LVU172
+ 597 00b4 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 598              		.loc 1 152 5 view .LVU173
+ 599 00b6 9847     		blx	r3
+ 600              	.LVL48:
+ 601              		.loc 1 152 36 view .LVU174
+ 602 00b8 4369     		ldr	r3, [r0, #20]	@ unaligned
+ 603              		.loc 1 152 5 view .LVU175
+ 604 00ba 9847     		blx	r3
+ 605              	.LVL49:
+ 606              		.loc 1 152 48 view .LVU176
+ 607 00bc 8368     		ldr	r3, [r0, #8]	@ unaligned
+ 608              		.loc 1 152 5 view .LVU177
+ 609 00be 01A9     		add	r1, sp, #4
+ 610 00c0 2F4A     		ldr	r2, .L15+44
+ 611 00c2 1068     		ldr	r0, [r2]
+ 612 00c4 9847     		blx	r3
+ 613              	.LVL50:
+ 153:App/Task_Display/Task_Widget.c **** 
+ 154:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->ProcessBar()->Set_Value(test_processbar_1, prc_val);
+ 614              		.loc 1 154 5 is_stmt 1 view .LVU178
+ 615              		.loc 1 154 15 is_stmt 0 view .LVU179
+ 616 00c6 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 617              		.loc 1 154 5 view .LVU180
+ 618 00c8 2068     		ldr	r0, [r4]
+ 619 00ca 9847     		blx	r3
+ 620              	.LVL51:
+ 621              		.loc 1 154 30 view .LVU181
+ 622 00cc 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 623              		.loc 1 154 5 view .LVU182
+ 624 00ce 9847     		blx	r3
+ 625              	.LVL52:
+ 626              		.loc 1 154 36 view .LVU183
+ 627 00d0 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 628              		.loc 1 154 5 view .LVU184
+ 629 00d2 9847     		blx	r3
+ 630              	.LVL53:
+ 631              		.loc 1 154 50 view .LVU185
+ 632 00d4 8368     		ldr	r3, [r0, #8]	@ unaligned
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 15
+
+
+ 633              		.loc 1 154 5 view .LVU186
+ 634 00d6 294A     		ldr	r2, .L15+40
+ 635 00d8 92F90010 		ldrsb	r1, [r2]
+ 636 00dc 294A     		ldr	r2, .L15+48
+ 637 00de 1068     		ldr	r0, [r2]
+ 638 00e0 9847     		blx	r3
+ 639              	.LVL54:
+ 155:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test4)->Draw()->draw_str(Font_8, "slidebar Timer", 2, 2, true);
+ 156:App/Task_Display/Task_Widget.c **** 
+ 157:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->Show_Selector(&selector);
+ 640              		.loc 1 157 5 is_stmt 1 view .LVU187
+ 641              		.loc 1 157 15 is_stmt 0 view .LVU188
+ 642 00e2 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 643              		.loc 1 157 5 view .LVU189
+ 644 00e4 2068     		ldr	r0, [r4]
+ 645 00e6 9847     		blx	r3
+ 646              	.LVL55:
+ 647              		.loc 1 157 30 view .LVU190
+ 648 00e8 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 649              		.loc 1 157 5 view .LVU191
+ 650 00ea 9847     		blx	r3
+ 651              	.LVL56:
+ 652              		.loc 1 157 36 view .LVU192
+ 653 00ec 0368     		ldr	r3, [r0]	@ unaligned
+ 654              		.loc 1 157 5 view .LVU193
+ 655 00ee 2048     		ldr	r0, .L15+28
+ 656 00f0 9847     		blx	r3
+ 657              	.LVL57:
+ 158:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->UI()->Fresh();
+ 658              		.loc 1 158 5 is_stmt 1 view .LVU194
+ 659              		.loc 1 158 15 is_stmt 0 view .LVU195
+ 660 00f2 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 661              		.loc 1 158 5 view .LVU196
+ 662 00f4 2068     		ldr	r0, [r4]
+ 663 00f6 9847     		blx	r3
+ 664              	.LVL58:
+ 665              		.loc 1 158 30 view .LVU197
+ 666 00f8 8369     		ldr	r3, [r0, #24]	@ unaligned
+ 667              		.loc 1 158 5 view .LVU198
+ 668 00fa 9847     		blx	r3
+ 669              	.LVL59:
+ 670              		.loc 1 158 36 view .LVU199
+ 671 00fc 8368     		ldr	r3, [r0, #8]	@ unaligned
+ 672              		.loc 1 158 5 view .LVU200
+ 673 00fe 9847     		blx	r3
+ 674              	.LVL60:
+ 159:App/Task_Display/Task_Widget.c ****     Widget_Mng.Control(test4)->Show();
+ 675              		.loc 1 159 5 is_stmt 1 view .LVU201
+ 676              		.loc 1 159 15 is_stmt 0 view .LVU202
+ 677 0100 AB68     		ldr	r3, [r5, #8]	@ unaligned
+ 678              		.loc 1 159 5 view .LVU203
+ 679 0102 2068     		ldr	r0, [r4]
+ 680 0104 9847     		blx	r3
+ 681              	.LVL61:
+ 682              		.loc 1 159 30 view .LVU204
+ 683 0106 0368     		ldr	r3, [r0]	@ unaligned
+ 684              		.loc 1 159 5 view .LVU205
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 16
+
+
+ 685 0108 9847     		blx	r3
+ 686              	.LVL62:
+ 160:App/Task_Display/Task_Widget.c **** 
+ 161:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test3)->Clear();
+ 162:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test3)->Move(15 /* + dis*/, 15);
+ 163:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad, true);
+ 164:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test3)->Draw()->fill_circle(35, 20, rad - 2, false);
+ 165:App/Task_Display/Task_Widget.c **** 
+ 166:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test3)->Draw()->draw_str(Font_12, "8_B!T0", 15, 22, true);
+ 167:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test3)->Draw()->draw_char(Font_12, '3', 8, 2, true);
+ 168:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test3)->Show();
+ 169:App/Task_Display/Task_Widget.c **** 
+ 170:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test2)->Clear();
+ 171:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test2)->Move(50, 5 + dis);
+ 172:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test2)->Draw()->draw_char(Font_12, '2', 8, 2, true);
+ 173:App/Task_Display/Task_Widget.c ****     // // Widget_Mng.Control(test2)->Draw()->fill_radius_rectangle(22, 3, 25, 14, 3);
+ 174:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test2)->Draw()->draw_str(Font_12, "yes", 24, 3, false);
+ 175:App/Task_Display/Task_Widget.c ****     // //Widget_Mng.Control(test2)->Draw()->draw_str(Font_12, "no", 46, 40, true);
+ 176:App/Task_Display/Task_Widget.c ****     // //Widget_Mng.Control(test2)->Draw()->draw_radius_rectangle(40, 40, 25, 15, 3, 1);
+ 177:App/Task_Display/Task_Widget.c ****     // Widget_Mng.Control(test2)->Show();
+ 178:App/Task_Display/Task_Widget.c **** }
+ 687              		.loc 1 178 1 view .LVU206
+ 688 010a 03B0     		add	sp, sp, #12
+ 689              	.LCFI5:
+ 690              		.cfi_remember_state
+ 691              		.cfi_def_cfa_offset 12
+ 692              		@ sp needed
+ 693 010c 30BD     		pop	{r4, r5, pc}
+ 694              	.L6:
+ 695              	.LCFI6:
+ 696              		.cfi_restore_state
+  88:App/Task_Display/Task_Widget.c ****         // slidebar_in++;
+ 697              		.loc 1 88 9 is_stmt 1 view .LVU207
+  88:App/Task_Display/Task_Widget.c ****         // slidebar_in++;
+ 698              		.loc 1 88 13 is_stmt 0 view .LVU208
+ 699 010e 134A     		ldr	r2, .L15+8
+ 700 0110 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 701 0112 023B     		subs	r3, r3, #2
+ 702 0114 5BB2     		sxtb	r3, r3
+ 703 0116 1370     		strb	r3, [r2]
+  91:App/Task_Display/Task_Widget.c ****         {
+ 704              		.loc 1 91 9 is_stmt 1 view .LVU209
+  91:App/Task_Display/Task_Widget.c ****         {
+ 705              		.loc 1 91 12 is_stmt 0 view .LVU210
+ 706 0118 022B     		cmp	r3, #2
+ 707 011a 9DDC     		bgt	.L7
+  95:App/Task_Display/Task_Widget.c ****         }
+ 708              		.loc 1 95 13 is_stmt 1 view .LVU211
+  95:App/Task_Display/Task_Widget.c ****         }
+ 709              		.loc 1 95 20 is_stmt 0 view .LVU212
+ 710 011c 0E4B     		ldr	r3, .L15+4
+ 711 011e 0022     		movs	r2, #0
+ 712 0120 1A70     		strb	r2, [r3]
+ 713 0122 99E7     		b	.L7
+ 714              	.L8:
+ 111:App/Task_Display/Task_Widget.c ****             selector = -1;
+ 715              		.loc 1 111 9 is_stmt 1 view .LVU213
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 17
+
+
+ 112:App/Task_Display/Task_Widget.c **** 
+ 716              		.loc 1 112 13 view .LVU214
+ 112:App/Task_Display/Task_Widget.c **** 
+ 717              		.loc 1 112 22 is_stmt 0 view .LVU215
+ 718 0124 124B     		ldr	r3, .L15+28
+ 719 0126 FF21     		movs	r1, #255
+ 720 0128 1970     		strb	r1, [r3]
+ 114:App/Task_Display/Task_Widget.c ****         {
+ 721              		.loc 1 114 9 is_stmt 1 view .LVU216
+ 116:App/Task_Display/Task_Widget.c ****         }
+ 722              		.loc 1 116 13 view .LVU217
+ 116:App/Task_Display/Task_Widget.c ****         }
+ 723              		.loc 1 116 29 is_stmt 0 view .LVU218
+ 724 012a 104B     		ldr	r3, .L15+24
+ 725 012c 1A70     		strb	r2, [r3]
+ 726 012e 9CE7     		b	.L9
+ 727              	.L10:
+ 134:App/Task_Display/Task_Widget.c **** 
+ 728              		.loc 1 134 9 is_stmt 1 view .LVU219
+ 134:App/Task_Display/Task_Widget.c **** 
+ 729              		.loc 1 134 13 is_stmt 0 view .LVU220
+ 730 0130 114A     		ldr	r2, .L15+36
+ 731 0132 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 732 0134 023B     		subs	r3, r3, #2
+ 733 0136 5BB2     		sxtb	r3, r3
+ 734 0138 1370     		strb	r3, [r2]
+ 136:App/Task_Display/Task_Widget.c ****         {
+ 735              		.loc 1 136 9 is_stmt 1 view .LVU221
+ 136:App/Task_Display/Task_Widget.c ****         {
+ 736              		.loc 1 136 12 is_stmt 0 view .LVU222
+ 737 013a 022B     		cmp	r3, #2
+ 738 013c A3DC     		bgt	.L11
+ 139:App/Task_Display/Task_Widget.c ****         }
+ 739              		.loc 1 139 13 is_stmt 1 view .LVU223
+ 139:App/Task_Display/Task_Widget.c ****         }
+ 740              		.loc 1 139 18 is_stmt 0 view .LVU224
+ 741 013e 0D4B     		ldr	r3, .L15+32
+ 742 0140 0022     		movs	r2, #0
+ 743 0142 1A70     		strb	r2, [r3]
+ 744 0144 9FE7     		b	.L11
+ 745              	.L12:
+ 148:App/Task_Display/Task_Widget.c ****         prc_val = 0;
+ 746              		.loc 1 148 10 is_stmt 1 view .LVU225
+ 148:App/Task_Display/Task_Widget.c ****         prc_val = 0;
+ 747              		.loc 1 148 13 is_stmt 0 view .LVU226
+ 748 0146 002B     		cmp	r3, #0
+ 749 0148 AADC     		bgt	.L13
+ 149:App/Task_Display/Task_Widget.c **** 
+ 750              		.loc 1 149 9 is_stmt 1 view .LVU227
+ 149:App/Task_Display/Task_Widget.c **** 
+ 751              		.loc 1 149 17 is_stmt 0 view .LVU228
+ 752 014a 0C4B     		ldr	r3, .L15+40
+ 753 014c 0022     		movs	r2, #0
+ 754 014e 1A70     		strb	r2, [r3]
+ 755 0150 A6E7     		b	.L13
+ 756              	.L16:
+ 757 0152 00BF     		.align	2
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 18
+
+
+ 758              	.L15:
+ 759 0154 00000000 		.word	.LANCHOR7
+ 760 0158 00000000 		.word	.LANCHOR8
+ 761 015c 00000000 		.word	.LANCHOR9
+ 762 0160 00000000 		.word	Widget_Mng
+ 763 0164 00000000 		.word	.LANCHOR1
+ 764 0168 00000000 		.word	.LANCHOR2
+ 765 016c 00000000 		.word	.LANCHOR10
+ 766 0170 00000000 		.word	.LANCHOR11
+ 767 0174 00000000 		.word	.LANCHOR12
+ 768 0178 00000000 		.word	.LANCHOR13
+ 769 017c 00000000 		.word	.LANCHOR14
+ 770 0180 00000000 		.word	.LANCHOR4
+ 771 0184 00000000 		.word	.LANCHOR3
+ 772              		.cfi_endproc
+ 773              	.LFE127:
+ 775              		.section	.text.TaskWidget_Core,"ax",%progbits
+ 776              		.align	1
+ 777              		.global	TaskWidget_Core
+ 778              		.syntax unified
+ 779              		.thumb
+ 780              		.thumb_func
+ 781              		.fpu fpv4-sp-d16
+ 783              	TaskWidget_Core:
+ 784              	.LVL63:
+ 785              	.LFB128:
+ 179:App/Task_Display/Task_Widget.c **** 
+ 180:App/Task_Display/Task_Widget.c **** void TaskWidget_Core(Task_Handler self)
+ 181:App/Task_Display/Task_Widget.c **** {
+ 786              		.loc 1 181 1 is_stmt 1 view -0
+ 787              		.cfi_startproc
+ 788              		@ args = 0, pretend = 0, frame = 0
+ 789              		@ frame_needed = 0, uses_anonymous_args = 0
+ 790              		.loc 1 181 1 is_stmt 0 view .LVU230
+ 791 0000 08B5     		push	{r3, lr}
+ 792              	.LCFI7:
+ 793              		.cfi_def_cfa_offset 8
+ 794              		.cfi_offset 3, -8
+ 795              		.cfi_offset 14, -4
+ 182:App/Task_Display/Task_Widget.c ****     switch ((uint8_t)TaskWidget_State)
+ 796              		.loc 1 182 5 is_stmt 1 view .LVU231
+ 797              		.loc 1 182 13 is_stmt 0 view .LVU232
+ 798 0002 114B     		ldr	r3, .L24
+ 799 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 800              		.loc 1 182 5 view .LVU233
+ 801 0006 012B     		cmp	r3, #1
+ 802 0008 09D0     		beq	.L18
+ 803 000a 022B     		cmp	r3, #2
+ 804 000c 13D0     		beq	.L19
+ 805 000e 03B1     		cbz	r3, .L23
+ 806              	.LVL64:
+ 807              	.L17:
+ 183:App/Task_Display/Task_Widget.c ****     {
+ 184:App/Task_Display/Task_Widget.c ****     case TaskWdiget_State_Init:
+ 185:App/Task_Display/Task_Widget.c ****         TaskWidget_Init();
+ 186:App/Task_Display/Task_Widget.c ****         TaskWidget_State = TaskWidget_State_CheckFresh;
+ 187:App/Task_Display/Task_Widget.c ****         break;
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 19
+
+
+ 188:App/Task_Display/Task_Widget.c **** 
+ 189:App/Task_Display/Task_Widget.c ****     case TaskWidget_State_CheckFresh:
+ 190:App/Task_Display/Task_Widget.c ****         if (Widget_Mng.trigger_fresh())
+ 191:App/Task_Display/Task_Widget.c ****         {
+ 192:App/Task_Display/Task_Widget.c ****             TaskWidget_State = TaskWidget_State_Fresh;
+ 193:App/Task_Display/Task_Widget.c ****         }
+ 194:App/Task_Display/Task_Widget.c ****         else
+ 195:App/Task_Display/Task_Widget.c ****             TaskWidget_State = TaskWidget_State_CheckFresh;
+ 196:App/Task_Display/Task_Widget.c ****         break;
+ 197:App/Task_Display/Task_Widget.c **** 
+ 198:App/Task_Display/Task_Widget.c ****     case TaskWidget_State_Fresh:
+ 199:App/Task_Display/Task_Widget.c ****         TestWidget_Dynamic_Dsp();
+ 200:App/Task_Display/Task_Widget.c ****         Widget_Mng.fresh_all();
+ 201:App/Task_Display/Task_Widget.c ****         TaskWidget_State = TaskWidget_State_CheckFresh;
+ 202:App/Task_Display/Task_Widget.c ****         break;
+ 203:App/Task_Display/Task_Widget.c ****     }
+ 204:App/Task_Display/Task_Widget.c **** }
+ 808              		.loc 1 204 1 view .LVU234
+ 809 0010 08BD     		pop	{r3, pc}
+ 810              	.LVL65:
+ 811              	.L23:
+ 185:App/Task_Display/Task_Widget.c ****         TaskWidget_State = TaskWidget_State_CheckFresh;
+ 812              		.loc 1 185 9 is_stmt 1 view .LVU235
+ 813 0012 FFF7FEFF 		bl	TaskWidget_Init
+ 814              	.LVL66:
+ 186:App/Task_Display/Task_Widget.c ****         break;
+ 815              		.loc 1 186 9 view .LVU236
+ 186:App/Task_Display/Task_Widget.c ****         break;
+ 816              		.loc 1 186 26 is_stmt 0 view .LVU237
+ 817 0016 0C4B     		ldr	r3, .L24
+ 818 0018 0122     		movs	r2, #1
+ 819 001a 1A70     		strb	r2, [r3]
+ 187:App/Task_Display/Task_Widget.c **** 
+ 820              		.loc 1 187 9 is_stmt 1 view .LVU238
+ 821 001c F8E7     		b	.L17
+ 822              	.LVL67:
+ 823              	.L18:
+ 190:App/Task_Display/Task_Widget.c ****         {
+ 824              		.loc 1 190 9 view .LVU239
+ 190:App/Task_Display/Task_Widget.c ****         {
+ 825              		.loc 1 190 23 is_stmt 0 view .LVU240
+ 826 001e 0B4B     		ldr	r3, .L24+4
+ 827 0020 1B69     		ldr	r3, [r3, #16]	@ unaligned
+ 190:App/Task_Display/Task_Widget.c ****         {
+ 828              		.loc 1 190 13 view .LVU241
+ 829 0022 9847     		blx	r3
+ 830              	.LVL68:
+ 190:App/Task_Display/Task_Widget.c ****         {
+ 831              		.loc 1 190 12 view .LVU242
+ 832 0024 18B1     		cbz	r0, .L21
+ 192:App/Task_Display/Task_Widget.c ****         }
+ 833              		.loc 1 192 13 is_stmt 1 view .LVU243
+ 192:App/Task_Display/Task_Widget.c ****         }
+ 834              		.loc 1 192 30 is_stmt 0 view .LVU244
+ 835 0026 084B     		ldr	r3, .L24
+ 836 0028 0222     		movs	r2, #2
+ 837 002a 1A70     		strb	r2, [r3]
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 20
+
+
+ 838 002c F0E7     		b	.L17
+ 839              	.L21:
+ 195:App/Task_Display/Task_Widget.c ****         break;
+ 840              		.loc 1 195 13 is_stmt 1 view .LVU245
+ 195:App/Task_Display/Task_Widget.c ****         break;
+ 841              		.loc 1 195 30 is_stmt 0 view .LVU246
+ 842 002e 064B     		ldr	r3, .L24
+ 843 0030 0122     		movs	r2, #1
+ 844 0032 1A70     		strb	r2, [r3]
+ 845 0034 ECE7     		b	.L17
+ 846              	.LVL69:
+ 847              	.L19:
+ 199:App/Task_Display/Task_Widget.c ****         Widget_Mng.fresh_all();
+ 848              		.loc 1 199 9 is_stmt 1 view .LVU247
+ 849 0036 FFF7FEFF 		bl	TestWidget_Dynamic_Dsp
+ 850              	.LVL70:
+ 200:App/Task_Display/Task_Widget.c ****         TaskWidget_State = TaskWidget_State_CheckFresh;
+ 851              		.loc 1 200 9 view .LVU248
+ 200:App/Task_Display/Task_Widget.c ****         TaskWidget_State = TaskWidget_State_CheckFresh;
+ 852              		.loc 1 200 19 is_stmt 0 view .LVU249
+ 853 003a 044B     		ldr	r3, .L24+4
+ 854 003c 5B69     		ldr	r3, [r3, #20]	@ unaligned
+ 200:App/Task_Display/Task_Widget.c ****         TaskWidget_State = TaskWidget_State_CheckFresh;
+ 855              		.loc 1 200 9 view .LVU250
+ 856 003e 9847     		blx	r3
+ 857              	.LVL71:
+ 201:App/Task_Display/Task_Widget.c ****         break;
+ 858              		.loc 1 201 9 is_stmt 1 view .LVU251
+ 201:App/Task_Display/Task_Widget.c ****         break;
+ 859              		.loc 1 201 26 is_stmt 0 view .LVU252
+ 860 0040 014B     		ldr	r3, .L24
+ 861 0042 0122     		movs	r2, #1
+ 862 0044 1A70     		strb	r2, [r3]
+ 202:App/Task_Display/Task_Widget.c ****     }
+ 863              		.loc 1 202 9 is_stmt 1 view .LVU253
+ 864              		.loc 1 204 1 is_stmt 0 view .LVU254
+ 865 0046 E3E7     		b	.L17
+ 866              	.L25:
+ 867              		.align	2
+ 868              	.L24:
+ 869 0048 00000000 		.word	.LANCHOR15
+ 870 004c 00000000 		.word	Widget_Mng
+ 871              		.cfi_endproc
+ 872              	.LFE128:
+ 874              		.global	Widget_Tsk_Hdl
+ 875              		.section	.bss.Lst_Encoder_Val.8,"aw",%nobits
+ 876              		.align	2
+ 877              		.set	.LANCHOR7,. + 0
+ 880              	Lst_Encoder_Val.8:
+ 881 0000 00000000 		.space	4
+ 882              		.section	.bss.TaskWidget_State,"aw",%nobits
+ 883              		.set	.LANCHOR15,. + 0
+ 886              	TaskWidget_State:
+ 887 0000 00       		.space	1
+ 888              		.section	.bss.Widget_Tsk_Hdl,"aw",%nobits
+ 889              		.align	2
+ 892              	Widget_Tsk_Hdl:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 21
+
+
+ 893 0000 00000000 		.space	4
+ 894              		.section	.bss.change.7,"aw",%nobits
+ 895              		.set	.LANCHOR8,. + 0
+ 898              	change.7:
+ 899 0000 00       		.space	1
+ 900              		.section	.bss.dis.1,"aw",%nobits
+ 901              		.set	.LANCHOR13,. + 0
+ 904              	dis.1:
+ 905 0000 00       		.space	1
+ 906              		.section	.bss.move.2,"aw",%nobits
+ 907              		.set	.LANCHOR12,. + 0
+ 910              	move.2:
+ 911 0000 00       		.space	1
+ 912              		.section	.bss.prc_val.0,"aw",%nobits
+ 913              		.set	.LANCHOR14,. + 0
+ 916              	prc_val.0:
+ 917 0000 00       		.space	1
+ 918              		.section	.bss.rad.6,"aw",%nobits
+ 919              		.set	.LANCHOR9,. + 0
+ 922              	rad.6:
+ 923 0000 00       		.space	1
+ 924              		.section	.bss.selector.3,"aw",%nobits
+ 925              		.set	.LANCHOR11,. + 0
+ 928              	selector.3:
+ 929 0000 00       		.space	1
+ 930              		.section	.bss.selector_switch.5,"aw",%nobits
+ 931              		.set	.LANCHOR10,. + 0
+ 934              	selector_switch.5:
+ 935 0000 00       		.space	1
+ 936              		.section	.bss.test1,"aw",%nobits
+ 937              		.align	2
+ 938              		.set	.LANCHOR0,. + 0
+ 941              	test1:
+ 942 0000 00000000 		.space	4
+ 943              		.section	.bss.test4,"aw",%nobits
+ 944              		.align	2
+ 945              		.set	.LANCHOR1,. + 0
+ 948              	test4:
+ 949 0000 00000000 		.space	4
+ 950              		.section	.bss.test_DigInput,"aw",%nobits
+ 951              		.align	2
+ 952              		.set	.LANCHOR6,. + 0
+ 955              	test_DigInput:
+ 956 0000 00000000 		.space	4
+ 957              		.section	.bss.test_checkbox_1,"aw",%nobits
+ 958              		.align	2
+ 959              		.set	.LANCHOR2,. + 0
+ 962              	test_checkbox_1:
+ 963 0000 00000000 		.space	4
+ 964              		.section	.bss.test_drop,"aw",%nobits
+ 965              		.align	2
+ 966              		.set	.LANCHOR5,. + 0
+ 969              	test_drop:
+ 970 0000 00000000 		.space	4
+ 971              		.section	.bss.test_processbar_1,"aw",%nobits
+ 972              		.align	2
+ 973              		.set	.LANCHOR3,. + 0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 22
+
+
+ 976              	test_processbar_1:
+ 977 0000 00000000 		.space	4
+ 978              		.section	.bss.test_slidebar_1,"aw",%nobits
+ 979              		.align	2
+ 980              		.set	.LANCHOR4,. + 0
+ 983              	test_slidebar_1:
+ 984 0000 00000000 		.space	4
+ 985              		.text
+ 986              	.Letext0:
+ 987              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 988              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 989              		.file 4 "SYS/task_manager/task_manager.h"
+ 990              		.file 5 "App/Task_Display/Task_Widget.h"
+ 991              		.file 6 "Dsp/screen/font/oledfont.h"
+ 992              		.file 7 "Dsp/widget/wgt_core/GenDsp.h"
+ 993              		.file 8 "Dsp/screen/OledIO_Definition/Oled_DspProp_Def.h"
+ 994              		.file 9 "Dsp/widget/wgt_core/UI_Controller.h"
+ 995              		.file 10 "Dsp/widget/wgt_core/widget_mng.h"
+ 996              		.file 11 "Dev/Dev_Toggle.h"
+ 997              		.file 12 "Dev/Dev_5DirButton.h"
+ 998              		.file 13 "Dev/Dev_Encoder.h"
+ 999              		.file 14 "App/Task_Input/Task_Input.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s 			page 23
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Task_Widget.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:18     .rodata.TaskWidget_Init.str1.4:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:46     .text.TaskWidget_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:53     .text.TaskWidget_Init:0000000000000000 TaskWidget_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:387    .text.TaskWidget_Init:0000000000000170 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:408    .text.TestWidget_Dynamic_Dsp:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:414    .text.TestWidget_Dynamic_Dsp:0000000000000000 TestWidget_Dynamic_Dsp
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:759    .text.TestWidget_Dynamic_Dsp:0000000000000154 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:776    .text.TaskWidget_Core:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:783    .text.TaskWidget_Core:0000000000000000 TaskWidget_Core
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:869    .text.TaskWidget_Core:0000000000000048 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:892    .bss.Widget_Tsk_Hdl:0000000000000000 Widget_Tsk_Hdl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:876    .bss.Lst_Encoder_Val.8:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:880    .bss.Lst_Encoder_Val.8:0000000000000000 Lst_Encoder_Val.8
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:886    .bss.TaskWidget_State:0000000000000000 TaskWidget_State
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:887    .bss.TaskWidget_State:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:889    .bss.Widget_Tsk_Hdl:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:898    .bss.change.7:0000000000000000 change.7
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:899    .bss.change.7:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:904    .bss.dis.1:0000000000000000 dis.1
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:905    .bss.dis.1:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:910    .bss.move.2:0000000000000000 move.2
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:911    .bss.move.2:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:916    .bss.prc_val.0:0000000000000000 prc_val.0
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:917    .bss.prc_val.0:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:922    .bss.rad.6:0000000000000000 rad.6
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:923    .bss.rad.6:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:928    .bss.selector.3:0000000000000000 selector.3
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:929    .bss.selector.3:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:934    .bss.selector_switch.5:0000000000000000 selector_switch.5
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:935    .bss.selector_switch.5:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:937    .bss.test1:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:941    .bss.test1:0000000000000000 test1
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:944    .bss.test4:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:948    .bss.test4:0000000000000000 test4
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:951    .bss.test_DigInput:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:955    .bss.test_DigInput:0000000000000000 test_DigInput
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:958    .bss.test_checkbox_1:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:962    .bss.test_checkbox_1:0000000000000000 test_checkbox_1
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:965    .bss.test_drop:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:969    .bss.test_drop:0000000000000000 test_drop
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:972    .bss.test_processbar_1:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:976    .bss.test_processbar_1:0000000000000000 test_processbar_1
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:979    .bss.test_slidebar_1:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccNOkIE3.s:983    .bss.test_slidebar_1:0000000000000000 test_slidebar_1
+
+UNDEFINED SYMBOLS
+Widget_Mng
+TaskInput_GetData

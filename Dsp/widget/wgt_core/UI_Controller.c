@@ -360,7 +360,7 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_DigInput:
-        block_y = HandleToDigInputObj(item->Handler)->Gen_Data.y - 1;
+        block_y = HandleToDigInputObj(item->Handler)->Gen_Data.y;
 
         if (HandleToDigInputObj(item->Handler)->selected)
         {
@@ -374,7 +374,7 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         break;
 
     case UI_Type_StrInput:
-        block_y = HandleToStrInputObj(item->Handler)->Gen_Data.y - 1;
+        block_y = HandleToStrInputObj(item->Handler)->Gen_Data.y;
 
         if (HandleToStrInputObj(item->Handler)->selected)
         {
