@@ -168,6 +168,12 @@ typedef struct
 typedef struct
 {
     UI_DigInput_Handle (*create)(char *label, int16_t x, int16_t y, UI_DigInput_Type type);
+    bool (*Move)(UI_DigInput_Handle hdl, int16_t x, int16_t y);
+    bool (*set_callback)(UI_DigInput_Handle hdl, UI_DigInput_Callback callback);
+    bool (*set_IntInput_Range)(UI_DigInput_Handle hdl, uint8_t eff_len, int32_t min, int32_t max, int32_t default_val);
+    bool (*set_DouInput_Range)(UI_DigInput_Handle hdl, uint8_t int_eff_len, uint8_t dou_eff_len, double max, double min, double cur);
+    bool (*select)(UI_DigInput_Handle hdl, bool state);
+    bool (*input)(UI_DigInput_Handle hdl, uint8_t pos, int8_t *val);
 } WidgetUI_DigInput_Interface_TypeDef;
 
 typedef struct
