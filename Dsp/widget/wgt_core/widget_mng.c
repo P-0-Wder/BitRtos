@@ -2030,6 +2030,39 @@ static WidgetUI_StrInput_Interface_TypeDef *WidgetUI_GetStrInput_Instance(void)
 
 static UI_StrInput_Handle WidgetUI_Create_StrInput(char *label, int16_t x, int16_t y)
 {
+    UI_StrInputObj_TypeDef *str_input = NULL;
+
+    str_input = (UI_StrInputObj_TypeDef *)MMU_Malloc(sizeof(UI_StrInputObj_TypeDef));
+    if ((str_input == NULL) ||
+        (!UI_StrInput.init(str_input, label, x, y + UI_Get_FontType())) ||
+        (!WidgetUIList_InsertItem(str_input, UI_Type_StrInput)))
+        return NULL;
+
+    return ((UI_StrInput_Handle)str_input);
+}
+
+static bool WidgetUI_StrInput_Move(UI_StrInput_Handle hdl, int16_t x, int16_t y)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_StrInput.Move(HandleToStrInputObj(hdl), x, y);
+}
+
+static bool WidgetUI_StrInput_SetCallback(UI_StrInput_Handle hdl, UI_StrInput_Callback callback)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_StrInput.set_callback(HandleToStrInputObj(hdl), callback);
+}
+
+static bool WidgetUI_StrInput_Select(UI_StrInput_Handle hdl, bool state)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_StrInput.Set_Select(HandleToStrInputObj(hdl), state);
 }
 
 /************************************** widget StrInput interface ******************************************/
