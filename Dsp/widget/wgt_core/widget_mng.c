@@ -99,6 +99,7 @@ static WidgetUI_Button_Interface_TypeDef *WidgetUI_GetButton_Instance(void);
 static WidgetUI_CheckBox_Interface_TypeDef *WidgetUI_GetCheckBox_Instance(void);
 static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
 static WidgetUI_DigInput_Interface_TypeDef *WidgetUI_GetDigInput_Instance(void);
+static WidgetUI_StrInput_Interface_TypeDef *WidgetUI_GetStrInput_Instance(void);
 static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(void);
 
 /* general UI Mathod */
@@ -195,6 +196,10 @@ WidgetUI_DigInput_Interface_TypeDef WidgetUI_DigInput = {
     .create = NULL,
 };
 
+WidgetUI_StrInput_Interface_TypeDef WidgetUI_StrInput = {
+    .create = NULL,
+};
+
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
@@ -203,8 +208,9 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .CheckBox = WidgetUI_GetCheckBox_Instance,
     .SlideBar = WidgetUI_GetSlideBar_Instance,
     .ProcessBar = WidgetUI_GetProcessBar_Instance,
+    .DigInput = WidgetUI_GetDigInput_Instance,
+    .StrInput = WidgetUI_GetStrInput_Instance,
     .Drop = WidgetUI_GetDrop_Instance,
-    // .UI_StrInput = NULL,
     // .UI_ProcBar = NULL,
     // .UI_VerBar = NULL,
     // .UI_HorBar = NULL,
@@ -1920,9 +1926,80 @@ static UI_DigInput_Handle WidgetUI_Create_DigInput(char *label, int16_t x, int16
     return ((UI_DigInput_Handle)dig_input);
 }
 
+static bool WidgetUI_DigInput_Setcallback(UI_DigInput_Handle hdl, UI_DigInput_Callback callback)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.set_callback(HandleToDigInputObj(hdl), callback);
+}
+
+static bool WidgetUI_DigInput_SetIntRange(UI_DigInput_Handle hdl, uint8_t eff_len, int32_t min, int32_t max, int32_t default_val)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.set_range_IntInput(HandleToDigInputObj(hdl), eff_len, max, min, default_val);
+}
+
+static bool WidgetUI_DigInput_SetDouRange(UI_DigInput_Handle hdl, uint8_t int_eff_len, uint8_t dou_eff_len, double max, double min, double cur)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.set_range_DouInput(HandleToDigInputObj(hdl), int_eff_len, dou_eff_len, max, min, cur);
+}
+
+static bool WidgetUI_DigInput_Move(UI_DigInput_Handle hdl, int16_t x, int16_t y)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.Move(HandleToDigInputObj(hdl), x, y);
+}
+
+static bool WidgetUI_DigInput_Select(UI_DigInput_Handle hdl, bool state)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.Set_Select(HandleToDigInputObj(hdl), state);
+}
+
+static bool WidgetUI_DigInput_Value(UI_DigInput_Handle hdl, uint8_t pos, int8_t *val)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_DigInput.input_val(HandleToDigInputObj(hdl), pos, val);
+}
+
+static bool WidgetUI_DigInput_Fresh(UI_DigInput_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+
+    if (HandleToDigInputObj(hdl)->Gen_Data.y < UI_Get_FontType() ||
+        HandleToDigInputObj(hdl)->Gen_Data.x < 0)
+        return true;
+
+    // if(HandleToDigInputObj(hdl)->Gen_Data.y )
+
+    return UI_DigInput.ctl(HandleToDigInputObj(hdl));
+}
+
 /************************************** widget DigInput interface ******************************************/
 
 /************************************** widget StrInput interface ******************************************/
+
+static WidgetUI_StrInput_Interface_TypeDef *WidgetUI_GetStrInput_Instance(void)
+{
+    return &WidgetUI_StrInput;
+}
+
+static UI_StrInput_Handle WidgetUI_Create_StrInput(char *label, int16_t x, int16_t y)
+{
+}
 
 /************************************** widget StrInput interface ******************************************/
 

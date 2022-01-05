@@ -440,8 +440,8 @@ typedef struct
     bool (*Move)(UI_StrInputObj_TypeDef *Obj, int16_t x, int16_t y);
     bool (*set_callback)(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Callback callback);
     bool (*Set_Select)(UI_StrInputObj_TypeDef *Obj, bool state);
-    bool (*input_val)(UI_StrInputObj_TypeDef *Obj, uint8_t pos, char input);
-    char *(*get_val)(UI_StrInputObj_TypeDef *Obj);
+    bool (*input_char)(UI_StrInputObj_TypeDef *Obj, uint8_t pos, char input);
+    char *(*get_str)(UI_StrInputObj_TypeDef *Obj);
     bool (*ctl)(UI_StrInputObj_TypeDef *Obj);
 } UI_StrInput_Interface_TypeDef;
 
@@ -481,6 +481,7 @@ extern UI_Button_Interface_TypeDef UI_Button;
 extern UI_DigInput_Interface_TypeDef UI_DigInput;
 extern UI_CheckBox_Interface_TypeDef UI_CheckBox;
 extern UI_DigInput_Interface_TypeDef UI_DigInput;
+extern UI_StrInput_Interface_TypeDef UI_StrInput;
 extern UI_SliderBar_Interface_TypeDef UI_SlideBar;
 extern UI_ProcessBar_Interface_TypeDef UI_ProcessBar;
 #endif

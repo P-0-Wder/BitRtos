@@ -172,6 +172,11 @@ typedef struct
 
 typedef struct
 {
+    UI_StrInput_Handle (*create)(char *label, int16_t x, int16_t y);
+} WidgetUI_StrInput_Interface_TypeDef;
+
+typedef struct
+{
     /* general UI function mathod */
     bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
@@ -184,7 +189,7 @@ typedef struct
     WidgetUI_ProcessBar_Interface_TypeDef *(*ProcessBar)(void);
     WidgetUI_Drop_Interface_TypeDef *(*Drop)(void);
     WidgetUI_DigInput_Interface_TypeDef (*DigInput)(void);
-    // void (*UI_StrInput)();
+    WidgetUI_StrInput_Interface_TypeDef (*StrInput)(void);
     // void (*UI_ProcBar)();
     // void (*UI_VerBar)();
     // void (*UI_HorBar)();
