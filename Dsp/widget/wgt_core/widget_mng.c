@@ -157,9 +157,15 @@ static bool WidgetUI_DigInput_SetDouRange(UI_DigInput_Handle hdl, uint8_t int_ef
 static bool WidgetUI_DigInput_Move(UI_DigInput_Handle hdl, int16_t x, int16_t y);
 static bool WidgetUI_DigInput_Select(UI_DigInput_Handle hdl, bool state);
 static bool WidgetUI_DigInput_Value(UI_DigInput_Handle hdl, uint8_t pos, int8_t *val);
-static bool WidgetUI_DigInput_Fresh(UI_DigInput_Handle hdl);
+static bool WidgetUI_Fresh_DigInput(UI_DigInput_Handle hdl);
 
 /* Widget UI String Input Mathod */
+static UI_StrInput_Handle WidgetUI_Create_StrInput(char *label, int16_t x, int16_t y);
+static bool WidgetUI_StrInput_Move(UI_StrInput_Handle hdl, int16_t x, int16_t y);
+static bool WidgetUI_StrInput_SetCallback(UI_StrInput_Handle hdl, UI_StrInput_Callback callback);
+static bool WidgetUI_StrInput_Select(UI_StrInput_Handle hdl, bool state);
+static bool WidgetUI_StrInput_StrChar(UI_StrInput_Handle hdl, uint8_t pos, char input);
+static bool WidgetUI_Fresh_StrInput(UI_StrInput_Handle hdl);
 
 /* Widget Button object Interface */
 WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
@@ -213,6 +219,10 @@ WidgetUI_DigInput_Interface_TypeDef WidgetUI_DigInput = {
 
 WidgetUI_StrInput_Interface_TypeDef WidgetUI_StrInput = {
     .create = NULL,
+    .Move = WidgetUI_StrInput_Move,
+    .set_callback = WidgetUI_StrInput_SetCallback,
+    .Select = WidgetUI_StrInput_Select,
+    .set_char = WidgetUI_StrInput_StrChar,
 };
 
 /* for temp we init each var as null */
@@ -1140,6 +1150,14 @@ static void WidgetUI_SetAll_CoordY_Offset(int8_t offset)
                     UI_Drop.Move(HandleToDropObj(ui_handle), HandleToDropObj(ui_handle)->Gen_Data.x, HandleToDropObj(ui_handle)->Gen_Data.y + offset);
                     break;
 
+                case UI_Type_DigInput:
+                    UI_DigInput.Move(HandleToDigInputObj(ui_handle), HandleToDigInputObj(ui_handle)->Gen_Data.x, HandleToDigInputObj(ui_handle)->Gen_Data.y + offset);
+                    break;
+
+                case UI_Type_StrInput:
+                    UI_StrInput.Move(HandleToStrInputObj(ui_handle), HandleToStrInputObj(ui_handle)->Gen_Data.x, HandleToStrInputObj(ui_handle)->Gen_Data.y);
+                    break;
+
                 default:
                     break;
                 }
@@ -1227,6 +1245,19 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
             return true;
         else
             break;
+
+    case UI_Type_DigInput:
+        if (HandleToDigInputObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < UI_Get_FontType())
+            return true;
+        else
+            break;
+
+    case UI_Type_StrInput:
+        if (HandleToStrInputObj(((WidgetUI_Item_TypeDef *)(tmp->CurSelected_CTL->data))->Handler)->Gen_Data.y < UI_Get_FontType())
+            return true;
+        else
+            break;
+
     default:
         break;
     }
@@ -1274,6 +1305,12 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
 
     case UI_Type_Drop:
         return WidgetUI_Fresh_Drop(UI_Data->Handler);
+
+    case UI_Type_DigInput:
+        return WidgetUI_Fresh_DigInput(UI_Data->Handler);
+
+    case UI_Type_StrInput:
+        return WidgetUI_Fresh_StrInput(UI_Data->Handler);
 
     default:
         return false;
@@ -2017,7 +2054,7 @@ static bool WidgetUI_DigInput_Value(UI_DigInput_Handle hdl, uint8_t pos, int8_t 
     return UI_DigInput.input_val(HandleToDigInputObj(hdl), pos, val);
 }
 
-static bool WidgetUI_DigInput_Fresh(UI_DigInput_Handle hdl)
+static bool WidgetUI_Fresh_DigInput(UI_DigInput_Handle hdl)
 {
     int16_t offset = 0;
 
@@ -2091,6 +2128,44 @@ static bool WidgetUI_StrInput_Select(UI_StrInput_Handle hdl, bool state)
         return false;
 
     return UI_StrInput.Set_Select(HandleToStrInputObj(hdl), state);
+}
+
+static bool WidgetUI_StrInput_StrChar(UI_StrInput_Handle hdl, uint8_t pos, char input)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_StrInput.input_char(HandleToStrInputObj(hdl), pos, input);
+}
+
+static bool WidgetUI_Fresh_StrInput(UI_StrInput_Handle hdl)
+{
+    int16_t offset = 0;
+
+    if (hdl == 0)
+        return false;
+
+    if (HandleToStrInputObj(hdl)->Gen_Data.y < UI_Get_FontType() ||
+        HandleToStrInputObj(hdl)->Gen_Data.x < 0)
+    {
+        if (WidgetUI_GetCurSelected_UICtl() == hdl)
+            WidgetUI_SetAll_CoordY_Offset(UICTL_STRINPUT_HEIGHT);
+
+        return true;
+    }
+
+    if ((HandleToStrInputObj(hdl)->Gen_Data.y > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
+        (HandleToStrInputObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
+    {
+        offset = GetCur_Active_Widget()->height - UI_Get_FontType() - (HandleToStrInputObj(hdl)->Gen_Data.y + UICTL_STRINPUT_HEIGHT);
+
+        if (WidgetUI_GetCurSelected_UICtl() == hdl)
+            WidgetUI_SetAll_CoordY_Offset(offset);
+
+        return false;
+    }
+
+    return UI_StrInput.ctl(HandleToStrInputObj(hdl));
 }
 
 /************************************** widget StrInput interface ******************************************/

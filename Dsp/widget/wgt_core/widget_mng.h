@@ -179,6 +179,10 @@ typedef struct
 typedef struct
 {
     UI_StrInput_Handle (*create)(char *label, int16_t x, int16_t y);
+    bool (*Move)(UI_StrInput_Handle hdl, int16_t x, int16_t y);
+    bool (*set_callback)(UI_StrInput_Handle hdl, UI_StrInput_Callback callback);
+    bool (*Select)(UI_StrInput_Handle hdl, bool state);
+    bool (*set_char)(UI_StrInput_Handle hdl, uint8_t pos, char input);
 } WidgetUI_StrInput_Interface_TypeDef;
 
 typedef struct
