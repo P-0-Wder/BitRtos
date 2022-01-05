@@ -49,7 +49,7 @@ static void TaskWidget_Init(void)
     Widget_Mng.Control(test4)->UI()->Drop()->add_item(test_drop, "item_2", NULL, 0, NULL);
 
     test_DigInput = Widget_Mng.Control(test4)->UI()->DigInput()->create("Int Input:", 0, 47, UI_IntDig_Input);
-    Widget_Mng.Control(test4)->UI()->DigInput()->set_IntInput_Range(test_DigInput, 3, -100, 100, 20);
+    Widget_Mng.Control(test4)->UI()->DigInput()->set_IntInput_Range(test_DigInput, 3, -200, 200, -173);
 
     // Widget_Mng.Control(test4)->UI()->StrInput()->create("Str Input:", 0, 45);
 }

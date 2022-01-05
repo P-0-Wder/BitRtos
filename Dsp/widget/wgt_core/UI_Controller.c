@@ -1469,6 +1469,8 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
 {
     int16_t dig_dsp_offset = 0;
     int16_t str_x = 0;
+    int32_t int_dsp_val = 0;
+    double dou_dsp_val = 0.0;
 
     if (Obj == NULL)
         return false;
@@ -1478,18 +1480,27 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
     UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, Obj->Gen_Data.y, true);
     dig_dsp_offset = strlen(Obj->Gen_Data.label) * STR_DIS + 5;
 
+    if ((Obj->InputData_Int.CurVal < 0) || (Obj->InputData_Dou.CurVal < 0))
+    {
+        UI_DspInterface.draw_str(base_font, "-", str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
+        dig_dsp_offset += STR_DIS;
+    }
+
     switch (Obj->type)
     {
     case UI_IntDig_Input:
-        for (uint8_t i = Obj->InputData_Int.effective_len; i > 0; i--)
+        int_dsp_val = abs(Obj->InputData_Int.CurVal);
+
+        for (int8_t i = (Obj->InputData_Int.effective_len - 1); i >= 0; i--)
         {
-            UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            UI_DspInterface.draw_dig(base_font, int_dsp_val / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
+            int_dsp_val %= (int)pow(10, i);
             dig_dsp_offset += STR_DIS;
         }
         break;
 
     case UI_DoubleDig_Input:
-        for (uint8_t i = Obj->InputData_Dou.effective_int_len; i > 0; i--)
+        for (int8_t i = (Obj->InputData_Dou.effective_int_len - 1); i >= 0; i--)
         {
             UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
             dig_dsp_offset += STR_DIS;
@@ -1498,7 +1509,7 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
         UI_DspInterface.draw_str(base_font, ".", str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
         dig_dsp_offset += STR_DIS;
 
-        for (uint8_t i = Obj->InputData_Dou.effective_point_len; i > 0; i++)
+        for (uint8_t i = (Obj->InputData_Dou.effective_point_len - 1); i > 0; i++)
         {
             UI_DspInterface.draw_dig(base_font, Obj->InputData_Dou.PointPart / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
             dig_dsp_offset += STR_DIS;
