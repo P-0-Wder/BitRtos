@@ -1366,6 +1366,34 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         }
         break;
 
+    case UI_Type_DigInput:
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return HandleToDigInputObj(item->Handler)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return HandleToDigInputObj(item->Handler)->Gen_Data.y;
+
+        default:
+            return 0;
+        }
+        break;
+
+    case UI_Type_StrInput:
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return HandleToStrInputObj(item->Handler)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return HandleToStrInputObj(item->Handler)->Gen_Data.y;
+
+        default:
+            return 0;
+        }
+        break;
+
     default:
         return 0;
     }
