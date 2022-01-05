@@ -1470,7 +1470,7 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
     int16_t dig_dsp_offset = 0;
     int16_t str_x = 0;
     int32_t int_dsp_val = 0;
-    double dou_dsp_val = 0.0;
+    int32_t dou_dsp_val = 0.0;
 
     if (Obj == NULL)
         return false;
@@ -1500,6 +1500,7 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
         break;
 
     case UI_DoubleDig_Input:
+        /* still in debug down below */
         for (int8_t i = (Obj->InputData_Dou.effective_int_len - 1); i >= 0; i--)
         {
             UI_DspInterface.draw_dig(base_font, Obj->InputData_Int.CurVal / (int)pow(10, i), str_x + dig_dsp_offset, Obj->Gen_Data.y, true);
