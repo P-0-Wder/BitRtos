@@ -208,6 +208,15 @@ typedef enum
 #pragma pack(1)
 typedef struct
 {
+    uint8_t coord_x;
+    uint8_t coord_y;
+
+    uint8_t width;
+    uint8_t height;
+} UI_SelectorObj_Typedef;
+
+typedef struct
+{
     int16_t x;
     int16_t y;
     uint8_t width;
