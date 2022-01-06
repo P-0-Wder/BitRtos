@@ -1155,7 +1155,7 @@ static void WidgetUI_SetAll_CoordY_Offset(int8_t offset)
                     break;
 
                 case UI_Type_StrInput:
-                    UI_StrInput.Move(HandleToStrInputObj(ui_handle), HandleToStrInputObj(ui_handle)->Gen_Data.x, HandleToStrInputObj(ui_handle)->Gen_Data.y);
+                    UI_StrInput.Move(HandleToStrInputObj(ui_handle), HandleToStrInputObj(ui_handle)->Gen_Data.x, HandleToStrInputObj(ui_handle)->Gen_Data.y + offset);
                     break;
 
                 default:
@@ -1585,7 +1585,9 @@ static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl)
         HandleToButtonObj(Btn_Hdl)->Gen_Data.x < 0)
     {
         if (WidgetUI_GetCurSelected_UICtl() == Btn_Hdl)
+        {
             WidgetUI_SetAll_CoordY_Offset(UICTL_SLIDERBAR_HEIGHT);
+        }
 
         return true;
     }
@@ -1974,10 +1976,8 @@ static bool WidgetUI_Fresh_Drop(UI_Drop_Handle hdl)
     if ((HandleToDropObj(hdl)->Gen_Data.y > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToDropObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
     {
-        offset = GetCur_Active_Widget()->height - UI_Get_FontType() - (HandleToDropObj(hdl)->Gen_Data.y + UICTL_DROP_HEIGHT);
-
         if (WidgetUI_GetCurSelected_UICtl() == hdl)
-            WidgetUI_SetAll_CoordY_Offset(offset);
+            WidgetUI_SetAll_CoordY_Offset(-UICTL_DROP_HEIGHT);
 
         return false;
     }
@@ -2056,8 +2056,6 @@ static bool WidgetUI_DigInput_Value(UI_DigInput_Handle hdl, uint8_t pos, int8_t 
 
 static bool WidgetUI_Fresh_DigInput(UI_DigInput_Handle hdl)
 {
-    int16_t offset = 0;
-
     if (hdl == 0)
         return false;
 
@@ -2073,10 +2071,8 @@ static bool WidgetUI_Fresh_DigInput(UI_DigInput_Handle hdl)
     if ((HandleToDigInputObj(hdl)->Gen_Data.y > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToDigInputObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
     {
-        offset = GetCur_Active_Widget()->height - UI_Get_FontType() - (HandleToDigInputObj(hdl)->Gen_Data.y + UICTL_DIGINPUT_HEIGHT);
-
         if (WidgetUI_GetCurSelected_UICtl() == hdl)
-            WidgetUI_SetAll_CoordY_Offset(offset);
+            WidgetUI_SetAll_CoordY_Offset(-UICTL_DIGINPUT_HEIGHT);
 
         return false;
     }
@@ -2140,8 +2136,6 @@ static bool WidgetUI_StrInput_StrChar(UI_StrInput_Handle hdl, uint8_t pos, char 
 
 static bool WidgetUI_Fresh_StrInput(UI_StrInput_Handle hdl)
 {
-    int16_t offset = 0;
-
     if (hdl == 0)
         return false;
 
@@ -2157,10 +2151,8 @@ static bool WidgetUI_Fresh_StrInput(UI_StrInput_Handle hdl)
     if ((HandleToStrInputObj(hdl)->Gen_Data.y > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
         (HandleToStrInputObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
     {
-        offset = GetCur_Active_Widget()->height - UI_Get_FontType() - (HandleToStrInputObj(hdl)->Gen_Data.y + UICTL_STRINPUT_HEIGHT);
-
         if (WidgetUI_GetCurSelected_UICtl() == hdl)
-            WidgetUI_SetAll_CoordY_Offset(offset);
+            WidgetUI_SetAll_CoordY_Offset(-UICTL_STRINPUT_HEIGHT);
 
         return false;
     }

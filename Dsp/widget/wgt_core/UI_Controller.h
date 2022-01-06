@@ -305,6 +305,8 @@ typedef enum
     UI_DefaultDig_Input = 0,
     UI_IntDig_Input = 0,
     UI_DoubleDig_Input,
+    UI_IntDig_Display,
+    UI_DoubleDig_Display,
 } UI_DigInput_Type;
 
 typedef enum

@@ -25,6 +25,7 @@ static UI_SlideBar_Handle test_slidebar_1 = 0;
 static UI_ProcessBar_Handle test_processbar_1 = 0;
 static UI_Drop_Handle test_drop = 0;
 static UI_DigInput_Handle test_DigInput = 0;
+static UI_StrInput_Handle test_StrInput = 0;
 
 /* internal function definition */
 
@@ -51,6 +52,7 @@ static void TaskWidget_Init(void)
     test_DigInput = Widget_Mng.Control(test4)->UI()->DigInput()->create("Int Input:", 0, 47, UI_IntDig_Input);
     Widget_Mng.Control(test4)->UI()->DigInput()->set_IntInput_Range(test_DigInput, 3, -200, 200, -173);
 
+    test_StrInput = Widget_Mng.Control(test4)->UI()->StrInput()->create("Str Input:", 0, 56);
     // Widget_Mng.Control(test4)->UI()->StrInput()->create("Str Input:", 0, 45);
 }
 
