@@ -243,6 +243,8 @@ typedef struct
 
     int8_t UI_CoordY_Offset;
     item_obj *CurSelected_CTL;
+
+    UI_SelectorObj_Typedef *selector;
 } WidgetObj_TypeDef;
 
 typedef struct

@@ -376,6 +376,12 @@ static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width
     widget_tmp->ui_ctl_num = 0;
     widget_tmp->CurSelected_CTL = NULL;
 
+    /* create a UI selector in current widget */
+    widget_tmp->selector = (UI_SelectorObj_Typedef *)MMU_Malloc(sizeof(UI_SelectorObj_Typedef));
+
+    if (widget_tmp->selector == NULL)
+        return WIDGET_CREATE_ERROR;
+
     return (Widget_Handle)widget_tmp;
 }
 
