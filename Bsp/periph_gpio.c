@@ -559,6 +559,12 @@ void GPIO_IIC2_IO_Init(void)
 
 void GPIO_SDIO_IO_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCMD(SDIO_D0_IO_PORT, ENABLE);
+	RCC_AHB1PeriphClockCMD(SDIO_CMD_IO_PORT, ENABLE);
+
+	RCC_APB2PeriphClockCMD(RCC_APB2Periph_SDIO, ENABLE);
 }
 
 void GPIO_IO_Encoder_Init(GPIO_TypeDef *Portx, uint32_t GPIO_CLK, uint16_t pin, uint8_t pin_src, uint8_t GPIO_AF_TIMx)
