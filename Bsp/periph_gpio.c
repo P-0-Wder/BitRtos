@@ -557,6 +557,10 @@ void GPIO_IIC2_IO_Init(void)
 {
 }
 
+void GPIO_SDIO_IO_Init(void)
+{
+}
+
 void GPIO_IO_Encoder_Init(GPIO_TypeDef *Portx, uint32_t GPIO_CLK, uint16_t pin, uint8_t pin_src, uint8_t GPIO_AF_TIMx)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;

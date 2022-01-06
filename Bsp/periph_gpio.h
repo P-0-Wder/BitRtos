@@ -194,6 +194,28 @@
 
 //IIC IO definition
 
+//SDIO IO definition
+#define SDIO_D0_IO_CLK RCC_AHB1Periph_GPIOC
+#define SDIO_D1_IO_CLK RCC_AHB1Periph_GPIOC
+#define SDIO_D2_IO_CLK RCC_AHB1Periph_GPIOC
+#define SDIO_D3_IO_CLK RCC_AHB1Periph_GPIOC
+#define SDIO_CMD_IO_CLK RCC_AHB1Periph_GPIOD
+#define SDIO_CLK_IO_CLK RCC_AHB1Periph_GPIOC
+
+#define SDIO_D0_IO_PORT GPIOC
+#define SDIO_D1_IO_PORT GPIOC
+#define SDIO_D2_IO_PORT GPIOC
+#define SDIO_D3_IO_PORT GPIOC
+#define SDIO_CMD_IO_PORT GPIOD
+#define SDIO_CLK_IO_PORT GPIOC
+
+#define SDIO_D0_IO_Pin GPIO_Pin_8
+#define SDIO_D1_IO_Pin GPIO_Pin_9
+#define SDIO_D2_IO_Pin GPIO_Pin_10
+#define SDIO_D3_IO_Pin GPIO_Pin_11
+#define SDIO_CMD_IO_Pin GPIO_Pin_2
+#define SDIO_CLK_IO_Pin GPIO_Pin_12
+
 #define SetBit(x) 1 << x
 
 typedef enum
@@ -241,6 +263,8 @@ void GPIO_ADC1_Channel11_IO_Init(void);
 void GPIO_ADC1_Channel12_IO_Init(void);
 void GPIO_ADC1_Channel13_IO_Init(void);
 void GPIO_ADC1_Channel14_IO_Init(void);
+
+void GPIO_SDIO_IO_Init(void);
 
 void GPIO_IO_Encoder_Init(GPIO_TypeDef *Portx, uint32_t GPIO_CLK, uint16_t pin, uint8_t pin_src, uint8_t GPIO_AF_TIMx);
 void GPIO_IO_Output_Init(uint32_t RCC_AHBCLK, uint16_t pin, GPIO_TypeDef *GPIO_Port);
