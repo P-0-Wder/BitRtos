@@ -2,8 +2,7 @@
 #include "runtime.h"
 #include "string.h"
 #include "stddef.h"
-#include "periph_gpio.h"
-#include "periph_timer.h"
+#include "drv_timer.h"
 #include <stdio.h>
 #include "task_manager_cfg.h"
 #include "binary_tree.h"
@@ -77,6 +76,7 @@ volatile TaskStack_ControlBlock CurTsk_TCB;
 volatile TaskStack_ControlBlock NxtTsk_TCB;
 
 static uint32_t Task_OS_StkMem[MSP_MEM_SPACE_SIZE];
+static DrvTimer_Obj_TypeDef SysTimerObj;
 uint32_t *Task_OS_ExpStkBase;
 
 static void Task_SetStkPtr_Val(Task *tsk);
@@ -87,6 +87,7 @@ static void Task_SetBASEPRI(uint32_t ulBASEPRI);
 void Task_SetPending(Task *tsk);
 #endif
 
+static void Task_Statistic_Cast(uint8_t *time_base, uint16_t unuse);
 static void Task_Exec(Task *tsk_ptr);
 static void Task_SetPendSVPro(void);
 void Task_TriggerPendSV(void);
@@ -142,8 +143,18 @@ static bool TaskSys_Init(void)
     Task_OS_ExpStkBase = Task_OS_StkMem + MSP_MEM_SPACE_SIZE - 1;
 #endif
 
-    //periph_Timer_CounterMode_Init(Timer_4, TimerCounter_1M_Prescaler, TimerCounter_1us_Period, 0, 1);
-    //periph_Timer_Counter_SetEnable(Timer_4, DISABLE);
+    DrvTimer.obj_clear(&SysTimerObj);
+
+    SysTimerObj.timerx = Timer_4;
+    SysTimerObj.period = TimerCounter_1us_Period;
+    SysTimerObj.Prescaler = TimerCounter_1M_Prescaler;
+    SysTimerObj.PreemptionPriority = 0;
+    SysTimerObj.SubPriority = 1;
+
+    DrvTimer.ctl(DrvTimer_Counter_Mode, (uint32_t)&SysTimerObj, 0);
+    DrvTimer.ctl(DrvTimer_Counter_SetIRQCallback, (uint32_t)&SysTimerObj, Task_Statistic_Cast);
+    // periph_Timer_CounterMode_Init(Timer_4, TimerCounter_1M_Prescaler, TimerCounter_1us_Period, 0, 1);
+    // periph_Timer_Counter_SetEnable(Timer_4, DISABLE);
 
     uint8_t index = 0;
 
@@ -799,6 +810,7 @@ void TaskSystem_Start(void)
     }
 #endif
 
+    DrvTimer.ctl(DrvTimer_Counter_SetState, (uint32_t)&SysTimerObj, ENABLE);
     Task_SetPendSVPro();
     Task_TriggerPendSV();
 
@@ -1076,11 +1088,11 @@ Task *Task_GetCurrentRunTask(void)
     return CurRunTsk_Ptr;
 }
 
-void Task_Statistic_Cast(uint32_t time_base)
+static void Task_Statistic_Cast(uint8_t *time_base, uint16_t unuse)
 {
     if ((CurRunTsk_Ptr != NULL) && (CurRunTsk_Ptr->Exec_status.State == Task_Running))
     {
-        CurRunTsk_Ptr->TskFuncUing_US += time_base;
+        CurRunTsk_Ptr->TskFuncUing_US += 1;
     }
 }
 

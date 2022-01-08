@@ -177,8 +177,6 @@ void SysTick_Handler(void)
   //GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, LO);
   //cast 4.8us
   Runtime_Tick();
-
-  Task_Statistic_Cast(Runtime_GetTickBase());
   //GPIO_Set_IO_LEVEL(GPIOB, GPIO_Pin_5, HI);
 }
 /******************************************************************************/

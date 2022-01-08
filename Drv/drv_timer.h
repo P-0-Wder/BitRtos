@@ -13,6 +13,8 @@ typedef enum
     DrvTimer_Counter_Mode = 0,
     DrvTimer_PWM_Mode,
     DrvTimer_DMA_Mode,
+    DrvTimer_Counter_SetState,
+    DrvTimer_Counter_SetIRQCallback,
     DrvTimer_Encoder_Mode,
 } DrvTimer_CMD_List;
 
@@ -31,12 +33,14 @@ typedef struct
     uint16_t enc_ch_b;
 
     uint32_t cnt;
+
+    bool init;
 } DrvTimer_Obj_TypeDef;
 
 typedef struct
 {
     bool (*obj_clear)(DrvTimer_Obj_TypeDef *obj);
-    bool (*ctl)(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len);
+    bool (*ctl)(DrvTimer_CMD_List cmd, uint32_t p_data, uint32_t len);
     int32_t (*get)(DrvTimer_Obj_TypeDef *obj);
 } DrvTimer_TypeDef;
 

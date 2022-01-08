@@ -3,6 +3,11 @@
 
 #include "stm32f4xx.h"
 #include "stm32f4xx_tim.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define Timer_Port_Sum 4
 
@@ -21,6 +26,8 @@
 
 #define TIM_DShot600_Period 69
 #define TIM_DShot600_Prescaler 3
+
+typedef void (*periph_timer_irq_callback)(uint8_t *data, uint16_t len);
 
 typedef enum
 {
@@ -76,6 +83,9 @@ void periph_Timer_DShotOutPut_Mode_Init(Timer_list timerx, Timer_PWM_Channel_Sta
 										uint32_t Buff_Size, uint32_t CH1_Buff, uint32_t CH2_Buff, uint32_t CH3_Buff, uint32_t CH4_Buff);
 void periph_Timer_PWM_SetEnable(Timer_list timerx, uint8_t state);
 void periph_Timer_Set_PWMOutPut(Timer_list timerx, PWM_OutPut_Channel Channel, uint32_t value);
+
+periph_timer_irq_callback periph_Timer_GetCountIRQ_Callback(Timer_list timerx);
+bool periph_Timer_SetCountIRQ_Callback(Timer_list timerx, periph_timer_irq_callback callback);
 
 extern TIM_TypeDef *Timer_Port[Timer_Port_Sum];
 #endif

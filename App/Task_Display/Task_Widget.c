@@ -53,7 +53,6 @@ static void TaskWidget_Init(void)
     Widget_Mng.Control(test4)->UI()->DigInput()->set_IntInput_Range(test_DigInput, 3, -200, 200, -173);
 
     test_StrInput = Widget_Mng.Control(test4)->UI()->StrInput()->create("Str Input:", 0, 56);
-    // Widget_Mng.Control(test4)->UI()->StrInput()->create("Str Input:", 0, 45);
 }
 
 static void TestWidget_Dynamic_Dsp(void)

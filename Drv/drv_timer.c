@@ -6,7 +6,7 @@
 
 /* external function */
 static bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj);
-static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len);
+static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint32_t len);
 static int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj);
 
 /* external variable */
@@ -28,12 +28,16 @@ static bool DrvTimer_Obj_Init(DrvTimer_Obj_TypeDef *obj)
     obj->SubPriority = 0;
     obj->timerx = Timer_None;
     obj->cnt = 0;
+    obj->init = false;
 
     return true;
 }
 
-static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
+static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint32_t len)
 {
+    if ((((DrvTimer_Obj_TypeDef *)p_data)->timerx < 0) || (((DrvTimer_Obj_TypeDef *)p_data)->timerx >= Timer_Port_Sum))
+        return false;
+
     switch (cmd)
     {
     case DrvTimer_Encoder_Mode:
@@ -54,13 +58,33 @@ static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
         periph_Timer_Encoder_Mode_Init(((DrvTimer_Obj_TypeDef *)p_data)->timerx,
                                        ((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_a,
                                        ((DrvTimer_Obj_TypeDef *)p_data)->enc_ch_b);
+
+        ((DrvTimer_Obj_TypeDef *)p_data)->init = true;
         return true;
 
     case DrvTimer_Counter_Mode:
-        /* TODO */
-        /* need set Counter IRQ Callback */
-        /* not inuse yet */
-        return false;
+        periph_Timer_CounterMode_Init(((DrvTimer_Obj_TypeDef *)p_data)->timerx,
+                                      ((DrvTimer_Obj_TypeDef *)p_data)->Prescaler,
+                                      ((DrvTimer_Obj_TypeDef *)p_data)->period,
+                                      ((DrvTimer_Obj_TypeDef *)p_data)->PreemptionPriority,
+                                      ((DrvTimer_Obj_TypeDef *)p_data)->SubPriority);
+
+        periph_Timer_Counter_SetEnable(((DrvTimer_Obj_TypeDef *)p_data)->timerx, DISABLE);
+        ((DrvTimer_Obj_TypeDef *)p_data)->init = true;
+        return true;
+
+    case DrvTimer_Counter_SetState:
+        if (((DrvTimer_Obj_TypeDef *)p_data)->init == false)
+            return false;
+
+        periph_Timer_Counter_SetEnable(((DrvTimer_Obj_TypeDef *)p_data)->timerx, len);
+        return true;
+
+    case DrvTimer_Counter_SetIRQCallback:
+        if (((DrvTimer_Obj_TypeDef *)p_data)->init == false)
+            return false;
+
+        return periph_Timer_SetCountIRQ_Callback(((DrvTimer_Obj_TypeDef *)p_data)->timerx, len);
 
     default:
         return false;
@@ -69,7 +93,7 @@ static bool DrvTimer_Ctl(DrvTimer_CMD_List cmd, uint32_t p_data, uint16_t len)
 
 static int32_t DrvTImer_GetEncoder(DrvTimer_Obj_TypeDef *obj)
 {
-    if ((obj == NULL) || (obj->mode != DrvTimer_Encoder_Mode))
+    if ((obj == NULL) || (obj->mode != DrvTimer_Encoder_Mode) || !obj->init)
         return 0;
 
     obj->cnt += periph_Timer_GetEncoder_Input(obj->timerx);

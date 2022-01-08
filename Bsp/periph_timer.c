@@ -3,7 +3,8 @@
 #include "periph_gpio.h"
 #include "periph_dma.h"
 #include "misc.h"
-#include <stdbool.h>
+
+static periph_timer_irq_callback CountIRQ_Callback[Timer_Port_Sum];
 
 TIM_TypeDef *Timer_Port[Timer_Port_Sum] = {TIM2,
 										   TIM3,
@@ -362,4 +363,25 @@ void periph_Timer_Counter_SetEnable(Timer_list timerx, uint8_t state)
 	{
 		TIM_Cmd(Timer_Port[timerx], DISABLE);
 	}
+}
+
+bool periph_Timer_SetCountIRQ_Callback(Timer_list timerx, periph_timer_irq_callback callback)
+{
+	if ((timerx < 0) || (timerx >= Timer_Port_Sum))
+	{
+		CountIRQ_Callback[timerx] = NULL;
+		return false;
+	}
+
+	CountIRQ_Callback[timerx] = callback;
+
+	return true;
+}
+
+periph_timer_irq_callback periph_Timer_GetCountIRQ_Callback(Timer_list timerx)
+{
+	if ((timerx < 0) || (timerx >= Timer_Port_Sum))
+		return NULL;
+
+	return CountIRQ_Callback[timerx];
 }

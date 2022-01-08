@@ -259,7 +259,6 @@ float Task_Get_IdleOcupy(void);
 void TaskSys_Set_State(TaskSys_State state);
 void Task_TriggerPendSV(void);
 TaskSys_State TaskSys_Get_State(void);
-void Task_Statistic_Cast(uint32_t time_base);
 
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
 void Load_FirstTask(void);
