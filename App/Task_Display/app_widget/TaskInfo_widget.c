@@ -38,7 +38,10 @@ typedef struct
 typedef enum
 {
     Stage_UICtl_Init = 0,
+    Stage_DspTaskName,
     Stage_UpdateDsp,
+    Stage_NxtLevel,
+    Stage_PrvLevel,
 } TaskInfo_DspStage_List;
 
 static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
@@ -93,7 +96,16 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
         switch (stage)
         {
         case Stage_UICtl_Init:
-            return TaskInfo_CreateUICtl(hdl);
+            if (!TaskInfo_CreateUICtl(hdl))
+            {
+                return false;
+            }
+
+            stage = Stage_DspTaskName;
+            break;
+
+        case Stage_DspTaskName:
+            break;
 
         case Stage_UpdateDsp:
             break;
