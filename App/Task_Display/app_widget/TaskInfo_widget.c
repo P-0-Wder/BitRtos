@@ -102,6 +102,8 @@ bool TaskInfo_SetStage(int8_t offset)
     if (((stage + offset) < 0) || ((stage + offset) > Stage_Sum))
         return false;
 
+    stage += offset;
+
     return true;
 }
 
