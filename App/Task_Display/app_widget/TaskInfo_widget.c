@@ -128,7 +128,6 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
             }
 
             stage = Stage_DspTaskName;
-            break;
 
         case Stage_DspTaskName:
 
