@@ -31,7 +31,8 @@ typedef struct
 typedef struct
 {
     uint8_t num;
-    TaskInfoDsp_Info_TypeDef *info;
+    TaskDspInfo_TypeDef *info;
+    TaskInfoDsp_Info_TypeDef *ui_ctl;
 } TaskInfo_DspLayer_TypeDef;
 
 typedef enum
@@ -52,6 +53,7 @@ static void TaskInfo_DspClear(void)
 {
     TaskInfo_Dsp.num = 0;
     TaskInfo_Dsp.info = NULL;
+    TaskInfo_Dsp.ui_ctl = NULL;
 }
 
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
@@ -61,13 +63,16 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
     TaskInfo_DspClear();
 
     TaskInfo_Dsp.num = Task_Get_TaskNum();
-    TaskInfo_Dsp.info = (TaskInfoDsp_Info_TypeDef *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(TaskInfoDsp_Info_TypeDef));
+    TaskInfo_Dsp.info = (TaskDspInfo_TypeDef *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(TaskDspInfo_TypeDef));
+    TaskInfo_Dsp.ui_ctl = (TaskInfoDsp_Info_TypeDef *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(TaskInfoDsp_Info_TypeDef));
 
-    if (TaskInfo_Dsp.info == NULL)
+    if ((TaskInfo_Dsp.info == NULL) || (TaskInfo_Dsp.ui_ctl == NULL))
         return false;
 
     for (uint8_t i = 0; i < TaskInfo_Dsp.num; i++)
     {
+        if (!Task_GetInfo_ByIndex(i, &TaskInfo_Dsp.info[i]))
+            return false;
     }
 
     return true;
