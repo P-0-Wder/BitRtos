@@ -80,7 +80,7 @@ static int8_t UI_DigInput_GetEffectSize(UI_DigInputObj_TypeDef *Obj, UI_DigInput
 static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj);
 
 /* UI String Input Section */
-static bool UI_StrInput_Init(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+static bool UI_StrInput_Init(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_StrInput_Type type);
 static bool UI_StrInput_Move(UI_StrInputObj_TypeDef *Obj, int16_t x, int16_t y);
 static bool UI_StrInput_SetCallback(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Callback callback);
 static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state);
@@ -1527,7 +1527,7 @@ static bool UI_DigInput_CTL(UI_DigInputObj_TypeDef *Obj)
     return true;
 }
 
-static bool UI_StrInput_Init(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y)
+static bool UI_StrInput_Init(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_StrInput_Type type)
 {
     if (Obj == NULL)
         return false;
@@ -1537,6 +1537,7 @@ static bool UI_StrInput_Init(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x
     Obj->selected_pos = 0;
     Obj->selected = false;
     Obj->callback = NULL;
+    Obj->type = type;
 
     return true;
 }
@@ -1561,7 +1562,7 @@ static bool UI_StrInput_SetCallback(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Cal
 
 static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state)
 {
-    if (Obj == NULL)
+    if ((Obj == NULL) || (Obj->type == UI_StrCTLtype_Dsp))
         return false;
 
     Obj->selected = state;
@@ -1578,7 +1579,7 @@ static bool UI_StrInput_Select(UI_StrInputObj_TypeDef *Obj, bool state)
 
 static bool UI_StrInput_SetChar(UI_StrInputObj_TypeDef *Obj, uint8_t index, char input)
 {
-    if ((Obj == NULL) && (index < MAX_INPUTSTR_LEN))
+    if ((Obj == NULL) && (index < MAX_INPUTSTR_LEN) || (Obj->type == UI_StrCTLtype_Dsp))
         return false;
 
     Obj->selected_pos = index;

@@ -12,6 +12,9 @@
 
 typedef uint32_t UI_GenCTL_Handle;
 typedef UI_GenCTL_Handle UI_Drop_Handle;
+typedef UI_GenCTL_Handle UI_Drop_Handle;
+typedef UI_GenCTL_Handle UI_DigDsp_Handle;
+typedef UI_GenCTL_Handle UI_StrDsp_Handle;
 typedef UI_GenCTL_Handle UI_Button_Handle;
 typedef UI_GenCTL_Handle UI_CheckBox_Handle;
 typedef UI_GenCTL_Handle UI_SlideBar_Handle;
@@ -325,6 +328,12 @@ typedef enum
     DigInput_PointPart,
 } UI_DigInput_SelectedPart;
 
+typedef enum
+{
+    UI_StrCTLtype_Input = 0,
+    UI_StrCTLtype_Dsp,
+} UI_StrInput_Type;
+
 typedef struct
 {
     int32_t Max;
@@ -368,6 +377,7 @@ typedef struct
     char str[MAX_INPUTSTR_LEN];
     bool selected;
     uint8_t selected_pos;
+    UI_StrInput_Type type;
     UI_StrInput_Callback callback;
 } UI_StrInputObj_TypeDef;
 
@@ -447,7 +457,7 @@ typedef struct
 
 typedef struct
 {
-    bool (*init)(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+    bool (*init)(UI_StrInputObj_TypeDef *Obj, char *label, int16_t x, int16_t y, UI_StrInput_Type type);
     bool (*Move)(UI_StrInputObj_TypeDef *Obj, int16_t x, int16_t y);
     bool (*set_callback)(UI_StrInputObj_TypeDef *Obj, UI_StrInput_Callback callback);
     bool (*Set_Select)(UI_StrInputObj_TypeDef *Obj, bool state);

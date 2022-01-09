@@ -1,4 +1,5 @@
 #include "TaskInfo_widget.h"
+#include "task_manager.h"
 #include "mmu.h"
 
 typedef struct
@@ -33,6 +34,7 @@ typedef enum
     Stage_UpdateDsp,
 } TaskInfo_DspStage_List;
 
+static TaskInfoDsp_BLock_TypeDef *TaskInfo_UICtl_List = NULL;
 static TaskInfo_DspStage_List stage = Stage_UICtl_Init;
 
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl);
@@ -40,8 +42,13 @@ static bool TaskInfo_DspUpdate(Widget_Handle hdl);
 
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
 {
+    uint8_t task_num = 0;
+
     if (hdl == 0)
         return false;
+
+    task_num = Task_Get_TaskNum();
+    TaskInfo_UICtl_List = (TaskInfoDsp_BLock_TypeDef *)MMU_Malloc(task_num * sizeof(TaskInfoDsp_BLock_TypeDef));
 
     return true;
 }

@@ -248,7 +248,6 @@ void TaskSystem_Start(void);
 Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth);
 void Task_Remove(Task_Handler Tsk_Hdl);
 void Task_SetRunState(Task_Handler Tsk_Handle, TASK_STATE state);
-void Task_PrintState(Task_Handler Tsk_Hdl);
 Task *Task_GetCurrentRunTask(void);
 Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r);
 void TaskSystem_Start(void);

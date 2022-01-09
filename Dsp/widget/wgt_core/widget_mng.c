@@ -2114,7 +2114,7 @@ static UI_StrInput_Handle WidgetUI_Create_StrInput(char *label, int16_t x, int16
 
     str_input = (UI_StrInputObj_TypeDef *)MMU_Malloc(sizeof(UI_StrInputObj_TypeDef));
     if ((str_input == NULL) ||
-        (!UI_StrInput.init(str_input, label, x, y + UI_Get_FontType())) ||
+        (!UI_StrInput.init(str_input, label, x, y + UI_Get_FontType(), UI_StrCTLtype_Input)) ||
         (!WidgetUIList_InsertItem(str_input, UI_Type_StrInput)))
         return NULL;
 
