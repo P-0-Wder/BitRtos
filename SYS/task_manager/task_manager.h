@@ -45,6 +45,8 @@ typedef void (*Task_Func)(Task_Handler hdl);
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
 typedef uint32_t *Task_STK_Ptr;
 
+#define TaskHandleToTaskObj(x) ((Task *)x)
+
 typedef enum
 {
     Us_Unit,

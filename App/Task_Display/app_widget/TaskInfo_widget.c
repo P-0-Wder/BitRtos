@@ -66,6 +66,10 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
     if (TaskInfo_Dsp.info == NULL)
         return false;
 
+    for (uint8_t i = 0; i < TaskInfo_Dsp.num; i++)
+    {
+    }
+
     return true;
 }
 
