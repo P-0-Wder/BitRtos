@@ -72,7 +72,12 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
     for (uint8_t i = 0; i < TaskInfo_Dsp.num; i++)
     {
         if (!Task_GetInfo_ByIndex(i, &TaskInfo_Dsp.info[i]))
+        {
+            MMU_Free(TaskInfo_Dsp.info);
+            MMU_Free(TaskInfo_Dsp.ui_ctl);
+            TaskInfo_Dsp.num = 0;
             return false;
+        }
     }
 
     return true;
