@@ -253,7 +253,7 @@ Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r);
 void TaskSystem_Start(void);
 uint8_t Task_Get_TaskNum(void);
 void Task_ReSet_BaseInfo(Task_Base_Info *info);
-Task_Base_Info Task_GetInfo_ByIndex(uint8_t index);
+bool Task_GetInfo_ByIndex(uint8_t index, Task_Base_Info *info);
 uint32_t Task_Get_IdleUS(void);
 float Task_Get_IdleOcupy(void);
 void TaskSys_Set_State(TaskSys_State state);

@@ -1076,11 +1076,25 @@ void Task_Scheduler(void)
 #endif
 }
 
-Task_Base_Info Task_GetInfo_ByIndex(uint8_t index)
+bool Task_GetInfo_ByIndex(uint8_t index, Task_Base_Info *info)
 {
     Task_Base_Info task_info;
+    item_obj *task_tmp;
 
-    return task_info;
+    if (index > TskCrt_RegList.num)
+        return false;
+
+    task_tmp = &TskCrt_RegList.list;
+
+    for (uint8_t i = 0; i < TskCrt_RegList.num; i++)
+    {
+        if (TskCrt_RegList.list.nxt == NULL)
+            return false;
+
+        task_tmp = TskCrt_RegList.list.nxt;
+    }
+
+    return true;
 }
 
 Task *Task_GetCurrentRunTask(void)
