@@ -10,8 +10,8 @@ typedef struct
     uint32_t frq;
     uint32_t detect_frq;
     float cpu_occupy;
-    float stk_occupy;
-    uint32_t remain_stack;
+    float stk_occupy;      //still in develop
+    uint32_t remain_stack; //still in develop
     uint32_t total_stack;
 } TaskDspInfo_TypeDef;
 
