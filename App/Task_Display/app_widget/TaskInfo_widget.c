@@ -39,9 +39,7 @@ typedef enum
 {
     Stage_UICtl_Init = 0,
     Stage_DspTaskName,
-    Stage_UpdateDsp,
-    Stage_NxtLevel,
-    Stage_PrvLevel,
+    Stage_DspTaskInfo,
     Stage_Sum,
 } TaskInfo_DspStage_List;
 
@@ -62,6 +60,7 @@ static void TaskInfo_DspClear(void)
 
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
 {
+    uint8_t i = 0;
     if (hdl == 0)
         return false;
     TaskInfo_DspClear();
@@ -73,7 +72,7 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
     if ((TaskInfo_Dsp.info == NULL) || (TaskInfo_Dsp.ui_ctl == NULL))
         return false;
 
-    for (uint8_t i = 0; i < TaskInfo_Dsp.num; i++)
+    for (i = 0; i < TaskInfo_Dsp.num; i++)
     {
         if (!Task_GetInfo_ByIndex(i, &TaskInfo_Dsp.info[i]))
         {
@@ -85,6 +84,10 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
     }
 
     // create widget ui controller
+    for (i = 0; i < TaskInfo_Dsp.num; i++)
+    {
+        // Widget_Mng.Control(hdl)->UI()->StrInput()->create();
+    }
 
     return true;
 }
@@ -114,6 +117,8 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
 
     while (true)
     {
+        Widget_Mng.Control(hdl)->Clear();
+
         switch (stage)
         {
         case Stage_UICtl_Init:
@@ -126,17 +131,19 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
             break;
 
         case Stage_DspTaskName:
-            break;
 
-        case Stage_UpdateDsp:
-            break;
+            Widget_Mng.Control(hdl)->Show();
+            return true;
+
+        case Stage_DspTaskInfo:
+
+            Widget_Mng.Control(hdl)->Show();
+            return true;
 
         default:
-            break;
+            return false;
         }
     }
-
-    return true;
 }
 
 static bool TaskInfo_Free(void)
