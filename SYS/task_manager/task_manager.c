@@ -1078,7 +1078,6 @@ void Task_Scheduler(void)
 
 bool Task_GetInfo_ByIndex(uint8_t index, Task_Base_Info *info)
 {
-    Task_Base_Info task_info;
     item_obj *task_tmp;
 
     if (index > TskCrt_RegList.num)
@@ -1093,6 +1092,13 @@ bool Task_GetInfo_ByIndex(uint8_t index, Task_Base_Info *info)
 
         task_tmp = TskCrt_RegList.list.nxt;
     }
+
+    memcpy(info->name, TaskHandleToTaskObj(task_tmp->data)->Task_name, strlen(TaskHandleToTaskObj(task_tmp->data)->Task_name));
+    info->group = GET_TASKGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp)->priority.Priority);
+    info->priority = GET_TASKINGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp)->priority.Priority);
+    info->stk_depth = TaskHandleToTaskObj(task_tmp->data)->Stack_Depth;
+    info->exec_frq = TaskHandleToTaskObj(task_tmp->data)->Exec_status.detect_exec_frq;
+    info->cpu_opy = TaskHandleToTaskObj(task_tmp->data)->Exec_status.cpu_opy;
 
     return true;
 }
