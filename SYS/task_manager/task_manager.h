@@ -231,7 +231,6 @@ typedef struct
     float cpu_opy;
     uint32_t stk_depth;
     uint32_t remain_stk_size;
-    uint32_t exec_times;
 } Task_Base_Info;
 
 typedef struct
@@ -251,6 +250,7 @@ Task *Task_GetCurrentRunTask(void);
 Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r);
 void TaskSystem_Start(void);
 uint8_t Task_Get_TaskNum(void);
+void Task_ReSet_BaseInfo(Task_Base_Info *info);
 Task_Base_Info Task_GetInfo_ByIndex(uint8_t index);
 uint32_t Task_Get_IdleUS(void);
 float Task_Get_IdleOcupy(void);

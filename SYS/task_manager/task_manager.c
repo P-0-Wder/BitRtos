@@ -121,7 +121,7 @@ static void ReSet_Task_Data(Task *task)
     task->Exec_status.State = Task_Done;
 }
 
-static void Task_ReSet_BaseInfo(Task_Base_Info *info)
+void Task_ReSet_BaseInfo(Task_Base_Info *info)
 {
     info->tsk_hdl = 0;
     memset(info->name, NULL, TASK_NAME_MAXLEN);
@@ -132,7 +132,6 @@ static void Task_ReSet_BaseInfo(Task_Base_Info *info)
     info->cpu_opy = 0.0f;
     info->stk_depth = 0;
     info->remain_stk_size = 0;
-    info->exec_times = 0;
 }
 
 static bool TaskSys_Init(void)

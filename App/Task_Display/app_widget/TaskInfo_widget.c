@@ -26,7 +26,13 @@ typedef struct
     UI_DigInput_Handle task_stk_occupy;
     UI_DigInput_Handle task_total_stk;
     UI_DigInput_Handle task_remain_stk;
-} TaskInfoDsp_BLock_TypeDef;
+} TaskInfoDsp_Info_TypeDef;
+
+typedef struct
+{
+    uint8_t num;
+    TaskInfoDsp_Info_TypeDef *info;
+} TaskInfo_DspLayer_TypeDef;
 
 typedef enum
 {
@@ -34,23 +40,30 @@ typedef enum
     Stage_UpdateDsp,
 } TaskInfo_DspStage_List;
 
-static TaskInfoDsp_BLock_TypeDef *TaskInfo_UICtl_List = NULL;
+static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
 static TaskInfo_DspStage_List stage = Stage_UICtl_Init;
 
+static void TaskInfo_DspClear(void);
+static bool TaskInfo_ShowNameList(Widget_Handle hdl);
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl);
 static bool TaskInfo_DspUpdate(Widget_Handle hdl);
 
+static void TaskInfo_DspClear(void)
+{
+    TaskInfo_Dsp.num = 0;
+    TaskInfo_Dsp.info = NULL;
+}
+
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
 {
-    uint8_t task_num = 0;
-
     if (hdl == 0)
         return false;
+    TaskInfo_DspClear();
 
-    task_num = Task_Get_TaskNum();
-    TaskInfo_UICtl_List = (TaskInfoDsp_BLock_TypeDef *)MMU_Malloc(task_num * sizeof(TaskInfoDsp_BLock_TypeDef));
+    TaskInfo_Dsp.num = Task_Get_TaskNum();
+    TaskInfo_Dsp.info = (TaskInfoDsp_Info_TypeDef *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(TaskInfoDsp_Info_TypeDef));
 
-    if (TaskInfo_UICtl_List == NULL)
+    if (TaskInfo_Dsp.info == NULL)
         return false;
 
     return true;
