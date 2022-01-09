@@ -42,6 +42,7 @@ typedef enum
     Stage_UpdateDsp,
     Stage_NxtLevel,
     Stage_PrvLevel,
+    Stage_Sum,
 } TaskInfo_DspStage_List;
 
 static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
@@ -82,6 +83,24 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
             return false;
         }
     }
+
+    // create widget ui controller
+
+    return true;
+}
+
+static bool TaskInfo_ShowNameList(Widget_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+
+    return true;
+}
+
+bool TaskInfo_SetStage(int8_t offset)
+{
+    if (((stage + offset) < 0) || ((stage + offset) > Stage_Sum))
+        return false;
 
     return true;
 }
