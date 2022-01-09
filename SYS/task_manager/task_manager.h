@@ -228,10 +228,9 @@ typedef struct
     uint8_t priority;
     uint16_t set_frq;
     uint16_t exec_frq;
-    uint16_t interval_us;
     float cpu_opy;
-    uint16_t avg_exec_us;
-    uint16_t max_exec_us;
+    uint32_t stk_depth;
+    uint32_t remain_stk_size;
     uint32_t exec_times;
 } Task_Base_Info;
 

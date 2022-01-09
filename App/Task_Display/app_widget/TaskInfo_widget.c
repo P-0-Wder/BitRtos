@@ -50,6 +50,9 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
     task_num = Task_Get_TaskNum();
     TaskInfo_UICtl_List = (TaskInfoDsp_BLock_TypeDef *)MMU_Malloc(task_num * sizeof(TaskInfoDsp_BLock_TypeDef));
 
+    if (TaskInfo_UICtl_List == NULL)
+        return false;
+
     return true;
 }
 

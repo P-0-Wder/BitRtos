@@ -123,15 +123,16 @@ static void ReSet_Task_Data(Task *task)
 
 static void Task_ReSet_BaseInfo(Task_Base_Info *info)
 {
-    info->avg_exec_us = 0;
-    info->cpu_opy = 0;
-    info->exec_frq = 0;
-    info->exec_times = 0;
-    info->group = 0;
-    info->max_exec_us = 0;
-    info->priority = 0;
-
+    info->tsk_hdl = 0;
     memset(info->name, NULL, TASK_NAME_MAXLEN);
+    info->group = 0;
+    info->priority = 0;
+    info->set_frq = 0;
+    info->exec_frq = 0;
+    info->cpu_opy = 0.0f;
+    info->stk_depth = 0;
+    info->remain_stk_size = 0;
+    info->exec_times = 0;
 }
 
 static bool TaskSys_Init(void)
