@@ -112,6 +112,8 @@ bool TaskInfo_SetStage(int8_t offset)
 
 bool TaskInfo_DspUpdate(Widget_Handle hdl)
 {
+    bool dsp = false;
+
     if (hdl == 0)
         return false;
 
@@ -130,19 +132,25 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
             stage = Stage_DspTaskName;
 
         case Stage_DspTaskName:
-
-            Widget_Mng.Control(hdl)->Show();
-            return true;
+            dsp = true;
+            break;
 
         case Stage_DspTaskInfo:
-
-            Widget_Mng.Control(hdl)->Show();
-            return true;
+            dsp = true;
+            break;
 
         default:
             return false;
         }
+
+        if (dsp)
+        {
+            Widget_Mng.Control(hdl)->Show();
+            break;
+        }
     }
+
+    return true;
 }
 
 static bool TaskInfo_Free(void)
