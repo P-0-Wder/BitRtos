@@ -1,0 +1,504 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"drv_gpio.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DrvGPIO_Close,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DrvGPIO_Close:
+  26              	.LVL0:
+  27              	.LFB124:
+  28              		.file 1 "Drv/drv_gpio.c"
+   1:Drv/drv_gpio.c **** #include "drv_gpio.h"
+   2:Drv/drv_gpio.c **** #include "periph_gpio.h"
+   3:Drv/drv_gpio.c **** #include "periph_exti.h"
+   4:Drv/drv_gpio.c **** 
+   5:Drv/drv_gpio.c **** /* internal function define */
+   6:Drv/drv_gpio.c **** 
+   7:Drv/drv_gpio.c **** /* external function define */
+   8:Drv/drv_gpio.c **** static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uint32_t data);
+   9:Drv/drv_gpio.c **** static bool DrvGPIO_Close(DrvGPIO_Obj_TypeDef *Obj);
+  10:Drv/drv_gpio.c **** static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level);
+  11:Drv/drv_gpio.c **** static DrvGPIO_IO_Level_TypeDef DrvGPIO_Get(DrvGPIO_Obj_TypeDef *Obj);
+  12:Drv/drv_gpio.c **** 
+  13:Drv/drv_gpio.c **** DrvGPIO_GenProcFunc_TypeDef DrvGPIO = {
+  14:Drv/drv_gpio.c ****     .open = DrvGPIO_Open,
+  15:Drv/drv_gpio.c ****     .close = DrvGPIO_Close,
+  16:Drv/drv_gpio.c ****     .set = DrvGPIO_Control,
+  17:Drv/drv_gpio.c ****     .get = DrvGPIO_Get,
+  18:Drv/drv_gpio.c **** };
+  19:Drv/drv_gpio.c **** 
+  20:Drv/drv_gpio.c **** static bool DrvGPIO_Open(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_CTL_TypeDef type, uint32_t data)
+  21:Drv/drv_gpio.c **** {
+  22:Drv/drv_gpio.c ****     Obj->IO_Type = type;
+  23:Drv/drv_gpio.c **** 
+  24:Drv/drv_gpio.c ****     switch ((uint8_t)type)
+  25:Drv/drv_gpio.c ****     {
+  26:Drv/drv_gpio.c ****     case GPIO_Output:
+  27:Drv/drv_gpio.c ****         GPIO_IO_Output_Init(Obj->CLK, Obj->Pin, Obj->Port);
+  28:Drv/drv_gpio.c ****         return true;
+  29:Drv/drv_gpio.c **** 
+  30:Drv/drv_gpio.c ****     case GPIO_Input:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 2
+
+
+  31:Drv/drv_gpio.c ****         GPIO_IO_Input_Init(Obj->CLK, Obj->Pin, Obj->Port);
+  32:Drv/drv_gpio.c ****         return true;
+  33:Drv/drv_gpio.c **** 
+  34:Drv/drv_gpio.c ****     case GPIO_Encoder:
+  35:Drv/drv_gpio.c ****         GPIO_IO_Encoder_Init(Obj->Port, Obj->CLK, Obj->Pin, Obj->Pin_Src, Obj->AF_TIMx);
+  36:Drv/drv_gpio.c ****         return true;
+  37:Drv/drv_gpio.c **** 
+  38:Drv/drv_gpio.c ****     case GPIO_EXTI_Input:
+  39:Drv/drv_gpio.c ****         GPIO_IO_Input_Init(Obj->CLK, Obj->Pin, Obj->Port);
+  40:Drv/drv_gpio.c **** 
+  41:Drv/drv_gpio.c ****         /* use for sync signal input */
+  42:Drv/drv_gpio.c ****         periph_exit_init(Obj->Exti_Cfg);
+  43:Drv/drv_gpio.c **** 
+  44:Drv/drv_gpio.c ****         /* set callback function */
+  45:Drv/drv_gpio.c ****         return periph_exti_SetCallback(Obj->Exti_Cfg.exti_line, (exti_callback)data);
+  46:Drv/drv_gpio.c **** 
+  47:Drv/drv_gpio.c ****     default:
+  48:Drv/drv_gpio.c ****         return false;
+  49:Drv/drv_gpio.c ****     }
+  50:Drv/drv_gpio.c **** }
+  51:Drv/drv_gpio.c **** 
+  52:Drv/drv_gpio.c **** static bool DrvGPIO_Close(DrvGPIO_Obj_TypeDef *Obj)
+  53:Drv/drv_gpio.c **** {
+  29              		.loc 1 53 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  54:Drv/drv_gpio.c ****     /* ToDo */
+  55:Drv/drv_gpio.c ****     return true;
+  34              		.loc 1 55 5 view .LVU1
+  56:Drv/drv_gpio.c **** }
+  35              		.loc 1 56 1 is_stmt 0 view .LVU2
+  36 0000 0120     		movs	r0, #1
+  37              	.LVL1:
+  38              		.loc 1 56 1 view .LVU3
+  39 0002 7047     		bx	lr
+  40              		.cfi_endproc
+  41              	.LFE124:
+  43              		.section	.text.DrvGPIO_Get,"ax",%progbits
+  44              		.align	1
+  45              		.syntax unified
+  46              		.thumb
+  47              		.thumb_func
+  48              		.fpu fpv4-sp-d16
+  50              	DrvGPIO_Get:
+  51              	.LVL2:
+  52              	.LFB126:
+  57:Drv/drv_gpio.c **** 
+  58:Drv/drv_gpio.c **** static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level)
+  59:Drv/drv_gpio.c **** {
+  60:Drv/drv_gpio.c ****     if (Obj->IO_Type != GPIO_Output)
+  61:Drv/drv_gpio.c ****         return false;
+  62:Drv/drv_gpio.c **** 
+  63:Drv/drv_gpio.c ****     if (level == GPIO_LOW)
+  64:Drv/drv_gpio.c ****     {
+  65:Drv/drv_gpio.c ****         GPIO_Set_IO_LEVEL(Obj->Port, Obj->Pin, LO);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 3
+
+
+  66:Drv/drv_gpio.c ****     }
+  67:Drv/drv_gpio.c ****     else
+  68:Drv/drv_gpio.c ****         GPIO_Set_IO_LEVEL(Obj->Port, Obj->Pin, HI);
+  69:Drv/drv_gpio.c **** 
+  70:Drv/drv_gpio.c ****     return true;
+  71:Drv/drv_gpio.c **** }
+  72:Drv/drv_gpio.c **** 
+  73:Drv/drv_gpio.c **** static DrvGPIO_IO_Level_TypeDef DrvGPIO_Get(DrvGPIO_Obj_TypeDef *Obj)
+  74:Drv/drv_gpio.c **** {
+  53              		.loc 1 74 1 is_stmt 1 view -0
+  54              		.cfi_startproc
+  55              		@ args = 0, pretend = 0, frame = 0
+  56              		@ frame_needed = 0, uses_anonymous_args = 0
+  57              		.loc 1 74 1 is_stmt 0 view .LVU5
+  58 0000 10B5     		push	{r4, lr}
+  59              	.LCFI0:
+  60              		.cfi_def_cfa_offset 8
+  61              		.cfi_offset 4, -8
+  62              		.cfi_offset 14, -4
+  75:Drv/drv_gpio.c ****     if (Obj->IO_Type != GPIO_Input)
+  63              		.loc 1 75 5 is_stmt 1 view .LVU6
+  64              		.loc 1 75 12 is_stmt 0 view .LVU7
+  65 0002 047B     		ldrb	r4, [r0, #12]	@ zero_extendqisi2
+  66              		.loc 1 75 8 view .LVU8
+  67 0004 012C     		cmp	r4, #1
+  68 0006 02D0     		beq	.L6
+  76:Drv/drv_gpio.c ****         return GPIO_ERR;
+  69              		.loc 1 76 16 view .LVU9
+  70 0008 0024     		movs	r4, #0
+  71              	.LVL3:
+  72              	.L3:
+  77:Drv/drv_gpio.c **** 
+  78:Drv/drv_gpio.c ****     if (GPIO_Get_IO_LEVEL(Obj->Port, Obj->Pin))
+  79:Drv/drv_gpio.c ****     {
+  80:Drv/drv_gpio.c ****         return GPIO_HIGH;
+  81:Drv/drv_gpio.c ****     }
+  82:Drv/drv_gpio.c ****     else
+  83:Drv/drv_gpio.c ****         return GPIO_LOW;
+  84:Drv/drv_gpio.c **** }
+  73              		.loc 1 84 1 view .LVU10
+  74 000a 2046     		mov	r0, r4
+  75 000c 10BD     		pop	{r4, pc}
+  76              	.LVL4:
+  77              	.L6:
+  78:Drv/drv_gpio.c ****     {
+  78              		.loc 1 78 5 is_stmt 1 view .LVU11
+  78:Drv/drv_gpio.c ****     {
+  79              		.loc 1 78 9 is_stmt 0 view .LVU12
+  80 000e 8188     		ldrh	r1, [r0, #4]
+  81 0010 8068     		ldr	r0, [r0, #8]
+  82              	.LVL5:
+  78:Drv/drv_gpio.c ****     {
+  83              		.loc 1 78 9 view .LVU13
+  84 0012 FFF7FEFF 		bl	GPIO_Get_IO_LEVEL
+  85              	.LVL6:
+  78:Drv/drv_gpio.c ****     {
+  86              		.loc 1 78 8 view .LVU14
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 4
+
+
+  87 0016 0028     		cmp	r0, #0
+  88 0018 F7D0     		beq	.L3
+  80:Drv/drv_gpio.c ****     }
+  89              		.loc 1 80 16 view .LVU15
+  90 001a 0224     		movs	r4, #2
+  91 001c F5E7     		b	.L3
+  92              		.cfi_endproc
+  93              	.LFE126:
+  95              		.section	.text.DrvGPIO_Control,"ax",%progbits
+  96              		.align	1
+  97              		.syntax unified
+  98              		.thumb
+  99              		.thumb_func
+ 100              		.fpu fpv4-sp-d16
+ 102              	DrvGPIO_Control:
+ 103              	.LVL7:
+ 104              	.LFB125:
+  59:Drv/drv_gpio.c ****     if (Obj->IO_Type != GPIO_Output)
+ 105              		.loc 1 59 1 is_stmt 1 view -0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+  59:Drv/drv_gpio.c ****     if (Obj->IO_Type != GPIO_Output)
+ 109              		.loc 1 59 1 is_stmt 0 view .LVU17
+ 110 0000 08B5     		push	{r3, lr}
+ 111              	.LCFI1:
+ 112              		.cfi_def_cfa_offset 8
+ 113              		.cfi_offset 3, -8
+ 114              		.cfi_offset 14, -4
+  60:Drv/drv_gpio.c ****         return false;
+ 115              		.loc 1 60 5 is_stmt 1 view .LVU18
+  60:Drv/drv_gpio.c ****         return false;
+ 116              		.loc 1 60 12 is_stmt 0 view .LVU19
+ 117 0002 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+  60:Drv/drv_gpio.c ****         return false;
+ 118              		.loc 1 60 8 view .LVU20
+ 119 0004 7BB9     		cbnz	r3, .L10
+  63:Drv/drv_gpio.c ****     {
+ 120              		.loc 1 63 5 is_stmt 1 view .LVU21
+  63:Drv/drv_gpio.c ****     {
+ 121              		.loc 1 63 8 is_stmt 0 view .LVU22
+ 122 0006 0129     		cmp	r1, #1
+ 123 0008 06D0     		beq	.L12
+  68:Drv/drv_gpio.c **** 
+ 124              		.loc 1 68 9 is_stmt 1 view .LVU23
+ 125 000a 0022     		movs	r2, #0
+ 126 000c 8188     		ldrh	r1, [r0, #4]
+ 127              	.LVL8:
+  68:Drv/drv_gpio.c **** 
+ 128              		.loc 1 68 9 is_stmt 0 view .LVU24
+ 129 000e 8068     		ldr	r0, [r0, #8]
+ 130              	.LVL9:
+  68:Drv/drv_gpio.c **** 
+ 131              		.loc 1 68 9 view .LVU25
+ 132 0010 FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 133              	.LVL10:
+  70:Drv/drv_gpio.c **** }
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 5
+
+
+ 134              		.loc 1 70 12 view .LVU26
+ 135 0014 0120     		movs	r0, #1
+ 136              	.L8:
+  71:Drv/drv_gpio.c **** 
+ 137              		.loc 1 71 1 view .LVU27
+ 138 0016 08BD     		pop	{r3, pc}
+ 139              	.LVL11:
+ 140              	.L12:
+  65:Drv/drv_gpio.c ****     }
+ 141              		.loc 1 65 9 is_stmt 1 view .LVU28
+ 142 0018 0122     		movs	r2, #1
+ 143 001a 8188     		ldrh	r1, [r0, #4]
+ 144              	.LVL12:
+  65:Drv/drv_gpio.c ****     }
+ 145              		.loc 1 65 9 is_stmt 0 view .LVU29
+ 146 001c 8068     		ldr	r0, [r0, #8]
+ 147              	.LVL13:
+  65:Drv/drv_gpio.c ****     }
+ 148              		.loc 1 65 9 view .LVU30
+ 149 001e FFF7FEFF 		bl	GPIO_Set_IO_LEVEL
+ 150              	.LVL14:
+  70:Drv/drv_gpio.c **** }
+ 151              		.loc 1 70 12 view .LVU31
+ 152 0022 0120     		movs	r0, #1
+ 153 0024 F7E7     		b	.L8
+ 154              	.LVL15:
+ 155              	.L10:
+  61:Drv/drv_gpio.c **** 
+ 156              		.loc 1 61 16 view .LVU32
+ 157 0026 0020     		movs	r0, #0
+ 158              	.LVL16:
+  61:Drv/drv_gpio.c **** 
+ 159              		.loc 1 61 16 view .LVU33
+ 160 0028 F5E7     		b	.L8
+ 161              		.cfi_endproc
+ 162              	.LFE125:
+ 164              		.section	.text.DrvGPIO_Open,"ax",%progbits
+ 165              		.align	1
+ 166              		.syntax unified
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.fpu fpv4-sp-d16
+ 171              	DrvGPIO_Open:
+ 172              	.LVL17:
+ 173              	.LFB123:
+  21:Drv/drv_gpio.c ****     Obj->IO_Type = type;
+ 174              		.loc 1 21 1 is_stmt 1 view -0
+ 175              		.cfi_startproc
+ 176              		@ args = 0, pretend = 0, frame = 0
+ 177              		@ frame_needed = 0, uses_anonymous_args = 0
+  21:Drv/drv_gpio.c ****     Obj->IO_Type = type;
+ 178              		.loc 1 21 1 is_stmt 0 view .LVU35
+ 179 0000 70B5     		push	{r4, r5, r6, lr}
+ 180              	.LCFI2:
+ 181              		.cfi_def_cfa_offset 16
+ 182              		.cfi_offset 4, -16
+ 183              		.cfi_offset 5, -12
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 6
+
+
+ 184              		.cfi_offset 6, -8
+ 185              		.cfi_offset 14, -4
+ 186 0002 82B0     		sub	sp, sp, #8
+ 187              	.LCFI3:
+ 188              		.cfi_def_cfa_offset 24
+ 189 0004 0446     		mov	r4, r0
+  22:Drv/drv_gpio.c **** 
+ 190              		.loc 1 22 5 is_stmt 1 view .LVU36
+  22:Drv/drv_gpio.c **** 
+ 191              		.loc 1 22 18 is_stmt 0 view .LVU37
+ 192 0006 0173     		strb	r1, [r0, #12]
+  24:Drv/drv_gpio.c ****     {
+ 193              		.loc 1 24 5 is_stmt 1 view .LVU38
+ 194 0008 0329     		cmp	r1, #3
+ 195 000a 2DD8     		bhi	.L20
+ 196 000c DFE801F0 		tbb	[pc, r1]
+ 197              	.L16:
+ 198 0010 02       		.byte	(.L19-.L16)/2
+ 199 0011 0A       		.byte	(.L18-.L16)/2
+ 200 0012 11       		.byte	(.L17-.L16)/2
+ 201 0013 1B       		.byte	(.L15-.L16)/2
+ 202              		.p2align 1
+ 203              	.L19:
+  27:Drv/drv_gpio.c ****         return true;
+ 204              		.loc 1 27 9 view .LVU39
+ 205 0014 8268     		ldr	r2, [r0, #8]
+ 206              	.LVL18:
+  27:Drv/drv_gpio.c ****         return true;
+ 207              		.loc 1 27 9 is_stmt 0 view .LVU40
+ 208 0016 8188     		ldrh	r1, [r0, #4]
+ 209              	.LVL19:
+  27:Drv/drv_gpio.c ****         return true;
+ 210              		.loc 1 27 9 view .LVU41
+ 211 0018 0068     		ldr	r0, [r0]
+ 212              	.LVL20:
+  27:Drv/drv_gpio.c ****         return true;
+ 213              		.loc 1 27 9 view .LVU42
+ 214 001a FFF7FEFF 		bl	GPIO_IO_Output_Init
+ 215              	.LVL21:
+  28:Drv/drv_gpio.c **** 
+ 216              		.loc 1 28 9 is_stmt 1 view .LVU43
+  28:Drv/drv_gpio.c **** 
+ 217              		.loc 1 28 16 is_stmt 0 view .LVU44
+ 218 001e 0120     		movs	r0, #1
+ 219              	.L14:
+  50:Drv/drv_gpio.c **** 
+ 220              		.loc 1 50 1 view .LVU45
+ 221 0020 02B0     		add	sp, sp, #8
+ 222              	.LCFI4:
+ 223              		.cfi_remember_state
+ 224              		.cfi_def_cfa_offset 16
+ 225              		@ sp needed
+ 226 0022 70BD     		pop	{r4, r5, r6, pc}
+ 227              	.LVL22:
+ 228              	.L18:
+ 229              	.LCFI5:
+ 230              		.cfi_restore_state
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 7
+
+
+  31:Drv/drv_gpio.c ****         return true;
+ 231              		.loc 1 31 9 is_stmt 1 view .LVU46
+ 232 0024 8268     		ldr	r2, [r0, #8]
+ 233              	.LVL23:
+  31:Drv/drv_gpio.c ****         return true;
+ 234              		.loc 1 31 9 is_stmt 0 view .LVU47
+ 235 0026 8188     		ldrh	r1, [r0, #4]
+ 236              	.LVL24:
+  31:Drv/drv_gpio.c ****         return true;
+ 237              		.loc 1 31 9 view .LVU48
+ 238 0028 0068     		ldr	r0, [r0]
+ 239              	.LVL25:
+  31:Drv/drv_gpio.c ****         return true;
+ 240              		.loc 1 31 9 view .LVU49
+ 241 002a FFF7FEFF 		bl	GPIO_IO_Input_Init
+ 242              	.LVL26:
+  32:Drv/drv_gpio.c **** 
+ 243              		.loc 1 32 9 is_stmt 1 view .LVU50
+  32:Drv/drv_gpio.c **** 
+ 244              		.loc 1 32 16 is_stmt 0 view .LVU51
+ 245 002e 0120     		movs	r0, #1
+ 246 0030 F6E7     		b	.L14
+ 247              	.LVL27:
+ 248              	.L17:
+  35:Drv/drv_gpio.c ****         return true;
+ 249              		.loc 1 35 9 is_stmt 1 view .LVU52
+ 250 0032 437B     		ldrb	r3, [r0, #13]	@ zero_extendqisi2
+ 251 0034 0093     		str	r3, [sp]
+ 252 0036 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 253 0038 8288     		ldrh	r2, [r0, #4]
+ 254              	.LVL28:
+  35:Drv/drv_gpio.c ****         return true;
+ 255              		.loc 1 35 9 is_stmt 0 view .LVU53
+ 256 003a 0168     		ldr	r1, [r0]
+ 257              	.LVL29:
+  35:Drv/drv_gpio.c ****         return true;
+ 258              		.loc 1 35 9 view .LVU54
+ 259 003c 8068     		ldr	r0, [r0, #8]
+ 260              	.LVL30:
+  35:Drv/drv_gpio.c ****         return true;
+ 261              		.loc 1 35 9 view .LVU55
+ 262 003e FFF7FEFF 		bl	GPIO_IO_Encoder_Init
+ 263              	.LVL31:
+  36:Drv/drv_gpio.c **** 
+ 264              		.loc 1 36 9 is_stmt 1 view .LVU56
+  36:Drv/drv_gpio.c **** 
+ 265              		.loc 1 36 16 is_stmt 0 view .LVU57
+ 266 0042 0120     		movs	r0, #1
+ 267 0044 ECE7     		b	.L14
+ 268              	.LVL32:
+ 269              	.L15:
+  36:Drv/drv_gpio.c **** 
+ 270              		.loc 1 36 16 view .LVU58
+ 271 0046 1546     		mov	r5, r2
+  39:Drv/drv_gpio.c **** 
+ 272              		.loc 1 39 9 is_stmt 1 view .LVU59
+ 273 0048 0646     		mov	r6, r0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 8
+
+
+ 274 004a 8268     		ldr	r2, [r0, #8]
+ 275              	.LVL33:
+  39:Drv/drv_gpio.c **** 
+ 276              		.loc 1 39 9 is_stmt 0 view .LVU60
+ 277 004c 8188     		ldrh	r1, [r0, #4]
+ 278              	.LVL34:
+  39:Drv/drv_gpio.c **** 
+ 279              		.loc 1 39 9 view .LVU61
+ 280 004e 56F8100B 		ldr	r0, [r6], #16
+ 281              	.LVL35:
+  39:Drv/drv_gpio.c **** 
+ 282              		.loc 1 39 9 view .LVU62
+ 283 0052 FFF7FEFF 		bl	GPIO_IO_Input_Init
+ 284              	.LVL36:
+  42:Drv/drv_gpio.c **** 
+ 285              		.loc 1 42 9 is_stmt 1 view .LVU63
+ 286 0056 96E80700 		ldm	r6, {r0, r1, r2}
+ 287 005a FFF7FEFF 		bl	periph_exit_init
+ 288              	.LVL37:
+  45:Drv/drv_gpio.c **** 
+ 289              		.loc 1 45 9 view .LVU64
+  45:Drv/drv_gpio.c **** 
+ 290              		.loc 1 45 16 is_stmt 0 view .LVU65
+ 291 005e 2946     		mov	r1, r5
+ 292 0060 6069     		ldr	r0, [r4, #20]
+ 293 0062 FFF7FEFF 		bl	periph_exti_SetCallback
+ 294              	.LVL38:
+ 295 0066 DBE7     		b	.L14
+ 296              	.LVL39:
+ 297              	.L20:
+  22:Drv/drv_gpio.c **** 
+ 298              		.loc 1 22 18 view .LVU66
+ 299 0068 0020     		movs	r0, #0
+ 300              	.LVL40:
+  22:Drv/drv_gpio.c **** 
+ 301              		.loc 1 22 18 view .LVU67
+ 302 006a D9E7     		b	.L14
+ 303              		.cfi_endproc
+ 304              	.LFE123:
+ 306              		.global	DrvGPIO
+ 307              		.section	.data.DrvGPIO,"aw"
+ 308              		.align	2
+ 311              	DrvGPIO:
+ 312 0000 00000000 		.word	DrvGPIO_Open
+ 313 0004 00000000 		.word	DrvGPIO_Close
+ 314 0008 00000000 		.word	DrvGPIO_Control
+ 315 000c 00000000 		.word	DrvGPIO_Get
+ 316              		.text
+ 317              	.Letext0:
+ 318              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 319              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 320              		.file 4 "FWLIB/inc/stm32f4xx_exti.h"
+ 321              		.file 5 "Bsp/periph_exti.h"
+ 322              		.file 6 "Bsp/periph_gpio.h"
+ 323              		.file 7 "Drv/drv_gpio.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 drv_gpio.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:18     .text.DrvGPIO_Close:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:25     .text.DrvGPIO_Close:0000000000000000 DrvGPIO_Close
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:44     .text.DrvGPIO_Get:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:50     .text.DrvGPIO_Get:0000000000000000 DrvGPIO_Get
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:96     .text.DrvGPIO_Control:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:102    .text.DrvGPIO_Control:0000000000000000 DrvGPIO_Control
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:165    .text.DrvGPIO_Open:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:171    .text.DrvGPIO_Open:0000000000000000 DrvGPIO_Open
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:198    .text.DrvGPIO_Open:0000000000000010 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:202    .text.DrvGPIO_Open:0000000000000014 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:311    .data.DrvGPIO:0000000000000000 DrvGPIO
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccQmA1RB.s:308    .data.DrvGPIO:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Get_IO_LEVEL
+GPIO_Set_IO_LEVEL
+GPIO_IO_Output_Init
+GPIO_IO_Input_Init
+GPIO_IO_Encoder_Init
+periph_exit_init
+periph_exti_SetCallback

@@ -257,6 +257,7 @@ typedef struct
 {
     Widget_Config_TypeDef *config_all;
     Widget_Handle (*Create)(int8_t cord_x, int8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
+    bool (*Rename)(Widget_Handle hdl, char *name);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
     bool (*trigger_fresh)(void);

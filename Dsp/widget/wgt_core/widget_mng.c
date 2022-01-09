@@ -62,6 +62,7 @@ static bool Widget_ConfigDisplay_MirrorDir(Oled_Mirror_Direction_Def dir);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
+static bool Widget_SetName(Widget_Handle hdl, char *name);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
@@ -277,6 +278,7 @@ static Widget_Config_TypeDef Widget_Config = {
 Widget_GenProcFunc_TypeDef Widget_Mng = {
     .config_all = &Widget_Config,
     .Create = Widget_Create,
+    .Rename = Widget_SetName,
     .Delete = Widget_Deleted,
     .Control = Widget_CtlInterface,
     .fresh_all = Widget_FreshAll,
@@ -383,6 +385,17 @@ static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width
         return WIDGET_CREATE_ERROR;
 
     return (Widget_Handle)widget_tmp;
+}
+
+static bool Widget_SetName(Widget_Handle hdl, char *name)
+{
+    if (hdl == 0)
+        return false;
+
+    memset(HandleToWidgetObj(hdl)->name, NULL, strlen(HandleToWidgetObj(hdl)->name));
+    HandleToWidgetObj(hdl)->name = name;
+
+    return true;
 }
 
 static bool Widget_Clear(void)
