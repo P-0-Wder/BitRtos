@@ -91,3 +91,15 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
 
     return true;
 }
+
+static bool TaskInfo_Free(void)
+{
+    if (TaskInfo_Dsp.num)
+    {
+        MMU_Free(TaskInfo_Dsp.info);
+    }
+
+    TaskInfo_Dsp.num = 0;
+
+    return true;
+}
