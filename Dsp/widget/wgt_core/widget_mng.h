@@ -243,8 +243,6 @@ typedef struct
 
     int8_t UI_CoordY_Offset;
     item_obj *CurSelected_CTL;
-
-    UI_SelectorObj_Typedef *selector;
 } WidgetObj_TypeDef;
 
 typedef struct
@@ -256,7 +254,8 @@ typedef struct
 typedef struct
 {
     Widget_Config_TypeDef *config_all;
-    Widget_Handle (*Create)(int8_t cord_x, int8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
+    Widget_Handle (*Create)(int8_t coord_x, int8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
+    Widget_Handle (*Create_Sub)(Widget_Handle Ori_Widget, uint8_t width, uint8_t height, char *name, bool show_frame);
     bool (*Rename)(Widget_Handle hdl, char *name);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
