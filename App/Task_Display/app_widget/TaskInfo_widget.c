@@ -43,6 +43,9 @@ typedef enum
     Stage_Sum,
 } TaskInfo_DspStage_List;
 
+static bool TaskWidget_CreateState = false;
+static Widget_Handle TaskList_Widget_Hdl = 0;
+static Widget_Handle TaskInfo_Widget_Hdl = 0;
 static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
 static TaskInfo_DspStage_List stage = Stage_UICtl_Init;
 
@@ -56,6 +59,17 @@ static void TaskInfo_DspClear(void)
     TaskInfo_Dsp.num = 0;
     TaskInfo_Dsp.info = NULL;
     TaskInfo_Dsp.ui_ctl = NULL;
+}
+
+static bool TaskInfo_CreateWidget(Widget_Handle hdl)
+{
+    TaskList_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task List", false);
+    TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info Ditial", false);
+
+    if ((TaskList_Widget_Hdl <= 0) || (TaskInfo_Widget_Hdl <= 0))
+        return false;
+
+    return true;
 }
 
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl)

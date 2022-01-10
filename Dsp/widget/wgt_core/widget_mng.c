@@ -62,7 +62,7 @@ static bool Widget_ConfigDisplay_MirrorDir(Oled_Mirror_Direction_Def dir);
 
 /* external widget manager function definition */
 static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
-static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name);
+static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name, bool show_frame);
 static bool Widget_SetName(Widget_Handle hdl, char *name);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
@@ -383,7 +383,7 @@ static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width
     return (Widget_Handle)widget_tmp;
 }
 
-static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name)
+static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name, bool show_frame)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -420,7 +420,7 @@ static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t 
 
     List_ItemInit(widget_tmp->dsp_item, widget_tmp);
 
-    widget_tmp->use_frame = HandleToWidgetObj(ori)->use_frame;
+    widget_tmp->use_frame = show_frame;
     widget_tmp->show_state = false;
 
     //clear ui controller first
