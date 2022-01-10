@@ -382,6 +382,18 @@ static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width
     return (Widget_Handle)widget_tmp;
 }
 
+static Widget_Handle Widget_CreateSub(Widget_Handle hdl, uint8_t width, uint8_t height, char *name)
+{
+    WidgetObj_TypeDef *widget_tmp;
+
+    widget_tmp = (WidgetObj_TypeDef *)MMU_Malloc(sizeof(WidgetObj_TypeDef));
+
+    if (widget_tmp == NULL)
+        return WIDGET_CREATE_ERROR;
+
+    return (Widget_Handle)widget_tmp;
+}
+
 static bool Widget_SetName(Widget_Handle hdl, char *name)
 {
     if (hdl == 0)
