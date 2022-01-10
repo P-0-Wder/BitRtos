@@ -67,10 +67,9 @@ static bool TaskInfo_CreateWidget(Widget_Handle hdl)
     TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info Ditial", false);
 
     if ((TaskList_Widget_Hdl <= 0) || (TaskInfo_Widget_Hdl <= 0))
-        TaskWidget_CreateState = false;
+        return false;
 
-    TaskWidget_CreateState = true;
-    return TaskWidget_CreateState;
+    return true;
 }
 
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
@@ -131,6 +130,14 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
 
     if (hdl == 0)
         return false;
+
+    if (!TaskWidget_CreateState)
+    {
+        TaskWidget_CreateState = TaskInfo_CreateWidget(hdl);
+
+        if (!TaskWidget_CreateState)
+            return false;
+    }
 
     while (true)
     {
