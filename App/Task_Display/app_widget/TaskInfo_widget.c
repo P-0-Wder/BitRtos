@@ -37,9 +37,11 @@ typedef struct
 
 typedef enum
 {
-    Stage_UICtl_Init = 0,
+    Stage_CreateWidget = 0,
+    Stage_UICtl_Init,
     Stage_DspTaskName,
     Stage_DspTaskInfo,
+    Stage_DspError,
     Stage_Sum,
 } TaskInfo_DspStage_List;
 
@@ -47,7 +49,7 @@ static bool TaskWidget_CreateState = false;
 static Widget_Handle TaskList_Widget_Hdl = 0;
 static Widget_Handle TaskInfo_Widget_Hdl = 0;
 static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
-static TaskInfo_DspStage_List stage = Stage_UICtl_Init;
+static TaskInfo_DspStage_List stage = Stage_CreateWidget;
 
 static void TaskInfo_DspClear(void);
 static bool TaskInfo_ShowNameList(Widget_Handle hdl);
@@ -130,20 +132,23 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
     if (hdl == 0)
         return false;
 
-    if (!TaskWidget_CreateState)
-    {
-        TaskWidget_CreateState = TaskInfo_CreateWidget(hdl);
-
-        if (!TaskWidget_CreateState)
-            return false;
-    }
-
     while (true)
     {
-        Widget_Mng.Control(hdl)->Clear();
-
         switch (stage)
         {
+        case Stage_CreateWidget:
+            TaskWidget_CreateState = TaskInfo_CreateWidget(hdl);
+            dsp = false;
+
+            if (!TaskWidget_CreateState)
+            {
+                stage = Stage_DspError;
+                return false;
+            }
+
+            stage = Stage_UICtl_Init;
+            break;
+
         case Stage_UICtl_Init:
             if (!TaskInfo_CreateUICtl(hdl))
             {
@@ -153,10 +158,12 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
             stage = Stage_DspTaskName;
 
         case Stage_DspTaskName:
+            Widget_Mng.Control(hdl)->Clear();
             dsp = true;
             break;
 
         case Stage_DspTaskInfo:
+            Widget_Mng.Control(hdl)->Clear();
             dsp = true;
             break;
 
