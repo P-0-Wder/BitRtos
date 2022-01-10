@@ -82,12 +82,13 @@ static bool TaskInfo_ShowNameList(Widget_Handle hdl)
     return true;
 }
 
-bool TaskInfo_SetStage(int8_t offset)
+bool TaskInfo_SetStage(int8_t *offset)
 {
-    if (((stage + offset) < 0) || ((stage + offset) > Stage_Unknow))
+    if (((stage + offset) < Stage_GetTaskInfo) || ((stage + offset) > Stage_Unknow))
         return false;
 
-    stage += offset;
+    stage += *offset;
+    *offset = 0;
 
     return true;
 }
