@@ -21,16 +21,6 @@ typedef struct
     TaskDspInfo_TypeDef *info;
 } TaskInfo_DspLayer_TypeDef;
 
-typedef enum
-{
-    Stage_CreateWidget = 0,
-    Stage_UICtl_Init,
-    Stage_DspTaskName,
-    Stage_DspTaskInfo,
-    Stage_DspError,
-    Stage_Sum,
-} TaskInfo_DspStage_List;
-
 static bool TaskWidget_CreateState = false;
 static Widget_Handle TaskList_Widget_Hdl = 0;
 static Widget_Handle TaskInfo_Widget_Hdl = 0;
@@ -39,7 +29,7 @@ static TaskInfo_DspStage_List stage = Stage_CreateWidget;
 
 static void TaskInfo_DspClear(void);
 static bool TaskInfo_ShowNameList(Widget_Handle hdl);
-static bool TaskInfo_CreateUICtl(Widget_Handle hdl);
+static bool TaskInfo_GetInfo(Widget_Handle hdl);
 
 static void TaskInfo_DspClear(void)
 {
@@ -58,7 +48,7 @@ static bool TaskInfo_CreateWidget(Widget_Handle hdl)
     return true;
 }
 
-static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
+static bool TaskInfo_GetInfo(Widget_Handle hdl)
 {
     uint8_t i = 0;
     if (hdl == 0)
@@ -79,12 +69,6 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
             TaskInfo_Dsp.num = 0;
             return false;
         }
-    }
-
-    // create widget ui controller
-    for (i = 0; i < TaskInfo_Dsp.num; i++)
-    {
-        // Widget_Mng.Control(hdl)->UI()->StrInput()->create();
     }
 
     return true;
@@ -108,61 +92,59 @@ bool TaskInfo_SetStage(int8_t offset)
     return true;
 }
 
-bool TaskInfo_DspUpdate(Widget_Handle hdl)
+TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl)
 {
     bool dsp = false;
 
     if (hdl == 0)
         return false;
 
-    while (true)
+    switch (stage)
     {
-        switch (stage)
+    case Stage_CreateWidget:
+        TaskWidget_CreateState = TaskInfo_CreateWidget(hdl);
+        dsp = false;
+
+        if (!TaskWidget_CreateState)
         {
-        case Stage_CreateWidget:
-            TaskWidget_CreateState = TaskInfo_CreateWidget(hdl);
-            dsp = false;
-
-            if (!TaskWidget_CreateState)
-            {
-                stage = Stage_DspError;
-                return false;
-            }
-
-            stage = Stage_UICtl_Init;
+            stage = Stage_DspError;
             break;
-
-        case Stage_UICtl_Init:
-            dsp = false;
-            if (!TaskInfo_CreateUICtl(hdl))
-            {
-                return false;
-            }
-
-            stage = Stage_DspTaskName;
-
-        case Stage_DspTaskName:
-            Widget_Mng.Control(hdl)->Clear();
-            dsp = true;
-            break;
-
-        case Stage_DspTaskInfo:
-            Widget_Mng.Control(hdl)->Clear();
-            dsp = true;
-            break;
-
-        default:
-            return false;
         }
 
-        if (dsp)
+        stage = Stage_GetTaskInfo;
+        break;
+
+    case Stage_GetTaskInfo:
+        dsp = false;
+        if (!TaskInfo_CreateUICtl(hdl))
         {
-            Widget_Mng.Control(hdl)->Show();
+            stage = Stage_DspError;
             break;
         }
+
+        stage = Stage_DspTaskName;
+        break;
+
+    case Stage_DspTaskName:
+        Widget_Mng.Control(hdl)->Clear();
+        dsp = true;
+        break;
+
+    case Stage_DspTaskInfo:
+        Widget_Mng.Control(hdl)->Clear();
+        dsp = true;
+        break;
+
+    default:
+        return Stage_Unknow;
     }
 
-    return true;
+    if (dsp)
+    {
+        Widget_Mng.Control(hdl)->Show();
+    }
+
+    return stage;
 }
 
 static bool TaskInfo_Free(void)
