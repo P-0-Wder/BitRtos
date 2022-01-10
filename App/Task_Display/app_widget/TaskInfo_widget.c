@@ -52,7 +52,6 @@ static TaskInfo_DspStage_List stage = Stage_UICtl_Init;
 static void TaskInfo_DspClear(void);
 static bool TaskInfo_ShowNameList(Widget_Handle hdl);
 static bool TaskInfo_CreateUICtl(Widget_Handle hdl);
-static bool TaskInfo_DspUpdate(Widget_Handle hdl);
 
 static void TaskInfo_DspClear(void)
 {

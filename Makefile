@@ -138,6 +138,7 @@ App/Task_Display/Task_Widget.c \
 App/Task_Display/app_widget/Boot_widget.c \
 App/Task_Display/app_widget/OS_widget.c \
 App/Task_Display/app_widget/version_widget.c \
+App/Task_Display/app_widget/TaskInfo_widget.c \
 App/Task_Input/Task_Input.c \
 App/Task_Input/Input_IO_Def.c \
 App/Task_Shell/Task_Shell.c \
