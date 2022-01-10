@@ -17,22 +17,8 @@ typedef struct
 
 typedef struct
 {
-    UI_StrInput_Handle task_name_ctl;
-    UI_DigInput_Handle task_group_ctl;
-    UI_DigInput_Handle task_pri_ctl;
-    UI_DigInput_Handle task_frq_ctl;
-    UI_DigInput_Handle task_detectfrq_ctl;
-    UI_DigInput_Handle task_cpu_occupy;
-    UI_DigInput_Handle task_stk_occupy;
-    UI_DigInput_Handle task_total_stk;
-    UI_DigInput_Handle task_remain_stk;
-} TaskInfoDsp_Info_TypeDef;
-
-typedef struct
-{
     uint8_t num;
     TaskDspInfo_TypeDef *info;
-    TaskInfoDsp_Info_TypeDef *ui_ctl;
 } TaskInfo_DspLayer_TypeDef;
 
 typedef enum
@@ -59,7 +45,6 @@ static void TaskInfo_DspClear(void)
 {
     TaskInfo_Dsp.num = 0;
     TaskInfo_Dsp.info = NULL;
-    TaskInfo_Dsp.ui_ctl = NULL;
 }
 
 static bool TaskInfo_CreateWidget(Widget_Handle hdl)
@@ -82,9 +67,8 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
 
     TaskInfo_Dsp.num = Task_Get_TaskNum();
     TaskInfo_Dsp.info = (TaskDspInfo_TypeDef *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(TaskDspInfo_TypeDef));
-    TaskInfo_Dsp.ui_ctl = (TaskInfoDsp_Info_TypeDef *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(TaskInfoDsp_Info_TypeDef));
 
-    if ((TaskInfo_Dsp.info == NULL) || (TaskInfo_Dsp.ui_ctl == NULL))
+    if (TaskInfo_Dsp.info == NULL)
         return false;
 
     for (i = 0; i < TaskInfo_Dsp.num; i++)
@@ -92,7 +76,6 @@ static bool TaskInfo_CreateUICtl(Widget_Handle hdl)
         if (!Task_GetInfo_ByIndex(i, &TaskInfo_Dsp.info[i]))
         {
             MMU_Free(TaskInfo_Dsp.info);
-            MMU_Free(TaskInfo_Dsp.ui_ctl);
             TaskInfo_Dsp.num = 0;
             return false;
         }
@@ -150,6 +133,7 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
             break;
 
         case Stage_UICtl_Init:
+            dsp = false;
             if (!TaskInfo_CreateUICtl(hdl))
             {
                 return false;
@@ -184,9 +168,7 @@ bool TaskInfo_DspUpdate(Widget_Handle hdl)
 static bool TaskInfo_Free(void)
 {
     if (TaskInfo_Dsp.num)
-    {
         MMU_Free(TaskInfo_Dsp.info);
-    }
 
     TaskInfo_Dsp.num = 0;
 
