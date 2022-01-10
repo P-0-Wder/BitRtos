@@ -84,7 +84,7 @@ static bool TaskInfo_ShowNameList(Widget_Handle hdl)
 
 bool TaskInfo_SetStage(int8_t offset)
 {
-    if (((stage + offset) < 0) || ((stage + offset) > Stage_Sum))
+    if (((stage + offset) < 0) || ((stage + offset) > Stage_Unknow))
         return false;
 
     stage += offset;
@@ -132,6 +132,10 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl)
 
     case Stage_DspTaskInfo:
         Widget_Mng.Control(hdl)->Clear();
+        dsp = true;
+        break;
+
+    case Stage_DspBack:
         dsp = true;
         break;
 
