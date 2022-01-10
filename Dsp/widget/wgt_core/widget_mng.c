@@ -382,7 +382,7 @@ static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width
     return (Widget_Handle)widget_tmp;
 }
 
-static Widget_Handle Widget_CreateSub(Widget_Handle hdl, uint8_t width, uint8_t height, char *name)
+static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -390,6 +390,42 @@ static Widget_Handle Widget_CreateSub(Widget_Handle hdl, uint8_t width, uint8_t 
 
     if (widget_tmp == NULL)
         return WIDGET_CREATE_ERROR;
+
+    widget_tmp->cord_x = HandleToWidgetObj(ori)->cord_x;
+    widget_tmp->cord_y = HandleToWidgetObj(ori)->cord_y;
+
+    if ((width > HandleToWidgetObj(ori)->width) || (height > HandleToWidgetObj(ori)->height))
+        return WIDGET_CREATE_ERROR;
+
+    widget_tmp->width = width;
+    widget_tmp->height = height;
+
+    widget_tmp->UI_CoordY_Offset = 0;
+
+    widget_tmp->frame_line_size = 1;
+    widget_tmp->is_selected = false;
+
+    widget_tmp->name = name;
+
+    widget_tmp->Dsp = &WidgetDraw_Interface;
+    widget_tmp->Ctl = &WidgetCtl_Interface;
+
+    widget_tmp->pixel_map = HandleToWidgetObj(ori)->pixel_map;
+
+    widget_tmp->dsp_item = (item_obj *)MMU_Malloc(sizeof(item_obj));
+
+    if (widget_tmp->dsp_item == NULL)
+        return WIDGET_CREATE_ERROR;
+
+    List_ItemInit(widget_tmp->dsp_item, widget_tmp);
+
+    widget_tmp->use_frame = HandleToWidgetObj(ori)->use_frame;
+    widget_tmp->show_state = false;
+
+    //clear ui controller first
+    widget_tmp->UICtl_List == NULL;
+    widget_tmp->ui_ctl_num = 0;
+    widget_tmp->CurSelected_CTL = NULL;
 
     return (Widget_Handle)widget_tmp;
 }
