@@ -21,6 +21,8 @@ typedef struct
     TaskDspInfo_TypeDef *info;
 } TaskInfo_DspLayer_TypeDef;
 
+static int32_t EncoderCurVal = 0;
+static int32_t EncoderLstVal = 0;
 static bool TaskWidget_CreateState = false;
 static Widget_Handle TaskList_Widget_Hdl = 0;
 static Widget_Handle TaskInfo_Widget_Hdl = 0;
@@ -28,8 +30,9 @@ static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
 static TaskInfo_DspStage_List stage = Stage_CreateWidget;
 
 static void TaskInfo_DspClear(void);
-static bool TaskInfo_ShowNameList(Widget_Handle hdl);
+static bool TaskInfo_SetStage(int8_t *offset);
 static bool TaskInfo_GetInfo(Widget_Handle hdl);
+static bool TaskInfo_ShowNameList(Widget_Handle hdl);
 
 static void TaskInfo_DspClear(void)
 {
@@ -82,13 +85,23 @@ static bool TaskInfo_ShowNameList(Widget_Handle hdl)
     return true;
 }
 
-bool TaskInfo_SetStage(int8_t *offset)
+static bool TaskInfo_SetStage(int8_t *offset)
 {
     if (((stage + offset) < Stage_GetTaskInfo) || ((stage + offset) > Stage_Unknow))
         return false;
 
     stage += *offset;
     *offset = 0;
+
+    return true;
+}
+
+static bool TaskInfo_Free(void)
+{
+    if (TaskInfo_Dsp.num)
+        MMU_Free(TaskInfo_Dsp.info);
+
+    TaskInfo_Dsp.num = 0;
 
     return true;
 }
@@ -152,12 +165,14 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl)
     return stage;
 }
 
-static bool TaskInfo_Free(void)
+void TaskInfo_Encoder_Reset(int32_t val)
 {
-    if (TaskInfo_Dsp.num)
-        MMU_Free(TaskInfo_Dsp.info);
+    EncoderCurVal = EncoderLstVal = val;
+}
 
-    TaskInfo_Dsp.num = 0;
+void TaskInfo_Encoder_Input(int32_t val)
+{
+    EncoderCurVal = val;
 
-    return true;
+    //check current display stage and process
 }

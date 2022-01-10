@@ -18,6 +18,7 @@ typedef enum
     Stage_Sum,
 } TaskInfo_DspStage_List;
 
-bool TaskInfo_SetStage(int8_t *offset);
+void TaskInfo_Encoder_Reset(int32_t val);
+void TaskInfo_Encoder_Input(int32_t val);
 TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl);
 #endif
