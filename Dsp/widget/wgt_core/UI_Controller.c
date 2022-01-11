@@ -387,6 +387,12 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         }
         break;
 
+    case UI_Type_TriggerLabel:
+        block_y = HandleToTriggerLabelObj(item->Handler)->Gen_Data.y;
+        block_x = HandleToTriggerLabelObj(item->Handler)->Gen_Data.x + 3;
+        UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width - 6), selector_height, true);
+        break;
+
     default:
         return UI_Fresh_Error;
     }
@@ -1610,6 +1616,54 @@ static bool UI_StrInput_Ctl(UI_StrInputObj_TypeDef *Obj)
 
     str_dsp_offset = STR_DIS * strlen(Obj->Gen_Data.label) + 5;
     UI_DspInterface.draw_str(base_font, Obj->str, str_x + str_dsp_offset, Obj->Gen_Data.y, true);
+
+    return true;
+}
+
+static bool UI_TriggerLabel_Init(UI_TriggerLabelObj_TypeDef *Obj, char *label, int16_t x, int16_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    UI_GenData_Init(&(Obj->Gen_Data), label, x, y);
+    Obj->callback = NULL;
+
+    return true;
+}
+
+static bool UI_TriggerLabel_SetCallback(UI_TriggerLabelObj_TypeDef *Obj, UI_TriggerLabel_Callback callback)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->callback = callback;
+
+    return true;
+}
+
+static bool UI_TriggerLabel_Trigger(UI_TriggerLabelObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
+
+    if (Obj->callback != NULL)
+        Obj->callback();
+
+    return true;
+}
+
+static bool UI_TriggerLabel_Move(UI_TriggerLabelObj_TypeDef *Obj, int16_t x, int16_t y)
+{
+    if (Obj == NULL)
+        return false;
+
+    return UI_Move(&(Obj->Gen_Data), x, y);
+}
+
+static bool UI_TriggerLabel_Ctl(UI_TriggerLabelObj_TypeDef *Obj)
+{
+    if (Obj == NULL)
+        return false;
 
     return true;
 }

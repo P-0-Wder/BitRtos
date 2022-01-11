@@ -30,6 +30,7 @@ typedef UI_GenCTL_Handle UI_ProcessBar_Handle;
 #define HandleToDigInputObj(x) ((UI_DigInputObj_TypeDef *)x)
 #define HandleToStrInputObj(x) ((UI_StrInputObj_TypeDef *)x)
 #define HandleToProcessBarObj(x) ((UI_ProcessBarObj_TypeDef *)x)
+#define HandleToTriggerLabelObj(x) ((UI_TriggerLabelObj_TypeDef *)x)
 
 #define MAX_DROP_ITEM 20
 #define MAX_COMBOBOX_ITEM 20
@@ -96,6 +97,7 @@ typedef void (*UI_FillCircle)(int16_t x, int16_t y, uint8_t radius, bool col_inv
 typedef void (*UI_FillCircle_Section)(int16_t x, int16_t y, uint8_t radius, uint8_t section, bool col_inv);
 typedef void (*UI_FillRadiusRectangle)(int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t radius, bool col_inv);
 
+typedef int (*UI_TriggerLabel_Callback)(void);
 typedef int (*UI_ButtonTrigger_Callback)(void);
 typedef int (*UI_CheckBoxTrigger_Callback)(bool state);
 typedef int (*UI_SliderBarTrigger_Callback)(int16_t data);
@@ -112,6 +114,7 @@ typedef enum
     UI_Type_Drop,
     UI_Type_DigInput,
     UI_Type_StrInput,
+    UI_Type_TriggerLabel,
 
     UI_Type_Sum,
 } WidgetUI_Type_List;
@@ -380,6 +383,12 @@ typedef struct
     UI_StrInput_Type type;
     UI_StrInput_Callback callback;
 } UI_StrInputObj_TypeDef;
+
+typedef struct
+{
+    UI_GeneralData_TypeDef Gen_Data;
+    UI_TriggerLabel_Callback callback;
+} UI_TriggerLabelObj_TypeDef;
 
 #pragma pack()
 
