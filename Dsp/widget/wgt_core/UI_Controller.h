@@ -477,6 +477,15 @@ typedef struct
 
 typedef struct
 {
+    bool (*init)(UI_TriggerLabelObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+    bool (*Move)(UI_TriggerLabelObj_TypeDef *Obj, int16_t x, int16_t y);
+    bool (*Set_Callback)(UI_TriggerLabelObj_TypeDef *Obj, UI_TriggerLabel_Callback callback);
+    bool (*trigger)(UI_TriggerLabelObj_TypeDef *Obj);
+    bool (*ctl)(UI_TriggerLabelObj_TypeDef *Obj);
+} UI_TriggerLabel_Interface_TypeDef;
+
+typedef struct
+{
     UI_GeneralData_TypeDef Gen_Data;
 } UI_VerticalBarObj_TypeDef;
 
