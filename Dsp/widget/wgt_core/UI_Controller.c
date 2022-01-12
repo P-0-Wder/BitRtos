@@ -89,6 +89,13 @@ static bool UI_StrInput_SetChar(UI_StrInputObj_TypeDef *Obj, uint8_t index, char
 static char *UI_StrInput_GetStr(UI_StrInputObj_TypeDef *Obj);
 static bool UI_StrInput_Ctl(UI_StrInputObj_TypeDef *Obj);
 
+/* UI TriggerLabel Section */
+static bool UI_TriggerLabel_Init(UI_TriggerLabelObj_TypeDef *Obj, char *label, int16_t x, int16_t y);
+static bool UI_TriggerLabel_SetCallback(UI_TriggerLabelObj_TypeDef *Obj, UI_TriggerLabel_Callback callback);
+static bool UI_TriggerLabel_Move(UI_TriggerLabelObj_TypeDef *Obj, int16_t x, int16_t y);
+static bool UI_TriggerLabel_Trigger(UI_TriggerLabelObj_TypeDef *Obj);
+static bool UI_TriggerLabel_Ctl(UI_TriggerLabelObj_TypeDef *Obj);
+
 /* general function */
 static bool UI_Get_InitSate(UI_GeneralData_TypeDef GenData);
 static bool UI_Selecte(UI_GeneralData_TypeDef *GenData, bool select);
@@ -172,11 +179,11 @@ UI_StrInput_Interface_TypeDef UI_StrInput = {
 };
 
 UI_TriggerLabel_Interface_TypeDef UI_TriggerLabel = {
-    .init = NULL,
-    .Move = NULL,
-    .Set_Callback = NULL,
-    .trigger = NULL,
-    .ctl = NULL,
+    .init = UI_TriggerLabel_Init,
+    .Move = UI_TriggerLabel_Move,
+    .Set_Callback = UI_TriggerLabel_SetCallback,
+    .trigger = UI_TriggerLabel_Trigger,
+    .ctl = UI_TriggerLabel_Ctl,
 };
 
 /******************************* general function *********************************/
