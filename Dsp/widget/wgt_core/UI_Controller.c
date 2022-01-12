@@ -171,6 +171,14 @@ UI_StrInput_Interface_TypeDef UI_StrInput = {
     .ctl = UI_StrInput_Ctl,
 };
 
+UI_TriggerLabel_Interface_TypeDef UI_TriggerLabel = {
+    .init = NULL,
+    .Move = NULL,
+    .Set_Callback = NULL,
+    .trigger = NULL,
+    .ctl = NULL,
+};
+
 /******************************* general function *********************************/
 
 bool UI_Set_FontType(uint8_t font)

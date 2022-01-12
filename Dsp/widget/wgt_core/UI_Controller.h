@@ -533,4 +533,5 @@ extern UI_DigInput_Interface_TypeDef UI_DigInput;
 extern UI_StrInput_Interface_TypeDef UI_StrInput;
 extern UI_SliderBar_Interface_TypeDef UI_SlideBar;
 extern UI_ProcessBar_Interface_TypeDef UI_ProcessBar;
+extern UI_TriggerLabel_Interface_TypeDef UI_TriggerLabel;
 #endif
