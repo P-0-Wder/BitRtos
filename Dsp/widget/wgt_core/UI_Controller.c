@@ -249,7 +249,7 @@ static bool UI_Draw_HorDotLine(int16_t x, int16_t y, uint8_t len, uint8_t line_w
 /* FYI different UI Item Got different selector */
 WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
 {
-    /* button selector coordinate */
+    /* Radius Ractangele Frame type button selector coordinate */
     int16_t Btn_Slct_LftUp_X = 0;
     int16_t Btn_Slct_LftUp_Y = 0;
     int16_t Btn_Slct_LftDwn_X = 0;
@@ -299,24 +299,32 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         if (UI_DspInterface.fill_circle_section == NULL)
             return UI_Fresh_Error;
 
-        /* comput button selector coordinate first */
-        Btn_Slct_LftUp_X = HandleToButtonObj(item->Handler)->Gen_Data.x;
-        Btn_Slct_LftUp_Y = HandleToButtonObj(item->Handler)->Gen_Data.y + HandleToButtonObj(item->Handler)->height - 1;
+        if (HandleToButtonObj(item->Handler)->dsp_type == UI_Button_DefaultFrame)
+        {
+            /* comput button selector coordinate first */
+            Btn_Slct_LftUp_X = HandleToButtonObj(item->Handler)->Gen_Data.x;
+            Btn_Slct_LftUp_Y = HandleToButtonObj(item->Handler)->Gen_Data.y + HandleToButtonObj(item->Handler)->height - 1;
 
-        Btn_Slct_LftDwn_X = Btn_Slct_LftUp_X;
-        Btn_Slct_LftDwn_Y = HandleToButtonObj(item->Handler)->Gen_Data.y;
+            Btn_Slct_LftDwn_X = Btn_Slct_LftUp_X;
+            Btn_Slct_LftDwn_Y = HandleToButtonObj(item->Handler)->Gen_Data.y;
 
-        Btn_Slct_RgtUp_X = HandleToButtonObj(item->Handler)->Gen_Data.x + HandleToButtonObj(item->Handler)->width;
-        Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
+            Btn_Slct_RgtUp_X = HandleToButtonObj(item->Handler)->Gen_Data.x + HandleToButtonObj(item->Handler)->width;
+            Btn_Slct_RgtUp_Y = Btn_Slct_LftUp_Y;
 
-        Btn_Slct_RgtDwn_X = Btn_Slct_RgtUp_X;
-        Btn_Slct_RgtDwn_Y = Btn_Slct_LftDwn_Y;
+            Btn_Slct_RgtDwn_X = Btn_Slct_RgtUp_X;
+            Btn_Slct_RgtDwn_Y = Btn_Slct_LftDwn_Y;
 
-        // show button selector
-        UI_DspInterface.draw_circle_section(Btn_Slct_LftUp_X, Btn_Slct_LftUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Down, BUTTON_SELECTOR_LINE_SIZE, true);
-        UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Up, BUTTON_SELECTOR_LINE_SIZE, true);
-        UI_DspInterface.draw_circle_section(Btn_Slct_RgtUp_X, Btn_Slct_RgtUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Down, BUTTON_SELECTOR_LINE_SIZE, true);
-        UI_DspInterface.draw_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Up, BUTTON_SELECTOR_LINE_SIZE, true);
+            // show button selector
+            UI_DspInterface.draw_circle_section(Btn_Slct_LftUp_X, Btn_Slct_LftUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Down, BUTTON_SELECTOR_LINE_SIZE, true);
+            UI_DspInterface.draw_circle_section(Btn_Slct_LftDwn_X, Btn_Slct_LftDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Left_Up, BUTTON_SELECTOR_LINE_SIZE, true);
+            UI_DspInterface.draw_circle_section(Btn_Slct_RgtUp_X, Btn_Slct_RgtUp_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Down, BUTTON_SELECTOR_LINE_SIZE, true);
+            UI_DspInterface.draw_circle_section(Btn_Slct_RgtDwn_X, Btn_Slct_RgtDwn_Y, BUTTON_SELECTOR_RADIUS, UICircle_Right_Up, BUTTON_SELECTOR_LINE_SIZE, true);
+        }
+        else if (HandleToButtonObj(item->Handler)->dsp_type == UI_Button_BarcketFrame)
+        {
+        }
+        else
+            return UI_Fresh_Error;
         break;
 
     case UI_Type_CheckBox:
@@ -575,6 +583,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
                 /* fill button frame */
                 UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, true);
             }
+            else if (Obj->dsp_type == UI_Button_BarcketFrame)
+            {
+            }
+            else
+                return false;
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
@@ -587,6 +600,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
                 /* draw button frame */
                 UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, 1, true);
             }
+            else if (Obj->dsp_type == UI_Button_BarcketFrame)
+            {
+            }
+            else
+                return false;
 
             if (Obj->type == Lock_Btn)
             {

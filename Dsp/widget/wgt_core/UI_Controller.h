@@ -213,8 +213,8 @@ typedef enum
 
 typedef enum
 {
-    UI_Button_RadiusFrame = 0,
-    UI_Button_DefaultFrame = UI_Button_RadiusFrame,
+    UI_Button_RadiusRectangleFrame = 0,
+    UI_Button_DefaultFrame = UI_Button_RadiusRectangleFrame,
     UI_Button_BarcketFrame,
 } UI_ButtonDsp_TypeList;
 
