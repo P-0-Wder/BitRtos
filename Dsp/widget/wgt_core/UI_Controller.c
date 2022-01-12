@@ -24,6 +24,7 @@ UI_GetWidget_Width UI_Get_WidgetWidth = NULL;
 static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
 static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *label);
 static bool UI_Button_Set_TriggerCallback(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback);
+static bool UI_Button_SetDspType(UI_ButtonObj_TypeDef *Obj, UI_ButtonDsp_TypeList type);
 static bool UI_Button_Push(UI_ButtonObj_TypeDef *Obj);
 static bool UI_Button_Release(UI_ButtonObj_TypeDef *Obj);
 static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint16_t x, uint16_t y);
@@ -440,6 +441,8 @@ static bool UI_Button_Init(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, in
     Obj->PushDown_Label = DEFAULT_BUTTON_PUSH_LABEL;
     Obj->Release_Label = DEFAULT_BUTTON_RELEASE_LABEL;
 
+    Obj->dsp_type = UI_Button_DefaultFrame;
+
     return true;
 }
 
@@ -452,6 +455,16 @@ static bool UI_Button_Set_Label(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List 
         Obj->PushDown_Label = label;
     else
         Obj->Release_Label = label;
+
+    return true;
+}
+
+static bool UI_Button_SetDspType(UI_ButtonObj_TypeDef *Obj, UI_ButtonDsp_TypeList type)
+{
+    if (Obj == NULL)
+        return false;
+
+    Obj->dsp_type = type;
 
     return true;
 }
@@ -557,8 +570,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
     {
         if (Obj->state == UI_Btn_PushDwn)
         {
-            /* fill button frame */
-            UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, true);
+            if (Obj->dsp_type == UI_Button_DefaultFrame)
+            {
+                /* fill button frame */
+                UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, true);
+            }
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
@@ -566,8 +582,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
         }
         else
         {
-            /* draw button frame */
-            UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, 1, true);
+            if (Obj->dsp_type == UI_Button_DefaultFrame)
+            {
+                /* draw button frame */
+                UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, 1, true);
+            }
 
             if (Obj->type == Lock_Btn)
             {
@@ -581,11 +600,11 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
                     UI_DspInterface.draw_str(base_font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
             }
         }
-    }
-    else
-        return false;
 
-    return true;
+        return true;
+    }
+
+    return false;
 }
 
 static bool UI_CheckBox_Init(UI_CheckBoxObj_TypeDef *Obj, char *label, int16_t x, int16_t y, bool state)

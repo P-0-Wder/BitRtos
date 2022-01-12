@@ -211,6 +211,13 @@ typedef enum
     UI_Btn_PushDwn = 1,
 } UI_Button_State_List;
 
+typedef enum
+{
+    UI_Button_RadiusFrame = 0,
+    UI_Button_DefaultFrame = UI_Button_RadiusFrame,
+    UI_Button_BarcketFrame,
+} UI_ButtonDsp_TypeList;
+
 #pragma pack(1)
 typedef struct
 {
@@ -246,6 +253,8 @@ typedef struct
 
     uint8_t width;
     uint8_t height;
+
+    UI_ButtonDsp_TypeList dsp_type;
 } UI_ButtonObj_TypeDef;
 
 typedef struct
@@ -397,10 +406,11 @@ typedef struct
     bool (*init)(UI_ButtonObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
     bool (*set_trogger_callback)(UI_ButtonObj_TypeDef *Obj, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback callback);
     bool (*set_label)(UI_ButtonObj_TypeDef *Obj, UI_Button_State_List state, char *Rls_Lbl);
-    bool (*push)(UI_ButtonObj_TypeDef *obj);
-    bool (*release)(UI_ButtonObj_TypeDef *obj);
-    bool (*ctl)(UI_ButtonObj_TypeDef *obj);
-    bool (*move)(UI_ButtonObj_TypeDef *obj, int16_t x, int16_t y);
+    bool (*push)(UI_ButtonObj_TypeDef *Obj);
+    bool (*release)(UI_ButtonObj_TypeDef *Obj);
+    bool (*set_DspType)(UI_ButtonObj_TypeDef *Obj, UI_ButtonDsp_TypeList type);
+    bool (*ctl)(UI_ButtonObj_TypeDef *Obj);
+    bool (*move)(UI_ButtonObj_TypeDef *Obj, int16_t x, int16_t y);
 } UI_Button_Interface_TypeDef;
 
 typedef struct
