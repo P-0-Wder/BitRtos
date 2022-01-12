@@ -661,9 +661,9 @@ Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r)
     }
 }
 
-Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth)
+Task_Handle Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth)
 {
-    Task_Handler handle;
+    Task_Handle handle;
     uint16_t task_name_len = strlen(name);
     uint32_t *Tsk_Ptr_tmp = NULL;
     static bool taskOs_InitState = false;
@@ -765,7 +765,7 @@ Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, T
 }
 
 //Remove func untest
-void Task_Remove(Task_Handler Tsk_Hdl)
+void Task_Remove(Task_Handle Tsk_Hdl)
 {
     //convert Tsk_Hdl from uint32_t var to Task Address which we need to delete
     //MMU_Free that memory space
@@ -817,7 +817,7 @@ void TaskSystem_Start(void)
     return true;
 }
 
-void Task_SetRunState(Task_Handler Tsk_Handle, TASK_STATE state)
+void Task_SetRunState(Task_Handle Tsk_Handle, TASK_STATE state)
 {
     ((Task *)Tsk_Handle)->Exec_status.State = state;
 }
@@ -1118,7 +1118,7 @@ static void Task_Statistic_Cast(uint8_t *time_base, uint16_t unuse)
     }
 }
 
-uint32_t Task_GetStackRemain(const Task_Handler hdl)
+uint32_t Task_GetStackRemain(const Task_Handle hdl)
 {
     uint32_t remain_size = 0;
 

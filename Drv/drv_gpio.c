@@ -57,9 +57,6 @@ static bool DrvGPIO_Close(DrvGPIO_Obj_TypeDef *Obj)
 
 static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef level)
 {
-    if (Obj->IO_Type != GPIO_Output)
-        return false;
-
     if (level == GPIO_LOW)
     {
         GPIO_Set_IO_LEVEL(Obj->Port, Obj->Pin, LO);
@@ -72,9 +69,6 @@ static bool DrvGPIO_Control(DrvGPIO_Obj_TypeDef *Obj, DrvGPIO_IO_Level_TypeDef l
 
 static DrvGPIO_IO_Level_TypeDef DrvGPIO_Get(DrvGPIO_Obj_TypeDef *Obj)
 {
-    if (Obj->IO_Type != GPIO_Input)
-        return GPIO_ERR;
-
     if (GPIO_Get_IO_LEVEL(Obj->Port, Obj->Pin))
     {
         return GPIO_HIGH;

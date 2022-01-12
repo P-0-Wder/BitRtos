@@ -92,10 +92,10 @@ typedef struct
     Input_Error_List error;
 } Input_Data_TypeDef;
 
-void TaskInput_Core(Task_Handler self);
+void TaskInput_Core(Task_Handle self);
 Input_Data_TypeDef *TaskInput_GetData(void);
 void TaskInput_SetCallback(TaskInput_Callback_TypeList type, TaskInput_Callback callback);
 
-extern Task_Handler SigInput_Tsk_Hdl;
+extern Task_Handle SigInput_Tsk_Hdl;
 
 #endif

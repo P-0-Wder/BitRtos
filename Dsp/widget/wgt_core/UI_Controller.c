@@ -295,7 +295,7 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
     switch (base_font)
     {
     case Font_8:
-        selector_height = UICTL_DEFAULT_HEIGHT;
+        selector_height = UICTL_DEFAULT_HEIGHT - 1;
         break;
 
     case Font_12:
@@ -732,7 +732,7 @@ static bool UI_CheckBox_Ctl(UI_CheckBoxObj_TypeDef *Obj)
         return false;
 
     frame_x = strlen(Obj->Gen_Data.label) * STR_DIS;
-    frame_y = Obj->Gen_Data.y + 3;
+    frame_y = Obj->Gen_Data.y + 2;
     frame_x += DEFAULT_CHECKBOX_OFFSET;
 
     str_x = Obj->Gen_Data.x + 3;

@@ -39,8 +39,8 @@
 #define TASK_IDLE_GROUP 8
 #define TASK_IDLE_PRIORITY 8
 
-typedef uint32_t Task_Handler;
-typedef void (*Task_Func)(Task_Handler hdl);
+typedef uint32_t Task_Handle;
+typedef void (*Task_Func)(Task_Handle hdl);
 
 #if (TASK_SCHEDULER_TYPE == PREEMPTIVE_SCHDULER)
 typedef uint32_t *Task_STK_Ptr;
@@ -56,7 +56,7 @@ typedef enum
 typedef struct
 {
     bool on_delay;
-    Task_Handler tsk_hdl;
+    Task_Handle tsk_hdl;
     uint32_t time_unit;
     SYSTEM_RunTime resume_Rt;
 } delay_reg;
@@ -224,7 +224,7 @@ typedef struct
 
 typedef struct
 {
-    Task_Handler tsk_hdl;
+    Task_Handle tsk_hdl;
     uint8_t name[TASK_NAME_MAXLEN];
     uint8_t group;
     uint8_t priority;
@@ -245,9 +245,9 @@ void Task_Scheduler(void);
 void Task_Caller(void);
 void TaskSystem_Start(void);
 
-Task_Handler Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth);
-void Task_Remove(Task_Handler Tsk_Hdl);
-void Task_SetRunState(Task_Handler Tsk_Handle, TASK_STATE state);
+Task_Handle Task_Create(const char *name, uint32_t frq, Priority_Group group, TASK_Priority priority, Task_Func func, uint32_t StackDepth);
+void Task_Remove(Task_Handle Tsk_Hdl);
+void Task_SetRunState(Task_Handle Tsk_Handle, TASK_STATE state);
 Task *Task_GetCurrentRunTask(void);
 Task *Task_PriorityCompare(const Task *tsk_l, const Task *tsk_r);
 void TaskSystem_Start(void);
@@ -271,10 +271,10 @@ void Task_SaveCurProc(void);
 void Task_Resume_FromBlock(Task *tsk);
 void Task_SetNextTask_Ptr(const Task *nxt);
 
-bool Task_Pause(Task_Handler tsk_hdl);
-bool Task_FrcPause(Task_Handler tsk_hdl);
-bool Task_Resume(Task_Handler tsk_hdl);
-bool Task_FrcExec(Task_Handler tsk_hdl);
+bool Task_Pause(Task_Handle tsk_hdl);
+bool Task_FrcPause(Task_Handle tsk_hdl);
+bool Task_Resume(Task_Handle tsk_hdl);
+bool Task_FrcExec(Task_Handle tsk_hdl);
 
 Task *Task_Get_HighestRank_RdyTask(void);
 Task *Task_Get_HighestRank_PndTask(void);

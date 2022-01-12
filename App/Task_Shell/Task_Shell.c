@@ -3,7 +3,7 @@
 #include "shell_port.h"
 #include "oledfont.h"
 
-Task_Handler Shell_Tsk_Hdl;
+Task_Handle Shell_Tsk_Hdl;
 
 #define SHELL_SERIAL_PORT DrvSerial_1
 
@@ -45,7 +45,7 @@ static bool TaskShell_Init(void)
     return false;
 }
 
-void TaskShell_Core(Task_Handler self)
+void TaskShell_Core(Task_Handle self)
 {
     switch ((uint8_t)TaskState)
     {

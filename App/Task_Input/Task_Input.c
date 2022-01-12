@@ -2,7 +2,7 @@
 #include "Task_Input.h"
 #include "Input_IO_Def.h"
 
-Task_Handler SigInput_Tsk_Hdl;
+Task_Handle SigInput_Tsk_Hdl;
 
 /* internal variable */
 static Input_Data_TypeDef InputData;
@@ -148,7 +148,7 @@ Input_Data_TypeDef *TaskInput_GetData(void)
     return &InputData;
 }
 
-void TaskInput_Core(Task_Handler self)
+void TaskInput_Core(Task_Handle self)
 {
     switch (Task_Stage)
     {

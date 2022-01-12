@@ -12,8 +12,8 @@ typedef enum
     Shell_State_Polling,
 } TaskShell_State_List;
 
-void TaskShell_Core(Task_Handler self);
+void TaskShell_Core(Task_Handle self);
 
-extern Task_Handler Shell_Tsk_Hdl;
+extern Task_Handle Shell_Tsk_Hdl;
 
 #endif

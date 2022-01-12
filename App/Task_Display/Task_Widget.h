@@ -3,28 +3,26 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+#include "widget_mng.h"
 #include "task_manager.h"
 
 typedef enum
 {
-    WidGUI_Boot = 0,
-    WidGUI_Version,
-    WidGUI_OS_Info,
-    WidGUI_BaseSetting,
-    WidGUI_FileDisk,
-    WidGUI_ModelControl,
-    WidGUI_RemoteStatus,
-} TaskWidget_GUIFunc_List;
+    WidgetDsp_BootLogo = 0,
+    WidgetDsp_SysInfo,
+    WidgetDsp_TFCardInfo,
+    WidgetDsp_AppInfo,
+    WidgetDsp_Sum,
+} DspWidget_TypeList;
 
 typedef enum
 {
-    TaskWdiget_State_Init = 0,
-    TaskWidget_State_CheckFresh,
-    TaskWidget_State_Fresh,
-} TaskWidget_State_List;
+    Widget_Stage_Init = 0,
+    Widget_Stage_Run,
+} TaskWidget_Stage_TypeList;
 
-void TaskWidget_Core(Task_Handler self);
+void TaskWidget_Core(Task_Handle self);
 
-extern Task_Handler Widget_Tsk_Hdl;
-
+extern Task_Handle Widget_Tsk_Hdl;
 #endif
