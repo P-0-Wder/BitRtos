@@ -1748,42 +1748,16 @@ static bool UI_TriggerLabel_Move(UI_TriggerLabelObj_TypeDef *Obj, int16_t x, int
 
 static bool UI_TriggerLabel_Ctl(UI_TriggerLabelObj_TypeDef *Obj)
 {
+    int16_t str_x = 0;
+
     if (Obj == NULL)
         return false;
+
+    str_x = Obj->Gen_Data.x + 3;
+
+    UI_DspInterface.draw_str(base_font, Obj->Gen_Data.label, str_x, Obj->Gen_Data.y, true);
 
     return true;
 }
 
 /***************************************************************** still developing down below **********************************************************************/
-
-static bool UI_VerticlBar_Init(UI_VerticalBarObj_TypeDef *Obj, char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, uint8_t unit_len)
-{
-    if (Obj == NULL)
-        return false;
-
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
-
-    return true;
-}
-
-static bool UI_HorizonBar_Init(UI_HorizonBarObj_TypeDef *Obj, char *label, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t unit_len)
-{
-    if (Obj == NULL)
-        return false;
-
-    UI_GenData_Init(&Obj->Gen_Data, label, x, y);
-
-    return true;
-}
-
-/******************************* control function *********************************/
-
-static bool UI_VerticlBar_Ctl(UI_VerticalBarObj_TypeDef *Obj, uint8_t unit_len)
-{
-    return true;
-}
-
-static bool UI_HorizonBar_Ctl(UI_HorizonBarObj_TypeDef *Obj, uint8_t unit_len)
-{
-    return true;
-}

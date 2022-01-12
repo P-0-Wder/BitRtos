@@ -494,16 +494,6 @@ typedef struct
     bool (*ctl)(UI_TriggerLabelObj_TypeDef *Obj);
 } UI_TriggerLabel_Interface_TypeDef;
 
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
-} UI_VerticalBarObj_TypeDef;
-
-typedef struct
-{
-    UI_GeneralData_TypeDef Gen_Data;
-} UI_HorizonBarObj_TypeDef;
-
 bool UI_Set_FontType(uint8_t font);
 uint8_t UI_Get_FontType(void);
 
