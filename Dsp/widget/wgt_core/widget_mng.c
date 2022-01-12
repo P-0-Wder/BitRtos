@@ -103,6 +103,7 @@ static WidgetUI_SlideBar_Interface_TypeDef *WidgetUI_GetSlideBar_Instance(void);
 static WidgetUI_DigInput_Interface_TypeDef *WidgetUI_GetDigInput_Instance(void);
 static WidgetUI_StrInput_Interface_TypeDef *WidgetUI_GetStrInput_Instance(void);
 static WidgetUI_ProcessBar_Interface_TypeDef *WidgetUI_GetProcessBar_Instance(void);
+static WidgetUI_TriggerLabel_Interface_TypeDef *WidgetUI_GetTriggerLabel_Instance(void);
 
 /* general UI Mathod */
 static void WidgetUI_Init(void);
@@ -117,6 +118,7 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y,
 static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
 static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback);
 static bool WidgetUI_Move_Button(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y);
+static bool WidgetUI_SetButton_DspType(UI_Button_Handle Btn_Hdl, UI_ButtonDsp_TypeList type);
 static bool WidgetUI_Button_Operate(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
 static bool WidgetUI_Fresh_Button(UI_Button_Handle Btn_Hdl);
 
@@ -169,10 +171,18 @@ static bool WidgetUI_StrInput_Select(UI_StrInput_Handle hdl, bool state);
 static bool WidgetUI_StrInput_StrChar(UI_StrInput_Handle hdl, uint8_t pos, char input);
 static bool WidgetUI_Fresh_StrInput(UI_StrInput_Handle hdl);
 
+/* Widget UI TriggerLabel Mathod */
+static UI_TriggerLabel_Handle WidgetUI_Cteate_TriggerLabel(char *label, int16_t x, int16_t y);
+static bool WidgetUI_TriggerLabel_Move(UI_TriggerLabel_Handle hdl, int16_t x, int16_t y);
+static bool WidgetUI_TriggerLabel_SetCallback(UI_TriggerLabel_Handle hdl, UI_TriggerLabel_Callback callback);
+static bool WidgetUI_TriggerLabel_Triggered(UI_TriggerLabel_Handle hdl);
+static bool WidgetUI_Fresh_TriggerLabel(UI_TriggerLabel_Handle hdl);
+
 /* Widget Button object Interface */
 static WidgetUI_Button_Interface_TypeDef WidgetUI_Button = {
     .create = WidgetUI_Creat_Button,
     .Set_OprLabel = WidgetUI_SetButton_OprLabel,
+    .Set_DspType = WidgetUI_SetButton_DspType,
     .Set_TriggerCallback = WidgetUI_SetButton_TriggerCallback,
     .Move = WidgetUI_Move_Button,
     .Operate = WidgetUI_Button_Operate,
@@ -227,6 +237,13 @@ static WidgetUI_StrInput_Interface_TypeDef WidgetUI_StrInput = {
     .set_char = WidgetUI_StrInput_StrChar,
 };
 
+static WidgetUI_TriggerLabel_Interface_TypeDef WidgetUI_TirggerLabel = {
+    .create = WidgetUI_Cteate_TriggerLabel,
+    .Move = WidgetUI_TriggerLabel_Move,
+    .set_callback = WidgetUI_TriggerLabel_SetCallback,
+    .trigger = WidgetUI_TriggerLabel_Triggered,
+};
+
 /* for temp we init each var as null */
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
@@ -238,9 +255,7 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .DigInput = WidgetUI_GetDigInput_Instance,
     .StrInput = WidgetUI_GetStrInput_Instance,
     .Drop = WidgetUI_GetDrop_Instance,
-    // .UI_ProcBar = NULL,
-    // .UI_VerBar = NULL,
-    // .UI_HorBar = NULL,
+    .TriggerLabel = WidgetUI_GetTriggerLabel_Instance,
 };
 
 static Widget_DrawFunc_TypeDef WidgetDraw_Interface = {
@@ -1221,6 +1236,10 @@ static void WidgetUI_SetAll_CoordY_Offset(int8_t offset)
                     UI_StrInput.Move(HandleToStrInputObj(ui_handle), HandleToStrInputObj(ui_handle)->Gen_Data.x, HandleToStrInputObj(ui_handle)->Gen_Data.y + offset);
                     break;
 
+                case UI_Type_TriggerLabel:
+                    UI_TriggerLabel.Move(HandleToTriggerLabelObj(ui_handle), HandleToTriggerLabelObj(ui_handle)->Gen_Data.x, HandleToTriggerLabelObj(ui_handle)->Gen_Data.y + offset);
+                    break;
+
                 default:
                     break;
                 }
@@ -1375,6 +1394,9 @@ static bool WidgetUI_Fresh_CallBack(item_obj *UI_item)
     case UI_Type_StrInput:
         return WidgetUI_Fresh_StrInput(UI_Data->Handler);
 
+    case UI_Type_TriggerLabel:
+        return WidgetUI_Fresh_TriggerLabel(UI_Data->Handler);
+
     default:
         return false;
     }
@@ -1494,6 +1516,20 @@ static int16_t WidgetUI_GetCoord(const WidgetUI_Item_TypeDef *item, WidgetUI_Get
         }
         break;
 
+    case UI_Type_TriggerLabel:
+        switch ((uint8_t)option)
+        {
+        case WidgetUI_get_x:
+            return HandleToTriggerLabelObj(item->Handler)->Gen_Data.x;
+
+        case WidgetUI_get_y:
+            return HandleToTriggerLabelObj(item->Handler)->Gen_Data.y;
+
+        default:
+            return 0;
+        }
+        break;
+
     default:
         return 0;
     }
@@ -1605,6 +1641,14 @@ static bool WidgetUI_SetButton_OprLabel(UI_Button_Handle Btn_Hdl, char *psh_lbl,
         return false;
 
     return true;
+}
+
+static bool WidgetUI_SetButton_DspType(UI_Button_Handle Btn_Hdl, UI_ButtonDsp_TypeList type)
+{
+    if (Btn_Hdl == 0)
+        return false;
+
+    return UI_Button.set_DspType(HandleToButtonObj(Btn_Hdl), type);
 }
 
 static bool WidgetUI_SetButton_TriggerCallback(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback)
@@ -2224,5 +2268,75 @@ static bool WidgetUI_Fresh_StrInput(UI_StrInput_Handle hdl)
 }
 
 /************************************** widget StrInput interface ******************************************/
+
+/************************************** widget TriggerLabel interface ******************************************/
+static WidgetUI_TriggerLabel_Interface_TypeDef *WidgetUI_GetTriggerLabel_Instance(void)
+{
+    return &WidgetUI_TirggerLabel;
+}
+
+static UI_TriggerLabel_Handle WidgetUI_Cteate_TriggerLabel(char *label, int16_t x, int16_t y)
+{
+    UI_TriggerLabelObj_TypeDef *triggerlabel = NULL;
+
+    triggerlabel = (UI_TriggerLabelObj_TypeDef *)MMU_Malloc(sizeof(UI_TriggerLabelObj_TypeDef));
+    if ((triggerlabel == NULL) ||
+        (!UI_TriggerLabel.init(triggerlabel, label, x, y + UI_Get_FontType())) ||
+        (!WidgetUIList_InsertItem(triggerlabel, UI_Type_TriggerLabel)))
+        return NULL;
+
+    return ((UI_TriggerLabel_Handle)triggerlabel);
+}
+
+static bool WidgetUI_TriggerLabel_Move(UI_TriggerLabel_Handle hdl, int16_t x, int16_t y)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_TriggerLabel.Move(HandleToTriggerLabelObj(hdl), x, y);
+}
+
+static bool WidgetUI_TriggerLabel_SetCallback(UI_TriggerLabel_Handle hdl, UI_TriggerLabel_Callback callback)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_TriggerLabel.Set_Callback(HandleToTriggerLabelObj(hdl), callback);
+}
+
+static bool WidgetUI_TriggerLabel_Triggered(UI_TriggerLabel_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+
+    return UI_TriggerLabel.trigger(HandleToTriggerLabelObj(hdl));
+}
+
+static bool WidgetUI_Fresh_TriggerLabel(UI_TriggerLabel_Handle hdl)
+{
+    if (hdl == 0)
+        return false;
+    if (HandleToTriggerLabelObj(hdl)->Gen_Data.y < UI_Get_FontType() ||
+        HandleToTriggerLabelObj(hdl)->Gen_Data.x < 0)
+    {
+        if (WidgetUI_GetCurSelected_UICtl() == hdl)
+            WidgetUI_SetAll_CoordY_Offset(UICTL_STRINPUT_HEIGHT);
+
+        return true;
+    }
+
+    if ((HandleToTriggerLabelObj(hdl)->Gen_Data.y > (GetCur_Active_Widget()->height - UI_Get_FontType())) ||
+        (HandleToTriggerLabelObj(hdl)->Gen_Data.x >= GetCur_Active_Widget()->width))
+    {
+        if (WidgetUI_GetCurSelected_UICtl() == hdl)
+            WidgetUI_SetAll_CoordY_Offset(-UICTL_STRINPUT_HEIGHT);
+
+        return false;
+    }
+
+    return UI_TriggerLabel.ctl(HandleToTriggerLabelObj(hdl));
+}
+
+/************************************** widget TriggerLabel interface ******************************************/
 
 /************************************** widget UI interface ******************************************/

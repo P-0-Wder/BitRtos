@@ -125,6 +125,7 @@ typedef struct
 {
     UI_Button_Handle (*create)(char *label, int16_t x, int16_t y, uint8_t width, uint8_t height, UI_Button_Type type, UI_Button_State_List state);
     bool (*Set_OprLabel)(UI_Button_Handle Btn_Hdl, char *psh_lbl, char *rls_lbl);
+    bool (*Set_DspType)(UI_Button_Handle Btn_Hdl, UI_ButtonDsp_TypeList type);
     bool (*Set_TriggerCallback)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type, UI_ButtonTrigger_Callback Callback);
     bool (*Move)(UI_Button_Handle Btn_Hdl, int16_t x, int16_t y);
     bool (*Operate)(UI_Button_Handle Btn_Hdl, UI_Button_Trigger_Type type);
@@ -187,6 +188,14 @@ typedef struct
 
 typedef struct
 {
+    UI_TriggerLabel_Handle (*create)(char *label, int16_t x, int16_t y);
+    bool (*Move)(UI_TriggerLabel_Handle hdl, int16_t x, int16_t y);
+    bool (*set_callback)(UI_TriggerLabel_Handle hdl, UI_TriggerLabel_Callback callback);
+    bool (*trigger)(UI_TriggerLabel_Handle hadl);
+} WidgetUI_TriggerLabel_Interface_TypeDef;
+
+typedef struct
+{
     /* general UI function mathod */
     bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
@@ -200,9 +209,7 @@ typedef struct
     WidgetUI_Drop_Interface_TypeDef *(*Drop)(void);
     WidgetUI_DigInput_Interface_TypeDef *(*DigInput)(void);
     WidgetUI_StrInput_Interface_TypeDef *(*StrInput)(void);
-    // void (*UI_ProcBar)();
-    // void (*UI_VerBar)();
-    // void (*UI_HorBar)();
+    WidgetUI_TriggerLabel_Interface_TypeDef *(*TriggerLabel)(void);
 } WidgetUI_Utils_TypeDef;
 
 typedef struct
