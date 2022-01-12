@@ -1,0 +1,1123 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"oled1306.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Oled_TransmitByte,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	Oled_TransmitByte:
+  26              	.LVL0:
+  27              	.LFB123:
+  28              		.file 1 "Dsp/screen/device/oled1306.c"
+   1:Dsp/screen/device/oled1306.c **** #include "oled1306.h"
+   2:Dsp/screen/device/oled1306.c **** #include "delay.h"
+   3:Dsp/screen/device/oled1306.c **** 
+   4:Dsp/screen/device/oled1306.c **** /* const static variable */
+   5:Dsp/screen/device/oled1306.c **** const uint8_t OledEnable_CMD[2] = {0X14, 0XAF};
+   6:Dsp/screen/device/oled1306.c **** const uint8_t OledDisable_CMD[2] = {0X10, 0XAE};
+   7:Dsp/screen/device/oled1306.c **** 
+   8:Dsp/screen/device/oled1306.c **** /* external funtion for app or midware */
+   9:Dsp/screen/device/oled1306.c **** static void Oled_EnableControl(Oled_Obj_TypeDef *Oled_Obj, Oled_Enable_State_List state);
+  10:Dsp/screen/device/oled1306.c **** static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj);
+  11:Dsp/screen/device/oled1306.c **** static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj);
+  12:Dsp/screen/device/oled1306.c **** static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map);
+  13:Dsp/screen/device/oled1306.c **** static uint8_t Oled_GetMax_Width(void);
+  14:Dsp/screen/device/oled1306.c **** static uint8_t Oled_GetMax_Height(void);
+  15:Dsp/screen/device/oled1306.c **** static bool Oled_SetBright(Oled_Bright_Level lvl);
+  16:Dsp/screen/device/oled1306.c **** 
+  17:Dsp/screen/device/oled1306.c **** /* internal function */
+  18:Dsp/screen/device/oled1306.c **** static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Write_Type type);
+  19:Dsp/screen/device/oled1306.c **** 
+  20:Dsp/screen/device/oled1306.c **** Oled_GenProcFunc_TypeDef DrvOled = {
+  21:Dsp/screen/device/oled1306.c **** 	.init = Oled_Init,
+  22:Dsp/screen/device/oled1306.c **** 	.enable_set = Oled_EnableControl,
+  23:Dsp/screen/device/oled1306.c **** 	.fresh = Oled_MapUpdate,
+  24:Dsp/screen/device/oled1306.c **** 	.clear = Oled_Clear,
+  25:Dsp/screen/device/oled1306.c **** 	.bright = Oled_SetBright,
+  26:Dsp/screen/device/oled1306.c **** 	.get_max_height = Oled_GetMax_Height,
+  27:Dsp/screen/device/oled1306.c **** 	.get_max_width = Oled_GetMax_Width,
+  28:Dsp/screen/device/oled1306.c **** };
+  29:Dsp/screen/device/oled1306.c **** 
+  30:Dsp/screen/device/oled1306.c **** /* device Bsp IO SPI_Bus correspond control Function */
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 2
+
+
+  31:Dsp/screen/device/oled1306.c **** static void Oled_TransmitByte(Oled_Obj_TypeDef *Oled_Obj, uint8_t data, Oled_Write_Type type)
+  32:Dsp/screen/device/oled1306.c **** {
+  29              		.loc 1 32 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 32 1 is_stmt 0 view .LVU1
+  34 0000 38B5     		push	{r3, r4, r5, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 16
+  37              		.cfi_offset 3, -16
+  38              		.cfi_offset 4, -12
+  39              		.cfi_offset 5, -8
+  40              		.cfi_offset 14, -4
+  41 0002 0446     		mov	r4, r0
+  42 0004 0D46     		mov	r5, r1
+  33:Dsp/screen/device/oled1306.c **** 	if (type == Oled_Write_CMD)
+  43              		.loc 1 33 2 is_stmt 1 view .LVU2
+  44              		.loc 1 33 5 is_stmt 0 view .LVU3
+  45 0006 62B9     		cbnz	r2, .L2
+  34:Dsp/screen/device/oled1306.c **** 	{
+  35:Dsp/screen/device/oled1306.c **** 		Oled_Obj->dc_ctl(Oled_RS_Disable);
+  46              		.loc 1 35 3 is_stmt 1 view .LVU4
+  47              		.loc 1 35 11 is_stmt 0 view .LVU5
+  48 0008 D0F81230 		ldr	r3, [r0, #18]	@ unaligned
+  49              		.loc 1 35 3 view .LVU6
+  50 000c 0120     		movs	r0, #1
+  51              	.LVL1:
+  52              		.loc 1 35 3 view .LVU7
+  53 000e 9847     		blx	r3
+  54              	.LVL2:
+  55              	.L3:
+  36:Dsp/screen/device/oled1306.c **** 	}
+  37:Dsp/screen/device/oled1306.c **** 	else
+  38:Dsp/screen/device/oled1306.c **** 		Oled_Obj->dc_ctl(Oled_RS_Enable);
+  39:Dsp/screen/device/oled1306.c **** 
+  40:Dsp/screen/device/oled1306.c **** 	Oled_Obj->bus_transmit(data);
+  56              		.loc 1 40 2 is_stmt 1 view .LVU8
+  57              		.loc 1 40 10 is_stmt 0 view .LVU9
+  58 0010 D4F81A30 		ldr	r3, [r4, #26]	@ unaligned
+  59              		.loc 1 40 2 view .LVU10
+  60 0014 2846     		mov	r0, r5
+  61 0016 9847     		blx	r3
+  62              	.LVL3:
+  41:Dsp/screen/device/oled1306.c **** 
+  42:Dsp/screen/device/oled1306.c **** 	Oled_Obj->dc_ctl(Oled_RS_Enable);
+  63              		.loc 1 42 2 is_stmt 1 view .LVU11
+  64              		.loc 1 42 10 is_stmt 0 view .LVU12
+  65 0018 D4F81230 		ldr	r3, [r4, #18]	@ unaligned
+  66              		.loc 1 42 2 view .LVU13
+  67 001c 0020     		movs	r0, #0
+  68 001e 9847     		blx	r3
+  69              	.LVL4:
+  43:Dsp/screen/device/oled1306.c **** }
+  70              		.loc 1 43 1 view .LVU14
+  71 0020 38BD     		pop	{r3, r4, r5, pc}
+  72              	.LVL5:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 3
+
+
+  73              	.L2:
+  38:Dsp/screen/device/oled1306.c **** 
+  74              		.loc 1 38 3 is_stmt 1 view .LVU15
+  38:Dsp/screen/device/oled1306.c **** 
+  75              		.loc 1 38 11 is_stmt 0 view .LVU16
+  76 0022 D0F81230 		ldr	r3, [r0, #18]	@ unaligned
+  38:Dsp/screen/device/oled1306.c **** 
+  77              		.loc 1 38 3 view .LVU17
+  78 0026 0020     		movs	r0, #0
+  79              	.LVL6:
+  38:Dsp/screen/device/oled1306.c **** 
+  80              		.loc 1 38 3 view .LVU18
+  81 0028 9847     		blx	r3
+  82              	.LVL7:
+  38:Dsp/screen/device/oled1306.c **** 
+  83              		.loc 1 38 3 view .LVU19
+  84 002a F1E7     		b	.L3
+  85              		.cfi_endproc
+  86              	.LFE123:
+  88              		.section	.text.Oled_EnableControl,"ax",%progbits
+  89              		.align	1
+  90              		.syntax unified
+  91              		.thumb
+  92              		.thumb_func
+  93              		.fpu fpv4-sp-d16
+  95              	Oled_EnableControl:
+  96              	.LVL8:
+  97              	.LFB124:
+  44:Dsp/screen/device/oled1306.c **** 
+  45:Dsp/screen/device/oled1306.c **** static void Oled_EnableControl(Oled_Obj_TypeDef *Oled_Obj, Oled_Enable_State_List state)
+  46:Dsp/screen/device/oled1306.c **** {
+  98              		.loc 1 46 1 is_stmt 1 view -0
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 0
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102              		.loc 1 46 1 is_stmt 0 view .LVU21
+ 103 0000 70B5     		push	{r4, r5, r6, lr}
+ 104              	.LCFI1:
+ 105              		.cfi_def_cfa_offset 16
+ 106              		.cfi_offset 4, -16
+ 107              		.cfi_offset 5, -12
+ 108              		.cfi_offset 6, -8
+ 109              		.cfi_offset 14, -4
+ 110 0002 0546     		mov	r5, r0
+ 111 0004 0C46     		mov	r4, r1
+  47:Dsp/screen/device/oled1306.c **** 	uint8_t *Enb_CMD_Buff;
+ 112              		.loc 1 47 2 is_stmt 1 view .LVU22
+  48:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0X8D, Oled_Write_CMD);
+ 113              		.loc 1 48 2 view .LVU23
+ 114 0006 0022     		movs	r2, #0
+ 115 0008 8D21     		movs	r1, #141
+ 116              	.LVL9:
+ 117              		.loc 1 48 2 is_stmt 0 view .LVU24
+ 118 000a FFF7FEFF 		bl	Oled_TransmitByte
+ 119              	.LVL10:
+  49:Dsp/screen/device/oled1306.c **** 
+  50:Dsp/screen/device/oled1306.c **** 	if (state == Oled_Display_Enable)
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 4
+
+
+ 120              		.loc 1 50 2 is_stmt 1 view .LVU25
+ 121              		.loc 1 50 5 is_stmt 0 view .LVU26
+ 122 000e 14B9     		cbnz	r4, .L9
+  51:Dsp/screen/device/oled1306.c **** 	{
+  52:Dsp/screen/device/oled1306.c **** 		Enb_CMD_Buff = (uint8_t *)OledEnable_CMD;
+ 123              		.loc 1 52 16 view .LVU27
+ 124 0010 074E     		ldr	r6, .L11
+ 125              	.L6:
+ 126              	.LVL11:
+  53:Dsp/screen/device/oled1306.c **** 	}
+  54:Dsp/screen/device/oled1306.c **** 	else
+  55:Dsp/screen/device/oled1306.c **** 		Enb_CMD_Buff = (uint8_t *)OledDisable_CMD;
+  56:Dsp/screen/device/oled1306.c **** 
+  57:Dsp/screen/device/oled1306.c **** 	for (uint8_t i = 0; i < sizeof(OledEnable_CMD); i++)
+ 127              		.loc 1 57 2 is_stmt 1 view .LVU28
+ 128              	.LBB2:
+ 129              		.loc 1 57 7 view .LVU29
+ 130              		.loc 1 57 15 is_stmt 0 view .LVU30
+ 131 0012 0024     		movs	r4, #0
+ 132              		.loc 1 57 2 view .LVU31
+ 133 0014 08E0     		b	.L7
+ 134              	.LVL12:
+ 135              	.L9:
+ 136              		.loc 1 57 2 view .LVU32
+ 137              	.LBE2:
+  55:Dsp/screen/device/oled1306.c **** 
+ 138              		.loc 1 55 16 view .LVU33
+ 139 0016 074E     		ldr	r6, .L11+4
+ 140 0018 FBE7     		b	.L6
+ 141              	.LVL13:
+ 142              	.L8:
+ 143              	.LBB3:
+  58:Dsp/screen/device/oled1306.c **** 	{
+  59:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, Enb_CMD_Buff[i], Oled_Write_CMD);
+ 144              		.loc 1 59 3 is_stmt 1 discriminator 3 view .LVU34
+ 145 001a 0022     		movs	r2, #0
+ 146 001c 315D     		ldrb	r1, [r6, r4]	@ zero_extendqisi2
+ 147 001e 2846     		mov	r0, r5
+ 148 0020 FFF7FEFF 		bl	Oled_TransmitByte
+ 149              	.LVL14:
+  57:Dsp/screen/device/oled1306.c **** 	{
+ 150              		.loc 1 57 50 discriminator 3 view .LVU35
+  57:Dsp/screen/device/oled1306.c **** 	{
+ 151              		.loc 1 57 51 is_stmt 0 discriminator 3 view .LVU36
+ 152 0024 0134     		adds	r4, r4, #1
+ 153              	.LVL15:
+  57:Dsp/screen/device/oled1306.c **** 	{
+ 154              		.loc 1 57 51 discriminator 3 view .LVU37
+ 155 0026 E4B2     		uxtb	r4, r4
+ 156              	.LVL16:
+ 157              	.L7:
+  57:Dsp/screen/device/oled1306.c **** 	{
+ 158              		.loc 1 57 22 is_stmt 1 discriminator 1 view .LVU38
+  57:Dsp/screen/device/oled1306.c **** 	{
+ 159              		.loc 1 57 2 is_stmt 0 discriminator 1 view .LVU39
+ 160 0028 012C     		cmp	r4, #1
+ 161 002a F6D9     		bls	.L8
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 5
+
+
+ 162              	.LBE3:
+  60:Dsp/screen/device/oled1306.c **** 	}
+  61:Dsp/screen/device/oled1306.c **** }
+ 163              		.loc 1 61 1 view .LVU40
+ 164 002c 70BD     		pop	{r4, r5, r6, pc}
+ 165              	.LVL17:
+ 166              	.L12:
+ 167              		.loc 1 61 1 view .LVU41
+ 168 002e 00BF     		.align	2
+ 169              	.L11:
+ 170 0030 00000000 		.word	.LANCHOR1
+ 171 0034 00000000 		.word	.LANCHOR0
+ 172              		.cfi_endproc
+ 173              	.LFE124:
+ 175              		.section	.text.Oled_Clear,"ax",%progbits
+ 176              		.align	1
+ 177              		.syntax unified
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.fpu fpv4-sp-d16
+ 182              	Oled_Clear:
+ 183              	.LVL18:
+ 184              	.LFB126:
+  62:Dsp/screen/device/oled1306.c **** 
+  63:Dsp/screen/device/oled1306.c **** static bool Oled_Init(Oled_Obj_TypeDef *Oled_Obj)
+  64:Dsp/screen/device/oled1306.c **** {
+  65:Dsp/screen/device/oled1306.c **** 	Oled_Obj->bus_init(Oled_Obj->BusID);
+  66:Dsp/screen/device/oled1306.c **** 	Oled_Obj->dc_init();
+  67:Dsp/screen/device/oled1306.c **** 	Oled_Obj->rs_init();
+  68:Dsp/screen/device/oled1306.c **** 
+  69:Dsp/screen/device/oled1306.c **** 	Oled_Obj->rs_ctl(Oled_RS_Disable);
+  70:Dsp/screen/device/oled1306.c **** 	delay_ms(100);
+  71:Dsp/screen/device/oled1306.c **** 	Oled_Obj->rs_ctl(Oled_RS_Enable);
+  72:Dsp/screen/device/oled1306.c **** 
+  73:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xAE, Oled_Write_CMD);
+  74:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xD5, Oled_Write_CMD);
+  75:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 80, Oled_Write_CMD);
+  76:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xA8, Oled_Write_CMD);
+  77:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0X3F, Oled_Write_CMD);
+  78:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xD3, Oled_Write_CMD);
+  79:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0X00, Oled_Write_CMD);
+  80:Dsp/screen/device/oled1306.c **** 
+  81:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x40, Oled_Write_CMD);
+  82:Dsp/screen/device/oled1306.c **** 
+  83:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x8D, Oled_Write_CMD);
+  84:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x14, Oled_Write_CMD);
+  85:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x14, Oled_Write_CMD);
+  86:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x20, Oled_Write_CMD);
+  87:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x02, Oled_Write_CMD);
+  88:Dsp/screen/device/oled1306.c **** 
+  89:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xA0, Oled_Write_CMD);
+  90:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xC8, Oled_Write_CMD);
+  91:Dsp/screen/device/oled1306.c **** 
+  92:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xDA, Oled_Write_CMD);
+  93:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x12, Oled_Write_CMD);
+  94:Dsp/screen/device/oled1306.c **** 
+  95:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x81, Oled_Write_CMD);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 6
+
+
+  96:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xEF, Oled_Write_CMD);
+  97:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xD9, Oled_Write_CMD);
+  98:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xf1, Oled_Write_CMD);
+  99:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xDB, Oled_Write_CMD);
+ 100:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x30, Oled_Write_CMD);
+ 101:Dsp/screen/device/oled1306.c **** 
+ 102:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xA4, Oled_Write_CMD);
+ 103:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xA6, Oled_Write_CMD);
+ 104:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xAF, Oled_Write_CMD);
+ 105:Dsp/screen/device/oled1306.c **** 
+ 106:Dsp/screen/device/oled1306.c **** 	Oled_Clear(Oled_Obj);
+ 107:Dsp/screen/device/oled1306.c **** 
+ 108:Dsp/screen/device/oled1306.c **** 	return true;
+ 109:Dsp/screen/device/oled1306.c **** }
+ 110:Dsp/screen/device/oled1306.c **** 
+ 111:Dsp/screen/device/oled1306.c **** static void Oled_Clear(Oled_Obj_TypeDef *Oled_Obj)
+ 112:Dsp/screen/device/oled1306.c **** {
+ 185              		.loc 1 112 1 is_stmt 1 view -0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              		.loc 1 112 1 is_stmt 0 view .LVU43
+ 190 0000 70B5     		push	{r4, r5, r6, lr}
+ 191              	.LCFI2:
+ 192              		.cfi_def_cfa_offset 16
+ 193              		.cfi_offset 4, -16
+ 194              		.cfi_offset 5, -12
+ 195              		.cfi_offset 6, -8
+ 196              		.cfi_offset 14, -4
+ 197 0002 0546     		mov	r5, r0
+ 113:Dsp/screen/device/oled1306.c **** 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
+ 198              		.loc 1 113 2 is_stmt 1 view .LVU44
+ 199              	.LBB4:
+ 200              		.loc 1 113 7 view .LVU45
+ 201              	.LVL19:
+ 202              		.loc 1 113 15 is_stmt 0 view .LVU46
+ 203 0004 0026     		movs	r6, #0
+ 204              		.loc 1 113 2 view .LVU47
+ 205 0006 0BE0     		b	.L14
+ 206              	.LVL20:
+ 207              	.L16:
+ 208              	.LBB5:
+ 114:Dsp/screen/device/oled1306.c **** 	{
+ 115:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, (0xb0 + c), Oled_Write_CMD);
+ 116:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
+ 117:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
+ 118:Dsp/screen/device/oled1306.c **** 
+ 119:Dsp/screen/device/oled1306.c **** 		for (uint8_t r = 0; r < OLED_MAX_WIDTH; r++)
+ 120:Dsp/screen/device/oled1306.c **** 		{
+ 121:Dsp/screen/device/oled1306.c **** 			Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_Data);
+ 209              		.loc 1 121 4 is_stmt 1 discriminator 3 view .LVU48
+ 210 0008 0122     		movs	r2, #1
+ 211 000a 0021     		movs	r1, #0
+ 212 000c 2846     		mov	r0, r5
+ 213 000e FFF7FEFF 		bl	Oled_TransmitByte
+ 214              	.LVL21:
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 7
+
+
+ 215              		.loc 1 119 43 discriminator 3 view .LVU49
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 216              		.loc 1 119 44 is_stmt 0 discriminator 3 view .LVU50
+ 217 0012 0134     		adds	r4, r4, #1
+ 218              	.LVL22:
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 219              		.loc 1 119 44 discriminator 3 view .LVU51
+ 220 0014 E4B2     		uxtb	r4, r4
+ 221              	.LVL23:
+ 222              	.L15:
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 223              		.loc 1 119 23 is_stmt 1 discriminator 1 view .LVU52
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 224              		.loc 1 119 3 is_stmt 0 discriminator 1 view .LVU53
+ 225 0016 14F0800F 		tst	r4, #128
+ 226 001a F5D0     		beq	.L16
+ 227              	.LBE5:
+ 113:Dsp/screen/device/oled1306.c **** 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
+ 228              		.loc 1 113 49 is_stmt 1 discriminator 2 view .LVU54
+ 113:Dsp/screen/device/oled1306.c **** 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
+ 229              		.loc 1 113 50 is_stmt 0 discriminator 2 view .LVU55
+ 230 001c 0136     		adds	r6, r6, #1
+ 231              	.LVL24:
+ 113:Dsp/screen/device/oled1306.c **** 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
+ 232              		.loc 1 113 50 discriminator 2 view .LVU56
+ 233 001e F6B2     		uxtb	r6, r6
+ 234              	.LVL25:
+ 235              	.L14:
+ 113:Dsp/screen/device/oled1306.c **** 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
+ 236              		.loc 1 113 22 is_stmt 1 discriminator 1 view .LVU57
+ 113:Dsp/screen/device/oled1306.c **** 	for (uint8_t c = 0; c < OLED_COLUMN_BLOCK_NUM; c++)
+ 237              		.loc 1 113 2 is_stmt 0 discriminator 1 view .LVU58
+ 238 0020 072E     		cmp	r6, #7
+ 239 0022 12D8     		bhi	.L19
+ 115:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
+ 240              		.loc 1 115 3 is_stmt 1 view .LVU59
+ 241 0024 A6F15001 		sub	r1, r6, #80
+ 242 0028 0022     		movs	r2, #0
+ 243 002a C9B2     		uxtb	r1, r1
+ 244 002c 2846     		mov	r0, r5
+ 245 002e FFF7FEFF 		bl	Oled_TransmitByte
+ 246              	.LVL26:
+ 116:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
+ 247              		.loc 1 116 3 view .LVU60
+ 248 0032 0022     		movs	r2, #0
+ 249 0034 1146     		mov	r1, r2
+ 250 0036 2846     		mov	r0, r5
+ 251 0038 FFF7FEFF 		bl	Oled_TransmitByte
+ 252              	.LVL27:
+ 117:Dsp/screen/device/oled1306.c **** 
+ 253              		.loc 1 117 3 view .LVU61
+ 254 003c 0022     		movs	r2, #0
+ 255 003e 1021     		movs	r1, #16
+ 256 0040 2846     		mov	r0, r5
+ 257 0042 FFF7FEFF 		bl	Oled_TransmitByte
+ 258              	.LVL28:
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 8
+
+
+ 259              		.loc 1 119 3 view .LVU62
+ 260              	.LBB6:
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 261              		.loc 1 119 8 view .LVU63
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 262              		.loc 1 119 16 is_stmt 0 view .LVU64
+ 263 0046 0024     		movs	r4, #0
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 264              		.loc 1 119 3 view .LVU65
+ 265 0048 E5E7     		b	.L15
+ 266              	.LVL29:
+ 267              	.L19:
+ 119:Dsp/screen/device/oled1306.c **** 		{
+ 268              		.loc 1 119 3 view .LVU66
+ 269              	.LBE6:
+ 270              	.LBE4:
+ 122:Dsp/screen/device/oled1306.c **** 		}
+ 123:Dsp/screen/device/oled1306.c **** 	}
+ 124:Dsp/screen/device/oled1306.c **** }
+ 271              		.loc 1 124 1 view .LVU67
+ 272 004a 70BD     		pop	{r4, r5, r6, pc}
+ 273              		.loc 1 124 1 view .LVU68
+ 274              		.cfi_endproc
+ 275              	.LFE126:
+ 277              		.section	.text.Oled_GetMax_Width,"ax",%progbits
+ 278              		.align	1
+ 279              		.syntax unified
+ 280              		.thumb
+ 281              		.thumb_func
+ 282              		.fpu fpv4-sp-d16
+ 284              	Oled_GetMax_Width:
+ 285              	.LFB127:
+ 125:Dsp/screen/device/oled1306.c **** 
+ 126:Dsp/screen/device/oled1306.c **** static uint8_t Oled_GetMax_Width(void)
+ 127:Dsp/screen/device/oled1306.c **** {
+ 286              		.loc 1 127 1 is_stmt 1 view -0
+ 287              		.cfi_startproc
+ 288              		@ args = 0, pretend = 0, frame = 0
+ 289              		@ frame_needed = 0, uses_anonymous_args = 0
+ 290              		@ link register save eliminated.
+ 128:Dsp/screen/device/oled1306.c **** 	return OLED_MAX_WIDTH;
+ 291              		.loc 1 128 2 view .LVU70
+ 129:Dsp/screen/device/oled1306.c **** }
+ 292              		.loc 1 129 1 is_stmt 0 view .LVU71
+ 293 0000 8020     		movs	r0, #128
+ 294 0002 7047     		bx	lr
+ 295              		.cfi_endproc
+ 296              	.LFE127:
+ 298              		.section	.text.Oled_GetMax_Height,"ax",%progbits
+ 299              		.align	1
+ 300              		.syntax unified
+ 301              		.thumb
+ 302              		.thumb_func
+ 303              		.fpu fpv4-sp-d16
+ 305              	Oled_GetMax_Height:
+ 306              	.LFB128:
+ 130:Dsp/screen/device/oled1306.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 9
+
+
+ 131:Dsp/screen/device/oled1306.c **** static uint8_t Oled_GetMax_Height(void)
+ 132:Dsp/screen/device/oled1306.c **** {
+ 307              		.loc 1 132 1 is_stmt 1 view -0
+ 308              		.cfi_startproc
+ 309              		@ args = 0, pretend = 0, frame = 0
+ 310              		@ frame_needed = 0, uses_anonymous_args = 0
+ 311              		@ link register save eliminated.
+ 133:Dsp/screen/device/oled1306.c **** 	return OLED_MAX_HEIGHT;
+ 312              		.loc 1 133 2 view .LVU73
+ 134:Dsp/screen/device/oled1306.c **** }
+ 313              		.loc 1 134 1 is_stmt 0 view .LVU74
+ 314 0000 4020     		movs	r0, #64
+ 315 0002 7047     		bx	lr
+ 316              		.cfi_endproc
+ 317              	.LFE128:
+ 319              		.section	.text.Oled_MapUpdate,"ax",%progbits
+ 320              		.align	1
+ 321              		.syntax unified
+ 322              		.thumb
+ 323              		.thumb_func
+ 324              		.fpu fpv4-sp-d16
+ 326              	Oled_MapUpdate:
+ 327              	.LVL30:
+ 328              	.LFB129:
+ 135:Dsp/screen/device/oled1306.c **** 
+ 136:Dsp/screen/device/oled1306.c **** static bool Oled_MapUpdate(Oled_Obj_TypeDef *Oled_Obj, uint8_t **map)
+ 137:Dsp/screen/device/oled1306.c **** {
+ 329              		.loc 1 137 1 is_stmt 1 view -0
+ 330              		.cfi_startproc
+ 331              		@ args = 0, pretend = 0, frame = 0
+ 332              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138:Dsp/screen/device/oled1306.c **** 	uint8_t i = 0;
+ 333              		.loc 1 138 2 view .LVU76
+ 139:Dsp/screen/device/oled1306.c **** 
+ 140:Dsp/screen/device/oled1306.c **** 	if ((Oled_Obj == NULL) || (map == NULL))
+ 334              		.loc 1 140 2 view .LVU77
+ 335              		.loc 1 140 5 is_stmt 0 view .LVU78
+ 336 0000 B0B3     		cbz	r0, .L29
+ 137:Dsp/screen/device/oled1306.c **** 	uint8_t i = 0;
+ 337              		.loc 1 137 1 discriminator 1 view .LVU79
+ 338 0002 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 339              	.LCFI3:
+ 340              		.cfi_def_cfa_offset 24
+ 341              		.cfi_offset 3, -24
+ 342              		.cfi_offset 4, -20
+ 343              		.cfi_offset 5, -16
+ 344              		.cfi_offset 6, -12
+ 345              		.cfi_offset 7, -8
+ 346              		.cfi_offset 14, -4
+ 347 0004 0E46     		mov	r6, r1
+ 348 0006 0746     		mov	r7, r0
+ 349              		.loc 1 140 25 discriminator 1 view .LVU80
+ 350 0008 A1B3     		cbz	r1, .L30
+ 351              	.LBB7:
+ 141:Dsp/screen/device/oled1306.c **** 		return false;
+ 142:Dsp/screen/device/oled1306.c **** 
+ 143:Dsp/screen/device/oled1306.c **** 	for (uint8_t row_index = 0; row_index < ROW_SIZE; row_index++)
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 10
+
+
+ 352              		.loc 1 143 15 view .LVU81
+ 353 000a 0025     		movs	r5, #0
+ 354 000c 19E0     		b	.L24
+ 355              	.LVL31:
+ 356              	.L26:
+ 357              	.LBB8:
+ 358              	.LBB9:
+ 144:Dsp/screen/device/oled1306.c **** 	{
+ 145:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, (0xb0 + row_index), Oled_Write_CMD);
+ 146:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
+ 147:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
+ 148:Dsp/screen/device/oled1306.c **** 
+ 149:Dsp/screen/device/oled1306.c **** 		for (uint8_t column_index = 0; column_index < OLED_MAX_WIDTH; column_index++)
+ 150:Dsp/screen/device/oled1306.c **** 		{
+ 151:Dsp/screen/device/oled1306.c **** 			uint8_t tmp = 0;
+ 152:Dsp/screen/device/oled1306.c **** 
+ 153:Dsp/screen/device/oled1306.c **** 			for (i = 0; i < ROW_SIZE; i++)
+ 154:Dsp/screen/device/oled1306.c **** 			{
+ 155:Dsp/screen/device/oled1306.c **** 				tmp |= map[row_index * ROW_SIZE + i][column_index] << i;
+ 359              		.loc 1 155 5 is_stmt 1 discriminator 3 view .LVU82
+ 360              		.loc 1 155 37 is_stmt 0 discriminator 3 view .LVU83
+ 361 000e 03EBC502 		add	r2, r3, r5, lsl #3
+ 362              		.loc 1 155 15 discriminator 3 view .LVU84
+ 363 0012 56F82220 		ldr	r2, [r6, r2, lsl #2]
+ 364              		.loc 1 155 41 discriminator 3 view .LVU85
+ 365 0016 125D     		ldrb	r2, [r2, r4]	@ zero_extendqisi2
+ 366              		.loc 1 155 56 discriminator 3 view .LVU86
+ 367 0018 9A40     		lsls	r2, r2, r3
+ 368              		.loc 1 155 9 discriminator 3 view .LVU87
+ 369 001a 1143     		orrs	r1, r1, r2
+ 370              	.LVL32:
+ 371              		.loc 1 155 9 discriminator 3 view .LVU88
+ 372 001c C9B2     		uxtb	r1, r1
+ 373              	.LVL33:
+ 153:Dsp/screen/device/oled1306.c **** 			{
+ 374              		.loc 1 153 30 is_stmt 1 discriminator 3 view .LVU89
+ 153:Dsp/screen/device/oled1306.c **** 			{
+ 375              		.loc 1 153 31 is_stmt 0 discriminator 3 view .LVU90
+ 376 001e 0133     		adds	r3, r3, #1
+ 377              	.LVL34:
+ 153:Dsp/screen/device/oled1306.c **** 			{
+ 378              		.loc 1 153 31 discriminator 3 view .LVU91
+ 379 0020 DBB2     		uxtb	r3, r3
+ 380              	.LVL35:
+ 381              	.L27:
+ 153:Dsp/screen/device/oled1306.c **** 			{
+ 382              		.loc 1 153 16 is_stmt 1 discriminator 1 view .LVU92
+ 153:Dsp/screen/device/oled1306.c **** 			{
+ 383              		.loc 1 153 4 is_stmt 0 discriminator 1 view .LVU93
+ 384 0022 072B     		cmp	r3, #7
+ 385 0024 F3D9     		bls	.L26
+ 156:Dsp/screen/device/oled1306.c **** 			}
+ 157:Dsp/screen/device/oled1306.c **** 
+ 158:Dsp/screen/device/oled1306.c **** 			Oled_TransmitByte(Oled_Obj, tmp, Oled_Write_Data);
+ 386              		.loc 1 158 4 is_stmt 1 discriminator 2 view .LVU94
+ 387 0026 0122     		movs	r2, #1
+ 388 0028 3846     		mov	r0, r7
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 11
+
+
+ 389 002a FFF7FEFF 		bl	Oled_TransmitByte
+ 390              	.LVL36:
+ 391              		.loc 1 158 4 is_stmt 0 discriminator 2 view .LVU95
+ 392              	.LBE9:
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 393              		.loc 1 149 65 is_stmt 1 discriminator 2 view .LVU96
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 394              		.loc 1 149 77 is_stmt 0 discriminator 2 view .LVU97
+ 395 002e 0134     		adds	r4, r4, #1
+ 396              	.LVL37:
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 397              		.loc 1 149 77 discriminator 2 view .LVU98
+ 398 0030 E4B2     		uxtb	r4, r4
+ 399              	.LVL38:
+ 400              	.L25:
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 401              		.loc 1 149 34 is_stmt 1 discriminator 1 view .LVU99
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 402              		.loc 1 149 3 is_stmt 0 discriminator 1 view .LVU100
+ 403 0032 14F0800F 		tst	r4, #128
+ 404 0036 02D1     		bne	.L36
+ 405              	.LBB10:
+ 151:Dsp/screen/device/oled1306.c **** 
+ 406              		.loc 1 151 12 view .LVU101
+ 407 0038 0021     		movs	r1, #0
+ 153:Dsp/screen/device/oled1306.c **** 			{
+ 408              		.loc 1 153 11 view .LVU102
+ 409 003a 0B46     		mov	r3, r1
+ 410 003c F1E7     		b	.L27
+ 411              	.L36:
+ 412              	.LBE10:
+ 413              	.LBE8:
+ 143:Dsp/screen/device/oled1306.c **** 	{
+ 414              		.loc 1 143 52 is_stmt 1 discriminator 2 view .LVU103
+ 143:Dsp/screen/device/oled1306.c **** 	{
+ 415              		.loc 1 143 61 is_stmt 0 discriminator 2 view .LVU104
+ 416 003e 0135     		adds	r5, r5, #1
+ 417              	.LVL39:
+ 143:Dsp/screen/device/oled1306.c **** 	{
+ 418              		.loc 1 143 61 discriminator 2 view .LVU105
+ 419 0040 EDB2     		uxtb	r5, r5
+ 420              	.LVL40:
+ 421              	.L24:
+ 143:Dsp/screen/device/oled1306.c **** 	{
+ 422              		.loc 1 143 30 is_stmt 1 discriminator 1 view .LVU106
+ 143:Dsp/screen/device/oled1306.c **** 	{
+ 423              		.loc 1 143 2 is_stmt 0 discriminator 1 view .LVU107
+ 424 0042 072D     		cmp	r5, #7
+ 425 0044 12D8     		bhi	.L37
+ 145:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x00, Oled_Write_CMD);
+ 426              		.loc 1 145 3 is_stmt 1 view .LVU108
+ 427 0046 A5F15001 		sub	r1, r5, #80
+ 428 004a 0022     		movs	r2, #0
+ 429 004c C9B2     		uxtb	r1, r1
+ 430 004e 3846     		mov	r0, r7
+ 431 0050 FFF7FEFF 		bl	Oled_TransmitByte
+ 432              	.LVL41:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 12
+
+
+ 146:Dsp/screen/device/oled1306.c **** 		Oled_TransmitByte(Oled_Obj, 0x10, Oled_Write_CMD);
+ 433              		.loc 1 146 3 view .LVU109
+ 434 0054 0022     		movs	r2, #0
+ 435 0056 1146     		mov	r1, r2
+ 436 0058 3846     		mov	r0, r7
+ 437 005a FFF7FEFF 		bl	Oled_TransmitByte
+ 438              	.LVL42:
+ 147:Dsp/screen/device/oled1306.c **** 
+ 439              		.loc 1 147 3 view .LVU110
+ 440 005e 0022     		movs	r2, #0
+ 441 0060 1021     		movs	r1, #16
+ 442 0062 3846     		mov	r0, r7
+ 443 0064 FFF7FEFF 		bl	Oled_TransmitByte
+ 444              	.LVL43:
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 445              		.loc 1 149 3 view .LVU111
+ 446              	.LBB11:
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 447              		.loc 1 149 8 view .LVU112
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 448              		.loc 1 149 16 is_stmt 0 view .LVU113
+ 449 0068 0024     		movs	r4, #0
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 450              		.loc 1 149 3 view .LVU114
+ 451 006a E2E7     		b	.L25
+ 452              	.LVL44:
+ 453              	.L37:
+ 149:Dsp/screen/device/oled1306.c **** 		{
+ 454              		.loc 1 149 3 view .LVU115
+ 455              	.LBE11:
+ 456              	.LBE7:
+ 159:Dsp/screen/device/oled1306.c **** 		}
+ 160:Dsp/screen/device/oled1306.c **** 	}
+ 161:Dsp/screen/device/oled1306.c **** 	return true;
+ 457              		.loc 1 161 9 view .LVU116
+ 458 006c 0120     		movs	r0, #1
+ 459              	.LVL45:
+ 460              	.L23:
+ 162:Dsp/screen/device/oled1306.c **** }
+ 461              		.loc 1 162 1 view .LVU117
+ 462 006e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 463              	.LVL46:
+ 464              	.L29:
+ 465              	.LCFI4:
+ 466              		.cfi_def_cfa_offset 0
+ 467              		.cfi_restore 3
+ 468              		.cfi_restore 4
+ 469              		.cfi_restore 5
+ 470              		.cfi_restore 6
+ 471              		.cfi_restore 7
+ 472              		.cfi_restore 14
+ 141:Dsp/screen/device/oled1306.c **** 
+ 473              		.loc 1 141 10 view .LVU118
+ 474 0070 0020     		movs	r0, #0
+ 475              	.LVL47:
+ 476              		.loc 1 162 1 view .LVU119
+ 477 0072 7047     		bx	lr
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 13
+
+
+ 478              	.LVL48:
+ 479              	.L30:
+ 480              	.LCFI5:
+ 481              		.cfi_def_cfa_offset 24
+ 482              		.cfi_offset 3, -24
+ 483              		.cfi_offset 4, -20
+ 484              		.cfi_offset 5, -16
+ 485              		.cfi_offset 6, -12
+ 486              		.cfi_offset 7, -8
+ 487              		.cfi_offset 14, -4
+ 141:Dsp/screen/device/oled1306.c **** 
+ 488              		.loc 1 141 10 view .LVU120
+ 489 0074 0020     		movs	r0, #0
+ 490              	.LVL49:
+ 141:Dsp/screen/device/oled1306.c **** 
+ 491              		.loc 1 141 10 view .LVU121
+ 492 0076 FAE7     		b	.L23
+ 493              		.cfi_endproc
+ 494              	.LFE129:
+ 496              		.section	.text.Oled_SetBright,"ax",%progbits
+ 497              		.align	1
+ 498              		.syntax unified
+ 499              		.thumb
+ 500              		.thumb_func
+ 501              		.fpu fpv4-sp-d16
+ 503              	Oled_SetBright:
+ 504              	.LVL50:
+ 505              	.LFB130:
+ 163:Dsp/screen/device/oled1306.c **** 
+ 164:Dsp/screen/device/oled1306.c **** static bool Oled_SetBright(Oled_Bright_Level lvl)
+ 165:Dsp/screen/device/oled1306.c **** {
+ 506              		.loc 1 165 1 is_stmt 1 view -0
+ 507              		.cfi_startproc
+ 508              		@ args = 0, pretend = 0, frame = 0
+ 509              		@ frame_needed = 0, uses_anonymous_args = 0
+ 510              		@ link register save eliminated.
+ 166:Dsp/screen/device/oled1306.c **** 	return true;
+ 511              		.loc 1 166 2 view .LVU123
+ 167:Dsp/screen/device/oled1306.c **** }
+ 512              		.loc 1 167 1 is_stmt 0 view .LVU124
+ 513 0000 0120     		movs	r0, #1
+ 514              	.LVL51:
+ 515              		.loc 1 167 1 view .LVU125
+ 516 0002 7047     		bx	lr
+ 517              		.cfi_endproc
+ 518              	.LFE130:
+ 520              		.section	.text.Oled_Init,"ax",%progbits
+ 521              		.align	1
+ 522              		.syntax unified
+ 523              		.thumb
+ 524              		.thumb_func
+ 525              		.fpu fpv4-sp-d16
+ 527              	Oled_Init:
+ 528              	.LVL52:
+ 529              	.LFB125:
+  64:Dsp/screen/device/oled1306.c **** 	Oled_Obj->bus_init(Oled_Obj->BusID);
+ 530              		.loc 1 64 1 is_stmt 1 view -0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 14
+
+
+ 531              		.cfi_startproc
+ 532              		@ args = 0, pretend = 0, frame = 0
+ 533              		@ frame_needed = 0, uses_anonymous_args = 0
+  64:Dsp/screen/device/oled1306.c **** 	Oled_Obj->bus_init(Oled_Obj->BusID);
+ 534              		.loc 1 64 1 is_stmt 0 view .LVU127
+ 535 0000 10B5     		push	{r4, lr}
+ 536              	.LCFI6:
+ 537              		.cfi_def_cfa_offset 8
+ 538              		.cfi_offset 4, -8
+ 539              		.cfi_offset 14, -4
+ 540 0002 0446     		mov	r4, r0
+  65:Dsp/screen/device/oled1306.c **** 	Oled_Obj->dc_init();
+ 541              		.loc 1 65 2 is_stmt 1 view .LVU128
+  65:Dsp/screen/device/oled1306.c **** 	Oled_Obj->dc_init();
+ 542              		.loc 1 65 10 is_stmt 0 view .LVU129
+ 543 0004 D0F81630 		ldr	r3, [r0, #22]	@ unaligned
+  65:Dsp/screen/device/oled1306.c **** 	Oled_Obj->dc_init();
+ 544              		.loc 1 65 2 view .LVU130
+ 545 0008 4079     		ldrb	r0, [r0, #5]	@ zero_extendqisi2
+ 546              	.LVL53:
+  65:Dsp/screen/device/oled1306.c **** 	Oled_Obj->dc_init();
+ 547              		.loc 1 65 2 view .LVU131
+ 548 000a 9847     		blx	r3
+ 549              	.LVL54:
+  66:Dsp/screen/device/oled1306.c **** 	Oled_Obj->rs_init();
+ 550              		.loc 1 66 2 is_stmt 1 view .LVU132
+  66:Dsp/screen/device/oled1306.c **** 	Oled_Obj->rs_init();
+ 551              		.loc 1 66 10 is_stmt 0 view .LVU133
+ 552 000c D4F80A30 		ldr	r3, [r4, #10]	@ unaligned
+  66:Dsp/screen/device/oled1306.c **** 	Oled_Obj->rs_init();
+ 553              		.loc 1 66 2 view .LVU134
+ 554 0010 9847     		blx	r3
+ 555              	.LVL55:
+  67:Dsp/screen/device/oled1306.c **** 
+ 556              		.loc 1 67 2 is_stmt 1 view .LVU135
+  67:Dsp/screen/device/oled1306.c **** 
+ 557              		.loc 1 67 10 is_stmt 0 view .LVU136
+ 558 0012 D4F80630 		ldr	r3, [r4, #6]	@ unaligned
+  67:Dsp/screen/device/oled1306.c **** 
+ 559              		.loc 1 67 2 view .LVU137
+ 560 0016 9847     		blx	r3
+ 561              	.LVL56:
+  69:Dsp/screen/device/oled1306.c **** 	delay_ms(100);
+ 562              		.loc 1 69 2 is_stmt 1 view .LVU138
+  69:Dsp/screen/device/oled1306.c **** 	delay_ms(100);
+ 563              		.loc 1 69 10 is_stmt 0 view .LVU139
+ 564 0018 D4F80E30 		ldr	r3, [r4, #14]	@ unaligned
+  69:Dsp/screen/device/oled1306.c **** 	delay_ms(100);
+ 565              		.loc 1 69 2 view .LVU140
+ 566 001c 0120     		movs	r0, #1
+ 567 001e 9847     		blx	r3
+ 568              	.LVL57:
+  70:Dsp/screen/device/oled1306.c **** 	Oled_Obj->rs_ctl(Oled_RS_Enable);
+ 569              		.loc 1 70 2 is_stmt 1 view .LVU141
+ 570 0020 6420     		movs	r0, #100
+ 571 0022 FFF7FEFF 		bl	delay_ms
+ 572              	.LVL58:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 15
+
+
+  71:Dsp/screen/device/oled1306.c **** 
+ 573              		.loc 1 71 2 view .LVU142
+  71:Dsp/screen/device/oled1306.c **** 
+ 574              		.loc 1 71 10 is_stmt 0 view .LVU143
+ 575 0026 D4F80E30 		ldr	r3, [r4, #14]	@ unaligned
+  71:Dsp/screen/device/oled1306.c **** 
+ 576              		.loc 1 71 2 view .LVU144
+ 577 002a 0020     		movs	r0, #0
+ 578 002c 9847     		blx	r3
+ 579              	.LVL59:
+  73:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xD5, Oled_Write_CMD);
+ 580              		.loc 1 73 2 is_stmt 1 view .LVU145
+ 581 002e 0022     		movs	r2, #0
+ 582 0030 AE21     		movs	r1, #174
+ 583 0032 2046     		mov	r0, r4
+ 584 0034 FFF7FEFF 		bl	Oled_TransmitByte
+ 585              	.LVL60:
+  74:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 80, Oled_Write_CMD);
+ 586              		.loc 1 74 2 view .LVU146
+ 587 0038 0022     		movs	r2, #0
+ 588 003a D521     		movs	r1, #213
+ 589 003c 2046     		mov	r0, r4
+ 590 003e FFF7FEFF 		bl	Oled_TransmitByte
+ 591              	.LVL61:
+  75:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xA8, Oled_Write_CMD);
+ 592              		.loc 1 75 2 view .LVU147
+ 593 0042 0022     		movs	r2, #0
+ 594 0044 5021     		movs	r1, #80
+ 595 0046 2046     		mov	r0, r4
+ 596 0048 FFF7FEFF 		bl	Oled_TransmitByte
+ 597              	.LVL62:
+  76:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0X3F, Oled_Write_CMD);
+ 598              		.loc 1 76 2 view .LVU148
+ 599 004c 0022     		movs	r2, #0
+ 600 004e A821     		movs	r1, #168
+ 601 0050 2046     		mov	r0, r4
+ 602 0052 FFF7FEFF 		bl	Oled_TransmitByte
+ 603              	.LVL63:
+  77:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xD3, Oled_Write_CMD);
+ 604              		.loc 1 77 2 view .LVU149
+ 605 0056 0022     		movs	r2, #0
+ 606 0058 3F21     		movs	r1, #63
+ 607 005a 2046     		mov	r0, r4
+ 608 005c FFF7FEFF 		bl	Oled_TransmitByte
+ 609              	.LVL64:
+  78:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0X00, Oled_Write_CMD);
+ 610              		.loc 1 78 2 view .LVU150
+ 611 0060 0022     		movs	r2, #0
+ 612 0062 D321     		movs	r1, #211
+ 613 0064 2046     		mov	r0, r4
+ 614 0066 FFF7FEFF 		bl	Oled_TransmitByte
+ 615              	.LVL65:
+  79:Dsp/screen/device/oled1306.c **** 
+ 616              		.loc 1 79 2 view .LVU151
+ 617 006a 0022     		movs	r2, #0
+ 618 006c 1146     		mov	r1, r2
+ 619 006e 2046     		mov	r0, r4
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 16
+
+
+ 620 0070 FFF7FEFF 		bl	Oled_TransmitByte
+ 621              	.LVL66:
+  81:Dsp/screen/device/oled1306.c **** 
+ 622              		.loc 1 81 2 view .LVU152
+ 623 0074 0022     		movs	r2, #0
+ 624 0076 4021     		movs	r1, #64
+ 625 0078 2046     		mov	r0, r4
+ 626 007a FFF7FEFF 		bl	Oled_TransmitByte
+ 627              	.LVL67:
+  83:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x14, Oled_Write_CMD);
+ 628              		.loc 1 83 2 view .LVU153
+ 629 007e 0022     		movs	r2, #0
+ 630 0080 8D21     		movs	r1, #141
+ 631 0082 2046     		mov	r0, r4
+ 632 0084 FFF7FEFF 		bl	Oled_TransmitByte
+ 633              	.LVL68:
+  84:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x14, Oled_Write_CMD);
+ 634              		.loc 1 84 2 view .LVU154
+ 635 0088 0022     		movs	r2, #0
+ 636 008a 1421     		movs	r1, #20
+ 637 008c 2046     		mov	r0, r4
+ 638 008e FFF7FEFF 		bl	Oled_TransmitByte
+ 639              	.LVL69:
+  85:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x20, Oled_Write_CMD);
+ 640              		.loc 1 85 2 view .LVU155
+ 641 0092 0022     		movs	r2, #0
+ 642 0094 1421     		movs	r1, #20
+ 643 0096 2046     		mov	r0, r4
+ 644 0098 FFF7FEFF 		bl	Oled_TransmitByte
+ 645              	.LVL70:
+  86:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x02, Oled_Write_CMD);
+ 646              		.loc 1 86 2 view .LVU156
+ 647 009c 0022     		movs	r2, #0
+ 648 009e 2021     		movs	r1, #32
+ 649 00a0 2046     		mov	r0, r4
+ 650 00a2 FFF7FEFF 		bl	Oled_TransmitByte
+ 651              	.LVL71:
+  87:Dsp/screen/device/oled1306.c **** 
+ 652              		.loc 1 87 2 view .LVU157
+ 653 00a6 0022     		movs	r2, #0
+ 654 00a8 0221     		movs	r1, #2
+ 655 00aa 2046     		mov	r0, r4
+ 656 00ac FFF7FEFF 		bl	Oled_TransmitByte
+ 657              	.LVL72:
+  89:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xC8, Oled_Write_CMD);
+ 658              		.loc 1 89 2 view .LVU158
+ 659 00b0 0022     		movs	r2, #0
+ 660 00b2 A021     		movs	r1, #160
+ 661 00b4 2046     		mov	r0, r4
+ 662 00b6 FFF7FEFF 		bl	Oled_TransmitByte
+ 663              	.LVL73:
+  90:Dsp/screen/device/oled1306.c **** 
+ 664              		.loc 1 90 2 view .LVU159
+ 665 00ba 0022     		movs	r2, #0
+ 666 00bc C821     		movs	r1, #200
+ 667 00be 2046     		mov	r0, r4
+ 668 00c0 FFF7FEFF 		bl	Oled_TransmitByte
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 17
+
+
+ 669              	.LVL74:
+  92:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x12, Oled_Write_CMD);
+ 670              		.loc 1 92 2 view .LVU160
+ 671 00c4 0022     		movs	r2, #0
+ 672 00c6 DA21     		movs	r1, #218
+ 673 00c8 2046     		mov	r0, r4
+ 674 00ca FFF7FEFF 		bl	Oled_TransmitByte
+ 675              	.LVL75:
+  93:Dsp/screen/device/oled1306.c **** 
+ 676              		.loc 1 93 2 view .LVU161
+ 677 00ce 0022     		movs	r2, #0
+ 678 00d0 1221     		movs	r1, #18
+ 679 00d2 2046     		mov	r0, r4
+ 680 00d4 FFF7FEFF 		bl	Oled_TransmitByte
+ 681              	.LVL76:
+  95:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xEF, Oled_Write_CMD);
+ 682              		.loc 1 95 2 view .LVU162
+ 683 00d8 0022     		movs	r2, #0
+ 684 00da 8121     		movs	r1, #129
+ 685 00dc 2046     		mov	r0, r4
+ 686 00de FFF7FEFF 		bl	Oled_TransmitByte
+ 687              	.LVL77:
+  96:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xD9, Oled_Write_CMD);
+ 688              		.loc 1 96 2 view .LVU163
+ 689 00e2 0022     		movs	r2, #0
+ 690 00e4 EF21     		movs	r1, #239
+ 691 00e6 2046     		mov	r0, r4
+ 692 00e8 FFF7FEFF 		bl	Oled_TransmitByte
+ 693              	.LVL78:
+  97:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xf1, Oled_Write_CMD);
+ 694              		.loc 1 97 2 view .LVU164
+ 695 00ec 0022     		movs	r2, #0
+ 696 00ee D921     		movs	r1, #217
+ 697 00f0 2046     		mov	r0, r4
+ 698 00f2 FFF7FEFF 		bl	Oled_TransmitByte
+ 699              	.LVL79:
+  98:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xDB, Oled_Write_CMD);
+ 700              		.loc 1 98 2 view .LVU165
+ 701 00f6 0022     		movs	r2, #0
+ 702 00f8 F121     		movs	r1, #241
+ 703 00fa 2046     		mov	r0, r4
+ 704 00fc FFF7FEFF 		bl	Oled_TransmitByte
+ 705              	.LVL80:
+  99:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0x30, Oled_Write_CMD);
+ 706              		.loc 1 99 2 view .LVU166
+ 707 0100 0022     		movs	r2, #0
+ 708 0102 DB21     		movs	r1, #219
+ 709 0104 2046     		mov	r0, r4
+ 710 0106 FFF7FEFF 		bl	Oled_TransmitByte
+ 711              	.LVL81:
+ 100:Dsp/screen/device/oled1306.c **** 
+ 712              		.loc 1 100 2 view .LVU167
+ 713 010a 0022     		movs	r2, #0
+ 714 010c 3021     		movs	r1, #48
+ 715 010e 2046     		mov	r0, r4
+ 716 0110 FFF7FEFF 		bl	Oled_TransmitByte
+ 717              	.LVL82:
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 18
+
+
+ 102:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xA6, Oled_Write_CMD);
+ 718              		.loc 1 102 2 view .LVU168
+ 719 0114 0022     		movs	r2, #0
+ 720 0116 A421     		movs	r1, #164
+ 721 0118 2046     		mov	r0, r4
+ 722 011a FFF7FEFF 		bl	Oled_TransmitByte
+ 723              	.LVL83:
+ 103:Dsp/screen/device/oled1306.c **** 	Oled_TransmitByte(Oled_Obj, 0xAF, Oled_Write_CMD);
+ 724              		.loc 1 103 2 view .LVU169
+ 725 011e 0022     		movs	r2, #0
+ 726 0120 A621     		movs	r1, #166
+ 727 0122 2046     		mov	r0, r4
+ 728 0124 FFF7FEFF 		bl	Oled_TransmitByte
+ 729              	.LVL84:
+ 104:Dsp/screen/device/oled1306.c **** 
+ 730              		.loc 1 104 2 view .LVU170
+ 731 0128 0022     		movs	r2, #0
+ 732 012a AF21     		movs	r1, #175
+ 733 012c 2046     		mov	r0, r4
+ 734 012e FFF7FEFF 		bl	Oled_TransmitByte
+ 735              	.LVL85:
+ 106:Dsp/screen/device/oled1306.c **** 
+ 736              		.loc 1 106 2 view .LVU171
+ 737 0132 2046     		mov	r0, r4
+ 738 0134 FFF7FEFF 		bl	Oled_Clear
+ 739              	.LVL86:
+ 108:Dsp/screen/device/oled1306.c **** }
+ 740              		.loc 1 108 2 view .LVU172
+ 109:Dsp/screen/device/oled1306.c **** 
+ 741              		.loc 1 109 1 is_stmt 0 view .LVU173
+ 742 0138 0120     		movs	r0, #1
+ 743 013a 10BD     		pop	{r4, pc}
+ 109:Dsp/screen/device/oled1306.c **** 
+ 744              		.loc 1 109 1 view .LVU174
+ 745              		.cfi_endproc
+ 746              	.LFE125:
+ 748              		.global	DrvOled
+ 749              		.global	OledDisable_CMD
+ 750              		.global	OledEnable_CMD
+ 751              		.section	.data.DrvOled,"aw"
+ 752              		.align	2
+ 755              	DrvOled:
+ 756 0000 00000000 		.word	Oled_Init
+ 757 0004 00000000 		.word	Oled_EnableControl
+ 758 0008 00000000 		.word	Oled_MapUpdate
+ 759 000c 00000000 		.word	Oled_Clear
+ 760 0010 00000000 		.word	Oled_SetBright
+ 761 0014 00000000 		.word	Oled_GetMax_Width
+ 762 0018 00000000 		.word	Oled_GetMax_Height
+ 763              		.section	.rodata.OledDisable_CMD,"a"
+ 764              		.align	2
+ 765              		.set	.LANCHOR0,. + 0
+ 768              	OledDisable_CMD:
+ 769 0000 10AE     		.ascii	"\020\256"
+ 770              		.section	.rodata.OledEnable_CMD,"a"
+ 771              		.align	2
+ 772              		.set	.LANCHOR1,. + 0
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 19
+
+
+ 775              	OledEnable_CMD:
+ 776 0000 14AF     		.ascii	"\024\257"
+ 777              		.text
+ 778              	.Letext0:
+ 779              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 780              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 781              		.file 4 "Dsp/screen/OledIO_Definition/Oled_DspProp_Def.h"
+ 782              		.file 5 "Dsp/screen/device/oled1306.h"
+ 783              		.file 6 "SYS/delay/delay.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 oled1306.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:18     .text.Oled_TransmitByte:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:25     .text.Oled_TransmitByte:0000000000000000 Oled_TransmitByte
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:89     .text.Oled_EnableControl:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:95     .text.Oled_EnableControl:0000000000000000 Oled_EnableControl
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:170    .text.Oled_EnableControl:0000000000000030 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:176    .text.Oled_Clear:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:182    .text.Oled_Clear:0000000000000000 Oled_Clear
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:278    .text.Oled_GetMax_Width:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:284    .text.Oled_GetMax_Width:0000000000000000 Oled_GetMax_Width
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:299    .text.Oled_GetMax_Height:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:305    .text.Oled_GetMax_Height:0000000000000000 Oled_GetMax_Height
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:320    .text.Oled_MapUpdate:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:326    .text.Oled_MapUpdate:0000000000000000 Oled_MapUpdate
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:497    .text.Oled_SetBright:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:503    .text.Oled_SetBright:0000000000000000 Oled_SetBright
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:521    .text.Oled_Init:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:527    .text.Oled_Init:0000000000000000 Oled_Init
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:755    .data.DrvOled:0000000000000000 DrvOled
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:768    .rodata.OledDisable_CMD:0000000000000000 OledDisable_CMD
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:775    .rodata.OledEnable_CMD:0000000000000000 OledEnable_CMD
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:752    .data.DrvOled:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:764    .rodata.OledDisable_CMD:0000000000000000 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccpgSZVq.s:771    .rodata.OledEnable_CMD:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+delay_ms

@@ -15,6 +15,12 @@
 #define WIDGET_CREATE_ERROR WIDGET_OPR_ERROR
 #define WIDGET_DELETE_ERROR WIDGET_OPR_ERROR
 
+#define SHOW_WIDGET_FRAME true
+#define HIDE_WIDGET_FRAME false
+
+#define SHOW_WIDGET_NAME true
+#define HIDE_WIDGET_NAME false
+
 #define MAX_WIDGET_CACHE_PAGE 5 //40k for widget display
 #define DEFAULT_LAYER 0
 

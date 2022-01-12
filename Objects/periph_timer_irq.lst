@@ -1,0 +1,289 @@
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"periph_timer_irq.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.TIM2_IRQHandler,"ax",%progbits
+  18              		.align	1
+  19              		.global	TIM2_IRQHandler
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	TIM2_IRQHandler:
+  27              	.LFB126:
+  28              		.file 1 "Bsp/periph_timer_irq.c"
+   1:Bsp/periph_timer_irq.c **** #include "periph_timer_irq.h"
+   2:Bsp/periph_timer_irq.c **** #include "periph_timer.h"
+   3:Bsp/periph_timer_irq.c **** #include "stm32f4xx_tim.h"
+   4:Bsp/periph_timer_irq.c **** #include "delay.h"
+   5:Bsp/periph_timer_irq.c **** 
+   6:Bsp/periph_timer_irq.c **** void TIM2_IRQHandler(void)
+   7:Bsp/periph_timer_irq.c **** {
+  29              		.loc 1 7 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+   8:Bsp/periph_timer_irq.c **** 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
+  38              		.loc 1 8 2 view .LVU1
+  39              		.loc 1 8 6 is_stmt 0 view .LVU2
+  40 0002 0121     		movs	r1, #1
+  41 0004 4FF08040 		mov	r0, #1073741824
+  42 0008 FFF7FEFF 		bl	TIM_GetITStatus
+  43              	.LVL0:
+  44              		.loc 1 8 5 view .LVU3
+  45 000c 0128     		cmp	r0, #1
+  46 000e 00D0     		beq	.L4
+  47              	.L1:
+   9:Bsp/periph_timer_irq.c **** 	{
+  10:Bsp/periph_timer_irq.c **** 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+  11:Bsp/periph_timer_irq.c **** 
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s 			page 2
+
+
+  12:Bsp/periph_timer_irq.c **** 		if (periph_Timer_GetCountIRQ_Callback(Timer_2) != NULL)
+  13:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_2)(NULL, 0);
+  14:Bsp/periph_timer_irq.c **** 	}
+  15:Bsp/periph_timer_irq.c **** }
+  48              		.loc 1 15 1 view .LVU4
+  49 0010 08BD     		pop	{r3, pc}
+  50              	.L4:
+  10:Bsp/periph_timer_irq.c **** 
+  51              		.loc 1 10 3 is_stmt 1 view .LVU5
+  52 0012 0121     		movs	r1, #1
+  53 0014 4FF08040 		mov	r0, #1073741824
+  54 0018 FFF7FEFF 		bl	TIM_ClearITPendingBit
+  55              	.LVL1:
+  12:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_2)(NULL, 0);
+  56              		.loc 1 12 3 view .LVU6
+  12:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_2)(NULL, 0);
+  57              		.loc 1 12 7 is_stmt 0 view .LVU7
+  58 001c 0020     		movs	r0, #0
+  59 001e FFF7FEFF 		bl	periph_Timer_GetCountIRQ_Callback
+  60              	.LVL2:
+  12:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_2)(NULL, 0);
+  61              		.loc 1 12 6 view .LVU8
+  62 0022 0028     		cmp	r0, #0
+  63 0024 F4D0     		beq	.L1
+  13:Bsp/periph_timer_irq.c **** 	}
+  64              		.loc 1 13 4 is_stmt 1 view .LVU9
+  65 0026 0020     		movs	r0, #0
+  66 0028 FFF7FEFF 		bl	periph_Timer_GetCountIRQ_Callback
+  67              	.LVL3:
+  68 002c 0346     		mov	r3, r0
+  69 002e 0021     		movs	r1, #0
+  70 0030 0846     		mov	r0, r1
+  71 0032 9847     		blx	r3
+  72              	.LVL4:
+  73              		.loc 1 15 1 is_stmt 0 view .LVU10
+  74 0034 ECE7     		b	.L1
+  75              		.cfi_endproc
+  76              	.LFE126:
+  78              		.section	.text.TIM3_IRQHandler,"ax",%progbits
+  79              		.align	1
+  80              		.global	TIM3_IRQHandler
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  84              		.fpu fpv4-sp-d16
+  86              	TIM3_IRQHandler:
+  87              	.LFB127:
+  16:Bsp/periph_timer_irq.c **** 
+  17:Bsp/periph_timer_irq.c **** void TIM3_IRQHandler(void)
+  18:Bsp/periph_timer_irq.c **** {
+  88              		.loc 1 18 1 is_stmt 1 view -0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92 0000 08B5     		push	{r3, lr}
+  93              	.LCFI1:
+  94              		.cfi_def_cfa_offset 8
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s 			page 3
+
+
+  95              		.cfi_offset 3, -8
+  96              		.cfi_offset 14, -4
+  19:Bsp/periph_timer_irq.c **** 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)
+  97              		.loc 1 19 2 view .LVU12
+  98              		.loc 1 19 6 is_stmt 0 view .LVU13
+  99 0002 0121     		movs	r1, #1
+ 100 0004 0B48     		ldr	r0, .L9
+ 101 0006 FFF7FEFF 		bl	TIM_GetITStatus
+ 102              	.LVL5:
+ 103              		.loc 1 19 5 view .LVU14
+ 104 000a 0128     		cmp	r0, #1
+ 105 000c 00D0     		beq	.L8
+ 106              	.L5:
+  20:Bsp/periph_timer_irq.c **** 	{
+  21:Bsp/periph_timer_irq.c **** 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+  22:Bsp/periph_timer_irq.c **** 
+  23:Bsp/periph_timer_irq.c **** 		if (periph_Timer_GetCountIRQ_Callback(Timer_3) != NULL)
+  24:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_3)(NULL, 0);
+  25:Bsp/periph_timer_irq.c **** 	}
+  26:Bsp/periph_timer_irq.c **** }
+ 107              		.loc 1 26 1 view .LVU15
+ 108 000e 08BD     		pop	{r3, pc}
+ 109              	.L8:
+  21:Bsp/periph_timer_irq.c **** 
+ 110              		.loc 1 21 3 is_stmt 1 view .LVU16
+ 111 0010 0121     		movs	r1, #1
+ 112 0012 0848     		ldr	r0, .L9
+ 113 0014 FFF7FEFF 		bl	TIM_ClearITPendingBit
+ 114              	.LVL6:
+  23:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_3)(NULL, 0);
+ 115              		.loc 1 23 3 view .LVU17
+  23:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_3)(NULL, 0);
+ 116              		.loc 1 23 7 is_stmt 0 view .LVU18
+ 117 0018 0120     		movs	r0, #1
+ 118 001a FFF7FEFF 		bl	periph_Timer_GetCountIRQ_Callback
+ 119              	.LVL7:
+  23:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_3)(NULL, 0);
+ 120              		.loc 1 23 6 view .LVU19
+ 121 001e 0028     		cmp	r0, #0
+ 122 0020 F5D0     		beq	.L5
+  24:Bsp/periph_timer_irq.c **** 	}
+ 123              		.loc 1 24 4 is_stmt 1 view .LVU20
+ 124 0022 0120     		movs	r0, #1
+ 125 0024 FFF7FEFF 		bl	periph_Timer_GetCountIRQ_Callback
+ 126              	.LVL8:
+ 127 0028 0346     		mov	r3, r0
+ 128 002a 0021     		movs	r1, #0
+ 129 002c 0846     		mov	r0, r1
+ 130 002e 9847     		blx	r3
+ 131              	.LVL9:
+ 132              		.loc 1 26 1 is_stmt 0 view .LVU21
+ 133 0030 EDE7     		b	.L5
+ 134              	.L10:
+ 135 0032 00BF     		.align	2
+ 136              	.L9:
+ 137 0034 00040040 		.word	1073742848
+ 138              		.cfi_endproc
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s 			page 4
+
+
+ 139              	.LFE127:
+ 141              		.section	.text.TIM4_IRQHandler,"ax",%progbits
+ 142              		.align	1
+ 143              		.global	TIM4_IRQHandler
+ 144              		.syntax unified
+ 145              		.thumb
+ 146              		.thumb_func
+ 147              		.fpu fpv4-sp-d16
+ 149              	TIM4_IRQHandler:
+ 150              	.LFB128:
+  27:Bsp/periph_timer_irq.c **** 
+  28:Bsp/periph_timer_irq.c **** void TIM4_IRQHandler(void)
+  29:Bsp/periph_timer_irq.c **** {
+ 151              		.loc 1 29 1 is_stmt 1 view -0
+ 152              		.cfi_startproc
+ 153              		@ args = 0, pretend = 0, frame = 0
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155 0000 08B5     		push	{r3, lr}
+ 156              	.LCFI2:
+ 157              		.cfi_def_cfa_offset 8
+ 158              		.cfi_offset 3, -8
+ 159              		.cfi_offset 14, -4
+  30:Bsp/periph_timer_irq.c **** 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) == SET)
+ 160              		.loc 1 30 2 view .LVU23
+ 161              		.loc 1 30 6 is_stmt 0 view .LVU24
+ 162 0002 0121     		movs	r1, #1
+ 163 0004 0B48     		ldr	r0, .L15
+ 164 0006 FFF7FEFF 		bl	TIM_GetITStatus
+ 165              	.LVL10:
+ 166              		.loc 1 30 5 view .LVU25
+ 167 000a 0128     		cmp	r0, #1
+ 168 000c 00D0     		beq	.L14
+ 169              	.L11:
+  31:Bsp/periph_timer_irq.c **** 	{
+  32:Bsp/periph_timer_irq.c **** 		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+  33:Bsp/periph_timer_irq.c **** 
+  34:Bsp/periph_timer_irq.c **** 		if (periph_Timer_GetCountIRQ_Callback(Timer_4) != NULL)
+  35:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_4)(1, 0);
+  36:Bsp/periph_timer_irq.c **** 	}
+  37:Bsp/periph_timer_irq.c **** }
+ 170              		.loc 1 37 1 view .LVU26
+ 171 000e 08BD     		pop	{r3, pc}
+ 172              	.L14:
+  32:Bsp/periph_timer_irq.c **** 
+ 173              		.loc 1 32 3 is_stmt 1 view .LVU27
+ 174 0010 0121     		movs	r1, #1
+ 175 0012 0848     		ldr	r0, .L15
+ 176 0014 FFF7FEFF 		bl	TIM_ClearITPendingBit
+ 177              	.LVL11:
+  34:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_4)(1, 0);
+ 178              		.loc 1 34 3 view .LVU28
+  34:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_4)(1, 0);
+ 179              		.loc 1 34 7 is_stmt 0 view .LVU29
+ 180 0018 0220     		movs	r0, #2
+ 181 001a FFF7FEFF 		bl	periph_Timer_GetCountIRQ_Callback
+ 182              	.LVL12:
+  34:Bsp/periph_timer_irq.c **** 			periph_Timer_GetCountIRQ_Callback(Timer_4)(1, 0);
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s 			page 5
+
+
+ 183              		.loc 1 34 6 view .LVU30
+ 184 001e 0028     		cmp	r0, #0
+ 185 0020 F5D0     		beq	.L11
+  35:Bsp/periph_timer_irq.c **** 	}
+ 186              		.loc 1 35 4 is_stmt 1 view .LVU31
+ 187 0022 0220     		movs	r0, #2
+ 188 0024 FFF7FEFF 		bl	periph_Timer_GetCountIRQ_Callback
+ 189              	.LVL13:
+ 190 0028 0346     		mov	r3, r0
+ 191 002a 0021     		movs	r1, #0
+ 192 002c 0120     		movs	r0, #1
+ 193 002e 9847     		blx	r3
+ 194              	.LVL14:
+ 195              		.loc 1 37 1 is_stmt 0 view .LVU32
+ 196 0030 EDE7     		b	.L11
+ 197              	.L16:
+ 198 0032 00BF     		.align	2
+ 199              	.L15:
+ 200 0034 00080040 		.word	1073743872
+ 201              		.cfi_endproc
+ 202              	.LFE128:
+ 204              		.text
+ 205              	.Letext0:
+ 206              		.file 2 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/mac
+ 207              		.file 3 "/usr/local/arm-none-eabi-gcc/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys
+ 208              		.file 4 "USER/stm32f4xx.h"
+ 209              		.file 5 "Bsp/periph_timer.h"
+ 210              		.file 6 "FWLIB/inc/stm32f4xx_tim.h"
+ARM GAS  /var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 periph_timer_irq.c
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:18     .text.TIM2_IRQHandler:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:26     .text.TIM2_IRQHandler:0000000000000000 TIM2_IRQHandler
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:79     .text.TIM3_IRQHandler:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:86     .text.TIM3_IRQHandler:0000000000000000 TIM3_IRQHandler
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:137    .text.TIM3_IRQHandler:0000000000000034 $d
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:142    .text.TIM4_IRQHandler:0000000000000000 $t
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:149    .text.TIM4_IRQHandler:0000000000000000 TIM4_IRQHandler
+/var/folders/lx/hc4sn_b53233_zkc9xbbl97r0000gp/T//ccz44R86.s:200    .text.TIM4_IRQHandler:0000000000000034 $d
+
+UNDEFINED SYMBOLS
+TIM_GetITStatus
+TIM_ClearITPendingBit
+periph_Timer_GetCountIRQ_Callback
