@@ -322,6 +322,12 @@ WidgetUI_FreshState_List UI_ShowSelector(WidgetUI_Item_TypeDef *item)
         }
         else if (HandleToButtonObj(item->Handler)->dsp_type == UI_Button_BarcketFrame)
         {
+            block_x = HandleToButtonObj(item->Handler)->Gen_Data.x + 3;
+            block_y = HandleToButtonObj(item->Handler)->Gen_Data.y + 1;
+
+            widget_width = (strlen(HandleToButtonObj(item->Handler)->Gen_Data.label) + 2) * STR_DIS;
+
+            UI_DspInterface.fill_rectangle(block_x, block_y, (widget_width + 6), selector_height, true);
         }
         else
             return UI_Fresh_Error;
@@ -553,6 +559,13 @@ static bool UI_Button_Move(UI_ButtonObj_TypeDef *Obj, uint16_t x, uint16_t y)
 
 static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
 {
+    int8_t label_dsp_offset = 0;
+    char pushlabel_buff[32];
+    char releaselabel_buff[32];
+
+    memset(releaselabel_buff, '\0', 32);
+    memset(pushlabel_buff, '\0', 32);
+
     if (Obj == NULL)
         return false;
 
@@ -582,16 +595,23 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
             {
                 /* fill button frame */
                 UI_DspInterface.fill_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, true);
+                memcpy(pushlabel_buff, Obj->PushDown_Label, strlen(Obj->PushDown_Label));
+                label_dsp_offset = 5;
             }
             else if (Obj->dsp_type == UI_Button_BarcketFrame)
             {
+                strcat(pushlabel_buff, "[");
+                strcat(pushlabel_buff, Obj->PushDown_Label);
+                strcat(pushlabel_buff, "]");
+                label_dsp_offset = 0;
             }
             else
                 return false;
 
             /* invert string display */
             if (Obj->PushDown_Label != NULL)
-                UI_DspInterface.draw_str(base_font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
+                UI_DspInterface.draw_str(base_font, pushlabel_buff, Obj->Gen_Data.x + label_dsp_offset, Obj->Gen_Data.y, true);
+            // UI_DspInterface.draw_str(base_font, Obj->PushDown_Label, Obj->Gen_Data.x + label_dsp_offset, Obj->Gen_Data.y, true);
         }
         else
         {
@@ -599,9 +619,21 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
             {
                 /* draw button frame */
                 UI_DspInterface.draw_radius_rectangle(Obj->Gen_Data.x, Obj->Gen_Data.y, Obj->width, Obj->height, DEFAULT_BUTTON_RADIUS, 1, true);
+                memcpy(pushlabel_buff, Obj->PushDown_Label, strlen(Obj->PushDown_Label));
+                memcpy(releaselabel_buff, Obj->Release_Label, strlen(Obj->Release_Label));
+                label_dsp_offset = 5;
             }
             else if (Obj->dsp_type == UI_Button_BarcketFrame)
             {
+                strcat(pushlabel_buff, "[");
+                strcat(pushlabel_buff, Obj->PushDown_Label);
+                strcat(pushlabel_buff, "]");
+
+                strcat(releaselabel_buff, "[");
+                strcat(releaselabel_buff, Obj->Release_Label);
+                strcat(releaselabel_buff, "]");
+
+                label_dsp_offset = 0;
             }
             else
                 return false;
@@ -610,12 +642,14 @@ static bool UI_Button_Ctl(UI_ButtonObj_TypeDef *Obj)
             {
                 /* display label normally */
                 if (Obj->Release_Label != NULL)
-                    UI_DspInterface.draw_str(base_font, Obj->Release_Label, Obj->Gen_Data.x + 9, Obj->Gen_Data.y, true);
+                    // UI_DspInterface.draw_str(base_font, Obj->Release_Label, Obj->Gen_Data.x + label_dsp_offset, Obj->Gen_Data.y, true);
+                    UI_DspInterface.draw_str(base_font, releaselabel_buff, Obj->Gen_Data.x + label_dsp_offset, Obj->Gen_Data.y, true);
             }
             else
             {
                 if (Obj->PushDown_Label != NULL)
-                    UI_DspInterface.draw_str(base_font, Obj->PushDown_Label, Obj->Gen_Data.x + 5, Obj->Gen_Data.y, true);
+                    // UI_DspInterface.draw_str(base_font, Obj->PushDown_Label, Obj->Gen_Data.x + label_dsp_offset, Obj->Gen_Data.y, true);
+                    UI_DspInterface.draw_str(base_font, pushlabel_buff, Obj->Gen_Data.x + label_dsp_offset, Obj->Gen_Data.y, true);
             }
         }
 
