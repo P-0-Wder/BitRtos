@@ -247,6 +247,7 @@ typedef struct
     Widget_DrawFunc_TypeDef *Dsp; //widget draw function block
     Widget_Control_TypeDef *Ctl;  //widget control function block
 
+    bool show_widget_name;
     char *name;
 
     uint8_t level;
@@ -267,8 +268,8 @@ typedef struct
 typedef struct
 {
     Widget_Config_TypeDef *config_all;
-    Widget_Handle (*Create)(int8_t coord_x, int8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
-    Widget_Handle (*Create_Sub)(Widget_Handle Ori_Widget, uint8_t width, uint8_t height, char *name, bool show_frame);
+    Widget_Handle (*Create)(int8_t coord_x, int8_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame, bool show_name);
+    Widget_Handle (*Create_Sub)(Widget_Handle Ori_Widget, uint8_t width, uint8_t height, char *name, bool show_frame, bool show_name);
     bool (*Rename)(Widget_Handle hdl, char *name);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);

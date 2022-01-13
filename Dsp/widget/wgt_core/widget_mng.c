@@ -61,8 +61,8 @@ static bool Widget_ConfigDisplay_RoutateDir(Oled_Routate_Direction_Def dir);
 static bool Widget_ConfigDisplay_MirrorDir(Oled_Mirror_Direction_Def dir);
 
 /* external widget manager function definition */
-static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame);
-static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name, bool show_frame);
+static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame, bool show_name);
+static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name, bool show_frame, bool show_name);
 static bool Widget_SetName(Widget_Handle hdl, char *name);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
@@ -302,7 +302,7 @@ Widget_GenProcFunc_TypeDef Widget_Mng = {
     .trigger_fresh = Widget_CheckFlashTrigger,
 };
 
-static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame)
+static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width, uint8_t height, char *name, bool show_frame, bool show_name)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -353,6 +353,7 @@ static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width
     widget_tmp->is_selected = false;
 
     widget_tmp->name = name;
+    widget_tmp->show_widget_name = show_name;
 
     if (MonitorDataObj.remain_size < (height * width))
         return WIDGET_CREATE_ERROR;
@@ -398,7 +399,7 @@ static Widget_Handle Widget_Create(int16_t cord_x, int16_t cord_y, uint8_t width
     return (Widget_Handle)widget_tmp;
 }
 
-static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name, bool show_frame)
+static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t height, char *name, bool show_frame, bool show_name)
 {
     WidgetObj_TypeDef *widget_tmp;
 
@@ -422,6 +423,7 @@ static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t 
     widget_tmp->is_selected = false;
 
     widget_tmp->name = name;
+    widget_tmp->show_widget_name = show_name;
 
     widget_tmp->Dsp = &WidgetDraw_Interface;
     widget_tmp->Ctl = &WidgetCtl_Interface;
@@ -1625,9 +1627,12 @@ static UI_Button_Handle WidgetUI_Creat_Button(char *label, int16_t x, int16_t y,
 
     btn = (UI_ButtonObj_TypeDef *)MMU_Malloc(sizeof(UI_ButtonObj_TypeDef));
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     if ((btn == NULL) ||
         (!WidgetUIList_InsertItem(btn, UI_Type_Button)) ||
-        (!UI_Button.init(btn, label, x, y + UI_Get_FontType(), width, height, type, state)))
+        (!UI_Button.init(btn, label, x, y, width, height, type, state)))
         return NULL;
 
     return (UI_Button_Handle)btn;
@@ -1724,8 +1729,11 @@ static UI_CheckBox_Handle WidgetUI_Create_CheckBox(char *label, int16_t x, int16
 
     checkbox = (UI_CheckBoxObj_TypeDef *)MMU_Malloc(sizeof(UI_CheckBoxObj_TypeDef));
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     if ((checkbox == NULL) ||
-        (!UI_CheckBox.init(checkbox, label, x, y + UI_Get_FontType(), state)) ||
+        (!UI_CheckBox.init(checkbox, label, x, y, state)) ||
         (!WidgetUIList_InsertItem(checkbox, UI_Type_CheckBox)))
         return NULL;
 
@@ -1800,8 +1808,11 @@ static UI_SlideBar_Handle WidgetUI_Create_SlideBar(char *label, int16_t x, int16
 
     slidebar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     if ((slidebar == NULL) ||
-        (!UI_SlideBar.init(slidebar, mode, label, x, y + UI_Get_FontType(), max, min, start_val, step_len)) ||
+        (!UI_SlideBar.init(slidebar, mode, label, x, y, max, min, start_val, step_len)) ||
         (!WidgetUIList_InsertItem(slidebar, UI_Type_SlideBar)))
         return NULL;
 
@@ -1914,8 +1925,11 @@ static UI_ProcessBar_Handle WidgetUI_Create_ProcessBar(char *label, UI_ProcessBa
 
     processbar = (UI_SlideBarObj_TypeDef *)MMU_Malloc(sizeof(UI_SlideBarObj_TypeDef));
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     if ((processbar == NULL) ||
-        (!UI_ProcessBar.init(processbar, dsp_type, label, x, y + UI_Get_FontType(), width, min, max)) ||
+        (!UI_ProcessBar.init(processbar, dsp_type, label, x, y, width, min, max)) ||
         (!WidgetUIList_InsertItem(processbar, UI_Type_ProcBar)))
         return NULL;
 
@@ -2019,8 +2033,11 @@ static UI_Drop_Handle WidgetUI_Create_Drop(char *label, int16_t x, int16_t y)
 
     drop = (UI_DropObj_TypeDef *)MMU_Malloc(sizeof(UI_DropObj_TypeDef));
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     if ((drop == NULL) ||
-        (!UI_Drop.init(drop, label, x, y + UI_Get_FontType())) ||
+        (!UI_Drop.init(drop, label, x, y)) ||
         (!WidgetUIList_InsertItem(drop, UI_Type_Drop)))
         return NULL;
 
@@ -2104,9 +2121,12 @@ static UI_DigInput_Handle WidgetUI_Create_DigInput(char *label, int16_t x, int16
 {
     UI_DigInputObj_TypeDef *dig_input = NULL;
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     dig_input = (UI_DigInputObj_TypeDef *)MMU_Malloc(sizeof(UI_DigInputObj_TypeDef));
     if ((dig_input == NULL) ||
-        (!UI_DigInput.init(dig_input, label, x, y + UI_Get_FontType(), type)) ||
+        (!UI_DigInput.init(dig_input, label, x, y, type)) ||
         (!WidgetUIList_InsertItem(dig_input, UI_Type_DigInput)))
         return NULL;
 
@@ -2200,9 +2220,12 @@ static UI_StrInput_Handle WidgetUI_Create_StrInput(char *label, int16_t x, int16
 {
     UI_StrInputObj_TypeDef *str_input = NULL;
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     str_input = (UI_StrInputObj_TypeDef *)MMU_Malloc(sizeof(UI_StrInputObj_TypeDef));
     if ((str_input == NULL) ||
-        (!UI_StrInput.init(str_input, label, x, y + UI_Get_FontType(), UI_StrCTLtype_Input)) ||
+        (!UI_StrInput.init(str_input, label, x, y, UI_StrCTLtype_Input)) ||
         (!WidgetUIList_InsertItem(str_input, UI_Type_StrInput)))
         return NULL;
 
@@ -2279,9 +2302,12 @@ static UI_TriggerLabel_Handle WidgetUI_Cteate_TriggerLabel(char *label, int16_t 
 {
     UI_TriggerLabelObj_TypeDef *triggerlabel = NULL;
 
+    if (GetCur_Active_Widget()->show_widget_name)
+        y += UI_Get_FontType();
+
     triggerlabel = (UI_TriggerLabelObj_TypeDef *)MMU_Malloc(sizeof(UI_TriggerLabelObj_TypeDef));
     if ((triggerlabel == NULL) ||
-        (!UI_TriggerLabel.init(triggerlabel, label, x, y + UI_Get_FontType())) ||
+        (!UI_TriggerLabel.init(triggerlabel, label, x, y)) ||
         (!WidgetUIList_InsertItem(triggerlabel, UI_Type_TriggerLabel)))
         return NULL;
 

@@ -42,8 +42,8 @@ static void TaskInfo_DspClear(void)
 
 static bool TaskInfo_CreateWidget(Widget_Handle hdl)
 {
-    TaskList_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task List", false);
-    TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info Ditial", false);
+    TaskList_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task List", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
+    TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info Ditial", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
 
     if ((TaskList_Widget_Hdl <= 0) || (TaskInfo_Widget_Hdl <= 0))
         return false;

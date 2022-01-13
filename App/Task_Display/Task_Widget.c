@@ -23,11 +23,11 @@ static void TaskWidget_FreshInputVal(void)
 
 static bool TaskWidget_Init(void)
 {
-    MainWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "Main", HIDE_WIDGET_FRAME);
-    BootWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "Boot", HIDE_WIDGET_FRAME);
-    SysWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "SysInfo", HIDE_WIDGET_FRAME);
-    TFCardWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "TFCard", HIDE_WIDGET_FRAME);
-    AppWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "App", HIDE_WIDGET_FRAME);
+    MainWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "Main", HIDE_WIDGET_FRAME, HIDE_WIDGET_NAME);
+    BootWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "Boot", HIDE_WIDGET_FRAME, HIDE_WIDGET_NAME);
+    SysWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "SysInfo", HIDE_WIDGET_FRAME, HIDE_WIDGET_NAME);
+    TFCardWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "TFCard", HIDE_WIDGET_FRAME, HIDE_WIDGET_NAME);
+    AppWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "App", HIDE_WIDGET_FRAME, HIDE_WIDGET_NAME);
 
     Encoder = TaskInput_GetData()->Enc_Val;
 }
