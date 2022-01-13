@@ -11,6 +11,8 @@ static Widget_Handle BootWidget_Hdl = 0;
 static Widget_Handle SysWidget_Hdl = 0;
 static Widget_Handle TFCardWidget_Hdl = 0;
 static Widget_Handle AppWidget_Hdl = 0;
+static Widget_Handle Cur_Widget = 0;
+
 static Encoder_Data_TypeDef Encoder;
 
 static TaskWidget_Stage_TypeList stage = Widget_Stage_Init;
@@ -88,7 +90,7 @@ static bool TaskWidget_ShowManu(int8_t val)
         {
             if (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
             {
-                show_manu = !show_manu;
+                show_manu = true;
 
                 EncoderBtnTrigger_Rt = Get_CurrentRunningMs();
                 Encoder.btn = false;
@@ -117,17 +119,13 @@ static bool TaskWidget_ShowManu(int8_t val)
 static uint8_t TaskWidget_UpdateDsp(int8_t val)
 {
     BootDsp_State_List BootDsp_Stage = BootDsp_Ctl(BootWidget_Hdl);
-    static Widget_Handle Cur_Widget = 0;
-    static Widget_Handle Lst_Widget = 0;
 
     if (BootDsp_Stage == Boot_Stage_DspDone)
     {
         if (BootWidget_Hdl)
         {
             Widget_Mng.Delete(&BootWidget_Hdl);
-            /* Init Manu */
-
-            Cur_Widget = Lst_Widget = AppWidget_Hdl;
+            Cur_Widget = AppWidget_Hdl;
         }
 
         if (Cur_Widget == AppWidget_Hdl)
