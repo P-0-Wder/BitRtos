@@ -604,7 +604,8 @@ static bool Widget_Show(void)
                              true);
     }
 
-    Widget_DrawStr(Font_8, GetCur_Active_Widget()->name, 0, 0, true);
+    if (GetCur_Active_Widget()->show_widget_name)
+        Widget_DrawStr(Font_8, GetCur_Active_Widget()->name, 0, 0, true);
 
     if (!GetCur_Active_Widget()->show_state)
     {
