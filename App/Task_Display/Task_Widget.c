@@ -11,7 +11,6 @@ static Widget_Handle BootWidget_Hdl = 0;
 static Widget_Handle SysWidget_Hdl = 0;
 static Widget_Handle TFCardWidget_Hdl = 0;
 static Widget_Handle AppWidget_Hdl = 0;
-static uint8_t Main_Selector = 0;
 static Encoder_Data_TypeDef Encoder;
 
 static TaskWidget_Stage_TypeList stage = Widget_Stage_Init;
@@ -21,19 +20,24 @@ static SYSTEM_RunTime EncoderBtnTrigger_Rt = 0;
 static bool show_manu = false;
 static TaskWidget_Manu_UI_TypeDef Manu_UI;
 
-static void TaskWidget_FreshInputVal(void)
-{
-    Encoder_Data_TypeDef CurEncoder_tmp = TaskInput_GetData()->Enc_Val;
-
-    Main_Selector = CurEncoder_tmp.val - Encoder.val;
-    Encoder.val = CurEncoder_tmp.val;
-}
+#define TaskWidget_FreshInputVal() TaskInput_GetData()->Enc_Val
 
 static bool TaskWidget_InitManu(void)
 {
+    int8_t UI_Pos = 10;
+
     if (ManuWidget_Hdl == WIDGET_CREATE_ERROR)
         return false;
 
+    Manu_UI.Label_SysInfo = Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->create(HandleToWidgetObj(SysWidget_Hdl)->name, 0, UI_Pos);
+    UI_Pos += UICTL_DEFAULT_HEIGHT;
+
+    Manu_UI.Label_TFCard = Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->create(HandleToWidgetObj(TFCardWidget_Hdl)->name, 0, UI_Pos);
+    UI_Pos += UICTL_DEFAULT_HEIGHT;
+
+    Manu_UI.Label_Back = Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->create("Back", 0, UI_Pos);
+
+    Manu_UI.selector = 0;
     return true;
 }
 
@@ -59,7 +63,11 @@ static TaskWiget_Error_List TaskWidget_Init(void)
     if (ManuWidget_Hdl == WIDGET_CREATE_ERROR)
         return Create_ManuWidget_Error;
 
-    Encoder = TaskInput_GetData()->Enc_Val;
+    if (!TaskWidget_InitManu())
+        return Create_ManuWidget_Error;
+
+    Encoder.val = TaskInput_GetData()->Enc_Val.val;
+    Encoder.btn = false;
 
     return Create_Widget_NoEror;
 }
@@ -70,7 +78,7 @@ static void EncoderPush_Callback(void)
     Encoder.btn = true;
 }
 
-static bool TaskWidget_ShowManu(void)
+static bool TaskWidget_ShowManu(int8_t val)
 {
     TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
 
@@ -87,20 +95,17 @@ static bool TaskWidget_ShowManu(void)
             }
         }
         else
-        {
             EncoderBtnTrigger_Rt = Get_CurrentRunningMs();
-            Encoder.btn = false;
-        }
     }
 
     if (show_manu)
     {
+        Manu_UI.selector = val;
+
         Widget_Mng.Control(ManuWidget_Hdl)->Clear();
         Widget_Mng.Control(ManuWidget_Hdl)->Draw()->draw_str(Font_8, HandleToWidgetObj(ManuWidget_Hdl)->name, (HandleToWidgetObj(ManuWidget_Hdl)->width - strlen(HandleToWidgetObj(ManuWidget_Hdl)->name) * STR_DIS) / 2, 0, true);
-
-        Widget_Mng.Control(ManuWidget_Hdl)->Draw()->draw_str(Font_8, "SysInfo", 0, 10, true);
-        Widget_Mng.Control(ManuWidget_Hdl)->Draw()->draw_str(Font_8, "TFCard", 0, 20, true);
-        Widget_Mng.Control(ManuWidget_Hdl)->Draw()->draw_str(Font_8, "Back", 0, 30, true);
+        Widget_Mng.Control(ManuWidget_Hdl)->UI()->Show_Selector(&Manu_UI.selector);
+        Widget_Mng.Control(ManuWidget_Hdl)->UI()->Fresh();
         Widget_Mng.Control(ManuWidget_Hdl)->Show();
     }
     else
@@ -109,7 +114,7 @@ static bool TaskWidget_ShowManu(void)
     return show_manu;
 }
 
-static uint8_t TaskWidget_UpdateDsp(void)
+static uint8_t TaskWidget_UpdateDsp(int8_t val)
 {
     BootDsp_State_List BootDsp_Stage = BootDsp_Ctl(BootWidget_Hdl);
     static Widget_Handle Cur_Widget = 0;
@@ -127,7 +132,7 @@ static uint8_t TaskWidget_UpdateDsp(void)
 
         if (Cur_Widget == AppWidget_Hdl)
         {
-            if (!TaskWidget_ShowManu())
+            if (!TaskWidget_ShowManu(val))
             {
             }
         }
@@ -138,6 +143,8 @@ static uint8_t TaskWidget_UpdateDsp(void)
 
 void TaskWidget_Core(Task_Handle self)
 {
+    int8_t val;
+
     switch (stage)
     {
     case Widget_Stage_Init:
@@ -152,8 +159,9 @@ void TaskWidget_Core(Task_Handle self)
         break;
 
     case Widget_Stage_Run:
-        TaskWidget_FreshInputVal();
-        TaskWidget_UpdateDsp();
+        val = Encoder.val - TaskWidget_FreshInputVal().val;
+        Encoder.val = TaskWidget_FreshInputVal().val;
+        TaskWidget_UpdateDsp(val);
 
     case Widget_Stage_CheckFresh:
         if (Widget_Mng.trigger_fresh())

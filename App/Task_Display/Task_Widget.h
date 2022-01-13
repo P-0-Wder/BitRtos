@@ -40,6 +40,8 @@ typedef struct
     UI_TriggerLabel_Handle Label_SysInfo;
     UI_TriggerLabel_Handle Label_TFCard;
     UI_TriggerLabel_Handle Label_Back;
+
+    int8_t selector;
 } TaskWidget_Manu_UI_TypeDef;
 
 void TaskWidget_Core(Task_Handle self);

@@ -1290,8 +1290,6 @@ static bool WidgetUI_SelectCtl(int8_t *search_offset)
     WidgetUI_FreshState_List fresh_state;
     int8_t offset = *search_offset;
 
-    // while (true)
-    // {
     if ((UIItem_tmp == NULL) ||
         (tmp->CurSelected_CTL == NULL))
         return false;
