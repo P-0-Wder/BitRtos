@@ -273,6 +273,7 @@ typedef struct
     bool (*Rename)(Widget_Handle hdl, char *name);
     Widget_Control_TypeDef *(*Control)(Widget_Handle hdl);
     bool (*Delete)(Widget_Handle *hdl);
+    bool (*DeleteSub)(Widget_Handle *hdl);
     bool (*trigger_fresh)(void);
     bool (*fresh_all)(void);
     bool (*Operate)(UI_Button_Trigger_Type type);

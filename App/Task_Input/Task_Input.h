@@ -95,6 +95,7 @@ typedef struct
 void TaskInput_Core(Task_Handle self);
 Input_Data_TypeDef *TaskInput_GetData(void);
 void TaskInput_SetCallback(TaskInput_Callback_TypeList type, TaskInput_Callback callback);
+bool TaskInput_GetCurEncoderBtn_Level(void);
 
 extern Task_Handle SigInput_Tsk_Hdl;
 

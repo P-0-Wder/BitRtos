@@ -8,7 +8,6 @@ typedef enum
 {
     Boot_Page_8Bit = 0,
     Boot_Page_BitRtos,
-    Boot_Page_ELRS,
     Boot_Page_Sum,
 } Boot_Page_List;
 
@@ -16,6 +15,7 @@ typedef enum
 {
     Boot_State_Init = 0,
     Boot_State_Dsp,
+    Boot_Stage_DspDone,
     Boot_State_Error,
 } BootDsp_State_List;
 

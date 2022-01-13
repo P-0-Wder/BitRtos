@@ -14,6 +14,7 @@ typedef enum
     Create_SysWidget_Error,
     Create_TFCardWidget_Error,
     Create_AppWidget_Error,
+    Create_ManuWidget_Error,
 } TaskWiget_Error_List;
 
 typedef enum
@@ -28,10 +29,18 @@ typedef enum
 typedef enum
 {
     Widget_Stage_Init = 0,
-    Widget_Stage_BootDsp,
     Widget_Stage_Run,
+    Widget_Stage_Fresh,
+    Widget_Stage_CheckFresh,
     Widget_Stage_Error,
 } TaskWidget_Stage_TypeList;
+
+typedef struct
+{
+    UI_TriggerLabel_Handle Label_SysInfo;
+    UI_TriggerLabel_Handle Label_TFCard;
+    UI_TriggerLabel_Handle Label_Back;
+} TaskWidget_Manu_UI_TypeDef;
 
 void TaskWidget_Core(Task_Handle self);
 

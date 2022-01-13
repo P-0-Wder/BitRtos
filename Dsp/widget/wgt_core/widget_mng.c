@@ -66,6 +66,7 @@ static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t 
 static bool Widget_SetName(Widget_Handle hdl, char *name);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
+static bool Widget_DeletedSub(Widget_Handle *hdl);
 static bool Widget_FreshAll(void);
 
 /* external widget control function */
@@ -297,6 +298,7 @@ Widget_GenProcFunc_TypeDef Widget_Mng = {
     .Create_Sub = Widget_CreateSub,
     .Rename = Widget_SetName,
     .Delete = Widget_Deleted,
+    .DeleteSub = Widget_DeletedSub,
     .Control = Widget_CtlInterface,
     .fresh_all = Widget_FreshAll,
     .trigger_fresh = Widget_CheckFlashTrigger,
@@ -494,6 +496,24 @@ static bool Widget_Deleted(Widget_Handle *hdl)
 
     MonitorDataObj.remain_size += width * height;
     MonitorDataObj.widget_used_size -= width * height;
+
+    if (MonitorDataObj.remain_size > MonitorDataObj.max_display_cache)
+        return false;
+
+    MMU_Free(*hdl);
+
+    *hdl = 0;
+    return true;
+}
+
+static bool Widget_DeletedSub(Widget_Handle *hdl)
+{
+    if ((hdl == NULL) || ((*hdl) == 0))
+        return false;
+
+    MMU_Free((HandleToWidgetObj(*hdl))->dsp_item);
+
+    MMU_Free((HandleToWidgetObj(*hdl))->pixel_map);
 
     if (MonitorDataObj.remain_size > MonitorDataObj.max_display_cache)
         return false;
