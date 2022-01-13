@@ -9,6 +9,15 @@
 
 typedef enum
 {
+    Create_Widget_NoEror = 0,
+    Create_BootWidget_Error,
+    Create_SysWidget_Error,
+    Create_TFCardWidget_Error,
+    Create_AppWidget_Error,
+} TaskWiget_Error_List;
+
+typedef enum
+{
     WidgetDsp_BootLogo = 0,
     WidgetDsp_SysInfo,
     WidgetDsp_TFCardInfo,
@@ -19,7 +28,9 @@ typedef enum
 typedef enum
 {
     Widget_Stage_Init = 0,
+    Widget_Stage_BootDsp,
     Widget_Stage_Run,
+    Widget_Stage_Error,
 } TaskWidget_Stage_TypeList;
 
 void TaskWidget_Core(Task_Handle self);

@@ -136,7 +136,6 @@ USER/system_stm32f4xx.c \
 USER/main.c \
 App/Task_Display/Task_Widget.c \
 App/Task_Display/app_widget/Boot_widget.c \
-App/Task_Display/app_widget/OS_widget.c \
 App/Task_Display/app_widget/version_widget.c \
 App/Task_Display/app_widget/TaskInfo_widget.c \
 App/Task_Input/Task_Input.c \
