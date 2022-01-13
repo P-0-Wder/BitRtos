@@ -24,6 +24,24 @@ static TaskWidget_Manu_UI_TypeDef Manu_UI;
 
 #define TaskWidget_FreshInputVal() TaskInput_GetData()->Enc_Val
 
+static void TaskWidget_JumpTo_AppWidget(void)
+{
+    Cur_Widget = AppWidget_Hdl;
+    show_manu = false;
+}
+
+static void TaskWidget_JumpTo_SysInfoWidget(void)
+{
+    Cur_Widget = SysWidget_Hdl;
+    show_manu = false;
+}
+
+static void TaskWidget_JumpTo_TFCardWidget(void)
+{
+    Cur_Widget = TFCardWidget_Hdl;
+    show_manu = false;
+}
+
 static bool TaskWidget_InitManu(void)
 {
     int8_t UI_Pos = 10;
@@ -32,12 +50,15 @@ static bool TaskWidget_InitManu(void)
         return false;
 
     Manu_UI.Label_SysInfo = Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->create(HandleToWidgetObj(SysWidget_Hdl)->name, 0, UI_Pos);
+    Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->set_callback(Manu_UI.Label_SysInfo, TaskWidget_JumpTo_SysInfoWidget);
     UI_Pos += UICTL_DEFAULT_HEIGHT;
 
     Manu_UI.Label_TFCard = Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->create(HandleToWidgetObj(TFCardWidget_Hdl)->name, 0, UI_Pos);
+    Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->set_callback(Manu_UI.Label_TFCard, TaskWidget_JumpTo_TFCardWidget);
     UI_Pos += UICTL_DEFAULT_HEIGHT;
 
-    Manu_UI.Label_Back = Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->create("Back", 0, UI_Pos);
+    Manu_UI.Label_App = Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->create(HandleToWidgetObj(AppWidget_Hdl)->name, 0, UI_Pos);
+    Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->set_callback(Manu_UI.Label_App, TaskWidget_JumpTo_AppWidget);
 
     Manu_UI.selector = 0;
     return true;
@@ -53,7 +74,7 @@ static TaskWiget_Error_List TaskWidget_Init(void)
     if (SysWidget_Hdl == WIDGET_CREATE_ERROR)
         return Create_SysWidget_Error;
 
-    TFCardWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "TFCard", HIDE_WIDGET_FRAME, HIDE_WIDGET_NAME);
+    TFCardWidget_Hdl = Widget_Mng.Create(0, 0, 128, 64, "TFCard", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
     if (TFCardWidget_Hdl == WIDGET_CREATE_ERROR)
         return Create_TFCardWidget_Error;
 
@@ -80,15 +101,18 @@ static void EncoderPush_Callback(void)
     Encoder.btn = true;
 }
 
+static void EncoderRelease_Callback(void)
+{
+    Encoder.btn = false;
+}
+
 static bool TaskWidget_ShowManu(int8_t val)
 {
-    TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-
     if (Encoder.btn)
     {
         if (TaskInput_GetCurEncoderBtn_Level())
         {
-            if (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
+            if (!show_manu && Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
             {
                 show_manu = true;
 
@@ -106,11 +130,19 @@ static bool TaskWidget_ShowManu(int8_t val)
 
         Widget_Mng.Control(ManuWidget_Hdl)->Clear();
         Widget_Mng.Control(ManuWidget_Hdl)->Draw()->draw_str(Font_8, HandleToWidgetObj(ManuWidget_Hdl)->name, (HandleToWidgetObj(ManuWidget_Hdl)->width - strlen(HandleToWidgetObj(ManuWidget_Hdl)->name) * STR_DIS) / 2, 0, true);
+
+        if (Encoder.btn)
+        {
+            Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(ManuWidget_Hdl)->UI()->Get_CurSelected_UI());
+            Encoder.btn = false;
+        }
+
         Widget_Mng.Control(ManuWidget_Hdl)->UI()->Show_Selector(&Manu_UI.selector);
         Widget_Mng.Control(ManuWidget_Hdl)->UI()->Fresh();
         Widget_Mng.Control(ManuWidget_Hdl)->Show();
     }
-    else
+
+    if ((Cur_Widget != AppWidget_Hdl) || !show_manu)
         Widget_Mng.Control(ManuWidget_Hdl)->Hide();
 
     return show_manu;
@@ -132,7 +164,19 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
         {
             if (!TaskWidget_ShowManu(val))
             {
+                TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
+                TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
             }
+        }
+        else if (Cur_Widget == TFCardWidget_Hdl)
+        {
+            Widget_Mng.Control(TFCardWidget_Hdl)->Clear();
+            Widget_Mng.Control(TFCardWidget_Hdl)->Show();
+        }
+        else if (Cur_Widget == SysWidget_Hdl)
+        {
+            Widget_Mng.Control(SysWidget_Hdl)->Clear();
+            Widget_Mng.Control(SysWidget_Hdl)->Show();
         }
     }
 

@@ -39,7 +39,7 @@ typedef struct
 {
     UI_TriggerLabel_Handle Label_SysInfo;
     UI_TriggerLabel_Handle Label_TFCard;
-    UI_TriggerLabel_Handle Label_Back;
+    UI_TriggerLabel_Handle Label_App;
 
     int8_t selector;
 } TaskWidget_Manu_UI_TypeDef;
