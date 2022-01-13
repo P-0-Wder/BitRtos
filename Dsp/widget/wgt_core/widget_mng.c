@@ -249,6 +249,7 @@ static WidgetUI_TriggerLabel_Interface_TypeDef WidgetUI_TirggerLabel = {
 static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
     .Fresh = WidgetUI_Fresh,
+    .Get_CurSelected_UI = WidgetUI_GetCurSelected_UICtl,
     .Button = WidgetUI_GetButton_Instance,
     .CheckBox = WidgetUI_GetCheckBox_Instance,
     .SlideBar = WidgetUI_GetSlideBar_Instance,

@@ -206,6 +206,7 @@ typedef struct
     bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
     void (*Fresh)(void);
+    UI_GenCTL_Handle (*Get_CurSelected_UI)(void);
 
     /* ui control interface section */
     WidgetUI_Button_Interface_TypeDef *(*Button)(void);
@@ -276,7 +277,6 @@ typedef struct
     bool (*DeleteSub)(Widget_Handle *hdl);
     bool (*trigger_fresh)(void);
     bool (*fresh_all)(void);
-    bool (*Operate)(UI_Button_Trigger_Type type);
 } Widget_GenProcFunc_TypeDef;
 
 extern Widget_GenProcFunc_TypeDef Widget_Mng;
