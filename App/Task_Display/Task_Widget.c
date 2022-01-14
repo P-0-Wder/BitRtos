@@ -1,5 +1,6 @@
 #include "Task_Widget.h"
 #include "Boot_widget.h"
+#include "Sys_widget.h"
 #include "Task_Input.h"
 
 Task_Handle Widget_Tsk_Hdl = 0;
@@ -167,14 +168,18 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
                 TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
                 TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
             }
+
+            /* Updata App Widget */
         }
         else if (Cur_Widget == TFCardWidget_Hdl)
         {
+            /* Update TFCard Widget */
             Widget_Mng.Control(TFCardWidget_Hdl)->Clear();
             Widget_Mng.Control(TFCardWidget_Hdl)->Show();
         }
         else if (Cur_Widget == SysWidget_Hdl)
         {
+            /* Update RTOS System Info Widget */
             Widget_Mng.Control(SysWidget_Hdl)->Clear();
             Widget_Mng.Control(SysWidget_Hdl)->Show();
         }
