@@ -19,6 +19,5 @@ typedef enum
 } TaskInfo_DspStage_List;
 
 void TaskInfo_DspRefresh(int32_t val);
-void TaskInfo_Encoder_Input(int32_t val);
 TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl);
 #endif

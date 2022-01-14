@@ -45,7 +45,7 @@ static bool TaskInfo_CreateWidget(Widget_Handle hdl)
     TaskList_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task List", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
     TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info Ditial", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
 
-    if ((TaskList_Widget_Hdl <= 0) || (TaskInfo_Widget_Hdl <= 0))
+    if ((TaskList_Widget_Hdl == WIDGET_CREATE_ERROR) || (TaskInfo_Widget_Hdl == WIDGET_CREATE_ERROR))
         return false;
 
     return true;
@@ -166,12 +166,4 @@ void TaskInfo_DspRefresh(int32_t val)
     EncoderVal = val;
 
     stage = Stage_GetTaskInfo;
-}
-
-void TaskInfo_Encoder_Input(int32_t val)
-{
-    int8_t diff = val - EncoderVal;
-    EncoderVal = val;
-
-    //check current display stage and process
 }

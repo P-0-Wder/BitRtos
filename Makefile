@@ -135,9 +135,9 @@ USER/stm32f4xx_it.c\
 USER/system_stm32f4xx.c \
 USER/main.c \
 App/Task_Display/Task_Widget.c \
-App/Task_Display/app_widget/Boot_widget.c \
-App/Task_Display/app_widget/version_widget.c \
-App/Task_Display/app_widget/TaskInfo_widget.c \
+App/Task_Display/sys_widget/Boot_widget.c \
+App/Task_Display/sys_widget/version_widget.c \
+App/Task_Display/sys_widget/TaskInfo_widget.c \
 App/Task_Input/Task_Input.c \
 App/Task_Input/Input_IO_Def.c \
 App/Task_Shell/Task_Shell.c \
@@ -241,7 +241,7 @@ C_INCLUDES =  \
 -IUSER \
 -IApp/Task_Input \
 -IApp/Task_Display \
--IApp/Task_Display/app_widget \
+-IApp/Task_Display/sys_widget \
 -IApp/Task_Input \
 -IApp/Task_Shell \
 
