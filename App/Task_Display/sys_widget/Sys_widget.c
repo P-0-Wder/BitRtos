@@ -1,20 +1,21 @@
 #include "Sys_widget.h"
-#include "widget_mng.h"
+#include "TaskInfo_widget.h"
+#include "version_widget.h"
 
 static SysDsp_Stage_List stage = SysDsp_Stage_WidgetInit;
 
-static bool SysWidget_Init(void)
+static bool SysWidget_Init(Widget_Handle hdl)
 {
 
     return true;
 }
 
-SysDsp_Stage_List SysWidget_DspUpdate(void)
+SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl)
 {
     switch (stage)
     {
     case SysDsp_Stage_WidgetInit:
-        if (SysWidget_Init())
+        if (SysWidget_Init(hdl))
         {
             stage = SysDsp_Stage_Update;
         }

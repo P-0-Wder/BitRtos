@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include "widget_mng.h"
 
 typedef enum
 {
@@ -18,6 +19,6 @@ typedef enum
     DspSysInfo_Widget = 0,
 } SysDsp_Widget_List;
 
-SysDsp_Stage_List SysWidget_DspUpdate(void);
+SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl);
 
 #endif
