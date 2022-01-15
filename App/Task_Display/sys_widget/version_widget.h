@@ -11,10 +11,12 @@ typedef enum
 {
     VersionDspStage_Init = 0,
     VersionDspStage_Update,
+    VersionDspStage_Exit,
+    VersionDspStage_Wait,
     VersionDspStage_Error,
     VersionDspStage_Sum,
 } VersionWidget_DspStage_List;
 
-VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl);
+VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *encoder_in);
 
 #endif

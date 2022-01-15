@@ -106,7 +106,7 @@ static bool TaskInfo_Free(void)
     return true;
 }
 
-TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl)
+TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
 {
     bool dsp = false;
 

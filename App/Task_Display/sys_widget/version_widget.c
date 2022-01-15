@@ -6,10 +6,11 @@ static UI_TriggerLabel_Handle ver_boot_LabelHandle = 0;
 static UI_TriggerLabel_Handle ver_RTOS_LabelHandle = 0;
 static UI_TriggerLabel_Handle ver_App_LabelHandle = 0;
 static UI_TriggerLabel_Handle ver_Back_LabelHandle = 0;
-static int8_t selector = 0;
 
 static void VersionWidget_BackLabel_Callback(void)
 {
+    Widget_Mng.Control(VersionWidget_Handle)->Hide();
+    stage = VersionDspStage_Exit;
 }
 
 static bool VersionWidget_CreateUICtl(Widget_Handle hdl)
@@ -54,15 +55,15 @@ static bool VersionWidget_Init(Widget_Handle hdl)
     return true;
 }
 
-static void VersionWidget_Fresh(Widget_Handle hdl)
+static void VersionWidget_Fresh(Widget_Handle hdl, int8_t *encoder_in)
 {
     Widget_Mng.Control(hdl)->Clear();
-    Widget_Mng.Control(hdl)->UI()->Show_Selector(&selector);
+    Widget_Mng.Control(hdl)->UI()->Show_Selector(encoder_in);
     Widget_Mng.Control(hdl)->UI()->Fresh();
     Widget_Mng.Control(hdl)->Show();
 }
 
-VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl)
+VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *encoder_in)
 {
     switch (stage)
     {
@@ -72,12 +73,17 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl)
         else
             stage = VersionDspStage_Error;
 
+    case VersionDspStage_Wait:
     case VersionDspStage_Update:
-        VersionWidget_Fresh(VersionWidget_Fresh);
+        VersionWidget_Fresh(VersionWidget_Fresh, encoder_in);
         return VersionDspStage_Update;
 
     case VersionDspStage_Error:
         return VersionDspStage_Error;
+
+    case VersionDspStage_Exit:
+        stage = VersionDspStage_Wait;
+        return VersionDspStage_Exit;
 
     default:
         stage = VersionDspStage_Error;
