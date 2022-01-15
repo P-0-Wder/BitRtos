@@ -19,6 +19,6 @@ typedef enum
     DspSysInfo_Widget = 0,
 } SysDsp_Widget_List;
 
-SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl);
+SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in);
 
 #endif

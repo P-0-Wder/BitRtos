@@ -7,6 +7,19 @@ static SysDsp_Stage_List stage = SysDsp_Stage_WidgetInit;
 static Widget_Handle SysWidget_Handle = 0;
 static UI_TriggerLabel_Handle VersionLabel_Handle = 0;
 static UI_TriggerLabel_Handle TaskInfoLabel_Handle = 0;
+static UI_TriggerLabel_Handle BackLabel_Handle = 0;
+
+static void VersionLabel_Trigger_Callback(void)
+{
+}
+
+static void TaskInfoLabel_Trigger_Callback(void)
+{
+}
+
+static void BackLabel_Trigger_Callback(void)
+{
+}
 
 static bool SysWidget_Init(Widget_Handle hdl)
 {
@@ -21,33 +34,45 @@ static bool SysWidget_Init(Widget_Handle hdl)
     if (VersionLabel_Handle == NULL)
         return false;
 
+    Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->set_callback(VersionLabel_Handle, VersionLabel_Trigger_Callback);
+
     y_offset += UICTL_TRIGGERLABEL_HEIGHT;
     TaskInfoLabel_Handle = Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->create("Task Info", 0, y_offset);
-    if (TaskInfoLabel_Handle)
+    if (TaskInfoLabel_Handle == NULL)
         return false;
+
+    Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->set_callback(TaskInfoLabel_Handle, TaskInfoLabel_Trigger_Callback);
+
+    y_offset += UICTL_TRIGGERLABEL_HEIGHT;
+    BackLabel_Handle = Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->create("Back", 0, y_offset);
+    if (BackLabel_Handle == NULL)
+        return false;
+
+    Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->set_callback(BackLabel_Handle, BackLabel_Trigger_Callback);
 
     return true;
 }
 
-SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl)
+static void SysWidget_Fresh(void)
+{
+}
+
+SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
 {
     switch (stage)
     {
     case SysDsp_Stage_WidgetInit:
         if (SysWidget_Init(hdl))
-        {
             stage = SysDsp_Stage_Update;
-        }
         else
-        {
             stage = SysDsp_Stage_Error;
-        }
         return stage;
 
     case SysDsp_Stage_Update:
         break;
 
     default:
+        stage = SysDsp_Stage_Error;
         return SysDsp_Stage_Error;
     }
 }
