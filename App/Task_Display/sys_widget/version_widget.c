@@ -6,6 +6,7 @@ static UI_TriggerLabel_Handle ver_boot_LabelHandle = 0;
 static UI_TriggerLabel_Handle ver_RTOS_LabelHandle = 0;
 static UI_TriggerLabel_Handle ver_App_LabelHandle = 0;
 static UI_TriggerLabel_Handle ver_Back_LabelHandle = 0;
+static int8_t selector = 0;
 
 static void VersionWidget_BackLabel_Callback(void)
 {
@@ -56,7 +57,8 @@ static bool VersionWidget_Init(Widget_Handle hdl)
 static void VersionWidget_Fresh(Widget_Handle hdl)
 {
     Widget_Mng.Control(hdl)->Clear();
-
+    Widget_Mng.Control(hdl)->UI()->Show_Selector(&selector);
+    Widget_Mng.Control(hdl)->UI()->Fresh();
     Widget_Mng.Control(hdl)->Show();
 }
 
@@ -71,6 +73,7 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl)
             stage = VersionDspStage_Error;
 
     case VersionDspStage_Update:
+        VersionWidget_Fresh(VersionWidget_Fresh);
         return VersionDspStage_Update;
 
     case VersionDspStage_Error:
