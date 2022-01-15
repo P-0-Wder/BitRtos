@@ -87,7 +87,7 @@ static bool TaskInfo_ShowNameList(Widget_Handle hdl)
 
 static bool TaskInfo_SetStage(int8_t *offset)
 {
-    if (((stage + offset) < InfoDspStage_DspExit) || ((stage + offset) > InfoDspStage_Unknow))
+    if (((stage + offset) < InfoDspStage_DspExit) || ((stage + offset) > InfoDspStage_DspError))
         return false;
 
     stage += *offset;
@@ -130,11 +130,11 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
 
     case InfoDspStage_GetTaskInfo:
         dsp = false;
-        if (!TaskInfo_CreateUICtl(hdl))
-        {
-            stage = InfoDspStage_DspError;
-            break;
-        }
+        // if (!TaskInfo_CreateUICtl(hdl))
+        // {
+        //     stage = InfoDspStage_DspError;
+        //     break;
+        // }
 
         stage = InfoDspStage_DspTaskName;
         break;
@@ -150,7 +150,7 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         break;
 
     default:
-        return InfoDspStage_Unknow;
+        return InfoDspStage_DspError;
     }
 
     if (dsp)
@@ -159,11 +159,4 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
     }
 
     return stage;
-}
-
-void TaskInfo_DspRefresh(int32_t val)
-{
-    EncoderVal = val;
-
-    stage = InfoDspStage_GetTaskInfo;
 }

@@ -125,7 +125,14 @@ static bool TaskWidget_ShowManu(int8_t val)
             EncoderBtnTrigger_Rt = Get_CurrentRunningMs();
     }
 
-    if (show_manu)
+    if ((Cur_Widget != AppWidget_Hdl) || !show_manu)
+    {
+        Widget_Mng.Control(ManuWidget_Hdl)->Hide();
+        Manu_UI.selector = 0;
+        TaskInput_SetCallback(DevEncoderBtn_Push_Callback, NULL);
+        TaskInput_SetCallback(DevEncoderBtn_Release_Callback, NULL);
+    }
+    else
     {
         Manu_UI.selector = val;
 
@@ -142,9 +149,6 @@ static bool TaskWidget_ShowManu(int8_t val)
         Widget_Mng.Control(ManuWidget_Hdl)->UI()->Fresh();
         Widget_Mng.Control(ManuWidget_Hdl)->Show();
     }
-
-    if ((Cur_Widget != AppWidget_Hdl) || !show_manu)
-        Widget_Mng.Control(ManuWidget_Hdl)->Hide();
 
     return show_manu;
 }
@@ -174,14 +178,14 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
         else if (Cur_Widget == TFCardWidget_Hdl)
         {
             /* Update TFCard Widget */
-            Widget_Mng.Control(TFCardWidget_Hdl)->Clear();
-            Widget_Mng.Control(TFCardWidget_Hdl)->Show();
         }
         else if (Cur_Widget == SysWidget_Hdl)
         {
+            static int8_t SysWidget_Selector = 0;
+            SysWidget_Selector = val;
+
             /* Update RTOS System Info Widget */
-            Widget_Mng.Control(SysWidget_Hdl)->Clear();
-            Widget_Mng.Control(SysWidget_Hdl)->Show();
+            SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector);
         }
     }
 

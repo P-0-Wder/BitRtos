@@ -3,27 +3,38 @@
 #include "version_widget.h"
 #include "widget_mng.h"
 
-static SysDsp_Stage_List stage = SysDsp_Stage_WidgetInit;
+static SysDsp_Stage_List stage = SysDspStage_WidgetInit;
 static Widget_Handle SysWidget_Handle = 0;
 static UI_TriggerLabel_Handle VersionLabel_Handle = 0;
 static UI_TriggerLabel_Handle TaskInfoLabel_Handle = 0;
 static UI_TriggerLabel_Handle BackLabel_Handle = 0;
 
+static void SysWidget_Fresh(int8_t *encoder_in);
+
 static void VersionLabel_Trigger_Callback(void)
 {
+    Widget_Mng.Control(SysWidget_Handle)->Hide();
+
+    stage = SysDspStage_ShowVersion;
 }
 
 static void TaskInfoLabel_Trigger_Callback(void)
 {
+    Widget_Mng.Control(SysWidget_Handle)->Hide();
+
+    stage = SysDspStage_ShowTaskInfo;
 }
 
 static void BackLabel_Trigger_Callback(void)
 {
+    Widget_Mng.Control(SysWidget_Handle)->Hide();
+
+    stage = SysDspStage_Exit;
 }
 
-static bool SysWidget_Init(Widget_Handle hdl)
+static bool SysWidget_Init(Widget_Handle hdl, int8_t *encoder_in)
 {
-    uint8_t y_offset = 0;
+    int16_t y_offset = 0;
 
     /* ctreate widget and controller */
     SysWidget_Handle = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "System", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
@@ -50,29 +61,70 @@ static bool SysWidget_Init(Widget_Handle hdl)
 
     Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->set_callback(BackLabel_Handle, BackLabel_Trigger_Callback);
 
+    SysWidget_Fresh(encoder_in);
+
     return true;
 }
 
-static void SysWidget_Fresh(void)
+static void SysWidget_Fresh(int8_t *encoder_in)
 {
+    Widget_Mng.Control(SysWidget_Handle)->Clear();
+    Widget_Mng.Control(SysWidget_Handle)->UI()->Show_Selector(encoder_in);
+    Widget_Mng.Control(SysWidget_Handle)->UI()->Fresh();
+    Widget_Mng.Control(SysWidget_Handle)->Show();
 }
 
 SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
 {
+    VersionWidget_DspStage_List VersionWidget_state;
+    TaskInfo_DspStage_List TaskInfoWidget_state;
+
     switch (stage)
     {
-    case SysDsp_Stage_WidgetInit:
-        if (SysWidget_Init(hdl))
-            stage = SysDsp_Stage_Update;
+    case SysDspStage_WidgetInit:
+        if (SysWidget_Init(hdl, encoder_in))
+            stage = SysDspStage_Update;
         else
-            stage = SysDsp_Stage_Error;
+            stage = SysDspStage_Error;
+
         return stage;
 
-    case SysDsp_Stage_Update:
-        break;
+    case SysDspStage_Update:
+        SysWidget_Fresh(encoder_in);
+        return SysDspStage_Update;
+
+    case SysDspStage_ShowTaskInfo:
+        TaskInfoWidget_state = TaskInfo_DspUpdate(SysWidget_Handle, encoder_in);
+
+        if (TaskInfoWidget_state == InfoDspStage_DspExit)
+        {
+            stage = SysDspStage_Update;
+            return SysDspStage_Update;
+        }
+        else if (TaskInfoWidget_state == InfoDspStage_DspError)
+        {
+            stage = SysDspStage_Error;
+            return SysDspStage_Error;
+        }
+        return SysDspStage_ShowTaskInfo;
+
+    case SysDspStage_ShowVersion:
+        VersionWidget_state = VersionWidget_Update(SysWidget_Handle, encoder_in);
+
+        if (VersionWidget_state == VersionDspStage_Exit)
+        {
+            stage = SysDspStage_Update;
+            return SysDspStage_Update;
+        }
+        else if (VersionWidget_state == VersionDspStage_Error)
+        {
+            stage = SysDspStage_Error;
+            return SysDspStage_Error;
+        }
+        return SysDspStage_ShowVersion;
 
     default:
-        stage = SysDsp_Stage_Error;
-        return SysDsp_Stage_Error;
+        stage = SysDspStage_Error;
+        return SysDspStage_Error;
     }
 }

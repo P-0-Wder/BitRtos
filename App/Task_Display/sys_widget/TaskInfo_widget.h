@@ -14,10 +14,8 @@ typedef enum
     InfoDspStage_DspTaskName,
     InfoDspStage_DspTaskInfo,
     InfoDspStage_DspError,
-    InfoDspStage_Unknow,
     InfoDspStage_Sum,
 } TaskInfo_DspStage_List;
 
-void TaskInfo_DspRefresh(int32_t val);
 TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in);
 #endif

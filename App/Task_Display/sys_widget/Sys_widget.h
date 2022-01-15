@@ -8,9 +8,14 @@
 
 typedef enum
 {
-    SysDsp_Stage_WidgetInit = 0,
-    SysDsp_Stage_Update,
-    SysDsp_Stage_Error,
+    SysDspStage_WidgetInit = 0,
+    SysDspStage_Update,
+    SysDspStage_ShowVersion,
+    SysDspStage_ShowTaskInfo,
+    SysDspStage_Exit,
+    SysDspStage_Wait,
+    SysDspStage_Error,
+    SysDspStage_Sum,
 } SysDsp_Stage_List;
 
 typedef enum

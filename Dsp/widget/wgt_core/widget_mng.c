@@ -486,6 +486,10 @@ static bool Widget_Deleted(Widget_Handle *hdl)
     height = (HandleToWidgetObj(*hdl))->height;
     width = (HandleToWidgetObj(*hdl))->width;
 
+    HandleToWidgetObj(*hdl)->show_state = false;
+
+    List_Delete_Item(HandleToWidgetObj(*hdl)->dsp_item, NULL);
+
     MMU_Free((HandleToWidgetObj(*hdl))->dsp_item);
 
     MMU_Free((HandleToWidgetObj(*hdl))->pixel_map);
@@ -511,6 +515,10 @@ static bool Widget_DeletedSub(Widget_Handle *hdl)
 {
     if ((hdl == NULL) || ((*hdl) == 0))
         return false;
+
+    HandleToWidgetObj(*hdl)->show_state = false;
+
+    List_Delete_Item(HandleToWidgetObj(*hdl)->dsp_item, NULL);
 
     MMU_Free((HandleToWidgetObj(*hdl))->dsp_item);
 
@@ -753,6 +761,9 @@ static bool Widget_ClearBlackBoard(void)
 
 static int Widget_Fusion(item_obj *item, WidgetObj_TypeDef *obj, void *arg)
 {
+    if (!obj->show_state)
+        return 0;
+
     if ((obj->cord_x == 0) &&
         (obj->cord_y == 0) &&
         (obj->width >= SrvOled.get_range().width) &&

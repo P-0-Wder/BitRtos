@@ -68,7 +68,7 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *enco
     switch (stage)
     {
     case VersionDspStage_Init:
-        if (VersionWidget_init(hdl))
+        if (VersionWidget_Init(hdl))
             stage = VersionDspStage_Update;
         else
             stage = VersionDspStage_Error;
@@ -86,7 +86,6 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *enco
         return VersionDspStage_Exit;
 
     default:
-        stage = VersionDspStage_Error;
         return VersionDspStage_Error;
     }
 }
