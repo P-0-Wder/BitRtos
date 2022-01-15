@@ -6,11 +6,10 @@ static SysDsp_Stage_List stage = SysDsp_Stage_WidgetInit;
 
 static bool SysWidget_Init(Widget_Handle hdl)
 {
-    if (TaskInfo_DspUpdate(hdl))
-    {
-    }
+    if (!TaskInfo_DspUpdate(hdl) || !VersionWidget_Update(hdl))
+        return false;
 
-    return false;
+    return true;
 }
 
 SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl)

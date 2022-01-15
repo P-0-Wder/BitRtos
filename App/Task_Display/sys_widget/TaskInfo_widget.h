@@ -8,14 +8,14 @@
 
 typedef enum
 {
-    Stage_CreateWidget = 0,
-    Stage_GetTaskInfo,
-    Stage_DspExit,
-    Stage_DspTaskName,
-    Stage_DspTaskInfo,
-    Stage_DspError,
-    Stage_Unknow,
-    Stage_Sum,
+    InfoDspStage_CreateWidget = 0,
+    InfoDspStage_GetTaskInfo,
+    InfoDspStage_DspExit,
+    InfoDspStage_DspTaskName,
+    InfoDspStage_DspTaskInfo,
+    InfoDspStage_DspError,
+    InfoDspStage_Unknow,
+    InfoDspStage_Sum,
 } TaskInfo_DspStage_List;
 
 void TaskInfo_DspRefresh(int32_t val);

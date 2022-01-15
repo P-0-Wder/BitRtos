@@ -5,19 +5,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#define BitRTOS_Version
+#define App_Version
+
 #pragma pack(1)
 typedef struct
 {
-    uint8_t ID_1;
-    uint8_t ID_2;
-    uint8_t ID_3;
-} VersionFrame_TypeDef;
-
-typedef struct
-{
-    VersionFrame_TypeDef BootVer;
-    VersionFrame_TypeDef OsVer;
-    VersionFrame_TypeDef AppVer;
+    uint8_t Ver[3];
     uint64_t sn;
     char bref[128];
 } Version_Info_TypeDef;

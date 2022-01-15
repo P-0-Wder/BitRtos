@@ -26,7 +26,7 @@ static bool TaskWidget_CreateState = false;
 static Widget_Handle TaskList_Widget_Hdl = 0;
 static Widget_Handle TaskInfo_Widget_Hdl = 0;
 static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
-static TaskInfo_DspStage_List stage = Stage_CreateWidget;
+static TaskInfo_DspStage_List stage = InfoDspStage_CreateWidget;
 
 static void TaskInfo_DspClear(void);
 static bool TaskInfo_SetStage(int8_t *offset);
@@ -87,7 +87,7 @@ static bool TaskInfo_ShowNameList(Widget_Handle hdl)
 
 static bool TaskInfo_SetStage(int8_t *offset)
 {
-    if (((stage + offset) < Stage_DspExit) || ((stage + offset) > Stage_Unknow))
+    if (((stage + offset) < InfoDspStage_DspExit) || ((stage + offset) > InfoDspStage_Unknow))
         return false;
 
     stage += *offset;
@@ -115,42 +115,42 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl)
 
     switch (stage)
     {
-    case Stage_CreateWidget:
+    case InfoDspStage_CreateWidget:
         TaskWidget_CreateState = TaskInfo_CreateWidget(hdl);
         dsp = false;
 
         if (!TaskWidget_CreateState)
         {
-            stage = Stage_DspError;
+            stage = InfoDspStage_DspError;
             break;
         }
 
-        stage = Stage_GetTaskInfo;
+        stage = InfoDspStage_GetTaskInfo;
         break;
 
-    case Stage_GetTaskInfo:
+    case InfoDspStage_GetTaskInfo:
         dsp = false;
         if (!TaskInfo_CreateUICtl(hdl))
         {
-            stage = Stage_DspError;
+            stage = InfoDspStage_DspError;
             break;
         }
 
-        stage = Stage_DspTaskName;
+        stage = InfoDspStage_DspTaskName;
         break;
 
-    case Stage_DspTaskName:
+    case InfoDspStage_DspTaskName:
         Widget_Mng.Control(hdl)->Clear();
         dsp = true;
         break;
 
-    case Stage_DspTaskInfo:
+    case InfoDspStage_DspTaskInfo:
         Widget_Mng.Control(hdl)->Clear();
         dsp = true;
         break;
 
     default:
-        return Stage_Unknow;
+        return InfoDspStage_Unknow;
     }
 
     if (dsp)
@@ -165,5 +165,5 @@ void TaskInfo_DspRefresh(int32_t val)
 {
     EncoderVal = val;
 
-    stage = Stage_GetTaskInfo;
+    stage = InfoDspStage_GetTaskInfo;
 }
