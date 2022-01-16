@@ -475,30 +475,16 @@ static bool Widget_Clear(void)
     return true;
 }
 
-static bool Widget_DeletedItem_InMonitorList(item_obj *item)
+static bool Widget_Reset_MonitorList(item_obj *item)
 {
-    list_obj *list = MonitorDataObj.widget_dsp_list;
-
     if (item == NULL)
         return false;
 
-    while (list != NULL)
+    if (item->prv == NULL)
     {
-        if (list == item)
-        {
-            if (list->prv == NULL)
-            {
-                list->data = NULL;
-                list = list->nxt;
-                list->prv = NULL;
-            }
-            else
-                List_Delete_Item(list, NULL);
-
-            return true;
-        }
-
-        list = list->nxt;
+        MonitorDataObj.widget_dsp_list->data = NULL;
+        MonitorDataObj.widget_dsp_list = item->nxt;
+        MonitorDataObj.widget_dsp_list->prv = NULL;
     }
 
     return false;
@@ -517,7 +503,7 @@ static bool Widget_Deleted(Widget_Handle *hdl)
 
     HandleToWidgetObj(*hdl)->show_state = false;
 
-    List_Delete_Item(HandleToWidgetObj(*hdl)->dsp_item, Widget_DeletedItem_InMonitorList);
+    List_Delete_Item(HandleToWidgetObj(*hdl)->dsp_item, Widget_Reset_MonitorList);
 
     MMU_Free((HandleToWidgetObj(*hdl))->dsp_item);
 
@@ -547,7 +533,7 @@ static bool Widget_DeletedSub(Widget_Handle *hdl)
 
     HandleToWidgetObj(*hdl)->show_state = false;
 
-    List_Delete_Item(HandleToWidgetObj(*hdl)->dsp_item, Widget_DeletedItem_InMonitorList);
+    List_Delete_Item(HandleToWidgetObj(*hdl)->dsp_item, Widget_Reset_MonitorList);
 
     MMU_Free((HandleToWidgetObj(*hdl))->dsp_item);
 

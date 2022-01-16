@@ -161,6 +161,7 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
     {
         if (BootWidget_Hdl)
         {
+            Widget_Mng.Control(BootWidget_Hdl)->Clear();
             Widget_Mng.Delete(&BootWidget_Hdl);
             Cur_Widget = AppWidget_Hdl;
         }
@@ -172,6 +173,10 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
                 TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
                 TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
             }
+
+            Widget_Mng.Control(AppWidget_Hdl)->Clear();
+            Widget_Mng.Control(AppWidget_Hdl)->Draw()->draw_str(Font_8, "app test", 0, 40, true);
+            Widget_Mng.Control(AppWidget_Hdl)->Show();
 
             /* Updata App Widget */
         }

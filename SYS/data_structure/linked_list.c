@@ -271,8 +271,15 @@ list_error_code List_DecBelowID(item_obj *obj)
 
 list_error_code List_Delete_Item(item_obj *item, item_datareset_callback callback)
 {
+    volatile static uint8_t test = 0;
+
     if (item != NULL)
     {
+        if (callback != NULL)
+        {
+            callback(item);
+        }
+
         if ((item->prv != NULL) && (item->nxt != NULL))
         {
             item->prv->nxt = item->nxt;
@@ -290,10 +297,10 @@ list_error_code List_Delete_Item(item_obj *item, item_datareset_callback callbac
         {
             item = item->nxt;
         }
-
-        if (callback != NULL)
+        else if ((item->prv == NULL) && (item->nxt == NULL))
         {
-            callback(item);
+            item->data = NULL;
+            item = NULL;
         }
 
         return list_no_error;
