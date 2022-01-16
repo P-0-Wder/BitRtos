@@ -113,7 +113,7 @@ static bool TaskWidget_ShowManu(int8_t val)
     {
         if (TaskInput_GetCurEncoderBtn_Level())
         {
-            if (!show_manu && Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
+            if (!show_manu && (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff))
             {
                 show_manu = true;
 
@@ -121,8 +121,6 @@ static bool TaskWidget_ShowManu(int8_t val)
                 Encoder.btn = false;
             }
         }
-        else
-            EncoderBtnTrigger_Rt = Get_CurrentRunningMs();
     }
 
     if ((Cur_Widget != AppWidget_Hdl) || !show_manu)
@@ -183,14 +181,23 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
         }
         else if (Cur_Widget == SysWidget_Hdl)
         {
-            static int8_t SysWidget_Selector = 0;
-            SysWidget_Selector = val;
-
-            TaskInput_SetCallback(DevEncoderBtn_Push_Callback, SysWidget_ButtonPush_Callback);
-            TaskInput_SetCallback(DevEncoderBtn_Release_Callback, SysWidget_ButtonRelease_Callback);
+            int8_t SysWidget_Selector = val;
 
             /* Update RTOS System Info Widget */
-            SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector);
+            SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector);
+
+            switch (SysDsp_Stage)
+            {
+            case SysDspStage_Update:
+                break;
+
+            case SysDspStage_Exit:
+                Cur_Widget = AppWidget_Hdl;
+                break;
+
+            default:
+                break;
+            }
         }
     }
 

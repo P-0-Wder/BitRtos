@@ -2,6 +2,9 @@
 #include "widget_mng.h"
 #include "runtime.h"
 
+#define CODER_DSP_DURATION 200
+#define RTOS_DSP_DURATION 200
+
 static BootDsp_State_List Boot_Stage = Boot_State_Init;
 static Boot_Page_List Cur_DspPage = Boot_Page_8Bit;
 
@@ -25,7 +28,7 @@ static Boot_Page_List Boot_Show_8Bit_Logo(void)
 {
     Boot_Page_List stage;
     static SYSTEM_RunTime Rt = 0;
-    const uint16_t duration = 2000;
+    const uint16_t duration = CODER_DSP_DURATION;
 
     if (Rt == 0)
     {
@@ -50,7 +53,7 @@ static Boot_Page_List Boot_Show_BitRTOS_Logo(void)
 {
     Boot_Page_List stage;
     static SYSTEM_RunTime Rt = 0;
-    const uint16_t duration = 2000;
+    const uint16_t duration = RTOS_DSP_DURATION;
 
     if (Rt == 0)
     {

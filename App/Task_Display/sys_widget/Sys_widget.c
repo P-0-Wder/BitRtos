@@ -2,6 +2,8 @@
 #include "TaskInfo_widget.h"
 #include "version_widget.h"
 #include "widget_mng.h"
+#include "Task_Input.h"
+#include "runtime.h"
 
 static SysDsp_Stage_List stage = SysDspStage_WidgetInit;
 static Widget_Handle SysWidget_Handle = 0;
@@ -9,6 +11,7 @@ static UI_TriggerLabel_Handle VersionLabel_Handle = 0;
 static UI_TriggerLabel_Handle TaskInfoLabel_Handle = 0;
 static UI_TriggerLabel_Handle BackLabel_Handle = 0;
 static bool Btn_Trigger = false;
+static SYSTEM_RunTime Rt;
 
 static void SysWidget_Fresh(int8_t *encoder_in);
 
@@ -84,11 +87,10 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
     {
     case SysDspStage_WidgetInit:
         if (SysWidget_Init(hdl, encoder_in))
-            stage = SysDspStage_Update;
+            stage = SysDspStage_ResetCallback;
         else
             stage = SysDspStage_Error;
-
-        return stage;
+        return SysDspStage_WidgetInit;
 
     case SysDspStage_Update:
         SysWidget_Fresh(encoder_in);
@@ -119,29 +121,41 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         }
         else if (VersionWidget_state == VersionDspStage_Error)
         {
-            stage = SysDspStage_Error;
+            stage = SysDspStage_Update;
             return SysDspStage_Error;
         }
         return SysDspStage_ShowVersion;
 
+    case SysDspStage_Exit:
+        Widget_Mng.Control(SysWidget_Handle)->Clear();
+        stage = SysDspStage_ResetCallback;
+        return SysDspStage_Exit;
+
+    case SysDspStage_ResetCallback:
+        TaskInput_SetCallback(DevEncoderBtn_Push_Callback, SysWidget_ButtonPush_Callback);
+        TaskInput_SetCallback(DevEncoderBtn_Release_Callback, SysWidget_ButtonRelease_Callback);
+        stage = SysDspStage_Update;
+
+        return SysDspStage_ResetCallback;
+
     default:
-        stage = SysDspStage_Error;
         return SysDspStage_Error;
     }
 }
 
 void SysWidget_ButtonPush_Callback(void)
 {
+    Rt = Get_CurrentRunningMs();
     Btn_Trigger = true;
-
-    if (Btn_Trigger)
-    {
-        Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(SysWidget_Handle)->UI()->Get_CurSelected_UI());
-        Btn_Trigger = false;
-    }
 }
 
 void SysWidget_ButtonRelease_Callback(void)
 {
-    Btn_Trigger = false;
+    if ((Btn_Trigger) && (Get_CurrentRunningMs() - Rt > 50))
+    {
+        Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(SysWidget_Handle)->UI()->Get_CurSelected_UI());
+        Btn_Trigger = false;
+    }
+
+    Rt = Get_CurrentRunningMs();
 }

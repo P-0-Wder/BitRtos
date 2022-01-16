@@ -1,4 +1,6 @@
 #include "version_widget.h"
+#include "Task_Input.h"
+#include "runtime.h"
 
 VersionWidget_DspStage_List stage = VersionDspStage_Init;
 static Widget_Handle VersionWidget_Handle = 0;
@@ -72,7 +74,6 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *enco
             stage = VersionDspStage_Update;
         else
             stage = VersionDspStage_Error;
-        break;
 
     case VersionDspStage_Wait:
     case VersionDspStage_Update:
