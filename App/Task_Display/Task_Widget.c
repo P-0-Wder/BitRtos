@@ -98,7 +98,6 @@ static TaskWiget_Error_List TaskWidget_Init(void)
 
 static void EncoderPush_Callback(void)
 {
-    EncoderBtnTrigger_Rt = Get_CurrentRunningMs();
     Encoder.btn = true;
 }
 
@@ -107,18 +106,23 @@ static void EncoderRelease_Callback(void)
     Encoder.btn = false;
 }
 
-static bool TaskWidget_ShowManu(int8_t val)
+static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 {
-    if (Encoder.btn)
+    if (!show_manu)
     {
+        if (*btn)
+        {
+            EncoderBtnTrigger_Rt = Get_CurrentRunningMs();
+            *btn = false;
+        }
+
         if (TaskInput_GetCurEncoderBtn_Level())
         {
-            if (!show_manu && (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff))
+            if (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
             {
                 show_manu = true;
 
-                EncoderBtnTrigger_Rt = Get_CurrentRunningMs();
-                Encoder.btn = false;
+                EncoderBtnTrigger_Rt = 0;
             }
         }
     }
@@ -135,10 +139,10 @@ static bool TaskWidget_ShowManu(int8_t val)
         Widget_Mng.Control(ManuWidget_Hdl)->Clear();
         Widget_Mng.Control(ManuWidget_Hdl)->Draw()->draw_str(Font_8, HandleToWidgetObj(ManuWidget_Hdl)->name, (HandleToWidgetObj(ManuWidget_Hdl)->width - strlen(HandleToWidgetObj(ManuWidget_Hdl)->name) * STR_DIS) / 2, 0, true);
 
-        if (Encoder.btn)
+        if (*btn)
         {
             Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(ManuWidget_Hdl)->UI()->Get_CurSelected_UI());
-            Encoder.btn = false;
+            *btn = false;
         }
 
         Widget_Mng.Control(ManuWidget_Hdl)->UI()->Show_Selector(&Manu_UI.selector);
@@ -149,7 +153,7 @@ static bool TaskWidget_ShowManu(int8_t val)
     return show_manu;
 }
 
-static uint8_t TaskWidget_UpdateDsp(int8_t val)
+static uint8_t TaskWidget_UpdateDsp(int8_t val, bool *btn)
 {
     BootDsp_State_List BootDsp_Stage = BootDsp_Ctl(BootWidget_Hdl);
 
@@ -164,10 +168,10 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
 
         if (Cur_Widget == AppWidget_Hdl)
         {
-            if (!TaskWidget_ShowManu(val))
+            if (!TaskWidget_ShowManu(val, btn))
             {
                 TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-                TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
+                // TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
             }
 
             Widget_Mng.Control(AppWidget_Hdl)->Clear();
@@ -184,7 +188,7 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
             int8_t SysWidget_Selector = val;
 
             /* Update RTOS System Info Widget */
-            SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector);
+            SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
 
             switch (SysDsp_Stage)
             {
@@ -224,7 +228,7 @@ void TaskWidget_Core(Task_Handle self)
     case Widget_Stage_Run:
         val = Encoder.val - TaskWidget_FreshInputVal().val;
         Encoder.val = TaskWidget_FreshInputVal().val;
-        TaskWidget_UpdateDsp(val);
+        TaskWidget_UpdateDsp(val, &Encoder.btn);
 
     case Widget_Stage_CheckFresh:
         if (Widget_Mng.trigger_fresh())

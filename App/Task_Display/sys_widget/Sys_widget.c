@@ -10,8 +10,6 @@ static Widget_Handle SysWidget_Handle = 0;
 static UI_TriggerLabel_Handle VersionLabel_Handle = 0;
 static UI_TriggerLabel_Handle TaskInfoLabel_Handle = 0;
 static UI_TriggerLabel_Handle BackLabel_Handle = 0;
-static bool Btn_Trigger = false;
-static SYSTEM_RunTime Rt;
 
 static void SysWidget_Fresh(int8_t *encoder_in);
 
@@ -78,10 +76,16 @@ static void SysWidget_Fresh(int8_t *encoder_in)
     Widget_Mng.Control(SysWidget_Handle)->Show();
 }
 
-SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
+SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, bool *btn)
 {
     VersionWidget_DspStage_List VersionWidget_state;
     TaskInfo_DspStage_List TaskInfoWidget_state;
+
+    if (*btn)
+    {
+        Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(SysWidget_Handle)->UI()->Get_CurSelected_UI());
+        *btn = false;
+    }
 
     switch (stage)
     {
@@ -132,8 +136,6 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         return SysDspStage_Exit;
 
     case SysDspStage_ResetCallback:
-        TaskInput_SetCallback(DevEncoderBtn_Push_Callback, SysWidget_ButtonPush_Callback);
-        TaskInput_SetCallback(DevEncoderBtn_Release_Callback, SysWidget_ButtonRelease_Callback);
         stage = SysDspStage_Update;
 
         return SysDspStage_ResetCallback;
@@ -141,21 +143,4 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
     default:
         return SysDspStage_Error;
     }
-}
-
-void SysWidget_ButtonPush_Callback(void)
-{
-    Rt = Get_CurrentRunningMs();
-    Btn_Trigger = true;
-}
-
-void SysWidget_ButtonRelease_Callback(void)
-{
-    if ((Btn_Trigger) && (Get_CurrentRunningMs() - Rt > 50))
-    {
-        Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(SysWidget_Handle)->UI()->Get_CurSelected_UI());
-        Btn_Trigger = false;
-    }
-
-    Rt = Get_CurrentRunningMs();
 }
