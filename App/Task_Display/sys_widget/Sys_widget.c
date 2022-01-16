@@ -8,6 +8,7 @@ static Widget_Handle SysWidget_Handle = 0;
 static UI_TriggerLabel_Handle VersionLabel_Handle = 0;
 static UI_TriggerLabel_Handle TaskInfoLabel_Handle = 0;
 static UI_TriggerLabel_Handle BackLabel_Handle = 0;
+static bool Btn_Trigger = false;
 
 static void SysWidget_Fresh(int8_t *encoder_in);
 
@@ -127,4 +128,20 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         stage = SysDspStage_Error;
         return SysDspStage_Error;
     }
+}
+
+void SysWidget_ButtonPush_Callback(void)
+{
+    Btn_Trigger = true;
+
+    if (Btn_Trigger)
+    {
+        Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(SysWidget_Handle)->UI()->Get_CurSelected_UI());
+        Btn_Trigger = false;
+    }
+}
+
+void SysWidget_ButtonRelease_Callback(void)
+{
+    Btn_Trigger = false;
 }

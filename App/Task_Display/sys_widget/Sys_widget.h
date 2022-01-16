@@ -25,5 +25,7 @@ typedef enum
 } SysDsp_Widget_List;
 
 SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in);
+void SysWidget_ButtonPush_Callback(void);
+void SysWidget_ButtonRelease_Callback(void);
 
 #endif

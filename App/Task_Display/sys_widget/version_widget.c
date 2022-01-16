@@ -72,10 +72,11 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *enco
             stage = VersionDspStage_Update;
         else
             stage = VersionDspStage_Error;
+        break;
 
     case VersionDspStage_Wait:
     case VersionDspStage_Update:
-        VersionWidget_Fresh(VersionWidget_Fresh, encoder_in);
+        VersionWidget_Fresh(VersionWidget_Handle, encoder_in);
         return VersionDspStage_Update;
 
     case VersionDspStage_Error:

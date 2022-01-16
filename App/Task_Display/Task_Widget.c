@@ -129,8 +129,6 @@ static bool TaskWidget_ShowManu(int8_t val)
     {
         Widget_Mng.Control(ManuWidget_Hdl)->Hide();
         Manu_UI.selector = 0;
-        TaskInput_SetCallback(DevEncoderBtn_Push_Callback, NULL);
-        TaskInput_SetCallback(DevEncoderBtn_Release_Callback, NULL);
     }
     else
     {
@@ -175,7 +173,6 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
             }
 
             Widget_Mng.Control(AppWidget_Hdl)->Clear();
-            Widget_Mng.Control(AppWidget_Hdl)->Draw()->draw_str(Font_8, "app test", 0, 40, true);
             Widget_Mng.Control(AppWidget_Hdl)->Show();
 
             /* Updata App Widget */
@@ -188,6 +185,9 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val)
         {
             static int8_t SysWidget_Selector = 0;
             SysWidget_Selector = val;
+
+            TaskInput_SetCallback(DevEncoderBtn_Push_Callback, SysWidget_ButtonPush_Callback);
+            TaskInput_SetCallback(DevEncoderBtn_Release_Callback, SysWidget_ButtonRelease_Callback);
 
             /* Update RTOS System Info Widget */
             SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector);
