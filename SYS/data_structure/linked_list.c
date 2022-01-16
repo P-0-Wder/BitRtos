@@ -293,7 +293,7 @@ list_error_code List_Delete_Item(item_obj *item, item_datareset_callback callbac
 
         if (callback != NULL)
         {
-            callback(item->data);
+            callback(item);
         }
 
         return list_no_error;
