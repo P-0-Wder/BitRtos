@@ -12,7 +12,6 @@ static Widget_Handle BootWidget_Hdl = 0;
 static Widget_Handle SysWidget_Hdl = 0;
 static Widget_Handle TFCardWidget_Hdl = 0;
 static Widget_Handle AppWidget_Hdl = 0;
-static Widget_Handle Cur_Widget = 0;
 
 static Encoder_Data_TypeDef Encoder;
 
@@ -27,19 +26,19 @@ static TaskWidget_Manu_UI_TypeDef Manu_UI;
 
 static void TaskWidget_JumpTo_AppWidget(void)
 {
-    Cur_Widget = AppWidget_Hdl;
+    Dsp_stage = WidgetDsp_AppInfo;
     show_manu = false;
 }
 
 static void TaskWidget_JumpTo_SysInfoWidget(void)
 {
-    Cur_Widget = SysWidget_Hdl;
+    Dsp_stage = WidgetDsp_SysInfo;
     show_manu = false;
 }
 
 static void TaskWidget_JumpTo_TFCardWidget(void)
 {
-    Cur_Widget = TFCardWidget_Hdl;
+    Dsp_stage = WidgetDsp_TFCardInfo;
     show_manu = false;
 }
 
@@ -127,7 +126,7 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
         }
     }
 
-    if ((Cur_Widget != AppWidget_Hdl) || !show_manu)
+    if (!show_manu)
     {
         Widget_Mng.Control(ManuWidget_Hdl)->Hide();
         Manu_UI.selector = 0;
@@ -170,7 +169,6 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
             {
                 Widget_Mng.Control(BootWidget_Hdl)->Clear();
                 Widget_Mng.Delete(&BootWidget_Hdl);
-                Cur_Widget = AppWidget_Hdl;
 
                 BootDsp_Stage = WidgetDsp_AppInfo;
             }
@@ -196,7 +194,7 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
         SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
 
         if (SysDsp_Stage == SysDspStage_Exit)
-            Cur_Widget = AppWidget_Hdl;
+            Dsp_stage = WidgetDsp_AppInfo;
 
         break;
 
