@@ -17,7 +17,6 @@ static Widget_Handle Cur_Widget = 0;
 static Encoder_Data_TypeDef Encoder;
 
 static TaskWidget_Stage_TypeList stage = Widget_Stage_Init;
-static TaskWiget_Error_List Task_Error = Create_Widget_NoEror;
 
 static SYSTEM_RunTime EncoderBtnTrigger_Rt = 0;
 static bool show_manu = false;
@@ -215,12 +214,8 @@ void TaskWidget_Core(Task_Handle self)
     switch (stage)
     {
     case Widget_Stage_Init:
-        Task_Error = TaskWidget_Init();
-
-        if (Task_Error == Create_Widget_NoEror)
-        {
+        if (TaskWidget_Init() == Create_Widget_NoEror)
             stage = Widget_Stage_Run;
-        }
         else
             stage = Widget_Stage_Error;
         break;
