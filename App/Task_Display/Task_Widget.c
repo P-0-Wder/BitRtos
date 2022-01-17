@@ -130,8 +130,11 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 
     if (!show_manu)
     {
-        Widget_Mng.Control(ManuWidget_Hdl)->Hide();
-        Manu_UI.selector = 0;
+        if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing)
+        {
+            Widget_Mng.Control(ManuWidget_Hdl)->Hide();
+            Manu_UI.selector = 0;
+        }
     }
     else
     {
