@@ -120,6 +120,8 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
             if (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
             {
                 show_manu = true;
+                TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
+                TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
 
                 EncoderBtnTrigger_Rt = 0;
             }
@@ -178,11 +180,7 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
     case WidgetDsp_AppInfo:
         Widget_Mng.Control(AppWidget_Hdl)->Clear();
 
-        if (!TaskWidget_ShowManu(val, btn))
-        {
-            TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-            TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
-        }
+        TaskWidget_ShowManu(val, btn);
 
         Widget_Mng.Control(AppWidget_Hdl)->Show();
         break;
