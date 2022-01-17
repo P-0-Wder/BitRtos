@@ -156,6 +156,7 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
 {
     BootDsp_State_List BootDsp_Stage;
+    SysDsp_Stage_List SysDsp_Stage;
     int8_t SysWidget_Selector;
 
     switch (Dsp_stage)
@@ -176,29 +177,6 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
         }
         break;
 
-    case WidgetDsp_SysInfo:
-        SysWidget_Selector = val;
-
-        /* Update RTOS System Info Widget */
-        SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
-
-        switch (SysDsp_Stage)
-        {
-        case SysDspStage_Update:
-            break;
-
-        case SysDspStage_Exit:
-            Cur_Widget = AppWidget_Hdl;
-            break;
-
-        default:
-            break;
-        }
-        break;
-
-    case WidgetDsp_TFCardInfo:
-        break;
-
     case WidgetDsp_AppInfo:
         Widget_Mng.Control(AppWidget_Hdl)->Clear();
 
@@ -209,6 +187,22 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
         }
 
         Widget_Mng.Control(AppWidget_Hdl)->Show();
+        break;
+
+    case WidgetDsp_SysInfo:
+        SysWidget_Selector = val;
+
+        /* Update RTOS System Info Widget */
+        SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
+
+        if (SysDsp_Stage == SysDspStage_Exit)
+            Cur_Widget = AppWidget_Hdl;
+
+        break;
+
+    case WidgetDsp_TFCardInfo:
+        Widget_Mng.Control(TFCardWidget_Hdl)->Clear();
+        Widget_Mng.Control(TFCardWidget_Hdl)->Show();
         break;
 
     default:
