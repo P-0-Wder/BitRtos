@@ -17,6 +17,7 @@ static Widget_Handle Cur_Widget = 0;
 static Encoder_Data_TypeDef Encoder;
 
 static TaskWidget_Stage_TypeList stage = Widget_Stage_Init;
+static DspWidget_TypeList Dsp_stage = WidgetDsp_BootLogo;
 
 static SYSTEM_RunTime EncoderBtnTrigger_Rt = 0;
 static bool show_manu = false;
@@ -154,62 +155,66 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 
 static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
 {
+    BootDsp_State_List BootDsp_Stage;
+    int8_t SysWidget_Selector;
+
+    switch (Dsp_stage)
+    {
+    case WidgetDsp_BootLogo:
+        BootDsp_Stage = BootDsp_Ctl(BootWidget_Hdl);
+
+        if (BootDsp_Stage == Boot_Stage_DspDone)
+        {
+            if (BootWidget_Hdl)
+            {
+                Widget_Mng.Control(BootWidget_Hdl)->Clear();
+                Widget_Mng.Delete(&BootWidget_Hdl);
+                Cur_Widget = AppWidget_Hdl;
+
+                BootDsp_Stage = WidgetDsp_AppInfo;
+            }
+        }
+        break;
+
+    case WidgetDsp_SysInfo:
+        SysWidget_Selector = val;
+
+        /* Update RTOS System Info Widget */
+        SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
+
+        switch (SysDsp_Stage)
+        {
+        case SysDspStage_Update:
+            break;
+
+        case SysDspStage_Exit:
+            Cur_Widget = AppWidget_Hdl;
+            break;
+
+        default:
+            break;
+        }
+        break;
+
+    case WidgetDsp_TFCardInfo:
+        break;
+
+    case WidgetDsp_AppInfo:
+        Widget_Mng.Control(AppWidget_Hdl)->Clear();
+
+        if (!TaskWidget_ShowManu(val, btn))
+        {
+            TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
+            TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
+        }
+
+        Widget_Mng.Control(AppWidget_Hdl)->Show();
+        break;
+
+    default:
+        break;
+    }
 }
-
-// static uint8_t TaskWidget_UpdateDsp(int8_t val, bool *btn)
-// {
-//     BootDsp_State_List BootDsp_Stage = BootDsp_Ctl(BootWidget_Hdl);
-
-//     if (BootDsp_Stage == Boot_Stage_DspDone)
-//     {
-//         if (BootWidget_Hdl)
-//         {
-//             Widget_Mng.Control(BootWidget_Hdl)->Clear();
-//             Widget_Mng.Delete(&BootWidget_Hdl);
-//             Cur_Widget = AppWidget_Hdl;
-//         }
-
-//         if (Cur_Widget == AppWidget_Hdl)
-//         {
-//             if (!TaskWidget_ShowManu(val, btn))
-//             {
-//                 TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-//                 TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
-//             }
-
-//             Widget_Mng.Control(AppWidget_Hdl)->Clear();
-//             Widget_Mng.Control(AppWidget_Hdl)->Show();
-
-//             /* Updata App Widget */
-//         }
-//         else if (Cur_Widget == TFCardWidget_Hdl)
-//         {
-//             /* Update TFCard Widget */
-//         }
-//         else if (Cur_Widget == SysWidget_Hdl)
-//         {
-//             int8_t SysWidget_Selector = val;
-
-//             /* Update RTOS System Info Widget */
-//             SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
-
-//             switch (SysDsp_Stage)
-//             {
-//             case SysDspStage_Update:
-//                 break;
-
-//             case SysDspStage_Exit:
-//                 Cur_Widget = AppWidget_Hdl;
-//                 break;
-
-//             default:
-//                 break;
-//             }
-//         }
-//     }
-
-//     return 0;
-// }
 
 void TaskWidget_Core(Task_Handle self)
 {
