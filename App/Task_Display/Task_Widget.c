@@ -133,15 +133,16 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
                 EncoderBtnTrigger_Rt = 0;
             }
         }
-    }
 
-    if (!show_manu)
-    {
-        if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing)
+        if (!show_manu)
         {
-            Widget_Mng.Control(ManuWidget_Hdl)->Hide();
-            Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
-            Manu_UI.selector = 0;
+            if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing)
+            {
+                show_manu = false;
+                Widget_Mng.Control(ManuWidget_Hdl)->Hide();
+                Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
+                Manu_UI.selector = 0;
+            }
         }
     }
     else

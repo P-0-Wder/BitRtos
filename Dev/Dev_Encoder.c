@@ -15,6 +15,7 @@ static bool DevEncoder_Invert(DevEncoder_Obj_TypeDef *obj, uint8_t invert_val);
 static bool DevEncoder_Set_BtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_Callback callback);
 static bool DevEncoder_ButtonTrigger(DevEncoder_Obj_TypeDef *obj, DrvGPIO_Obj_TypeDef *btn_io);
 static Encoder_Data_TypeDef DevEncoder_Get(DevEncoder_Obj_TypeDef *obj);
+static bool DevEncoder_GetButtonState(DrvGPIO_Obj_TypeDef *btn_io);
 static uint8_t DevEncoder_GetNum(void);
 
 /* external variable */
@@ -77,6 +78,14 @@ static bool DevEncoder_Set_BtnCallback(DevEncoder_Obj_TypeDef *obj, Encoder_Btn_
         obj->Btn_Callback = callback;
         return true;
     }
+
+    return false;
+}
+
+static bool DevEncoder_GetButtonState(DrvGPIO_Obj_TypeDef *btn_io)
+{
+    if (DrvGPIO.get(btn_io) == GPIO_LOW)
+        return true;
 
     return false;
 }
