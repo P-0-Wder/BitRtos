@@ -67,6 +67,7 @@ static bool Widget_SetName(Widget_Handle hdl, char *name);
 static Widget_Control_TypeDef *Widget_CtlInterface(Widget_Handle hdl);
 static bool Widget_Deleted(Widget_Handle *hdl);
 static bool Widget_DeletedSub(Widget_Handle *hdl);
+static bool Widget_ResetCurUICtl(void);
 static bool Widget_FreshAll(void);
 
 /* external widget control function */
@@ -250,6 +251,7 @@ static WidgetUI_Utils_TypeDef WidgetUI_Interface = {
     .Show_Selector = WidgetUI_SelectCtl,
     .Fresh = WidgetUI_Fresh,
     .Get_CurSelected_UI = WidgetUI_GetCurSelected_UICtl,
+    .Reset_SelectUICtl = Widget_ResetCurUICtl,
     .Button = WidgetUI_GetButton_Instance,
     .CheckBox = WidgetUI_GetCheckBox_Instance,
     .SlideBar = WidgetUI_GetSlideBar_Instance,
@@ -449,6 +451,18 @@ static Widget_Handle Widget_CreateSub(Widget_Handle ori, uint8_t width, uint8_t 
     widget_tmp->CurSelected_CTL = NULL;
 
     return (Widget_Handle)widget_tmp;
+}
+
+static bool Widget_ResetCurUICtl(void)
+{
+    WidgetObj_TypeDef *widget = GetCur_Active_Widget();
+
+    if (widget == NULL)
+        return false;
+
+    widget->CurSelected_CTL = widget->UICtl_List;
+
+    return true;
 }
 
 static bool Widget_SetName(Widget_Handle hdl, char *name)

@@ -206,6 +206,7 @@ typedef struct
     bool (*Show_Selector)(int8_t *search_offset);
     void (*Set_CoordY_Offset)(int8_t offset);
     void (*Fresh)(void);
+    bool (*Reset_SelectUICtl)(void);
     UI_GenCTL_Handle (*Get_CurSelected_UI)(void);
 
     /* ui control interface section */

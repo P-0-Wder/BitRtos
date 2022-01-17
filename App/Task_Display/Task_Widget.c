@@ -152,60 +152,64 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
     return show_manu;
 }
 
-static uint8_t TaskWidget_UpdateDsp(int8_t val, bool *btn)
+static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
 {
-    BootDsp_State_List BootDsp_Stage = BootDsp_Ctl(BootWidget_Hdl);
-
-    if (BootDsp_Stage == Boot_Stage_DspDone)
-    {
-        if (BootWidget_Hdl)
-        {
-            Widget_Mng.Control(BootWidget_Hdl)->Clear();
-            Widget_Mng.Delete(&BootWidget_Hdl);
-            Cur_Widget = AppWidget_Hdl;
-        }
-
-        if (Cur_Widget == AppWidget_Hdl)
-        {
-            if (!TaskWidget_ShowManu(val, btn))
-            {
-                TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-                TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
-            }
-
-            Widget_Mng.Control(AppWidget_Hdl)->Clear();
-            Widget_Mng.Control(AppWidget_Hdl)->Show();
-
-            /* Updata App Widget */
-        }
-        else if (Cur_Widget == TFCardWidget_Hdl)
-        {
-            /* Update TFCard Widget */
-        }
-        else if (Cur_Widget == SysWidget_Hdl)
-        {
-            int8_t SysWidget_Selector = val;
-
-            /* Update RTOS System Info Widget */
-            SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
-
-            switch (SysDsp_Stage)
-            {
-            case SysDspStage_Update:
-                break;
-
-            case SysDspStage_Exit:
-                Cur_Widget = AppWidget_Hdl;
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-
-    return 0;
 }
+
+// static uint8_t TaskWidget_UpdateDsp(int8_t val, bool *btn)
+// {
+//     BootDsp_State_List BootDsp_Stage = BootDsp_Ctl(BootWidget_Hdl);
+
+//     if (BootDsp_Stage == Boot_Stage_DspDone)
+//     {
+//         if (BootWidget_Hdl)
+//         {
+//             Widget_Mng.Control(BootWidget_Hdl)->Clear();
+//             Widget_Mng.Delete(&BootWidget_Hdl);
+//             Cur_Widget = AppWidget_Hdl;
+//         }
+
+//         if (Cur_Widget == AppWidget_Hdl)
+//         {
+//             if (!TaskWidget_ShowManu(val, btn))
+//             {
+//                 TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
+//                 TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
+//             }
+
+//             Widget_Mng.Control(AppWidget_Hdl)->Clear();
+//             Widget_Mng.Control(AppWidget_Hdl)->Show();
+
+//             /* Updata App Widget */
+//         }
+//         else if (Cur_Widget == TFCardWidget_Hdl)
+//         {
+//             /* Update TFCard Widget */
+//         }
+//         else if (Cur_Widget == SysWidget_Hdl)
+//         {
+//             int8_t SysWidget_Selector = val;
+
+//             /* Update RTOS System Info Widget */
+//             SysDsp_Stage_List SysDsp_Stage = SysWidget_DspUpdate(SysWidget_Hdl, &SysWidget_Selector, btn);
+
+//             switch (SysDsp_Stage)
+//             {
+//             case SysDspStage_Update:
+//                 break;
+
+//             case SysDspStage_Exit:
+//                 Cur_Widget = AppWidget_Hdl;
+//                 break;
+
+//             default:
+//                 break;
+//             }
+//         }
+//     }
+
+//     return 0;
+// }
 
 void TaskWidget_Core(Task_Handle self)
 {
