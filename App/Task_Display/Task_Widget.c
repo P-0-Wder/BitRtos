@@ -122,9 +122,6 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
                 if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Hiding)
                     show_manu = true;
 
-                TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-                TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
-
                 EncoderBtnTrigger_Rt = 0;
             }
         }
@@ -164,6 +161,9 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
     BootDsp_State_List BootDsp_Stage;
     SysDsp_Stage_List SysDsp_Stage;
     int8_t SysWidget_Selector;
+
+    TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
+    TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
 
     switch (Dsp_stage)
     {
