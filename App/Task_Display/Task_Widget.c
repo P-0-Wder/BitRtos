@@ -24,6 +24,9 @@ static TaskWidget_Manu_UI_TypeDef Manu_UI;
 
 #define TaskWidget_FreshInputVal() TaskInput_GetData()->Enc_Val
 
+static void EncoderPush_Callback(void);
+static void EncoderRelease_Callback(void);
+
 static void TaskWidget_JumpTo_AppWidget(void)
 {
     Dsp_stage = WidgetDsp_AppInfo;
@@ -124,7 +127,6 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
             {
                 if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Hiding)
                 {
-                    Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
                     show_manu = true;
                 }
 
@@ -138,6 +140,7 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
         if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing)
         {
             Widget_Mng.Control(ManuWidget_Hdl)->Hide();
+            Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
             Manu_UI.selector = 0;
         }
     }
@@ -180,7 +183,10 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
                 Widget_Mng.Control(BootWidget_Hdl)->Clear();
                 Widget_Mng.Delete(&BootWidget_Hdl);
 
-                BootDsp_Stage = WidgetDsp_AppInfo;
+                Dsp_stage = WidgetDsp_AppInfo;
+
+                Widget_Mng.Control(AppWidget_Hdl)->Clear();
+                Widget_Mng.Control(AppWidget_Hdl)->Show();
             }
         }
         break;

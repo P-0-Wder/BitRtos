@@ -108,8 +108,8 @@ BootDsp_State_List BootDsp_Ctl(Widget_Handle hdl)
             return Boot_State_Dsp;
 
         case Boot_Page_Sum:
-            Widget_Mng.Control(BootLogo_Widget_Hdl)->Clear();
-            Widget_Mng.Control(BitRtos_Widget_Hdl)->Clear();
+            // Widget_Mng.Control(BootLogo_Widget_Hdl)->Clear();
+            // Widget_Mng.Control(BitRtos_Widget_Hdl)->Clear();
 
             /* delete all widget relative to boot */
             Widget_Mng.DeleteSub(&BootLogo_Widget_Hdl);
