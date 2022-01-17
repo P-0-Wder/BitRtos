@@ -170,7 +170,7 @@ static uint8_t TaskWidget_UpdateDsp(int8_t val, bool *btn)
             if (!TaskWidget_ShowManu(val, btn))
             {
                 TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-                // TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
+                TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
             }
 
             Widget_Mng.Control(AppWidget_Hdl)->Clear();
