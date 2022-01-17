@@ -119,7 +119,9 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
         {
             if (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
             {
-                show_manu = true;
+                if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Hiding)
+                    show_manu = true;
+
                 TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
                 TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
 
