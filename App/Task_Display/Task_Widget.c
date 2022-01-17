@@ -92,6 +92,9 @@ static TaskWiget_Error_List TaskWidget_Init(void)
     Encoder.val = TaskInput_GetData()->Enc_Val.val;
     Encoder.btn = false;
 
+    TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
+    TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
+
     return Create_Widget_NoEror;
 }
 
@@ -161,9 +164,6 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
     BootDsp_State_List BootDsp_Stage;
     SysDsp_Stage_List SysDsp_Stage;
     int8_t SysWidget_Selector;
-
-    TaskInput_SetCallback(DevEncoderBtn_Push_Callback, EncoderPush_Callback);
-    TaskInput_SetCallback(DevEncoderBtn_Release_Callback, EncoderRelease_Callback);
 
     switch (Dsp_stage)
     {
