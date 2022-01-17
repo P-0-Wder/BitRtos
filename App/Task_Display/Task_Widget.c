@@ -183,11 +183,11 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
         break;
 
     case WidgetDsp_AppInfo:
-        Widget_Mng.Control(AppWidget_Hdl)->Clear();
-
-        TaskWidget_ShowManu(val, btn);
-
-        Widget_Mng.Control(AppWidget_Hdl)->Show();
+        if (!TaskWidget_ShowManu(val, btn))
+        {
+            Widget_Mng.Control(AppWidget_Hdl)->Clear();
+            Widget_Mng.Control(AppWidget_Hdl)->Show();
+        }
         break;
 
     case WidgetDsp_SysInfo:
