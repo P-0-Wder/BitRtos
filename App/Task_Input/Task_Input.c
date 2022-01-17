@@ -104,7 +104,7 @@ static void TaskInput_EncoderBtn_Callback(void)
 
 bool TaskInput_GetCurEncoderBtn_Level(void)
 {
-    return DevEncoder.trigger_button(&Encoder_Obj, &EncPin[Encoder_IO_Btn]);
+    return DevEncoder.get_btn_state(&EncPin[Encoder_IO_Btn]);
 }
 
 void TaskInput_SetCallback(TaskInput_Callback_TypeList type, TaskInput_Callback callback)

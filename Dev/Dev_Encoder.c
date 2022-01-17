@@ -25,6 +25,7 @@ DevEncoder_TypeDef DevEncoder = {
     .open = DevEncoder_Open,
     .num = DevEncoder_GetNum,
     .set_btn_callback = DevEncoder_Set_BtnCallback,
+    .get_btn_state = DevEncoder_GetButtonState,
     .trigger_button = DevEncoder_ButtonTrigger,
 };
 
