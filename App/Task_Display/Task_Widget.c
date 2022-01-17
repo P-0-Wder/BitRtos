@@ -123,7 +123,10 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
             if (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
             {
                 if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Hiding)
+                {
+                    Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
                     show_manu = true;
+                }
 
                 EncoderBtnTrigger_Rt = 0;
             }
