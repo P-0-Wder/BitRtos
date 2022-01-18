@@ -31,19 +31,22 @@ static void EncoderRelease_Callback(void);
 
 static void TaskWidget_JumpTo_AppWidget(void)
 {
-    Dsp_stage = WidgetDsp_AppInfo;
+    NxtDsp_Stage = WidgetDsp_AppInfo;
+    Dsp_stage = WidgetDsp_Check;
     show_manu = false;
 }
 
 static void TaskWidget_JumpTo_SysInfoWidget(void)
 {
-    Dsp_stage = WidgetDsp_SysInfo;
+    NxtDsp_Stage = WidgetDsp_SysInfo;
+    Dsp_stage = WidgetDsp_Check;
     show_manu = false;
 }
 
 static void TaskWidget_JumpTo_TFCardWidget(void)
 {
-    Dsp_stage = WidgetDsp_TFCardInfo;
+    NxtDsp_Stage = WidgetDsp_TFCardInfo;
+    Dsp_stage = WidgetDsp_Check;
     show_manu = false;
 }
 
@@ -119,7 +122,6 @@ static void TaskWidget_HideManu(void)
     {
         show_manu = false;
         Widget_Mng.Control(ManuWidget_Hdl)->Hide();
-        Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
         Manu_UI.selector = 0;
     }
 }
@@ -134,17 +136,18 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
             *btn = false;
         }
 
-        if ((TaskInput_GetCurEncoderBtn_Level()) && (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff))
+        if ((TaskInput_GetCurEncoderBtn_Level()) && EncoderBtnTrigger_Rt && (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff))
         {
             if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Hiding)
             {
+                Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
                 show_manu = true;
             }
 
             EncoderBtnTrigger_Rt = 0;
         }
-        else
-            TaskWidget_HideManu();
+        // else
+        //     TaskWidget_HideManu();
     }
     else
     {
@@ -165,6 +168,34 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
     }
 
     return show_manu;
+}
+
+static void TaskWidget_DspCheck(void)
+{
+    switch (LstDsp_Stage)
+    {
+    case WidgetDsp_AppInfo:
+        TaskWidget_HideManu();
+        break;
+
+    case WidgetDsp_BootLogo:
+        break;
+
+    case WidgetDsp_SysInfo:
+        TaskWidget_HideManu();
+        // Widget_Mng.Control(SysWidget_Hdl)->UI()->Reset_SelectUICtl();
+        break;
+
+    case WidgetDsp_TFCardInfo:
+        TaskWidget_HideManu();
+        // Widget_Mng.Control(TFCardWidget_Hdl)->UI()->Reset_SelectUICtl();
+        break;
+
+    default:
+        break;
+    }
+
+    Dsp_stage = NxtDsp_Stage;
 }
 
 static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
@@ -199,6 +230,8 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
             Widget_Mng.Control(AppWidget_Hdl)->Clear();
             Widget_Mng.Control(AppWidget_Hdl)->Show();
         }
+
+        LstDsp_Stage = WidgetDsp_AppInfo;
         break;
 
     case WidgetDsp_SysInfo:
@@ -210,11 +243,18 @@ static void TaskWidget_UpdateDsp(int8_t val, bool *btn)
         if (SysDsp_Stage == SysDspStage_Exit)
             Dsp_stage = WidgetDsp_AppInfo;
 
+        LstDsp_Stage = WidgetDsp_SysInfo;
         break;
 
     case WidgetDsp_TFCardInfo:
         Widget_Mng.Control(TFCardWidget_Hdl)->Clear();
         Widget_Mng.Control(TFCardWidget_Hdl)->Show();
+
+        LstDsp_Stage = WidgetDsp_TFCardInfo;
+        break;
+
+    case WidgetDsp_Check:
+        TaskWidget_DspCheck();
         break;
 
     default:
