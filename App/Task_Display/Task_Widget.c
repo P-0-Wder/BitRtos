@@ -111,6 +111,17 @@ static void EncoderRelease_Callback(void)
     Encoder.btn = false;
 }
 
+static void TaskWidget_HideManu(void)
+{
+    if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing)
+    {
+        show_manu = false;
+        Widget_Mng.Control(ManuWidget_Hdl)->Hide();
+        Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
+        Manu_UI.selector = 0;
+    }
+}
+
 static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 {
     if (!show_manu)
@@ -121,29 +132,17 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
             *btn = false;
         }
 
-        if (TaskInput_GetCurEncoderBtn_Level())
+        if ((TaskInput_GetCurEncoderBtn_Level()) && (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff))
         {
-            if (Get_CurrentRunningMs() - EncoderBtnTrigger_Rt >= WidgetSelect_TimeDiff)
+            if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Hiding)
             {
-                if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Hiding)
-                {
-                    show_manu = true;
-                }
-
-                EncoderBtnTrigger_Rt = 0;
+                show_manu = true;
             }
-        }
 
-        if (!show_manu)
-        {
-            if (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing)
-            {
-                show_manu = false;
-                Widget_Mng.Control(ManuWidget_Hdl)->Hide();
-                Widget_Mng.Control(ManuWidget_Hdl)->UI()->Reset_SelectUICtl();
-                Manu_UI.selector = 0;
-            }
+            EncoderBtnTrigger_Rt = 0;
         }
+        else
+            TaskWidget_HideManu();
     }
     else
     {
