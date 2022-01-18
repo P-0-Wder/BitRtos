@@ -23,6 +23,7 @@ typedef enum
     WidgetDsp_SysInfo,
     WidgetDsp_TFCardInfo,
     WidgetDsp_AppInfo,
+    WidgetDsp_Check,
     WidgetDsp_Sum,
 } DspWidget_TypeList;
 

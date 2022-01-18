@@ -17,6 +17,8 @@ static Encoder_Data_TypeDef Encoder;
 
 static TaskWidget_Stage_TypeList stage = Widget_Stage_Init;
 static DspWidget_TypeList Dsp_stage = WidgetDsp_BootLogo;
+static DspWidget_TypeList LstDsp_Stage = WidgetDsp_BootLogo;
+static DspWidget_TypeList NxtDsp_Stage = WidgetDsp_Check;
 
 static SYSTEM_RunTime EncoderBtnTrigger_Rt = 0;
 static bool show_manu = false;
