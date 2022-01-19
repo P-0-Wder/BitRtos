@@ -60,6 +60,15 @@ static bool VersionWidget_Init(Widget_Handle hdl)
 static void VersionWidget_Fresh(Widget_Handle hdl, int8_t *encoder_in)
 {
     Widget_Mng.Control(hdl)->Clear();
+
+    if (*encoder_in)
+    {
+        if (Widget_Mng.Control(VersionWidget_Handle)->UI()->Get_CurSelected_UI() == ver_Back_LabelHandle)
+            Widget_Mng.Control(VersionWidget_Handle)->UI()->TriggerLabel()->trigger(ver_Back_LabelHandle);
+
+        *encoder_in = false;
+    }
+
     Widget_Mng.Control(hdl)->UI()->Show_Selector(encoder_in);
     Widget_Mng.Control(hdl)->UI()->Fresh();
     Widget_Mng.Control(hdl)->Show();
