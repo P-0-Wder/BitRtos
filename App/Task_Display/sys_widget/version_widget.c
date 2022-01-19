@@ -84,6 +84,7 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *enco
         return VersionDspStage_Error;
 
     case VersionDspStage_Exit:
+        Widget_Mng.Control(VersionWidget_Handle)->UI()->Reset_SelectUICtl();
         stage = VersionDspStage_Wait;
         return VersionDspStage_Exit;
 
