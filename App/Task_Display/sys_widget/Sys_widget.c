@@ -132,6 +132,7 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
 
     case SysDspStage_Exit:
         Widget_Mng.Control(SysWidget_Handle)->Clear();
+        Widget_Mng.Control(SysWidget_Handle)->UI()->Reset_SelectUICtl();
         stage = SysDspStage_ResetCallback;
         return SysDspStage_Exit;
 
