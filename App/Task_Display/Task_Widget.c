@@ -146,8 +146,6 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 
             EncoderBtnTrigger_Rt = 0;
         }
-        // else
-        //     TaskWidget_HideManu();
     }
     else
     {

@@ -77,6 +77,11 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
     return true;
 }
 
+static void TaskInfo_ResetCtl(void)
+{
+    Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->Reset_SelectUICtl();
+}
+
 static bool TaskInfo_ShowNameList(Widget_Handle hdl)
 {
     if (hdl == 0)
