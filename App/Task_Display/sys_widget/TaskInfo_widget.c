@@ -111,10 +111,24 @@ static bool TaskInfo_Free(void)
     return true;
 }
 
+static bool TaskInfo_UpdateDspList(void)
+{
+    Widget_Mng.Control(TaskList_Widget_Hdl)->Clear();
+    Widget_Mng.Control(TaskList_Widget_Hdl)->Show();
+
+    return true;
+}
+
+static bool TaskInfo_UpdataDspDitial(void)
+{
+    Widget_Mng.Control(TaskInfo_Widget_Hdl)->Clear();
+    Widget_Mng.Control(TaskInfo_Widget_Hdl)->Show();
+
+    return true;
+}
+
 TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
 {
-    bool dsp = false;
-
     if (hdl == 0)
         return false;
 
@@ -122,7 +136,6 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
     {
     case InfoDspStage_CreateWidget:
         TaskWidget_CreateState = TaskInfo_CreateWidget(hdl);
-        dsp = false;
 
         if (!TaskWidget_CreateState)
         {
@@ -134,7 +147,6 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         break;
 
     case InfoDspStage_GetTaskInfo:
-        dsp = false;
         // if (!TaskInfo_CreateUICtl(hdl))
         // {
         //     stage = InfoDspStage_DspError;
@@ -145,23 +157,22 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         break;
 
     case InfoDspStage_DspTaskName:
-        Widget_Mng.Control(hdl)->Clear();
-        dsp = true;
+        TaskInfo_UpdateDspList();
         break;
 
     case InfoDspStage_DspTaskInfo:
-        Widget_Mng.Control(hdl)->Clear();
-        dsp = true;
+        TaskInfo_UpdataDspDitial();
+        break;
+
+    case InfoDspStage_DspExit:
+        stage = InfoDspStage_GetTaskInfo;
         break;
 
     default:
         return InfoDspStage_DspError;
     }
 
-    if (dsp)
-    {
-        Widget_Mng.Control(hdl)->Show();
-    }
+    Widget_Mng.Control(hdl)->Show();
 
     return stage;
 }
