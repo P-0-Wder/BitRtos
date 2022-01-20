@@ -81,27 +81,27 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
     VersionWidget_DspStage_List VersionWidget_state;
     TaskInfo_DspStage_List TaskInfoWidget_state;
 
-    if (*btn)
-    {
-        Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(SysWidget_Handle)->UI()->Get_CurSelected_UI());
-        *btn = false;
-    }
-
     switch (stage)
     {
     case SysDspStage_WidgetInit:
         if (SysWidget_Init(hdl, encoder_in))
-            stage = SysDspStage_ResetCallback;
+            stage = SysDspStage_Update;
         else
             stage = SysDspStage_Error;
         return SysDspStage_WidgetInit;
 
     case SysDspStage_Update:
+        if (*btn)
+        {
+            Widget_Mng.Control(SysWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(SysWidget_Handle)->UI()->Get_CurSelected_UI());
+            *btn = false;
+        }
+
         SysWidget_Fresh(encoder_in);
         return SysDspStage_Update;
 
     case SysDspStage_ShowTaskInfo:
-        TaskInfoWidget_state = TaskInfo_DspUpdate(SysWidget_Handle, encoder_in);
+        // TaskInfoWidget_state = TaskInfo_DspUpdate(SysWidget_Handle, encoder_in);
 
         if (TaskInfoWidget_state == InfoDspStage_DspExit)
         {
@@ -123,7 +123,7 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
         return SysDspStage_ShowTaskInfo;
 
     case SysDspStage_ShowVersion:
-        VersionWidget_state = VersionWidget_Update(SysWidget_Handle, encoder_in);
+        VersionWidget_state = VersionWidget_Update(SysWidget_Handle, encoder_in, btn);
 
         if (VersionWidget_state == VersionDspStage_Exit)
         {
@@ -146,13 +146,8 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
     case SysDspStage_Exit:
         Widget_Mng.Control(SysWidget_Handle)->Clear();
         Widget_Mng.Control(SysWidget_Handle)->UI()->Reset_SelectUICtl();
-        stage = SysDspStage_ResetCallback;
-        return SysDspStage_Exit;
-
-    case SysDspStage_ResetCallback:
         stage = SysDspStage_Update;
-
-        return SysDspStage_ResetCallback;
+        return SysDspStage_Exit;
 
     default:
         return SysDspStage_Error;

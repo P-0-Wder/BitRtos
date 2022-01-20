@@ -12,7 +12,6 @@ typedef enum
     SysDspStage_Update,
     SysDspStage_ShowVersion,
     SysDspStage_ShowTaskInfo,
-    SysDspStage_ResetCallback,
     SysDspStage_Exit,
     SysDspStage_Wait,
     SysDspStage_Error,

@@ -11,7 +11,6 @@ static UI_TriggerLabel_Handle ver_Back_LabelHandle = 0;
 
 static void VersionWidget_BackLabel_Callback(void)
 {
-    Widget_Mng.Control(VersionWidget_Handle)->Hide();
     stage = VersionDspStage_Exit;
 }
 
@@ -57,19 +56,15 @@ static bool VersionWidget_Init(Widget_Handle hdl)
     return true;
 }
 
-static void VersionWidget_Fresh(Widget_Handle hdl, int8_t *encoder_in)
+static void VersionWidget_Fresh(Widget_Handle hdl, int8_t *encoder_in, bool *btn)
 {
     Widget_Mng.Control(hdl)->Clear();
 
-    if (*encoder_in)
+    if (*btn)
     {
-        if (Widget_Mng.Control(VersionWidget_Handle)->UI()->Get_CurSelected_UI() == ver_Back_LabelHandle)
-        {
-            Widget_Mng.Control(VersionWidget_Handle)->UI()->TriggerLabel()->trigger(ver_Back_LabelHandle);
-            Widget_Mng.Control(VersionWidget_Handle)->UI()->Reset_SelectUICtl();
-        }
+        Widget_Mng.Control(VersionWidget_Handle)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(VersionWidget_Handle)->UI()->Get_CurSelected_UI());
 
-        *encoder_in = false;
+        *btn = false;
     }
 
     Widget_Mng.Control(hdl)->UI()->Show_Selector(encoder_in);
@@ -77,7 +72,7 @@ static void VersionWidget_Fresh(Widget_Handle hdl, int8_t *encoder_in)
     Widget_Mng.Control(hdl)->Show();
 }
 
-VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *encoder_in)
+VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *encoder_in, bool *btn)
 {
     switch (stage)
     {
@@ -87,17 +82,17 @@ VersionWidget_DspStage_List VersionWidget_Update(Widget_Handle hdl, int8_t *enco
         else
             stage = VersionDspStage_Error;
 
-    case VersionDspStage_Wait:
     case VersionDspStage_Update:
-        VersionWidget_Fresh(VersionWidget_Handle, encoder_in);
+        VersionWidget_Fresh(VersionWidget_Handle, encoder_in, btn);
         return VersionDspStage_Update;
 
     case VersionDspStage_Error:
         return VersionDspStage_Error;
 
     case VersionDspStage_Exit:
+        Widget_Mng.Control(VersionWidget_Handle)->Hide();
         Widget_Mng.Control(VersionWidget_Handle)->UI()->Reset_SelectUICtl();
-        stage = VersionDspStage_Wait;
+        stage = VersionDspStage_Update;
         return VersionDspStage_Exit;
 
     default:
