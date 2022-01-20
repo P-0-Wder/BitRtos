@@ -123,7 +123,15 @@ static bool TaskInfo_SetStage(int8_t *offset)
 static bool TaskInfo_Free(void)
 {
     if (TaskInfo_Dsp.num)
+    {
+        for (uint8_t i = 0; i < TaskInfo_Dsp.num; i++)
+        {
+            /* delete trigger_label controller */
+        }
+
+        MMU_Free(TaskName_LabelList);
         MMU_Free(TaskInfo_Dsp.info);
+    }
 
     TaskInfo_Dsp.num = 0;
 
