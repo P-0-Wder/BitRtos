@@ -28,6 +28,8 @@ static Widget_Handle TaskInfo_Widget_Hdl = 0;
 static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
 static TaskInfo_DspStage_List stage = InfoDspStage_CreateWidget;
 
+static UI_TriggerLabel_Handle *TaskName_LabelList;
+
 static void TaskInfo_DspClear(void);
 static bool TaskInfo_SetStage(int8_t *offset);
 static bool TaskInfo_GetInfo(Widget_Handle hdl);
@@ -76,6 +78,10 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
     }
 
     /* then create trigger_label */
+    TaskName_LabelList = (UI_TriggerLabel_Handle *)MMU_Malloc(sizeof(UI_TriggerLabel_Handle) * TaskInfo_Dsp.num);
+    if (TaskName_LabelList == NULL)
+        return false;
+
     for (i = 0; i < TaskInfo_Dsp.num; i++)
     {
     }
