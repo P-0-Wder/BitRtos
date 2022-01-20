@@ -64,6 +64,7 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
     if (TaskInfo_Dsp.info == NULL)
         return false;
 
+    /* get task info first */
     for (i = 0; i < TaskInfo_Dsp.num; i++)
     {
         if (!Task_GetInfo_ByIndex(i, &TaskInfo_Dsp.info[i]))
@@ -72,6 +73,11 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
             TaskInfo_Dsp.num = 0;
             return false;
         }
+    }
+
+    /* then create trigger_label */
+    for (i = 0; i < TaskInfo_Dsp.num; i++)
+    {
     }
 
     return true;
