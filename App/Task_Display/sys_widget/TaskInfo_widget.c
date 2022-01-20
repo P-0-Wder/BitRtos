@@ -56,6 +56,8 @@ static bool TaskInfo_CreateWidget(Widget_Handle hdl)
 static bool TaskInfo_GetInfo(Widget_Handle hdl)
 {
     uint8_t i = 0;
+    int16_t y_offset = 0;
+
     if (hdl == 0)
         return false;
     TaskInfo_DspClear();
@@ -77,13 +79,18 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
         }
     }
 
-    /* then create trigger_label */
+    /* second create trigger_label_handle */
     TaskName_LabelList = (UI_TriggerLabel_Handle *)MMU_Malloc(sizeof(UI_TriggerLabel_Handle) * TaskInfo_Dsp.num);
     if (TaskName_LabelList == NULL)
         return false;
 
+    /* third create trigger_label controller */
     for (i = 0; i < TaskInfo_Dsp.num; i++)
     {
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->TriggerLabel()->create(TaskInfo_Dsp.info[i].name, 0, y_offset);
+        y_offset += UICTL_TRIGGERLABEL_HEIGHT;
+
+        /* set trigger callback */
     }
 
     return true;
