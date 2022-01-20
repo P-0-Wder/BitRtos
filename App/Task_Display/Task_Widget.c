@@ -154,7 +154,7 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
         Widget_Mng.Control(ManuWidget_Hdl)->Clear();
         Widget_Mng.Control(ManuWidget_Hdl)->Draw()->draw_str(Font_8, HandleToWidgetObj(ManuWidget_Hdl)->name, (HandleToWidgetObj(ManuWidget_Hdl)->width - strlen(HandleToWidgetObj(ManuWidget_Hdl)->name) * STR_DIS) / 2, 0, true);
 
-        if (*btn)
+        if (*btn && (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing))
         {
             Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->trigger(Manu_UI.Label_SysInfo);
 
