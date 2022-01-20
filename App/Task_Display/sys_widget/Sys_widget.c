@@ -128,6 +128,12 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
             stage = SysDspStage_Update;
             return SysDspStage_Error;
         }
+        else if (VersionWidget_state == VersionDspStage_Exit)
+        {
+            stage = SysDspStage_Update;
+            Widget_Mng.Control(SysWidget_Handle)->UI()->Reset_SelectUICtl();
+            return SysDspStage_Update;
+        }
         return SysDspStage_ShowVersion;
 
     case SysDspStage_Exit:

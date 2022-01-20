@@ -64,7 +64,10 @@ static void VersionWidget_Fresh(Widget_Handle hdl, int8_t *encoder_in)
     if (*encoder_in)
     {
         if (Widget_Mng.Control(VersionWidget_Handle)->UI()->Get_CurSelected_UI() == ver_Back_LabelHandle)
+        {
             Widget_Mng.Control(VersionWidget_Handle)->UI()->TriggerLabel()->trigger(ver_Back_LabelHandle);
+            Widget_Mng.Control(VersionWidget_Handle)->UI()->Reset_SelectUICtl();
+        }
 
         *encoder_in = false;
     }
