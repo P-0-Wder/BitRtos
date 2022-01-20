@@ -156,10 +156,7 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 
         if (*btn)
         {
-            if (Widget_Mng.Control(ManuWidget_Hdl)->UI()->Get_CurSelected_UI() == Manu_UI.Label_SysInfo)
-            {
-                Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->trigger(Manu_UI.Label_SysInfo);
-            }
+            Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->trigger(Manu_UI.Label_SysInfo);
 
             *btn = false;
         }
