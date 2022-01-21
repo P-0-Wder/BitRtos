@@ -101,7 +101,7 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
         return SysDspStage_Update;
 
     case SysDspStage_ShowTaskInfo:
-        // TaskInfoWidget_state = TaskInfo_DspUpdate(SysWidget_Handle, encoder_in);
+        TaskInfoWidget_state = TaskInfo_DspUpdate(SysWidget_Handle, encoder_in);
 
         if (TaskInfoWidget_state == InfoDspStage_DspExit)
         {
