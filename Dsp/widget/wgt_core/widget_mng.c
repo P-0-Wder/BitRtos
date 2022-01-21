@@ -1639,6 +1639,9 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
 
 static bool WidgetUIList_DeleteItem(UI_GenCTL_Handle *hdl)
 {
+    WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
+
+    tmp->ui_ctl_num--;
 }
 
 static bool WidgetUIList_InsertItem(UI_GenCTL_Handle hdl, WidgetUI_Type_List type)
