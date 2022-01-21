@@ -1637,6 +1637,10 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
         return item_nxt;
 }
 
+static bool WidgetUIList_DeleteItem(UI_GenCTL_Handle *hdl)
+{
+}
+
 static bool WidgetUIList_InsertItem(UI_GenCTL_Handle hdl, WidgetUI_Type_List type)
 {
     WidgetUI_Item_TypeDef *UI_ItemData_tmp = NULL;
