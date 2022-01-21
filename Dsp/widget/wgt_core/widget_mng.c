@@ -2374,6 +2374,10 @@ static UI_TriggerLabel_Handle WidgetUI_Cteate_TriggerLabel(char *label, int16_t 
     return ((UI_TriggerLabel_Handle)triggerlabel);
 }
 
+static void WidgetUI_Delete_TriggerLabel(UI_TriggerLabel_Handle *hdl)
+{
+}
+
 static bool WidgetUI_TriggerLabel_Move(UI_TriggerLabel_Handle hdl, int16_t x, int16_t y)
 {
     if (hdl == 0)
