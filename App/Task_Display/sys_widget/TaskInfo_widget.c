@@ -17,6 +17,7 @@ static TaskInfo_DspStage_List stage = InfoDspStage_CreateWidget;
 static int8_t task_index = -1;
 
 static UI_TriggerLabel_Handle *TaskName_LabelList;
+static UI_TriggerLabel_Handle TaskInfo_Label = 0;
 
 static void TaskInfo_DspClear(void);
 static bool TaskInfo_SetStage(int8_t *offset);
@@ -53,15 +54,16 @@ static void TaskInfo_DspClear(void)
 static bool TaskInfo_CreateWidget(Widget_Handle hdl)
 {
     TaskList_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task List", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
-    TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
+    TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info", HIDE_WIDGET_FRAME, HIDE_WIDGET_NAME);
+    TaskInfo_Label = Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->TriggerLabel()->create("back", 0, 50);
 
-    if ((TaskList_Widget_Hdl == WIDGET_CREATE_ERROR) || (TaskInfo_Widget_Hdl == WIDGET_CREATE_ERROR))
+    if ((TaskList_Widget_Hdl == WIDGET_CREATE_ERROR) || (TaskInfo_Widget_Hdl == WIDGET_CREATE_ERROR) || (TaskInfo_Label == NULL))
         return false;
 
     return true;
 }
 
-static bool TaskInfo_GetInfo(Widget_Handle hdl)
+static bool Get_TaskInfo(Widget_Handle hdl)
 {
     uint8_t i = 0;
     int16_t y_offset = 0;
@@ -124,12 +126,18 @@ static bool TaskInfo_SetStage(int8_t *offset)
     return true;
 }
 
-static void TaskInfo_UpdateDspList(int8_t *encoder_in)
+static void TaskInfo_UpdateDspList(int8_t *encoder_in, bool *btn)
 {
     static bool get_TaskInfo = false;
 
     if (!get_TaskInfo)
-        get_TaskInfo = TaskInfo_GetInfo(TaskList_Widget_Hdl);
+        get_TaskInfo = Get_TaskInfo(TaskList_Widget_Hdl);
+
+    if (*btn)
+    {
+        Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Get_CurSelected_UI());
+        *btn = false;
+    }
 
     Widget_Mng.Control(TaskList_Widget_Hdl)->Clear();
     Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Show_Selector(encoder_in);
@@ -137,9 +145,36 @@ static void TaskInfo_UpdateDspList(int8_t *encoder_in)
     Widget_Mng.Control(TaskList_Widget_Hdl)->Show();
 }
 
-static void TaskInfo_UpdataDspDitial(void)
+static void TaskInfo_UpdataDspDitial(uint8_t *encoder_in, bool *btn)
 {
+    int16_t y_offset = 0;
+    char dsp_buff[32];
+
+    memset(dsp_buff, NULL, 32);
+
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->Clear();
+    if (task_index >= 0)
+    {
+        /* display task name */ /* use sprintf */
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, "name: ", 0, 0, true);
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, TaskInfo_Dsp.info[task_index].name, strlen("name: ") * STR_DIS, y_offset, true);
+        y_offset += UICTL_DEFAULT_HEIGHT;
+
+        /* display priority */
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, "Pri: ", 0, y_offset, true);
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_num(Font_8, TaskInfo_Dsp.info[task_index].group, strlen("Pri: ") * STR_DIS, y_offset, true);
+
+        /* display set frequence & actually frequence */
+
+        /* display task cpu occupy */
+
+        /* display task stack occupy */
+    }
+    else
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, "get info failed", 0, 0, true);
+
+    Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->Show_Selector(encoder_in);
+    Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->Fresh();
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->Show();
 }
 
@@ -162,17 +197,11 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in,
             stage = InfoDspStage_DspTaskName;
 
     case InfoDspStage_DspTaskName:
-        if (*btn)
-        {
-            Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Get_CurSelected_UI());
-            *btn = false;
-        }
-
-        TaskInfo_UpdateDspList(encoder_in);
+        TaskInfo_UpdateDspList(encoder_in, btn);
         break;
 
     case InfoDspStage_DspTaskInfo:
-        TaskInfo_UpdataDspDitial();
+        TaskInfo_UpdataDspDitial(encoder_in, btn);
         break;
 
     case InfoDspStage_DspExit:
