@@ -16,5 +16,5 @@ typedef enum
     InfoDspStage_Sum,
 } TaskInfo_DspStage_List;
 
-TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in);
+TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, bool *btn);
 #endif

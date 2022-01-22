@@ -14,6 +14,7 @@ static Widget_Handle TaskList_Widget_Hdl = 0;
 static Widget_Handle TaskInfo_Widget_Hdl = 0;
 static TaskInfo_DspLayer_TypeDef TaskInfo_Dsp;
 static TaskInfo_DspStage_List stage = InfoDspStage_CreateWidget;
+static int8_t task_index = -1;
 
 static UI_TriggerLabel_Handle *TaskName_LabelList;
 
@@ -21,7 +22,27 @@ static void TaskInfo_DspClear(void);
 static bool TaskInfo_SetStage(int8_t *offset);
 static bool TaskInfo_GetInfo(Widget_Handle hdl);
 static void TaskInfo_SwitchWidget(int8_t *offset);
-static bool TaskInfo_ShowNameList(Widget_Handle hdl);
+
+static void TaskInfo_BackLabel_TriggerCallback(void)
+{
+    task_index = -1;
+    Widget_Mng.Control(TaskList_Widget_Hdl)->Hide();
+    stage = InfoDspStage_DspExit;
+}
+
+static void TaskInfo_SelectedTask_TriggerCallback(void)
+{
+    for (uint8_t i = 0; i < TaskInfo_Dsp.num; i++)
+    {
+        if (TaskName_LabelList[i] == Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Get_CurSelected_UI())
+        {
+            task_index = i;
+            Widget_Mng.Control(TaskList_Widget_Hdl)->Hide();
+            stage = InfoDspStage_DspTaskInfo;
+            break;
+        }
+    }
+}
 
 static void TaskInfo_DspClear(void)
 {
@@ -32,7 +53,7 @@ static void TaskInfo_DspClear(void)
 static bool TaskInfo_CreateWidget(Widget_Handle hdl)
 {
     TaskList_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task List", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
-    TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info Ditial", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
+    TaskInfo_Widget_Hdl = Widget_Mng.Create_Sub(hdl, HandleToWidgetObj(hdl)->width, HandleToWidgetObj(hdl)->height, "Task Info", HIDE_WIDGET_FRAME, SHOW_WIDGET_NAME);
 
     if ((TaskList_Widget_Hdl == WIDGET_CREATE_ERROR) || (TaskInfo_Widget_Hdl == WIDGET_CREATE_ERROR))
         return false;
@@ -78,9 +99,11 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
         y_offset += UICTL_TRIGGERLABEL_HEIGHT;
 
         /* set trigger callback */
+        Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->set_callback(TaskName_LabelList[i], TaskInfo_SelectedTask_TriggerCallback);
     }
 
     TaskName_LabelList[TaskInfo_Dsp.num + 1] = Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->create("back", 0, y_offset);
+    Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->set_callback(TaskName_LabelList[TaskInfo_Dsp.num + 1], TaskInfo_BackLabel_TriggerCallback);
 
     return true;
 }
@@ -88,14 +111,6 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
 static void TaskInfo_ResetCtl(void)
 {
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->Reset_SelectUICtl();
-}
-
-static bool TaskInfo_ShowNameList(Widget_Handle hdl)
-{
-    if (hdl == 0)
-        return false;
-
-    return true;
 }
 
 static bool TaskInfo_SetStage(int8_t *offset)
@@ -128,7 +143,7 @@ static void TaskInfo_UpdataDspDitial(void)
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->Show();
 }
 
-TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
+TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, bool *btn)
 {
     if (hdl == 0)
         return false;
@@ -147,6 +162,12 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
             stage = InfoDspStage_DspTaskName;
 
     case InfoDspStage_DspTaskName:
+        if (*btn)
+        {
+            Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Get_CurSelected_UI());
+            *btn = false;
+        }
+
         TaskInfo_UpdateDspList(encoder_in);
         break;
 
@@ -155,6 +176,8 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         break;
 
     case InfoDspStage_DspExit:
+        *btn = false;
+        Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Reset_SelectUICtl();
         stage = InfoDspStage_DspTaskName;
         break;
 

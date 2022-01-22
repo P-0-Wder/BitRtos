@@ -58,6 +58,7 @@ typedef enum
     Fresh_FRQ_20Hz = 20,
     Fresh_FRQ_25Hz = 25,
     Fresh_FRQ_50Hz = 50,
+    Fresh_FRQ_100Hz = 100,
 } Widget_FreshFrq_List;
 
 typedef enum

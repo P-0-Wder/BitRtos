@@ -23,6 +23,8 @@ static DspWidget_TypeList NxtDsp_Stage = WidgetDsp_Check;
 static SYSTEM_RunTime EncoderBtnTrigger_Rt = 0;
 static bool show_manu = false;
 static TaskWidget_Manu_UI_TypeDef Manu_UI;
+static bool button_trigger = false;
+static SYSTEM_RunTime trigger_rt = 0;
 
 #define TaskWidget_FreshInputVal() TaskInput_GetData()->Enc_Val
 

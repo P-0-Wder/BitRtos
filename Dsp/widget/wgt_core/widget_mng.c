@@ -566,7 +566,7 @@ static bool Widget_CheckFlashTrigger(void)
 {
     uint32_t RT = Get_CurrentRunningMs();
 
-    if ((RT - MonitorDataObj.LstFreshRT) >= Fresh_FRQ_50Hz)
+    if ((RT - MonitorDataObj.LstFreshRT) >= Fresh_FRQ_100Hz)
     {
         MonitorDataObj.LstFreshRT = RT;
         return true;

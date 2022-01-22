@@ -101,7 +101,7 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
         return SysDspStage_Update;
 
     case SysDspStage_ShowTaskInfo:
-        TaskInfoWidget_state = TaskInfo_DspUpdate(SysWidget_Handle, encoder_in);
+        TaskInfoWidget_state = TaskInfo_DspUpdate(SysWidget_Handle, encoder_in, btn);
 
         if (TaskInfoWidget_state == InfoDspStage_DspExit)
         {
@@ -144,6 +144,7 @@ SysDsp_Stage_List SysWidget_DspUpdate(Widget_Handle hdl, int8_t *encoder_in, boo
         return SysDspStage_ShowVersion;
 
     case SysDspStage_Exit:
+        *btn = false;
         Widget_Mng.Control(SysWidget_Handle)->Clear();
         Widget_Mng.Control(SysWidget_Handle)->UI()->Reset_SelectUICtl();
         stage = SysDspStage_Update;
