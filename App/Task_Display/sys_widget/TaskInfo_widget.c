@@ -4,21 +4,8 @@
 
 typedef struct
 {
-    char *name;
-    uint8_t group_pri;
-    uint8_t task_pri;
-    uint32_t frq;
-    uint32_t detect_frq;
-    float cpu_occupy;
-    float stk_occupy;      //still in develop
-    uint32_t remain_stack; //still in develop
-    uint32_t total_stack;
-} TaskDspInfo_TypeDef;
-
-typedef struct
-{
     uint8_t num;
-    TaskDspInfo_TypeDef *info;
+    Task_Base_Info *info;
 } TaskInfo_DspLayer_TypeDef;
 
 static int32_t EncoderVal = 0;
@@ -63,7 +50,7 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
     TaskInfo_DspClear();
 
     TaskInfo_Dsp.num = Task_Get_TaskNum();
-    TaskInfo_Dsp.info = (TaskDspInfo_TypeDef *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(TaskDspInfo_TypeDef));
+    TaskInfo_Dsp.info = (Task_Base_Info *)MMU_Malloc(TaskInfo_Dsp.num * sizeof(Task_Base_Info));
 
     if (TaskInfo_Dsp.info == NULL)
         return false;
@@ -71,7 +58,7 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
     /* get task info first */
     for (i = 0; i < TaskInfo_Dsp.num; i++)
     {
-        if (!Task_GetInfo_ByIndex(i, &TaskInfo_Dsp.info[i]))
+        if (!Task_GetInfo_ByIndex(i, &(TaskInfo_Dsp.info[i])))
         {
             MMU_Free(TaskInfo_Dsp.info);
             TaskInfo_Dsp.num = 0;
@@ -80,18 +67,20 @@ static bool TaskInfo_GetInfo(Widget_Handle hdl)
     }
 
     /* second create trigger_label_handle */
-    TaskName_LabelList = (UI_TriggerLabel_Handle *)MMU_Malloc(sizeof(UI_TriggerLabel_Handle) * TaskInfo_Dsp.num);
+    TaskName_LabelList = (UI_TriggerLabel_Handle *)MMU_Malloc(sizeof(UI_TriggerLabel_Handle) * TaskInfo_Dsp.num + 1);
     if (TaskName_LabelList == NULL)
         return false;
 
     /* third create trigger_label controller */
     for (i = 0; i < TaskInfo_Dsp.num; i++)
     {
-        Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->TriggerLabel()->create(TaskInfo_Dsp.info[i].name, 0, y_offset);
+        TaskName_LabelList[i] = Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->create(TaskInfo_Dsp.info[i].name, 0, y_offset);
         y_offset += UICTL_TRIGGERLABEL_HEIGHT;
 
         /* set trigger callback */
     }
+
+    TaskName_LabelList[TaskInfo_Dsp.num + 1] = Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->create("back", 0, y_offset);
 
     return true;
 }
@@ -120,38 +109,23 @@ static bool TaskInfo_SetStage(int8_t *offset)
     return true;
 }
 
-static bool TaskInfo_Free(void)
+static void TaskInfo_UpdateDspList(int8_t *encoder_in)
 {
-    if (TaskInfo_Dsp.num)
-    {
-        for (uint8_t i = 0; i < TaskInfo_Dsp.num; i++)
-        {
-            /* delete trigger_label controller */
-        }
+    static bool get_TaskInfo = false;
 
-        MMU_Free(TaskName_LabelList);
-        MMU_Free(TaskInfo_Dsp.info);
-    }
+    if (!get_TaskInfo)
+        get_TaskInfo = TaskInfo_GetInfo(TaskList_Widget_Hdl);
 
-    TaskInfo_Dsp.num = 0;
-
-    return true;
-}
-
-static bool TaskInfo_UpdateDspList(void)
-{
     Widget_Mng.Control(TaskList_Widget_Hdl)->Clear();
+    Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Show_Selector(encoder_in);
+    Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Fresh();
     Widget_Mng.Control(TaskList_Widget_Hdl)->Show();
-
-    return true;
 }
 
-static bool TaskInfo_UpdataDspDitial(void)
+static void TaskInfo_UpdataDspDitial(void)
 {
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->Clear();
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->Show();
-
-    return true;
 }
 
 TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
@@ -169,22 +143,11 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
             stage = InfoDspStage_DspError;
             break;
         }
-
-        stage = InfoDspStage_GetTaskInfo;
-        break;
-
-    case InfoDspStage_GetTaskInfo:
-        // if (!TaskInfo_CreateUICtl(hdl))
-        // {
-        //     stage = InfoDspStage_DspError;
-        //     break;
-        // }
-
-        stage = InfoDspStage_DspTaskName;
-        break;
+        else
+            stage = InfoDspStage_DspTaskName;
 
     case InfoDspStage_DspTaskName:
-        TaskInfo_UpdateDspList();
+        TaskInfo_UpdateDspList(encoder_in);
         break;
 
     case InfoDspStage_DspTaskInfo:
@@ -192,14 +155,12 @@ TaskInfo_DspStage_List TaskInfo_DspUpdate(Widget_Handle hdl, int8_t *encoder_in)
         break;
 
     case InfoDspStage_DspExit:
-        stage = InfoDspStage_GetTaskInfo;
+        stage = InfoDspStage_DspTaskName;
         break;
 
     default:
         return InfoDspStage_DspError;
     }
-
-    Widget_Mng.Control(hdl)->Show();
 
     return stage;
 }

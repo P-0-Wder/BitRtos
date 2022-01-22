@@ -9,7 +9,6 @@
 typedef enum
 {
     InfoDspStage_CreateWidget = 0,
-    InfoDspStage_GetTaskInfo,
     InfoDspStage_DspExit,
     InfoDspStage_DspTaskName,
     InfoDspStage_DspTaskInfo,

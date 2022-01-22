@@ -1637,6 +1637,7 @@ static WidgetUI_Item_TypeDef *WidgetUI_InsertSequence_Callback(const WidgetUI_It
         return item_nxt;
 }
 
+/* still in developing */
 static bool WidgetUIList_DeleteItem(UI_GenCTL_Handle *hdl)
 {
     WidgetObj_TypeDef *tmp = GetCur_Active_Widget();
@@ -2381,6 +2382,7 @@ static UI_TriggerLabel_Handle WidgetUI_Cteate_TriggerLabel(char *label, int16_t 
     return ((UI_TriggerLabel_Handle)triggerlabel);
 }
 
+/* still in developing */
 static void WidgetUI_Delete_TriggerLabel(UI_TriggerLabel_Handle *hdl)
 {
 }

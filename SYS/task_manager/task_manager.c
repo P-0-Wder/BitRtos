@@ -1083,17 +1083,17 @@ bool Task_GetInfo_ByIndex(uint8_t index, Task_Base_Info *info)
     if (index > TskCrt_RegList.num)
         return false;
 
-    task_tmp = &TskCrt_RegList.list;
+    task_tmp = &(TskCrt_RegList.list);
 
-    for (uint8_t i = 0; i < TskCrt_RegList.num; i++)
+    for (uint8_t i = 0; i < index; i++)
     {
-        if (TskCrt_RegList.list.nxt == NULL)
+        if (task_tmp == NULL)
             return false;
 
-        task_tmp = TskCrt_RegList.list.nxt;
+        task_tmp = task_tmp->nxt;
     }
 
-    memcpy(info->name, TaskHandleToTaskObj(task_tmp->data)->Task_name, strlen(TaskHandleToTaskObj(task_tmp->data)->Task_name));
+    info->name = TaskHandleToTaskObj(task_tmp->data)->Task_name;
     info->group = GET_TASKGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp)->priority.Priority);
     info->priority = GET_TASKINGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp)->priority.Priority);
     info->stk_depth = TaskHandleToTaskObj(task_tmp->data)->Stack_Depth;

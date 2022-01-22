@@ -225,7 +225,7 @@ typedef struct
 typedef struct
 {
     Task_Handle tsk_hdl;
-    uint8_t name[TASK_NAME_MAXLEN];
+    char *name;
     uint8_t group;
     uint8_t priority;
     uint16_t set_frq;

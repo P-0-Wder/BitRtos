@@ -156,7 +156,7 @@ static bool TaskWidget_ShowManu(int8_t val, bool *btn)
 
         if (*btn && (Widget_Mng.Control(ManuWidget_Hdl)->Dsp_status() == Widget_Showing))
         {
-            Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->trigger(Manu_UI.Label_SysInfo);
+            Widget_Mng.Control(ManuWidget_Hdl)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(ManuWidget_Hdl)->UI()->Get_CurSelected_UI());
 
             *btn = false;
         }
