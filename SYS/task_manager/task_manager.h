@@ -220,7 +220,6 @@ typedef struct
     item_obj *item_ptr;
     item_obj delay_item;
 } Task;
-#pragma pack()
 
 typedef struct
 {
@@ -234,6 +233,7 @@ typedef struct
     uint32_t stk_depth;
     uint32_t remain_stk_size;
 } Task_Base_Info;
+#pragma pack()
 
 typedef struct
 {
@@ -278,6 +278,9 @@ bool Task_FrcExec(Task_Handle tsk_hdl);
 
 Task *Task_Get_HighestRank_RdyTask(void);
 Task *Task_Get_HighestRank_PndTask(void);
+
+uint32_t Task_GetStackRemain(const Task_Handle hdl);
+
 #endif
 
 #endif

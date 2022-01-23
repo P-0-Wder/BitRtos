@@ -45,7 +45,7 @@ int main(void)
 
 	SystemInit();
 
-	SigInput_Tsk_Hdl = Task_Create("Input", TASK_EXEC_100HZ, Group_0, Task_Priority_2, TaskInput_Core, 256);
+	SigInput_Tsk_Hdl = Task_Create("Input", TASK_EXEC_50HZ, Group_0, Task_Priority_2, TaskInput_Core, 256);
 	Widget_Tsk_Hdl = Task_Create("Widget", TASK_EXEC_100HZ, Group_0, Task_Priority_1, TaskWidget_Core, 256);
 	Shell_Tsk_Hdl = Task_Create("Shell", TASK_EXEC_100HZ, Group_0, Task_Priority_0, TaskShell_Core, 2048);
 

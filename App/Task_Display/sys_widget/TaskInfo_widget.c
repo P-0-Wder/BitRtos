@@ -27,6 +27,13 @@ static void TaskInfo_SwitchWidget(int8_t *offset);
 static void TaskInfo_BackLabel_TriggerCallback(void)
 {
     task_index = -1;
+    Widget_Mng.Control(TaskInfo_Widget_Hdl)->Hide();
+    stage = InfoDspStage_DspTaskName;
+}
+
+static void TaskList_BackLabel_TriggerCallback(void)
+{
+    task_index = -1;
     Widget_Mng.Control(TaskList_Widget_Hdl)->Hide();
     stage = InfoDspStage_DspExit;
 }
@@ -38,6 +45,9 @@ static void TaskInfo_SelectedTask_TriggerCallback(void)
         if (TaskName_LabelList[i] == Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->Get_CurSelected_UI())
         {
             task_index = i;
+            Task_GetInfo_ByIndex(task_index, &TaskInfo_Dsp.info[task_index]);
+            TaskInfo_Dsp.info[task_index].remain_stk_size = TaskInfo_Dsp.info[task_index].stk_depth - Task_GetStackRemain(TaskInfo_Dsp.info[task_index].tsk_hdl);
+
             Widget_Mng.Control(TaskList_Widget_Hdl)->Hide();
             stage = InfoDspStage_DspTaskInfo;
             break;
@@ -59,6 +69,8 @@ static bool TaskInfo_CreateWidget(Widget_Handle hdl)
 
     if ((TaskList_Widget_Hdl == WIDGET_CREATE_ERROR) || (TaskInfo_Widget_Hdl == WIDGET_CREATE_ERROR) || (TaskInfo_Label == NULL))
         return false;
+
+    Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->TriggerLabel()->set_callback(TaskInfo_Label, TaskInfo_BackLabel_TriggerCallback);
 
     return true;
 }
@@ -105,7 +117,7 @@ static bool Get_TaskInfo(Widget_Handle hdl)
     }
 
     TaskName_LabelList[TaskInfo_Dsp.num + 1] = Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->create("back", 0, y_offset);
-    Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->set_callback(TaskName_LabelList[TaskInfo_Dsp.num + 1], TaskInfo_BackLabel_TriggerCallback);
+    Widget_Mng.Control(TaskList_Widget_Hdl)->UI()->TriggerLabel()->set_callback(TaskName_LabelList[TaskInfo_Dsp.num + 1], TaskList_BackLabel_TriggerCallback);
 
     return true;
 }
@@ -152,12 +164,15 @@ static void TaskInfo_UpdataDspDitial(uint8_t *encoder_in, bool *btn)
 
     memset(dsp_buff, NULL, 32);
 
+    if (*btn)
+    {
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->TriggerLabel()->trigger(Widget_Mng.Control(TaskInfo_Widget_Hdl)->UI()->Get_CurSelected_UI());
+        *btn = false;
+    }
+
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->Clear();
     if (task_index >= 0)
     {
-        //update Task Info
-        Task_GetInfo_ByIndex(task_index, &TaskInfo_Dsp.info[task_index]);
-
         /* display task name */ /* use sprintf */
         sprintf(dsp_buff, "name: %s", TaskInfo_Dsp.info[task_index].name);
         Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, dsp_buff, 0, 0, true);
@@ -183,6 +198,10 @@ static void TaskInfo_UpdataDspDitial(uint8_t *encoder_in, bool *btn)
         y_offset += UICTL_DEFAULT_HEIGHT;
 
         /* display task stack occupy */
+        sprintf(dsp_buff, "Mem:  %.2f%%", (TaskInfo_Dsp.info[task_index].remain_stk_size / (float)TaskInfo_Dsp.info[task_index].stk_depth) * 100.0);
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, dsp_buff, 0, y_offset, true);
+        memset(dsp_buff, NULL, 32);
+        y_offset += UICTL_DEFAULT_HEIGHT;
     }
     else
         Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, "get info failed", 0, 0, true);

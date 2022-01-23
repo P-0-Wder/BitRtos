@@ -886,7 +886,7 @@ static void Task_Exec(Task *tsk_ptr)
             //get task execute frequence
             if (tsk_ptr->Exec_status.Exec_Times)
             {
-                tsk_ptr->Exec_status.detect_exec_frq = (uint32_t)(tsk_ptr->Exec_status.Exec_Times / (float)(tsk_ptr->Exec_status.Exec_Time / 1000000));
+                tsk_ptr->Exec_status.detect_exec_frq = (uint32_t)(tsk_ptr->Exec_status.Exec_Times / (float)(Get_CurrentRunningS()));
             }
 
             tsk_ptr->Exec_status.State = Task_Stop;
@@ -1121,15 +1121,17 @@ static void Task_Statistic_Cast(uint8_t *time_base, uint16_t unuse)
 uint32_t Task_GetStackRemain(const Task_Handle hdl)
 {
     uint32_t remain_size = 0;
+    uint32_t check_pos = ((Task *)hdl)->Stack_Depth;
 
     __asm("cpsid i");
 
-    while ((uint8_t)(((Task *)hdl)->TCB.Stack + remain_size) == TASK_STACK_DEFAULT)
+    while ((uint8_t)(*((Task *)hdl)->TCB.Stack + check_pos) == TASK_STACK_DEFAULT)
     {
         remain_size++;
+        check_pos--;
     }
 
     __asm("cpsie i");
 
-    return (remain_size / 4);
+    return remain_size;
 }
