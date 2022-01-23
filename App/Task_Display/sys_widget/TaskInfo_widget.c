@@ -81,7 +81,7 @@ static bool Get_TaskInfo(Widget_Handle hdl)
     /* get task info first */
     for (i = 0; i < TaskInfo_Dsp.num; i++)
     {
-        if (!Task_GetInfo_ByIndex(i, &(TaskInfo_Dsp.info[i])))
+        if (!Task_GetInfo_ByIndex(i, &TaskInfo_Dsp.info[i]))
         {
             MMU_Free(TaskInfo_Dsp.info);
             TaskInfo_Dsp.num = 0;
@@ -155,18 +155,32 @@ static void TaskInfo_UpdataDspDitial(uint8_t *encoder_in, bool *btn)
     Widget_Mng.Control(TaskInfo_Widget_Hdl)->Clear();
     if (task_index >= 0)
     {
+        //update Task Info
+        Task_GetInfo_ByIndex(task_index, &TaskInfo_Dsp.info[task_index]);
+
         /* display task name */ /* use sprintf */
-        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, "name: ", 0, 0, true);
-        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, TaskInfo_Dsp.info[task_index].name, strlen("name: ") * STR_DIS, y_offset, true);
+        sprintf(dsp_buff, "name: %s", TaskInfo_Dsp.info[task_index].name);
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, dsp_buff, 0, 0, true);
+        memset(dsp_buff, NULL, 32);
         y_offset += UICTL_DEFAULT_HEIGHT;
 
         /* display priority */
-        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, "Pri: ", 0, y_offset, true);
-        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_num(Font_8, TaskInfo_Dsp.info[task_index].group, strlen("Pri: ") * STR_DIS, y_offset, true);
+        sprintf(dsp_buff, "Pri:  %d : %d", TaskInfo_Dsp.info[task_index].group, TaskInfo_Dsp.info[task_index].priority);
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, dsp_buff, 0, y_offset, true);
+        memset(dsp_buff, NULL, 32);
+        y_offset += UICTL_DEFAULT_HEIGHT;
 
         /* display set frequence & actually frequence */
+        sprintf(dsp_buff, "Frq:  %d / %d", TaskInfo_Dsp.info[task_index].set_frq, TaskInfo_Dsp.info[task_index].exec_frq);
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, dsp_buff, 0, y_offset, true);
+        memset(dsp_buff, NULL, 32);
+        y_offset += UICTL_DEFAULT_HEIGHT;
 
         /* display task cpu occupy */
+        sprintf(dsp_buff, "CPU:  %.3f%%", TaskInfo_Dsp.info[task_index].cpu_opy);
+        Widget_Mng.Control(TaskInfo_Widget_Hdl)->Draw()->draw_str(Font_8, dsp_buff, 0, y_offset, true);
+        memset(dsp_buff, NULL, 32);
+        y_offset += UICTL_DEFAULT_HEIGHT;
 
         /* display task stack occupy */
     }

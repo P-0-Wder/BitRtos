@@ -886,7 +886,7 @@ static void Task_Exec(Task *tsk_ptr)
             //get task execute frequence
             if (tsk_ptr->Exec_status.Exec_Times)
             {
-                tsk_ptr->Exec_status.detect_exec_frq = (uint32_t)(tsk_ptr->Exec_status.Exec_Times / (float)tsk_ptr->Exec_status.Exec_Time);
+                tsk_ptr->Exec_status.detect_exec_frq = (uint32_t)(tsk_ptr->Exec_status.Exec_Times / (float)(tsk_ptr->Exec_status.Exec_Time / 1000000));
             }
 
             tsk_ptr->Exec_status.State = Task_Stop;
@@ -1094,8 +1094,8 @@ bool Task_GetInfo_ByIndex(uint8_t index, Task_Base_Info *info)
     }
 
     info->name = TaskHandleToTaskObj(task_tmp->data)->Task_name;
-    info->group = GET_TASKGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp)->priority.Priority);
-    info->priority = GET_TASKINGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp)->priority.Priority);
+    info->group = GET_TASKGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp->data)->priority.Priority);
+    info->priority = GET_TASKINGROUP_PRIORITY(TaskHandleToTaskObj(task_tmp->data)->priority.Priority);
     info->stk_depth = TaskHandleToTaskObj(task_tmp->data)->Stack_Depth;
     info->set_frq = TaskHandleToTaskObj(task_tmp->data)->exec_frq;
     info->exec_frq = TaskHandleToTaskObj(task_tmp->data)->Exec_status.detect_exec_frq;
